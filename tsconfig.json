@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    {"path": "./tsconfig.project.json"},
+    {"path": "./app"},
+    {"path": "./functions/api"},
+    {"path": "./packages/zest"}
+  ]
+}

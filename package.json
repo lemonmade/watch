@@ -1,0 +1,23 @@
+{
+  "name": "watch",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "sk lint",
+    "test": "sk test",
+    "type-check": "sk type-check"
+  },
+  "workspaces": {
+    "packages": [
+      "app",
+      "functions/*",
+      "packages/*"
+    ]
+  },
+  "devDependencies": {
+    "@quilted/quilt": "^0.0.9",
+    "@quilted/sewing-kit-plugins": "^0.0.2",
+    "@sewing-kit/cli": "^0.0.22",
+    "@sewing-kit/eslint-plugin": "^0.0.5"
+  }
+}
