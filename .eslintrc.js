@@ -6,6 +6,10 @@ module.exports = {
   ],
   ignorePatterns: [
     'node_modules/',
+    'build/',
+    'packages/*/*.d.ts',
+    'packages/*/build/',
+    '!**/.eslintrc.js',
   ],
   overrides: [
     {

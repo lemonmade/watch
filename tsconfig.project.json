@@ -1,8 +1,7 @@
 {
   "extends": "./config/typescript/tsconfig.base.json",
-  "include": ["**/sewing-kit.config.ts"],
+  "include": ["node_modules/@sewing-kit/*/*.d.ts", "**/sewing-kit.config.ts"],
   "compilerOptions": {
-    "noEmit": true,
     "outDir": "build/project/ts"
   }
 }

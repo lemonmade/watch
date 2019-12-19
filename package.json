@@ -5,7 +5,9 @@
   "scripts": {
     "lint": "sk lint",
     "test": "sk test",
-    "type-check": "sk type-check"
+    "type-check": "sk type-check",
+    "dev": "sk dev",
+    "build": "sk build"
   },
   "workspaces": {
     "packages": [
@@ -16,8 +18,12 @@
   },
   "devDependencies": {
     "@quilted/quilt": "^0.0.9",
-    "@quilted/sewing-kit-plugins": "^0.0.2",
-    "@sewing-kit/cli": "^0.0.22",
-    "@sewing-kit/eslint-plugin": "^0.0.5"
+    "@quilted/sewing-kit-plugins": "^0.0.10",
+    "@sewing-kit/cli": "^0.0.31",
+    "@sewing-kit/eslint-plugin": "^0.0.7",
+    "@types/webpack-virtual-modules": "^0.1.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "webpack-virtual-modules": "^0.2.1"
   }
 }

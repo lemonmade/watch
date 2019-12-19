@@ -1,4 +1,6 @@
 import React, {useEffect} from 'react';
+
+import {Router} from '@quilted/quilt';
 import {Rating} from '@lemon/zest';
 
 interface Props {}
@@ -6,7 +8,7 @@ interface Props {}
 export function App({}: Props) {
   useEffect(() => {
     (async () => {
-      const fetched = await fetch('http://localhost:8041/api', {
+      const fetched = await fetch('http://localhost:8080/api', {
         method: 'POST',
         headers: {Accept: 'application/json'},
       });
@@ -15,9 +17,9 @@ export function App({}: Props) {
   });
 
   return (
-    <>
+    <Router>
       <div>Hello world!</div>
       <Rating />
-    </>
+    </Router>
   );
 }
