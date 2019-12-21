@@ -39,7 +39,7 @@ jobs:
 
     - name: Zip
       run: zip -r ../api.zip ./*
-      working-directory: ./build/service
+      working-directory: ./build/services
 
   aws:
     needs: build
