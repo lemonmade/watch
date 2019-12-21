@@ -1,4 +1,3 @@
-import {URL} from 'url';
 import {createServer} from 'http';
 
 import {createWebApp} from '@sewing-kit/config';
@@ -20,12 +19,10 @@ export default createWebApp((app) => {
         build.tap(PLUGIN, ({hooks}) => {
           hooks.webApp.tap(PLUGIN, ({hooks, webApp}) => {
             hooks.steps.tap(PLUGIN, (steps, _, {webpackBuildManager}) => {
-              // console.log(steps);
-
               return [
                 createStep({label: 'Building static HTML output'}, (step) => {
                   return new Promise((resolve) => {
-                    webpackBuildManager.on(webApp, (stats) => {
+                    webpackBuildManager?.on(webApp, (stats) => {
                       step.log(`has errors: ${stats.hasErrors()}`);
                       resolve();
                     });
@@ -49,10 +46,10 @@ export default createWebApp((app) => {
                 async () => {
                   const currentAssets = new Set<string>();
 
-                  webpackBuildManager.on(
+                  webpackBuildManager?.on(
                     webApp,
                     (stats: import('webpack').Stats) => {
-                      const {publicPath, assets} = stats.toJson({
+                      const {publicPath, assets = []} = stats.toJson({
                         assets: true,
                         publicPath: true,
                       });
@@ -60,11 +57,15 @@ export default createWebApp((app) => {
                       currentAssets.clear();
 
                       for (const asset of assets) {
-                        currentAssets.add(
-                          publicPath.endsWith('/')
-                            ? `${publicPath}${asset.name}`
-                            : `${publicPath}/${asset.name}`,
-                        );
+                        if (publicPath == null) {
+                          currentAssets.add(asset.name);
+                        } else {
+                          currentAssets.add(
+                            publicPath.endsWith('/')
+                              ? `${publicPath}${asset.name}`
+                              : `${publicPath}/${asset.name}`,
+                          );
+                        }
                       }
                     },
                   );

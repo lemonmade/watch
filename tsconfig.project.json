@@ -1,7 +1,17 @@
 {
   "extends": "./config/typescript/tsconfig.base.json",
-  "include": ["node_modules/@sewing-kit/*/*.d.ts", "**/sewing-kit.config.ts"],
+  "include": [
+    "node_modules/@sewing-kit/*/*.d.ts",
+    "**/sewing-kit.config.ts",
+    "**/tests/**/*.ts",
+    "**/tests/**/*.tsx"
+  ],
   "compilerOptions": {
     "outDir": "build/project/ts"
-  }
+  },
+  "references": [
+    {"path": "./packages/zest"},
+    {"path": "./functions/api"},
+    {"path": "./app"}
+  ]
 }

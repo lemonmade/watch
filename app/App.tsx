@@ -5,13 +5,15 @@ import {Rating} from '@lemon/zest';
 
 interface Props {}
 
-export function App({}: Props) {
+export function App(_props: Props) {
   useEffect(() => {
     (async () => {
       const fetched = await fetch('http://localhost:8080/api', {
         method: 'POST',
         headers: {Accept: 'application/json'},
       });
+
+      // eslint-disable-next-line no-console
       console.log(await fetched.json());
     })();
   });

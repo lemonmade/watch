@@ -6,5 +6,6 @@
     "outDir": "build/ts",
     "paths": {}
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/tests/**/*.ts", "**/tests/**/*.tsx"]
 }

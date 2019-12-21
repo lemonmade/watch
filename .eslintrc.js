@@ -11,6 +11,9 @@ module.exports = {
     'packages/*/build/',
     '!**/.eslintrc.js',
   ],
+  settings: {
+    'import/external-module-folders': ['node_modules', 'packages'],
+  },
   overrides: [
     {
       files: ['sewing-kit.config.ts', 'config/sewing-kit/**/*'],

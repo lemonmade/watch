@@ -17,7 +17,6 @@
     ]
   },
   "devDependencies": {
-    "@quilted/quilt": "^0.0.10",
     "@quilted/sewing-kit-plugins": "^0.0.16",
     "@sewing-kit/cli": "^0.0.32",
     "@sewing-kit/eslint-plugin": "^0.0.7",
