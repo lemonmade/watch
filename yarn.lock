@@ -7455,10 +7455,10 @@ sewing-kit-plugin-knex@^0.0.3:
     "@sewing-kit/plugin-webpack" "^0.0.24"
     "@sewing-kit/plugins" "^0.0.11"
 
-sewing-kit-plugin-webpack-virtual-modules@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/sewing-kit-plugin-webpack-virtual-modules/-/sewing-kit-plugin-webpack-virtual-modules-0.0.3.tgz#c6034bda831994d62ff180495a41f4d652839a1c"
-  integrity sha512-A9rmlCPPfJq5ByfvW1k9FpLBeDQjjwZNpZzF0qUXaYzhulW/fcTLyR+BHvXWv97ozssT9GFWmt59Sx8oW1ngIQ==
+sewing-kit-plugin-webpack-virtual-modules@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/sewing-kit-plugin-webpack-virtual-modules/-/sewing-kit-plugin-webpack-virtual-modules-0.0.4.tgz#1e5c32575ffedcf5e86d6bc68e6d91377f7dab32"
+  integrity sha512-SVUh1WIWJqCxWN+Z0lXifFGywOUmlR9UVQ+ZWnflaTcJJWZFne70Oon837nnSRaK/QDzuirOA0roAihU+E68+w==
   dependencies:
     "@sewing-kit/plugins" "^0.0.11"
     "@types/webpack-virtual-modules" "^0.1.0"

@@ -25,6 +25,6 @@
     "koa-bodyparser": "^4.2.1",
     "raw-loader": "^4.0.0",
     "sewing-kit-plugin-knex": "^0.0.3",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.3"
+    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.4"
   }
 }
