@@ -41,6 +41,12 @@ jobs:
       run: zip -r ../api.zip ./*
       working-directory: ./build/services
 
+    - name: Save build artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: build/api.zip
+
   aws:
     needs: build
     runs-on: ubuntu-latest
@@ -48,6 +54,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       name: Checkout
+
+    - name: Restore build artifacts
+      uses: actions/download-artifact@v1
+      with:
+        name: build
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
