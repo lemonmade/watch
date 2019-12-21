@@ -37,6 +37,10 @@ jobs:
     - name: Build
       run: yarn build
 
+    - name: Zip
+      run: zip -r ../api.zip ./*
+      working-directory: ./build/service
+
   aws:
     needs: build
     runs-on: ubuntu-latest
@@ -74,6 +78,5 @@ jobs:
         aws-region: us-east-1
 
     - name: Update AWS resources
-      run:
-        - (cd ./build/services && zip -r ../api.zip ./*)
-        - aws lambda update-function-code --function-name WatchApi --zip-file fileb://build/api.zip
+      run: |
+        aws lambda update-function-code --function-name WatchApi --zip-file fileb://build/api.zip
