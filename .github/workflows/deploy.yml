@@ -1,0 +1,79 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+
+    - uses: actions/setup-node@v1
+      name: Setup node.js and yarn
+      with:
+        node-version: 12.14.0
+
+    - name: Get yarn cache directory
+      id: yarn-cache-get-dir
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v1
+      id: yarn-cache
+      name: Restore yarn cache
+      with:
+        path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Yarn install
+      run: yarn install --frozen-lockfile
+
+    - name: Build
+      run: yarn build
+
+  aws:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+
+    - uses: actions/setup-node@v1
+      name: Setup node.js and yarn
+      with:
+        node-version: 12.14.0
+
+    - name: Get yarn cache directory
+      id: yarn-cache-get-dir
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v1
+      id: yarn-cache
+      name: Restore yarn cache
+      with:
+        path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install AWS SDK
+      run: yarn add aws-sdk
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Update AWS resources
+      run:
+        - (cd ./build/services && zip -r ../api.zip ./*)
+        - aws lambda update-function-code --function-name WatchApi --zip-file fileb://build/api.zip
