@@ -1,0 +1,191 @@
+scalar Date
+scalar Notes
+scalar Url
+
+interface Watchable {
+  id: ID!
+  watches: [Watch!]!
+  latestWatch: Watch
+}
+
+interface Reviewable {
+  rating: Int
+  notes: Notes
+}
+
+type Image {
+  source: Url
+}
+
+type Episode implements Watchable {
+  id: ID!
+  title: String!
+  series: Series!
+  season: Season!
+  number: Int!
+  firstAired: Date
+  watches: [Watch!]!
+  latestWatch: Watch
+  still: Image
+  overview: String
+}
+
+type Season {
+  id: ID!
+  series: Series!
+  number: Int!
+  episodes: [Episode!]!
+  firstAired: Date
+  poster: Image
+  overview: String
+  isSpecials: Boolean!
+  status: SeasonStatus!
+}
+
+type Series {
+  id: ID!
+  tmdbId: ID!
+  imdbId: ID!
+  name: String!
+  poster: Image
+  overview: String
+  firstAired: Date
+  status: SeriesStatus!
+  seasons: [Season!]!
+  season(number: Int!): Season
+  episodes: [Episode!]!
+  episode(number: Int!, seasonNumber: Int!): Episode
+}
+
+enum WatchThroughState {
+  IN_PROGRESS
+  STOPPED
+  FINISHED
+  UP_TO_DATE
+}
+
+enum EpisodeWatchedFilter {
+  WATCHED
+  UNWATCHED
+}
+
+enum SeriesStatus {
+  RETURNING
+  ENDED
+  CANCELLED
+}
+
+enum SeasonStatus {
+  CONTINUING
+  ENDED
+}
+
+union WatchThroughEpisodeAction = Watch | Skip
+
+type WatchThroughEpisode {
+  id: ID!
+  episode: Episode!
+  finished: Boolean!
+  watchThrough: WatchThrough!
+  action: WatchThroughEpisodeAction
+}
+
+type WatchThrough implements Reviewable {
+  id: ID!
+  series: Series!
+  startedAt: Date
+  updatedAt: Date!
+  lastAction: WatchThroughEpisodeAction
+  finishedAt: Date
+  watches: [Watch!]!
+  nextEpisode: Episode
+  state: WatchThroughState!
+  rating: Int
+  notes: Notes
+  lastEpisode: WatchThroughEpisode
+  episodes(finished: Boolean, watched: EpisodeWatchedFilter): [WatchThroughEpisode!]!
+  unfinishedEpisodeCount: Int!
+}
+
+type Watch implements Reviewable {
+  id: ID!
+  media: Watchable!
+  startedAt: Date
+  finishedAt: Date
+  rating: Int
+  notes: Notes
+  watchThrough: WatchThrough
+}
+
+type Skip {
+  id: ID!
+  at: Date
+  media: Watchable!
+  notes: Notes
+  watchThrough: WatchThrough
+}
+
+type WatchEpisodePayload {
+  watch: Watch
+  episode: Episode
+  watchThrough: WatchThrough
+}
+
+type SkipEpisodePayload {
+  skip: Skip
+  episode: Episode
+  watchThrough: WatchThrough
+}
+
+type StartWatchThroughPayload {
+  watchThrough: WatchThrough
+}
+
+type DeleteWatchThroughPayload {
+  deletedWatchThroughId: ID!
+}
+
+type DeleteWatchPayload {
+  deletedWatchId: ID!
+  watchThrough: WatchThrough
+}
+
+type SearchResults {
+  series: [Series!]!
+}
+
+input SeriesSliceEndpoint {
+  episodeNumber: Int!
+  seasonNumber: Int!
+}
+
+input SeriesSlice {
+  from: SeriesSliceEndpoint
+  to: SeriesSliceEndpoint!
+}
+
+type WatchEpisodesFromSeriesPayload {
+  series: Series
+}
+
+type Query {
+  watch(id: ID!): Watch
+  series(id: ID!): Series
+  watchThrough(id: ID!): WatchThrough
+  watchThroughs: [WatchThrough!]!
+  search(query: String!): SearchResults!
+}
+
+type Mutation {
+  skipEpisode(episode: ID!, watchThrough: ID, notes: Notes, at: Date): SkipEpisodePayload!
+  watchEpisode(episode: ID!, watchThrough: ID, rating: Int, notes: Notes, startedAt: Date, finishedAt: Date): WatchEpisodePayload!
+  watchEpisodesFromSeries(series: ID!, slice: SeriesSlice): WatchEpisodesFromSeriesPayload!
+  startWatchThrough(series: ID!, seasons: [ID!], episodes: [ID!]): StartWatchThroughPayload!
+  deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
+  deleteWatch(id: ID!): DeleteWatchPayload!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

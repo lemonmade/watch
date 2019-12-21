@@ -6,5 +6,9 @@
     "outDir": "build/ts",
     "paths": {}
   },
+  "include": [
+    "../../config/typescript/globals.d.ts",
+    "**/*.ts"
+  ],
   "exclude": ["sewing-kit.config.ts", "build"]
 }

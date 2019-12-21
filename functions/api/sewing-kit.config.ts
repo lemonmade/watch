@@ -1,78 +1,39 @@
 import {createService} from '@sewing-kit/config';
-import {
-  createProjectDevPlugin,
-  createProjectBuildPlugin,
-} from '@sewing-kit/plugins';
-import {Service} from '@sewing-kit/model';
-import {quiltServicePlugin} from '@quilted/sewing-kit-plugins';
+import {Project} from '@sewing-kit/model';
+import {createQuiltServicePlugin} from '@quilted/sewing-kit-plugins';
+
+import {createKnexPlugin, Dialect} from 'sewing-kit-plugin-knex';
+import {useVirtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
 
 import {} from '@sewing-kit/plugin-webpack';
 
-import WebpackVirtualModules from 'webpack-virtual-modules';
-
-const PLUGIN = 'Watch.Api';
-
 export default createService((service) => {
   service.entry('./index');
-  service.plugin(quiltServicePlugin);
-
-  service.plugin(
-    createProjectBuildPlugin(PLUGIN, ({hooks}, api) => {
-      hooks.service.tap(PLUGIN, ({hooks, service}) => {
-        const virtualEntry = api.configPath(
-          `lambda-service/${service.name}.js`,
-        );
-
-        hooks.configure.tap(PLUGIN, (configure) => {
-          configure.webpackEntries?.tap(PLUGIN, () => [virtualEntry]);
-
-          configure.webpackPlugins?.tap(PLUGIN, (plugins) => [
-            ...plugins,
-            new WebpackVirtualModules({
-              [virtualEntry]: virtualEntryContent(service),
-            }),
-          ]);
-        });
-      });
-    }),
-  );
-
-  service.plugin(
-    createProjectDevPlugin(PLUGIN, ({hooks}, api) => {
-      hooks.service.tap(PLUGIN, ({hooks, service}) => {
-        hooks.configure.tap(PLUGIN, (configure) => {
-          configure.port.tap(PLUGIN, () => 8080);
-          configure.ip.tap(PLUGIN, () => 'localhost');
-
-          const virtualEntry = api.configPath(
-            `lambda-service/${service.name}.js`,
-          );
-
-          configure.webpackEntries?.tap(PLUGIN, () => [virtualEntry]);
-
-          configure.webpackPlugins?.tap(PLUGIN, (plugins) => [
-            ...plugins,
-            new WebpackVirtualModules({
-              [virtualEntry]: virtualEntryContent(service),
-            }),
-          ]);
-        });
-      });
-    }),
+  service.plugins(
+    createQuiltServicePlugin({devServer: {ip: 'localhost', port: 8080}}),
+    createKnexPlugin({dialect: Dialect.Postgres}),
+    useVirtualModules(
+      ({project, api}) => ({
+        [api.tmpPath(`lambda-service/${service.name}.js`)]: virtualEntryContent(
+          project,
+        ),
+      }),
+      {asEntry: true},
+    ),
   );
 });
 
-function virtualEntryContent(service: Service) {
+function virtualEntryContent(project: Project) {
   return `
     import Koa from 'koa';
     import bodyParser from 'koa-bodyparser';
-    import handler from ${JSON.stringify(service.fs.resolvePath('index'))};
+    import handler from ${JSON.stringify(project.fs.resolvePath('index'))};
     
     const app = new Koa();
 
     app.use(bodyParser());
     app.use(async (ctx) => {
-      const {body, statusCode = 200, headers = {}} = await handler({body: ctx.request.body});
+      const {body, statusCode = 200, headers = {}} = await handler({body: JSON.stringify(ctx.request.body)});
       ctx.status = statusCode;
       
       for (const [header, value] of Object.entries(headers)) {

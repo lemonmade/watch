@@ -1,3 +1,13 @@
 {
-  "eslint.enable": true
+  "eslint.enable": true,
+  "cSpell.words": [
+    "throughs",
+    "watch"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  }
 }
