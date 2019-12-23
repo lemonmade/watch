@@ -17,7 +17,7 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.0.16",
+    "@quilted/sewing-kit-plugins": "^0.0.18",
     "@sewing-kit/cli": "^0.0.32",
     "@sewing-kit/eslint-plugin": "^0.0.7",
     "koa": "^2.11.0",
