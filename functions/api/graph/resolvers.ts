@@ -1,4 +1,5 @@
 import {IResolverObject as ResolverObject} from 'graphql-tools';
+import fetch from 'node-fetch';
 import {Context, Table} from './context';
 
 type Resolver<Source = never> = ResolverObject<Source, Context>;
