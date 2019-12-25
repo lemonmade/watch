@@ -1,83 +1,56 @@
 import {createService} from '@sewing-kit/config';
-import {Project} from '@sewing-kit/model';
-import {createQuiltServicePlugin} from '@quilted/sewing-kit-plugins';
-import {createProjectPlugin} from '@sewing-kit/plugins';
-import {} from '@sewing-kit/plugin-webpack';
+import {
+  Task,
+  Service,
+  createProjectBuildPlugin,
+  createComposedProjectPlugin,
+} from '@sewing-kit/plugins';
+import {quiltService} from '@quilted/sewing-kit-plugins';
+import {webpackAliases} from '@sewing-kit/plugin-webpack';
 
-import {createKnexPlugin, Dialect} from 'sewing-kit-plugin-knex';
-import {useVirtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
+import {knex, Dialect} from 'sewing-kit-plugin-knex';
+import {virtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
 
 const PLUGIN = 'Watch.Api';
 
+const anyPromiseStub = require.resolve(
+  '../../config/sewing-kit/stubs/any-promise.js',
+);
+
 export default createService((service) => {
   service.entry('./index');
-  service.plugins(
-    createQuiltServicePlugin({devServer: {ip: 'localhost', port: 8080}}),
-    createKnexPlugin({dialect: Dialect.Postgres}),
-    useVirtualModules(
+  service.use(
+    quiltService({devServer: {ip: 'localhost', port: 8080}}),
+    knex({dialect: Dialect.Postgres}),
+    webpackAliases({'any-promise': anyPromiseStub}),
+    simpleLambda(),
+  );
+});
+
+function simpleLambda() {
+  return createComposedProjectPlugin<Service>(`${PLUGIN}.SimpleLambda`, [
+    virtualModules(
       ({project, api}) => ({
         [api.tmpPath(`lambda-service/${project.name}.js`)]: virtualEntryContent(
           project,
         ),
       }),
-      {asEntry: true, build: false, dev: true},
+      {asEntry: true, include: [Task.Dev]},
     ),
-    createProjectPlugin({
-      id: PLUGIN,
-      run({dev, build}) {
-        dev.tap(PLUGIN, ({hooks}) => {
-          hooks.service.tap(PLUGIN, ({hooks}) => {
-            hooks.configure.tap(PLUGIN, (configure) => {
-              configure.webpackConfig?.tap(PLUGIN, (config) => {
-                return {
-                  ...config,
-                  resolve: {
-                    ...config.resolve,
-                    alias: {
-                      ...config.resolve?.alias,
-                      'any-promise': require.resolve(
-                        '../../config/sewing-kit/stubs/any-promise.js',
-                      ),
-                    },
-                  },
-                };
-              });
-            });
-          });
-        });
-
-        build.tap(PLUGIN, ({hooks}) => {
-          hooks.service.tap(PLUGIN, ({hooks}) => {
-            hooks.configure.tap(PLUGIN, (configure) => {
-              configure.webpackOutputFilename?.tap(PLUGIN, () => 'index.js');
-              configure.webpackConfig?.tap(PLUGIN, (config) => {
-                return {
-                  ...config,
-                  resolve: {
-                    ...config.resolve,
-                    alias: {
-                      ...config.resolve?.alias,
-                      'any-promise': require.resolve(
-                        '../../config/sewing-kit/stubs/any-promise.js',
-                      ),
-                    },
-                  },
-                };
-              });
-            });
-          });
-        });
-      },
+    createProjectBuildPlugin(`${PLUGIN}.SetWebpackFilename`, ({hooks}) => {
+      hooks.configure.hook((configure) => {
+        configure.webpackOutputFilename?.hook(() => 'index.js');
+      });
     }),
-  );
-});
+  ]);
+}
 
-function virtualEntryContent(project: Project) {
+function virtualEntryContent(service: Service) {
   return `
     import Koa from 'koa';
     import bodyParser from 'koa-bodyparser';
-    import handler from ${JSON.stringify(project.fs.resolvePath('index'))};
-    
+    import handler from ${JSON.stringify(service.fs.resolvePath('index'))};
+
     const app = new Koa();
 
     app.use(bodyParser());

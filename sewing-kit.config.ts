@@ -1,6 +1,6 @@
 import {createWorkspace} from '@sewing-kit/config';
-import {quiltWorkspacePlugin} from '@quilted/sewing-kit-plugins';
+import {quiltWorkspace} from '@quilted/sewing-kit-plugins';
 
 export default createWorkspace((workspace) => {
-  workspace.plugin(quiltWorkspacePlugin);
+  workspace.use(quiltWorkspace());
 });
