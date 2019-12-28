@@ -9,7 +9,7 @@
     "graphql-tools": "^4.0.6",
     "knex": "^0.20.4",
     "node-fetch": "^2.6.0",
-    "pg": "^7.15.1"
+    "pg": "^7.16.0"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
