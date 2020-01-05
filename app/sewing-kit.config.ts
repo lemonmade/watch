@@ -18,14 +18,17 @@ export default createWebApp((app) => {
     createProjectBuildPlugin(PLUGIN, ({api, hooks, project}) => {
       hooks.steps.hook((steps, {webpackBuildManager}) => {
         return [
-          api.createStep({label: 'Building static HTML output'}, (step) => {
-            return new Promise((resolve) => {
-              webpackBuildManager?.on(project, (stats) => {
-                step.log(`has errors: ${stats.hasErrors()}`);
-                resolve();
+          api.createStep(
+            {label: 'build static html output', id: 'StaticHtml.Build'},
+            (step) => {
+              return new Promise((resolve) => {
+                webpackBuildManager?.on(project, (stats) => {
+                  step.log(`has errors: ${stats.hasErrors()}`);
+                  resolve();
+                });
               });
-            });
-          }),
+            },
+          ),
           ...steps,
         ];
       });
@@ -35,10 +38,10 @@ export default createWebApp((app) => {
         ...steps,
         api.createStep(
           {
-            label: 'Starting development server for static HTML',
-            indefinite: true,
+            label: 'starting stating HTML development server',
+            id: 'StaticHtml.DevServer',
           },
-          async () => {
+          async (step) => {
             const currentAssets = new Set<string>();
 
             webpackBuildManager?.on(
@@ -65,22 +68,26 @@ export default createWebApp((app) => {
               },
             );
 
-            createServer((_, res) => {
-              res.writeHead(200, {'Content-Type': 'text/html'});
-              res.write(
-                `<html>
-                  <head></head>
-                  <body>
-                    <div id="app"></div>
-                    ${[...currentAssets].map(
-                      (asset) =>
-                        `<script src=${JSON.stringify(asset)}></script>`,
-                    )}
-                  </body>
-                </html>`,
-              );
-              res.end();
-            }).listen(8082);
+            step.indefinite(({stdio}) => {
+              createServer((req, res) => {
+                stdio.stdout.write(`request for path: ${req.url}\n`);
+
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.write(
+                  `<html>
+                    <head></head>
+                    <body>
+                      <div id="app"></div>
+                      ${[...currentAssets].map(
+                        (asset) =>
+                          `<script src=${JSON.stringify(asset)}></script>`,
+                      )}
+                    </body>
+                  </html>`,
+                );
+                res.end();
+              }).listen(8082);
+            });
           },
         ),
       ]);

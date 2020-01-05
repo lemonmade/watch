@@ -7,9 +7,9 @@
     "dataloader": "^2.0.0",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.6",
-    "knex": "^0.20.4",
+    "knex": "^0.20.6",
     "node-fetch": "^2.6.0",
-    "pg": "^7.16.0"
+    "pg": "^7.17.0"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
