@@ -1,5 +1,5 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {App} from './App';
+import {Watch} from './Watch';
 
-render(<App />, document.querySelector('#app'));
+render(<Watch />, document.querySelector('#app'));

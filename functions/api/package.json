@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@sentry/node": "^5.10.2",
+    "@sentry/node": "^5.11.0",
     "dataloader": "^2.0.0",
     "graphql": "^14.5.8",
     "graphql-tools": "^4.0.6",
-    "knex": "^0.20.6",
+    "knex": "^0.20.7",
     "node-fetch": "^2.6.0",
-    "pg": "^7.17.0"
+    "pg": "^7.17.1"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",

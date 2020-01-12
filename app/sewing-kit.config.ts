@@ -78,10 +78,12 @@ export default createWebApp((app) => {
                     <head></head>
                     <body>
                       <div id="app"></div>
-                      ${[...currentAssets].map(
-                        (asset) =>
-                          `<script src=${JSON.stringify(asset)}></script>`,
-                      )}
+                      ${[...currentAssets]
+                        .map(
+                          (asset) =>
+                            `<script src=${JSON.stringify(asset)}></script>`,
+                        )
+                        .join('\n')}
                     </body>
                   </html>`,
                 );

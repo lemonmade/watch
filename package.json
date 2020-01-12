@@ -17,14 +17,14 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.0.26",
-    "@sewing-kit/cli": "^0.0.41",
-    "@sewing-kit/eslint-plugin": "^0.0.9",
+    "@quilted/sewing-kit-plugins": "^0.0.28",
+    "@sewing-kit/cli": "^0.0.42",
+    "@sewing-kit/eslint-plugin": "^0.0.10",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "raw-loader": "^4.0.0",
-    "sewing-kit-plugin-knex": "^0.0.15",
-    "sewing-kit-plugin-storybook": "^0.0.2",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.14"
+    "sewing-kit-plugin-knex": "^0.0.16",
+    "sewing-kit-plugin-storybook": "^0.0.3",
+    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.15"
   }
 }
