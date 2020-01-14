@@ -2,20 +2,21 @@ import {createServer} from 'http';
 
 import {createWebApp} from '@sewing-kit/config';
 import {
+  WebApp,
   createProjectDevPlugin,
   createProjectBuildPlugin,
+  createComposedProjectPlugin,
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 
-import {} from '@sewing-kit/plugin-webpack';
-
-const PLUGIN = 'Watch.App';
+import {webpackPlugins} from '@sewing-kit/plugin-webpack';
+import {addBabelPlugin} from '@sewing-kit/plugin-babel';
 
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     quiltWebApp(),
-    createProjectBuildPlugin(PLUGIN, ({api, hooks, project}) => {
+    createProjectBuildPlugin('Watch.App.BuildHtml', ({api, hooks, project}) => {
       hooks.steps.hook((steps, {webpackBuildManager}) => {
         return [
           api.createStep(
@@ -33,7 +34,7 @@ export default createWebApp((app) => {
         ];
       });
     }),
-    createProjectDevPlugin(PLUGIN, ({api, hooks, project}) => {
+    createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
       hooks.steps.hook((steps, {webpackBuildManager}) => [
         ...steps,
         api.createStep(
@@ -72,7 +73,11 @@ export default createWebApp((app) => {
               createServer((req, res) => {
                 stdio.stdout.write(`request for path: ${req.url}\n`);
 
-                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.writeHead(200, {
+                  'Content-Type': 'text/html',
+                  // 'Content-Security-Policy':
+                  //   "default-src http://* https://* 'unsafe-eval'",
+                });
                 res.write(
                   `<html>
                     <head></head>
@@ -94,5 +99,19 @@ export default createWebApp((app) => {
         ),
       ]);
     }),
+    // reactRefresh(),
   );
 });
+
+// function reactRefresh() {
+//   return createComposedProjectPlugin<WebApp>('ReactRefresh', [
+//     webpackPlugins(async () => {
+//       const {default: ReactRefreshWebpackPlugin} = await import(
+//         'react-refresh-webpack-plugin'
+//       );
+
+//       return new ReactRefreshWebpackPlugin({disableRefreshCheck: true});
+//     }),
+//     addBabelPlugin('react-refresh/babel'),
+//   ]);
+// }

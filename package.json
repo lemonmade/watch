@@ -23,6 +23,8 @@
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "raw-loader": "^4.0.0",
+    "react-refresh": "^0.7.2",
+    "react-refresh-webpack-plugin": "^0.1.0",
     "sewing-kit-plugin-knex": "^0.0.16",
     "sewing-kit-plugin-storybook": "^0.0.3",
     "sewing-kit-plugin-webpack-virtual-modules": "^0.0.15"
