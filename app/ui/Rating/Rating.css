@@ -1,0 +1,68 @@
+.Rating {
+  --Rating-star-gap: 0.3rem;
+
+  display: inline-block;
+  border-radius: var(--zest-border-radius);
+  background: var(--zest-color-action);
+  padding: 0 var(--zest-spacing-mini);
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.Rating:focus,
+.Rating:hover {
+  background: var(--zest-color-action-active);
+}
+
+.Rating:active,
+.Rating:focus {
+  transform: scale(0.9);
+}
+
+.StarContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--zest-action-size);
+  pointer-events: none;
+}
+
+.Star {
+  --RatingStar-size: 1.5rem;
+
+  height: var(--zest-RatingStar-size);
+  width: var(--zest-RatingStar-size);
+}
+
+.Star + .Star {
+  margin-left: var(--zest-Rating-star-gap);
+}
+
+.Star-fillPartial .StarPath:first-of-type {
+  fill: var(--zest-color-action-rate);
+}
+
+.Star-fillFull .StarPath,
+.Star-fillHalfAndHalf .StarPath {
+  fill: var(--zest-color-action-rate);
+}
+
+.Star-fillFullInverse .StarPath {
+  fill: var(--zest-color-action-rate);
+  opacity: 0.3;
+}
+
+.Star-fillPartialInverse .StarPath:first-of-type {
+  fill: var(--zest-color-action-rate);
+  opacity: 0.3;
+}
+
+.Star-fillHalfAndHalf .StarPath:not(:first-of-type) {
+  opacity: 0.3;
+}
+
+.StarPath {
+  fill: var(--zest-color-action-content-subdued);
+}

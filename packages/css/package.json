@@ -1,0 +1,12 @@
+{
+  "name": "@lemon/css",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "classnames": "^2.2.6"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.9"
+  }
+}

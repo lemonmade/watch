@@ -1,0 +1,97 @@
+.WatchThrough {
+  position: relative;
+  z-index: 10;
+  display: block;
+  border-radius: 0 0 var(--zest-border-radius) var(--zest-border-radius);
+  transition: background 0.2s ease, transform 0.15s ease;
+  text-decoration: none;
+  color: var(--zest-color-text);
+  /* touch-action: manipulation; */
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.WatchThrough:hover,
+.WatchThrough:focus,
+.WatchThrough:active {
+  outline: none;
+  background: rgb(30, 30, 30);
+}
+
+.WatchThrough:active {
+  transform: scale(0.95);
+}
+
+.hasFootnotes .WatchThroughContent {
+  padding-bottom: calc(
+    var(--WatchThrough-content-padding) + var(--zest-spacing-mini)
+  );
+}
+
+.WatchThroughContainer {
+  position: relative;
+}
+
+.WatchThroughContent {
+  --WatchThrough-content-padding: var(--zest-spacing-small);
+  padding: var(--WatchThrough-content-padding);
+}
+
+.WatchThroughNextEpisodeMeta {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--zest-spacing-mini);
+  margin-top: -2px;
+}
+
+.WatchThroughIndicator {
+  --WatchThrough-indicator-size: 0.5em;
+
+  display: block;
+  flex: 0 0 auto;
+  width: var(--WatchThrough-indicator-size);
+  height: var(--WatchThrough-indicator-size);
+  background: rgba(255, 255, 0, 0.8);
+  border-radius: 50%;
+  margin-bottom: -1px;
+  margin-right: calc(0.5 * var(--WatchThrough-indicator-size));
+}
+
+.WatchThroughNextEpisodeTiming {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+  font-size: 0.75rem;
+  color: var(--zest-color-action-content-subdued);
+  text-transform: uppercase;
+}
+
+.WatchThroughNextEpisodeTitle {
+  margin: 0;
+  color: var(--zest-color-action-content);
+}
+
+.WatchThroughFootnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 20;
+}
+
+.WatchThroughBadge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem 0.15rem;
+  border-radius: var(--zest-border-radius);
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+  color: var(--zest-color-surface);
+  white-space: nowrap;
+  background-color: rgb(100, 100, 100);
+  font-size: 0.7rem;
+}

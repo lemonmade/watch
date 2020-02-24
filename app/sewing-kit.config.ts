@@ -8,6 +8,7 @@ import {
   createComposedProjectPlugin,
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
+import {graphql} from '@sewing-kit/plugin-graphql';
 
 import {webpackPlugins} from '@sewing-kit/plugin-webpack';
 import {addBabelPlugin} from '@sewing-kit/plugin-babel';
@@ -16,6 +17,7 @@ export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     quiltWebApp(),
+    graphql(),
     createProjectBuildPlugin('Watch.App.BuildHtml', ({api, hooks, project}) => {
       hooks.steps.hook((steps, {webpackBuildManager}) => {
         return [

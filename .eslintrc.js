@@ -14,6 +14,11 @@ module.exports = {
   settings: {
     'import/external-module-folders': ['node_modules', 'packages'],
   },
+  rules: {
+    'jsx-a11y/label-has-for': 'off',
+    'jsx-a11y/control-has-associated-label': 'off',
+    'no-nested-ternary': 'off',
+  },
   overrides: [
     {
       files: ['sewing-kit.config.ts', 'config/sewing-kit/**/*'],

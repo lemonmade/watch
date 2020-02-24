@@ -1,0 +1,16 @@
+.CollapseGroup {
+  padding-bottom: var(--zest-spacing);
+}
+
+.Heading {
+  padding: var(--zest-spacing-small);
+  color: var(--zest-color-action-content);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(18px) brightness(25%);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: var(--zest-action-size);
+  display: flex;
+  align-items: center;
+}

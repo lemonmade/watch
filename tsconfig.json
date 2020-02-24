@@ -5,6 +5,7 @@
     {"path": "./tsconfig.project.json"},
     {"path": "./app"},
     {"path": "./functions/api"},
+    {"path": "./packages/css"},
     {"path": "./packages/zest"}
   ]
 }

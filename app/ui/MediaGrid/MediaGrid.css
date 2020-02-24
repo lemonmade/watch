@@ -1,0 +1,20 @@
+.MediaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: var(--zest-spacing-extra-large);
+  column-gap: var(--zest-spacing-mini);
+  padding: 0 var(--zest-spacing-small);
+  align-items: flex-start;
+}
+
+@media (min-width: 36.25em) {
+  .MediaGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 50em) {
+  .MediaGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -1,0 +1,11 @@
+.DateField {
+  appearance: none;
+  border: none;
+  font-size: 1.25rem;
+  height: var(--zest-action-size);
+  background: var(--zest-color-action);
+  color: var(--zest-color-text);
+  border-radius: var(--zest-border-radius);
+  padding: 0 var(--zest-spacing-mini);
+  overflow: hidden;
+}

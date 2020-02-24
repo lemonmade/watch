@@ -6,10 +6,10 @@
     "outDir": "build/ts",
     "paths": {
       "@lemon/zest": ["../packages/zest"],
+      "@lemon/css": ["../packages/css"]
     }
   },
+  "include": ["**/*", "../config/typescript/globals.d.ts"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [
-    {"path": "../packages/zest"}
-  ]
+  "references": [{"path": "../packages/css"}, {"path": "../packages/zest"}]
 }

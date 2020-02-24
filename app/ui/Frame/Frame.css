@@ -1,0 +1,49 @@
+.Frame {
+  position: relative;
+}
+
+.hasNav {
+  padding-bottom: 6rem;
+}
+
+.Content {
+  position: relative;
+  z-index: 100;
+}
+
+.Nav {
+  position: fixed;
+  bottom: var(--zest-spacing);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--zest-color-surface-raised-2);
+  border-radius: var(--zest-border-radius);
+  padding: var(--zest-spacing-mini);
+}
+
+.Actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.Action {
+  display: block;
+  height: 3rem;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--zest-spacing);
+  border-radius: var(--zest-border-radius);
+}
+
+.Action + .Action {
+  margin-left: var(--zest-spacing-small);
+}
+
+.Action:hover {
+  background: var(--zest-color-surface-raised-2-active);
+}

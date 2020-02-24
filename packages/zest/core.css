@@ -1,0 +1,35 @@
+:root {
+  --zest-border-radius: 0.25rem;
+
+  --zest-color-text: hsl(0, 0%, 100%);
+
+  --zest-color-text: rgb(255, 255, 255);
+  --zest-color-text-subdued: rgb(160, 160, 160);
+
+  --zest-color-surface: hsl(0, 0%, 0%);
+  --zest-color-surface-raised-1: rgb(20, 20, 20);
+  --zest-color-surface-raised-2: rgb(60, 60, 60);
+  --zest-color-surface-raised-2-active: rgb(100, 100, 100);
+
+  --zest-color-action: rgb(40, 40, 40);
+  --zest-color-action-active: rgb(60, 60, 60);
+  --zest-color-action-content: rgb(200, 200, 200);
+  --zest-color-action-content-subdued: rgb(120, 120, 120);
+
+  --zest-color-action-rate: yellow;
+  --zest-color-action-highlight: rgb(70, 113, 125);
+  --zest-color-action-primary: #395ba6;
+  --zest-color-action-primary-hover: #395ba6;
+  --zest-color-action-primary-focus: #395ba6;
+  --zest-color-action-primary-active: #294789;
+
+  --zest-action-size: 2.75rem; /* 44px / 16px */
+
+  --zest-spacing: 1rem;
+  --zest-spacing-small: 0.75rem;
+  --zest-spacing-mini: 0.5rem;
+  --zest-spacing-large: 1.5rem;
+  --zest-spacing-extra-large: 2rem;
+
+  --zest-border: 1px solid var(--color-action-active);
+}
