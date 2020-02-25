@@ -7,6 +7,8 @@ export {Link} from './Link';
 export {MediaGrid} from './MediaGrid';
 export {Poster} from './Poster';
 export {Rating} from './Rating';
+export {SpacingScale} from './SpacingScale';
+export {Stack, StackItem} from './Stack';
 export {Text} from './Text';
 export {TextField} from './TextField';
 export {View} from './View';

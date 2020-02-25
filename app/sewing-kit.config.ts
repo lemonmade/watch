@@ -2,16 +2,14 @@ import {createServer} from 'http';
 
 import {createWebApp} from '@sewing-kit/config';
 import {
-  WebApp,
   createProjectDevPlugin,
   createProjectBuildPlugin,
-  createComposedProjectPlugin,
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
 
-import {webpackPlugins} from '@sewing-kit/plugin-webpack';
-import {addBabelPlugin} from '@sewing-kit/plugin-babel';
+import {} from '@sewing-kit/plugin-webpack';
+import {} from '@sewing-kit/plugin-babel';
 
 export default createWebApp((app) => {
   app.entry('./index');

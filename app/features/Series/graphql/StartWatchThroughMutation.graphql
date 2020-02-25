@@ -1,0 +1,7 @@
+mutation SeriesStartWatchThrough($series: ID!, $seasons: [ID!]) {
+  startWatchThrough(series: $series, seasons: $seasons) {
+    watchThrough {
+      id
+    }
+  }
+}

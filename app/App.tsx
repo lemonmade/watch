@@ -1,30 +1,40 @@
-import React from 'react';
+import React, {ComponentProps} from 'react';
 import {ApolloProvider} from '@apollo/react-hooks';
 import ApolloClient, {
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from 'apollo-boost';
-// import {Route} from '@quilted/quilt';
+import {Route, RemoteRouter} from '@lemon/react-router';
 
 import {Frame} from './components';
-import {Watching} from './features';
+import {Watching, Series} from './features';
 
-interface Props {}
+interface Props {
+  router: ComponentProps<typeof RemoteRouter>['router'];
+}
 
 const client = createApolloClient();
 
-export default function App({}: Props) {
+export default function App({router}: Props) {
   return (
-    <ApolloProvider client={client}>
-      <Frame
-        actions={[
-          {content: 'Watching', to: '/'},
-          {content: 'Search', to: '/search'},
-        ]}
-      >
-        <Watching />
-      </Frame>
-    </ApolloProvider>
+    <RemoteRouter router={router}>
+      <ApolloProvider client={client}>
+        <Frame
+          actions={[
+            {content: 'Watching', to: '/'},
+            {content: 'Search', to: '/search'},
+          ]}
+        >
+          <Route match="/" render={() => <Watching />} />
+          <Route
+            match={/\/series\/[\w-]+$/}
+            render={({pathname}) => (
+              <Series id={`gid://watch/Series/${pathname.split('/').pop()!}`} />
+            )}
+          />
+        </Frame>
+      </ApolloProvider>
+    </RemoteRouter>
   );
 }
 

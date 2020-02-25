@@ -1354,15 +1354,15 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@quilted/quilt@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.0.29.tgz#d379988deed5495bbeee00dc7e6a622df60052ad"
-  integrity sha512-dWGyfbMp+Pzh4Qem47e3+UtP6ZiDEuM+f3vLlI1ZctT2fBZ3Pk+/ZVie1zaP5fJ0+qSOOQUENaDSy4aXTMsDEA==
+"@quilted/quilt@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.0.31.tgz#e2004b574cf4a064594a9c0293ef7958e18256d2"
+  integrity sha512-xQEVME4PxcodvFJoxwxpSDMV2lnBoA7dNiTorqkudiN4ru5I5QY/ofMeyLJcPyHztDikHfCiYuw6m0SzcJaDeA==
   dependencies:
     "@quilted/react-html" "^0.0.17"
-    "@quilted/react-router" "^0.0.18"
+    "@quilted/react-router" "^0.0.19"
     "@quilted/react-server-render" "^0.0.16"
-    "@quilted/react-web-workers" "^0.0.4"
+    "@quilted/react-web-workers" "^0.0.5"
 
 "@quilted/react-html@^0.0.17":
   version "0.0.17"
@@ -1373,10 +1373,10 @@
     "@types/react" ">=16.9.22"
     serialize-javascript "^3.0.0"
 
-"@quilted/react-router@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.0.18.tgz#1bf6fb83346d54b88c5ef7655d8450b29ae8086f"
-  integrity sha512-u7gpi+cMpREQFxlfJZB0YX6Y/KlMrm6QetMOBEdrXi0GJs+HFUOlTVw67NnJ2+vZEAL1ryG6wOfFUjO7a4999Q==
+"@quilted/react-router@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.0.19.tgz#9a71e6af1b1d12fbf43b197255de57a5dc856c90"
+  integrity sha512-F+LK4s84rqljc4ThFSQ0QStKdAOZVmLy3GdsMLeZQCDgaMrJXsQ6jmeJQHaLbStcRNjeQnFRjGdGiFyYKCPgNA==
   dependencies:
     "@quilted/react-html" "^0.0.17"
     "@quilted/react-server-render" "^0.0.16"
@@ -1388,10 +1388,10 @@
   dependencies:
     "@types/react" ">=16.9.22"
 
-"@quilted/react-web-workers@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@quilted/react-web-workers/-/react-web-workers-0.0.4.tgz#128f51cc27b03456e228b44cd7a569f95e9028af"
-  integrity sha512-Ny+HznRDb+lTSnIo7US6SPGtxBfLuOP7KYTuS8J98ILNr+8ZaUyZrCDdLJIoYNLttT5D9OBUJW2ZEV/Y17T5VA==
+"@quilted/react-web-workers@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@quilted/react-web-workers/-/react-web-workers-0.0.5.tgz#bc238bad2704e815a115a60a9aa08d4c37147ebd"
+  integrity sha512-jg30aLyk6644znu7Jd4nKp/i12OHwadVZ3tp1NtDIA3WtfrfzyiJF0oMWCKKf4TTnc2y4gQ30bCHQ0bcmzCnPA==
   dependencies:
     "@remote-ui/react" "^0.0.15"
     "@remote-ui/web-workers" "^0.0.4"
@@ -2978,12 +2978,13 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
-"@types/node-fetch@^2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.4.tgz#5245b6d8841fc3a6208b82291119bc11c4e0ce44"
-  integrity sha512-Oz6id++2qAOFuOlE1j0ouk1dzl3mmI1+qINPNBhi9nt/gVOz0G+13Ao6qjhdF0Ys+eOkhu6JnFmt38bR3H0POQ==
+"@types/node-fetch@^2.5.5":
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.5.tgz#cd264e20a81f4600a6c52864d38e7fef72485e92"
+  integrity sha512-IWwjsyYjGw+em3xTvWVQi5MgYKbRs0du57klfTaZkv/B24AEQ/p/IopNeqIYNy3EsfHOpg8ieQSDomPcsYMHpA==
   dependencies:
     "@types/node" "*"
+    form-data "^3.0.0"
 
 "@types/node@*":
   version "12.12.17"
@@ -3102,7 +3103,7 @@
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
 
-"@types/vfile-message@*", "@types/vfile-message@1.0.1":
+"@types/vfile-message@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/vfile-message/-/vfile-message-1.0.1.tgz#e1e9895cc6b36c462d4244e64e6d0b6eaf65355a"
   integrity sha512-mlGER3Aqmq7bqR1tTTIVHq8KSAFFRyGbrxuM8C/H82g6k7r2fS+IMEkIu3D7JHzG10NvPdR8DNx0jr0pwpp4dA==
@@ -5105,7 +5106,7 @@ colors@^1.1.2:
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
 
-combined-stream@^1.0.6, combined-stream@~1.0.6:
+combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
@@ -7001,6 +7002,15 @@ fork-ts-checker-webpack-plugin@1.5.0:
     semver "^5.6.0"
     tapable "^1.0.0"
     worker-rpc "^0.1.0"
+
+form-data@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.0.tgz#31b7e39c85f1355b7139ee0c647cf0de7f83c682"
+  integrity sha512-CKMFDglpbMi6PyN+brwB9Q/GOw0eAnsrEZDgcsH5Krhz5Od/haKHAX0NmQfha2zPPz0JpWzA7GJHGSnvCRLWsg==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
 
 form-data@~2.3.2:
   version "2.3.3"

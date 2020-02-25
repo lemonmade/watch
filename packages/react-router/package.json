@@ -1,0 +1,15 @@
+{
+  "name": "@lemon/react-router",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "@quilted:registry": "https://registry.npmjs.org"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": ">=16.8.0 <17.0.0"
+  }
+}

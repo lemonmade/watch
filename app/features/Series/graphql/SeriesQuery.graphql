@@ -1,0 +1,16 @@
+query Series($id: ID!) {
+  series(id: $id) {
+    id
+    name
+    overview
+    imdbId
+    poster {
+      source
+    }
+    seasons {
+      id
+      number
+      overview
+    }
+  }
+}

@@ -13,6 +13,6 @@
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
-    "@types/node-fetch": "^2.5.4"
+    "@types/node-fetch": "^2.5.5"
   }
 }
