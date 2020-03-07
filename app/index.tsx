@@ -1,6 +1,11 @@
 import React, {useMemo, ComponentProps} from 'react';
 import {render} from 'react-dom';
-import {createWorkerComponent, Router, useRouter} from '@quilted/quilt';
+import {
+  createWorkerComponent,
+  Router,
+  AutoHeadingGroup,
+  useRouter,
+} from '@quilted/quilt';
 
 import * as components from './ui';
 
@@ -13,7 +18,9 @@ const App = createWorkerComponent(() => import('./App'), {
 
 render(
   <Router>
-    <WrappedApp />
+    <AutoHeadingGroup>
+      <WrappedApp />
+    </AutoHeadingGroup>
   </Router>,
   document.querySelector('#app'),
 );

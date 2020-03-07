@@ -3,6 +3,7 @@ export {CollapseGroup} from './CollapseGroup';
 export {ContextualMenu} from './ContextualMenu';
 export {DateField} from './DateField';
 export {Frame} from './Frame';
+export {Heading} from './Heading';
 export {Link} from './Link';
 export {MediaGrid} from './MediaGrid';
 export {Poster} from './Poster';

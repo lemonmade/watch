@@ -2,7 +2,7 @@ import React from 'react';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 import {useRouter} from '@lemon/react-router';
 
-import {Text, Link, Button, Stack, View} from '../../components';
+import {Text, Link, Button, Stack, View, Heading} from '../../components';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
@@ -26,7 +26,7 @@ export function Series({id}: Props) {
 
   return (
     <Stack>
-      <Text>{series.name}</Text>
+      <Heading>{series.name}</Heading>
       {series.overview && <Text>{series.overview}</Text>}
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
