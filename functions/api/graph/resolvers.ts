@@ -50,6 +50,19 @@ export const Query: Resolver = {
   series(_, {id}: {id: string}, {seriesLoader}) {
     return seriesLoader.load(fromGid(id).id);
   },
+  subscription(_, {id}: {id: string}, {seriesSubscriptionsLoader}) {
+    return seriesSubscriptionsLoader.load(fromGid(id).id);
+  },
+  async subscriptions(_, __, {db, seriesSubscriptionsLoader}) {
+    const seriesSubscriptions = await db
+      .select('id')
+      .from(Table.SeriesSubscriptions)
+      .limit(50);
+
+    return Promise.all(
+      seriesSubscriptions.map(({id}) => seriesSubscriptionsLoader.load(id)),
+    );
+  },
   watchThrough(_, {id}: {id: string}, {watchThroughLoader}) {
     return watchThroughLoader.load(fromGid(id).id);
   },
@@ -600,6 +613,18 @@ export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
       .limit(1);
 
     return lastEpisode || null;
+  },
+};
+
+export const SeriesSubscription: Resolver<{
+  id: string;
+  seriesId: string;
+  createdAt: string;
+}> = {
+  id: ({id}) => toGid(id, 'SeriesSubscription'),
+  subscribedOn: ({createdAt}) => createdAt,
+  series({seriesId}, _, {seriesLoader}) {
+    return seriesLoader.load(seriesId);
   },
 };
 

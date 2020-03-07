@@ -103,7 +103,10 @@ type WatchThrough implements Reviewable {
   rating: Int
   notes: Notes
   lastEpisode: WatchThroughEpisode
-  episodes(finished: Boolean, watched: EpisodeWatchedFilter): [WatchThroughEpisode!]!
+  episodes(
+    finished: Boolean
+    watched: EpisodeWatchedFilter
+  ): [WatchThroughEpisode!]!
   unfinishedEpisodeCount: Int!
 }
 
@@ -168,19 +171,51 @@ type WatchEpisodesFromSeriesPayload {
   series: Series
 }
 
+type SeriesSubscription {
+  id: ID!
+  series: Series!
+  subscribedOn: Date!
+}
+
+type SeriesSubscriptionPayload {
+  subscription: SeriesSubscription
+}
+
 type Query {
   watch(id: ID!): Watch
   series(id: ID!): Series
   watchThrough(id: ID!): WatchThrough
   watchThroughs: [WatchThrough!]!
+  subscription(id: ID!): SeriesSubscription
+  subscriptions: [SeriesSubscription!]!
   search(query: String!): SearchResults!
 }
 
 type Mutation {
-  skipEpisode(episode: ID!, watchThrough: ID, notes: Notes, at: Date): SkipEpisodePayload!
-  watchEpisode(episode: ID!, watchThrough: ID, rating: Int, notes: Notes, startedAt: Date, finishedAt: Date): WatchEpisodePayload!
-  watchEpisodesFromSeries(series: ID!, slice: SeriesSlice): WatchEpisodesFromSeriesPayload!
-  startWatchThrough(series: ID!, seasons: [ID!], episodes: [ID!]): StartWatchThroughPayload!
+  skipEpisode(
+    episode: ID!
+    watchThrough: ID
+    notes: Notes
+    at: Date
+  ): SkipEpisodePayload!
+  watchEpisode(
+    episode: ID!
+    watchThrough: ID
+    rating: Int
+    notes: Notes
+    startedAt: Date
+    finishedAt: Date
+  ): WatchEpisodePayload!
+  watchEpisodesFromSeries(
+    series: ID!
+    slice: SeriesSlice
+  ): WatchEpisodesFromSeriesPayload!
+  startWatchThrough(
+    series: ID!
+    seasons: [ID!]
+    episodes: [ID!]
+  ): StartWatchThroughPayload!
+  subscribeToSeries(id: ID!): SeriesSubscriptionPayload!
   deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!
 }

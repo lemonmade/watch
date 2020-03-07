@@ -4,6 +4,7 @@ export enum Table {
   Watches = 'Watches',
   Skips = 'Skips',
   Series = 'Series',
+  SeriesSubscriptions = 'SeriesSubscriptions',
   Seasons = 'Seasons',
   Episodes = 'Episodes',
   WatchThroughs = 'WatchThroughs',
@@ -18,6 +19,9 @@ export function createContext(db: import('knex')) {
     watchLoader: new DataLoader(createBatchLoaderForTable(db, Table.Watches)),
     skipLoader: new DataLoader(createBatchLoaderForTable(db, Table.Skips)),
     seriesLoader: new DataLoader(createBatchLoaderForTable(db, Table.Series)),
+    seriesSubscriptionsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.SeriesSubscriptions),
+    ),
     seasonLoader: new DataLoader(createBatchLoaderForTable(db, Table.Seasons)),
     episodeLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.Episodes),
