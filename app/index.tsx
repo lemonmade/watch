@@ -6,6 +6,7 @@ import {
   AutoHeadingGroup,
   useRouter,
 } from '@quilted/quilt';
+import {retain, release} from '@remote-ui/react';
 
 import * as components from './ui';
 
@@ -39,6 +40,7 @@ function WrappedApp() {
       },
       go: router.go.bind(router),
       listen(listener) {
+        retain(listener);
         listeners.set(
           listener,
           router.listen((url) => {
@@ -49,8 +51,10 @@ function WrappedApp() {
       unlisten(listener) {
         listeners.get(listener)?.();
         listeners.delete(listener);
+        release(listener);
       },
       block(blocker) {
+        retain(blocker);
         blockers.set(
           blocker,
           router.block((url, redo) => blocker(toRemoteUrl(url), redo) as any),
@@ -59,6 +63,7 @@ function WrappedApp() {
       unblock(blocker) {
         blockers.get(blocker)?.();
         blockers.delete(blocker);
+        release(blocker);
       },
     };
   }, [router]);
