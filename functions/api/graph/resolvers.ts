@@ -280,15 +280,19 @@ export const Mutation: Resolver = {
   async subscribeToSeries(
     _,
     {id: seriesGid}: {id: string},
-    {db, seriesLoader},
+    {db, seriesSubscriptionsLoader},
   ) {
     const {id: seriesId} = fromGid(seriesGid);
 
-    await db.insert({seriesId}, ['id']).into(Table.SeriesSubscriptions);
+    const [{id: seriesSubscriptionId}] = await db
+      .insert({seriesId}, ['id'])
+      .into(Table.SeriesSubscriptions);
 
-    const series = await seriesLoader.load(seriesId);
+    const subscription = await seriesSubscriptionsLoader.load(
+      seriesSubscriptionId,
+    );
 
-    return {series};
+    return {subscription};
   },
   async deleteWatch(_, {id: gid}: {id: string}, {db, watchThroughLoader}) {
     const {id} = fromGid(gid);
