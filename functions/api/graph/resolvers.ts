@@ -277,6 +277,19 @@ export const Mutation: Resolver = {
 
     return {watchThrough};
   },
+  async subscribeToSeries(
+    _,
+    {id: seriesGid}: {id: string},
+    {db, seriesLoader},
+  ) {
+    const {id: seriesId} = fromGid(seriesGid);
+
+    await db.insert({seriesId}, ['id']).into(Table.SeriesSubscriptions);
+
+    const series = await seriesLoader.load(seriesId);
+
+    return {series};
+  },
   async deleteWatch(_, {id: gid}: {id: string}, {db, watchThroughLoader}) {
     const {id} = fromGid(gid);
     const [{watchThroughId}] = await db
