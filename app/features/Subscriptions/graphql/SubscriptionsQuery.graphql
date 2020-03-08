@@ -1,0 +1,12 @@
+query Subscriptions {
+  subscriptions {
+    id
+    series {
+      id
+      name
+      poster {
+        source
+      }
+    }
+  }
+}

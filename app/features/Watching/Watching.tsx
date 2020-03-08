@@ -2,6 +2,8 @@ import React, {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@apollo/react-hooks';
 
 import {CollapseGroup, MediaGrid, WatchThroughItem} from '../../components';
+import {parseGid} from '../../utilities/graphql';
+
 import watchingQuery from './graphql/WatchingQuery.graphql';
 
 interface Props {}
@@ -68,7 +70,7 @@ function watchThroughToProps({
 } {
   return {
     id,
-    to: `/watchthrough/${id.split('/').pop()}`,
+    to: `/series/${parseGid(series.id).id}`,
     nextEpisode: nextEpisode
       ? {
           title: nextEpisode.title,

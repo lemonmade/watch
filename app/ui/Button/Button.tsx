@@ -12,7 +12,7 @@ export function Button({children, primary, onPress}: Props) {
     <button
       type="button"
       className={classes(styles.Button, primary && styles.primary)}
-      onPointerUp={onPress}
+      onPointerUp={() => onPress()}
     >
       {children}
     </button>

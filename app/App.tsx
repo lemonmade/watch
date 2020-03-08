@@ -7,7 +7,7 @@ import ApolloClient, {
 import {Route, RemoteRouter} from '@lemon/react-router';
 
 import {Frame} from './components';
-import {Watching, Series} from './features';
+import {Watching, Series, Subscriptions} from './features';
 
 interface Props {
   router: ComponentProps<typeof RemoteRouter>['router'];
@@ -26,6 +26,7 @@ export default function App({router}: Props) {
           ]}
         >
           <Route match="/" render={() => <Watching />} />
+          <Route match="/subscriptions" render={() => <Subscriptions />} />
           <Route
             match={/\/series\/[\w-]+$/}
             render={({pathname}) => (
