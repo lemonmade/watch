@@ -33,11 +33,9 @@ export function Series({id}: Props) {
       <View>
         <Button
           onPress={async () => {
-            const {data} = await subscribeToSeries({
+            await subscribeToSeries({
               variables: {id: series.id},
             });
-
-            console.log(data);
           }}
         >
           Subscribe

@@ -19,7 +19,11 @@ export function Subscriptions() {
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
           <Link key={id} to={`/series/${parseGid(series.id).id}`}>
-            <Poster source={series.poster?.source ?? ''} />
+            <Poster
+              source={
+                series.poster?.source.replace('/original/', '/w342/') ?? ''
+              }
+            />
           </Link>
         ))}
       </MediaGrid>

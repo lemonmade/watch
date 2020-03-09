@@ -80,14 +80,17 @@ function watchThroughToProps({
             ? new Date(
                 new Date(nextEpisode.firstAired).getTime() +
                   new Date().getTimezoneOffset() * 60_000,
-              )
+              ).toISOString()
             : undefined,
           poster: nextEpisode.season.poster?.source,
         }
       : undefined,
     series: {
       poster:
-        lastEpisode?.episode.season.poster?.source ?? series.poster?.source,
+        lastEpisode?.episode.season.poster?.source.replace(
+          '/original/',
+          '/w342/',
+        ) ?? series.poster?.source.replace('/original/', '/w342/'),
     },
     unfinishedEpisodeCount,
   };

@@ -9,7 +9,7 @@ interface Episode {
   poster?: string;
   number: number;
   seasonNumber: number;
-  firstAired?: Date;
+  firstAired?: string;
 }
 
 interface Props {

@@ -23,6 +23,7 @@ export default function App({router}: Props) {
           actions={[
             {content: 'Watching', to: '/'},
             {content: 'Search', to: '/search'},
+            {content: 'Subscriptions', to: '/subscriptions'},
           ]}
         >
           <Route match="/" render={() => <Watching />} />
