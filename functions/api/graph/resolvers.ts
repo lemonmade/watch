@@ -320,6 +320,18 @@ export const Mutation: Resolver = {
       .delete();
     return {deletedWatchThroughId: gid};
   },
+  async updateSeason(
+    _,
+    {id: gid, ...rest}: {id: string; status: string},
+    {db, seasonLoader},
+  ) {
+    const {id} = fromGid(gid);
+    await db
+      .from(Table.Seasons)
+      .where({id})
+      .update(rest);
+    return {season: await seasonLoader.load(id)};
+  },
   async watchEpisodesFromSeries(
     _,
     {

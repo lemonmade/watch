@@ -181,6 +181,10 @@ type SeriesSubscriptionPayload {
   subscription: SeriesSubscription
 }
 
+type UpdateSeasonPayload {
+  season: Season
+}
+
 type Query {
   watch(id: ID!): Watch
   series(id: ID!): Series
@@ -218,6 +222,7 @@ type Mutation {
   subscribeToSeries(id: ID!): SeriesSubscriptionPayload!
   deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!
+  updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
 }
 
 schema {

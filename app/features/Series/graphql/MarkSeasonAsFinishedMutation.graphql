@@ -1,0 +1,8 @@
+mutation MarkSeasonAsFinished($id: ID!) {
+  updateSeason(id: $id, status: ENDED) {
+    season {
+      id
+      status
+    }
+  }
+}

@@ -10,6 +10,7 @@ query Series($id: ID!) {
     seasons {
       id
       number
+      status
       overview
     }
   }

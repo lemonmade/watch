@@ -8,6 +8,7 @@ import {parseGid} from '../../utilities/graphql';
 import seriesQuery from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
+import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
 
 interface Props {
   id: string;
@@ -20,6 +21,7 @@ export function Series({id}: Props) {
   });
   const [startWatchThrough] = useMutation(startWatchThroughMutation);
   const [subscribeToSeries] = useMutation(subscribeToSeriesMutation);
+  const [markSeasonAsFinished] = useMutation(markSeasonAsFinishedMutation);
 
   if (data?.series == null) {
     return null;
@@ -46,7 +48,7 @@ export function Series({id}: Props) {
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
       )}
       <Stack>
-        {series.seasons.map(({id, number}: any) => (
+        {series.seasons.map(({id, number, status}: any) => (
           <View key={id}>
             <Text>Season number {number}</Text>
             <Stack direction="inline">
@@ -73,6 +75,15 @@ export function Series({id}: Props) {
               >
                 Start season watch through
               </Button>
+              {status === 'CONTINUING' && (
+                <Button
+                  onPress={() => {
+                    markSeasonAsFinished({variables: {id}});
+                  }}
+                >
+                  Mark finished
+                </Button>
+              )}
             </Stack>
           </View>
         ))}
