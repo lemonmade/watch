@@ -23,12 +23,14 @@ export function TextField({initialValue = '', onChange, multiline}: Props) {
   }
 
   return (
-    <input
-      type="text"
-      value={value}
-      className={styles.TextField}
-      onChange={({currentTarget}) => setValue(currentTarget.value)}
-    />
+    <div className={styles.TextField}>
+      <input
+        type="text"
+        value={value}
+        className={styles.Input}
+        onChange={({currentTarget}) => setValue(currentTarget.value)}
+      />
+    </div>
   );
 }
 

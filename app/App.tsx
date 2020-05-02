@@ -7,7 +7,7 @@ import ApolloClient, {
 import {Route, RemoteRouter} from '@lemon/react-router';
 
 import {Frame} from './components';
-import {Watching, Series, Subscriptions} from './features';
+import {Watching, Series, Subscriptions, WatchThrough} from './features';
 
 interface Props {
   router: ComponentProps<typeof RemoteRouter>['router'];
@@ -32,6 +32,14 @@ export default function App({router}: Props) {
             match={/\/series\/[\w-]+$/}
             render={({pathname}) => (
               <Series id={`gid://watch/Series/${pathname.split('/').pop()!}`} />
+            )}
+          />
+          <Route
+            match={/\/watchthrough\/[\w-]+$/}
+            render={({pathname}) => (
+              <WatchThrough
+                id={`gid://watch/WatchThrough/${pathname.split('/').pop()!}`}
+              />
             )}
           />
         </Frame>

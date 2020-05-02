@@ -2,7 +2,8 @@
   "eslint.enable": true,
   "cSpell.words": [
     "throughs",
-    "watch"
+    "watch",
+    "watchthrough"
   ],
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"

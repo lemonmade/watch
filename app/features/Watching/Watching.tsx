@@ -70,7 +70,7 @@ function watchThroughToProps({
 } {
   return {
     id,
-    to: `/series/${parseGid(series.id).id}`,
+    to: `/watchthrough/${parseGid(id).id}`,
     nextEpisode: nextEpisode
       ? {
           title: nextEpisode.title,

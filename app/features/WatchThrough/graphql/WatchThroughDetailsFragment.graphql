@@ -1,0 +1,45 @@
+fragment WatchThroughDetails on WatchThrough {
+  id
+  series {
+    id
+    name
+  }
+  episodes {
+    id
+    finished
+    action {
+      ... on Watch {
+        id
+        rating
+        notes
+      }
+    }
+    episode {
+      id
+      number
+      title
+      firstAired
+      still {
+        source
+      }
+      season {
+        id
+        number
+      }
+    }
+  }
+  nextEpisode {
+    id
+    title
+    number
+    overview
+    firstAired
+    still {
+      source
+    }
+    season {
+      id
+      number
+    }
+  }
+}

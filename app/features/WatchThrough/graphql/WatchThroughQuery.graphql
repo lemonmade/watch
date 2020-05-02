@@ -1,0 +1,7 @@
+#import "./WatchThroughDetailsFragment.graphql"
+
+query WatchThrough($id: ID!) {
+  watchThrough(id: $id) {
+    ...WatchThroughDetails
+  }
+}
