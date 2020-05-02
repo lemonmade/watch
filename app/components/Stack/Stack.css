@@ -1,0 +1,25 @@
+.Stack {
+  --Stack-spacing: var(--zest-spacing);
+
+  display: grid;
+  gap: var(--Stack-spacing);
+  justify-content: stretch;
+  align-items: center;
+  align-content: center;
+}
+
+.inline {
+  justify-content: start;
+  grid-auto-flow: column;
+}
+
+.spacingSmall {
+  --Stack-spacing: var(--zest-spacing-small);
+}
+
+.spacingLarge {
+  --Stack-spacing: var(--zest-spacing-small);
+}
+
+.Item {
+}

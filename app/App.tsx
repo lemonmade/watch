@@ -1,50 +1,53 @@
-import React, {ComponentProps} from 'react';
+import React from 'react';
 import {ApolloProvider} from '@apollo/react-hooks';
 import ApolloClient, {
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from 'apollo-boost';
-import {Route, RemoteRouter} from '@lemon/react-router';
+import {Router, Route, AutoHeadingGroup} from '@quilted/quilt';
+
+import '@lemon/zest/core.css';
+import './App.css';
 
 import {Frame} from './components';
 import {Watching, Series, Subscriptions, WatchThrough} from './features';
 
-interface Props {
-  router: ComponentProps<typeof RemoteRouter>['router'];
-}
-
 const client = createApolloClient();
 
-export default function App({router}: Props) {
+export default function App() {
   return (
-    <RemoteRouter router={router}>
-      <ApolloProvider client={client}>
-        <Frame
-          actions={[
-            {content: 'Watching', to: '/'},
-            {content: 'Search', to: '/search'},
-            {content: 'Subscriptions', to: '/subscriptions'},
-          ]}
-        >
-          <Route match="/" render={() => <Watching />} />
-          <Route match="/subscriptions" render={() => <Subscriptions />} />
-          <Route
-            match={/\/series\/[\w-]+$/}
-            render={({pathname}) => (
-              <Series id={`gid://watch/Series/${pathname.split('/').pop()!}`} />
-            )}
-          />
-          <Route
-            match={/\/watchthrough\/[\w-]+$/}
-            render={({pathname}) => (
-              <WatchThrough
-                id={`gid://watch/WatchThrough/${pathname.split('/').pop()!}`}
-              />
-            )}
-          />
-        </Frame>
-      </ApolloProvider>
-    </RemoteRouter>
+    <Router>
+      <AutoHeadingGroup>
+        <ApolloProvider client={client}>
+          <Frame
+            actions={[
+              {content: 'Watching', to: '/'},
+              {content: 'Search', to: '/search'},
+              {content: 'Subscriptions', to: '/subscriptions'},
+            ]}
+          >
+            <Route match="/" render={() => <Watching />} />
+            <Route match="/subscriptions" render={() => <Subscriptions />} />
+            <Route
+              match={/\/series\/[\w-]+$/}
+              render={({pathname}) => (
+                <Series
+                  id={`gid://watch/Series/${pathname.split('/').pop()!}`}
+                />
+              )}
+            />
+            <Route
+              match={/\/watchthrough\/[\w-]+$/}
+              render={({pathname}) => (
+                <WatchThrough
+                  id={`gid://watch/WatchThrough/${pathname.split('/').pop()!}`}
+                />
+              )}
+            />
+          </Frame>
+        </ApolloProvider>
+      </AutoHeadingGroup>
+    </Router>
   );
 }
 
