@@ -17,19 +17,20 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.0.31",
-    "@sewing-kit/cli": "^0.0.42",
-    "@sewing-kit/eslint-plugin": "^0.0.10",
-    "@sewing-kit/plugin-graphql": "^0.0.35",
-    "graphql-config": "^3.0.0-alpha.17",
+    "@quilted/sewing-kit-plugins": "^0.0.50",
+    "@sewing-kit/cli": "^0.0.46",
+    "@sewing-kit/eslint-plugin": "^0.0.13",
+    "@sewing-kit/plugin-graphql": "^0.0.46",
+    "graphql-config": "^3.0.1",
     "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
-    "raw-loader": "^4.0.0",
-    "react-refresh": "^0.7.2",
+    "koa-bodyparser": "^4.3.0",
+    "postcss-preset-env": "^6.7.0",
+    "raw-loader": "^4.0.1",
+    "react-refresh": "^0.8.2",
     "react-refresh-webpack-plugin": "^0.1.0",
-    "sewing-kit-plugin-knex": "^0.0.16",
-    "sewing-kit-plugin-storybook": "^0.0.3",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.15"
+    "sewing-kit-plugin-knex": "^0.0.22",
+    "sewing-kit-plugin-storybook": "^0.0.10",
+    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.19"
   },
   "resolutions": {
     "@types/vfile-message": "1.0.1"

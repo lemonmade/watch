@@ -9,7 +9,6 @@ import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
 
 import {} from '@sewing-kit/plugin-webpack';
-import {} from '@sewing-kit/plugin-babel';
 
 export default createWebApp((app) => {
   app.entry('./index');
@@ -35,6 +34,14 @@ export default createWebApp((app) => {
       });
     }),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
+      hooks.configure.hook((configuration) => {
+        configuration.webpackAliases?.hook((aliases) => {
+          return {
+            ...aliases,
+            components$: project.fs.resolvePath('components'),
+          };
+        });
+      });
       hooks.steps.hook((steps, {webpackBuildManager}) => [
         ...steps,
         api.createStep(
@@ -56,6 +63,10 @@ export default createWebApp((app) => {
                 currentAssets.clear();
 
                 for (const asset of assets) {
+                  if (asset.name.endsWith('.map')) {
+                    continue;
+                  }
+
                   if (publicPath == null) {
                     currentAssets.add(asset.name);
                   } else {

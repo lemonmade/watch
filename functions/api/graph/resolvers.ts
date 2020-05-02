@@ -300,10 +300,7 @@ export const Mutation: Resolver = {
       .select('watchThroughId')
       .from(Table.Watches)
       .where({id});
-    await db
-      .from(Table.Watches)
-      .where({id})
-      .delete();
+    await db.from(Table.Watches).where({id}).delete();
 
     return {
       deletedWatchId: gid,
@@ -314,10 +311,7 @@ export const Mutation: Resolver = {
   },
   async deleteWatchThrough(_, {id: gid}: {id: string}, {db}) {
     const {id} = fromGid(gid);
-    await db
-      .from(Table.WatchThroughs)
-      .where({id})
-      .delete();
+    await db.from(Table.WatchThroughs).where({id}).delete();
     return {deletedWatchThroughId: gid};
   },
   async updateSeason(
@@ -326,10 +320,7 @@ export const Mutation: Resolver = {
     {db, seasonLoader},
   ) {
     const {id} = fromGid(gid);
-    await db
-      .from(Table.Seasons)
-      .where({id})
-      .update(rest);
+    await db.from(Table.Seasons).where({id}).update(rest);
     return {season: await seasonLoader.load(id)};
   },
   async watchEpisodesFromSeries(
