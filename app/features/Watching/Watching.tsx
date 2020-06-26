@@ -42,7 +42,7 @@ export function Watching(_: Props) {
 
   return (
     <>
-      <CollapseGroup title="hhhhhh">
+      <CollapseGroup title="Ready to watch">
         <MediaGrid>
           {availableWatchThroughs.map(({id, ...props}) => (
             <WatchThroughItem key={id} {...props} />

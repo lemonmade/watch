@@ -27,7 +27,7 @@ export function InlineStack({children, spacing}: Props) {
     <div
       className={classes(
         styles.Stack,
-        styles.block,
+        styles.inline,
         spacing && styles[variation('spacing', spacing)],
       )}
     >

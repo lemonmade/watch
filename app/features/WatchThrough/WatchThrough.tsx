@@ -1,7 +1,7 @@
 import React from 'react';
 import {useQuery} from '@apollo/react-hooks';
 
-import {Stack, Heading, TextField} from '../../components';
+import {BlockStack, Heading, TextField} from '../../components';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 
@@ -17,9 +17,9 @@ export function WatchThrough({id}: Props) {
   if (data == null) return null;
 
   return (
-    <Stack>
+    <BlockStack>
       <Heading>{data.watchThrough.series.name}</Heading>
       <TextField onChange={() => {}} />
-    </Stack>
+    </BlockStack>
   );
 }

@@ -2,7 +2,15 @@ import React from 'react';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 import {useRouter} from '@lemon/react-router';
 
-import {Text, Link, Button, Stack, View, Heading} from '../../components';
+import {
+  Text,
+  Link,
+  Button,
+  BlockStack,
+  InlineStack,
+  View,
+  Heading,
+} from '../../components';
 import {parseGid} from '../../utilities/graphql';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
@@ -30,7 +38,7 @@ export function Series({id}: Props) {
   const {series} = data;
 
   return (
-    <Stack>
+    <BlockStack>
       <Heading>{series.name}</Heading>
       <View>
         <Button
@@ -47,11 +55,11 @@ export function Series({id}: Props) {
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
       )}
-      <Stack>
+      <BlockStack>
         {series.seasons.map(({id, number, status}: any) => (
           <View key={id}>
             <Text>Season number {number}</Text>
-            <Stack direction="inline">
+            <InlineStack direction="inline">
               {series.imdbId && (
                 <Link
                   to={`https://www.imdb.com/title/${series.imdbId}/episodes?season=${number}`}
@@ -84,10 +92,10 @@ export function Series({id}: Props) {
                   Mark finished
                 </Button>
               )}
-            </Stack>
+            </InlineStack>
           </View>
         ))}
-      </Stack>
+      </BlockStack>
       <View>
         <Button
           onPress={async () => {
@@ -105,6 +113,6 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
-    </Stack>
+    </BlockStack>
   );
 }

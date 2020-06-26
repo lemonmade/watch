@@ -2,7 +2,7 @@ import React from 'react';
 import {useQuery} from '@apollo/react-hooks';
 
 import {parseGid} from '../../utilities/graphql';
-import {Link, MediaGrid, Stack, Poster, Heading} from '../../components';
+import {Link, MediaGrid, BlockStack, Poster, Heading} from '../../components';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
@@ -14,7 +14,7 @@ export function Subscriptions() {
   }
 
   return (
-    <Stack>
+    <BlockStack>
       <Heading>Subscriptions</Heading>
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
@@ -27,6 +27,6 @@ export function Subscriptions() {
           </Link>
         ))}
       </MediaGrid>
-    </Stack>
+    </BlockStack>
   );
 }

@@ -14,9 +14,9 @@ import {Watching, Series, Subscriptions, WatchThrough} from './features';
 
 const client = createApolloClient();
 
-export default function App() {
+export default function App({url}: {url?: URL}) {
   return (
-    <Router>
+    <Router url={url}>
       <AutoHeadingGroup>
         <ApolloProvider client={client}>
           <Frame
