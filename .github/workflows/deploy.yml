@@ -66,9 +66,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: app
-
-    - name: Display structure of downloaded files
-      run: ls -R
+        path: build
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -93,9 +91,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: api
-
-    - name: Display structure of downloaded files
-      run: ls -R
+        path: build
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
