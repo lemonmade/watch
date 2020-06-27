@@ -1,6 +1,6 @@
 import React from 'react';
 import {useQuery, useMutation} from '@apollo/react-hooks';
-import {useRouter} from '@lemon/react-router';
+import {useRouter} from '@quilted/quilt';
 
 import {
   Text,

@@ -1599,17 +1599,17 @@
     "@sewing-kit/plugin-javascript" "^0.1.10"
     "@sewing-kit/plugins" "^0.1.4"
 
-"@quilted/quilt@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.4.tgz#59cf77ca19fb145b94752f98c66fc128cbc0f33e"
-  integrity sha512-x3AJrCurhnIZxS6mszu5y93j93likGKyptgg79XZMuQQX+yQWugQTvJIHljftRSsQ4lrifnY6t/urVGvQ0TW8g==
+"@quilted/quilt@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.5.tgz#23c24641e81a3c752e093c697e466a035f079db8"
+  integrity sha512-zgvYmgC2s49LfkCH5eLwuF5lq2+U6bM9Qs4FzmHbhcvieRLKbkq9DNifhMxJFXDqFm8VAZFFgesWv6nAOsy3QQ==
   dependencies:
     "@quilted/async" "^0.1.4"
     "@quilted/react-async" "^0.1.4"
     "@quilted/react-auto-headings" "^0.1.0"
     "@quilted/react-html" "^0.1.0"
     "@quilted/react-idle" "^0.1.0"
-    "@quilted/react-router" "^0.1.2"
+    "@quilted/react-router" "^0.1.3"
     "@quilted/react-server-render" "^0.1.0"
     "@quilted/react-web-workers" "^0.1.2"
 
@@ -1644,10 +1644,10 @@
   resolved "https://registry.yarnpkg.com/@quilted/react-idle/-/react-idle-0.1.0.tgz#2d895306d458f002146e57daaf30d18e7a80adb3"
   integrity sha512-WIDSv8kwvMdVKFE6SyAcrYlPfhw5sKeOuITn9G5CnLab5851nsrDs4k+ZFK9bt9OhwfK8tX1pw8W30Yj68hAFg==
 
-"@quilted/react-router@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.1.2.tgz#6bb50863f242e23e875700ed357524c07bea1b91"
-  integrity sha512-HfZ0zVTm3JKdbXCAv7xjkoYt6EOtynkzPh6mNwyuEstH/kQp95JMv59rTdakAcHzU1E+Y332N6hDz6WsiM3g3g==
+"@quilted/react-router@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.1.3.tgz#afbdfc8a533c1fd1dbd0570737e5a3770c172de8"
+  integrity sha512-6cv9nmv0ZGyGquD/jU1/KSfXcJuv7dw9ToIhV99aHF8fO2TsMrB4OOxEbi5DlpjOAF01CKeGaqht9buoCAvZ0w==
   dependencies:
     "@quilted/react-html" "^0.1.0"
     "@quilted/react-server-render" "^0.1.0"
@@ -1668,10 +1668,10 @@
     "@remote-ui/web-workers" "^1.0.4"
     "@types/react" ">=16.9.34"
 
-"@quilted/sewing-kit-plugins@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.5.tgz#763221f03547133e45eff14ac80826158223c972"
-  integrity sha512-UKphqJbzARDVaSRRZsUm9WKvnoINRl16b+dvcnb/iuV+TOxEv88RalXnoWYH93KspF5ogOD0cj0AQdPOXCauWA==
+"@quilted/sewing-kit-plugins@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.6.tgz#829262ccf0ea5982afc5e1554a3b8e2e24f46dce"
+  integrity sha512-qigPaCWhfwk7NWvdVqhSQVFCds5eHnKfFKGGV3Z9boTtdNP4oxJuAXoMRMY3koPMcz/O500OiwsZR5sO1RQlNw==
   dependencies:
     "@sewing-kit/plugin-css" "^0.1.11"
     "@sewing-kit/plugin-eslint" "^0.1.4"
@@ -1686,7 +1686,7 @@
     "@sewing-kit/plugin-webpack" "^0.1.6"
     "@sewing-kit/plugins" "^0.1.4"
   optionalDependencies:
-    "@quilted/quilt" "^0.1.4"
+    "@quilted/quilt" "^0.1.5"
 
 "@remote-ui/core@^1.2.3":
   version "1.2.3"
