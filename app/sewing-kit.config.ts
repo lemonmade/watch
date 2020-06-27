@@ -3,6 +3,7 @@ import {createServer} from 'http';
 import {join, dirname, extname} from 'path';
 import {createWebApp} from '@sewing-kit/config';
 import {
+  Env,
   Runtime,
   WebApp,
   TargetBuilder,
@@ -12,7 +13,7 @@ import {
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
-import {webpackBuild} from '@sewing-kit/plugin-webpack';
+import {createWebpackConfig} from '@sewing-kit/plugin-webpack';
 
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
@@ -24,7 +25,57 @@ export default createWebApp((app) => {
     quiltWebApp(),
     webAppAutoServer(),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
-      hooks.steps.hook((steps, {webpackBuildManager}) => [
+      hooks.configure.hook((configuration) => {
+        const entry = api.tmpPath(`quilt/${project.name}-client.js`);
+        const appEntry = project.fs.resolvePath(project.entry ?? 'index');
+
+        configuration.assetServerPort?.hook(() => 3002);
+
+        configuration.webpackPublicPath?.hook(
+          () => `http://localhost:3002/assets/`,
+        );
+
+        configuration.webpackEntries?.hook(() => [entry]);
+
+        configuration.webpackPlugins?.hook(async (plugins) => {
+          const {default: WebpackVirtualModules} = await import(
+            'webpack-virtual-modules'
+          );
+
+          return [
+            ...plugins,
+            new WebpackVirtualModules({
+              [entry]: `
+              import 'regenerator-runtime/runtime';
+              import React from 'react';
+              import {render} from 'react-dom';
+              import * as AppModule from ${JSON.stringify(appEntry)};
+
+              const App = getAppComponent(AppModule);
+
+              render(<App />, document.getElementById('app'));
+              
+              function getAppComponent(AppModule) {
+                if (typeof AppModule.default === 'function') return AppModule.default;
+                if (typeof AppModule.App === 'function') return AppModule.App;
+              
+                const firstFunction = Object.keys(AppModule)
+                  .map((key) => AppModule[key])
+                  .find((exported) => typeof exported === 'function');
+              
+                if (firstFunction) return firstFunction;
+              
+                throw new Error(\`No App component found in module: ${JSON.stringify(
+                  appEntry,
+                )}\`);
+              }
+            `,
+            }),
+          ];
+        });
+      });
+
+      hooks.steps.hook((steps, configuration) => [
         ...steps,
         api.createStep(
           {
@@ -32,37 +83,7 @@ export default createWebApp((app) => {
             id: 'StaticHtml.DevServer',
           },
           async (step) => {
-            const currentAssets = new Set<string>();
-
-            webpackBuildManager?.on(
-              project,
-              (stats: import('webpack').Stats) => {
-                const {publicPath, assets = []} = stats.toJson({
-                  assets: true,
-                  publicPath: true,
-                });
-
-                currentAssets.clear();
-
-                for (const asset of assets) {
-                  if (asset.name.endsWith('.map')) {
-                    continue;
-                  }
-
-                  if (publicPath == null) {
-                    currentAssets.add(asset.name);
-                  } else {
-                    currentAssets.add(
-                      publicPath.endsWith('/')
-                        ? `${publicPath}${asset.name}`
-                        : `${publicPath}/${asset.name}`,
-                    );
-                  }
-                }
-              },
-            );
-
-            step.indefinite(({stdio}) => {
+            step.indefinite(async ({stdio}) => {
               createServer((req, res) => {
                 stdio.stdout.write(`request for path: ${req.url}\n`);
 
@@ -71,22 +92,20 @@ export default createWebApp((app) => {
                   // 'Content-Security-Policy':
                   //   "default-src http://* https://* 'unsafe-eval'",
                 });
+
                 res.write(
                   `<html>
-                    <head></head>
-                    <body>
-                      <div id="app"></div>
-                      ${[...currentAssets]
-                        .map(
-                          (asset) =>
-                            `<script src=${JSON.stringify(asset)}></script>`,
-                        )
-                        .join('\n')}
-                    </body>
-                  </html>`,
+                      <head></head>
+                      <body>
+                        <div id="app"></div>
+                        <script src="http://localhost:3002/assets/main.js"></script>
+                      </body>
+                    </html>`,
                 );
                 res.end();
-              }).listen(8082);
+              }).listen(8082, () => {
+                step.log(`App server listening on localhost:8082`);
+              });
             });
           },
         ),
@@ -131,16 +150,7 @@ function webAppAutoServer() {
               );
 
               const [stats] = [...context.project.webpackStats!.values()];
-
-              const entrypoints = [
-                ...stats.compilation.entrypoints.keys(),
-              ].reduce<{[key: string]: Entrypoint}>(
-                (entries, name) => ({
-                  ...entries,
-                  [name]: getChunkDependencies(stats.compilation, name),
-                }),
-                {},
-              );
+              const entrypoints = entrypointFromCompilation(stats.compilation);
 
               return [
                 ...plugins,
@@ -216,8 +226,6 @@ function webAppAutoServer() {
                 }),
               ];
             });
-
-            // configuration.
           });
         } else {
           hooks.configure.hook((configuration) => {
@@ -265,6 +273,18 @@ function webAppAutoServer() {
         }
       });
     },
+  );
+}
+
+function entrypointFromCompilation(compilation: compilation.Compilation) {
+  return [...compilation.entrypoints.keys()].reduce<{
+    [key: string]: Entrypoint;
+  }>(
+    (entries, name) => ({
+      ...entries,
+      [name]: getChunkDependencies(compilation, name),
+    }),
+    {},
   );
 }
 
