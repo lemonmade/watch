@@ -67,6 +67,9 @@ jobs:
       with:
         name: app
 
+    - name: Display structure of downloaded files
+      run: ls -R
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -76,7 +79,7 @@ jobs:
 
     - name: Update AWS resources
       run: |
-        aws s3 cp build/app s3://cdn.lemon.tools/ --recursive --exclude "build/app/quiltAutoServer/*"
+        aws s3 cp /build/app s3://cdn.lemon.tools/ --recursive --exclude "/build/app/quiltAutoServer/*"
 
   aws-api:
     needs: build
@@ -90,6 +93,9 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: api
+
+    - name: Display structure of downloaded files
+      run: ls -R
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
