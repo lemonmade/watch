@@ -3,7 +3,6 @@ import {createServer} from 'http';
 import {join, dirname, extname} from 'path';
 import {createWebApp} from '@sewing-kit/config';
 import {
-  Env,
   Runtime,
   WebApp,
   TargetBuilder,
@@ -13,7 +12,7 @@ import {
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
-import {createWebpackConfig} from '@sewing-kit/plugin-webpack';
+import type {} from '@sewing-kit/plugin-webpack';
 
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
