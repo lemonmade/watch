@@ -77,7 +77,7 @@ jobs:
 
     - name: Update AWS resources
       run: |
-        aws s3 cp /build/app s3://cdn.lemon.tools/ --recursive --exclude "/build/app/quiltAutoServer/*"
+        aws s3 cp build/app s3://cdn.lemon.tools/ --recursive --exclude "build/app/quiltAutoServer/*"
 
   aws-api:
     needs: build
