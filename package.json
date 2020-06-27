@@ -17,10 +17,10 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.1.4",
-    "@sewing-kit/cli": "^0.1.4",
+    "@quilted/sewing-kit-plugins": "^0.1.5",
+    "@sewing-kit/cli": "^0.1.5",
     "@sewing-kit/eslint-plugin": "^0.0.14",
-    "@sewing-kit/plugin-graphql": "^0.1.10",
+    "@sewing-kit/plugin-graphql": "^0.1.11",
     "graphql-config": "^3.0.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",

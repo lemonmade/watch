@@ -1,5 +1,4 @@
 import {createServer} from 'http';
-import * as URL from 'url';
 
 import {join, dirname, extname} from 'path';
 import {createWebApp} from '@sewing-kit/config';
@@ -10,21 +9,10 @@ import {
   TargetRuntime,
   createProjectDevPlugin,
   createProjectBuildPlugin,
-  createComposedProjectPlugin,
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
-import {createCSSWebpackRuleSet} from '@sewing-kit/plugin-css';
-import {
-  createJavaScriptWebpackRuleSet,
-  updateSewingKitBabelPreset,
-} from '@sewing-kit/plugin-javascript';
-import {webpackBuild, createWebpackConfig} from '@sewing-kit/plugin-webpack';
-
-// mostly the same as Sewing Kit’s asset metadata plugin
-// (https://github.com/Shopify/sewing-kit/tree/master/packages/webpack-asset-metadata-plugin)
-// but trimmed down and suitable for Checkout’s "render the HTML in shopify/shopify"
-// production deploy.
+import {webpackBuild} from '@sewing-kit/plugin-webpack';
 
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
@@ -32,20 +20,10 @@ import type {Compiler, Plugin, compilation} from 'webpack';
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
-    quiltWebApp(),
     graphql(),
-    webpackBuild(),
+    quiltWebApp(),
     webAppAutoServer(),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
-      hooks.configure.hook((configuration) => {
-        configuration.webpackAliases?.hook((aliases) => {
-          return {
-            ...aliases,
-            components$: project.fs.resolvePath('components'),
-          };
-        });
-      });
-
       hooks.steps.hook((steps, {webpackBuildManager}) => [
         ...steps,
         api.createStep(
@@ -146,10 +124,6 @@ function webAppAutoServer() {
             const entry = api.tmpPath(`quilt/${project.name}.js`);
 
             configuration.webpackEntries?.hook(() => [entry]);
-
-            configuration.webpackOutputDirectory?.hook((path) =>
-              join(path, 'quilt-auto-server'),
-            );
 
             configuration.webpackPlugins?.hook(async (plugins) => {
               const {default: WebpackVirtualModules} = await import(
