@@ -59,7 +59,7 @@ export function Series({id}: Props) {
         {series.seasons.map(({id, number, status}: any) => (
           <View key={id}>
             <Text>Season number {number}</Text>
-            <InlineStack direction="inline">
+            <InlineStack>
               {series.imdbId && (
                 <Link
                   to={`https://www.imdb.com/title/${series.imdbId}/episodes?season=${number}`}

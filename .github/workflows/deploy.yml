@@ -39,15 +39,21 @@ jobs:
 
     - name: Zip
       run: zip -r ../api.zip ./*
-      working-directory: ./build/services
+      working-directory: ./build/service
 
-    - name: Save build artifact
+    - name: Save API build artifact
       uses: actions/upload-artifact@v1
       with:
-        name: build
+        name: api
         path: build/api.zip
+    
+    - name: Save app build artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: app
+        path: build/app
 
-  aws:
+  aws-app:
     needs: build
     runs-on: ubuntu-latest
 
@@ -58,7 +64,31 @@ jobs:
     - name: Restore build artifacts
       uses: actions/download-artifact@v1
       with:
-        name: build
+        name: app
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Update AWS resources
+      run: |
+        aws s3 cp /build/app s3://cdn.lemon.tools/ --recursive --exclude "/build/app/quiltAutoServer/*"
+
+  aws-api:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+
+    - name: Restore build artifacts
+      uses: actions/download-artifact@v1
+      with:
+        name: api
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1

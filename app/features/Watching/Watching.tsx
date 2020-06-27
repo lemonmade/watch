@@ -38,7 +38,7 @@ export function Watching(_: Props) {
       available.sort(sortWatchThroughs).map(watchThroughToProps),
       unavailable.sort(sortWatchThroughs).map(watchThroughToProps),
     ] as const;
-  }, [data]);
+  }, [data?.watchThroughs]);
 
   return (
     <>
