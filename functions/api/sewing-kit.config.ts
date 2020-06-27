@@ -38,8 +38,10 @@ function simpleLambda() {
       {asEntry: true, include: [Task.Dev]},
     ),
     createProjectBuildPlugin(`${PLUGIN}.SetWebpackFilename`, ({hooks}) => {
-      hooks.configure.hook((configure) => {
-        configure.webpackOutputFilename?.hook(() => 'index.js');
+      hooks.target.hook(({hooks}) => {
+        hooks.configure.hook((configure) => {
+          configure.webpackOutputFilename?.hook(() => 'index.js');
+        });
       });
     }),
   ]);

@@ -6,6 +6,8 @@ import {createWebApp} from '@sewing-kit/config';
 import {
   Runtime,
   WebApp,
+  TargetBuilder,
+  TargetRuntime,
   createProjectDevPlugin,
   createProjectBuildPlugin,
   createComposedProjectPlugin,
@@ -116,29 +118,44 @@ export default createWebApp((app) => {
 });
 
 declare module '@sewing-kit/hooks' {
-  interface BuildWebAppOptions {
-    readonly quiltAutoServer: true;
+  interface BuildWebAppTargetOptions {
+    readonly quiltAutoServer?: true;
   }
 }
 
 function webAppAutoServer() {
   return createProjectBuildPlugin<WebApp>(
     'Quilt.WebAppAutoServer',
-    ({project, workspace, hooks, api, options}) => {
+    ({project, hooks, api}) => {
       const appEntry = project.fs.resolvePath(project.entry ?? 'index');
 
-      hooks.steps.hook((steps, configuration, context) => {
-        const polyfills = api.tmpPath(`quilt/${project.name}-polyfills.js`);
-        const entry = api.tmpPath(`quilt/${project.name}.js`);
+      hooks.targets.hook((targets) => [
+        ...targets,
+        new TargetBuilder({
+          project,
+          options: [{quiltAutoServer: true}],
+          runtime: new TargetRuntime([Runtime.Node]),
+          needs: targets.filter((target) => target.default),
+        }),
+      ]);
 
-        return [
-          ...steps,
-          api.createStep(
-            {
-              id: 'Quilt.WebAppAutoServer.Build',
-              label: 'Build magic server renderer',
-            },
-            async (step) => {
+      hooks.target.hook(({target, hooks, context}) => {
+        if (target.options.quiltAutoServer) {
+          hooks.configure.hook((configuration) => {
+            const polyfills = api.tmpPath(`quilt/${project.name}-polyfills.js`);
+            const entry = api.tmpPath(`quilt/${project.name}.js`);
+
+            configuration.webpackEntries?.hook(() => [entry]);
+
+            configuration.webpackOutputDirectory?.hook((path) =>
+              join(path, 'quilt-auto-server'),
+            );
+
+            configuration.webpackPlugins?.hook(async (plugins) => {
+              const {default: WebpackVirtualModules} = await import(
+                'webpack-virtual-modules'
+              );
+
               const [stats] = [...context.project.webpackStats!.values()];
 
               const entrypoints = [
@@ -151,185 +168,98 @@ function webAppAutoServer() {
                 {},
               );
 
-              const [
-                {default: WebpackVirtualModules},
-                {default: webpack},
-                cssRule,
-              ] = await Promise.all([
-                import('webpack-virtual-modules'),
-                import('webpack'),
-                createCSSWebpackRuleSet({
-                  env: options.simulateEnv,
-                  configuration,
-                  api,
-                  project,
-                  cacheDependencies: [],
-                  cacheDirectory: 'auto-server-css',
-                  sourceMaps: options.sourceMaps,
-                  runtimes: [Runtime.Node],
-                  postcss: false,
-                }),
-              ]);
+              return [
+                ...plugins,
+                new WebpackVirtualModules({
+                  [polyfills]: `
+                    import 'regenerator-runtime/runtime';
+                    import fetch from 'node-fetch';
+  
+                    if (!global.fetch) {
+                      global.fetch = fetch;
+                      global.Response = fetch.Response;
+                      global.Headers = fetch.Headers;
+                      global.Request = fetch.Request;
+                    }
+                  `,
+                  [entry]: `
+                    import ${JSON.stringify(polyfills)};
+  
+                    import React from 'react';
+                    import Koa from 'koa';
+                    import mount from 'koa-mount';
+                    import serve from 'koa-static';
+                    import {render, stream, Html} from '@quilted/quilt/server';
+  
+                    import * as AppModule from ${JSON.stringify(appEntry)};
+  
+                    process.on('uncaughtException', (...args) => {
+                      console.log(...args);
+                    });
+                    
+                    const App = getAppComponent(AppModule);
+                    const server = new Koa();
 
-              const config = await createWebpackConfig({
-                api,
-                project,
-                workspace,
-                hooks: configuration,
-                env: options.simulateEnv,
-                sourceMaps: options.sourceMaps,
-                runtimes: [Runtime.Node],
-              });
-
-              const updatedConfig: typeof config = {
-                ...config,
-                entry,
-                output: {
-                  ...config.output,
-                  path: join(config.output?.path!, 'auto-server'),
-                },
-                module: {
-                  ...config.module,
-                  rules: [
-                    ...(config.module?.rules ?? []),
-                    // This is a very shitty part of the current way sewing-kit works.
-                    // The CSS plugin would know how to add the rule for this this server,
-                    // but that only runs for a "variant", because the variant is the thing
-                    // that attaches the runtime. Needs to change.
-                    {
-                      test: /\.css$/,
-                      use: cssRule,
-                    } as import('webpack').RuleSetRule,
-                  ],
-                },
-                plugins: [
-                  ...(config.plugins ?? []),
-                  new WebpackVirtualModules({
-                    [polyfills]: `
-                      import 'regenerator-runtime/runtime';
-                      import fetch from 'node-fetch';
-    
-                      if (!global.fetch) {
-                        global.fetch = fetch;
-                        global.Response = fetch.Response;
-                        global.Headers = fetch.Headers;
-                        global.Request = fetch.Request;
-                      }
-                    `,
-                    [entry]: `
-                      import ${JSON.stringify(polyfills)};
-    
-                      import React from 'react';
-                      import Koa from 'koa';
-                      import mount from 'koa-mount';
-                      import serve from 'koa-static';
-                      import {render, stream, Html} from '@quilted/quilt/server';
-    
-                      import * as AppModule from ${JSON.stringify(appEntry)};
-    
-                      process.on('uncaughtException', (...args) => {
-                        console.log(...args);
-                      });
-                      
-                      const App = getAppComponent(AppModule);
-                      const server = new Koa();
-
-                      server.use(
-                        mount('/assets', serve('build/app'))
+                    server.use(
+                      mount('/assets', serve('build/app'))
+                    );
+                    
+                    server.use(async (ctx) => {
+                      const {html, markup, asyncAssets} = await render(<App url={ctx.URL} />);
+                    
+                      ctx.type = 'html';
+                      ctx.body = stream(
+                        <Html
+                          manager={html}
+                          styles={${JSON.stringify(entrypoints.main.css)}}
+                          scripts={${JSON.stringify(entrypoints.main.js)}}
+                          preloadAssets={[]}
+                        >
+                          {markup}
+                        </Html>,
                       );
-                      
-                      server.use(async (ctx) => {
-                        const {html, markup, asyncAssets} = await render(<App url={ctx.URL} />);
-                      
-                        ctx.type = 'html';
-                        ctx.body = stream(
-                          <Html
-                            manager={html}
-                            styles={${JSON.stringify(entrypoints.main.css)}}
-                            scripts={${JSON.stringify(entrypoints.main.js)}}
-                            preloadAssets={[]}
-                          >
-                            {markup}
-                          </Html>,
-                        );
-                      });
-                      
-                      server.listen(process.env.PORT, process.env.IP, () => {
-                        console.log(\`listening on \${process.env.IP}:\${process.env.PORT}\`);
-                      });
-                      
-                      function getAppComponent(AppModule) {
-                        if (typeof AppModule.default === 'function') return AppModule.default;
-                        if (typeof AppModule.App === 'function') return AppModule.App;
-                      
-                        const firstFunction = Object.keys(AppModule)
-                          .map((key) => AppModule[key])
-                          .find((exported) => typeof exported === 'function');
-                      
-                        if (firstFunction) return firstFunction;
-                      
-                        throw new Error(\`No App component found in module: ${JSON.stringify(
-                          appEntry,
-                        )}\`);
-                      }
-                    `,
-                  }),
-                ],
-              };
+                    });
+                    
+                    server.listen(process.env.PORT, process.env.IP, () => {
+                      console.log(\`listening on \${process.env.IP}:\${process.env.PORT}\`);
+                    });
+                    
+                    function getAppComponent(AppModule) {
+                      if (typeof AppModule.default === 'function') return AppModule.default;
+                      if (typeof AppModule.App === 'function') return AppModule.App;
+                    
+                      const firstFunction = Object.keys(AppModule)
+                        .map((key) => AppModule[key])
+                        .find((exported) => typeof exported === 'function');
+                    
+                      if (firstFunction) return firstFunction;
+                    
+                      throw new Error(\`No App component found in module: ${JSON.stringify(
+                        appEntry,
+                      )}\`);
+                    }
+                  `,
+                }),
+              ];
+            });
 
-              const compiler = webpack(updatedConfig);
+            // configuration.
+          });
+        } else {
+          hooks.configure.hook((configuration) => {
+            const entry = api.tmpPath(`quilt/${project.name}-client.js`);
 
-              await new Promise<import('webpack').Stats>((resolve, reject) => {
-                compiler.run((error, stats) => {
-                  if (error) {
-                    reject(error);
-                    return;
-                  }
+            configuration.webpackEntries?.hook(() => [entry]);
 
-                  if (stats.hasErrors()) {
-                    reject(new Error(stats.toString('errors-warnings')));
-                    return;
-                  }
+            configuration.webpackPlugins?.hook(async (plugins) => {
+              const {default: WebpackVirtualModules} = await import(
+                'webpack-virtual-modules'
+              );
 
-                  const entrypoints = [
-                    ...stats.compilation.entrypoints.keys(),
-                  ].reduce<{[key: string]: Entrypoint}>(
-                    (entries, name) => ({
-                      ...entries,
-                      [name]: getChunkDependencies(stats.compilation, name),
-                    }),
-                    {},
-                  );
-
-                  step.log(JSON.stringify(entrypoints, null, 2));
-
-                  resolve(stats);
-                });
-              });
-
-              step.log('Compiled successfully!');
-            },
-          ),
-        ];
-      });
-
-      hooks.variants.hook(() => [{}]);
-
-      hooks.variant.hook(({hooks}) => {
-        hooks.configure.hook((configuration) => {
-          const entry = api.tmpPath(`quilt/${project.name}-client.js`);
-
-          configuration.webpackEntries?.hook(() => [entry]);
-
-          configuration.webpackPlugins?.hook(async (plugins) => {
-            const {default: WebpackVirtualModules} = await import(
-              'webpack-virtual-modules'
-            );
-
-            return [
-              ...plugins,
-              new WebpackVirtualModules({
-                [entry]: `
+              return [
+                ...plugins,
+                new WebpackVirtualModules({
+                  [entry]: `
                   import 'regenerator-runtime/runtime';
                   import React from 'react';
                   import {render} from 'react-dom';
@@ -354,10 +284,11 @@ function webAppAutoServer() {
                     )}\`);
                   }
                 `,
-              }),
-            ];
+                }),
+              ];
+            });
           });
-        });
+        }
       });
     },
   );

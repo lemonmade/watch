@@ -7,8 +7,8 @@
     "@lemon/css": "*",
     "@lemon/react-router": "*",
     "@lemon/zest": "*",
-    "@quilted/quilt": "^0.1.2",
-    "@remote-ui/react": "^1.0.7",
+    "@quilted/quilt": "^0.1.3",
+    "@remote-ui/react": "^1.0.8",
     "apollo-boost": "^0.4.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
