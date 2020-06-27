@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - sewing-kit-test-site
 
 jobs:
   build:
