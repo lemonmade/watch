@@ -17,17 +17,29 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.1.6",
+    "@aws-cdk/aws-apigatewayv2": "^1.47.0",
+    "@aws-cdk/aws-cloudfront": "^1.47.0",
+    "@aws-cdk/aws-ec2": "^1.47.0",
+    "@aws-cdk/aws-iam": "^1.47.0",
+    "@aws-cdk/aws-lambda": "^1.47.0",
+    "@aws-cdk/aws-rds": "^1.47.0",
+    "@aws-cdk/aws-s3": "^1.47.0",
+    "@aws-cdk/aws-s3-deployment": "^1.47.0",
+    "@aws-cdk/core": "^1.47.0",
+    "@babel/node": "^7.10.3",
+    "@quilted/sewing-kit-plugins": "^0.1.11",
     "@sewing-kit/cli": "^0.1.5",
     "@sewing-kit/eslint-plugin": "^0.0.14",
-    "@sewing-kit/plugin-graphql": "^0.1.11",
+    "@sewing-kit/plugin-graphql": "^0.1.17",
+    "aws-cdk": "^1.47.0",
     "graphql-config": "^3.0.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "postcss-preset-env": "^6.7.0",
     "raw-loader": "^4.0.1",
     "sewing-kit-plugin-knex": "^0.1.0",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.1.0"
+    "sewing-kit-plugin-webpack-virtual-modules": "^0.1.1",
+    "webpack-bundle-analyzer": "^3.8.0"
   },
   "resolutions": {
     "@types/vfile-message": "1.0.1"

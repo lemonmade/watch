@@ -21,7 +21,9 @@ export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     graphql(),
-    quiltWebApp(),
+    quiltWebApp({
+      preact: true,
+    }),
     webAppAutoServer(),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
       hooks.configure.hook((configuration) => {
@@ -237,8 +239,20 @@ function webAppAutoServer() {
                 'webpack-virtual-modules'
               );
 
+              // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
+              const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+
               return [
                 ...plugins,
+                ...(process.env.CI
+                  ? []
+                  : [
+                      new BundleAnalyzerPlugin({
+                        analyzerMode: 'static',
+                        generateStatsFile: true,
+                        openAnalyzer: false,
+                      }),
+                    ]),
                 new WebpackVirtualModules({
                   [entry]: `
                   import 'regenerator-runtime/runtime';

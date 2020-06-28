@@ -5,3 +5,4 @@ packages/*/build/
 packages/*/*.d.ts
 .sewing-kit
 build
+cdk.out

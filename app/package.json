@@ -7,9 +7,10 @@
     "@lemon/css": "*",
     "@lemon/react-router": "*",
     "@lemon/zest": "*",
-    "@quilted/quilt": "^0.1.5",
-    "@remote-ui/react": "^1.0.8",
+    "@quilted/quilt": "^0.1.10",
+    "@remote-ui/react": "^1.0.9",
     "apollo-boost": "^0.4.7",
+    "preact": "^10.4.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
