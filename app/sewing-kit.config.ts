@@ -218,8 +218,10 @@ function webAppAutoServer() {
 
                     const App = getAppComponent(AppModule);
 
-                    export function handler(event) {
+                    export async function handler(event) {
                       const {html, markup, asyncAssets} = await render(<App url={new URL('https://tv.lemon.tools/')} />);
+
+                      console.log(event);
 
                       return {
                         statusCode: 200,
