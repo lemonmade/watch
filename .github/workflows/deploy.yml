@@ -90,6 +90,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
+
       - name: Restore build artifacts
         uses: actions/download-artifact@v1
         with:
@@ -107,7 +110,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Update AWS resources
+      - name: Upload assets to S3
         run: yarn run:ts ./scripts/asset-upload.ts
 
   aws-ui:
