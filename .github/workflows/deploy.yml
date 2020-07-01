@@ -43,7 +43,7 @@ jobs:
         working-directory: ./build/service
 
       - name: Zip UI Lambda
-        run: zip -r ../ui.zip ./*
+        run: zip -r ../../ui.zip ./*
         working-directory: ./build/app/quiltAutoService
 
       - name: Save API build artifact

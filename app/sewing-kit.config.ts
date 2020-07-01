@@ -18,6 +18,8 @@ import {webpackPlugins} from '@sewing-kit/plugin-webpack';
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
 
+import {CDN_DOMAIN, CDN_PREFIX} from '../config/deploy/constants';
+
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
@@ -25,20 +27,32 @@ export default createWebApp((app) => {
     quiltWebApp({
       preact: true,
     }),
-    webpackPlugins(
-      () => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-extraneous-dependencies
-        const CompressionPlugin = require('compression-webpack-plugin');
+    createProjectBuildPlugin('Watch.App.Brotli', ({hooks}) => {
+      hooks.target.hook(({target, hooks}) => {
+        if (
+          !target.runtime.includes(Runtime.Browser) &&
+          !target.runtime.includes(Runtime.WebWorker)
+        )
+          return;
 
-        return new CompressionPlugin({
-          filename: '[path].br',
-          algorithm: 'brotliCompress',
-          minRatio: 1,
-          test: /\.(js|css)$/,
+        hooks.configure.hook((configuration) => {
+          configuration.webpackPlugins?.hook((plugins) => {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-extraneous-dependencies
+            const CompressionPlugin = require('compression-webpack-plugin');
+
+            return [
+              ...plugins,
+              new CompressionPlugin({
+                filename: '[path].br',
+                algorithm: 'brotliCompress',
+                minRatio: 1,
+                test: /\.(js|css)$/,
+              }),
+            ];
+          });
         });
-      },
-      {include: [Task.Build]},
-    ),
+      });
+    }),
     webAppAutoServer(),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
       hooks.configure.hook((configuration) => {
@@ -158,6 +172,8 @@ function webAppAutoServer() {
             const polyfills = api.tmpPath(`quilt/${project.name}-polyfills.js`);
             const entry = api.tmpPath(`quilt/${project.name}.js`);
 
+            configuration.webpackOutputFilename?.hook(() => 'index.js');
+
             configuration.webpackEntries?.hook(() => [entry]);
 
             configuration.webpackPlugins?.hook(async (plugins) => {
@@ -184,45 +200,44 @@ function webAppAutoServer() {
                   `,
                   [entry]: `
                     import ${JSON.stringify(polyfills)};
+
+                    import {URL} from 'url';
   
                     import React from 'react';
+                    import {renderToStaticMarkup} from 'react-dom/server';
                     import Koa from 'koa';
                     import mount from 'koa-mount';
                     import serve from 'koa-static';
-                    import {render, stream, Html} from '@quilted/quilt/server';
+                    import {render, Html} from '@quilted/quilt/server';
   
                     import * as AppModule from ${JSON.stringify(appEntry)};
-  
-                    process.on('uncaughtException', (...args) => {
-                      console.log(...args);
-                    });
-                    
-                    const App = getAppComponent(AppModule);
-                    const server = new Koa();
 
-                    server.use(
-                      mount('/assets', serve('build/app'))
-                    );
-                    
-                    server.use(async (ctx) => {
-                      const {html, markup, asyncAssets} = await render(<App url={ctx.URL} />);
-                    
-                      ctx.type = 'html';
-                      ctx.body = stream(
-                        <Html
-                          manager={html}
-                          styles={${JSON.stringify(entrypoints.main.css)}}
-                          scripts={${JSON.stringify(entrypoints.main.js)}}
-                          preloadAssets={[]}
-                        >
-                          {markup}
-                        </Html>,
-                      );
+                    process.on('uncaughtException', (...args) => {
+                      console.error(...args);
                     });
-                    
-                    server.listen(process.env.PORT, process.env.IP, () => {
-                      console.log(\`listening on \${process.env.IP}:\${process.env.PORT}\`);
-                    });
+
+                    const App = getAppComponent(AppModule);
+
+                    export function handler(event) {
+                      const {html, markup, asyncAssets} = await render(<App url={new URL('https://tv.lemon.tools/')} />);
+
+                      return {
+                        statusCode: 200,
+                        body: \`<!DOCTYPE html>\${renderToStaticMarkup(
+                          <Html
+                            manager={html}
+                            styles={${JSON.stringify(entrypoints.main.css)}}
+                            scripts={${JSON.stringify(entrypoints.main.js)}}
+                            preloadAssets={[]}
+                          >
+                            {markup}
+                          </Html>
+                        )}\`,
+                        headers: {
+                          'Content-Type': 'text/html',
+                        },
+                      };
+                    }
                     
                     function getAppComponent(AppModule) {
                       if (typeof AppModule.default === 'function') return AppModule.default;
@@ -248,6 +263,10 @@ function webAppAutoServer() {
             const entry = api.tmpPath(`quilt/${project.name}-client.js`);
 
             configuration.webpackEntries?.hook(() => [entry]);
+
+            configuration.webpackPublicPath?.hook(
+              () => `https://${CDN_DOMAIN}/${CDN_PREFIX}/`,
+            );
 
             configuration.webpackPlugins?.hook(async (plugins) => {
               const {default: WebpackVirtualModules} = await import(
