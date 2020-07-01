@@ -1821,18 +1821,18 @@
     native-url "^0.2.6"
     schema-utils "^2.6.5"
 
-"@quilted/asset-upload-s3@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@quilted/asset-upload-s3/-/asset-upload-s3-0.1.3.tgz#752f38d8cb4e0447308bfc437fc74862bfb957eb"
-  integrity sha512-j9gfVJ7NAiWViw36unBJ045G1guo4dN7MZG1D30HxHD3BPscec6X9oCA22dbePioYs+Ufvc8AqzRF/rJS7jsUw==
+"@quilted/asset-upload-s3@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@quilted/asset-upload-s3/-/asset-upload-s3-0.1.4.tgz#cafaa8c1c4b481f6e6d423ccf5cb2b688996be93"
+  integrity sha512-avZ7Qa2i7A4ecczAke5IV8HC8QDJCi3+6Xv0jDo2bnywA16jeYJhtL5uSTEIq1D0J85hY9sTGB7GDLIf/pPgrw==
   dependencies:
-    "@quilted/asset-upload" "^0.1.3"
+    "@quilted/asset-upload" "^0.1.4"
     aws-sdk "^2.708.0"
 
-"@quilted/asset-upload@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@quilted/asset-upload/-/asset-upload-0.1.3.tgz#0fee26479e65fbc3469897b927243e0b05b4aaee"
-  integrity sha512-Kx3GpE/n4zWdv7iKtPHkvcLdjJdubnZwFw563SaxvPpCq55LNQHkvTcZvatXpEpwGpTqR+3w9Z8xKmPl2PznfQ==
+"@quilted/asset-upload@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@quilted/asset-upload/-/asset-upload-0.1.4.tgz#b750330fe3999bd8907324999c778ea1797b3048"
+  integrity sha512-IkpZt25BgVIqE9EIJmaF8EQa1y/TOk1q/Rm3+pu79w182GeGrXp9oBd4qzOjJPbQkOZZwXqxVhk4I/VSVxy1gA==
   dependencies:
     "@types/async" "^3.2.3"
     "@types/node-fetch" "^2.5.7"
