@@ -105,7 +105,7 @@ export default createWebApp((app) => {
         });
       });
 
-      hooks.steps.hook((steps, configuration) => [
+      hooks.steps.hook((steps) => [
         ...steps,
         api.createStep(
           {
