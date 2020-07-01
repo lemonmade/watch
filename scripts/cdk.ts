@@ -7,7 +7,7 @@ const [, , action, cdk] = process.argv;
 if (action && cdk) {
   execSync(
     `node_modules/.bin/cdk ${action} --app ${JSON.stringify(
-      `npx babel-node --extensions .ts,.tsx,.mjs,.js,.json ${
+      `node_modules/.bin/babel-node --extensions .ts,.tsx,.mjs,.js,.json ${
         cdk.includes(path.sep) && cdk.includes('.')
           ? cdk
           : path.join('config/deploy', cdk.endsWith('.ts') ? cdk : `${cdk}.ts`)

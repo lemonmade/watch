@@ -8,8 +8,8 @@
     "type-check": "sk type-check",
     "dev": "sk dev",
     "build": "sk build",
-    "cdk": "npx babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
-    "run:ts": "npx babel-node --extensions .ts,.tsx,.mjs,.js,.json"
+    "cdk": "babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
+    "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
   "workspaces": {
     "packages": [
