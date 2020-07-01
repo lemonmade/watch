@@ -1,3 +1,0 @@
-{
-  "app": "npx babel-node --extensions .ts,.tsx,.mjs,.js,.json ./config/aws/cdk.ts"
-}

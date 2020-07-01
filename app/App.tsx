@@ -53,7 +53,7 @@ export default function App({url}: {url?: URL}) {
 
 function createApolloClient() {
   return new ApolloClient({
-    uri: 'https://grtlne0ph9.execute-api.us-east-1.amazonaws.com/',
+    uri: 'https://api.lemon.tools/watch',
     cache: new InMemoryCache({
       addTypename: true,
       fragmentMatcher: new IntrospectionFragmentMatcher({

@@ -7,7 +7,9 @@
     "test": "sk test",
     "type-check": "sk type-check",
     "dev": "sk dev",
-    "build": "sk build"
+    "build": "sk build",
+    "cdk": "npx babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
+    "run:ts": "npx babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
   "workspaces": {
     "packages": [
@@ -17,21 +19,22 @@
     ]
   },
   "devDependencies": {
-    "@aws-cdk/aws-apigatewayv2": "^1.47.0",
-    "@aws-cdk/aws-cloudfront": "^1.47.0",
-    "@aws-cdk/aws-ec2": "^1.47.0",
-    "@aws-cdk/aws-iam": "^1.47.0",
-    "@aws-cdk/aws-lambda": "^1.47.0",
-    "@aws-cdk/aws-rds": "^1.47.0",
-    "@aws-cdk/aws-s3": "^1.47.0",
-    "@aws-cdk/aws-s3-deployment": "^1.47.0",
-    "@aws-cdk/core": "^1.47.0",
+    "@aws-cdk/aws-cloudfront": "^1.47.1",
+    "@aws-cdk/aws-iam": "^1.47.1",
+    "@aws-cdk/aws-lambda": "^1.47.1",
+    "@aws-cdk/aws-s3": "^1.47.1",
+    "@aws-cdk/core": "^1.47.1",
     "@babel/node": "^7.10.3",
+    "@quilted/asset-upload-s3": "^0.1.2",
     "@quilted/sewing-kit-plugins": "^0.1.11",
     "@sewing-kit/cli": "^0.1.5",
     "@sewing-kit/eslint-plugin": "^0.0.14",
     "@sewing-kit/plugin-graphql": "^0.1.17",
-    "aws-cdk": "^1.47.0",
+    "@types/common-tags": "^1.8.0",
+    "aws-cdk": "^1.47.1",
+    "aws-sdk": "^2.708.0",
+    "common-tags": "^1.8.0",
+    "compression-webpack-plugin": "^4.0.0",
     "graphql-config": "^3.0.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",

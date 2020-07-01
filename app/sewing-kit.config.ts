@@ -3,6 +3,7 @@ import {createServer} from 'http';
 import {join, dirname, extname} from 'path';
 import {createWebApp} from '@sewing-kit/config';
 import {
+  Task,
   Runtime,
   WebApp,
   TargetBuilder,
@@ -12,7 +13,7 @@ import {
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {graphql} from '@sewing-kit/plugin-graphql';
-import type {} from '@sewing-kit/plugin-webpack';
+import {webpackPlugins} from '@sewing-kit/plugin-webpack';
 
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
@@ -24,6 +25,20 @@ export default createWebApp((app) => {
     quiltWebApp({
       preact: true,
     }),
+    webpackPlugins(
+      () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-extraneous-dependencies
+        const CompressionPlugin = require('compression-webpack-plugin');
+
+        return new CompressionPlugin({
+          filename: '[path].br',
+          algorithm: 'brotliCompress',
+          minRatio: 1,
+          test: /\.(js|css)$/,
+        });
+      },
+      {include: [Task.Build]},
+    ),
     webAppAutoServer(),
     createProjectDevPlugin('Watch.App.Dev', ({api, hooks, project}) => {
       hooks.configure.hook((configuration) => {
@@ -255,30 +270,30 @@ function webAppAutoServer() {
                     ]),
                 new WebpackVirtualModules({
                   [entry]: `
-                  import 'regenerator-runtime/runtime';
-                  import React from 'react';
-                  import {render} from 'react-dom';
-                  import * as AppModule from ${JSON.stringify(appEntry)};
+                    import 'regenerator-runtime/runtime';
+                    import React from 'react';
+                    import {render} from 'react-dom';
+                    import * as AppModule from ${JSON.stringify(appEntry)};
 
-                  const App = getAppComponent(AppModule);
+                    const App = getAppComponent(AppModule);
 
-                  render(<App />, document.getElementById('app'));
-                  
-                  function getAppComponent(AppModule) {
-                    if (typeof AppModule.default === 'function') return AppModule.default;
-                    if (typeof AppModule.App === 'function') return AppModule.App;
-                  
-                    const firstFunction = Object.keys(AppModule)
-                      .map((key) => AppModule[key])
-                      .find((exported) => typeof exported === 'function');
-                  
-                    if (firstFunction) return firstFunction;
-                  
-                    throw new Error(\`No App component found in module: ${JSON.stringify(
-                      appEntry,
-                    )}\`);
-                  }
-                `,
+                    render(<App />, document.getElementById('app'));
+                    
+                    function getAppComponent(AppModule) {
+                      if (typeof AppModule.default === 'function') return AppModule.default;
+                      if (typeof AppModule.App === 'function') return AppModule.App;
+                    
+                      const firstFunction = Object.keys(AppModule)
+                        .map((key) => AppModule[key])
+                        .find((exported) => typeof exported === 'function');
+                    
+                      if (firstFunction) return firstFunction;
+                    
+                      throw new Error(\`No App component found in module: ${JSON.stringify(
+                        appEntry,
+                      )}\`);
+                    }
+                  `,
                 }),
               ];
             });
