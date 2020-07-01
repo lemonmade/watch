@@ -44,7 +44,7 @@ jobs:
 
       - name: Zip UI Lambda
         run: zip -r ../../ui.zip ./*
-        working-directory: ./build/app/quiltAutoService
+        working-directory: ./build/app/quiltAutoServer
 
       - name: Save API build artifact
         uses: actions/upload-artifact@v1
