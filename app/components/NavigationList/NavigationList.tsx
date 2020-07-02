@@ -1,5 +1,5 @@
-import React, {useMemo, ReactNode, ComponentProps} from 'react';
-import {Link, useCurrentUrl} from '@quilted/quilt';
+import React, {ReactNode, ComponentProps} from 'react';
+import {Link, useRouteMatch} from '@quilted/quilt';
 import {classes} from '@lemon/css';
 import styles from './NavigationList.css';
 
@@ -17,7 +17,7 @@ interface ItemProps {
 }
 
 export function NavigationListItem({to, children}: ItemProps) {
-  const active = useActive(to);
+  const active = useRouteMatch(to);
 
   return (
     <Link
@@ -27,9 +27,4 @@ export function NavigationListItem({to, children}: ItemProps) {
       {children}
     </Link>
   );
-}
-
-function useActive(to: ItemProps['to']) {
-  const currentUrl = useCurrentUrl();
-  return useMemo(() => currentUrl.pathname === to, [currentUrl, to]);
 }

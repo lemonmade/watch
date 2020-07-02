@@ -1867,6 +1867,20 @@
     "@quilted/react-server-render" "^0.1.0"
     "@quilted/react-web-workers" "^0.1.3"
 
+"@quilted/quilt@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.11.tgz#66ce5d51bc5ea9d7fd51fdf5006167419e4c7943"
+  integrity sha512-ZfyKkXBNrwRxBokGTG1ZdsWKlzx6487nsYeWde6OcNl5qlWbeX6Zx9tRTBShVvS8daYtE5SkXNOyXXLfT2ugQA==
+  dependencies:
+    "@quilted/async" "^0.1.8"
+    "@quilted/react-async" "^0.1.8"
+    "@quilted/react-auto-headings" "^0.1.0"
+    "@quilted/react-html" "^0.1.0"
+    "@quilted/react-idle" "^0.1.0"
+    "@quilted/react-router" "^0.1.4"
+    "@quilted/react-server-render" "^0.1.0"
+    "@quilted/react-web-workers" "^0.1.3"
+
 "@quilted/react-async@^0.1.8":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@quilted/react-async/-/react-async-0.1.8.tgz#9b3cde02dc26706c47c7eb28051b782481af6c99"
@@ -1902,6 +1916,14 @@
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.1.3.tgz#afbdfc8a533c1fd1dbd0570737e5a3770c172de8"
   integrity sha512-6cv9nmv0ZGyGquD/jU1/KSfXcJuv7dw9ToIhV99aHF8fO2TsMrB4OOxEbi5DlpjOAF01CKeGaqht9buoCAvZ0w==
+  dependencies:
+    "@quilted/react-html" "^0.1.0"
+    "@quilted/react-server-render" "^0.1.0"
+
+"@quilted/react-router@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.1.4.tgz#f0befd1b710d61088c170f2a59126266f058ad9b"
+  integrity sha512-2snEuUr6qQh8y1Z2xHG0oVBzg5xa7hJ4qxutgveKSFN2sYZdEa8d5nnvUH42v2ufeEUhfvvDCB+nC8HtIT3M4w==
   dependencies:
     "@quilted/react-html" "^0.1.0"
     "@quilted/react-server-render" "^0.1.0"
@@ -2969,18 +2991,10 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.2":
+"@types/unist@^2.0.0", "@types/unist@^2.0.2":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
-
-"@types/vfile-message@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@types/vfile-message/-/vfile-message-1.0.1.tgz#e1e9895cc6b36c462d4244e64e6d0b6eaf65355a"
-  integrity sha512-mlGER3Aqmq7bqR1tTTIVHq8KSAFFRyGbrxuM8C/H82g6k7r2fS+IMEkIu3D7JHzG10NvPdR8DNx0jr0pwpp4dA==
-  dependencies:
-    "@types/node" "*"
-    "@types/unist" "*"
 
 "@types/webpack-dev-middleware@*":
   version "2.0.3"
