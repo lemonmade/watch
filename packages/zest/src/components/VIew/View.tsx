@@ -18,15 +18,11 @@ export function View({
     backgroundColor: background,
   };
 
-  if (cornerRadius) {
-    // concentric border radius is handled with a class
-    if (cornerRadius === 'concentric') {
-      style.borderRadius = `calc(var(--x-container-corner-radius, 0) - var(--x-container-inset, 0))`;
-    } else {
-      const radius = relativeSize(cornerRadius);
-      (style as any)[`--x-container-corner-radius`] = radius;
-      style.borderRadius = radius;
-    }
+  // concentric border radius is handled with a class
+  if (typeof cornerRadius === 'number') {
+    const radius = relativeSize(cornerRadius);
+    (style as any)[`--x-container-corner-radius`] = radius;
+    style.borderRadius = radius;
   }
 
   if (padding) {
