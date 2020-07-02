@@ -13,6 +13,7 @@
   resize: vertical;
   font-size: 1rem;
   color: var(--zest-color-text);
+  padding: var(--zest-spacing-mini) var(--zest-spacing);
 }
 
 .multiline {

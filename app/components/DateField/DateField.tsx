@@ -2,8 +2,8 @@ import React from 'react';
 import styles from './DateField.css';
 
 interface Props {
-  id: string;
-  label: string;
+  id?: string;
+  label?: string;
   value: Date;
   onChange(value: Date): void;
 }
@@ -11,7 +11,7 @@ interface Props {
 export function DateField({id, label, value, onChange}: Props) {
   return (
     <>
-      <label htmlFor={id}>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
       <input
         id={id}
         value={`${value.getFullYear()}-${String(value.getMonth() + 1).padStart(

@@ -13,6 +13,10 @@
   grid-auto-flow: column;
 }
 
+.spacingNone {
+  --Stack-spacing: 0;
+}
+
 .spacingSmall {
   --Stack-spacing: var(--zest-spacing-small);
 }

@@ -9,8 +9,15 @@ import {Router, Route, AutoHeadingGroup} from '@quilted/quilt';
 import '@lemon/zest/core.css';
 import './App.css';
 
-import {Frame} from './components';
-import {Watching, Series, Subscriptions, WatchThrough} from './features';
+import {Frame, NavigationList, NavigationListItem} from './components';
+import {
+  Watching,
+  Series,
+  Subscriptions,
+  WatchThrough,
+  Settings,
+  Search,
+} from './features';
 
 const client = createApolloClient();
 
@@ -20,14 +27,21 @@ export default function App({url}: {url?: URL}) {
       <AutoHeadingGroup>
         <ApolloProvider client={client}>
           <Frame
-            actions={[
-              {content: 'Watching', to: '/'},
-              {content: 'Search', to: '/search'},
-              {content: 'Subscriptions', to: '/subscriptions'},
-            ]}
+            renderNavigation={() => (
+              <NavigationList>
+                <NavigationListItem to="/">Watching</NavigationListItem>
+                <NavigationListItem to="/subscriptions">
+                  Subscriptions
+                </NavigationListItem>
+                <NavigationListItem to="/search">Search</NavigationListItem>
+                <NavigationListItem to="/settings">Settings</NavigationListItem>
+              </NavigationList>
+            )}
           >
             <Route match="/" render={() => <Watching />} />
             <Route match="/subscriptions" render={() => <Subscriptions />} />
+            <Route match="/settings" render={() => <Settings />} />
+            <Route match="/search" render={() => <Search />} />
             <Route
               match={/\/series\/[\w-]+$/}
               render={({pathname}) => (

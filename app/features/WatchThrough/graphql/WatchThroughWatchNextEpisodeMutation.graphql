@@ -1,0 +1,21 @@
+#import "./WatchThroughDetailsFragment.graphql"
+
+mutation WatchThroughWatchNextEpisode(
+  $episode: ID!
+  $watchThrough: ID!
+  $rating: Int
+  $notes: Notes
+  $finishedAt: Date
+) {
+  watchEpisode(
+    episode: $episode
+    watchThrough: $watchThrough
+    rating: $rating
+    notes: $notes
+    finishedAt: $finishedAt
+  ) {
+    watchThrough {
+      ...WatchThroughDetails
+    }
+  }
+}

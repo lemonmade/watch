@@ -24,9 +24,7 @@ export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     graphql(),
-    quiltWebApp({
-      preact: true,
-    }),
+    quiltWebApp(),
     createProjectBuildPlugin('Watch.App.Brotli', ({hooks}) => {
       hooks.target.hook(({target, hooks}) => {
         if (
@@ -125,7 +123,9 @@ export default createWebApp((app) => {
 
                 res.write(
                   `<html>
-                      <head></head>
+                      <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, user-scalable=0">
+                      </head>
                       <body>
                         <div id="app"></div>
                         <script src="http://localhost:3002/assets/main.js"></script>
@@ -231,6 +231,7 @@ function webAppAutoServer() {
                             styles={${JSON.stringify(entrypoints.main.css)}}
                             scripts={${JSON.stringify(entrypoints.main.js)}}
                             preloadAssets={[]}
+                            headMarkup={<><meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, user-scalable=0" /></>}
                           >
                             {markup}
                           </Html>

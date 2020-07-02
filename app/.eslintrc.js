@@ -4,4 +4,7 @@ module.exports = {
     'plugin:@sewing-kit/prettier',
     'plugin:@sewing-kit/react',
   ],
+  rules: {
+    'react/jsx-curly-newline': 'off',
+  },
 };

@@ -1,0 +1,11 @@
+query Search($query: String!) {
+  search(query: $query) {
+    series {
+      id
+      name
+      poster {
+        source
+      }
+    }
+  }
+}

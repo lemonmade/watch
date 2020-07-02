@@ -1,7 +1,8 @@
 import React, {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@apollo/react-hooks';
 
-import {CollapseGroup, MediaGrid} from '../../components';
+import {Page, MediaGrid} from 'components';
+
 import {parseGid} from '../../utilities/graphql';
 
 import watchingQuery from './graphql/WatchingQuery.graphql';
@@ -41,22 +42,13 @@ export function Watching(_: Props) {
   }, [data?.watchThroughs]);
 
   return (
-    <>
-      <CollapseGroup title="Ready to watch">
-        <MediaGrid>
-          {availableWatchThroughs.map(({id, ...props}) => (
-            <WatchThroughItem key={id} {...props} />
-          ))}
-        </MediaGrid>
-      </CollapseGroup>
-      <CollapseGroup title="Upcoming">
-        <MediaGrid>
-          {unavailableWatchThroughs.map(({id, ...props}) => (
-            <WatchThroughItem key={id} {...props} />
-          ))}
-        </MediaGrid>
-      </CollapseGroup>
-    </>
+    <Page title="Watching">
+      <MediaGrid>
+        {availableWatchThroughs.map(({id, ...props}) => (
+          <WatchThroughItem key={id} {...props} />
+        ))}
+      </MediaGrid>
+    </Page>
   );
 }
 
