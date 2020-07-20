@@ -1,10 +1,12 @@
-import React from 'react';
-import {ApolloProvider} from '@apollo/react-hooks';
-import ApolloClient, {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} from 'apollo-boost';
-import {Router, Route, AutoHeadingGroup} from '@quilted/quilt';
+import React, {useMemo} from 'react';
+import {
+  GraphQLContext,
+  createGraphQL,
+  createHttpFetch,
+  Router,
+  Route,
+  AutoHeadingGroup,
+} from '@quilted/quilt';
 
 import '@lemon/zest/core.css';
 import './App.css';
@@ -19,13 +21,19 @@ import {
   Search,
 } from './features';
 
-const client = createApolloClient();
-
 export default function App({url}: {url?: URL}) {
+  const graphql = useMemo(
+    () =>
+      createGraphQL({
+        fetch: createHttpFetch({uri: 'https://api.lemon.tools/watch'}),
+      }),
+    [],
+  );
+
   return (
     <Router url={url}>
       <AutoHeadingGroup>
-        <ApolloProvider client={client}>
+        <GraphQLContext.Provider value={graphql}>
           <Frame
             renderNavigation={() => (
               <NavigationList>
@@ -59,58 +67,8 @@ export default function App({url}: {url?: URL}) {
               )}
             />
           </Frame>
-        </ApolloProvider>
+        </GraphQLContext.Provider>
       </AutoHeadingGroup>
     </Router>
   );
-}
-
-function createApolloClient() {
-  return new ApolloClient({
-    uri: 'https://api.lemon.tools/watch',
-    cache: new InMemoryCache({
-      addTypename: true,
-      fragmentMatcher: new IntrospectionFragmentMatcher({
-        introspectionQueryResultData: {
-          __schema: {
-            types: [
-              {
-                kind: 'INTERFACE',
-                name: 'Reviewable',
-                possibleTypes: [
-                  {
-                    name: 'Watch',
-                  },
-                  {
-                    name: 'WatchThrough',
-                  },
-                ],
-              },
-              {
-                kind: 'INTERFACE',
-                name: 'Watchable',
-                possibleTypes: [
-                  {
-                    name: 'Episode',
-                  },
-                ],
-              },
-              {
-                kind: 'UNION',
-                name: 'WatchThroughEpisodeAction',
-                possibleTypes: [
-                  {
-                    name: 'Watch',
-                  },
-                  {
-                    name: 'Skip',
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      }),
-    }),
-  });
 }

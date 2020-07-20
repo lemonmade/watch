@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef} from 'react';
 import {classes} from '@lemon/css';
 import styles from './TextField.css';
 
@@ -27,7 +27,7 @@ export function TextField({
             setValue(currentTarget.value);
             onInput?.(currentTarget.value);
           }}
-          onBlur={() => onChange?.(value)}
+          onBlur={() => onChange?.(value ?? '')}
         />
       </div>
     );
@@ -43,7 +43,7 @@ export function TextField({
           setValue(currentTarget.value);
           onInput?.(currentTarget.value);
         }}
-        onBlur={() => onChange?.(value)}
+        onBlur={() => onChange?.(value ?? '')}
       />
     </div>
   );

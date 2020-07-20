@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {useQuery} from '@apollo/react-hooks';
-import {Link} from '@quilted/quilt';
+import {Link, useQuery} from '@quilted/quilt';
+
 import {Page, BlockStack, TextField} from 'components';
 
 import searchQuery from './graphql/SearchQuery.graphql';

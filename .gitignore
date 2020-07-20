@@ -6,3 +6,5 @@ packages/*/*.d.ts
 .sewing-kit
 build
 cdk.out
+app/graphql/types/*
+app/**/*.graphql.d.ts

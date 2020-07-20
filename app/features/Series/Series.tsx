@@ -1,6 +1,5 @@
 import React from 'react';
-import {useQuery, useMutation} from '@apollo/react-hooks';
-import {useRouter} from '@quilted/quilt';
+import {useRouter, useQuery, useMutation} from '@quilted/quilt';
 
 import {
   Text,
@@ -27,9 +26,9 @@ export function Series({id}: Props) {
   const {data} = useQuery(seriesQuery, {
     variables: {id},
   });
-  const [startWatchThrough] = useMutation(startWatchThroughMutation);
-  const [subscribeToSeries] = useMutation(subscribeToSeriesMutation);
-  const [markSeasonAsFinished] = useMutation(markSeasonAsFinishedMutation);
+  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const subscribeToSeries = useMutation(subscribeToSeriesMutation);
+  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
 
   if (data?.series == null) {
     return null;

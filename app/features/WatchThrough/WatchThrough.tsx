@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useQuery, useMutation} from '@apollo/react-hooks';
+import {useQuery, useMutation} from '@quilted/quilt';
 
 import {
   BlockStack,
@@ -66,7 +66,7 @@ function NextEpisode({
 }: {
   id: string;
   title: string;
-  image: string;
+  image?: string;
   overview?: string;
   firstAired?: Date;
   watchThroughId: string;
@@ -75,8 +75,8 @@ function NextEpisode({
 }) {
   const [rating, setRating] = useState<null | number>(null);
   const [notes, setNotes] = useState<null | string>(null);
-  const [watchNextEpisode] = useMutation(watchNextEpisodeMutation);
-  const [skipNextEpisode] = useMutation(skipNextEpisodeMutation);
+  const watchNextEpisode = useMutation(watchNextEpisodeMutation);
+  const skipNextEpisode = useMutation(skipNextEpisodeMutation);
   const [at, setAt] = useState<Date | null>(() => new Date());
 
   return (

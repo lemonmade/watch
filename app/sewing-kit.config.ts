@@ -3,7 +3,6 @@ import {createServer} from 'http';
 import {join, dirname, extname} from 'path';
 import {createWebApp} from '@sewing-kit/config';
 import {
-  Task,
   Runtime,
   WebApp,
   TargetBuilder,
@@ -12,8 +11,7 @@ import {
   createProjectBuildPlugin,
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
-import {graphql} from '@sewing-kit/plugin-graphql';
-import {webpackPlugins} from '@sewing-kit/plugin-webpack';
+import type {} from '@sewing-kit/plugin-webpack';
 
 import {mkdirp, writeFile} from 'fs-extra';
 import type {Compiler, Plugin, compilation} from 'webpack';
@@ -23,8 +21,9 @@ import {CDN_DOMAIN, CDN_PREFIX} from '../config/deploy/constants';
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
-    graphql(),
-    quiltWebApp(),
+    quiltWebApp({
+      preact: true,
+    }),
     createProjectBuildPlugin('Watch.App.Brotli', ({hooks}) => {
       hooks.target.hook(({target, hooks}) => {
         if (

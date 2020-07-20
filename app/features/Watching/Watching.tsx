@@ -1,9 +1,9 @@
 import React, {useMemo, ComponentProps} from 'react';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery} from '@quilted/quilt';
 
 import {Page, MediaGrid} from 'components';
 
-import {parseGid} from '../../utilities/graphql';
+import {parseGid} from 'utilities/graphql';
 
 import watchingQuery from './graphql/WatchingQuery.graphql';
 import {WatchThroughItem} from './components';
@@ -20,11 +20,9 @@ interface WatchThrough {
 }
 
 export function Watching(_: Props) {
-  const {data} = useQuery(watchingQuery, {
-    fetchPolicy: 'cache-and-network',
-  });
+  const {data} = useQuery(watchingQuery);
 
-  const [availableWatchThroughs, unavailableWatchThroughs] = useMemo(() => {
+  const [availableWatchThroughs] = useMemo(() => {
     const [available, unavailable] = ((data?.watchThroughs ??
       []) as WatchThrough[]).reduce<[WatchThrough[], WatchThrough[]]>(
       ([available, unavailable], watchThrough) => {

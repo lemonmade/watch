@@ -7,4 +7,5 @@ module.exports = {
   rules: {
     'react/jsx-curly-newline': 'off',
   },
+  ignorePatterns: ['graphql/types/*', '**/*.graphql.d.ts'],
 };

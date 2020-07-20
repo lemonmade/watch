@@ -1,5 +1,5 @@
 import React from 'react';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery} from '@quilted/quilt';
 
 import {Link, MediaGrid, Poster, Page} from 'components';
 import {parseGid} from 'utilities/graphql';
@@ -18,11 +18,13 @@ export function Subscriptions() {
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
           <Link key={id} to={`/series/${parseGid(series.id).id}`}>
-            <Poster
-              source={
-                series.poster?.source.replace('/original/', '/w342/') ?? ''
-              }
-            />
+            {series.poster?.source && (
+              <Poster
+                source={
+                  series.poster.source.replace('/original/', '/w342/') ?? ''
+                }
+              />
+            )}
           </Link>
         ))}
       </MediaGrid>

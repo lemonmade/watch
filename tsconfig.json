@@ -6,7 +6,6 @@
     {"path": "./app"},
     {"path": "./functions/api"},
     {"path": "./packages/css"},
-    {"path": "./packages/react-router"},
     {"path": "./packages/zest"}
   ]
 }
