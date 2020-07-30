@@ -26,7 +26,7 @@
     "@aws-cdk/core": "^1.47.1",
     "@babel/node": "^7.10.3",
     "@quilted/asset-upload-s3": "^0.1.5",
-    "@quilted/sewing-kit-plugins": "^0.1.21",
+    "@quilted/sewing-kit-plugins": "^0.1.27",
     "@sewing-kit/cli": "^0.1.6",
     "@sewing-kit/eslint-plugin": "^0.0.14",
     "@types/common-tags": "^1.8.0",

@@ -11,7 +11,7 @@ export function Search() {
   const searchTimeout = useRef<null | number>(null);
 
   const {data} = useQuery(searchQuery, {
-    skip: search.length === 0,
+    skip: committedSearch.length === 0,
     variables: {query: committedSearch},
   });
 
