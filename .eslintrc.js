@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['plugin:@sewing-kit/typescript', 'plugin:@sewing-kit/prettier'],
+  extends: ['plugin:@sewing-kit/typescript', 'plugin:@sewing-kit/prettier', 'plugin:@sewing-kit/graphql'],
   ignorePatterns: [
     'node_modules/',
     'build/',
@@ -17,7 +17,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['sewing-kit.config.ts', 'config/sewing-kit/**/*'],
+      files: ['**/sewing-kit.config.ts', 'config/sewing-kit/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 'off',
       },
