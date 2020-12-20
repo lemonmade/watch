@@ -6,6 +6,7 @@ import {
   Router,
   Route,
   AutoHeadingGroup,
+  useTitle,
 } from '@quilted/quilt';
 
 import '@lemon/zest/core.css';
@@ -29,6 +30,8 @@ export default function App({url}: {url?: URL}) {
       }),
     [],
   );
+
+  useTitle('Watch');
 
   return (
     <Router url={url}>
