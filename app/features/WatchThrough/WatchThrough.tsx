@@ -18,7 +18,7 @@ import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
 
-interface Props {
+export interface Props {
   id: string;
 }
 
