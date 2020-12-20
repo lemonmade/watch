@@ -5,19 +5,14 @@ import {Page, MediaGrid} from 'components';
 
 import {parseGid} from 'utilities/graphql';
 
-import watchingQuery from './graphql/WatchingQuery.graphql';
+import watchingQuery, {
+  WatchingQueryData,
+} from './graphql/WatchingQuery.graphql';
 import {WatchThroughItem} from './components';
 
 interface Props {}
 
-interface WatchThrough {
-  id: string;
-  series: any;
-  nextEpisode: any;
-  lastAction: any;
-  lastEpisode: any;
-  unfinishedEpisodeCount: number;
-}
+type WatchThrough = WatchingQueryData.WatchThroughs;
 
 export function Watching(_: Props) {
   const {data} = useQuery(watchingQuery);
@@ -74,15 +69,15 @@ function watchThroughToProps({
                   new Date().getTimezoneOffset() * 60_000,
               ).toISOString()
             : undefined,
-          poster: nextEpisode.season.poster?.source,
+          poster: nextEpisode.season.poster?.source!,
         }
       : undefined,
     series: {
       poster:
-        lastEpisode?.episode.season.poster?.source.replace(
+        lastEpisode?.episode.season.poster?.source!.replace(
           '/original/',
           '/w342/',
-        ) ?? series.poster?.source.replace('/original/', '/w342/'),
+        ) ?? series.poster?.source!.replace('/original/', '/w342/'),
     },
     unfinishedEpisodeCount,
   };
@@ -90,48 +85,82 @@ function watchThroughToProps({
 
 function sortWatchThroughs(
   {
-    lastAction: lastActionOneRaw,
+    lastAction: lastActionOne,
     nextEpisode: nextEpisodeOne,
     series: seriesOne,
   }: WatchThrough,
   {
-    lastAction: lastActionTwoRaw,
+    lastAction: lastActionTwo,
     nextEpisode: nextEpisodeTwo,
     series: seriesTwo,
   }: WatchThrough,
 ) {
-  const lastActionDateOneRaw =
-    lastActionOneRaw?.finishedAt ?? lastActionOneRaw?.at;
+  const lastActionOneDate = actionToDate(lastActionOne);
+  const lastActionTwoDate = actionToDate(lastActionTwo);
 
-  const lastActionDateTwoRaw =
-    lastActionTwoRaw?.finishedAt ?? lastActionTwoRaw?.at;
+  if (lastActionOneDate != null && lastActionTwoDate != null) {
+    const lastActionOneTime = lastActionOneDate.getTime();
+    const lastActionTwoTime = lastActionTwoDate.getTime();
 
-  if (lastActionDateOneRaw != null && lastActionDateTwoRaw != null) {
-    return new Date(lastActionDateOneRaw).getTime() >
-      new Date(lastActionDateTwoRaw).getTime()
-      ? -1
-      : 1;
+    if (lastActionOneTime === lastActionTwoTime) {
+      return seriesOne.name.localeCompare(seriesTwo.name);
+    }
+
+    return lastActionOneDate.getTime() > lastActionTwoDate.getTime() ? -1 : 1;
   }
 
-  if (lastActionDateOneRaw != null && lastActionDateTwoRaw == null) {
+  if (lastActionOneDate != null && lastActionTwoDate == null) {
     return -1;
   }
 
-  if (lastActionDateTwoRaw != null && lastActionDateOneRaw == null) {
+  if (lastActionTwoDate != null && lastActionOneDate == null) {
     return 1;
   }
 
-  const nextEpisodeDateOne =
-    nextEpisodeOne?.firstAired ?? seriesOne?.firstAired;
-  const nextEpisodeDateTwo =
-    nextEpisodeTwo?.firstAired ?? seriesTwo?.firstAired;
+  const nextEpisodeOneDate = getFirstAired(seriesOne, nextEpisodeOne);
+  const nextEpisodeTwoDate = getFirstAired(seriesTwo, nextEpisodeTwo);
 
-  if (nextEpisodeDateOne === nextEpisodeDateTwo) {
-    return seriesOne.name.localeCompare(seriesTwo.name);
+  if (nextEpisodeOneDate != null && nextEpisodeTwoDate != null) {
+    const nextEpisodeOneTime = nextEpisodeOneDate.getTime();
+    const nextEpisodeTwoTime = nextEpisodeTwoDate.getTime();
+
+    if (nextEpisodeOneTime === nextEpisodeTwoTime) {
+      return seriesOne.name.localeCompare(seriesTwo.name);
+    }
+
+    return nextEpisodeOneDate.getTime() > nextEpisodeTwoDate.getTime() ? -1 : 1;
   }
 
-  return new Date(nextEpisodeDateOne).getTime() >
-    new Date(nextEpisodeDateTwo).getTime()
-    ? -1
-    : 1;
+  if (nextEpisodeOneDate != null && nextEpisodeTwoDate == null) {
+    return -1;
+  }
+
+  if (nextEpisodeTwoDate != null && nextEpisodeOneDate == null) {
+    return 1;
+  }
+
+  return seriesOne.name.localeCompare(seriesTwo.name);
+}
+
+function getFirstAired(
+  series: Pick<WatchingQueryData.WatchThroughs.Series, 'firstAired'>,
+  episode?: Pick<
+    WatchingQueryData.WatchThroughs.NextEpisode,
+    'firstAired'
+  > | null,
+) {
+  const firstAired = episode?.firstAired ?? series.firstAired;
+  return firstAired ? new Date(firstAired) : undefined;
+}
+
+function actionToDate(
+  action?: WatchingQueryData.WatchThroughs.LastAction | null,
+) {
+  if (action == null) return undefined;
+  switch (action.__typename) {
+    case 'Skip':
+      return action.at ? new Date(action.at) : undefined;
+    case 'Watch':
+      return action.finishedAt ? new Date(action.finishedAt) : undefined;
+  }
 }
