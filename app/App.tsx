@@ -30,7 +30,31 @@ export default function App() {
     [],
   );
 
-  const routes = useRoutes(
+  return (
+    <QuiltApp graphql={graphql}>
+      <Head />
+      <AutoHeadingGroup>
+        <Frame
+          renderNavigation={() => (
+            <NavigationList>
+              <NavigationListItem to="/">Watching</NavigationListItem>
+              <NavigationListItem to="/subscriptions">
+                Subscriptions
+              </NavigationListItem>
+              <NavigationListItem to="/search">Search</NavigationListItem>
+              <NavigationListItem to="/settings">Settings</NavigationListItem>
+            </NavigationList>
+          )}
+        >
+          <Routes />
+        </Frame>
+      </AutoHeadingGroup>
+    </QuiltApp>
+  );
+}
+
+const Routes = memo(function Routes() {
+  return useRoutes(
     useMemo<Parameters<typeof useRoutes>[0]>(
       () => [
         {match: '/', render: () => <Watching />},
@@ -63,29 +87,7 @@ export default function App() {
       [],
     ),
   );
-
-  return (
-    <QuiltApp graphql={graphql}>
-      <Head />
-      <AutoHeadingGroup>
-        <Frame
-          renderNavigation={() => (
-            <NavigationList>
-              <NavigationListItem to="/">Watching</NavigationListItem>
-              <NavigationListItem to="/subscriptions">
-                Subscriptions
-              </NavigationListItem>
-              <NavigationListItem to="/search">Search</NavigationListItem>
-              <NavigationListItem to="/settings">Settings</NavigationListItem>
-            </NavigationList>
-          )}
-        >
-          {routes}
-        </Frame>
-      </AutoHeadingGroup>
-    </QuiltApp>
-  );
-}
+});
 
 const Head = memo(function Head() {
   useTitle('Watch');
