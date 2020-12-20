@@ -189,6 +189,7 @@ function webAppAutoServer() {
                   [polyfills]: `
                     import 'regenerator-runtime/runtime';
                     import fetch from 'node-fetch';
+                    import {URL} from 'url';
   
                     if (!global.fetch) {
                       global.fetch = fetch;
@@ -196,12 +197,14 @@ function webAppAutoServer() {
                       global.Headers = fetch.Headers;
                       global.Request = fetch.Request;
                     }
+
+                    if (!global.URL) {
+                      global.URL = URL;
+                    }
                   `,
                   [entry]: `
                     import ${JSON.stringify(polyfills)};
 
-                    import {URL} from 'url';
-  
                     import React from 'react';
                     import {renderToStaticMarkup} from 'react-dom/server';
                     import Koa from 'koa';
@@ -218,7 +221,9 @@ function webAppAutoServer() {
                     const App = getAppComponent(AppModule);
 
                     export async function handler(event) {
-                      const {html, markup, asyncAssets} = await render(<App url={new URL('https://tv.lemon.tools/')} />);
+                      const {html, markup, asyncAssets} = await render(<App />, {
+                        url: new URL(event.rawPath, 'https://' + event.requestContext.domainName)
+                      });
 
                       console.log(event);
 
@@ -230,7 +235,6 @@ function webAppAutoServer() {
                             styles={${JSON.stringify(entrypoints.main.css)}}
                             scripts={${JSON.stringify(entrypoints.main.js)}}
                             preloadAssets={[]}
-                            headMarkup={<><meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, user-scalable=0" /></>}
                           >
                             {markup}
                           </Html>

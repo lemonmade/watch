@@ -1,5 +1,5 @@
 import React, {ReactNode, ComponentProps} from 'react';
-import {Link, useRouteMatch} from '@quilted/quilt';
+import {Link, useMatch} from '@quilted/quilt';
 import {classes} from '@lemon/css';
 import styles from './NavigationList.css';
 
@@ -12,12 +12,15 @@ export function NavigationList({children}: Props) {
 }
 
 interface ItemProps {
-  to: ComponentProps<typeof Link>['to'];
+  to: Extract<
+    Parameters<typeof useMatch>[0],
+    ComponentProps<typeof Link>['to']
+  >;
   children?: ReactNode;
 }
 
 export function NavigationListItem({to, children}: ItemProps) {
-  const active = useRouteMatch(to);
+  const active = useMatch(to);
 
   return (
     <Link

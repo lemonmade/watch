@@ -1,13 +1,12 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, memo} from 'react';
 import {
-  GraphQLContext,
   createGraphQL,
   createHttpFetch,
-  Router,
-  Route,
+  useRoutes,
   AutoHeadingGroup,
-  useTitle,
+  App as QuiltApp,
 } from '@quilted/quilt';
+import {useTitle, useMeta} from '@quilted/quilt/html';
 
 import '@lemon/zest/core.css';
 import './App.css';
@@ -22,7 +21,7 @@ import {
   Search,
 } from './features';
 
-export default function App({url}: {url?: URL}) {
+export default function App() {
   const graphql = useMemo(
     () =>
       createGraphQL({
@@ -31,47 +30,71 @@ export default function App({url}: {url?: URL}) {
     [],
   );
 
-  useTitle('Watch');
+  const routes = useRoutes(
+    useMemo<Parameters<typeof useRoutes>[0]>(
+      () => [
+        {match: '/', render: () => <Watching />},
+        {match: 'subscriptions', render: () => <Subscriptions />},
+        {match: 'settings', render: () => <Settings />},
+        {match: 'search', render: () => <Search />},
+        {
+          match: 'series',
+          children: [
+            {
+              match: /[\w-]+/,
+              render: ({matched}) => (
+                <Series id={`gid://watch/Series/${matched}`} />
+              ),
+            },
+          ],
+        },
+        {
+          match: 'watchthrough',
+          children: [
+            {
+              match: /[\w-]+/,
+              render: ({matched}) => (
+                <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
+              ),
+            },
+          ],
+        },
+      ],
+      [],
+    ),
+  );
 
   return (
-    <Router url={url}>
+    <QuiltApp graphql={graphql}>
+      <Head />
       <AutoHeadingGroup>
-        <GraphQLContext.Provider value={graphql}>
-          <Frame
-            renderNavigation={() => (
-              <NavigationList>
-                <NavigationListItem to="/">Watching</NavigationListItem>
-                <NavigationListItem to="/subscriptions">
-                  Subscriptions
-                </NavigationListItem>
-                <NavigationListItem to="/search">Search</NavigationListItem>
-                <NavigationListItem to="/settings">Settings</NavigationListItem>
-              </NavigationList>
-            )}
-          >
-            <Route match="/" render={() => <Watching />} />
-            <Route match="/subscriptions" render={() => <Subscriptions />} />
-            <Route match="/settings" render={() => <Settings />} />
-            <Route match="/search" render={() => <Search />} />
-            <Route
-              match={/\/series\/[\w-]+$/}
-              render={({pathname}) => (
-                <Series
-                  id={`gid://watch/Series/${pathname.split('/').pop()!}`}
-                />
-              )}
-            />
-            <Route
-              match={/\/watchthrough\/[\w-]+$/}
-              render={({pathname}) => (
-                <WatchThrough
-                  id={`gid://watch/WatchThrough/${pathname.split('/').pop()!}`}
-                />
-              )}
-            />
-          </Frame>
-        </GraphQLContext.Provider>
+        <Frame
+          renderNavigation={() => (
+            <NavigationList>
+              <NavigationListItem to="/">Watching</NavigationListItem>
+              <NavigationListItem to="/subscriptions">
+                Subscriptions
+              </NavigationListItem>
+              <NavigationListItem to="/search">Search</NavigationListItem>
+              <NavigationListItem to="/settings">Settings</NavigationListItem>
+            </NavigationList>
+          )}
+        >
+          {routes}
+        </Frame>
       </AutoHeadingGroup>
-    </Router>
+    </QuiltApp>
   );
 }
+
+const Head = memo(function Head() {
+  useTitle('Watch');
+
+  useMeta({
+    name: 'viewport',
+    content:
+      'width=device-width, initial-scale=1.0, height=device-height, user-scalable=0',
+  });
+
+  return null;
+});
