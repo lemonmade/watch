@@ -20,6 +20,7 @@ export function TextField({
   if (multiline) {
     return (
       <div className={styles.TextField}>
+        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
         <textarea
           value={value}
           className={classes(styles.Input, multiline && styles.multiline)}
@@ -35,6 +36,7 @@ export function TextField({
 
   return (
     <div className={styles.TextField}>
+      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
       <input
         type="text"
         value={value}

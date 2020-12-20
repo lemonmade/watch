@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['plugin:@sewing-kit/typescript', 'plugin:@sewing-kit/prettier', 'plugin:@sewing-kit/graphql'],
+  extends: ['plugin:@sewing-kit/typescript', 'plugin:@sewing-kit/prettier'],
   ignorePatterns: [
     'node_modules/',
     'build/',

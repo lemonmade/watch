@@ -166,6 +166,7 @@ function fillForValueInRange(
     inProgressValue >= value ||
     inProgressValue >= end;
   const largerFill =
+    // eslint-disable-next-line no-nested-ternary
     largerValue >= end
       ? StarFill.Full
       : largerValue > start

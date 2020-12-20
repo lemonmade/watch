@@ -23,8 +23,9 @@ export function Watching(_: Props) {
   const {data} = useQuery(watchingQuery);
 
   const [availableWatchThroughs] = useMemo(() => {
-    const [available, unavailable] = ((data?.watchThroughs ??
-      []) as WatchThrough[]).reduce<[WatchThrough[], WatchThrough[]]>(
+    const [available, unavailable] = (data?.watchThroughs ?? []).reduce<
+      [WatchThrough[], WatchThrough[]]
+    >(
       ([available, unavailable], watchThrough) => {
         return watchThrough.unfinishedEpisodeCount === 0
           ? [available, [...unavailable, watchThrough]]

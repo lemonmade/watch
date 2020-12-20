@@ -24,7 +24,7 @@ export function Search() {
     [],
   );
 
-  const series: any[] = data?.search.series ?? [];
+  const series = data?.search.series ?? [];
 
   return (
     <Page title="Search">

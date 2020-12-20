@@ -12,6 +12,7 @@ export function DateField({id, label, value, onChange}: Props) {
   return (
     <>
       {label && <label htmlFor={id}>{label}</label>}
+      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
       <input
         id={id}
         value={`${value.getFullYear()}-${String(value.getMonth() + 1).padStart(

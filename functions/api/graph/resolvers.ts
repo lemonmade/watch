@@ -1,8 +1,8 @@
-import {IResolverObject as ResolverObject} from 'graphql-tools';
+import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 import {Context, Table} from './context';
 
-type Resolver<Source = never> = ResolverObject<Source, Context>;
+type Resolver<Source = never> = IResolvers<Source, Context>;
 
 export const Query: Resolver = {
   async search(_, {query}: {query?: string}, context) {
@@ -117,7 +117,7 @@ export const Mutation: Resolver = {
         finishedAt,
       })
       .into(Table.Watches)
-      .returning('id');
+      .returning<string>('id');
 
     if (watchThroughId && watchId) {
       await Promise.all([
@@ -168,7 +168,7 @@ export const Mutation: Resolver = {
         at,
       })
       .into(Table.Skips)
-      .returning('id');
+      .returning<string>('id');
 
     if (watchThroughId && skipId) {
       await Promise.all([
@@ -583,7 +583,7 @@ export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
       )
       .count({count: 'WatchThroughEpisodes.id'});
 
-    return parseInt(count, 10);
+    return parseInt(String(count), 10);
   },
   async nextEpisode({id}, _, {db, episodeLoader}) {
     const [episodeId] = (await db

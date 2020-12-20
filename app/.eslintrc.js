@@ -8,4 +8,12 @@ module.exports = {
     'react/jsx-curly-newline': 'off',
   },
   ignorePatterns: ['graphql/types/*', '**/*.graphql.d.ts'],
+  overrides: [
+    {
+      files: ['**/sewing-kit.config.ts', 'config/sewing-kit/**/*'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+  ],
 };

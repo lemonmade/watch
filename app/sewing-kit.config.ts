@@ -34,7 +34,7 @@ export default createWebApp((app) => {
 
         hooks.configure.hook((configuration) => {
           configuration.webpackPlugins?.hook((plugins) => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-extraneous-dependencies
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const CompressionPlugin = require('compression-webpack-plugin');
 
             return [
@@ -275,7 +275,7 @@ function webAppAutoServer() {
                 'webpack-virtual-modules'
               );
 
-              // eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/no-var-requires
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
               const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
               return [
