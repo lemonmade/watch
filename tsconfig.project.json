@@ -2,6 +2,8 @@
   "extends": "./config/typescript/tsconfig.base.json",
   "include": [
     "node_modules/@sewing-kit/*/*.d.ts",
+    "config/**/*.ts",
+    "scripts/**/*.ts",
     "**/sewing-kit.config.ts",
     "**/tests/**/*.ts",
     "**/tests/**/*.tsx"

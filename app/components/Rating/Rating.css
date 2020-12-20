@@ -32,12 +32,12 @@
 .Star {
   --RatingStar-size: 1.5rem;
 
-  height: var(--zest-RatingStar-size);
-  width: var(--zest-RatingStar-size);
+  height: var(--RatingStar-size);
+  width: var(--RatingStar-size);
 }
 
 .Star + .Star {
-  margin-left: var(--zest-Rating-star-gap);
+  margin-left: var(--Rating-star-gap);
 }
 
 .Star-fillPartial .StarPath:first-of-type {

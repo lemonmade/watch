@@ -1,49 +1,30 @@
 .Frame {
   position: relative;
+  height: 100vh;
+  display: grid;
+  grid-template-areas: 'content';
+  align-items: stretch;
 }
 
-.hasNav {
-  padding-bottom: 6rem;
+.hasNavigation {
+  grid-template-areas: 'navigation content';
+  grid-template-columns: 12rem 1fr;
+}
+
+.hasNavigation > .Content {
+  padding-inline-start: var(--zest-spacing-mini);
 }
 
 .Content {
+  grid-area: 'content';
   position: relative;
   z-index: 100;
+  overflow: auto;
+  padding: var(--zest-spacing);
 }
 
-.Nav {
-  position: fixed;
-  bottom: var(--zest-spacing);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  background: var(--zest-color-surface-raised-2);
-  border-radius: var(--zest-border-radius);
-  padding: var(--zest-spacing-mini);
-}
-
-.Actions {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-.Action {
-  display: block;
-  height: 3rem;
-  color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 0 var(--zest-spacing);
-  border-radius: var(--zest-border-radius);
-}
-
-.Action + .Action {
-  margin-left: var(--zest-spacing-small);
-}
-
-.Action:hover {
-  background: var(--zest-color-surface-raised-2-active);
+.Navigation {
+  grid-area: 'navigation';
+  padding: var(--zest-spacing) var(--zest-spacing-mini) var(--zest-spacing)
+    var(--zest-spacing);
 }

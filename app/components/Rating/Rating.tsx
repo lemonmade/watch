@@ -153,18 +153,20 @@ export const Rating = memo(function Rating({value, onChange}: Props) {
 });
 
 function fillForValueInRange(
-  value: number | undefined = 0,
+  currentValue: number | undefined,
   inProgressValue: number | undefined,
   start: number,
   end: number,
 ) {
-  const toValue = inProgressValue || 0;
+  const value = currentValue ?? 0;
+  const toValue = inProgressValue ?? 0;
   const largerValue = Math.max(value, toValue);
   const increasing =
     inProgressValue == null ||
     inProgressValue >= value ||
     inProgressValue >= end;
   const largerFill =
+    // eslint-disable-next-line no-nested-ternary
     largerValue >= end
       ? StarFill.Full
       : largerValue > start

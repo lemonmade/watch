@@ -1,8 +1,9 @@
 import React, {useMemo, ComponentProps} from 'react';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery} from '@quilted/quilt';
 
-import {CollapseGroup, MediaGrid} from '../../components';
-import {parseGid} from '../../utilities/graphql';
+import {Page, MediaGrid} from 'components';
+
+import {parseGid} from 'utilities/graphql';
 
 import watchingQuery from './graphql/WatchingQuery.graphql';
 import {WatchThroughItem} from './components';
@@ -19,13 +20,12 @@ interface WatchThrough {
 }
 
 export function Watching(_: Props) {
-  const {data} = useQuery(watchingQuery, {
-    fetchPolicy: 'cache-and-network',
-  });
+  const {data} = useQuery(watchingQuery);
 
-  const [availableWatchThroughs, unavailableWatchThroughs] = useMemo(() => {
-    const [available, unavailable] = ((data?.watchThroughs ??
-      []) as WatchThrough[]).reduce<[WatchThrough[], WatchThrough[]]>(
+  const [availableWatchThroughs] = useMemo(() => {
+    const [available, unavailable] = (data?.watchThroughs ?? []).reduce<
+      [WatchThrough[], WatchThrough[]]
+    >(
       ([available, unavailable], watchThrough) => {
         return watchThrough.unfinishedEpisodeCount === 0
           ? [available, [...unavailable, watchThrough]]
@@ -38,25 +38,16 @@ export function Watching(_: Props) {
       available.sort(sortWatchThroughs).map(watchThroughToProps),
       unavailable.sort(sortWatchThroughs).map(watchThroughToProps),
     ] as const;
-  }, [data]);
+  }, [data?.watchThroughs]);
 
   return (
-    <>
-      <CollapseGroup title="hhhhhh">
-        <MediaGrid>
-          {availableWatchThroughs.map(({id, ...props}) => (
-            <WatchThroughItem key={id} {...props} />
-          ))}
-        </MediaGrid>
-      </CollapseGroup>
-      <CollapseGroup title="Upcoming">
-        <MediaGrid>
-          {unavailableWatchThroughs.map(({id, ...props}) => (
-            <WatchThroughItem key={id} {...props} />
-          ))}
-        </MediaGrid>
-      </CollapseGroup>
-    </>
+    <Page title="Watching">
+      <MediaGrid>
+        {availableWatchThroughs.map(({id, ...props}) => (
+          <WatchThroughItem key={id} {...props} />
+        ))}
+      </MediaGrid>
+    </Page>
   );
 }
 

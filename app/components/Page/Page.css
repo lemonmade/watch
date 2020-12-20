@@ -1,0 +1,6 @@
+.Page {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-flow: row;
+  row-gap: var(--zest-spacing);
+}

@@ -7,7 +7,9 @@
     "test": "sk test",
     "type-check": "sk type-check",
     "dev": "sk dev",
-    "build": "sk build"
+    "build": "sk build",
+    "cdk": "babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
+    "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
   "workspaces": {
     "packages": [
@@ -17,22 +19,35 @@
     ]
   },
   "devDependencies": {
-    "@quilted/sewing-kit-plugins": "^0.0.50",
-    "@sewing-kit/cli": "^0.0.46",
-    "@sewing-kit/eslint-plugin": "^0.0.13",
-    "@sewing-kit/plugin-graphql": "^0.0.46",
+    "@aws-cdk/aws-cloudfront": "^1.47.1",
+    "@aws-cdk/aws-iam": "^1.47.1",
+    "@aws-cdk/aws-lambda": "^1.47.1",
+    "@aws-cdk/aws-s3": "^1.47.1",
+    "@aws-cdk/core": "^1.47.1",
+    "@babel/node": "^7.10.3",
+    "@quilted/asset-upload-s3": "^0.1.5",
+    "@quilted/sewing-kit-plugins": "^0.1.27",
+    "@sewing-kit/cli": "^0.1.6",
+    "@sewing-kit/eslint-plugin": "^0.0.14",
+    "@types/common-tags": "^1.8.0",
+    "aws-cdk": "^1.47.1",
+    "aws-sdk": "^2.708.0",
+    "common-tags": "^1.8.0",
+    "compression-webpack-plugin": "^4.0.0",
     "graphql-config": "^3.0.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "postcss-preset-env": "^6.7.0",
     "raw-loader": "^4.0.1",
-    "react-refresh": "^0.8.2",
-    "react-refresh-webpack-plugin": "^0.1.0",
-    "sewing-kit-plugin-knex": "^0.0.22",
-    "sewing-kit-plugin-storybook": "^0.0.10",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.0.19"
+    "sewing-kit-plugin-knex": "^0.1.0",
+    "sewing-kit-plugin-webpack-virtual-modules": "^0.1.1",
+    "webpack-bundle-analyzer": "^3.8.0"
   },
   "resolutions": {
     "@types/vfile-message": "1.0.1"
+  },
+  "dependencies": {
+    "koa-mount": "^4.0.0",
+    "koa-static": "^5.0.0"
   }
 }

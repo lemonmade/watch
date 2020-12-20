@@ -1,4 +1,0 @@
-projects:
-  default:
-    schemaPath: './functions/api/graph/schema.graphql'
-    includes: ['./**/*.graphql']

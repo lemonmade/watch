@@ -5,7 +5,7 @@ import styles from './Stack.css';
 
 interface Props {
   children?: ReactNode;
-  spacing?: 'small' | 'large';
+  spacing?: 'none' | 'small' | 'large';
 }
 
 export function BlockStack({children, spacing}: Props) {
@@ -27,7 +27,7 @@ export function InlineStack({children, spacing}: Props) {
     <div
       className={classes(
         styles.Stack,
-        styles.block,
+        styles.inline,
         spacing && styles[variation('spacing', spacing)],
       )}
     >

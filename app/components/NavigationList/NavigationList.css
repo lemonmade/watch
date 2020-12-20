@@ -1,0 +1,27 @@
+.NavigationList {
+}
+
+.Item {
+  display: grid;
+  align-items: center;
+  text-decoration: none;
+  color: var(--zest-color-text);
+  border-radius: var(--zest-border-radius);
+  padding-inline: var(--zest-spacing-small);
+  min-height: 2rem;
+  transition: background 0.2s ease;
+}
+
+.Item:focus,
+.Item:hover {
+  outline: none;
+  background: var(--zest-color-action-active);
+}
+
+.Item + .Item {
+  margin-block-start: 0.25rem;
+}
+
+.Item.Item-active {
+  background: var(--zest-color-action-primary);
+}

@@ -1,23 +1,34 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef} from 'react';
 import {classes} from '@lemon/css';
 import styles from './TextField.css';
 
 interface Props {
-  initialValue?: string;
+  value?: string;
   multiline?: boolean;
-  onChange(value: string): void;
+  onChange?(value: string): void;
+  onInput?(value: string): void;
 }
 
-export function TextField({initialValue = '', onChange, multiline}: Props) {
-  const [value, setValue] = usePartiallyControlledState(initialValue, onChange);
+export function TextField({
+  value: currentValue = '',
+  onChange,
+  onInput,
+  multiline,
+}: Props) {
+  const [value, setValue] = usePartiallyControlledState(currentValue);
 
   if (multiline) {
     return (
       <div className={styles.TextField}>
+        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
         <textarea
           value={value}
           className={classes(styles.Input, multiline && styles.multiline)}
-          onChange={({currentTarget}) => setValue(currentTarget.value)}
+          onChange={({currentTarget}) => {
+            setValue(currentTarget.value);
+            onInput?.(currentTarget.value);
+          }}
+          onBlur={() => onChange?.(value ?? '')}
         />
       </div>
     );
@@ -25,35 +36,32 @@ export function TextField({initialValue = '', onChange, multiline}: Props) {
 
   return (
     <div className={styles.TextField}>
+      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
       <input
         type="text"
         value={value}
         className={styles.Input}
-        onChange={({currentTarget}) => setValue(currentTarget.value)}
+        onChange={({currentTarget}) => {
+          setValue(currentTarget.value);
+          onInput?.(currentTarget.value);
+        }}
+        onBlur={() => onChange?.(value ?? '')}
       />
     </div>
   );
 }
 
-function usePartiallyControlledState<T>(
-  initialValue: T,
-  onChange?: (value: T) => void,
-) {
-  const [currentValue, setCurrentValue] = useState(initialValue);
-  const lastValue = useRef(initialValue);
+function usePartiallyControlledState(value?: string) {
+  const [localValue, setLocalValue] = useState(value);
+  const lastExplicitValue = useRef(value);
 
-  if (lastValue.current !== initialValue) {
-    lastValue.current = initialValue;
-    setCurrentValue(initialValue);
+  let valueToReturn = localValue;
+
+  if (lastExplicitValue.current !== value) {
+    lastExplicitValue.current = value;
+    setLocalValue(value);
+    valueToReturn = value;
   }
 
-  const setValue = useCallback(
-    (value: T) => {
-      setCurrentValue(value);
-      onChange?.(value);
-    },
-    [onChange],
-  );
-
-  return [currentValue, setValue] as const;
+  return [valueToReturn, setLocalValue] as const;
 }

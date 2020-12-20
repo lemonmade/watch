@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
+  "dependencies": {
+    "@lemon/css": "*"
+  },
   "peerDependencies": {
     "react": ">=16.8.0 <17.0.0"
   }
