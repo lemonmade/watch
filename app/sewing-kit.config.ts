@@ -226,6 +226,8 @@ function webAppAutoServer() {
                       });
 
                       console.log(event);
+                      console.log(asyncAssets);
+                      console.log(html);
 
                       return {
                         statusCode: 200,
