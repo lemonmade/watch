@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'regenerator-runtime/runtime';
+
 import React, {useMemo, memo} from 'react';
 import {
   createGraphQL,
