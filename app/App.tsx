@@ -9,6 +9,7 @@ import {
   AutoHeadingGroup,
   App as QuiltApp,
 } from '@quilted/quilt';
+import {useResponseHeader} from '@quilted/quilt/http';
 import {useTitle, useMeta} from '@quilted/quilt/html';
 
 import '@lemon/zest/core.css';
@@ -35,6 +36,7 @@ export default function App() {
 
   return (
     <QuiltApp graphql={graphql}>
+      <Http />
       <Head />
       <AutoHeadingGroup>
         <Frame
@@ -90,6 +92,12 @@ const Routes = memo(function Routes() {
       [],
     ),
   );
+});
+
+const Http = memo(function Http() {
+  useResponseHeader('X-Lemon', '1');
+
+  return null;
 });
 
 const Head = memo(function Head() {
