@@ -389,6 +389,10 @@ function webAppAutoServer() {
                       const {headers, statusCode} = http.state;
 
                       console.log(event);
+                      console.log(headers, [...headers].reduce((allHeaders, [key, value]) => {
+                        allHeaders[key] = value;
+                        return allHeaders;
+                      }, {}));
 
                       return {
                         statusCode: statusCode || 200,
