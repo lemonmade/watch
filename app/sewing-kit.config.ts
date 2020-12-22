@@ -386,17 +386,12 @@ function webAppAutoServer() {
                         url: new URL(event.rawPath, 'https://' + event.requestContext.domainName)
                       });
 
-                      const {headers, statusCode} = http.state;
+                      const {headers, statusCode = 200} = http.state;
 
                       console.log(event);
-                      console.log(http);
-                      console.log(headers, [...headers].reduce((allHeaders, [key, value]) => {
-                        allHeaders[key] = value;
-                        return allHeaders;
-                      }, {}));
 
                       return {
-                        statusCode: statusCode || 200,
+                        statusCode,
                         body: \`<!DOCTYPE html>\${renderToStaticMarkup(
                           <Html
                             manager={html}
