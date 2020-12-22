@@ -95,6 +95,7 @@ const Routes = memo(function Routes() {
 });
 
 const Http = memo(function Http() {
+  useResponseHeader('Content-Type', 'text/html');
   useResponseHeader('X-Lemon', '1');
 
   return null;

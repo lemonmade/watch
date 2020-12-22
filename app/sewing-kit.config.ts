@@ -382,14 +382,16 @@ function webAppAutoServer() {
                     });
 
                     export async function handler(event) {
-                      const {html, markup, asyncAssets} = await render(<App />, {
+                      const {html, http, markup, asyncAssets} = await render(<App />, {
                         url: new URL(event.rawPath, 'https://' + event.requestContext.domainName)
                       });
+
+                      const {headers, statusCode} = http.state;
 
                       console.log(event);
 
                       return {
-                        statusCode: 200,
+                        statusCode: statusCode || 200,
                         body: \`<!DOCTYPE html>\${renderToStaticMarkup(
                           <Html
                             manager={html}
@@ -400,9 +402,10 @@ function webAppAutoServer() {
                             {markup}
                           </Html>
                         )}\`,
-                        headers: {
-                          'Content-Type': 'text/html',
-                        },
+                        headers: [...headers].reduce((allHeaders, [key, value]) => {
+                          allHeaders[key] = value;
+                          return allHeaders;
+                        }, {}),
                       };
                     }
                   `,
