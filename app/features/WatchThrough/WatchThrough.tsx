@@ -23,8 +23,9 @@ export interface Props {
 }
 
 export function WatchThrough({id}: Props) {
+  const [key, setKey] = useState(1);
   const {data} = useQuery(watchThroughQuery, {
-    variables: {id},
+    variables: {id, key} as any,
   });
 
   if (data?.watchThrough == null) return null;
@@ -48,6 +49,7 @@ export function WatchThrough({id}: Props) {
           watchThroughId={id}
           image={nextEpisode.still?.source ?? undefined}
           overview={nextEpisode.overview ?? undefined}
+          onAction={() => setKey((key) => key + 1)}
         />
       )}
     </Page>
@@ -63,6 +65,7 @@ function NextEpisode({
   watchThroughId,
   episodeNumber,
   seasonNumber,
+  onAction,
 }: {
   id: string;
   title: string;
@@ -72,6 +75,7 @@ function NextEpisode({
   watchThroughId: string;
   episodeNumber: number;
   seasonNumber: number;
+  onAction?(): void;
 }) {
   const [rating, setRating] = useState<null | number>(null);
   const [notes, setNotes] = useState<null | string>(null);
@@ -120,13 +124,17 @@ function NextEpisode({
             if (notes) optionalArguments.notes = notes;
             if (rating) optionalArguments.rating = rating;
 
-            await watchNextEpisode({
-              variables: {
-                ...optionalArguments,
-                episode: id,
-                watchThrough: watchThroughId,
-              },
-            });
+            try {
+              await watchNextEpisode({
+                variables: {
+                  ...optionalArguments,
+                  episode: id,
+                  watchThrough: watchThroughId,
+                },
+              });
+            } finally {
+              onAction?.();
+            }
           }}
         >
           Watch
@@ -137,13 +145,17 @@ function NextEpisode({
 
             if (notes) optionalArguments.notes = notes;
 
-            await skipNextEpisode({
-              variables: {
-                ...optionalArguments,
-                episode: id,
-                watchThrough: watchThroughId,
-              },
-            });
+            try {
+              await skipNextEpisode({
+                variables: {
+                  ...optionalArguments,
+                  episode: id,
+                  watchThrough: watchThroughId,
+                },
+              });
+            } finally {
+              onAction?.();
+            }
           }}
         >
           Skip

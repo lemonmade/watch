@@ -7,7 +7,8 @@
   text-decoration: none;
   color: var(--zest-color-text);
   border-radius: var(--zest-border-radius);
-  padding-inline: var(--zest-spacing-small);
+  padding-inline-start: var(--zest-spacing-small);
+  padding-inline-end: var(--zest-spacing-small);
   min-height: 2rem;
   transition: background 0.2s ease;
 }

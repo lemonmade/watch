@@ -29,6 +29,9 @@ export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     quiltWebApp({
+      // eslint-disable-next-line no-warning-comments
+      // TODO: this option doesn't work with fast refresh because it still configures
+      // react-refresh
       preact: true,
     }),
     brotli(),
