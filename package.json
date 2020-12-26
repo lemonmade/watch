@@ -18,6 +18,15 @@
       "packages/*"
     ]
   },
+  "browserslist": {
+    "default": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 opera versions",
+      "safari >= 13",
+      "ios >= 13"
+    ]
+  },
   "devDependencies": {
     "@aws-cdk/aws-cloudfront": "^1.47.1",
     "@aws-cdk/aws-iam": "^1.47.1",
