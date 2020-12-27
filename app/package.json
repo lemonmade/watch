@@ -5,7 +5,7 @@
   "dependencies": {
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@quilted/quilt": "^0.1.58",
+    "@quilted/quilt": "^0.1.59",
     "@remote-ui/react": "^1.0.9",
     "preact": "^10.4.4",
     "preact-render-to-string": "^5.1.9",

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {upload} from '@quilted/asset-upload-s3';
+import {uploadToS3} from '@quilted/aws';
 
 import {
   CDN_BUCKET,
@@ -8,12 +8,12 @@ import {
   ASSET_UPLOAD_BUCKET,
 } from '../config/deploy/constants';
 
-upload({
+uploadToS3({
   prefix: CDN_PREFIX,
   region: DEFAULT_REGION,
   bucket: CDN_BUCKET,
   buildDirectory: path.resolve('build/app'),
-  ignore: ['quiltAutoServer/**/*'],
+  ignore: ['server/**/*'],
   manifest: {
     bucket: ASSET_UPLOAD_BUCKET,
   },

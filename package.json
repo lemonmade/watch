@@ -34,19 +34,15 @@
     "@aws-cdk/aws-s3": "^1.47.1",
     "@aws-cdk/core": "^1.47.1",
     "@babel/node": "^7.10.3",
-    "@quilted/asset-upload-s3": "^0.1.5",
-    "@quilted/sewing-kit-plugins": "^0.1.27",
+    "@quilted/aws": "^0.0.2",
+    "@quilted/sewing-kit-plugins": "^0.1.32",
     "@sewing-kit/cli": "^0.1.6",
     "@sewing-kit/eslint-plugin": "^0.0.14",
     "@types/common-tags": "^1.8.0",
-    "@types/isomorphic-form-data": "^2.0.0",
     "aws-cdk": "^1.47.1",
     "aws-sdk": "^2.708.0",
     "common-tags": "^1.8.0",
     "compression-webpack-plugin": "^4.0.0",
-    "graphql-config": "^3.0.1",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.3.0",
     "postcss-preset-env": "^6.7.0",
     "raw-loader": "^4.0.1",
     "sewing-kit-plugin-knex": "^0.1.0",
@@ -55,9 +51,5 @@
   },
   "resolutions": {
     "@types/vfile-message": "1.0.1"
-  },
-  "dependencies": {
-    "koa-mount": "^4.0.0",
-    "koa-static": "^5.0.0"
   }
 }

@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
-    "@types/node-fetch": "^2.5.7"
+    "@types/node-fetch": "^2.5.7",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.3.0"
   }
 }
