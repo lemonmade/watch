@@ -12,8 +12,7 @@ uploadToS3({
   prefix: CDN_PREFIX,
   region: DEFAULT_REGION,
   bucket: CDN_BUCKET,
-  buildDirectory: path.resolve('build/app'),
-  ignore: ['server/**/*'],
+  buildDirectory: path.resolve('build/app/assets'),
   manifest: {
     bucket: ASSET_UPLOAD_BUCKET,
   },
