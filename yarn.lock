@@ -2125,13 +2125,13 @@
     "@sewing-kit/plugin-javascript" "^0.2.0"
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/aws@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.0.2.tgz#c838248e062cdadc59de3eec6711a93b2784940b"
-  integrity sha512-u+rdOQD9+ZV4nJWzYLwy7rty2u6/zxS07JYJAcsi1lAed/ZxS1WYcQUg38Eor81JRnVY2e+2RMwaIt2HOZ3SzA==
+"@quilted/aws@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.0.4.tgz#a1f95d02c0da9d416e5b96fe6cef607ea5b3ce6d"
+  integrity sha512-oG6a2davU64RJffd/ZMITyQGvwD8c8O9UWriq7MD9oxKs9w0xKlaIvZKRD60dBoVC6ihwX84Jy5rqVbOZkb+9A==
   dependencies:
     "@quilted/asset-upload-s3" "^0.1.8"
-    "@quilted/sewing-kit-plugins" "^0.1.32"
+    "@quilted/sewing-kit-plugins" "^0.1.34"
     "@sewing-kit/plugins" "^0.1.6"
 
 "@quilted/graphql@^0.1.27":
@@ -2164,10 +2164,10 @@
   resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.0.2.tgz#ffeda0bef2f0c8c856efc75dfa1def30df487cf5"
   integrity sha512-B/WWGlnBWzCjePHxI/a9S8nqFTLSOZcFwmOz+5M61YIiH4kCfl0u1FQSMCLFiyLIT50zPJUEAqiu0KxBoQyfjQ==
 
-"@quilted/polyfills@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.3.tgz#0549a2655ea2385d650b39316320e3cd49570d33"
-  integrity sha512-J5oqKXa0XVchDtEsvoHS5fyVZFI8k8y26aVTkVyiGMalnH8jGi6QcDIjyAWLGk7r9ymEsozos1o7FmDdtAuzig==
+"@quilted/polyfills@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.4.tgz#e88315036117b988b78293a1b0bce7d639c8c422"
+  integrity sha512-to4VjzhaJTerU3ZdARjHhX4Mu00BeGzNut8vEVO72mh4IZWZRrtLdbkqAg+1ZWoxTgnAk4qGDM2OA1Qpcdf8nw==
   dependencies:
     "@types/caniuse-api" "^3.0.0"
     caniuse-api "^3.0.0"
@@ -2176,14 +2176,14 @@
     regenerator-runtime "^0.13.0"
     whatwg-fetch "^3.5.0"
 
-"@quilted/quilt@^0.1.59":
-  version "0.1.60"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.60.tgz#7bc26881342489d91ef393a8a7e740561159e5c1"
-  integrity sha512-j1bOTngWQAryKX50h3DlMktVl5OK4CVMPf++epwAaMfASl8xQ24EhM2/dh1NEA9yF4h1UAMM1/VDuwnWo1szAw==
+"@quilted/quilt@^0.1.61":
+  version "0.1.61"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.61.tgz#e2ca790c3070cb2314c45b848f4ea1b2f77e4cc0"
+  integrity sha512-wvq3VuKa4ve1gMIiaWC050chZA++xqJszvCalkj63v6w07QUobAR1RIq5PQ/vEq6pDn4CGXoKLV6ZRHVw7Lqbw==
   dependencies:
     "@quilted/async" "^0.1.11"
     "@quilted/graphql" "^0.1.27"
-    "@quilted/polyfills" "^0.0.3"
+    "@quilted/polyfills" "^0.0.4"
     "@quilted/react-async" "^0.1.16"
     "@quilted/react-auto-headings" "^0.1.0"
     "@quilted/react-graphql" "^0.1.30"
@@ -2281,12 +2281,12 @@
     "@remote-ui/web-workers" "^1.2.6"
     "@types/react" ">=16.9.56"
 
-"@quilted/sewing-kit-plugins@^0.1.32":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.33.tgz#764e238bef7c5f1a775761e6dab63c0d43a5dc7b"
-  integrity sha512-HWcVZ8ACniToenJpl7G4lIQKtKA0B0kPgB/qnSom39Xk3dAwErmC/kxqYJEXCJvTls/G6czLDCi3EVD2PfdFYA==
+"@quilted/sewing-kit-plugins@^0.1.34":
+  version "0.1.34"
+  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.34.tgz#ecfca9778dde0c403e880d6afb32368572f4c832"
+  integrity sha512-xMeaIIv3Zu+FOwrL7WhdaP7oRs3QQlgtZG78aKaVZBbzinYOCEL7wuYkDNKDcgAeryZQIHY6We7tLdDoKW+e6A==
   dependencies:
-    "@quilted/polyfills" "^0.0.3"
+    "@quilted/polyfills" "^0.0.4"
     "@sewing-kit/plugin-css" "^0.1.21"
     "@sewing-kit/plugin-eslint" "^0.1.6"
     "@sewing-kit/plugin-graphql" "^0.1.24"
@@ -3212,18 +3212,10 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react@>=16.8.0 <17.0.0", "@types/react@^16", "@types/react@^16.9.34":
+"@types/react@>=16.8.0 <17.0.0", "@types/react@>=16.9.56", "@types/react@^16", "@types/react@^16.9.34":
   version "16.14.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.2.tgz#85dcc0947d0645349923c04ccef6018a1ab7538c"
   integrity sha512-BzzcAlyDxXl2nANlabtT4thtvbbnhee8hMmH/CcJrISDBVcJS1iOsP1f0OAgSdGE0MsY9tqcrb9YoZcOFv9dbQ==
-  dependencies:
-    "@types/prop-types" "*"
-    csstype "^3.0.2"
-
-"@types/react@>=16.9.56":
-  version "17.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
-  integrity sha512-aj/L7RIMsRlWML3YB6KZiXB3fV2t41+5RBGYF8z+tAKU43Px8C3cYUZsDvf1/+Bm4FK21QWBrDutu8ZJ/70qOw==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
