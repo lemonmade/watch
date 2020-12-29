@@ -23,8 +23,9 @@
       "last 2 chrome versions",
       "last 2 firefox versions",
       "last 2 opera versions",
-      "safari >= 13",
-      "ios >= 13"
+      "last 2 edge versions",
+      "safari >= 11",
+      "ios >= 11"
     ]
   },
   "devDependencies": {
@@ -34,7 +35,7 @@
     "@aws-cdk/aws-s3": "^1.47.1",
     "@aws-cdk/core": "^1.47.1",
     "@babel/node": "^7.10.3",
-    "@quilted/aws": "^0.0.6",
+    "@quilted/aws": "^0.1.1",
     "@quilted/sewing-kit-plugins": "^0.1.36",
     "@sewing-kit/cli": "^0.1.6",
     "@sewing-kit/eslint-plugin": "^0.0.14",
@@ -48,7 +49,7 @@
     "raw-loader": "^4.0.1",
     "sewing-kit-plugin-knex": "^0.1.0",
     "sewing-kit-plugin-webpack-virtual-modules": "^0.1.1",
-    "webpack-bundle-analyzer": "^3.8.0"
+    "webpack-bundle-analyzer": "^4.3.0"
   },
   "resolutions": {
     "@types/vfile-message": "1.0.1"
