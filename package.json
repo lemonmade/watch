@@ -26,6 +26,17 @@
       "last 2 edge versions",
       "safari >= 11",
       "ios >= 11"
+    ],
+    "evergreen": [
+      "last 1 chrome versions",
+      "last 1 firefox versions",
+      "last 1 opera versions",
+      "last 1 edge versions",
+      "safari >= 13",
+      "ios >= 13"
+    ],
+    "latest-chrome": [
+      "last 1 chrome versions"
     ]
   },
   "devDependencies": {

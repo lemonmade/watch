@@ -2065,12 +2065,12 @@
     "@sewing-kit/plugins" "^0.1.6"
 
 "@quilted/aws@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.1.1.tgz#be1d3ec0c936f063468c2ef67f2fa04ba8c43815"
-  integrity sha512-CfYcM0b1iTWVoJ6RQYhXYJ4QnOZ66pc/MquIZntoaZ02MhMl+V+XgGRAU5EanU9aTpeJTsu7hMm0HOvYuToQsg==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.1.2.tgz#88bbc3a7399265130e6fae25d7c8b8baa5f75f7e"
+  integrity sha512-k0jyKUOwX7M3OWmg3yOUzCRSooYH2NCEt/5snzHFEs7KS3wpVrZOeV8yBS8choZPZdxIs9kd0/6yebGOZk9Nlw==
   dependencies:
     "@quilted/asset-upload-s3" "^0.1.8"
-    "@quilted/sewing-kit-plugins" "^0.1.37"
+    "@quilted/sewing-kit-plugins" "^0.1.38"
     "@sewing-kit/plugins" "^0.1.6"
 
 "@quilted/graphql@^0.1.27":
@@ -2103,10 +2103,10 @@
   resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.0.2.tgz#ffeda0bef2f0c8c856efc75dfa1def30df487cf5"
   integrity sha512-B/WWGlnBWzCjePHxI/a9S8nqFTLSOZcFwmOz+5M61YIiH4kCfl0u1FQSMCLFiyLIT50zPJUEAqiu0KxBoQyfjQ==
 
-"@quilted/polyfills@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.4.tgz#e88315036117b988b78293a1b0bce7d639c8c422"
-  integrity sha512-to4VjzhaJTerU3ZdARjHhX4Mu00BeGzNut8vEVO72mh4IZWZRrtLdbkqAg+1ZWoxTgnAk4qGDM2OA1Qpcdf8nw==
+"@quilted/polyfills@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.5.tgz#0fb10310841e58e5bbc603ea9482b8080b6ed549"
+  integrity sha512-x8oTxVy5TqlC6UQXchKiHj71hwd1GycLNBMOZ078cGfEnLXpijOgL/fxGmSEW3dXsYorrT9swGlJPW9YH9LUVQ==
   dependencies:
     "@types/caniuse-api" "^3.0.0"
     caniuse-api "^3.0.0"
@@ -2116,13 +2116,13 @@
     whatwg-fetch "^3.5.0"
 
 "@quilted/quilt@^0.1.63":
-  version "0.1.64"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.64.tgz#c8c7cdfbc403d1bd2270ae5dc18fa2ee3dc33e17"
-  integrity sha512-a0fGE2rHrYnaxQs7qiDMGfzji48h8ssu8cZ0orWdoa73T9JO6C0NxAJ6e4FfTKnXY/GGODOBGTOBIzFPrmaCbg==
+  version "0.1.65"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.1.65.tgz#cf39c98dccd071e993a46c8c095ba50905b14c40"
+  integrity sha512-92wywS25rJqnxeZEFGvpMqJ/PAktjecVEt1aaupcg9xa2g5L8pw45voF/wel9T+FWsK4DWQG8AvD0i9iDtgzmQ==
   dependencies:
     "@quilted/async" "^0.1.14"
     "@quilted/graphql" "^0.1.27"
-    "@quilted/polyfills" "^0.0.4"
+    "@quilted/polyfills" "^0.0.5"
     "@quilted/react-async" "^0.1.19"
     "@quilted/react-auto-headings" "^0.1.0"
     "@quilted/react-graphql" "^0.1.33"
@@ -2220,12 +2220,12 @@
     "@remote-ui/web-workers" "^1.2.6"
     "@types/react" ">=16.9.56"
 
-"@quilted/sewing-kit-plugins@^0.1.36", "@quilted/sewing-kit-plugins@^0.1.37":
-  version "0.1.37"
-  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.37.tgz#f428640967bdcfa3086dfca86232906b3c219a06"
-  integrity sha512-nnYmoFrw2OyB166dWeViiSULZ2eObRvNN+b1BywK7QHpCpVi5rYhIfPtVSYojCWGSyqUE6cepzrmmhkjOMg8yA==
+"@quilted/sewing-kit-plugins@^0.1.36", "@quilted/sewing-kit-plugins@^0.1.38":
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.1.38.tgz#b89a39961705e92db9eb705e995c4bdac5efdb7f"
+  integrity sha512-WTEJNqh42bEb4Jd6fH5ospnnGdIdApDLR9GbJD+CIjHsO7s0MgyVMkobAZKgvVi0tC9nQulcMKQ5f0N+sataOg==
   dependencies:
-    "@quilted/polyfills" "^0.0.4"
+    "@quilted/polyfills" "^0.0.5"
     "@sewing-kit/plugin-css" "^0.1.21"
     "@sewing-kit/plugin-eslint" "^0.1.6"
     "@sewing-kit/plugin-graphql" "^0.1.24"

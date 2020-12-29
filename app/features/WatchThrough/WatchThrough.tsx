@@ -22,7 +22,7 @@ export interface Props {
   id: string;
 }
 
-export function WatchThrough({id}: Props) {
+export default function WatchThrough({id}: Props) {
   const [key, setKey] = useState(1);
   const {data} = useQuery(watchThroughQuery, {
     variables: {id, key} as any,

@@ -1,8 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import '@quilted/polyfills/base';
-import '@quilted/polyfills/fetch';
-/* eslint-enable import/no-extraneous-dependencies */
-
 import React, {useMemo, memo} from 'react';
 import {
   createGraphQL,

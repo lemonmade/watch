@@ -7,6 +7,7 @@ import {
 } from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {aws} from '@quilted/aws/sewing-kit';
+import type {BuildWebAppTargetOptions} from '@sewing-kit/hooks';
 import type {} from '@sewing-kit/plugin-webpack';
 
 import {CDN_ROOT} from '../config/deploy/constants';
@@ -19,9 +20,11 @@ export default createWebApp((app) => {
       // TODO: this option doesn't work with fast refresh because it still configures
       // react-refresh
       preact: true,
-      autoServer: true,
+      autoServer: {port: 3003},
       assetServer: {port: 3002},
       cdn: CDN_ROOT,
+      features: ['base', 'fetch'],
+      browserGroups: ['evergreen', 'latest-chrome'],
     }),
     aws(),
     brotli(),
@@ -65,6 +68,9 @@ function bundleAnalyzer() {
                     analyzerMode: 'static',
                     generateStatsFile: true,
                     openAnalyzer: false,
+                    reportFilename: `report.${
+                      idFromTargetOptions(target.options) || 'default'
+                    }.html`,
                   }),
                 ];
           });
@@ -102,4 +108,30 @@ function brotli() {
       });
     });
   });
+}
+
+export function idFromTargetOptions(options: BuildWebAppTargetOptions) {
+  return (
+    Object.keys(options)
+      .sort()
+      .map((key) => {
+        const value = (options as any)[key];
+
+        switch (key as keyof typeof options) {
+          case 'quiltAutoServer':
+            return undefined;
+          case 'browsers':
+            return value;
+          default: {
+            if (typeof value === 'boolean') {
+              return value ? key : `no-${key}`;
+            }
+
+            return value;
+          }
+        }
+      })
+      .filter(Boolean)
+      .join('.') || 'default'
+  );
 }
