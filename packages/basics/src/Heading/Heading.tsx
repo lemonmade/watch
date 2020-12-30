@@ -1,4 +1,5 @@
 import React, {ReactNode} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {AutoHeading, AutoHeadingGroup} from '@quilted/quilt';
 import styles from './Heading.css';
 

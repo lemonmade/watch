@@ -79,6 +79,7 @@ const Routes = memo(function Routes() {
           children: [
             {
               match: /[\w-]+/,
+              renderPrefetch: () => <WatchThrough.Prefetch />,
               render: ({matched}) => (
                 <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
               ),
