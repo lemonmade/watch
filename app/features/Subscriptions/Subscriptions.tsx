@@ -1,7 +1,8 @@
 import React from 'react';
 import {useQuery} from '@quilted/quilt';
+import {MediaGrid, Poster, Page} from '@lemon/zest';
 
-import {Link, MediaGrid, Poster, Page} from 'components';
+import {Link} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';

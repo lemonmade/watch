@@ -1,16 +1,16 @@
 import React from 'react';
 import {useRouter, useQuery, useMutation} from '@quilted/quilt';
-
 import {
-  Text,
-  Link,
+  View,
   Button,
   BlockStack,
   InlineStack,
-  View,
   Heading,
-} from '../../components';
-import {parseGid} from '../../utilities/graphql';
+  Text,
+} from '@lemon/zest';
+
+import {Link} from 'components';
+import {parseGid} from 'utilities/graphql';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';

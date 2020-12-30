@@ -12,8 +12,20 @@
     "outDir": "build/project/ts"
   },
   "references": [
-    {"path": "./packages/zest"},
-    {"path": "./functions/api"},
-    {"path": "./app"}
+    {
+      "path": "./packages/basics"
+    },
+    {
+      "path": "./packages/css"
+    },
+    {
+      "path": "./packages/zest"
+    },
+    {
+      "path": "./functions/api"
+    },
+    {
+      "path": "./app"
+    }
   ]
 }

@@ -2,10 +2,23 @@
   "files": [],
   "include": [],
   "references": [
-    {"path": "./tsconfig.project.json"},
-    {"path": "./app"},
-    {"path": "./functions/api"},
-    {"path": "./packages/css"},
-    {"path": "./packages/zest"}
+    {
+      "path": "./tsconfig.project.json"
+    },
+    {
+      "path": "./app"
+    },
+    {
+      "path": "./functions/api"
+    },
+    {
+      "path": "./packages/basics"
+    },
+    {
+      "path": "./packages/css"
+    },
+    {
+      "path": "./packages/zest"
+    }
   ]
 }

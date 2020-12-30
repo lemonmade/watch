@@ -1,4 +1,4 @@
-.Stack {
+.BlockStack {
   --Stack-spacing: var(--zest-spacing);
 
   display: grid;
@@ -6,11 +6,6 @@
   justify-content: stretch;
   align-items: center;
   align-content: center;
-}
-
-.inline {
-  justify-content: start;
-  grid-auto-flow: column;
 }
 
 .spacingNone {
@@ -23,7 +18,4 @@
 
 .spacingLarge {
   --Stack-spacing: var(--zest-spacing-small);
-}
-
-.Item {
 }

@@ -3,7 +3,7 @@
 import React, {PropsWithChildren, ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {HiddenForAccessibility} from '../HiddenForAccessibility';
+import {View} from '../View';
 import styles from './Image.css';
 
 type ViewportSize = 'small' | 'medium' | 'large';
@@ -120,7 +120,7 @@ type MaybeProps<T = {}> = PropsWithChildren<T & {condition: boolean}>;
 
 function MaybeHiddenForA11y({children, condition}: MaybeProps) {
   return condition ? (
-    <HiddenForAccessibility>{children}</HiddenForAccessibility>
+    <View accessibility="hidden">{children}</View>
   ) : (
     <>{children}</>
   );

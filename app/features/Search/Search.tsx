@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {Link, useQuery} from '@quilted/quilt';
 
-import {Page, BlockStack, TextField} from 'components';
+import {Page, BlockStack, TextField} from '@lemon/zest';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 

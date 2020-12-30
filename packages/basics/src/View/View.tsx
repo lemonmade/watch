@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, CSSProperties} from 'react';
+import React, {PropsWithChildren, CSSProperties, ComponentProps} from 'react';
 import {classes, variation} from '@lemon/css';
 import styles from './View.css';
 
@@ -6,6 +6,7 @@ interface Props {
   padding?: number;
   background?: string;
   cornerRadius?: number | 'concentric';
+  accessibility?: 'hidden';
 }
 
 export function View({
@@ -13,10 +14,13 @@ export function View({
   cornerRadius,
   padding,
   background,
+  accessibility,
 }: PropsWithChildren<Props>) {
   const style: CSSProperties = {
     backgroundColor: background,
   };
+
+  const moreProps: ComponentProps<'div'> = {};
 
   // concentric border radius is handled with a class
   if (typeof cornerRadius === 'number') {
@@ -31,6 +35,10 @@ export function View({
     style.padding = relativePadding;
   }
 
+  if (accessibility === 'hidden') {
+    moreProps['aria-hidden'] = true;
+  }
+
   return (
     <div
       style={style}
@@ -39,6 +47,7 @@ export function View({
         cornerRadius === 'concentric' &&
           styles[variation('cornerRadius', cornerRadius)],
       )}
+      {...moreProps}
     >
       {children}
     </div>

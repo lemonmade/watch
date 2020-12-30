@@ -1,7 +1,7 @@
 import React, {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@quilted/quilt';
 
-import {Page, MediaGrid} from 'components';
+import {Page, MediaGrid} from '@lemon/zest';
 
 import {parseGid} from 'utilities/graphql';
 

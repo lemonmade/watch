@@ -1,7 +1,8 @@
 import React from 'react';
 import {classes} from '@lemon/css';
+import {Poster} from '@lemon/zest';
 
-import {Link, Poster} from 'components';
+import {Link} from 'components';
 
 import styles from './WatchThroughItem.css';
 

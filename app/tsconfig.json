@@ -5,7 +5,23 @@
     "rootDir": ".",
     "outDir": "build/ts"
   },
-  "include": ["**/*", "../config/typescript/globals.d.ts"],
-  "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../packages/css"}, {"path": "../packages/zest"}]
+  "include": [
+    "**/*",
+    "../config/typescript/globals.d.ts"
+  ],
+  "exclude": [
+    "sewing-kit.config.ts",
+    "build"
+  ],
+  "references": [
+    {
+      "path": "../packages/basics"
+    },
+    {
+      "path": "../packages/css"
+    },
+    {
+      "path": "../packages/zest"
+    }
+  ]
 }

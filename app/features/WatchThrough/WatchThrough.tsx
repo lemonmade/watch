@@ -12,7 +12,7 @@ import {
   Rating,
   Image,
   DateField,
-} from 'components';
+} from '@lemon/zest';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';

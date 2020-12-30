@@ -8,11 +8,11 @@ import {
 } from '@quilted/quilt';
 import {useResponseHeader} from '@quilted/quilt/http';
 import {useTitle, useMeta} from '@quilted/quilt/html';
+import {Frame, NavigationList, NavigationListItem} from '@lemon/zest';
 
 import '@lemon/zest/core.css';
 import './App.css';
 
-import {Frame, NavigationList, NavigationListItem} from './components';
 import {
   Watching,
   Series,

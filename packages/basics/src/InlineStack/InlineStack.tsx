@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import styles from './Stack.css';
+import styles from './InlineStack.css';
 
 interface Props {
   children?: ReactNode;
@@ -26,16 +26,11 @@ export function InlineStack({children, spacing}: Props) {
   return (
     <div
       className={classes(
-        styles.Stack,
-        styles.inline,
+        styles.InlineStack,
         spacing && styles[variation('spacing', spacing)],
       )}
     >
       {children}
     </div>
   );
-}
-
-export function StackItem({children}: {children?: ReactNode}) {
-  return <div className={styles.Item}>{children}</div>;
 }
