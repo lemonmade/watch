@@ -6,6 +6,7 @@ module.exports = {
   ],
   rules: {
     'react/jsx-curly-newline': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
   ignorePatterns: ['graphql/types/*', '**/*.graphql.d.ts'],
   overrides: [

@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 import {Heading, HeadingGroup} from '@lemon/basics';
 import styles from './Page.css';
 

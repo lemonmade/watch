@@ -1,4 +1,4 @@
-import React, {useState, RefObject, useEffect, useRef} from 'react';
+import {useState, RefObject, useEffect, useRef} from 'react';
 import {classes} from '@lemon/css';
 import styles from './ContextualMenu.css';
 

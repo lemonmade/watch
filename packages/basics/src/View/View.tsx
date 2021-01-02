@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, CSSProperties, ComponentProps} from 'react';
+import {PropsWithChildren, CSSProperties, ComponentProps} from 'react';
 import {classes, variation} from '@lemon/css';
 import styles from './View.css';
 

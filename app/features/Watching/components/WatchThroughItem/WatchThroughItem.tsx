@@ -1,4 +1,3 @@
-import React from 'react';
 import {classes} from '@lemon/css';
 import {Poster} from '@lemon/zest';
 

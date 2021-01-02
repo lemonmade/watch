@@ -6,7 +6,6 @@
 // TODO: should not be required, or should be centralized
 import '@quilted/quilt/matchers';
 
-import React from 'react';
 import {Link as RouterLink} from '@quilted/quilt';
 import {mount} from '@quilted/quilt/testing';
 import {Link} from './Link';

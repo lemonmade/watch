@@ -1,4 +1,3 @@
-import React from 'react';
 import {useQuery} from '@quilted/quilt';
 import {MediaGrid, Poster, Page} from '@lemon/zest';
 

@@ -46,8 +46,8 @@
     "@aws-cdk/aws-s3": "^1.47.1",
     "@aws-cdk/core": "^1.47.1",
     "@babel/node": "^7.10.3",
-    "@quilted/aws": "^0.1.1",
-    "@quilted/sewing-kit-plugins": "^0.1.36",
+    "@quilted/aws": "^0.2.0",
+    "@quilted/sewing-kit-plugins": "^0.2.0",
     "@sewing-kit/cli": "^0.1.6",
     "@sewing-kit/eslint-plugin": "^0.0.14",
     "@types/common-tags": "^1.8.0",
@@ -63,6 +63,10 @@
     "webpack-bundle-analyzer": "^4.3.0"
   },
   "resolutions": {
-    "@types/vfile-message": "1.0.1"
+    "@types/vfile-message": "1.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
+    "@typescript-eslint/experimental-utils": "^4.0.0",
+    "@typescript-eslint/parser": "^4.0.0",
+    "typescript": "^4.1.0"
   }
 }

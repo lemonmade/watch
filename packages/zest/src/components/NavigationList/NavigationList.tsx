@@ -1,4 +1,4 @@
-import React, {ReactNode, ComponentProps} from 'react';
+import {ReactNode, ComponentProps} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Link, useMatch} from '@quilted/quilt';
 import {classes} from '@lemon/css';

@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import {ReactNode} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import styles from './InlineStack.css';

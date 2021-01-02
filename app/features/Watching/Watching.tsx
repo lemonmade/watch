@@ -1,4 +1,4 @@
-import React, {useMemo, ComponentProps} from 'react';
+import {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@quilted/quilt';
 
 import {Page, MediaGrid} from '@lemon/zest';

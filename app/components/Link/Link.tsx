@@ -1,4 +1,4 @@
-import React, {ComponentProps} from 'react';
+import {ComponentProps} from 'react';
 import {Link as RouterLink} from '@quilted/quilt';
 
 export function Link({to, ...rest}: ComponentProps<typeof RouterLink>) {

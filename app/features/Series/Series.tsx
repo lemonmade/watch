@@ -1,4 +1,3 @@
-import React from 'react';
 import {useRouter, useQuery, useMutation} from '@quilted/quilt';
 import {
   View,

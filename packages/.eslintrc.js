@@ -4,6 +4,9 @@ module.exports = {
     'plugin:@sewing-kit/prettier',
     'plugin:@sewing-kit/react',
   ],
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+  },
   overrides: [
     {
       files: ['**/sewing-kit.config.ts', 'config/sewing-kit/**/*'],

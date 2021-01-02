@@ -1,6 +1,6 @@
 /* eslint react/jsx-no-useless-fragment: off */
 
-import React, {PropsWithChildren, ImgHTMLAttributes} from 'react';
+import {PropsWithChildren, ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {View} from '../View';

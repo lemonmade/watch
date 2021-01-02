@@ -1,4 +1,3 @@
-import React from 'react';
 import {Page} from '@lemon/zest';
 
 export function Settings() {
