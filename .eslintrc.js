@@ -11,6 +11,9 @@ module.exports = {
     'import/external-module-folders': ['node_modules', 'packages'],
   },
   rules: {
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
+    '@typescript-eslint/class-name-casing': 'off',
     'jsx-a11y/label-has-for': 'off',
     'jsx-a11y/control-has-associated-label': 'off',
     'no-nested-ternary': 'off',

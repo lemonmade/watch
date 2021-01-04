@@ -33,8 +33,19 @@ export default createWebApp((app) => {
 });
 
 function randomBits() {
-  return createProjectPlugin<WebApp>('Watch.App.Etcetera', ({tasks: {dev}}) => {
-    dev.hook(({hooks}) => {
+  return createProjectPlugin<WebApp>('Watch.App.Etcetera', ({tasks}) => {
+    // tasks.build.hook(({hooks}) => {
+    //   hooks.target.hook(({hooks}) => {
+    //     hooks.configure.hook(({webpackConfig}) => {
+    //       webpackConfig?.hook((value) => {
+    //         console.log(value);
+    //         return value;
+    //       });
+    //     });
+    //   });
+    // });
+
+    tasks.dev.hook(({hooks}) => {
       hooks.configure.hook((configuration) => {
         // Shouldn't need this...
         configuration.webpackPublicPath?.hook(
