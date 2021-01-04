@@ -116,7 +116,9 @@ function normalizeLoading(
   }
 }
 
-type MaybeProps<T = {}> = PropsWithChildren<T & {condition: boolean}>;
+type MaybeProps<T = Record<string, unknown>> = PropsWithChildren<
+  T & {condition: boolean}
+>;
 
 function MaybeHiddenForA11y({children, condition}: MaybeProps) {
   return condition ? (

@@ -33,6 +33,7 @@ export function Watching(_: Props) {
       available.sort(sortWatchThroughs).map(watchThroughToProps),
       unavailable.sort(sortWatchThroughs).map(watchThroughToProps),
     ] as const;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.watchThroughs]);
 
   return (

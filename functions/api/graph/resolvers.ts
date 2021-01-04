@@ -738,48 +738,35 @@ interface TmdbSeries {
   name: string;
   status: string;
   seasons: TmdbSeriesSeason[];
-  // eslint-disable-next-line @typescript-eslint/camelcase
   air_date?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   first_air_date?: string;
   overview?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   poster_path?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   number_of_seasons?: number;
 }
 
 interface TmdbExternalIds {
-  // eslint-disable-next-line @typescript-eslint/camelcase
   imdb_id: string;
 }
 
 interface TmdbSeriesSeason {
-  // eslint-disable-next-line @typescript-eslint/camelcase
   season_number: number;
 }
 
 interface TmdbSeason {
-  // eslint-disable-next-line @typescript-eslint/camelcase
   season_number: number;
   episodes: TmdbEpisode[];
-  // eslint-disable-next-line @typescript-eslint/camelcase
   air_date?: string;
   overview?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   poster_path?: string;
 }
 
 interface TmdbEpisode {
   name: string;
   overview?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   air_date?: string;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   episode_number: number;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   season_number: number;
-  // eslint-disable-next-line @typescript-eslint/camelcase
   still_path?: string;
 }
 
