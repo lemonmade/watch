@@ -34,26 +34,6 @@ export default createWebApp((app) => {
 
 function randomBits() {
   return createProjectPlugin<WebApp>('Watch.App.Etcetera', ({tasks}) => {
-    tasks.build.hook(({hooks}) => {
-      hooks.target.hook(({hooks}) => {
-        hooks.configure.hook(({webpackAliases}) => {
-          webpackAliases?.hook((aliases) => {
-            return {...aliases, 'react-dom/server$': 'preact/compat/server'};
-          });
-
-          // webpackConfig?.hook((value) => {
-          //   return {
-          //     ...value,
-          //     optimization: {
-          //       ...value.optimization,
-          //       minimize: false,
-          //     },
-          //   };
-          // });
-        });
-      });
-    });
-
     tasks.dev.hook(({hooks}) => {
       hooks.configure.hook((configuration) => {
         // Shouldn't need this...
