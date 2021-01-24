@@ -66,11 +66,15 @@ export const Query: Resolver = {
   watchThrough(_, {id}: {id: string}, {watchThroughLoader}) {
     return watchThroughLoader.load(fromGid(id).id);
   },
-  async watchThroughs(_, __, {db, watchThroughLoader}) {
+  async watchThroughs(
+    _,
+    {state = 'IN_PROGRESS'}: {state?: string},
+    {db, watchThroughLoader},
+  ) {
     const watchThroughs = await db
       .select('id')
       .from(Table.WatchThroughs)
-      .whereNot({status: 'FINISHED'})
+      .where({state})
       .limit(50);
 
     return Promise.all(
@@ -120,21 +124,15 @@ export const Mutation: Resolver = {
       .returning<string>('id');
 
     if (watchThroughId && watchId) {
-      await Promise.all([
-        db
-          .update({watchId})
-          .from(Table.WatchThroughEpisodes)
-          .where({watchThroughId, episodeId}),
-        db
-          .update({updatedAt: finishedAt || startedAt || 'now()'})
-          .from(Table.WatchThroughs)
-          .where({id: watchThroughId}),
-      ]);
-
       await db
         .update({watchId})
         .from(Table.WatchThroughEpisodes)
         .where({watchThroughId, episodeId});
+
+      await updateWatchThrough(watchThroughId, {
+        db,
+        timestamp: startedAt ?? finishedAt,
+      });
     }
 
     const [watch, episode, watchThrough] = await Promise.all([
@@ -171,16 +169,15 @@ export const Mutation: Resolver = {
       .returning<string>('id');
 
     if (watchThroughId && skipId) {
-      await Promise.all([
-        db
-          .update({skipId})
-          .from(Table.WatchThroughEpisodes)
-          .where({watchThroughId, episodeId}),
-        db
-          .update({updatedAt: at || 'now()'})
-          .from(Table.WatchThroughs)
-          .where({id: watchThroughId}),
-      ]);
+      await db
+        .update({skipId})
+        .from(Table.WatchThroughEpisodes)
+        .where({watchThroughId, episodeId});
+
+      await updateWatchThrough(watchThroughId, {
+        db,
+        timestamp: at,
+      });
     }
 
     const [skip, episode, watchThrough] = await Promise.all([
@@ -566,24 +563,8 @@ export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
 
     return episodes;
   },
-  async unfinishedEpisodeCount({id: watchThroughId}, _, {db}) {
-    const [{count}] = await db
-      .from(Table.WatchThroughEpisodes)
-      .join('Episodes', 'Episodes.id', '=', 'WatchThroughEpisodes.episodeId')
-      .where((clause) => {
-        clause
-          .where({watchThroughId})
-          .whereNull('WatchThroughEpisodes.watchId')
-          .whereNull('WatchThroughEpisodes.skipId');
-      })
-      .where(
-        'Episodes.firstAired',
-        '<',
-        db.raw(`CURRENT_DATE + interval '1 day'`),
-      )
-      .count({count: 'WatchThroughEpisodes.id'});
-
-    return parseInt(String(count), 10);
+  unfinishedEpisodeCount({id: watchThroughId}, _, {db}) {
+    return unfinishedEpisodeCount(watchThroughId, {db});
   },
   async nextEpisode({id}, _, {db, episodeLoader}) {
     const [episodeId] = (await db
@@ -768,6 +749,97 @@ interface TmdbEpisode {
   episode_number: number;
   season_number: number;
   still_path?: string;
+}
+
+async function updateWatchThrough(
+  watchThroughId: string,
+  {db, timestamp = 'now()'}: Pick<Context, 'db'> & {timestamp?: string},
+) {
+  await db
+    .update({updatedAt: timestamp})
+    .from(Table.WatchThroughs)
+    .where({id: watchThroughId});
+
+  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
+    db,
+  });
+
+  if (unfinishedEpisodes !== 0) return;
+
+  const [watched] = await db
+    .from(Table.WatchThroughEpisodes)
+    .pluck<string>('episodeId')
+    .where({watchThroughId})
+    .andWhere((clause) => clause.whereNotNull('watchId'))
+    .orderBy('index', 'desc')
+    .limit(1);
+
+  const [season] = await db
+    .from(Table.Episodes)
+    .select({id: 'Seasons.id', status: 'Seasons.status'})
+    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
+    .whereIn('Episodes.id', [watched]);
+
+  if (season?.status !== 'ENDED') return;
+
+  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {db}))
+    ? {status: 'FINISHED', finishedAt: timestamp}
+    : {};
+
+  await db
+    .from(Table.WatchThroughs)
+    .where({id: watchThroughId})
+    .update({...finishedUpdate, updatedAt: timestamp});
+}
+
+async function watchThroughIsFinished(
+  watchThroughId: string,
+  {db}: Pick<Context, 'db'>,
+) {
+  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
+    db,
+  });
+
+  if (unfinishedEpisodes !== 0) return false;
+
+  const [watched] = await db
+    .from(Table.WatchThroughEpisodes)
+    .pluck<string>('episodeId')
+    .where({watchThroughId})
+    .andWhere((clause) => clause.whereNotNull('watchId'))
+    .orderBy('index', 'desc')
+    .limit(1);
+
+  const [season] = await db
+    .from(Table.Episodes)
+    .select({id: 'Seasons.id', status: 'Seasons.status'})
+    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
+    .whereIn('Episodes.id', [watched]);
+
+  return season?.status === 'ENDED';
+}
+
+async function unfinishedEpisodeCount(
+  watchThroughId: string,
+  {db}: Pick<Context, 'db'>,
+) {
+  const [{count}] = await db
+    .from(Table.WatchThroughEpisodes)
+    .join('Episodes', 'Episodes.id', '=', 'WatchThroughEpisodes.episodeId')
+    .where((clause) => {
+      clause
+        .where({watchThroughId})
+        .whereNull('WatchThroughEpisodes.watchId')
+        .whereNull('WatchThroughEpisodes.skipId');
+    })
+    .where(
+      'Episodes.firstAired',
+      '<',
+      db.raw(`CURRENT_DATE + interval '1 day'`),
+    )
+    .count({count: 'WatchThroughEpisodes.id'});
+
+  return parseInt(String(count), 10);
 }
 
 async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
