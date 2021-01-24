@@ -68,13 +68,13 @@ export const Query: Resolver = {
   },
   async watchThroughs(
     _,
-    {state = 'IN_PROGRESS'}: {state?: string},
+    {status = 'IN_PROGRESS'}: {status?: string},
     {db, watchThroughLoader},
   ) {
     const watchThroughs = await db
       .select('id')
       .from(Table.WatchThroughs)
-      .where({state})
+      .where({status})
       .limit(50);
 
     return Promise.all(
