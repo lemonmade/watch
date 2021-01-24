@@ -313,11 +313,31 @@ export const Mutation: Resolver = {
   },
   async updateSeason(
     _,
-    {id: gid, ...rest}: {id: string; status: string},
+    {id: gid, status}: {id: string; status: string},
     {db, seasonLoader},
   ) {
     const {id} = fromGid(gid);
-    await db.from(Table.Seasons).where({id}).update(rest);
+    await db.from(Table.Seasons).where({id}).update({status});
+
+    if (status === 'ENDED') {
+      const watchThroughsToCheck = await db
+        .select({id: 'WatchThroughs.id', updatedAt: 'WatchThroughs.updatedAt'})
+        .from(Table.Seasons)
+        .join(
+          'WatchThroughs',
+          'WatchThroughs.seriesId',
+          '=',
+          'Seasons.seriesId',
+        )
+        .where({'Seasons.id': id, 'WatchThroughs.status': 'ONGOING'});
+
+      await Promise.all(
+        watchThroughsToCheck.map(({id, updatedAt}) =>
+          updateWatchThrough(id, {db, timestamp: updatedAt}),
+        ),
+      );
+    }
+
     return {season: await seasonLoader.load(id)};
   },
   async watchEpisodesFromSeries(
@@ -755,33 +775,6 @@ async function updateWatchThrough(
   watchThroughId: string,
   {db, timestamp = 'now()'}: Pick<Context, 'db'> & {timestamp?: string},
 ) {
-  await db
-    .update({updatedAt: timestamp})
-    .from(Table.WatchThroughs)
-    .where({id: watchThroughId});
-
-  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
-    db,
-  });
-
-  if (unfinishedEpisodes !== 0) return;
-
-  const [watched] = await db
-    .from(Table.WatchThroughEpisodes)
-    .pluck<string>('episodeId')
-    .where({watchThroughId})
-    .andWhere((clause) => clause.whereNotNull('watchId'))
-    .orderBy('index', 'desc')
-    .limit(1);
-
-  const [season] = await db
-    .from(Table.Episodes)
-    .select({id: 'Seasons.id', status: 'Seasons.status'})
-    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-    .whereIn('Episodes.id', [watched]);
-
-  if (season?.status !== 'ENDED') return;
-
   const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {db}))
     ? {status: 'FINISHED', finishedAt: timestamp}
     : {};
