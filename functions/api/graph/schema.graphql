@@ -58,7 +58,7 @@ type Series {
 }
 
 enum WatchThroughStatus {
-  IN_PROGRESS
+  ONGOING
   STOPPED
   FINISHED
 }

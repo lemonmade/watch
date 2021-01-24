@@ -68,7 +68,7 @@ export const Query: Resolver = {
   },
   async watchThroughs(
     _,
-    {status = 'IN_PROGRESS'}: {status?: string},
+    {status = 'ONGOING'}: {status?: string},
     {db, watchThroughLoader},
   ) {
     const watchThroughs = await db
