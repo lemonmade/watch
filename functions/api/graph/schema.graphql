@@ -57,11 +57,10 @@ type Series {
   episode(number: Int!, seasonNumber: Int!): Episode
 }
 
-enum WatchThroughState {
+enum WatchThroughStatus {
   IN_PROGRESS
   STOPPED
   FINISHED
-  UP_TO_DATE
 }
 
 enum EpisodeWatchedFilter {
@@ -99,7 +98,7 @@ type WatchThrough implements Reviewable {
   finishedAt: Date
   watches: [Watch!]!
   nextEpisode: Episode
-  state: WatchThroughState!
+  status: WatchThroughStatus!
   rating: Int
   notes: Notes
   lastEpisode: WatchThroughEpisode
@@ -189,7 +188,7 @@ type Query {
   watch(id: ID!): Watch
   series(id: ID!): Series
   watchThrough(id: ID!): WatchThrough
-  watchThroughs: [WatchThrough!]!
+  watchThroughs(status: WatchThroughStatus): [WatchThrough!]!
   subscription(id: ID!): SeriesSubscription
   subscriptions: [SeriesSubscription!]!
   search(query: String!): SearchResults!
