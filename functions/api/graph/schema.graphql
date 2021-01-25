@@ -143,6 +143,10 @@ type StartWatchThroughPayload {
   watchThrough: WatchThrough
 }
 
+type StopWatchThroughPayload {
+  watchThrough: WatchThrough
+}
+
 type DeleteWatchThroughPayload {
   deletedWatchThroughId: ID!
 }
@@ -218,6 +222,7 @@ type Mutation {
     seasons: [ID!]
     episodes: [ID!]
   ): StartWatchThroughPayload!
+  stopWatchThrough(id: ID!): StopWatchThroughPayload!
   subscribeToSeries(id: ID!): SeriesSubscriptionPayload!
   deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!

@@ -190,6 +190,14 @@ export const Mutation: Resolver = {
 
     return {skip, episode, watchThrough};
   },
+  async stopWatchThrough(_, {id: gid}: {id: string}, {db, watchThroughLoader}) {
+    const {id} = fromGid(gid);
+
+    await db.from(Table.WatchThroughs).update({status: 'STOPPED'}).where({id});
+    const watchThrough = await watchThroughLoader.load(id);
+
+    return {watchThrough};
+  },
   async startWatchThrough(
     _,
     {
