@@ -1,0 +1,7 @@
+mutation StopWatchThrough($id: ID!) {
+  stopWatchThrough(id: $id) {
+    watchThrough {
+      id
+    }
+  }
+}

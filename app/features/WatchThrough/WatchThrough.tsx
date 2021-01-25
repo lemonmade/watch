@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useQuery, useMutation} from '@quilted/quilt';
+import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
 
 import {
   BlockStack,
@@ -17,6 +17,7 @@ import {
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
+import stopWatchThroughMutation from './graphql/StopWatchThroughMutation.graphql';
 
 export interface Props {
   id: string;
@@ -27,31 +28,45 @@ export default function WatchThrough({id}: Props) {
   const {data} = useQuery(watchThroughQuery, {
     variables: {id, key} as any,
   });
+  const navigate = useNavigate();
+  const stopWatchThrough = useMutation(stopWatchThroughMutation);
 
   if (data?.watchThrough == null) return null;
 
-  const {nextEpisode} = data.watchThrough;
+  const {nextEpisode, status} = data.watchThrough;
 
   return (
     <Page title={data.watchThrough.series.name}>
-      {nextEpisode && (
-        <NextEpisode
-          key={nextEpisode.id}
-          id={nextEpisode.id}
-          title={nextEpisode.title}
-          episodeNumber={nextEpisode.number}
-          seasonNumber={nextEpisode.season.number}
-          firstAired={
-            nextEpisode.firstAired
-              ? new Date(nextEpisode.firstAired)
-              : undefined
-          }
-          watchThroughId={id}
-          image={nextEpisode.still?.source ?? undefined}
-          overview={nextEpisode.overview ?? undefined}
-          onAction={() => setKey((key) => key + 1)}
-        />
-      )}
+      <BlockStack>
+        {nextEpisode && (
+          <NextEpisode
+            key={nextEpisode.id}
+            id={nextEpisode.id}
+            title={nextEpisode.title}
+            episodeNumber={nextEpisode.number}
+            seasonNumber={nextEpisode.season.number}
+            firstAired={
+              nextEpisode.firstAired
+                ? new Date(nextEpisode.firstAired)
+                : undefined
+            }
+            watchThroughId={id}
+            image={nextEpisode.still?.source ?? undefined}
+            overview={nextEpisode.overview ?? undefined}
+            onAction={() => setKey((key) => key + 1)}
+          />
+        )}
+        {status === 'ONGOING' && (
+          <Button
+            onPress={async () => {
+              const {data} = await stopWatchThrough({variables: {id}});
+              if (data) navigate('/');
+            }}
+          >
+            Stop watchthrough
+          </Button>
+        )}
+      </BlockStack>
     </Page>
   );
 }

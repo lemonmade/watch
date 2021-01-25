@@ -4,6 +4,7 @@ fragment WatchThroughDetails on WatchThrough {
     id
     name
   }
+  status
   episodes {
     id
     finished
