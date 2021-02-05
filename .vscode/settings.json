@@ -6,5 +6,5 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.ignoreWords": ["imdb", "tmdb"]
+  "cSpell.ignoreWords": ["imdb", "routable", "tmdb"]
 }
