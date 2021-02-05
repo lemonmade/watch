@@ -12,6 +12,18 @@
       "path": "./functions/api"
     },
     {
+      "path": "./functions/assets-brotli-path-rewrite"
+    },
+    {
+      "path": "./functions/assets-header-rewrite"
+    },
+    {
+      "path": "./functions/tmdb-refresher"
+    },
+    {
+      "path": "./functions/tmdb-refresher-scheduler"
+    },
+    {
       "path": "./packages/basics"
     },
     {
