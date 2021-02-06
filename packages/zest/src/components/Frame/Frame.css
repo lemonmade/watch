@@ -1,6 +1,11 @@
+html {
+  height: -webkit-fill-available;
+}
+
 .Frame {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
   display: grid;
   grid-template-areas: 'header' 'content';
   grid-template-rows: auto 1fr;
