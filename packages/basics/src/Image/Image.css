@@ -6,11 +6,11 @@
   border: 1px solid var(--x-default-color-border);
 }
 
-.aspectRatio {
+.AspectRatio {
   position: relative;
 }
 
-.aspectRatio > * {
+.AspectRatio > * {
   position: absolute;
   top: 0;
   left: 0;

@@ -135,7 +135,7 @@ function MaybeAspectRatio({
 }: MaybeProps<{aspectRatio?: number}>) {
   return condition ? (
     <div
-      className={styles.aspectRatio}
+      className={styles.AspectRatio}
       style={{paddingBottom: `calc(100% / ${aspectRatio})`}}
     >
       {children}

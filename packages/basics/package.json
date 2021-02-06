@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "dependencies": {
     "@lemon/css": "*"
   },
