@@ -8,6 +8,7 @@
     "type-check": "sk type-check",
     "dev": "sk dev",
     "build": "sk build",
+    "version-bump": "lerna version",
     "cdk": "babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
     "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
@@ -56,6 +57,7 @@
     "aws-sdk": "^2.708.0",
     "common-tags": "^1.8.0",
     "compression-webpack-plugin": "^4.0.0",
+    "lerna": "^3.22.1",
     "postcss-preset-env": "^6.7.0",
     "raw-loader": "^4.0.1",
     "sewing-kit-plugin-knex": "^0.1.0",

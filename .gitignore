@@ -3,6 +3,9 @@ node_modules
 *.log
 packages/*/build/
 packages/*/*.d.ts
+packages/*/index.js
+packages/*/*.mjs
+packages/*/*.esnext
 .sewing-kit
 build
 cdk.out
