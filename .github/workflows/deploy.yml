@@ -17,6 +17,8 @@ jobs:
         name: Setup node.js and yarn
         with:
           node-version: 15.4.0
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get yarn cache directory
         id: yarn-cache-get-dir
@@ -65,6 +67,8 @@ jobs:
 
       - name: Deploy updated packages
         run: yarn packages:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   aws-assets:
     needs: build
