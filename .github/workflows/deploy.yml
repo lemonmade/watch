@@ -63,6 +63,9 @@ jobs:
           name: assets
           path: build/app
 
+      - name: Deploy updated packages
+        run: yarn packages:publish
+
   aws-assets:
     needs: build
     runs-on: ubuntu-latest
