@@ -68,7 +68,7 @@ jobs:
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
           yarn packages:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   aws-assets:
     needs: build
