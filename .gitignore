@@ -3,7 +3,8 @@ node_modules
 *.log
 packages/*/build/
 packages/*/*.d.ts
-packages/*/index.js
+packages/*/*.js
+!packages/*/.eslintrc.js
 packages/*/*.mjs
 packages/*/*.esnext
 .sewing-kit
