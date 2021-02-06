@@ -14,10 +14,6 @@ html {
   align-items: stretch;
 }
 
-.hasNavigation > .Content {
-  padding-inline-start: var(--zest-spacing-mini);
-}
-
 .Content {
   grid-area: content;
   position: relative;
@@ -43,6 +39,10 @@ html {
     grid-template-areas: 'navigation content';
     grid-template-rows: 1fr;
     grid-template-columns: auto 1fr;
+  }
+
+  .hasNavigation > .Content {
+    padding-inline-start: var(--zest-spacing-mini);
   }
 
   .Navigation {

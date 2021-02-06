@@ -10,7 +10,7 @@
   position: relative;
 }
 
-.aspectRatio > .Image {
+.aspectRatio > * {
   position: absolute;
   top: 0;
   left: 0;
