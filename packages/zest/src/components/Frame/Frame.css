@@ -19,7 +19,7 @@ html {
 }
 
 .Content {
-  grid-area: 'content';
+  grid-area: content;
   position: relative;
   z-index: 100;
   overflow: auto;
@@ -28,13 +28,13 @@ html {
 
 .Navigation {
   display: none;
-  grid-area: 'navigation';
+  grid-area: navigation;
   padding: var(--zest-spacing) var(--zest-spacing-mini) var(--zest-spacing)
     var(--zest-spacing);
 }
 
 .Header {
-  grid-area: 'header';
+  grid-area: header;
   padding: var(--zest-spacing-mini) var(--zest-spacing);
 }
 
