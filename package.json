@@ -8,7 +8,8 @@
     "type-check": "sk type-check",
     "dev": "sk dev",
     "build": "sk build",
-    "version-bump": "lerna version",
+    "packages:version": "lerna version --no-private",
+    "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
     "cdk": "babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
     "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
