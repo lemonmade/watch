@@ -17,8 +17,6 @@ jobs:
         name: Setup node.js and yarn
         with:
           node-version: 15.4.0
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get yarn cache directory
         id: yarn-cache-get-dir
@@ -66,7 +64,9 @@ jobs:
           path: build/app
 
       - name: Deploy updated packages
-        run: yarn packages:publish
+        run: |
+          echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+          yarn packages:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
