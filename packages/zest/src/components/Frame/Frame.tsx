@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import {classes} from '@lemon/css';
 
 import styles from './Frame.css';
@@ -10,6 +10,7 @@ interface Props {
 
 export function Frame({children, renderNavigation}: Props) {
   const navigation = renderNavigation?.() ?? null;
+  const [navigationActive, setNavigationActive] = useState(false);
 
   return (
     <div
@@ -18,7 +19,23 @@ export function Frame({children, renderNavigation}: Props) {
         Boolean(navigation) && styles.hasNavigation,
       )}
     >
-      {navigation && <nav className={styles.Navigation}>{navigation}</nav>}
+      {navigation && (
+        <>
+          <header className={styles.Header}>
+            <button
+              type="button"
+              className={styles.NavigationActivator}
+              onClick={() => setNavigationActive((active) => !active)}
+            >
+              Menu
+            </button>
+            {navigationActive && (
+              <nav className={styles.NavigationOverlay}>{navigation}</nav>
+            )}
+          </header>
+          <nav className={styles.Navigation}>{navigation}</nav>
+        </>
+      )}
       <div className={styles.Content}>{children}</div>
     </div>
   );
