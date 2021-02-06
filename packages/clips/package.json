@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "publishConfig": {
     "access": "public",
     "@quilted:registry": "https://registry.npmjs.org"
