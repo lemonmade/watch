@@ -485,7 +485,10 @@ export const Mutation: Resolver = {
       .insert({extensionId: fromGid(extensionId).id}, '*')
       .into(Table.ClipsExtensionVersions);
 
-    return {version, extension: await clipsExtensionsLoader.load(extensionId)};
+    return {
+      version,
+      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
+    };
   },
   async installApp(_, {id}: {id: string}, {db, appsLoader}) {
     const [installation] = await db
