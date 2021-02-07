@@ -232,6 +232,7 @@ type ClipsExtensionVersion {
   status: ClipsExtensionVersionStatus!
   assets: [Asset!]!
   apiVersion: ClipsExtensionApiVersion!
+  extension: ClipsExtension!
   # allowedExtensionPoints: [ClipsExtensionPoint!]!
   # configurationSchema: ClipsExtensionConfigurationSchema
   # settings: ClipsExtensionSettings
