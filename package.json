@@ -67,6 +67,7 @@
     "webpack-bundle-analyzer": "^4.3.0"
   },
   "resolutions": {
+    "@quilted/react-testing": "^0.2.2",
     "@types/vfile-message": "1.0.1",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/experimental-utils": "^4.0.0",
