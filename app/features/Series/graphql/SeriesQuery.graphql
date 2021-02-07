@@ -14,4 +14,18 @@ query Series($id: ID!) {
       overview
     }
   }
+  clipsInstallations(extensionPoint: "Watch::Series::Details") {
+    id
+    version {
+      id
+      apiVersion
+      assets {
+        source
+      }
+    }
+    extension {
+      id
+      name
+    }
+  }
 }

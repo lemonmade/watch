@@ -8,7 +8,7 @@ import {
   Text,
 } from '@lemon/zest';
 
-import {Link} from 'components';
+import {Link, Clip} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
@@ -33,7 +33,7 @@ export function Series({id}: Props) {
     return null;
   }
 
-  const {series} = data;
+  const {series, clipsInstallations} = data;
 
   return (
     <BlockStack>
@@ -111,6 +111,16 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
+      {clipsInstallations.map(({id, version}) => (
+        <Clip
+          key={id}
+          extensionPoint="Watch::Series::Details"
+          version={version.apiVersion}
+          api={{}}
+          components={{Text, View}}
+          script={version.assets[0].source}
+        />
+      ))}
     </BlockStack>
   );
 }

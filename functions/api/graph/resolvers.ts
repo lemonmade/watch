@@ -81,6 +81,24 @@ export const Query: Resolver = {
       watchThroughs.map(({id}) => watchThroughLoader.load(id)),
     );
   },
+  app(_, {id}: {id: string}, {appsLoader}) {
+    return appsLoader.load(fromGid(id).id);
+  },
+  async clipsInstallations(
+    _,
+    {extensionPoint}: {extensionPoint: string},
+    {db, clipsExtensionInstallationsLoader},
+  ) {
+    const installations = await db
+      .select('id')
+      .from(Table.ClipsExtensionInstallations)
+      .where({extensionPoint})
+      .limit(50);
+
+    return Promise.all(
+      installations.map(({id}) => clipsExtensionInstallationsLoader.load(id)),
+    );
+  },
 };
 
 interface Slice {
@@ -405,6 +423,97 @@ export const Mutation: Resolver = {
     const series = await seriesLoader.load(seriesId);
     return {series};
   },
+  async createApp(_, {name}: {name: string}, {db}) {
+    const [app] = await db.insert({name}, '*').into(Table.Apps);
+
+    return {app};
+  },
+  async deleteApp(_, {id}: {id: string}, {db}) {
+    await db
+      .from(Table.Apps)
+      .where({id: fromGid(id).id})
+      .delete();
+    return {deletedId: id};
+  },
+  async updateApp(_, {id, name}: {id: string; name?: string}, {db}) {
+    const [app] = await db
+      .update(name == null ? {} : {name}, '*')
+      .where({id: fromGid(id).id})
+      .into(Table.Apps);
+
+    return {app};
+  },
+  async createClipsExtension(
+    _,
+    {name, appId}: {appId: string; name: string},
+    {db, appsLoader},
+  ) {
+    const [extension] = await db
+      .insert({name, appId: fromGid(appId).id}, '*')
+      .into(Table.ClipsExtensions);
+
+    return {extension, app: await appsLoader.load(fromGid(appId).id)};
+  },
+  async deleteClipsExtension(_, {id}: {id: string}, {db, appsLoader}) {
+    const [{appId}] = await db
+      .select('appId')
+      .from(Table.ClipsExtensions)
+      .where({id: fromGid(id).id})
+      .limit(1);
+
+    await db
+      .from(Table.ClipsExtensions)
+      .where({id: fromGid(id).id})
+      .delete();
+
+    return {deletedId: id, app: await appsLoader.load(appId)};
+  },
+  async updateClipsExtension(_, {id, name}: {id: string; name?: string}, {db}) {
+    const [extension] = await db
+      .update(name == null ? {} : {name}, '*')
+      .where({id: fromGid(id).id})
+      .into(Table.ClipsExtensions);
+
+    return {extension};
+  },
+  async createClipsExtensionVersion(
+    _,
+    {extensionId}: {extensionId: string},
+    {db, clipsExtensionsLoader},
+  ) {
+    const [version] = await db
+      .insert({extensionId: fromGid(extensionId).id}, '*')
+      .into(Table.ClipsExtensionVersions);
+
+    return {version, extension: await clipsExtensionsLoader.load(extensionId)};
+  },
+  async installApp(_, {id}: {id: string}, {db, appsLoader}) {
+    const [installation] = await db
+      .insert({appId: fromGid(id).id})
+      .into(Table.AppInstallations);
+
+    return {app: await appsLoader.load(fromGid(id).id), installation};
+  },
+  async installClipsExtension(
+    _,
+    {id, appInstallationId}: {id: string; appInstallationId: string},
+    {db, clipsExtensionsLoader},
+  ) {
+    const [installation] = await db
+      .insert(
+        {
+          extensionId: fromGid(id).id,
+          appInstallId: fromGid(appInstallationId).id,
+        },
+        '*',
+      )
+      .into(Table.ClipsExtensionInstallations);
+
+    return {
+      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      installation,
+    };
+  },
 };
 
 export const Watchable: Resolver = {
@@ -416,6 +525,14 @@ export const Reviewable: Resolver = {
 };
 
 export const WatchThroughEpisodeAction: Resolver = {
+  __resolveType: resolveType,
+};
+
+export const AppExtension: Resolver = {
+  __resolveType: resolveType,
+};
+
+export const AppExtensionInstallation: Resolver = {
   __resolveType: resolveType,
 };
 
@@ -686,6 +803,107 @@ export const Skip: Resolver<{
   },
   watchThrough({watchThroughId}, _, {watchThroughLoader}) {
     return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  },
+};
+
+export const App: Resolver<{id: string}> = {
+  id: ({id}) => toGid(id, 'App'),
+  async extensions({id}, _, {db, clipsExtensionsLoader}) {
+    const versions = await db
+      .from(Table.ClipsExtensions)
+      .select('id')
+      .where({appId: id})
+      .orderBy('createdAt', 'desc')
+      .limit(50);
+
+    return Promise.all(
+      versions.map(({id}) =>
+        clipsExtensionsLoader.load(id).then(addResolvedType('ClipsExtension')),
+      ),
+    );
+  },
+};
+
+export const AppInstallation: Resolver<{
+  id: string;
+  appId: string;
+}> = {
+  id: ({id}) => toGid(id, 'AppInstallation'),
+  app: ({appId}, _, {appsLoader}) => appsLoader.load(fromGid(appId).id),
+  async extensions({id}, _, {db, clipsExtensionInstallationsLoader}) {
+    const versions = await db
+      .from(Table.ClipsExtensionInstallations)
+      .select('id')
+      .where({appInstallId: id})
+      .orderBy('createdAt', 'desc')
+      .limit(50);
+
+    return Promise.all(
+      versions.map(({id}) =>
+        clipsExtensionInstallationsLoader
+          .load(id)
+          .then(addResolvedType('ClipsExtensionInstallation')),
+      ),
+    );
+  },
+};
+
+export const ClipsExtension: Resolver<{
+  id: string;
+  appId: string;
+  latestVersionId?: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtension'),
+  app: ({appId}, _, {appsLoader}) => appsLoader.load(appId),
+  latestVersion({latestVersionId}, _, {clipsExtensionVersionsLoader}) {
+    return latestVersionId
+      ? clipsExtensionVersionsLoader.load(latestVersionId)
+      : null;
+  },
+  async versions({id}, _, {db, clipsExtensionVersionsLoader}) {
+    const versions = await db
+      .from(Table.ClipsExtensionVersions)
+      .select('id')
+      .where({extensionId: id})
+      .orderBy('createdAt', 'desc')
+      .limit(50);
+
+    return Promise.all(
+      versions.map(({id}) => clipsExtensionVersionsLoader.load(id)),
+    );
+  },
+};
+
+export const ClipsExtensionVersion: Resolver<{
+  id: string;
+  extensionId: string;
+  scriptUrl?: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
+  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
+    clipsExtensionsLoader.load(extensionId),
+  assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
+};
+
+export const ClipsExtensionInstallation: Resolver<{
+  id: string;
+  extensionId: string;
+  appInstallId: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
+  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
+    clipsExtensionsLoader.load(extensionId),
+  appInstallation: ({appInstallId}, _, {appInstallationsLoader}) =>
+    appInstallationsLoader.load(appInstallId),
+  async version(
+    {extensionId},
+    _,
+    {clipsExtensionsLoader, clipsExtensionVersionsLoader},
+  ) {
+    const extension = (await clipsExtensionsLoader.load(extensionId)) as any;
+    return extension?.latestVersionId
+      ? clipsExtensionVersionsLoader.load(extension.latestVersionId)
+      : null;
   },
 };
 

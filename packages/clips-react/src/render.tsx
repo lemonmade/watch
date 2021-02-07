@@ -3,19 +3,20 @@ import type {ReactNode} from 'react';
 import type {RemoteRoot} from '@remote-ui/core';
 import {render as renderRemoteUi} from '@remote-ui/react';
 
+import {extend} from '@watching/clips';
 import type {
   AnyApi,
   ExtensionPoint,
-  ExtensionPoints,
   ApiForExtensionPoint,
 } from '@watching/clips';
 
 import {ApiContext} from './context';
 
 export function render<T extends ExtensionPoint>(
+  extensionPoint: T,
   renderUi: (api: ApiForExtensionPoint<T>) => ReactNode,
-): ExtensionPoints[T] {
-  return (root: RemoteRoot<any>, api: AnyApi) => {
+) {
+  extend(extensionPoint, (root: RemoteRoot<any>, api: AnyApi) => {
     renderRemoteUi(
       <ApiContext.Provider value={api}>
         {renderUi(api as any)}
@@ -25,5 +26,5 @@ export function render<T extends ExtensionPoint>(
         root.mount();
       },
     );
-  };
+  });
 }
