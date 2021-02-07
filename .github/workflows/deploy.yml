@@ -35,7 +35,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build
+        run: yarn type-check && yarn build
 
       - name: Zip API Lambda
         run: zip -r ../api.zip ./*
