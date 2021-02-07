@@ -5,5 +5,5 @@ import {buildFlexibleOutputs} from '@sewing-kit/plugin-package-flexible-outputs'
 
 export default createPackage((pkg) => {
   pkg.entry({root: './src/index'});
-  pkg.use(quiltPackage(), buildFlexibleOutputs());
+  pkg.use(quiltPackage({react: true}), buildFlexibleOutputs());
 });

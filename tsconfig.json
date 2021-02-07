@@ -18,6 +18,9 @@
       "path": "./packages/clips"
     },
     {
+      "path": "./packages/clips-react"
+    },
+    {
       "path": "./packages/css"
     },
     {

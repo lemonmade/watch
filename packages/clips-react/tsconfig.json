@@ -3,16 +3,11 @@
   "compilerOptions": {
     "baseUrl": "src",
     "rootDir": "src",
-    "outDir": "build/ts"
+    "outDir": "build/ts",
+    "lib": ["WebWorker", "esnext"],
+    "types": []
   },
   "include": ["src", "../../config/typescript/globals.d.ts"],
   "exclude": ["**/tests/**/*.ts", "**/tests/**/*.tsx"],
-  "references": [
-    {
-      "path": "../basics"
-    },
-    {
-      "path": "../css"
-    }
-  ]
+  "references": [{"path": "../clips"}]
 }
