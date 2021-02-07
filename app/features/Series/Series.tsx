@@ -8,7 +8,7 @@ import {
   Text,
 } from '@lemon/zest';
 
-import {Link} from 'components';
+import {Link, Clip} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
@@ -111,6 +111,7 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
+      <Clip extensionPoint="Watch::Series::Details" script="" />
     </BlockStack>
   );
 }
