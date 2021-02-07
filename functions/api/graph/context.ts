@@ -9,6 +9,11 @@ export enum Table {
   Episodes = 'Episodes',
   WatchThroughs = 'WatchThroughs',
   WatchThroughEpisodes = 'WatchThroughEpisodes',
+  Apps = 'Apps',
+  ClipsExtensions = 'ClipsExtensions',
+  ClipsExtensionVersions = 'ClipsExtensionVersions',
+  AppInstallations = 'AppInstallations',
+  ClipsExtensionInstallations = 'ClipsExtensionInstallations',
 }
 
 export type Context = ReturnType<typeof createContext>;
@@ -28,6 +33,19 @@ export function createContext(db: import('knex')) {
     ),
     watchThroughLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.WatchThroughs),
+    ),
+    appsLoader: new DataLoader(createBatchLoaderForTable(db, Table.Apps)),
+    clipsExtensionsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.ClipsExtensions),
+    ),
+    appInstallationsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.AppInstallations),
+    ),
+    clipsExtensionInstallationsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.ClipsExtensionInstallations),
+    ),
+    clipsExtensionVersionsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
     ),
   };
 }

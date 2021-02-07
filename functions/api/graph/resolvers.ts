@@ -81,6 +81,24 @@ export const Query: Resolver = {
       watchThroughs.map(({id}) => watchThroughLoader.load(id)),
     );
   },
+  app(_, {id}: {id: string}, {appsLoader}) {
+    return appsLoader.load(fromGid(id).id);
+  },
+  async clipsInstallations(
+    _,
+    {extensionPoint}: {extensionPoint: string},
+    {db, clipsExtensionInstallationsLoader},
+  ) {
+    const installations = await db
+      .select('id')
+      .from(Table.ClipsExtensionInstallations)
+      .where({extensionPoint})
+      .limit(50);
+
+    return Promise.all(
+      installations.map(({id}) => clipsExtensionInstallationsLoader.load(id)),
+    );
+  },
 };
 
 interface Slice {
@@ -686,6 +704,80 @@ export const Skip: Resolver<{
   },
   watchThrough({watchThroughId}, _, {watchThroughLoader}) {
     return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  },
+};
+
+export const App: Resolver<{id: string}> = {
+  id: ({id}) => toGid(id, 'App'),
+  async extensions({id}, _, {db, clipsExtensionsLoader}) {
+    const versions = await db
+      .from(Table.ClipsExtensions)
+      .select('id')
+      .where({appId: fromGid(id).id})
+      .orderBy('createdAt', 'desc')
+      .limit(50);
+
+    return Promise.all(
+      versions.map(({id}) =>
+        clipsExtensionsLoader.load(id).then(addResolvedType('ClipsExtension')),
+      ),
+    );
+  },
+};
+
+export const ClipsExtension: Resolver<{
+  id: string;
+  appId: string;
+  latestVersionId?: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtension'),
+  app: ({appId}, _, {appsLoader}) => appsLoader.load(appId),
+  async latestVersion({latestVersionId}, _, {clipsExtensionVersionsLoader}) {
+    return latestVersionId
+      ? clipsExtensionVersionsLoader.load(latestVersionId)
+      : null;
+  },
+  async versions({id}, _, {db, clipsExtensionVersionsLoader}) {
+    const versions = await db
+      .from(Table.ClipsExtensionVersions)
+      .select('id')
+      .where({extensionId: fromGid(id).id})
+      .orderBy('createdAt', 'desc')
+      .limit(50);
+
+    return Promise.all(
+      versions.map(({id}) => clipsExtensionVersionsLoader.load(id)),
+    );
+  },
+};
+
+export const ClipsExtensionVersion: Resolver<{
+  id: string;
+  extensionId: string;
+  scriptUrl?: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
+  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
+    clipsExtensionsLoader.load(extensionId),
+  assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
+};
+
+export const ClipsExtensionInstallation: Resolver<{
+  id: string;
+  extensionId: string;
+}> = {
+  id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
+  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
+    clipsExtensionsLoader.load(extensionId),
+  async version(
+    {extensionId},
+    _,
+    {clipsExtensionsLoader, clipsExtensionVersionsLoader},
+  ) {
+    const extension = (await clipsExtensionsLoader.load(extensionId)) as any;
+    return extension?.latestVersionId
+      ? clipsExtensionVersionsLoader.load(extension.latestVersionId)
+      : null;
   },
 };
 

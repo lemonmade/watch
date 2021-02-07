@@ -188,6 +188,108 @@ type UpdateSeasonPayload {
   season: Season
 }
 
+# type User {
+#   id: ID!
+#   avatar: Image
+# }
+
+# type Business {
+#   id: ID!
+#   icon: Icon
+# }
+
+# union AppAuthor = User | Business
+
+type Image {
+  source: Url!
+}
+
+type Icon {
+  source: Url!
+}
+
+type App {
+  id: ID!
+  icon: Icon
+  extensions: [AppExtension!]!
+}
+
+type ClipExtension {
+  id: ID!
+  latestVersion: ClipExtensionVersion!
+  versions: [ClipExtensionVersion!]!
+}
+
+scalar ClipsExtensionApiVersion
+scalar ClipsExtensionPoint
+
+# type ClipsExtensionBasicSettings {
+#   showAuthor: Boolean!
+# }
+
+# union ClipsExtensionSettings = ClipsExtensionBasicSettings
+
+type ClipsExtensionVersion {
+  id: ID!
+  status: ClipsExtensionVersionStatus!
+  assets: [Asset!]!
+  apiVersion: ClipsExtensionApiVersion!
+  # allowedExtensionPoints: [ClipsExtensionPoint!]!
+  # configurationSchema: ClipsExtensionConfigurationSchema
+  # settings: ClipExtensionSettings
+}
+
+# type ClipsExtensionConfigurationSchema {
+#   fields: [ClipsExtensionConfigurationField!]!
+# }
+
+# scalar TranslationKey
+
+# type ClipsExtensionConfigurationStringTranslation {
+#   key: TranslationKey!
+# }
+
+# type ClipsExtensionConfigurationStringStatic {
+#   value: String!
+# }
+
+# union ClipsExtensionConfigurationString =
+#     ClipsExtensionConfigurationStringTranslation
+#   | ClipsExtensionConfigurationStringStatic
+
+# interface ClipsExtensionTypedConfigurationField {
+#   name: String!
+# }
+
+# type ClipsExtensionStringConfigurationField implements ClipsExtensionTypedConfigurationField {
+#   name: String!
+#   label: ClipExtensionConfigurationString!
+# }
+
+# union ClipsExtensionConfigurationField = ClipsExtensionStringConfigurationField
+
+type Asset {
+  source: Url!
+}
+
+union AppExtension = ClipExtension
+
+# scalar ClipsExtensionConfigurationBlob
+
+enum ClipsExtensionVersionStatus {
+  PUBLISHED
+  BUILDING
+}
+
+type ClipsExtensionInstallation {
+  extension: ClipsExtension!
+  version: ClipsExtensionVersion!
+  extensionPoint: ClipsExtensionPoint!
+  # configuration: ClipsExtensionConfigurationBlob
+}
+
+union AppExtensionInstallation = ClipsExtensionInstallation
+
 type Query {
   watch(id: ID!): Watch
   series(id: ID!): Series
@@ -196,6 +298,11 @@ type Query {
   subscription(id: ID!): SeriesSubscription
   subscriptions: [SeriesSubscription!]!
   search(query: String!): SearchResults!
+
+  app(id: ID!): App
+  clipsInstallations(
+    extensionPoint: ClipsExtensionPoint
+  ): [ClipsExtensionInstallation!]!
 }
 
 type Mutation {
@@ -227,6 +334,15 @@ type Mutation {
   deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
+
+  createApp(): CreateAppPayload!
+  updateApp(id: ID!): UpdateAppPayload!
+  createClipsExtension(): CreateClipsExtensionPayload!
+  updateClipsExtension(id: ID!): UpdateClipsExtensionPayload!
+  createClipsExtensionVersion(id: ID!): CreateClipsExtensionVersionPayload!
+  publishClipsExtensionVersion(id: ID!): PublishClipsExtensionVersionPayload!
+  installApp(id: ID!): InstallClipsExtensionPayload!
+  installClipsExtension(id: ID!): InstallClipsExtensionPayload!
 }
 
 schema {
