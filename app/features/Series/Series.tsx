@@ -33,7 +33,7 @@ export function Series({id}: Props) {
     return null;
   }
 
-  const {series} = data;
+  const {series, clipsInstallations} = data;
 
   return (
     <BlockStack>
@@ -111,7 +111,16 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
-      <Clip extensionPoint="Watch::Series::Details" script="" />
+      {clipsInstallations.map(({id, version}) => (
+        <Clip
+          key={id}
+          extensionPoint="Watch::Series::Details"
+          version={version.apiVersion}
+          api={{}}
+          components={{Text, View}}
+          script={version.assets[0].source}
+        />
+      ))}
     </BlockStack>
   );
 }

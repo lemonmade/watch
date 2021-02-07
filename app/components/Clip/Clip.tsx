@@ -14,6 +14,7 @@ import type {
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
 import {createWorkerFactory} from '@remote-ui/web-workers';
+import type {ClipsExtensionApiVersion} from 'graphql/types';
 
 export const createSandbox = createWorkerFactory(() =>
   import(/* webpackChunkName: 'ExtensionSandbox' */ './sandbox'),
@@ -29,13 +30,15 @@ type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
 
 interface Props<T extends ExtensionPoint> {
   extensionPoint: T;
+  version: ClipsExtensionApiVersion;
   script: string;
-  api: ApiForExtensionPoint<T>;
+  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
   components: ReactComponentsForRuntimeExtension<T>;
 }
 
 export function Clip<T extends ExtensionPoint>({
   extensionPoint,
+  version,
   script,
   api,
   components,
@@ -60,7 +63,7 @@ export function Clip<T extends ExtensionPoint>({
         extensionPoint,
         receiver.receive,
         Object.keys(components),
-        api as any,
+        {...api, version, extensionPoint} as any,
       );
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
