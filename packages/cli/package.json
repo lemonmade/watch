@@ -1,12 +1,14 @@
 {
   "name": "@watching/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
   },
   "license": "MIT",
-  "bin": {"watchapp": "./bin/watchapp"},
+  "bin": {
+    "watchapp": "./bin/watchapp"
+  },
   "sideEffects": false,
   "dependencies": {
     "@babel/core": "^7.0.0",
