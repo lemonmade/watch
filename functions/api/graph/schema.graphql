@@ -282,16 +282,27 @@ enum ClipsExtensionVersionStatus {
   BUILDING
 }
 
+type AppInstallation {
+  id: ID!
+  app: App!
+  extensions: [AppExtensionInstallation!]!
+}
+
 type ClipsExtensionInstallation {
   id: ID!
   extension: ClipsExtension!
   version: ClipsExtensionVersion!
   extensionPoint: ClipsExtensionPoint!
+  appInstallation: AppInstallation!
   # configuration: ClipsExtensionConfigurationBlob
 }
 
 type CreateAppPayload {
   app: App
+}
+
+type DeleteAppPayload {
+  deletedId: ID
 }
 
 type UpdateAppPayload {
@@ -301,6 +312,11 @@ type UpdateAppPayload {
 type CreateClipsExtensionPayload {
   app: App
   extension: ClipsExtension
+}
+
+type DeleteClipsExtensionPayload {
+  app: App
+  deletedId: ID
 }
 
 type UpdateClipsExtensionPayload {
@@ -320,6 +336,7 @@ type PublishClipsExtensionVersionPayload {
 
 type InstallAppPayload {
   app: App
+  installation: AppInstallation
 }
 
 type InstallClipsExtensionPayload {
@@ -375,8 +392,10 @@ type Mutation {
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
 
   createApp(name: String!): CreateAppPayload!
-  updateApp(id: ID!): UpdateAppPayload!
+  deleteApp(id: ID!): DeleteAppPayload!
+  updateApp(id: ID!, name: String): UpdateAppPayload!
   createClipsExtension(name: String!, appId: ID!): CreateClipsExtensionPayload!
+  deleteClipsExtension(id: ID!): DeleteClipsExtensionPayload!
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
   createClipsExtensionVersion(
     extensionId: ID!
@@ -386,7 +405,11 @@ type Mutation {
     script: String
   ): PublishClipsExtensionVersionPayload!
   installApp(id: ID!): InstallAppPayload!
-  installClipsExtension(id: ID!): InstallClipsExtensionPayload!
+  installClipsExtension(
+    id: ID!
+    appInstallationId: ID!
+    extensionPoint: ClipsExtensionPoint
+  ): InstallClipsExtensionPayload!
 }
 
 schema {
