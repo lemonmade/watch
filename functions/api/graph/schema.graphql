@@ -13,10 +13,6 @@ interface Reviewable {
   notes: Notes
 }
 
-type Image {
-  source: Url
-}
-
 type Episode implements Watchable {
   id: ID!
   title: String!
