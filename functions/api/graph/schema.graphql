@@ -214,10 +214,11 @@ type App {
   extensions: [AppExtension!]!
 }
 
-type ClipExtension {
+type ClipsExtension {
   id: ID!
-  latestVersion: ClipExtensionVersion!
-  versions: [ClipExtensionVersion!]!
+  name: String!
+  latestVersion: ClipsExtensionVersion!
+  versions: [ClipsExtensionVersion!]!
 }
 
 scalar ClipsExtensionApiVersion
@@ -236,7 +237,7 @@ type ClipsExtensionVersion {
   apiVersion: ClipsExtensionApiVersion!
   # allowedExtensionPoints: [ClipsExtensionPoint!]!
   # configurationSchema: ClipsExtensionConfigurationSchema
-  # settings: ClipExtensionSettings
+  # settings: ClipsExtensionSettings
 }
 
 # type ClipsExtensionConfigurationSchema {
@@ -263,7 +264,7 @@ type ClipsExtensionVersion {
 
 # type ClipsExtensionStringConfigurationField implements ClipsExtensionTypedConfigurationField {
 #   name: String!
-#   label: ClipExtensionConfigurationString!
+#   label: ClipsExtensionConfigurationString!
 # }
 
 # union ClipsExtensionConfigurationField = ClipsExtensionStringConfigurationField
@@ -272,7 +273,7 @@ type Asset {
   source: Url!
 }
 
-union AppExtension = ClipExtension
+union AppExtension = ClipsExtension
 
 # scalar ClipsExtensionConfigurationBlob
 
@@ -282,10 +283,48 @@ enum ClipsExtensionVersionStatus {
 }
 
 type ClipsExtensionInstallation {
+  id: ID!
   extension: ClipsExtension!
   version: ClipsExtensionVersion!
   extensionPoint: ClipsExtensionPoint!
   # configuration: ClipsExtensionConfigurationBlob
+}
+
+type CreateAppPayload {
+  app: App
+}
+
+type UpdateAppPayload {
+  app: App
+}
+
+type CreateClipsExtensionPayload {
+  app: App
+  extension: ClipsExtension
+}
+
+type UpdateClipsExtensionPayload {
+  app: App
+  extension: ClipsExtension
+}
+
+type CreateClipsExtensionVersionPayload {
+  extension: ClipsExtension
+  version: ClipsExtensionVersion
+}
+
+type PublishClipsExtensionVersionPayload {
+  extension: ClipsExtension
+  version: ClipsExtensionVersion
+}
+
+type InstallAppPayload {
+  app: App
+}
+
+type InstallClipsExtensionPayload {
+  extension: ClipsExtension
+  installation: ClipsExtensionInstallation
 }
 
 union AppExtensionInstallation = ClipsExtensionInstallation
@@ -335,13 +374,18 @@ type Mutation {
   deleteWatch(id: ID!): DeleteWatchPayload!
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
 
-  createApp(): CreateAppPayload!
+  createApp(name: String!): CreateAppPayload!
   updateApp(id: ID!): UpdateAppPayload!
-  createClipsExtension(): CreateClipsExtensionPayload!
-  updateClipsExtension(id: ID!): UpdateClipsExtensionPayload!
-  createClipsExtensionVersion(id: ID!): CreateClipsExtensionVersionPayload!
-  publishClipsExtensionVersion(id: ID!): PublishClipsExtensionVersionPayload!
-  installApp(id: ID!): InstallClipsExtensionPayload!
+  createClipsExtension(name: String!, appId: ID!): CreateClipsExtensionPayload!
+  updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
+  createClipsExtensionVersion(
+    extensionId: ID!
+  ): CreateClipsExtensionVersionPayload!
+  publishClipsExtensionVersion(
+    id: ID!
+    script: String
+  ): PublishClipsExtensionVersionPayload!
+  installApp(id: ID!): InstallAppPayload!
   installClipsExtension(id: ID!): InstallClipsExtensionPayload!
 }
 
