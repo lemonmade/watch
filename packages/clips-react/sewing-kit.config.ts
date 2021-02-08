@@ -1,9 +1,8 @@
 import {createPackage} from '@sewing-kit/config';
-
 import {quiltPackage} from '@quilted/sewing-kit-plugins';
-import {buildFlexibleOutputs} from '@sewing-kit/plugin-package-flexible-outputs';
+import {publicPackage} from '../../config/sewing-kit/plugins';
 
 export default createPackage((pkg) => {
   pkg.entry({root: './src/index'});
-  pkg.use(quiltPackage({react: true}), buildFlexibleOutputs());
+  pkg.use(quiltPackage({react: true}), publicPackage());
 });
