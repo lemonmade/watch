@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips-react",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
@@ -23,7 +23,7 @@
     "@remote-ui/core": "^1.6.3",
     "@remote-ui/mini-react": "^1.0.13",
     "@remote-ui/react": "^3.0.3",
-    "@watching/clips": "^0.0.4"
+    "@watching/clips": "^0.0.5"
   },
   "peerDependencies": {
     "react": "^17.0.0"
