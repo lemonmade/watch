@@ -214,7 +214,7 @@ type ClipsExtension {
   id: ID!
   name: String!
   app: App!
-  latestVersion: ClipsExtensionVersion!
+  latestVersion: ClipsExtensionVersion
   versions: [ClipsExtensionVersion!]!
 }
 
