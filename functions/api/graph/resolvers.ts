@@ -510,7 +510,7 @@ export const Mutation: Resolver = {
   },
   async installApp(_, {id}: {id: string}, {db, appsLoader}) {
     const [installation] = await db
-      .insert({appId: fromGid(id).id})
+      .insert({appId: fromGid(id).id}, '*')
       .into(Table.AppInstallations);
 
     return {app: await appsLoader.load(fromGid(id).id), installation};
