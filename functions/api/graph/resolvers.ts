@@ -517,7 +517,11 @@ export const Mutation: Resolver = {
   },
   async installClipsExtension(
     _,
-    {id, appInstallationId}: {id: string; appInstallationId: string},
+    {
+      id,
+      appInstallationId,
+      extensionPoint,
+    }: {id: string; appInstallationId: string; extensionPoint: string},
     {db, clipsExtensionsLoader},
   ) {
     const [installation] = await db
@@ -525,6 +529,7 @@ export const Mutation: Resolver = {
         {
           extensionId: fromGid(id).id,
           appInstallId: fromGid(appInstallationId).id,
+          extensionPoint,
         },
         '*',
       )
