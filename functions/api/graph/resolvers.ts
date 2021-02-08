@@ -503,6 +503,11 @@ export const Mutation: Resolver = {
       .into(Table.ClipsExtensionVersions)
       .where({id: fromGid(id).id});
 
+    await db
+      .update({latestVersionId: version.id})
+      .into(Table.ClipsExtensions)
+      .where({id: version.extensionId});
+
     return {
       version,
       extension: await clipsExtensionsLoader.load(version.extensionId),
