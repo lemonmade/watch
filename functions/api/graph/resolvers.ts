@@ -490,6 +490,24 @@ export const Mutation: Resolver = {
       extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
+  async publishClipsExtensionVersion(
+    _,
+    {id, script}: {id: string; script: string},
+    {db, clipsExtensionsLoader},
+  ) {
+    const [version] = await db
+      .update(
+        {status: 'PUBLISHED', ...(script ? {scriptUrl: script} : {})},
+        '*',
+      )
+      .into(Table.ClipsExtensionVersions)
+      .where({id: fromGid(id).id});
+
+    return {
+      version,
+      extension: await clipsExtensionsLoader.load(version.extensionId),
+    };
+  },
   async installApp(_, {id}: {id: string}, {db, appsLoader}) {
     const [installation] = await db
       .insert({appId: fromGid(id).id})
