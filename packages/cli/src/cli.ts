@@ -1,9 +1,6 @@
 import arg from 'arg';
 
-import {build} from './build';
-import {deploy} from './deploy';
-
-const KNOWN_COMMANDS = new Set(['build', 'deploy']);
+const KNOWN_COMMANDS = new Set(['build', 'deploy', 'dev']);
 
 run();
 
@@ -21,12 +18,19 @@ async function run() {
   }
 
   switch (command) {
+    case 'build': {
+      const {build} = await import('./build');
+      await build();
+      break;
+    }
     case 'deploy': {
+      const {deploy} = await import('./deploy');
       await deploy();
       break;
     }
-    case 'build': {
-      await build();
+    case 'dev': {
+      const {dev} = await import('./dev');
+      await dev();
       break;
     }
     default: {

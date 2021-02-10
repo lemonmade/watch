@@ -10,6 +10,7 @@ interface ExtensionConfiguration {
 }
 
 export interface Extension {
+  readonly id: string;
   readonly root: string;
   readonly configuration: ExtensionConfiguration;
 }
@@ -20,6 +21,7 @@ export interface AppConfiguration {
 }
 
 export interface App {
+  readonly id: string;
   readonly root: string;
   readonly extensions: readonly Extension[];
   readonly configuration: AppConfiguration;
@@ -38,14 +40,11 @@ export async function loadApp(): Promise<App> {
   validateAppConfig(configuration);
 
   return {
+    id: configuration.name.toLocaleLowerCase().replace(/\s+/g, '-'),
     root: path.resolve(),
     configuration,
     extensions: await resolveExtensions(configuration.extensions),
   };
-}
-
-export function toId(thing: App | Extension) {
-  return thing.configuration.name.toLocaleLowerCase().replace(/\s+/g, '-');
 }
 
 async function tryLoad<T>(file: string): Promise<T> {
@@ -118,6 +117,7 @@ async function loadExtensionFromDirectory(
   validateExtensionConfig(configuration);
 
   return {
+    id: configuration.name.toLocaleLowerCase().replace(/\s+/g, '-'),
     root: directory,
     configuration,
   };
