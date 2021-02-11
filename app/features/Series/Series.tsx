@@ -111,6 +111,14 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
+      <Clip
+        local
+        extensionPoint="Watch::Series::Details"
+        version="unstable"
+        api={{}}
+        components={{Text, View}}
+        script="http://localhost:3000/assets/survivor-season-rankings.js"
+      />
       {clipsInstallations.map(({id, version}) => (
         <Clip
           key={id}
