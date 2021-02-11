@@ -31,10 +31,25 @@ export async function dev() {
 
 function createDevServer(app: App) {
   let stats: any;
+  const webSockets = new Set<WebSocket>();
 
   const expressApp = express();
 
   const compiler = webpack(createWebpackConfiguration(app));
+
+  compiler.hooks.compile.tap('ClipsDevServer', () => {
+    send(webSockets, 'compile');
+  });
+
+  compiler.hooks.invalid.tap('ClipsDevServer', () => {
+    send(webSockets, 'compile');
+  });
+
+  compiler.hooks.done.tap('ClipsDevServer', (newStats) => {
+    stats = newStats.toJson();
+    sendStats(webSockets);
+  });
+
   expressApp.use(webpackDevMiddleware(compiler as any));
 
   const httpServer = createHttpServer(expressApp);
@@ -100,8 +115,6 @@ function createDevServer(app: App) {
       noServer: true,
       path: '/ws',
     });
-
-    const webSockets = new Set<WebSocket>();
 
     server.on('upgrade', (request, socket, head) => {
       if (!webSocketServer.shouldHandle(request)) return;
@@ -227,6 +240,6 @@ function send<T extends keyof MessageMap>(
 ) {
   for (const socket of sockets) {
     if (socket.readyState !== 1) continue;
-    socket.send({type, data: data ?? {}});
+    socket.send(JSON.stringify({type, data: data ?? {}}));
   }
 }

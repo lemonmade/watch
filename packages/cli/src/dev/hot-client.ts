@@ -18,7 +18,8 @@ interface HotClient {
   ): () => void;
 }
 
-(self as any).HOT_CLIENT = createHotClient();
+const hotClient = createHotClient();
+hotClient.start();
 
 export function createHotClient(): HotClient {
   let hash: string | undefined;

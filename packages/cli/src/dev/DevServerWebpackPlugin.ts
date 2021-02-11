@@ -36,7 +36,7 @@ export class DevServerWebpackPlugin {
       );
 
       const definePlugin = new DefinePlugin({
-        __DEV_SERVER_HOT_ENDPOINT__: 'ws://localhost:3000/assets/ws',
+        __DEV_SERVER_HOT_ENDPOINT__: JSON.stringify('ws://localhost:3000/ws'),
       });
       definePlugin.apply(compiler);
 
