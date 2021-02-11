@@ -31,7 +31,7 @@
   --zest-spacing-large: 1.5rem;
   --zest-spacing-extra-large: 2rem;
 
-  --zest-border: 1px solid var(--color-action-active);
+  --zest-border: 1px solid var(--zest-color-action-active);
 }
 
 *,
