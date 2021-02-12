@@ -1,6 +1,6 @@
 {
   "name": "@watching/cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
@@ -18,7 +18,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
     "@iarna/toml": "^3.0.0",
-    "@watching/webpack-hot-worker": "^0.1.0",
+    "@watching/webpack-hot-worker": "^0.1.1",
     "arg": "^5.0.0",
     "babel-loader": "^8.0.0",
     "express": "^4.17.0",
