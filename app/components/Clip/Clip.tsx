@@ -33,13 +33,13 @@ type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   >;
 };
 
-interface Props<T extends ExtensionPoint> {
+export interface Props<T extends ExtensionPoint> {
   extensionPoint: T;
   version: ClipsExtensionApiVersion;
   script: string;
   api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
   components: ReactComponentsForRuntimeExtension<T>;
-  local?: boolean;
+  local?: string;
 }
 
 export function Clip<T extends ExtensionPoint>({
@@ -94,7 +94,7 @@ function ClipInternal<T extends ExtensionPoint>({
   api,
   components,
   onReload,
-  local = false,
+  local,
 }: InternalProps<T>) {
   const sandbox = useWorker(createSandbox);
 
@@ -128,23 +128,34 @@ function ClipInternal<T extends ExtensionPoint>({
     <RemoteRenderer controller={controller} receiver={receiver} />
   );
 
-  return local ? <LocalDevelopment>{content}</LocalDevelopment> : content;
+  return local ? (
+    <ClipLocalDev socketUrl={local} onReload={onReload}>
+      {content}
+    </ClipLocalDev>
+  ) : (
+    content
+  );
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-function LocalDevelopment({
+function ClipLocalDev({
+  socketUrl,
   children,
-}: PropsWithChildren<Record<string, unknown>>) {
+  onReload,
+}: PropsWithChildren<
+  {socketUrl: string} & Pick<InternalProps<any>, 'onReload'>
+>) {
   const [buildState, setBuildState] = useState<EventMap['done']>();
   const [compiling, setCompiling] = useState(false);
 
   useEffect(() => {
-    const webSocket = createDevServerWebSocket({url: 'ws://localhost:3000/'});
+    const webSocket = createDevServerWebSocket({url: socketUrl});
 
     const doneWithDone = webSocket.on('done', (buildState) => {
       if (buildState.status === 'unchanged') return;
       setBuildState(buildState);
       setCompiling(false);
+      onReload?.();
     });
 
     const doneWithConnect = webSocket.on('connect', (connectionState) => {
@@ -164,7 +175,7 @@ function LocalDevelopment({
       doneWithCompiling();
       webSocket.stop();
     };
-  }, []);
+  }, [socketUrl, onReload]);
 
   return (
     <div className={styles.LocalClip}>

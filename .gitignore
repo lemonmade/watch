@@ -11,5 +11,6 @@ packages/*/*.esnext
 .sewing-kit
 build
 cdk.out
-app/graphql/types/*
-app/**/*.graphql.d.ts
+app/graphql/types*
+**/*.graphql.d.ts
+packages/cli/src/dev/schema-types.d.ts

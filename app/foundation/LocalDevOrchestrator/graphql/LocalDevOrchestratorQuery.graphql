@@ -1,0 +1,10 @@
+query LocalDevOrchestrator {
+  app {
+    extensions {
+      socketUrl
+      assets {
+        source
+      }
+    }
+  }
+}

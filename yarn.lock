@@ -2957,10 +2957,10 @@
     "@quilted/sewing-kit-plugins" "^0.2.6"
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/graphql@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@quilted/graphql/-/graphql-0.2.0.tgz#b7e11ca1a3332b3a814de4c7541dc77c503a93d8"
-  integrity sha512-T0QYBgHoL6/zzvydqgCKVXQ/A5/g97S+DU169XPSVKjCE9nLKeH3udPC67LYn9QTQpgHKKeX6p/dssoz0X/sLg==
+"@quilted/graphql@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@quilted/graphql/-/graphql-0.2.3.tgz#8aef8ac6ecca4d9990af2d2b99ee9fb1fa6d3e62"
+  integrity sha512-SOPcuzZfXq337I4WX+JLUZL+KE3JTEDmAgF/Xkh6QH1WdADpTHmY415kqm77r182au5OxJkkrSMb5/0vmnocxg==
   dependencies:
     "@babel/generator" ">=7.0.0"
     "@babel/types" ">=7.0.0"
@@ -3004,30 +3004,30 @@
   resolved "https://registry.yarnpkg.com/@quilted/preact-mini-compat/-/preact-mini-compat-0.1.3.tgz#ad650272895073927cca192ad580e67cb2ffcf04"
   integrity sha512-dPHS3w39l+xXSezYFTkLLvw9VOSaRCG79UxMTY7WzvC7Csd/bsS1QmlDEzo1b+YTAXm3fGpc33iYpTH6XtCyOw==
 
-"@quilted/quilt@^0.2.0":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.2.9.tgz#5e2a84b13d9ec292ce5f948734fbe7a6b42ec7cd"
-  integrity sha512-i0zRK3R9YcYanE7O1ryRIRsv7jpWUNJC1R1n/qk2+rP/ohyVaFPEZBKuWyjDG9yYJi03YqkyP69fdkUpHzAYiw==
+"@quilted/quilt@^0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.2.14.tgz#7860a398a90b1e725395d264cc1313ea4fbc0f94"
+  integrity sha512-WZXI6LtLYaKkRNzJLKpyKDvUzkUmfcUSgLvW0F4NEHLqYSYXQIT/E6oYzgf2hRjOp8RPC7Jjcj5OLiG1J2e4AQ==
   dependencies:
     "@quilted/async" "^0.2.0"
-    "@quilted/graphql" "^0.2.0"
+    "@quilted/graphql" "^0.2.3"
     "@quilted/polyfills" "^0.0.5"
     "@quilted/preact-mini-compat" "^0.1.3"
-    "@quilted/react-async" "^0.2.3"
+    "@quilted/react-async" "^0.2.4"
     "@quilted/react-auto-headings" "^0.2.1"
-    "@quilted/react-graphql" "^0.2.3"
+    "@quilted/react-graphql" "^0.2.7"
     "@quilted/react-html" "^0.2.1"
     "@quilted/react-http" "^0.1.1"
     "@quilted/react-idle" "^0.2.1"
     "@quilted/react-router" "^0.2.4"
     "@quilted/react-server-render" "^0.2.1"
-    "@quilted/react-testing" "^0.2.3"
+    "@quilted/react-testing" "^0.2.5"
     "@quilted/react-web-workers" "^0.2.1"
 
-"@quilted/react-async@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@quilted/react-async/-/react-async-0.2.3.tgz#9ef77f827fd413e2f424f2ea9e8a074d7ff2567d"
-  integrity sha512-B5xypnc8zkKQBEzJf4YGLe+FSgWbJJ4N5ZwIC1HB2dIyTSd1I5AjHvoFH8/WoMDQcN0jYfRG27aCerlntUw0jQ==
+"@quilted/react-async@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@quilted/react-async/-/react-async-0.2.4.tgz#e9ceac669982445e918e6888c5a5b96f7a544543"
+  integrity sha512-eVpdrNuQK4FA4cicvUW5h/0GWIUfGS8DfV7ihmhhpvGTRD9ptKSkPfxuqqOXNMef3BHHRspZlunY3OI54Lbu3A==
   dependencies:
     "@quilted/async" "^0.2.0"
     "@quilted/react-html" "^0.2.1"
@@ -3039,13 +3039,13 @@
   resolved "https://registry.yarnpkg.com/@quilted/react-auto-headings/-/react-auto-headings-0.2.1.tgz#2ba485d09a602d6aac359401522e67d592ad791b"
   integrity sha512-bO/UYpF1dR3XTcNboBwInq4+XchjKqXsum7sphUH9IkSGoS1c/+2hRRxNY3KGa3cp63Iw4iNLBXEfl2mv4XAlA==
 
-"@quilted/react-graphql@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@quilted/react-graphql/-/react-graphql-0.2.3.tgz#5360aec12fd465bd707dbd1fb901a93718cf8d85"
-  integrity sha512-wVIIVLlML3K7yBFJJ8nXsaVKOvPFi93jAZgYx8HPPY8rtcFcSRxyOyT1Afsjd7bCZ+djQIi2esmIu52IEMAI3A==
+"@quilted/react-graphql@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@quilted/react-graphql/-/react-graphql-0.2.7.tgz#df4a1fa62981f46304b9a2f7c50f3dcaa0231463"
+  integrity sha512-TLNk6wwEc324qRLPlN4T8k/GwC7mPq3j4TSekU0OvQyf6q7xVFOIn8rjVoN66p6YVuldHKLts30CRy73DJgMVw==
   dependencies:
-    "@quilted/graphql" "^0.2.0"
-    "@quilted/react-async" "^0.2.3"
+    "@quilted/graphql" "^0.2.3"
+    "@quilted/react-async" "^0.2.4"
     "@quilted/useful-types" "^0.1.0"
 
 "@quilted/react-html@^0.2.1":
@@ -3092,6 +3092,17 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@quilted/react-testing/-/react-testing-0.2.3.tgz#db845ce3f20866fae5bb539bc5c44874bdd3c101"
   integrity sha512-+bOOn7/qLK2uo5kEv+i6xrk0dIeYSPnkTIAz4g3lr1hGeu/+ZG+WuyyaO23A3FnCP9q4LX5nXVXPU5Q69m7bCw==
+  dependencies:
+    "@sewing-kit/plugins" "^0.1.6"
+    "@types/react-test-renderer" "^17.0.0"
+    jest-matcher-utils "^26.6.2"
+    react-reconciler "^0.26.0"
+    react-test-renderer "^17.0.0"
+
+"@quilted/react-testing@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@quilted/react-testing/-/react-testing-0.2.5.tgz#a1f1df17ad67acc580bf94da9eaa75f876ca72af"
+  integrity sha512-ij0a6pOC4PcX91VnBFzzbxQG3tRk2zP4FcUE5ANUlgGhkP9JJCelKnHtKY8spKq9LUg94W7admgyUdKMcSsfiw==
   dependencies:
     "@sewing-kit/plugins" "^0.1.6"
     "@types/react-test-renderer" "^17.0.0"
@@ -5413,7 +5424,7 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.3.tgz#beca005408f642ebebea80b042b4d18d2ac0ee6b"
   integrity sha512-GkTiFpjFtUzU9CbMeJ5iazkCzGL3jrhzerzZIuqLABjbwRaFt33I9tUdSNryIptM+RxDet6OKm2WnLXzW51KsQ==
 
-body-parser@1.19.0:
+body-parser@1.19.0, body-parser@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
   integrity sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw==

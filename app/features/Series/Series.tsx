@@ -9,7 +9,9 @@ import {
 } from '@lemon/zest';
 
 import {Link, Clip} from 'components';
+import type {ClipProps} from 'components';
 import {parseGid} from 'utilities/graphql';
+import {useLocalDevExtensionsContext} from 'utilities/local-dev';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
@@ -28,6 +30,8 @@ export function Series({id}: Props) {
   const startWatchThrough = useMutation(startWatchThroughMutation);
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
+
+  const localExtension = useLocalDevExtensionsContext('Watch::Series::Details');
 
   if (data?.series == null) {
     return null;
@@ -111,16 +115,37 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
-      {clipsInstallations.map(({id, version}) => (
-        <Clip
+      {localExtension.map(({script, version, socketUrl}) => (
+        <SeriesDetailsClip
           key={id}
-          extensionPoint="Watch::Series::Details"
+          version={version}
+          script={script}
+          local={socketUrl}
+        />
+      ))}
+      {clipsInstallations.map(({id, version}) => (
+        <SeriesDetailsClip
+          key={id}
           version={version.apiVersion}
-          api={{}}
-          components={{Text, View}}
           script={version.assets[0].source}
         />
       ))}
     </BlockStack>
+  );
+}
+
+function SeriesDetailsClip(
+  props: Pick<
+    ClipProps<'Watch::Series::Details'>,
+    'script' | 'version' | 'local'
+  >,
+) {
+  return (
+    <Clip
+      api={{}}
+      extensionPoint="Watch::Series::Details"
+      components={{Text, View}}
+      {...props}
+    />
   );
 }

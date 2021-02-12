@@ -7,6 +7,7 @@ export type {
   AllowedComponentsForExtensionPoint,
 } from './extension-points';
 export type {
+  Version,
   StandardApi,
   AnyApi,
   SeasonDetailsApi,
