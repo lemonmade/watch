@@ -22,6 +22,16 @@ export async function dev() {
 function createDevServer(app: App) {
   const expressApp = express();
 
+  expressApp.use((request, response, next) => {
+    if (request.path !== '/manifest') {
+      next();
+      return;
+    }
+
+    response.json({app});
+    response.end();
+  });
+
   const compiler = webpack(createWebpackConfiguration(app));
   expressApp.use(webpackDevMiddleware(compiler as any));
 
