@@ -115,12 +115,6 @@ function createWebpackConfiguration(app: App): Configuration {
     output: {
       publicPath: 'http://localhost:3000/assets/',
     },
-    plugins: [
-      ...(baseConfig.plugins ?? []),
-      new DevServerWebpackPlugin({
-        socketUrl: 'ws://localhost:3000',
-        hotEntry: '@watching/cli/hot-worker',
-      }),
-    ],
+    plugins: [...(baseConfig.plugins ?? []), new DevServerWebpackPlugin()],
   };
 }

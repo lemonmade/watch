@@ -1,4 +1,5 @@
 import {useMemo, useEffect, useState} from 'react';
+import type {PropsWithChildren} from 'react';
 import type {IdentifierForRemoteComponent} from '@remote-ui/core';
 import {
   useWorker,
@@ -13,6 +14,8 @@ import type {
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
+import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
+import type {EventMap} from '@watching/webpack-hot-worker/websocket';
 import {createWorkerFactory, expose} from '@remote-ui/web-workers';
 import type {ClipsExtensionApiVersion} from 'graphql/types';
 
@@ -125,13 +128,51 @@ function ClipInternal<T extends ExtensionPoint>({
     <RemoteRenderer controller={controller} receiver={receiver} />
   );
 
-  return local ? (
-    <div className={styles.LocalClip}>
-      <p className={styles.LocalClipHeading}>Local extension</p>
-      {content}
-    </div>
-  ) : (
-    content
-  );
+  return local ? <LocalDevelopment>{content}</LocalDevelopment> : content;
 }
 /* eslint-enable react-hooks/exhaustive-deps */
+
+function LocalDevelopment({
+  children,
+}: PropsWithChildren<Record<string, unknown>>) {
+  const [buildState, setBuildState] = useState<EventMap['done']>();
+  const [compiling, setCompiling] = useState(false);
+
+  useEffect(() => {
+    const webSocket = createDevServerWebSocket({url: 'ws://localhost:3000/'});
+
+    const doneWithDone = webSocket.on('done', (buildState) => {
+      if (buildState.status === 'unchanged') return;
+      setBuildState(buildState);
+      setCompiling(false);
+    });
+
+    const doneWithConnect = webSocket.on('connect', (connectionState) => {
+      if (connectionState.status === 'building') return;
+      setBuildState(connectionState);
+    });
+
+    const doneWithCompiling = webSocket.on('compile', () => {
+      setCompiling(true);
+    });
+
+    webSocket.start();
+
+    return () => {
+      doneWithDone();
+      doneWithConnect();
+      doneWithCompiling();
+      webSocket.stop();
+    };
+  }, []);
+
+  return (
+    <div className={styles.LocalClip}>
+      <p className={styles.LocalClipHeading}>
+        Local extension ({compiling ? 'compiling... ' : ''}
+        {JSON.stringify(buildState)})
+      </p>
+      {children}
+    </div>
+  );
+}
