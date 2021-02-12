@@ -1,9 +1,6 @@
 import {DefinePlugin, EntryPlugin, HotModuleReplacementPlugin} from 'webpack';
 import type {Compiler} from 'webpack';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ParserHelpers = require('webpack/lib/ParserHelpers');
-
 const PLUGIN = 'DevServerWebpackPlugin';
 
 export interface Options {
@@ -25,25 +22,22 @@ export class DevServerWebpackPlugin {
         ));
 
     if (shouldInject) {
-      compiler.hooks.make.tapPromise(
-        'WatchDevServerPlugin',
-        async (compilation) => {
-          await new Promise<void>((resolve, reject) => {
-            compilation.addEntry(
-              compiler.context,
-              EntryPlugin.createDependency(hotEntry!, {}),
-              {},
-              (error) => {
-                if (error) {
-                  reject(error);
-                } else {
-                  resolve();
-                }
-              },
-            );
-          });
-        },
-      );
+      compiler.hooks.make.tapPromise(PLUGIN, async (compilation) => {
+        await new Promise<void>((resolve, reject) => {
+          compilation.addEntry(
+            compiler.context,
+            EntryPlugin.createDependency(hotEntry!, {}),
+            {},
+            (error) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve();
+              }
+            },
+          );
+        });
+      });
 
       if (socketUrl) {
         const definePlugin = new DefinePlugin({
@@ -51,29 +45,6 @@ export class DevServerWebpackPlugin {
         });
         definePlugin.apply(compiler);
       }
-
-      compiler.hooks.compilation.tap(PLUGIN, (_, {normalModuleFactory}) => {
-        const handler = (parser: any) => {
-          parser.hooks.evaluateIdentifier.for('module.hot').tap(
-            {
-              name: PLUGIN,
-              before: 'NodeStuffPlugin',
-            } as any,
-            (expr: any) =>
-              ParserHelpers.evaluateToIdentifier(
-                'module.hot',
-                Boolean(parser.state.compilation.hotUpdateChunkTemplate),
-              )(expr),
-          );
-        };
-
-        normalModuleFactory.hooks.parser
-          .for('javascript/auto')
-          .tap(PLUGIN, handler);
-        normalModuleFactory.hooks.parser
-          .for('javascript/dynamic')
-          .tap(PLUGIN, handler);
-      });
 
       if (
         !compilerOptions.plugins?.some(
