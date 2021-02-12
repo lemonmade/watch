@@ -5,8 +5,8 @@ import {publicPackage} from '../../config/sewing-kit/plugins';
 export default createPackage((pkg) => {
   pkg.runtime(Runtime.Node);
   pkg.entry({
-    root: 'src/dev/hot-client',
-    name: 'hot-client',
+    root: 'src/hot-worker',
+    name: 'hot-worker',
     runtime: Runtime.WebWorker,
   });
   pkg.binary({name: 'watchapp', root: 'src/cli'});

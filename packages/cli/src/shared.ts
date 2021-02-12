@@ -4,17 +4,6 @@ import {readFile, stat} from 'fs/promises';
 import {sync as glob} from 'glob';
 import {parse} from '@iarna/toml';
 
-interface ExtensionConfiguration {
-  readonly name: string;
-  readonly userConfiguration?: unknown;
-}
-
-export interface Extension {
-  readonly id: string;
-  readonly root: string;
-  readonly configuration: ExtensionConfiguration;
-}
-
 export interface AppConfiguration {
   readonly name: string;
   readonly extensions?: string | readonly string[];
@@ -25,6 +14,17 @@ export interface App {
   readonly root: string;
   readonly extensions: readonly Extension[];
   readonly configuration: AppConfiguration;
+}
+
+interface ExtensionConfiguration {
+  readonly name: string;
+  readonly userConfiguration?: unknown;
+}
+
+export interface Extension {
+  readonly id: string;
+  readonly root: string;
+  readonly configuration: ExtensionConfiguration;
 }
 
 interface ExtensionEntry {

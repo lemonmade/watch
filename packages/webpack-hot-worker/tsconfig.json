@@ -9,5 +9,5 @@
   },
   "include": ["src", "../../config/typescript/globals.d.ts"],
   "exclude": ["**/tests/**/*.ts", "**/tests/**/*.tsx"],
-  "references": [{"path": "../webpack-hot-worker"}]
+  "references": []
 }
