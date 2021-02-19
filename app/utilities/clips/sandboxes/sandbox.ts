@@ -5,6 +5,7 @@ import {endpoint as untypedEndpoint} from '@remote-ui/web-workers/worker';
 
 import type {
   ClipsApi,
+  Version,
   ExtensionPoint,
   ExtensionPoints,
   ApiForExtensionPoint,
@@ -15,15 +16,15 @@ const registeredExtensions = new Map<
   ExtensionPoints[keyof ExtensionPoints]
 >();
 
-const endpoint: Endpoint<{reload(): void}> = untypedEndpoint as any;
-endpoint.callable('reload');
+const endpoint: Endpoint<{restart(): void}> = untypedEndpoint as any;
+endpoint.callable('restart');
 
 const clips: ClipsApi = Object.freeze({
   extend(extensionPoint, extend) {
     registeredExtensions.set(extensionPoint, extend);
   },
-  reload() {
-    endpoint.call.reload();
+  restart() {
+    endpoint.call.restart();
   },
 });
 
@@ -36,7 +37,7 @@ Reflect.defineProperty(self, 'clips', {
 
 declare const importScripts: (script: string) => void;
 
-export function load(script: string) {
+export function load(script: string, _: Version) {
   importScripts(script);
 }
 
