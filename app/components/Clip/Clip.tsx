@@ -1,12 +1,7 @@
-import {useMemo, useEffect, useState} from 'react';
+import {useMemo, useEffect, useState, useRef} from 'react';
 import type {PropsWithChildren} from 'react';
 import type {IdentifierForRemoteComponent} from '@remote-ui/core';
-import {
-  useWorker,
-  createController,
-  RemoteRenderer,
-  RemoteReceiver,
-} from '@remote-ui/react/host';
+import {createController, RemoteRenderer} from '@remote-ui/react/host';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
 import type {
   AnyComponent,
@@ -16,14 +11,12 @@ import type {
 } from '@watching/clips';
 import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
 import type {EventMap} from '@watching/webpack-hot-worker/websocket';
-import {createWorkerFactory, expose} from '@remote-ui/web-workers';
+
 import type {ClipsExtensionApiVersion} from 'graphql/types';
+import {useRenderSandbox} from 'utilities/clips';
+import type {RenderController} from 'utilities/clips';
 
 import styles from './Clip.css';
-
-export const createSandbox = createWorkerFactory(() =>
-  import(/* webpackChunkName: 'ExtensionSandbox' */ './sandbox'),
-);
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -42,94 +35,33 @@ export interface Props<T extends ExtensionPoint> {
   local?: string;
 }
 
+/* eslint-disable react-hooks/exhaustive-deps */
 export function Clip<T extends ExtensionPoint>({
   extensionPoint,
   version,
   script,
-  ...rest
-}: Props<T>) {
-  const [key, refreshExtension] = useExtensionKey({
-    extensionPoint,
-    version,
-    script,
-  });
-
-  return (
-    <ClipInternal
-      key={key}
-      extensionPoint={extensionPoint}
-      version={version}
-      script={script}
-      {...rest}
-      onReload={refreshExtension}
-    />
-  );
-}
-
-function useExtensionKey<T extends ExtensionPoint>({
-  extensionPoint,
-  version,
-  script,
-}: Pick<Props<T>, 'extensionPoint' | 'version' | 'script'>): [
-  string,
-  () => void,
-] {
-  const [reloadId, setReloadId] = useState(0);
-
-  return [
-    `${extensionPoint}_${version}_${script}_${reloadId}`,
-    () => setReloadId((id) => id + 1),
-  ];
-}
-
-interface InternalProps<T extends ExtensionPoint> extends Props<T> {
-  onReload?(): void;
-}
-
-/* eslint-disable react-hooks/exhaustive-deps */
-function ClipInternal<T extends ExtensionPoint>({
-  extensionPoint,
-  version,
-  script,
+  local,
   api,
   components,
-  onReload,
-  local,
-}: InternalProps<T>) {
-  const sandbox = useWorker(createSandbox);
+}: Props<T>) {
+  const controller = useMemo(() => createController(components), [
+    extensionPoint,
+  ]);
 
-  const {controller, receiver} = useMemo(
-    () => ({
-      receiver: new RemoteReceiver(),
-      controller: createController(components),
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    expose(sandbox, {
-      reload() {
-        onReload?.();
-      },
-    });
-
-    (async () => {
-      await sandbox.load(script);
-      await sandbox.render(
-        extensionPoint,
-        receiver.receive,
-        Object.keys(components),
-        {...api, version, extensionPoint} as any,
-      );
-    })();
-  }, [sandbox]);
+  const [receiver, sandboxController] = useRenderSandbox({
+    api,
+    components,
+    extensionPoint,
+    version: version as any,
+    script,
+  });
 
   const content = (
     <RemoteRenderer controller={controller} receiver={receiver} />
   );
 
   return local ? (
-    <ClipLocalDev socketUrl={local} onReload={onReload}>
+    <ClipLocalDev socketUrl={local} controller={sandboxController}>
       {content}
     </ClipLocalDev>
   ) : (
@@ -141,21 +73,24 @@ function ClipInternal<T extends ExtensionPoint>({
 function ClipLocalDev({
   socketUrl,
   children,
-  onReload,
-}: PropsWithChildren<
-  {socketUrl: string} & Pick<InternalProps<any>, 'onReload'>
->) {
+  controller,
+}: PropsWithChildren<{
+  socketUrl: string;
+  controller: RenderController;
+}>) {
   const [buildState, setBuildState] = useState<EventMap['done']>();
   const [compiling, setCompiling] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [forcedHeight, setForcedHeight] = useState<number | undefined>();
 
   useEffect(() => {
     const webSocket = createDevServerWebSocket({url: socketUrl});
 
     const doneWithDone = webSocket.on('done', (buildState) => {
+      setCompiling(false);
       if (buildState.status === 'unchanged') return;
       setBuildState(buildState);
-      setCompiling(false);
-      onReload?.();
+      controller.restart();
     });
 
     const doneWithConnect = webSocket.on('connect', (connectionState) => {
@@ -165,6 +100,7 @@ function ClipLocalDev({
 
     const doneWithCompiling = webSocket.on('compile', () => {
       setCompiling(true);
+      setForcedHeight(containerRef.current?.getBoundingClientRect().height);
     });
 
     webSocket.start();
@@ -175,7 +111,13 @@ function ClipLocalDev({
       doneWithCompiling();
       webSocket.stop();
     };
-  }, [socketUrl, onReload]);
+  }, [socketUrl, controller]);
+
+  useEffect(() => {
+    return controller.on('render', () => {
+      setForcedHeight(undefined);
+    });
+  }, [controller]);
 
   return (
     <div className={styles.LocalClip}>
@@ -183,7 +125,12 @@ function ClipLocalDev({
         Local extension ({compiling ? 'compiling... ' : ''}
         {JSON.stringify(buildState)})
       </p>
-      {children}
+      <div
+        ref={containerRef}
+        style={forcedHeight ? {minHeight: `${forcedHeight}px`} : undefined}
+      >
+        {children}
+      </div>
     </div>
   );
 }
