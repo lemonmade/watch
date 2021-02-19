@@ -5,6 +5,8 @@ module.exports = {
     'build/',
     'packages/*/*.d.ts',
     'packages/*/build/',
+    'app/graphql/types*',
+    '**/*.graphql.d.ts',
     '!**/.eslintrc.js',
   ],
   settings: {

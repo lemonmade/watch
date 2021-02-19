@@ -20,6 +20,6 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^1.6.3"
+    "@remote-ui/core": "^2.0.0"
   }
 }

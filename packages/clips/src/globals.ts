@@ -5,11 +5,13 @@ export interface ClipsApi {
     extensionPoint: ExtensionPoint,
     extend: ExtensionPoints[ExtensionPoint],
   ): void;
-  reload(): void;
+  restart(): void;
+}
+
+export interface ClipsGlobal {
+  readonly clips: ClipsApi;
 }
 
 declare global {
-  interface WorkerGlobalScope {
-    readonly clips: ClipsApi;
-  }
+  interface WorkerGlobalScope extends ClipsGlobal {}
 }

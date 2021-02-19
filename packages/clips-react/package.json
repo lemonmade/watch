@@ -20,12 +20,12 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^1.6.0",
-    "@remote-ui/mini-react": "^1.0.17",
+    "@remote-ui/core": "^2.0.0",
+    "@remote-ui/mini-react": "^1.2.0",
     "@watching/clips": "^0.0.5"
   },
   "peerDependencies": {
-    "@remote-ui/react": "^3.0.0",
+    "@remote-ui/react": "^4.0.0",
     "react": "^17.0.0"
   },
   "peerDependenciesMeta": {

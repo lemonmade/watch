@@ -1,0 +1,25 @@
+scalar Url
+scalar Version
+
+type Asset {
+  source: Url!
+}
+
+type Extension {
+  id: ID!
+  assets: [Asset!]!
+  socketUrl: Url
+}
+
+type App {
+  extensions: [Extension!]!
+}
+
+type Query {
+  version: Version!
+  app: App!
+}
+
+schema {
+  query: Query
+}
