@@ -4,13 +4,17 @@ import {createGraphQL, createHttpFetch} from '@quilted/quilt';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {useInitialUrl} from '@quilted/react-router';
 
-import {LocalDevExtensionsContext} from 'utilities/local-dev';
+import {LocalDevelopmentClipsContext} from 'utilities/clips';
 
-import localDevOrchestratorQuery from './graphql/LocalDevOrchestratorQuery.graphql';
+import localDevelopmentOrchestratorQuery from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
 
-export function LocalDevOrchestrator({children}: {children?: ReactNode}) {
+export function LocalDevelopmentOrchestrator({
+  children,
+}: {
+  children?: ReactNode;
+}) {
   const [extensions, setExtensions] = useState<
-    ContextType<typeof LocalDevExtensionsContext>
+    ContextType<typeof LocalDevelopmentClipsContext>
   >([]);
   const url = useInitialUrl();
 
@@ -27,7 +31,7 @@ export function LocalDevOrchestrator({children}: {children?: ReactNode}) {
           fetch: createHttpFetch({uri: devUrl.href}),
         });
 
-        const {data} = await graphql.query(localDevOrchestratorQuery);
+        const {data} = await graphql.query(localDevelopmentOrchestratorQuery);
 
         if (!valid || data == null) return;
 
@@ -53,8 +57,8 @@ export function LocalDevOrchestrator({children}: {children?: ReactNode}) {
   }, [url]);
 
   return (
-    <LocalDevExtensionsContext.Provider value={extensions}>
+    <LocalDevelopmentClipsContext.Provider value={extensions}>
       {children}
-    </LocalDevExtensionsContext.Provider>
+    </LocalDevelopmentClipsContext.Provider>
   );
 }

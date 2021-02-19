@@ -3088,18 +3088,7 @@
   dependencies:
     "@types/react" "^17.0.0"
 
-"@quilted/react-testing@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@quilted/react-testing/-/react-testing-0.2.3.tgz#db845ce3f20866fae5bb539bc5c44874bdd3c101"
-  integrity sha512-+bOOn7/qLK2uo5kEv+i6xrk0dIeYSPnkTIAz4g3lr1hGeu/+ZG+WuyyaO23A3FnCP9q4LX5nXVXPU5Q69m7bCw==
-  dependencies:
-    "@sewing-kit/plugins" "^0.1.6"
-    "@types/react-test-renderer" "^17.0.0"
-    jest-matcher-utils "^26.6.2"
-    react-reconciler "^0.26.0"
-    react-test-renderer "^17.0.0"
-
-"@quilted/react-testing@^0.2.5":
+"@quilted/react-testing@^0.2.3", "@quilted/react-testing@^0.2.5":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@quilted/react-testing/-/react-testing-0.2.5.tgz#a1f1df17ad67acc580bf94da9eaa75f876ca72af"
   integrity sha512-ij0a6pOC4PcX91VnBFzzbxQG3tRk2zP4FcUE5ANUlgGhkP9JJCelKnHtKY8spKq9LUg94W7admgyUdKMcSsfiw==
@@ -4064,15 +4053,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^17.0.0":
-  version "17.0.1"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.1.tgz#eb1f1407dea8da3bc741879c1192aa703ab9975b"
-  integrity sha512-w8t9f53B2ei4jeOqf/gxtc2Sswnc3LBK5s0DyJcg5xd10tMHXts2N31cKjWfH9IC/JvEPa/YF1U4YeP1t4R6HQ==
-  dependencies:
-    "@types/prop-types" "*"
-    csstype "^3.0.2"
-
-"@types/react@>=17.0.0 <18.0.0":
+"@types/react@*", "@types/react@>=17.0.0 <18.0.0", "@types/react@^17.0.0":
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.2.tgz#3de24c4efef902dd9795a49c75f760cbe4f7a5a8"
   integrity sha512-Xt40xQsrkdvjn1EyWe1Bc0dJLcil/9x2vAuW7ya+PuQip4UYUaXyhzWmAbwRsdMgwOFHpfp7/FFZebDU6Y8VHA==

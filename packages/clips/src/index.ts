@@ -14,6 +14,6 @@ export type {
   SeriesDetailsApi,
   WatchThroughDetailsApi,
 } from './api';
-export type {ClipsApi} from './globals';
+export type {ClipsApi, ClipsGlobal} from './globals';
 export {extend} from './extend';
 export * from './components';

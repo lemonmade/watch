@@ -7,12 +7,12 @@ export interface Extension {
   readonly socketUrl?: string;
 }
 
-export const LocalDevExtensionsContext = createContext<readonly Extension[]>(
+export const LocalDevelopmentClipsContext = createContext<readonly Extension[]>(
   [],
 );
 
-export function useLocalDevExtensionsContext<T extends ExtensionPoint>(
-  extensionPoint: T,
+export function useLocalDevelopmentClips<T extends ExtensionPoint>(
+  _extensionPoint: T,
 ) {
-  return useContext(LocalDevExtensionsContext);
+  return useContext(LocalDevelopmentClipsContext);
 }

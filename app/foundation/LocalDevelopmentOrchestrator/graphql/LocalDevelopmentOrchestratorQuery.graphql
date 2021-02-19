@@ -1,4 +1,4 @@
-query LocalDevOrchestrator {
+query LocalDevelopmentOrchestrator {
   app {
     extensions {
       socketUrl

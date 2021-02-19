@@ -11,7 +11,7 @@ import {
 import {Link, Clip} from 'components';
 import type {ClipProps} from 'components';
 import {parseGid} from 'utilities/graphql';
-import {useLocalDevExtensionsContext} from 'utilities/local-dev';
+import {useLocalDevelopmentClips} from 'utilities/clips';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
@@ -31,7 +31,9 @@ export function Series({id}: Props) {
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
 
-  const localExtension = useLocalDevExtensionsContext('Watch::Series::Details');
+  const localDevelopmentClips = useLocalDevelopmentClips(
+    'Watch::Series::Details',
+  );
 
   if (data?.series == null) {
     return null;
@@ -115,7 +117,7 @@ export function Series({id}: Props) {
           Start watch through
         </Button>
       </View>
-      {localExtension.map(({script, version, socketUrl}) => (
+      {localDevelopmentClips.map(({script, version, socketUrl}) => (
         <SeriesDetailsClip
           key={id}
           version={version}

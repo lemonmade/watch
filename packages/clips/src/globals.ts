@@ -8,8 +8,10 @@ export interface ClipsApi {
   restart(): void;
 }
 
+export interface ClipsGlobal {
+  readonly clips: ClipsApi;
+}
+
 declare global {
-  interface WorkerGlobalScope {
-    readonly clips: ClipsApi;
-  }
+  interface WorkerGlobalScope extends ClipsGlobal {}
 }

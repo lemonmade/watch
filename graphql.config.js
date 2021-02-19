@@ -4,7 +4,7 @@ module.exports = {
       schema: 'functions/api/graph/schema.graphql',
       documents: 'app/**/*.graphql',
       exclude: [
-        'app/foundation/LocalDevOrchestrator/graphql/LocalDevOrchestratorQuery.graphql',
+        'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       ],
       extensions: {
         quilt: {
@@ -18,7 +18,7 @@ module.exports = {
     cli: {
       schema: 'packages/cli/src/dev/schema.graphql',
       documents:
-        'app/foundation/LocalDevOrchestrator/graphql/LocalDevOrchestratorQuery.graphql',
+        'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       extensions: {
         quilt: {
           schemaTypes: [
