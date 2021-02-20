@@ -1,3 +1,4 @@
+export {App} from './App';
 export {Button} from './Button';
 export {CollapseGroup} from './CollapseGroup';
 export {ContextualMenu} from './ContextualMenu';
@@ -6,6 +7,7 @@ export {Frame} from './Frame';
 export {MediaGrid} from './MediaGrid';
 export {NavigationList, NavigationListItem} from './NavigationList';
 export {Page} from './Page';
+export {Popover, PopoverSheet} from './Popover';
 export {Poster} from './Poster';
 export {Rating} from './Rating';
 export {SpacingScale} from './SpacingScale';

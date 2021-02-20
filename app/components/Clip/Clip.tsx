@@ -10,13 +10,11 @@ import type {
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
 import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
-import type {EventMap} from '@watching/webpack-hot-worker/websocket';
+import {Popover, PopoverSheet, Button, View, TextBlock} from '@lemon/zest';
 
 import type {ClipsExtensionApiVersion} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
 import type {RenderController} from 'utilities/clips';
-
-import styles from './Clip.css';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -61,16 +59,16 @@ export function Clip<T extends ExtensionPoint>({
   );
 
   return local ? (
-    <ClipLocalDev socketUrl={local} controller={sandboxController}>
+    <ClipLocalDevelopment socketUrl={local} controller={sandboxController}>
       {content}
-    </ClipLocalDev>
+    </ClipLocalDevelopment>
   ) : (
     content
   );
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-function ClipLocalDev({
+function ClipLocalDevelopment({
   socketUrl,
   children,
   controller,
@@ -78,7 +76,7 @@ function ClipLocalDev({
   socketUrl: string;
   controller: RenderController;
 }>) {
-  const [buildState, setBuildState] = useState<EventMap['done']>();
+  const [timings, setTimings] = useState<RenderController['timings']>();
   const [compiling, setCompiling] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [forcedHeight, setForcedHeight] = useState<number | undefined>();
@@ -89,13 +87,7 @@ function ClipLocalDev({
     const doneWithDone = webSocket.on('done', (buildState) => {
       setCompiling(false);
       if (buildState.status === 'unchanged') return;
-      setBuildState(buildState);
       controller.restart();
-    });
-
-    const doneWithConnect = webSocket.on('connect', (connectionState) => {
-      if (connectionState.status === 'building') return;
-      setBuildState(connectionState);
     });
 
     const doneWithCompiling = webSocket.on('compile', () => {
@@ -107,7 +99,6 @@ function ClipLocalDev({
 
     return () => {
       doneWithDone();
-      doneWithConnect();
       doneWithCompiling();
       webSocket.stop();
     };
@@ -116,21 +107,56 @@ function ClipLocalDev({
   useEffect(() => {
     return controller.on('render', () => {
       setForcedHeight(undefined);
+      setTimings({...controller.timings});
     });
   }, [controller]);
 
   return (
-    <div className={styles.LocalClip}>
-      <p className={styles.LocalClipHeading}>
-        Local extension ({compiling ? 'compiling... ' : ''}
-        {JSON.stringify(buildState)})
-      </p>
+    <View>
+      <Popover>
+        <Button>Local extension {compiling ? '(compiling)' : ''}</Button>
+        <PopoverSheet>
+          <LocalDevelopmentDetails timings={timings} />
+        </PopoverSheet>
+      </Popover>
       <div
         ref={containerRef}
         style={forcedHeight ? {minHeight: `${forcedHeight}px`} : undefined}
       >
         {children}
       </div>
-    </div>
+    </View>
+  );
+}
+
+function LocalDevelopmentDetails({
+  timings,
+}: {
+  timings?: RenderController['timings'];
+}) {
+  if (timings == null) {
+    return null;
+  }
+
+  return (
+    <View>
+      {timings.start ? (
+        <TextBlock>
+          sandbox started: {new Date(timings.start).toLocaleTimeString()}
+          {timings.loadEnd
+            ? ` (finished in ${timings.loadEnd - timings.start}ms)`
+            : null}
+        </TextBlock>
+      ) : null}
+
+      {timings.renderStart ? (
+        <TextBlock>
+          render started: {new Date(timings.renderStart).toLocaleTimeString()}
+          {timings.renderEnd
+            ? ` (finished in ${timings.renderEnd - timings.renderStart}ms)`
+            : null}
+        </TextBlock>
+      ) : null}
+    </View>
   );
 }
