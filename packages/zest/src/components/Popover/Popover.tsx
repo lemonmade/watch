@@ -16,6 +16,7 @@ import type {ImplicitAction} from '../../utilities/actions';
 import styles from './Popover.css';
 
 const PopoverActiveContext = createContext(false);
+const PopoverIdContext = createContext<string | undefined>(undefined);
 const PopoverIgnoreElementsContext = createContext<Set<RefObject<Element>>>(
   new Set(),
 );
@@ -53,9 +54,11 @@ export function Popover({children}: PropsWithChildren<PopoverProps>) {
   return (
     <PopoverActiveContext.Provider value={active}>
       <PopoverIgnoreElementsContext.Provider value={ignore.current}>
-        <ImplicitActionContext.Provider value={implicitAction}>
-          <PopoverTrigger>{children}</PopoverTrigger>
-        </ImplicitActionContext.Provider>
+        <PopoverIdContext.Provider value={id}>
+          <ImplicitActionContext.Provider value={implicitAction}>
+            <PopoverTrigger>{children}</PopoverTrigger>
+          </ImplicitActionContext.Provider>
+        </PopoverIdContext.Provider>
       </PopoverIgnoreElementsContext.Provider>
     </PopoverActiveContext.Provider>
   );
@@ -78,9 +81,10 @@ interface PopoverSheetProps {}
 export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
   const active = useContext(PopoverActiveContext);
   const ref = useIgnoreRef<HTMLDivElement>();
+  const id = useContext(PopoverIdContext);
 
   return active ? (
-    <div className={styles.PopoverSheet} ref={ref}>
+    <div className={styles.PopoverSheet} id={id} ref={ref}>
       {children}
     </div>
   ) : null;
