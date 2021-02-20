@@ -20,7 +20,7 @@ export function Button({id, children, primary, onPress}: Props) {
     <button
       type="button"
       className={classes(styles.Button, primary && styles.primary)}
-      onPointerUp={() => {
+      onClick={() => {
         if (onPress) {
           onPress();
         } else {

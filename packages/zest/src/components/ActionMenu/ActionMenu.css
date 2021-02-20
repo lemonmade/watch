@@ -1,0 +1,40 @@
+.ActionMenu {
+  margin: 0;
+  padding: var(--zest-spacing-mini);
+  list-style: none;
+  display: grid;
+  gap: var(--zest-spacing-mini);
+}
+
+.ActionMenuItem {
+}
+
+.ActionMenuItemAction {
+  appearance: none;
+  border: none;
+  display: block;
+  background: none;
+  transition: background 0.2s ease;
+  font-size: 1rem;
+  color: var(--zest-color-text);
+  padding: var(--zest-spacing-mini);
+  display: block;
+  width: 100%;
+  border-radius: var(--zest-border-radius);
+  overflow: hidden;
+  text-align: start;
+}
+
+.ActionMenuItemAction:focus {
+  outline: none;
+}
+
+.ActionMenuItemAction:focus-visible,
+.ActionMenuItemAction:hover {
+  background: var(--zest-color-action-active);
+}
+
+.ActionMenuItemAction:focus-visible,
+.ActionMenuItemAction:active {
+  background: var(--zest-color-action-primary-active);
+}

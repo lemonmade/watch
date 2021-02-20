@@ -20,6 +20,8 @@ import {
   TextBlock,
   Section,
   Text,
+  ActionMenu,
+  ActionMenuItem,
 } from '@lemon/zest';
 
 import type {ClipsExtensionApiVersion} from 'graphql/types';
@@ -83,13 +85,54 @@ export function Clip<T extends ExtensionPoint>({
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-interface InstalledClipProps extends ClipFrameProps {}
+interface InstalledClipProps
+  extends Omit<
+    ClipFrameProps,
+    'renderPopoverContent' | 'renderPopoverActions'
+  > {}
 
-function InstalledClip(props: PropsWithChildren<InstalledClipProps>) {
-  return <ClipFrame {...props} />;
+function InstalledClip({
+  controller,
+  ...rest
+}: PropsWithChildren<InstalledClipProps>) {
+  return (
+    <ClipFrame
+      {...rest}
+      controller={controller}
+      renderPopoverActions={() => (
+        <>
+          <ActionMenuItem
+            // eslint-disable-next-line no-alert
+            onPress={() => alert('App page not implemented yet!')}
+          >
+            View app
+          </ActionMenuItem>
+          <ActionMenuItem onPress={() => controller.restart()}>
+            Restart
+          </ActionMenuItem>
+          <ActionMenuItem
+            // eslint-disable-next-line no-alert
+            onPress={() => alert('Uninstall not implemented yet!')}
+          >
+            Uninstall
+          </ActionMenuItem>
+          <ActionMenuItem
+            // eslint-disable-next-line no-alert
+            onPress={() => alert('Reporting not implemented yet!')}
+          >
+            Report an issue
+          </ActionMenuItem>
+        </>
+      )}
+    />
+  );
 }
 
-interface LocalDevelopmentClipProps extends ClipFrameProps {
+interface LocalDevelopmentClipProps
+  extends Omit<
+    ClipFrameProps,
+    'renderPopoverContent' | 'renderPopoverActions'
+  > {
   socketUrl: string;
 }
 
@@ -153,6 +196,11 @@ function LocalDevelopmentClip({
           buildState={buildState}
         />
       )}
+      renderPopoverActions={() => (
+        <ActionMenuItem onPress={() => controller.restart()}>
+          Restart
+        </ActionMenuItem>
+      )}
     >
       <div
         ref={containerRef}
@@ -187,6 +235,7 @@ interface ClipFrameProps {
   script: string;
   controller: RenderController;
   renderPopoverContent?(): ReactNode;
+  renderPopoverActions?(): ReactNode;
 }
 
 function ClipFrame({
@@ -195,8 +244,10 @@ function ClipFrame({
   controller,
   children,
   renderPopoverContent,
+  renderPopoverActions,
 }: PropsWithChildren<ClipFrameProps>) {
-  const additionalSheetContents = renderPopoverContent?.() ?? null;
+  const additionalSectionContents = renderPopoverContent?.() ?? null;
+  const actionContents = renderPopoverActions?.() ?? null;
 
   return (
     <BlockStack spacing="small">
@@ -208,9 +259,10 @@ function ClipFrame({
             <Section>
               <ClipTimings controller={controller} />
             </Section>
-            {additionalSheetContents && (
-              <Section>{additionalSheetContents}</Section>
+            {additionalSectionContents && (
+              <Section>{additionalSectionContents}</Section>
             )}
+            {actionContents && <ActionMenu>{actionContents}</ActionMenu>}
           </PopoverSheet>
         </Popover>
       </View>

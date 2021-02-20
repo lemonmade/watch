@@ -21,7 +21,6 @@
 }
 
 .primary {
-  color: var(--zest-color-text);
   padding: 0 var(--zest-spacing);
   background: var(--zest-color-action-primary);
 }
