@@ -43,7 +43,8 @@ function createDevServer(app: App) {
           return {
             extensions: app.extensions.map((extension) => {
               return {
-                id: extension.id,
+                id: `gid://ClipsLocalDevelopment/Extension/${extension.id}`,
+                name: extension.configuration.name,
                 socketUrl: 'ws://localhost:3000/',
                 assets: [
                   {source: `http://localhost:3000/assets/${extension.id}.js`},

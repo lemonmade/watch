@@ -1,4 +1,5 @@
-import {useRouter, useQuery, useMutation} from '@quilted/quilt';
+import {useMemo} from 'react';
+import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
 import {
   View,
   Button,
@@ -14,6 +15,7 @@ import {parseGid} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
+import type {SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
@@ -23,10 +25,29 @@ interface Props {
 }
 
 export function Series({id}: Props) {
-  const router = useRouter();
   const {data} = useQuery(seriesQuery, {
     variables: {id},
   });
+
+  if (data?.series == null) {
+    return null;
+  }
+
+  const {series, clipsInstallations} = data;
+
+  return (
+    <SeriesWithData series={series} clipsInstallations={clipsInstallations} />
+  );
+}
+
+function SeriesWithData({
+  series,
+  clipsInstallations,
+}: {
+  series: NonNullable<SeriesQueryData['series']>;
+  clipsInstallations: SeriesQueryData['clipsInstallations'];
+}) {
+  const navigate = useNavigate();
   const startWatchThrough = useMutation(startWatchThroughMutation);
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
@@ -35,11 +56,11 @@ export function Series({id}: Props) {
     'Watch::Series::Details',
   );
 
-  if (data?.series == null) {
-    return null;
-  }
-
-  const {series, clipsInstallations} = data;
+  const apiForClips = useMemo<
+    ClipProps<'Watch::Series::Details'>['api']
+  >(() => {
+    return {series: {id: series.id, name: series.name}};
+  }, [series]);
 
   return (
     <BlockStack>
@@ -80,9 +101,7 @@ export function Series({id}: Props) {
                   const watchThroughId =
                     data?.startWatchThrough?.watchThrough?.id;
                   if (watchThroughId)
-                    router.navigate(
-                      `/watchthrough/${parseGid(watchThroughId).id}`,
-                    );
+                    navigate(`/watchthrough/${parseGid(watchThroughId).id}`);
                 }}
               >
                 Start season watch through
@@ -109,29 +128,33 @@ export function Series({id}: Props) {
 
             const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
             if (watchThroughId)
-              router.navigate(
-                `/watchthrough/${watchThroughId.split('/').pop()}`,
-              );
+              navigate(`/watchthrough/${watchThroughId.split('/').pop()}`);
           }}
         >
           Start watch through
         </Button>
       </View>
-      {localDevelopmentClips.map(({script, version, socketUrl}) => (
-        <SeriesDetailsClip
-          key={id}
-          version={version}
-          script={script}
-          local={socketUrl}
-        />
-      ))}
-      {clipsInstallations.map(({id, version}) => (
-        <SeriesDetailsClip
-          key={id}
-          version={version.apiVersion}
-          script={version.assets[0].source}
-        />
-      ))}
+      <BlockStack spacing="large">
+        {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
+          <SeriesDetailsClip
+            key={id}
+            api={apiForClips}
+            name={name}
+            version={version}
+            script={script}
+            local={socketUrl}
+          />
+        ))}
+        {clipsInstallations.map(({id, version, extension}) => (
+          <SeriesDetailsClip
+            key={id}
+            api={apiForClips}
+            name={extension.name}
+            version={version.apiVersion}
+            script={version.assets[0].source}
+          />
+        ))}
+      </BlockStack>
     </BlockStack>
   );
 }
@@ -139,12 +162,11 @@ export function Series({id}: Props) {
 function SeriesDetailsClip(
   props: Pick<
     ClipProps<'Watch::Series::Details'>,
-    'script' | 'version' | 'local'
+    'script' | 'version' | 'local' | 'api' | 'name'
   >,
 ) {
   return (
     <Clip
-      api={{}}
       extensionPoint="Watch::Series::Details"
       components={{Text, View}}
       {...props}

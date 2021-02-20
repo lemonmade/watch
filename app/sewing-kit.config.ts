@@ -19,7 +19,7 @@ export default createWebApp((app) => {
       // eslint-disable-next-line no-warning-comments
       // TODO: this option doesn't work with fast refresh because it still configures
       // react-refresh
-      preact: true,
+      // preact: true,
       autoServer: {port: 3003},
       assetServer: {port: 3002},
       cdn: CDN_ROOT,

@@ -1,6 +1,8 @@
 query LocalDevelopmentOrchestrator {
   app {
     extensions {
+      id
+      name
       socketUrl
       assets {
         source

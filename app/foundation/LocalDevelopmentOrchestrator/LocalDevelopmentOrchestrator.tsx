@@ -31,7 +31,14 @@ export function LocalDevelopmentOrchestrator({
           fetch: createHttpFetch({uri: devUrl.href}),
         });
 
-        const {data} = await graphql.query(localDevelopmentOrchestratorQuery);
+        const {data, error} = await graphql.query(
+          localDevelopmentOrchestratorQuery,
+        );
+
+        if (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
 
         if (!valid || data == null) return;
 
@@ -40,6 +47,8 @@ export function LocalDevelopmentOrchestrator({
         setExtensions(
           app.extensions.map((extension) => {
             return {
+              id: extension.id,
+              name: extension.name,
               version: 'unstable',
               script: extension.assets[0].source,
               socketUrl: extension.socketUrl ?? undefined,

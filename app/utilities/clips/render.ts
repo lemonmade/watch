@@ -40,6 +40,7 @@ export interface RenderControllerTiming extends SandboxControllerTiming {
 }
 
 export interface RenderController {
+  readonly id: string;
   readonly timings: RenderControllerTiming;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
   on(
@@ -89,6 +90,9 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         get renderEnd() {
           return timings?.renderEnd;
         },
+      },
+      get id() {
+        return controller.id;
       },
       get state() {
         if (timings) {

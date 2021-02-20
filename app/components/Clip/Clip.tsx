@@ -1,5 +1,5 @@
 import {useMemo, useEffect, useState, useRef} from 'react';
-import type {PropsWithChildren} from 'react';
+import type {PropsWithChildren, ReactNode} from 'react';
 import type {IdentifierForRemoteComponent} from '@remote-ui/core';
 import {createController, RemoteRenderer} from '@remote-ui/react/host';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
@@ -10,7 +10,17 @@ import type {
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
 import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
-import {Popover, PopoverSheet, Button, View, TextBlock} from '@lemon/zest';
+import type {EventMap} from '@watching/webpack-hot-worker/websocket';
+import {
+  Popover,
+  PopoverSheet,
+  BlockStack,
+  Button,
+  View,
+  TextBlock,
+  Section,
+  Text,
+} from '@lemon/zest';
 
 import type {ClipsExtensionApiVersion} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
@@ -26,6 +36,7 @@ type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
 
 export interface Props<T extends ExtensionPoint> {
   extensionPoint: T;
+  name: string;
   version: ClipsExtensionApiVersion;
   script: string;
   api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
@@ -35,6 +46,7 @@ export interface Props<T extends ExtensionPoint> {
 
 /* eslint-disable react-hooks/exhaustive-deps */
 export function Clip<T extends ExtensionPoint>({
+  name,
   extensionPoint,
   version,
   script,
@@ -54,39 +66,59 @@ export function Clip<T extends ExtensionPoint>({
     script,
   });
 
-  const content = (
-    <RemoteRenderer controller={controller} receiver={receiver} />
-  );
-
   return local ? (
-    <ClipLocalDevelopment socketUrl={local} controller={sandboxController}>
-      {content}
-    </ClipLocalDevelopment>
+    <LocalDevelopmentClip
+      name={name}
+      socketUrl={local}
+      controller={sandboxController}
+      script={script}
+    >
+      <RemoteRenderer controller={controller} receiver={receiver} />
+    </LocalDevelopmentClip>
   ) : (
-    content
+    <InstalledClip name={name} controller={sandboxController} script={script}>
+      <RemoteRenderer controller={controller} receiver={receiver} />
+    </InstalledClip>
   );
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-function ClipLocalDevelopment({
+interface InstalledClipProps extends ClipFrameProps {}
+
+function InstalledClip(props: PropsWithChildren<InstalledClipProps>) {
+  return <ClipFrame {...props} />;
+}
+
+interface LocalDevelopmentClipProps extends ClipFrameProps {
+  socketUrl: string;
+}
+
+type BuildState = EventMap['connect'];
+
+function LocalDevelopmentClip({
   socketUrl,
   children,
   controller,
-}: PropsWithChildren<{
-  socketUrl: string;
-  controller: RenderController;
-}>) {
-  const [timings, setTimings] = useState<RenderController['timings']>();
+  ...rest
+}: PropsWithChildren<LocalDevelopmentClipProps>) {
   const [compiling, setCompiling] = useState(false);
+  const [buildState, setBuildState] = useState<BuildState | undefined>(
+    undefined,
+  );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [forcedHeight, setForcedHeight] = useState<number | undefined>();
 
   useEffect(() => {
     const webSocket = createDevServerWebSocket({url: socketUrl});
 
+    const doneWithConnect = webSocket.on('connect', (buildState) => {
+      setBuildState(buildState);
+    });
+
     const doneWithDone = webSocket.on('done', (buildState) => {
       setCompiling(false);
       if (buildState.status === 'unchanged') return;
+      setBuildState(buildState);
       controller.restart();
     });
 
@@ -98,6 +130,7 @@ function ClipLocalDevelopment({
     webSocket.start();
 
     return () => {
+      doneWithConnect();
       doneWithDone();
       doneWithCompiling();
       webSocket.stop();
@@ -107,36 +140,91 @@ function ClipLocalDevelopment({
   useEffect(() => {
     return controller.on('render', () => {
       setForcedHeight(undefined);
-      setTimings({...controller.timings});
     });
   }, [controller]);
 
   return (
-    <View>
-      <Popover>
-        <Button>Local extension {compiling ? '(compiling)' : ''}</Button>
-        <PopoverSheet>
-          <LocalDevelopmentDetails timings={timings} />
-        </PopoverSheet>
-      </Popover>
+    <ClipFrame
+      controller={controller}
+      {...rest}
+      renderPopoverContent={() => (
+        <LocalDevelopmentOverview
+          compiling={compiling}
+          buildState={buildState}
+        />
+      )}
+    >
       <div
         ref={containerRef}
         style={forcedHeight ? {minHeight: `${forcedHeight}px`} : undefined}
       >
         {children}
       </div>
-    </View>
+    </ClipFrame>
   );
 }
 
-function LocalDevelopmentDetails({
-  timings,
-}: {
-  timings?: RenderController['timings'];
-}) {
-  if (timings == null) {
-    return null;
+interface LocalDevelopmentOverviewProps {
+  compiling: boolean;
+  buildState?: BuildState;
+}
+
+function LocalDevelopmentOverview({
+  compiling,
+  buildState,
+}: LocalDevelopmentOverviewProps) {
+  if (buildState == null) {
+    return <Text>Connecting to local development server...</Text>;
+  } else if (compiling) {
+    return <Text>Compiling...</Text>;
   }
+
+  return <Text>{JSON.stringify(buildState)}</Text>;
+}
+
+interface ClipFrameProps {
+  name: string;
+  script: string;
+  controller: RenderController;
+  renderPopoverContent?(): ReactNode;
+}
+
+function ClipFrame({
+  name,
+  script,
+  controller,
+  children,
+  renderPopoverContent,
+}: PropsWithChildren<ClipFrameProps>) {
+  const additionalSheetContents = renderPopoverContent?.() ?? null;
+
+  return (
+    <BlockStack spacing="small">
+      <View>
+        <Popover>
+          <Button>{name}</Button>
+          <PopoverSheet>
+            <Section>Script: {script}</Section>
+            <Section>
+              <ClipTimings controller={controller} />
+            </Section>
+            {additionalSheetContents && (
+              <Section>{additionalSheetContents}</Section>
+            )}
+          </PopoverSheet>
+        </Popover>
+      </View>
+      <View>{children}</View>
+    </BlockStack>
+  );
+}
+
+interface ClipTimingsProps {
+  controller: RenderController;
+}
+
+function ClipTimings({controller}: ClipTimingsProps) {
+  const timings = useTimings(controller);
 
   return (
     <View>
@@ -159,4 +247,43 @@ function LocalDevelopmentDetails({
       ) : null}
     </View>
   );
+}
+
+function useTimings(controller: RenderController) {
+  const [state, setState] = useState<{
+    id: RenderController['id'];
+    timings: RenderController['timings'];
+    controller: RenderController;
+  }>(() => ({
+    id: controller.id,
+    timings: {...controller.timings},
+    controller,
+  }));
+
+  let timings = state.timings;
+
+  if (state.controller !== controller) {
+    timings = {...controller.timings};
+    setState({controller, timings, id: controller.id});
+  }
+
+  useEffect(() => {
+    const checkForUpdates = () => {
+      setState((currentState) => {
+        if (currentState.id === controller.id) return currentState;
+
+        return {
+          controller,
+          id: controller.id,
+          timings: {...controller.timings},
+        };
+      });
+    };
+
+    checkForUpdates();
+
+    return controller.on('render', () => checkForUpdates());
+  }, [controller]);
+
+  return timings;
 }

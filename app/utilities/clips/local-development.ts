@@ -2,6 +2,8 @@ import {createContext, useContext} from 'react';
 import type {Version, ExtensionPoint} from '@watching/clips';
 
 export interface Extension {
+  readonly id: string;
+  readonly name: string;
   readonly version: Version;
   readonly script: string;
   readonly socketUrl?: string;

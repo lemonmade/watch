@@ -17,5 +17,5 @@
 }
 
 .spacingLarge {
-  --Stack-spacing: var(--zest-spacing-small);
+  --Stack-spacing: var(--zest-spacing-large);
 }
