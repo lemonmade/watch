@@ -1,0 +1,15 @@
+.PopoverTrigger {
+  position: relative;
+}
+
+.PopoverSheet {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 500;
+  background: var(--zest-color-surface-raised-2);
+  border-radius: var(--zest-border-radius);
+  padding: var(--zest-spacing);
+  max-width: 20rem;
+  word-break: break-all;
+}
