@@ -1294,7 +1294,7 @@ async function createSignedClipsVersionUpload({
     : await db
         .insert(
           {
-            extensionId: fromGid(extensionId).id,
+            extensionId,
             scriptUrl: `https://watch-test.lemon.tools/${path}`,
             status: 'BUILDING',
           },

@@ -1,7 +1,7 @@
 import '@quilted/polyfills/fetch.node';
 
 import * as path from 'path';
-import {createReadStream, statSync} from 'fs';
+import {statSync} from 'fs';
 import {readFile} from 'fs/promises';
 import {createHash} from 'crypto';
 
@@ -129,17 +129,14 @@ async function deployExtension(
   }
 
   if (assetUploadUrl == null) {
-    // eslint-disable-next-line no-console
-    console.error('No signed URL');
-    process.exitCode = 1;
-    return;
+    throw new Error('Nowhere to upload built extension :/');
   }
 
   await fetch(assetUploadUrl, {
     method: 'PUT',
-    body: createReadStream('') as any,
+    body: scriptContents,
     headers: {
-      'Content-Length': String(statSync('').size),
+      'Content-Length': String(scriptContents.length),
     },
   });
 }
