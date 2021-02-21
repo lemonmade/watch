@@ -417,7 +417,6 @@ type Mutation {
   installApp(id: ID!): InstallAppPayload!
   installClipsExtension(
     id: ID!
-    appInstallationId: ID!
     extensionPoint: ClipsExtensionPoint
   ): InstallClipsExtensionPayload!
 }

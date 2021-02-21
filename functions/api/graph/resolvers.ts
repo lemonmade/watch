@@ -588,18 +588,30 @@ export const Mutation: Resolver = {
   },
   async installClipsExtension(
     _,
-    {
-      id,
-      appInstallationId,
-      extensionPoint,
-    }: {id: string; appInstallationId: string; extensionPoint: string},
+    {id, extensionPoint}: {id: string; extensionPoint: string},
     {db, clipsExtensionsLoader},
   ) {
+    const [appInstallation] = await db
+      .select({id: 'AppInstallations.id'})
+      .from(Table.ClipsExtensions)
+      .join(
+        Table.AppInstallations,
+        'AppInstallations.appId',
+        '=',
+        'ClipsExtensions.appId',
+      )
+      .where({'ClipsExtensions.id': fromGid(id).id})
+      .limit(1);
+
+    if (appInstallation == null) {
+      throw new Error(`You must install the app for extension ${id} first`);
+    }
+
     const [installation] = await db
       .insert(
         {
           extensionId: fromGid(id).id,
-          appInstallId: fromGid(appInstallationId).id,
+          appInstallId: appInstallation.id,
           extensionPoint,
         },
         '*',
