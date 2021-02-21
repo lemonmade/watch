@@ -600,7 +600,7 @@ export const Mutation: Resolver = {
 
     return {
       version,
-      extension: await clipsExtensionsLoader.load(version.extensionId),
+      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
   async installApp(_, {id}: {id: string}, {db, appsLoader}) {
