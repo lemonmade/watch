@@ -499,8 +499,8 @@ export const Mutation: Resolver = {
       .select('*')
       .from(Table.ClipsExtensionVersions)
       .where({
-        id: fromGid(extensionId).id,
         status: 'BUILDING',
+        extensionId: fromGid(extensionId).id,
       })
       .limit(1);
 
