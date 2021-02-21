@@ -503,12 +503,12 @@ export const Mutation: Resolver = {
 
     const s3Client = new S3Client({region: 'us-east-1'});
 
-    const path = `clips/${details.id}/${toParam(name ?? details.name)}.${
+    const path = `assets/clips/${details.id}/${toParam(name ?? details.name)}.${
       fromGid(extensionId).id
     }.${hash}.js`;
 
     const putCommand = new PutObjectCommand({
-      Bucket: 'clips',
+      Bucket: 'watch-assets-clips',
       Key: path,
       ContentType: getType(path) ?? 'application/javascript',
       CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
@@ -525,7 +525,7 @@ export const Mutation: Resolver = {
       .insert(
         {
           extensionId: fromGid(extensionId).id,
-          scriptUrl: `https://watch-test.lemon.tools/assets/${path}`,
+          scriptUrl: `https://watch-test.lemon.tools/${path}`,
         },
         '*',
       )
