@@ -594,7 +594,7 @@ export const Mutation: Resolver = {
         trx
           .update({latestVersionId: version.id})
           .into(Table.ClipsExtensions)
-          .where({id: version.extensionId}),
+          .where({id: fromGid(extensionId).id}),
       ]);
     });
 
