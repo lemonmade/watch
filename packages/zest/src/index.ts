@@ -7,6 +7,7 @@ export {
   Item,
   BlockStack,
   InlineStack,
+  Pressable,
   Section,
   Text,
   TextBlock,

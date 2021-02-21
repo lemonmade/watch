@@ -15,18 +15,18 @@ import {
   Popover,
   PopoverSheet,
   BlockStack,
-  Button,
   View,
   TextBlock,
   Section,
   Text,
   ActionMenu,
-  ActionMenuItem,
+  Pressable,
 } from '@lemon/zest';
 
 import type {ClipsExtensionApiVersion} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
-import type {RenderController} from 'utilities/clips';
+import type {RenderController, ExtensionSandbox} from 'utilities/clips';
+import type {ArrayElement, ThenType} from 'utilities/types';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -101,27 +101,25 @@ function InstalledClip({
       controller={controller}
       renderPopoverActions={() => (
         <>
-          <ActionMenuItem
+          <Pressable
             // eslint-disable-next-line no-alert
             onPress={() => alert('App page not implemented yet!')}
           >
             View app
-          </ActionMenuItem>
-          <ActionMenuItem onPress={() => controller.restart()}>
-            Restart
-          </ActionMenuItem>
-          <ActionMenuItem
+          </Pressable>
+          <Pressable onPress={() => controller.restart()}>Restart</Pressable>
+          <Pressable
             // eslint-disable-next-line no-alert
             onPress={() => alert('Uninstall not implemented yet!')}
           >
             Uninstall
-          </ActionMenuItem>
-          <ActionMenuItem
+          </Pressable>
+          <Pressable
             // eslint-disable-next-line no-alert
             onPress={() => alert('Reporting not implemented yet!')}
           >
             Report an issue
-          </ActionMenuItem>
+          </Pressable>
         </>
       )}
     />
@@ -197,9 +195,7 @@ function LocalDevelopmentClip({
         />
       )}
       renderPopoverActions={() => (
-        <ActionMenuItem onPress={() => controller.restart()}>
-          Restart
-        </ActionMenuItem>
+        <Pressable onPress={() => controller.restart()}>Restart</Pressable>
       )}
     >
       <div
@@ -240,7 +236,6 @@ interface ClipFrameProps {
 
 function ClipFrame({
   name,
-  script,
   controller,
   children,
   renderPopoverContent,
@@ -253,9 +248,8 @@ function ClipFrame({
     <BlockStack spacing="small">
       <View>
         <Popover>
-          <Button>{name}</Button>
+          <Pressable>{name}</Pressable>
           <PopoverSheet>
-            <Section>Script: {script}</Section>
             <Section>
               <ClipTimings controller={controller} />
             </Section>
@@ -277,6 +271,7 @@ interface ClipTimingsProps {
 
 function ClipTimings({controller}: ClipTimingsProps) {
   const timings = useTimings(controller);
+  const scripts = useSandboxScripts(controller);
 
   return (
     <View>
@@ -297,8 +292,88 @@ function ClipTimings({controller}: ClipTimingsProps) {
             : null}
         </TextBlock>
       ) : null}
+
+      <View>
+        {scripts.map((script) => (
+          <DownloadedScript key={script.name} script={script} />
+        ))}
+      </View>
     </View>
   );
+}
+
+type Script = ArrayElement<
+  ThenType<ReturnType<ExtensionSandbox['getResourceTimingEntries']>>
+>;
+
+// @see https://github.com/sindresorhus/pretty-bytes/blob/main/index.js
+const BYTE_UNITS = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+function prettyBytes(bytes: number) {
+  const exponent = Math.min(
+    Math.floor(Math.log10(bytes) / 3),
+    BYTE_UNITS.length - 1,
+  );
+
+  const normalized = bytes / 1000 ** exponent;
+
+  return `${normalized.toLocaleString(undefined, {maximumFractionDigits: 2})} ${
+    BYTE_UNITS[exponent]
+  }`;
+}
+
+function DownloadedScript({
+  script: {name, duration, encodedBodySize},
+}: {
+  script: Script;
+}) {
+  const sizePrefix = encodedBodySize
+    ? `${prettyBytes(encodedBodySize)} `
+    : null;
+  return (
+    <TextBlock>
+      {name} ({sizePrefix}downloaded in{' '}
+      {duration.toLocaleString(undefined, {maximumFractionDigits: 2})}ms)
+    </TextBlock>
+  );
+}
+
+function useSandboxScripts(controller: RenderController) {
+  const [scripts, setScripts] = useState<Script[]>([]);
+
+  useEffect(() => {
+    let activeIndex = 0;
+
+    const doneWithRestart = controller.on('start', () => {
+      activeIndex += 1;
+    });
+
+    const doneWithRender = controller.on('render', () => {
+      loadScripts();
+    });
+
+    if (controller.state === 'rendered') {
+      loadScripts();
+    }
+
+    return () => {
+      doneWithRestart();
+      doneWithRender();
+      activeIndex += 1;
+    };
+
+    async function loadScripts() {
+      const startIndex = activeIndex;
+
+      const entries = await controller.sandbox.getResourceTimingEntries();
+
+      if (startIndex !== activeIndex) return;
+
+      setScripts(entries);
+    }
+  }, [controller]);
+
+  return scripts;
 }
 
 function useTimings(controller: RenderController) {

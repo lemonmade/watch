@@ -1,5 +1,5 @@
 export {App} from './App';
-export {ActionMenu, ActionMenuItem} from './ActionMenu';
+export {ActionMenu} from './ActionMenu';
 export {Button} from './Button';
 export {CollapseGroup} from './CollapseGroup';
 export {ContextualMenu} from './ContextualMenu';

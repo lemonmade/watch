@@ -89,7 +89,13 @@ function createDevServer(app: App) {
   });
 
   const compiler = webpack(createWebpackConfiguration(app));
-  expressApp.use(webpackDevMiddleware(compiler as any));
+  expressApp.use(
+    webpackDevMiddleware(compiler as any, {
+      headers: {
+        'Timing-Allow-Origin': '*',
+      },
+    }),
+  );
 
   const httpServer = createHttpServer(expressApp);
   let webSocketServer: ReturnType<typeof createWebSocketServer> | undefined;

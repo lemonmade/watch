@@ -26,6 +26,8 @@ export interface SandboxController {
   on(event: 'start' | 'stop' | 'load', handler: () => void): () => void;
 }
 
+export type ExtensionSandbox = Omit<Sandbox, 'load'>;
+
 type Writable<T> = {-readonly [K in keyof T]: T[K]};
 
 export function useExtensionSandbox({script, version}: Options) {
@@ -38,8 +40,10 @@ export function useExtensionSandbox({script, version}: Options) {
 
     start();
 
-    const sandboxProxy: Omit<Sandbox, 'load'> = {
+    const sandboxProxy: ExtensionSandbox = {
       render: (...args) => call('render', ...args),
+      getResourceTimingEntries: (...args) =>
+        call('getResourceTimingEntries', ...args),
     };
 
     const sandboxController: SandboxController = {

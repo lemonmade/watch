@@ -15,6 +15,7 @@ import type {
 
 import {useExtensionSandbox} from './worker';
 import type {
+  ExtensionSandbox,
   SandboxController,
   SandboxControllerTiming,
   Options as BaseOptions,
@@ -42,6 +43,7 @@ export interface RenderControllerTiming extends SandboxControllerTiming {
 export interface RenderController {
   readonly id: string;
   readonly timings: RenderControllerTiming;
+  readonly sandbox: ExtensionSandbox;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
   on(
     event: 'start' | 'stop' | 'load' | 'render',
@@ -74,6 +76,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
     const listeners = new Map<'render', Set<() => void>>();
 
     return {
+      sandbox,
       timings: {
         get start() {
           return controller.timings.start;

@@ -9,9 +9,10 @@ import {
 } from 'react';
 import type {PropsWithChildren} from 'react';
 
+import {ImplicitActionContext} from '@lemon/basics';
+import type {ImplicitAction} from '@lemon/basics';
+
 import {useUniqueId} from '../../utilities/id';
-import {ImplicitActionContext} from '../../utilities/actions';
-import type {ImplicitAction} from '../../utilities/actions';
 
 import styles from './Popover.css';
 
@@ -55,9 +56,9 @@ export function Popover({children}: PropsWithChildren<PopoverProps>) {
     <PopoverActiveContext.Provider value={active}>
       <PopoverIgnoreElementsContext.Provider value={ignore.current}>
         <PopoverIdContext.Provider value={id}>
-          <ImplicitActionContext.Provider value={implicitAction}>
+          <ImplicitActionContext action={implicitAction}>
             <PopoverTrigger>{children}</PopoverTrigger>
-          </ImplicitActionContext.Provider>
+          </ImplicitActionContext>
         </PopoverIdContext.Provider>
       </PopoverIgnoreElementsContext.Provider>
     </PopoverActiveContext.Provider>

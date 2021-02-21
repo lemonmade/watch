@@ -1,1 +1,1 @@
-export {ActionMenu, ActionMenuItem} from './ActionMenu';
+export {ActionMenu} from './ActionMenu';

@@ -1,24 +1,21 @@
-import {ReactNode} from 'react';
-import {classes} from '@lemon/css';
-import {useImplicitAction} from '@lemon/basics';
+import type {PropsWithChildren} from 'react';
 
-import styles from './Button.css';
+import {useImplicitAction} from '../ImplicitAction';
+
+import styles from './Pressable.css';
 
 interface Props {
-  id?: string;
-  children?: ReactNode;
-  primary?: boolean;
   onPress?(): void;
 }
 
-export function Button({id, children, primary, onPress}: Props) {
-  const implicitAction = useImplicitAction(id);
+export function Pressable({onPress, children}: PropsWithChildren<Props>) {
+  const implicitAction = useImplicitAction();
   const target = implicitAction?.target;
 
   return (
     <button
       type="button"
-      className={classes(styles.Button, primary && styles.primary)}
+      className={styles.Pressable}
       onClick={() => {
         if (onPress) {
           onPress();

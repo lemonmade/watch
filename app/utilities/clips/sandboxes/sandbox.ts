@@ -78,3 +78,12 @@ function runExtensionPoint<T extends ExtensionPoint>(
 ): ReturnTypeForExtensionPoint<T> {
   return (registeredExtensions.get(id) as any)?.(...args);
 }
+
+export function getResourceTimingEntries() {
+  return performance
+    .getEntriesByType('resource')
+    .filter((entry) => entry.name.endsWith('.js'))
+    .map(
+      (entry) => entry.toJSON() as Omit<PerformanceResourceTiming, 'toJSON'>,
+    );
+}
