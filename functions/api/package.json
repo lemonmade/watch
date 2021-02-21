@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
+    "@types/mime": "^2.0.0",
     "@types/node-fetch": "^2.5.7",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0"

@@ -488,7 +488,7 @@ export const Mutation: Resolver = {
     const [
       {S3Client, PutObjectCommand},
       {getSignedUrl},
-      {lookup},
+      {getType},
     ] = await Promise.all([
       import('@aws-sdk/client-s3'),
       import('@aws-sdk/s3-request-presigner'),
@@ -510,7 +510,7 @@ export const Mutation: Resolver = {
     const putCommand = new PutObjectCommand({
       Bucket: 'clips',
       Key: path,
-      ContentType: lookup(path),
+      ContentType: getType(path) ?? 'application/javascript',
       CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
       Metadata: {
         'Timing-Allow-Origin': '*',
