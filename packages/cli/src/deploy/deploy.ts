@@ -8,7 +8,10 @@ import {createHash} from 'crypto';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import type {GraphQL} from '@quilted/graphql';
 
-import {buildDetailsForExtension} from '../utilities';
+import {
+  buildDetailsForExtension,
+  findMatchingProductionClipsExtension,
+} from '../utilities';
 import {loadProductionApp, loadLocalApp} from '../app';
 import type {LocalApp, LocalExtension, ProductionClipsExtension} from '../app';
 
@@ -29,17 +32,13 @@ export async function deploy() {
   });
 
   for (const extension of localApp.extensions) {
-    const matchingProductionExtension = productionApp.extensions.find(
-      (productionExtension) =>
-        productionExtension.__typename === 'ClipsExtension' &&
-        (productionExtension.id === extension.configuration.id ||
-          productionExtension.name === extension.configuration.name),
-    ) as ProductionClipsExtension | undefined;
-
     await deployExtension(extension, {
       app: localApp,
       graphql,
-      production: matchingProductionExtension,
+      production: findMatchingProductionClipsExtension(
+        extension,
+        productionApp,
+      ),
     });
   }
 }

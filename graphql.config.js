@@ -5,6 +5,7 @@ module.exports = {
       documents: [
         'app/**/*.graphql',
         'packages/cli/src/deploy/**/*.graphql',
+        'packages/cli/src/publish/**/*.graphql',
         'packages/cli/src/app/**/*.graphql',
       ],
       exclude: [
@@ -15,10 +16,7 @@ module.exports = {
           documents: [
             {
               kind: 'value',
-              match: [
-                'packages/cli/src/deploy/**/*.graphql',
-                'packages/cli/src/app/**/*.graphql',
-              ],
+              match: ['packages/**/*.graphql'],
             },
           ],
           schema: [
