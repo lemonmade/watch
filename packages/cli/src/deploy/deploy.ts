@@ -136,6 +136,7 @@ async function deployExtension(
     body: scriptContents,
     headers: {
       'Content-Length': String(scriptContents.length),
+      'Content-Type': 'application/javascript',
     },
   });
 }
