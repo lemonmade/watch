@@ -478,35 +478,125 @@ export const Mutation: Resolver = {
   },
   async createClipsExtensionVersion(
     _,
-    {extensionId}: {extensionId: string},
+    {
+      extensionId,
+      hash,
+      name,
+    }: {extensionId: string; hash: string; name?: string},
     {db, clipsExtensionsLoader},
   ) {
+    const [
+      {S3Client, PutObjectCommand},
+      {getSignedUrl},
+      {lookup},
+    ] = await Promise.all([
+      import('@aws-sdk/client-s3'),
+      import('@aws-sdk/s3-request-presigner'),
+      import('mime'),
+    ]);
+
+    const [details] = await db
+      .select({id: 'Apps.id', name: 'ClipsExtensions.name'})
+      .from(Table.Apps)
+      .join(Table.ClipsExtensions, 'ClipsExtensions.appId', '=', 'Apps.id')
+      .where({'ClipsExtensions.id': fromGid(extensionId).id});
+
+    const s3Client = new S3Client({region: 'us-east-1'});
+
+    const path = `clips/${details.id}/${toParam(name ?? details.name)}.${
+      fromGid(extensionId).id
+    }.${hash}.js`;
+
+    const putCommand = new PutObjectCommand({
+      Bucket: 'clips',
+      Key: path,
+      ContentType: lookup(path),
+      CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
+      Metadata: {
+        'Timing-Allow-Origin': '*',
+      },
+    });
+
+    const signedScriptUpload = await getSignedUrl(s3Client, putCommand, {
+      expiresIn: 3_600,
+    });
+
     const [version] = await db
-      .insert({extensionId: fromGid(extensionId).id}, '*')
+      .insert(
+        {
+          extensionId: fromGid(extensionId).id,
+          scriptUrl: `https://watch-test.lemon.tools/assets/${path}`,
+        },
+        '*',
+      )
       .into(Table.ClipsExtensionVersions);
 
     return {
       version,
+      signedScriptUpload,
       extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
   async publishClipsExtensionVersion(
     _,
-    {id, script}: {id: string; script: string},
+    {id}: {id: string},
+    {db, clipsExtensionsLoader},
+  ) {
+    const version = await db.transaction(async (trx) => {
+      const [version] = await trx
+        .update({status: 'PUBLISHED'}, '*')
+        .into(Table.ClipsExtensionVersions)
+        .where({id: fromGid(id).id});
+
+      await trx
+        .update({latestVersionId: version.id})
+        .into(Table.ClipsExtensions)
+        .where({id: version.extensionId});
+
+      return version as {id: string; extensionId: string};
+    });
+
+    return {
+      version,
+      extension: await clipsExtensionsLoader.load(version.extensionId),
+    };
+  },
+  async publishLatestClipsExtensionVersion(
+    _,
+    {extensionId}: {extensionId: string},
     {db, clipsExtensionsLoader},
   ) {
     const [version] = await db
-      .update(
-        {status: 'PUBLISHED', ...(script ? {scriptUrl: script} : {})},
-        '*',
+      .select({id: 'ClipsExtensionVersions.id'})
+      .from(Table.ClipsExtensions)
+      .join(
+        Table.ClipsExtensionVersions,
+        'ClipsExtensionVersions.extensionId',
+        '=',
+        'ClipsExtensions.id',
       )
-      .into(Table.ClipsExtensionVersions)
-      .where({id: fromGid(id).id});
+      .where({'ClipsExtensions.id': fromGid(extensionId).id})
+      .andWhereNot({'ClipsExtensionVersions.status': 'PUBLISHED'})
+      .orderBy('ClipsExtensionVersions.createdAt', 'desc')
+      .limit(1);
 
-    await db
-      .update({latestVersionId: version.id})
-      .into(Table.ClipsExtensions)
-      .where({id: version.extensionId});
+    if (version == null) {
+      return {};
+    }
+
+    await db.transaction(async (trx) => {
+      await Promise.all([
+        trx
+          .update({status: 'PUBLISHED'}, '*')
+          .into(Table.ClipsExtensionVersions)
+          .where({id: version.id}),
+
+        trx
+          .update({latestVersionId: version.id})
+          .into(Table.ClipsExtensions)
+          .where({id: version.extensionId}),
+      ]);
+    });
 
     return {
       version,
@@ -1184,4 +1274,8 @@ function fromGid(gid: string) {
 
 function toGid(id: string, type: string) {
   return `gid://watch/${type}/${id}`;
+}
+
+function toParam(name: string) {
+  return name.trim().toLocaleLowerCase().replace(/\s+/g, '-');
 }

@@ -2,7 +2,7 @@ module.exports = {
   projects: {
     default: {
       schema: 'functions/api/graph/schema.graphql',
-      documents: 'app/**/*.graphql',
+      documents: ['app/**/*.graphql', 'packages/cli/src/deploy/**/*.graphql'],
       exclude: [
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       ],

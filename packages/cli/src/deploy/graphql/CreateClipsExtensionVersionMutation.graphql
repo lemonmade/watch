@@ -1,0 +1,16 @@
+mutation CreateClipsExtensionVersion(
+  $extensionId: ID!
+  $hash: String!
+  $name: String
+) {
+  createClipsExtensionVersion(
+    extensionId: $extensionId
+    hash: $hash
+    name: $name
+  ) {
+    signedScriptUpload
+    version {
+      id
+    }
+  }
+}

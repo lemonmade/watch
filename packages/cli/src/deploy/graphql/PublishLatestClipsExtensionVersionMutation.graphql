@@ -1,0 +1,10 @@
+mutation PublishLatestClipsExtensionVersion($extensionId: ID!) {
+  publishLatestClipsExtensionVersion(extensionId: $extensionId) {
+    version {
+      id
+      assets {
+        source
+      }
+    }
+  }
+}

@@ -325,6 +325,7 @@ type UpdateClipsExtensionPayload {
 type CreateClipsExtensionVersionPayload {
   extension: ClipsExtension
   version: ClipsExtensionVersion
+  signedScriptUpload: Url
 }
 
 type PublishClipsExtensionVersionPayload {
@@ -397,11 +398,13 @@ type Mutation {
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
   createClipsExtensionVersion(
     extensionId: ID!
+    hash: String!
+    name: String
   ): CreateClipsExtensionVersionPayload!
-  publishClipsExtensionVersion(
-    id: ID!
-    script: String
+  publishLatestClipsExtensionVersion(
+    extensionId: ID!
   ): PublishClipsExtensionVersionPayload!
+  publishClipsExtensionVersion(id: ID!): PublishClipsExtensionVersionPayload!
   installApp(id: ID!): InstallAppPayload!
   installClipsExtension(
     id: ID!
