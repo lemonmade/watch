@@ -2,15 +2,28 @@ module.exports = {
   projects: {
     default: {
       schema: 'functions/api/graph/schema.graphql',
-      documents: ['app/**/*.graphql', 'packages/cli/src/deploy/**/*.graphql'],
+      documents: [
+        'app/**/*.graphql',
+        'packages/cli/src/deploy/**/*.graphql',
+        'packages/cli/src/app/**/*.graphql',
+      ],
       exclude: [
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       ],
       extensions: {
         quilt: {
-          schemaTypes: [
-            {types: 'output'},
-            {types: 'input', outputPath: 'app/graphql/types.d.ts'},
+          documents: [
+            {
+              kind: 'value',
+              match: [
+                'packages/cli/src/deploy/**/*.graphql',
+                'packages/cli/src/app/**/*.graphql',
+              ],
+            },
+          ],
+          schema: [
+            {kind: 'outputTypes'},
+            {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],
         },
       },
@@ -21,9 +34,9 @@ module.exports = {
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       extensions: {
         quilt: {
-          schemaTypes: [
-            {types: 'output'},
-            {types: 'input', outputPath: 'app/graphql/types/cli.d.ts'},
+          schema: [
+            {kind: 'outputTypes'},
+            {kind: 'inputTypes', outputPath: 'app/graphql/types/cli.d.ts'},
           ],
         },
       },

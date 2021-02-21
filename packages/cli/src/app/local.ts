@@ -4,36 +4,38 @@ import {readFile, stat} from 'fs/promises';
 import {sync as glob} from 'glob';
 import {parse} from '@iarna/toml';
 
-export interface AppConfiguration {
+export interface LocalAppConfiguration {
+  readonly id: string;
   readonly name: string;
   readonly extensions?: string | readonly string[];
 }
 
-export interface App {
+export interface LocalApp {
   readonly id: string;
   readonly root: string;
-  readonly extensions: readonly Extension[];
-  readonly configuration: AppConfiguration;
+  readonly extensions: readonly LocalExtension[];
+  readonly configuration: LocalAppConfiguration;
 }
 
-interface ExtensionConfiguration {
+interface LocalExtensionConfiguration {
+  readonly id?: string;
   readonly name: string;
   readonly userConfiguration?: unknown;
 }
 
-export interface Extension {
+export interface LocalExtension {
   readonly id: string;
   readonly root: string;
-  readonly configuration: ExtensionConfiguration;
+  readonly configuration: LocalExtensionConfiguration;
 }
 
-interface ExtensionEntry {
+interface LocalExtensionEntry {
   readonly pattern: string;
   readonly directories: string[];
 }
 
-export async function loadApp(): Promise<App> {
-  const configuration = await tryLoad<Partial<AppConfiguration>>(
+export async function loadLocalApp(): Promise<LocalApp> {
+  const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     path.resolve('app.toml'),
   );
 
@@ -60,8 +62,8 @@ async function tryLoad<T>(file: string): Promise<T> {
 }
 
 function validateAppConfig(
-  value: Partial<AppConfiguration>,
-): asserts value is AppConfiguration {
+  value: Partial<LocalAppConfiguration>,
+): asserts value is LocalAppConfiguration {
   if (value.name == null) {
     throw new Error('App config missing field `name`');
   }
@@ -69,7 +71,9 @@ function validateAppConfig(
   return value as any;
 }
 
-async function resolveExtensions(extensions: AppConfiguration['extensions']) {
+async function resolveExtensions(
+  extensions: LocalAppConfiguration['extensions'],
+) {
   if (extensions == null) return [];
 
   const extensionEntries =
@@ -78,7 +82,7 @@ async function resolveExtensions(extensions: AppConfiguration['extensions']) {
       : extensions.map((extension) => loadExtensionEntry(extension));
 
   const loadErrors: {directory: string; pattern: string}[] = [];
-  const resolvedExtensions: Extension[] = [];
+  const resolvedExtensions: LocalExtension[] = [];
 
   await Promise.all(
     extensionEntries.map(async ({pattern, directories}) => {
@@ -109,8 +113,8 @@ async function resolveExtensions(extensions: AppConfiguration['extensions']) {
 
 async function loadExtensionFromDirectory(
   directory: string,
-): Promise<Extension> {
-  const configuration = await tryLoad<Partial<ExtensionConfiguration>>(
+): Promise<LocalExtension> {
+  const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
     path.resolve(directory, 'extension.toml'),
   );
 
@@ -124,8 +128,8 @@ async function loadExtensionFromDirectory(
 }
 
 function validateExtensionConfig(
-  value: Partial<ExtensionConfiguration>,
-): asserts value is ExtensionConfiguration {
+  value: Partial<LocalExtensionConfiguration>,
+): asserts value is LocalExtensionConfiguration {
   if (value.name == null) {
     throw new Error('App config missing field `name`');
   }
@@ -133,7 +137,7 @@ function validateExtensionConfig(
   return value as any;
 }
 
-function loadExtensionEntry(pattern: string): ExtensionEntry {
+function loadExtensionEntry(pattern: string): LocalExtensionEntry {
   return {
     pattern,
     directories: glob(

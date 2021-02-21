@@ -1,0 +1,10 @@
+query FindAppMatchingLocalDevelopment($id: ID!) {
+  app(id: $id) {
+    extensions {
+      ... on ClipsExtension {
+        id
+        name
+      }
+    }
+  }
+}

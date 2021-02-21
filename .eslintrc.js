@@ -7,6 +7,7 @@ module.exports = {
     'packages/*/build/',
     'app/graphql/types*',
     '**/*.graphql.d.ts',
+    '**/*.graphql.ts',
     '!**/.eslintrc.js',
   ],
   settings: {

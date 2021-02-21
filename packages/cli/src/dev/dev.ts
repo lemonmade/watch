@@ -14,23 +14,34 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import {createWebSocketServer} from '@watching/webpack-hot-worker/server';
 import {DevServerWebpackPlugin} from '@watching/webpack-hot-worker/webpack';
 
-import {loadApp} from '../shared';
-import type {App} from '../shared';
+import {loadLocalApp} from '../app';
+import type {LocalApp} from '../app';
 import {createWebpackConfiguration as createBaseWebpackConfiguration} from '../webpack-config';
 
 import type {Query as QueryType} from './schema.graphql';
 
+type AllowedReturnType<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => infer U
+    ? AllowedReturnType<U>
+    : AllowedReturnType<T[K]>;
+};
+
 type QueryResolver = {
-  [K in keyof QueryType]: FieldResolver<never, never, never, QueryType[K]>;
+  [K in keyof QueryType]: FieldResolver<
+    never,
+    never,
+    Parameters<QueryType[K]>[0],
+    AllowedReturnType<ReturnType<QueryType[K]>>
+  >;
 };
 
 export async function dev() {
-  const app = await loadApp();
+  const app = await loadLocalApp();
   const devServer = createDevServer(app);
   await devServer.listen(3000, 'localhost');
 }
 
-function createDevServer(app: App) {
+function createDevServer(app: LocalApp) {
   const expressApp = express();
 
   const schema = makeExecutableSchema({
@@ -159,7 +170,7 @@ function createDevServer(app: App) {
   }
 }
 
-function createWebpackConfiguration(app: App): Configuration {
+function createWebpackConfiguration(app: LocalApp): Configuration {
   const baseConfig = createBaseWebpackConfiguration({
     mode: 'development',
   });

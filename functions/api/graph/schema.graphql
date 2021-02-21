@@ -310,6 +310,8 @@ type UpdateAppPayload {
 type CreateClipsExtensionPayload {
   app: App
   extension: ClipsExtension
+  version: ClipsExtensionVersion
+  signedScriptUpload: Url
 }
 
 type DeleteClipsExtensionPayload {
@@ -360,6 +362,10 @@ type Query {
   ): [ClipsExtensionInstallation!]!
 }
 
+input CreateClipsInitialVersion {
+  hash: String!
+}
+
 type Mutation {
   skipEpisode(
     episode: ID!
@@ -393,7 +399,11 @@ type Mutation {
   createApp(name: String!): CreateAppPayload!
   deleteApp(id: ID!): DeleteAppPayload!
   updateApp(id: ID!, name: String): UpdateAppPayload!
-  createClipsExtension(name: String!, appId: ID!): CreateClipsExtensionPayload!
+  createClipsExtension(
+    name: String!
+    appId: ID!
+    initialVersion: CreateClipsInitialVersion
+  ): CreateClipsExtensionPayload!
   deleteClipsExtension(id: ID!): DeleteClipsExtensionPayload!
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
   createClipsExtensionVersion(

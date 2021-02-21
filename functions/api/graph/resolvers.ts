@@ -445,14 +445,34 @@ export const Mutation: Resolver = {
   },
   async createClipsExtension(
     _,
-    {name, appId}: {appId: string; name: string},
+    {
+      name,
+      appId,
+      initialVersion,
+    }: {appId: string; name: string; initialVersion?: {hash: string}},
     {db, appsLoader},
   ) {
     const [extension] = await db
       .insert({name, appId: fromGid(appId).id}, '*')
       .into(Table.ClipsExtensions);
 
-    return {extension, app: await appsLoader.load(fromGid(appId).id)};
+    let additionalResults = {};
+
+    if (initialVersion) {
+      additionalResults = await createSignedClipsVersionUpload({
+        db,
+        hash: initialVersion.hash,
+        appId: fromGid(appId).id,
+        extensionId: extension.id,
+        extensionName: name,
+      });
+    }
+
+    return {
+      extension,
+      app: await appsLoader.load(fromGid(appId).id),
+      ...additionalResults,
+    };
   },
   async deleteClipsExtension(_, {id}: {id: string}, {db, appsLoader}) {
     const [{appId}] = await db
@@ -485,16 +505,6 @@ export const Mutation: Resolver = {
     }: {extensionId: string; hash: string; name?: string},
     {db, clipsExtensionsLoader},
   ) {
-    const [
-      {S3Client, PutObjectCommand},
-      {getSignedUrl},
-      {getType},
-    ] = await Promise.all([
-      import('@aws-sdk/client-s3'),
-      import('@aws-sdk/s3-request-presigner'),
-      import('mime'),
-    ]);
-
     const [existingVersion] = await db
       .select('*')
       .from(Table.ClipsExtensionVersions)
@@ -511,41 +521,14 @@ export const Mutation: Resolver = {
       .where({'ClipsExtensions.id': fromGid(extensionId).id})
       .limit(1);
 
-    const s3Client = new S3Client({region: 'us-east-1'});
-
-    const path = `assets/clips/${details.appId}/${toParam(
-      name ?? details.extensionName,
-    )}.${fromGid(extensionId).id}.${hash}.js`;
-
-    const putCommand = new PutObjectCommand({
-      Bucket: 'watch-assets-clips',
-      Key: path,
-      ContentType: getType(path) ?? 'application/javascript',
-      CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
-      Metadata: {
-        'Timing-Allow-Origin': '*',
-      },
+    const {version, signedScriptUpload} = await createSignedClipsVersionUpload({
+      db,
+      hash,
+      versionId: existingVersion?.id,
+      appId: details.appId,
+      extensionId: fromGid(extensionId).id,
+      extensionName: name ?? details.extensionName,
     });
-
-    const signedScriptUpload = await getSignedUrl(s3Client, putCommand, {
-      expiresIn: 3_600,
-    });
-
-    const [version] = existingVersion
-      ? await db
-          .update({scriptUrl: `https://watch-test.lemon.tools/${path}`}, '*')
-          .into(Table.ClipsExtensionVersions)
-          .where({id: existingVersion.id})
-      : await db
-          .insert(
-            {
-              extensionId: fromGid(extensionId).id,
-              scriptUrl: `https://watch-test.lemon.tools/${path}`,
-              status: 'BUILDING',
-            },
-            '*',
-          )
-          .into(Table.ClipsExtensionVersions);
 
     return {
       version,
@@ -1256,6 +1239,70 @@ async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
 
     return series;
   });
+}
+
+async function createSignedClipsVersionUpload({
+  hash,
+  appId,
+  extensionId,
+  extensionName,
+  versionId,
+  db,
+}: {
+  hash: string;
+  appId: string;
+  extensionId: string;
+  extensionName: string;
+  versionId?: string;
+  db: Context['db'];
+}) {
+  const [
+    {S3Client, PutObjectCommand},
+    {getSignedUrl},
+    {getType},
+  ] = await Promise.all([
+    import('@aws-sdk/client-s3'),
+    import('@aws-sdk/s3-request-presigner'),
+    import('mime'),
+  ]);
+
+  const s3Client = new S3Client({region: 'us-east-1'});
+
+  const path = `assets/clips/${appId}/${toParam(
+    extensionName,
+  )}.${extensionId}.${hash}.js`;
+
+  const putCommand = new PutObjectCommand({
+    Bucket: 'watch-assets-clips',
+    Key: path,
+    ContentType: getType(path) ?? 'application/javascript',
+    CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
+    Metadata: {
+      'Timing-Allow-Origin': '*',
+    },
+  });
+
+  const signedScriptUpload = await getSignedUrl(s3Client, putCommand, {
+    expiresIn: 3_600,
+  });
+
+  const [version] = versionId
+    ? await db
+        .update({scriptUrl: `https://watch-test.lemon.tools/${path}`}, '*')
+        .into(Table.ClipsExtensionVersions)
+        .where({id: versionId})
+    : await db
+        .insert(
+          {
+            extensionId: fromGid(extensionId).id,
+            scriptUrl: `https://watch-test.lemon.tools/${path}`,
+            status: 'BUILDING',
+          },
+          '*',
+        )
+        .into(Table.ClipsExtensionVersions);
+
+  return {version, signedScriptUpload};
 }
 
 function fromGid(gid: string) {

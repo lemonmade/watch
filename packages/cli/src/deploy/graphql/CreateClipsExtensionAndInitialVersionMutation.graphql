@@ -1,0 +1,17 @@
+mutation CreateClipsExtensionAndInitialVersion(
+  $appId: ID!
+  $name: String!
+  $initialVersion: CreateClipsInitialVersion!
+) {
+  createClipsExtension(
+    appId: $appId
+    name: $name
+    initialVersion: $initialVersion
+  ) {
+    extension {
+      id
+      name
+    }
+    signedScriptUpload
+  }
+}

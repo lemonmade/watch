@@ -3,12 +3,13 @@ import * as path from 'path';
 import webpack from 'webpack';
 import type {Configuration} from 'webpack';
 
-import {loadApp} from './shared';
-import type {Extension, App} from './shared';
+import {buildDetailsForExtension} from './utilities';
+import {loadLocalApp} from './app';
+import type {LocalExtension, LocalApp} from './app';
 import {createWebpackConfiguration as createBaseWebpackConfiguration} from './webpack-config';
 
 export async function build() {
-  const app = await loadApp();
+  const app = await loadLocalApp();
 
   const build = webpack(
     app.extensions.map((extension) =>
@@ -33,18 +34,19 @@ export async function build() {
 }
 
 function createWebpackConfiguration(
-  extension: Extension,
-  app: App,
+  extension: LocalExtension,
+  app: LocalApp,
 ): Configuration {
   const baseConfig = createBaseWebpackConfiguration({mode: 'production'});
+  const {filename, directory} = buildDetailsForExtension(extension, app);
 
   return {
     ...baseConfig,
     entry: path.resolve(extension.root, 'index'),
     output: {
       ...baseConfig.output,
-      filename: 'extension.js',
-      path: path.resolve(app.root, 'build', extension.id),
+      filename,
+      path: directory,
     },
   };
 }
