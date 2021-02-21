@@ -18,7 +18,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
     "@iarna/toml": "^3.0.0",
-    "@quilted/graphql": "^0.3.1",
+    "@quilted/graphql": "^0.3.2",
     "@quilted/polyfills": "^0.0.5",
     "@watching/webpack-hot-worker": "^0.1.1",
     "arg": "^5.0.0",

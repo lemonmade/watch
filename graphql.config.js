@@ -33,7 +33,7 @@ module.exports = {
       extensions: {
         quilt: {
           schema: [
-            {kind: 'outputTypes'},
+            {kind: 'definitions'},
             {kind: 'inputTypes', outputPath: 'app/graphql/types/cli.d.ts'},
           ],
         },

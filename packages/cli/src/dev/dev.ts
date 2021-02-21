@@ -1,4 +1,3 @@
-import {readFileSync} from 'fs';
 import * as path from 'path';
 import type {Socket} from 'net';
 import {createServer, RequestListener} from 'http';
@@ -18,6 +17,7 @@ import {loadLocalApp} from '../app';
 import type {LocalApp} from '../app';
 import {createWebpackConfiguration as createBaseWebpackConfiguration} from '../webpack-config';
 
+import schemaTypeDefinitions from './schema.graphql';
 import type {Query as QueryType} from './schema.graphql';
 
 type AllowedReturnType<T> = {
@@ -45,9 +45,7 @@ function createDevServer(app: LocalApp) {
   const expressApp = express();
 
   const schema = makeExecutableSchema({
-    typeDefs: readFileSync(path.resolve(__dirname, 'schema.graphql'), {
-      encoding: 'utf8',
-    }),
+    typeDefs: schemaTypeDefinitions,
     resolvers: {
       Query: {
         app: () => {
