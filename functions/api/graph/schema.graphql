@@ -404,7 +404,6 @@ type Mutation {
   publishLatestClipsExtensionVersion(
     extensionId: ID!
   ): PublishClipsExtensionVersionPayload!
-  publishClipsExtensionVersion(id: ID!): PublishClipsExtensionVersionPayload!
   installApp(id: ID!): InstallAppPayload!
   installClipsExtension(
     id: ID!

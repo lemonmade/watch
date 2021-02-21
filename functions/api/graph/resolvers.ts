@@ -495,17 +495,27 @@ export const Mutation: Resolver = {
       import('mime'),
     ]);
 
+    const [existingVersion] = await db
+      .select('*')
+      .from(Table.ClipsExtensionVersions)
+      .where({
+        id: fromGid(extensionId).id,
+        status: 'BUILDING',
+      })
+      .limit(1);
+
     const [details] = await db
-      .select({id: 'Apps.id', name: 'ClipsExtensions.name'})
+      .select({appId: 'Apps.id', extensionName: 'ClipsExtensions.name'})
       .from(Table.Apps)
       .join(Table.ClipsExtensions, 'ClipsExtensions.appId', '=', 'Apps.id')
-      .where({'ClipsExtensions.id': fromGid(extensionId).id});
+      .where({'ClipsExtensions.id': fromGid(extensionId).id})
+      .limit(1);
 
     const s3Client = new S3Client({region: 'us-east-1'});
 
-    const path = `assets/clips/${details.id}/${toParam(name ?? details.name)}.${
-      fromGid(extensionId).id
-    }.${hash}.js`;
+    const path = `assets/clips/${details.appId}/${toParam(
+      name ?? details.extensionName,
+    )}.${fromGid(extensionId).id}.${hash}.js`;
 
     const putCommand = new PutObjectCommand({
       Bucket: 'watch-assets-clips',
@@ -521,44 +531,26 @@ export const Mutation: Resolver = {
       expiresIn: 3_600,
     });
 
-    const [version] = await db
-      .insert(
-        {
-          extensionId: fromGid(extensionId).id,
-          scriptUrl: `https://watch-test.lemon.tools/${path}`,
-        },
-        '*',
-      )
-      .into(Table.ClipsExtensionVersions);
+    const [version] = existingVersion
+      ? await db
+          .update({scriptUrl: `https://watch-test.lemon.tools/${path}`}, '*')
+          .into(Table.ClipsExtensionVersions)
+          .where({id: existingVersion.id})
+      : await db
+          .insert(
+            {
+              extensionId: fromGid(extensionId).id,
+              scriptUrl: `https://watch-test.lemon.tools/${path}`,
+              status: 'BUILDING',
+            },
+            '*',
+          )
+          .into(Table.ClipsExtensionVersions);
 
     return {
       version,
       signedScriptUpload,
       extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
-    };
-  },
-  async publishClipsExtensionVersion(
-    _,
-    {id}: {id: string},
-    {db, clipsExtensionsLoader},
-  ) {
-    const version = await db.transaction(async (trx) => {
-      const [version] = await trx
-        .update({status: 'PUBLISHED'}, '*')
-        .into(Table.ClipsExtensionVersions)
-        .where({id: fromGid(id).id});
-
-      await trx
-        .update({latestVersionId: version.id})
-        .into(Table.ClipsExtensions)
-        .where({id: version.extensionId});
-
-      return version as {id: string; extensionId: string};
-    });
-
-    return {
-      version,
-      extension: await clipsExtensionsLoader.load(version.extensionId),
     };
   },
   async publishLatestClipsExtensionVersion(
@@ -575,9 +567,10 @@ export const Mutation: Resolver = {
         '=',
         'ClipsExtensions.id',
       )
-      .where({'ClipsExtensions.id': fromGid(extensionId).id})
-      .andWhereNot({'ClipsExtensionVersions.status': 'PUBLISHED'})
-      .orderBy('ClipsExtensionVersions.createdAt', 'desc')
+      .where({
+        'ClipsExtensions.id': fromGid(extensionId).id,
+        'ClipsExtensionVersions.status': 'BUILDING',
+      })
       .limit(1);
 
     if (version == null) {
