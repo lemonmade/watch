@@ -1,10 +1,4 @@
 {
-  "eslint.enable": true,
-  "cSpell.words": [
-    "throughs",
-    "watch",
-    "watchthrough"
-  ],
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
@@ -12,8 +6,5 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.ignoreWords": [
-    "imdb",
-    "tmdb"
-  ]
+  "cSpell.ignoreWords": ["imdb", "tmdb"]
 }
