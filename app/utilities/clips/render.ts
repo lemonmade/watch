@@ -117,7 +117,15 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           api = {},
         ] = renderArgumentsRef.current;
 
-        timings = {renderStart: Date.now()};
+        if (controller.state === 'loaded') {
+          timings = {renderStart: Date.now()};
+        } else {
+          const unlisten = controller.on('load', () => {
+            unlisten();
+            if (controller.id !== currentId) return;
+            timings = {renderStart: Date.now()};
+          });
+        }
 
         const finalReceiver: RemoteReceiver = explicitReceiver ?? receiver;
 

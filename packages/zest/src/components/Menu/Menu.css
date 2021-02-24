@@ -1,0 +1,6 @@
+.Menu {
+  padding: var(--zest-spacing-mini);
+  display: var(--x-implicit-display, grid);
+  gap: var(--zest-spacing-mini);
+  align-content: start;
+}

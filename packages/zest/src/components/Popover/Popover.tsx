@@ -9,10 +9,8 @@ import {
 } from 'react';
 import type {PropsWithChildren} from 'react';
 
-import {ImplicitActionContext} from '@lemon/basics';
+import {ImplicitActionContext, useUniqueId} from '@lemon/basics';
 import type {ImplicitAction} from '@lemon/basics';
-
-import {useUniqueId} from '../../utilities/id';
 
 import styles from './Popover.css';
 

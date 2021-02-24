@@ -1,0 +1,5 @@
+.Layout {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template: 1fr;
+}

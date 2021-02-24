@@ -19,7 +19,7 @@ import {
   TextBlock,
   Section,
   Text,
-  ActionMenu,
+  Menu,
   Pressable,
 } from '@lemon/zest';
 
@@ -256,7 +256,7 @@ function ClipFrame({
             {additionalSectionContents && (
               <Section>{additionalSectionContents}</Section>
             )}
-            {actionContents && <ActionMenu>{actionContents}</ActionMenu>}
+            {actionContents && <Menu>{actionContents}</Menu>}
           </PopoverSheet>
         </Popover>
       </View>

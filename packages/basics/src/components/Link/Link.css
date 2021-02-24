@@ -1,0 +1,24 @@
+.Link {
+  appearance: none;
+  border: none;
+  background: var(--zest-color-action);
+  transition: background 0.2s ease;
+  font-size: 1rem;
+  color: var(--zest-color-text);
+  height: var(--zest-action-size);
+  padding: 0 var(--zest-spacing-mini);
+  border-radius: var(--zest-border-radius);
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.Link:focus {
+  outline: none;
+}
+
+.Link:active,
+.Link:focus-visible {
+  background: var(--zest-color-action-active);
+}

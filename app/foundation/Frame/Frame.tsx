@@ -1,30 +1,50 @@
 import type {PropsWithChildren} from 'react';
 
-import {AutoHeadingGroup} from '@quilted/quilt';
 import {
-  Frame as FrameUi,
-  NavigationList,
-  NavigationListItem,
+  Canvas,
+  Link,
+  Menu,
+  Pressable,
+  Layout,
+  View,
+  Popover,
+  PopoverSheet,
 } from '@lemon/zest';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function Frame({children}: PropsWithChildren<{}>) {
+interface Props {}
+
+export function Frame({children}: PropsWithChildren<Props>) {
   return (
-    <AutoHeadingGroup>
-      <FrameUi
-        renderNavigation={() => (
-          <NavigationList>
-            <NavigationListItem to="/">Watching</NavigationListItem>
-            <NavigationListItem to="/subscriptions">
-              Subscriptions
-            </NavigationListItem>
-            <NavigationListItem to="/search">Search</NavigationListItem>
-            <NavigationListItem to="/settings">Settings</NavigationListItem>
-          </NavigationList>
-        )}
+    <Canvas>
+      <Layout
+        sizes={[
+          {value: [false, 'fill']},
+          {value: ['auto', 'fill'], viewport: {min: 'medium'}},
+        ]}
       >
-        {children}
-      </FrameUi>
-    </AutoHeadingGroup>
+        <Menu>
+          <Link to="/">Watching</Link>
+          <Link to="/subscriptions">Subscriptions</Link>
+          <Link to="/search">Search</Link>
+          <Link to="/settings">Settings</Link>
+        </Menu>
+        <View>
+          <View>
+            <Popover>
+              <Pressable>Super menu</Pressable>
+              <PopoverSheet>
+                <Menu>
+                  <Link to="/">Watching</Link>
+                  <Link to="/subscriptions">Subscriptions</Link>
+                  <Link to="/search">Search</Link>
+                  <Link to="/settings">Settings</Link>
+                </Menu>
+              </PopoverSheet>
+            </Popover>
+          </View>
+          <View>{children}</View>
+        </View>
+      </Layout>
+    </Canvas>
   );
 }

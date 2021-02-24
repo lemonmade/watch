@@ -1,6 +1,5 @@
 import {useMemo} from 'react';
 import {createGraphQL, createHttpFetch, App as QuiltApp} from '@quilted/quilt';
-import {App as ZestApp} from '@lemon/zest';
 
 import {
   Frame,
@@ -23,13 +22,11 @@ export default function App() {
     <QuiltApp graphql={graphql}>
       <Http />
       <Head />
-      <ZestApp>
-        <LocalDevelopmentOrchestrator>
-          <Frame>
-            <Routes />
-          </Frame>
-        </LocalDevelopmentOrchestrator>
-      </ZestApp>
+      <LocalDevelopmentOrchestrator>
+        <Frame>
+          <Routes />
+        </Frame>
+      </LocalDevelopmentOrchestrator>
     </QuiltApp>
   );
 }

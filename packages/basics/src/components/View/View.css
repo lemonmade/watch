@@ -1,3 +1,7 @@
+.View {
+  display: var(--x-implicit-display, block);
+}
+
 .cornerRadiusConcentric {
   border-radius: calc(
     var(--x-container-corner-radius, 0) - var(--x-container-inset, 0)
