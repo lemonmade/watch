@@ -127,7 +127,7 @@ function sizesToSelectors(root: string, sizes: Size[]) {
           break;
         }
         case 'fill': {
-          columns.push('1fr');
+          columns.push('minmax(0, 1fr)');
           break;
         }
         case 'hidden': {
