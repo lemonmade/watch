@@ -462,39 +462,3 @@ function usePopoverController() {
 
   return controller;
 }
-
-// function usePressOutside(
-//   {
-//     active = true,
-//     ignore = () => false,
-//   }: {
-//     active?: boolean;
-//     ignore?(element: Element): boolean;
-//   },
-//   perform: () => void,
-// ) {
-//   const functionsRef = useRef<[typeof ignore, typeof perform]>(null as any);
-//   functionsRef.current = [ignore, perform];
-
-//   useEffect(() => {
-//     if (!active) return;
-
-//     const listener = ({target}: PointerEvent) => {
-//       const [ignore, perform] = functionsRef.current;
-//       let currentElement = target as HTMLElement | null;
-
-//       while (currentElement != null) {
-//         if (ignore(currentElement)) return;
-//         currentElement = currentElement.parentElement;
-//       }
-
-//       perform();
-//     };
-
-//     document.addEventListener('pointerdown', listener);
-
-//     return () => {
-//       document.removeEventListener('pointerdown', listener);
-//     };
-//   }, [active]);
-// }
