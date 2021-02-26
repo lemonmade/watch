@@ -51,138 +51,161 @@ export function Popover({
   controlledBy,
 }: PropsWithChildren<PopoverProps>) {
   const id = useUniqueId('Popover');
+  const controller = useMemo(() => createPopoverController(id), [id]);
+  const active = usePopoverActive(controller);
 
-  const controller = useMemo<PopoverController>(() => {
-    let currentSheet: PopoverSheetController | null = null;
-    let currentTrigger: PopoverTriggerController | null = null;
-    let activationCount = 0;
-    let closing = false;
-    let state: PopoverController['state'] = 'inactive';
-
-    const subscribers = new Set<() => void>();
-
-    const currentActivationId = () => `Activation${activationCount}`;
-
-    function update() {
-      if (
-        state === 'inactive' ||
-        currentSheet == null ||
-        currentTrigger == null
-      ) {
-        return;
-      }
-
-      currentSheet.update({
-        sheet: currentSheet.measure(),
-        trigger: currentTrigger.measure(),
-      });
-    }
-
-    async function activate() {
-      if (state === 'open' || state === 'opening') return;
-
-      activationCount += 1;
-      closing = false;
-      await setState(state === 'inactive' ? 'preparing' : 'opening');
-    }
-
-    async function deactivate() {
-      if (state === 'closing' || state === 'inactive') return;
-
-      closing = true;
-      await setState(state === 'preparing' ? 'inactive' : 'closing');
-    }
-
-    const setState = (newState: typeof state) => {
-      state = newState;
-
-      for (const subscriber of subscribers) {
-        subscriber();
-      }
-
-      return updateSheet();
-    };
-
-    async function updateSheet() {
-      if (currentSheet == null) return;
-
-      const activationId = currentActivationId();
-
-      switch (state) {
-        case 'preparing': {
-          await currentSheet.prepare(activationId);
-          if (activationId === currentActivationId() && !closing) {
-            await setState('opening');
-          }
-          break;
-        }
-        case 'opening': {
-          update();
-          await currentSheet.open(activationId);
-          if (activationId === currentActivationId() && !closing) {
-            await setState('open');
-          }
-          break;
-        }
-        case 'closing': {
-          await currentSheet.close(activationId);
-          if (activationId === currentActivationId()) {
-            await setState('inactive');
-          }
-          break;
-        }
-      }
-    }
-
-    const isActive = () => state !== 'closing' && state !== 'inactive';
-
+  const implicitAction = useMemo<Action>(() => {
     return {
-      id,
-      get activationId() {
-        return currentActivationId();
-      },
-      get state() {
-        return state;
-      },
-      get active() {
-        return isActive();
-      },
-      set(active) {
-        if (active) {
-          activate();
-        } else {
-          deactivate();
-        }
-      },
-      subscribe(subscriber) {
-        subscribers.add(subscriber);
-        return () => subscribers.delete(subscriber);
-      },
-      setSheet(sheet) {
-        const wasActive = isActive();
-        currentSheet = sheet;
-        state = 'inactive';
-        if (wasActive) activate();
-
-        return () => {
-          if (currentSheet === sheet) {
-            currentSheet = null;
-          }
-        };
-      },
-      setTrigger(trigger) {
-        currentTrigger = trigger;
-        update();
-
-        return () => {
-          if (currentTrigger === trigger) {
-            currentTrigger = null;
-          }
-        };
-      },
+      id: controlledBy ?? `${controller.id}Trigger`,
+      perform: () => controller.set(!controller.active),
     };
-  }, [id]);
+  }, [controller, controlledBy]);
 
+  return (
+    <PopoverActiveContext.Provider value={active}>
+      <PopoverControllerContext.Provider value={controller}>
+        <ImplicitActionContext action={implicitAction}>
+          <PopoverTrigger>{children}</PopoverTrigger>
+        </ImplicitActionContext>
+      </PopoverControllerContext.Provider>
+    </PopoverActiveContext.Provider>
+  );
+}
+
+function createPopoverController(id: string) {
+  let currentSheet: PopoverSheetController | null = null;
+  let currentTrigger: PopoverTriggerController | null = null;
+  let activationCount = 0;
+  let closing = false;
+  let state: PopoverController['state'] = 'inactive';
+
+  const subscribers = new Set<() => void>();
+
+  const currentActivationId = () => `Activation${activationCount}`;
+
+  function update() {
+    if (
+      state === 'inactive' ||
+      currentSheet == null ||
+      currentTrigger == null
+    ) {
+      return;
+    }
+
+    currentSheet.update({
+      sheet: currentSheet.measure(),
+      trigger: currentTrigger.measure(),
+    });
+  }
+
+  async function activate() {
+    if (state === 'open' || state === 'opening') return;
+
+    activationCount += 1;
+    closing = false;
+    await setState(state === 'inactive' ? 'preparing' : 'opening');
+  }
+
+  async function deactivate() {
+    if (state === 'closing' || state === 'inactive') return;
+
+    closing = true;
+    await setState(state === 'preparing' ? 'inactive' : 'closing');
+  }
+
+  const setState = (newState: typeof state) => {
+    state = newState;
+
+    for (const subscriber of subscribers) {
+      subscriber();
+    }
+
+    return updateSheet();
+  };
+
+  async function updateSheet() {
+    if (currentSheet == null) return;
+
+    const activationId = currentActivationId();
+
+    switch (state) {
+      case 'preparing': {
+        await currentSheet.prepare(activationId);
+        if (activationId === currentActivationId() && !closing) {
+          await setState('opening');
+        }
+        break;
+      }
+      case 'opening': {
+        update();
+        await currentSheet.open(activationId);
+        if (activationId === currentActivationId() && !closing) {
+          await setState('open');
+        }
+        break;
+      }
+      case 'closing': {
+        await currentSheet.close(activationId);
+        if (activationId === currentActivationId()) {
+          await setState('inactive');
+        }
+        break;
+      }
+    }
+  }
+
+  const isActive = () => state !== 'closing' && state !== 'inactive';
+
+  const controller: PopoverController = {
+    id,
+    get activationId() {
+      return currentActivationId();
+    },
+    get state() {
+      return state;
+    },
+    get active() {
+      return isActive();
+    },
+    set(active) {
+      if (active) {
+        activate();
+      } else {
+        deactivate();
+      }
+    },
+    subscribe(subscriber) {
+      subscribers.add(subscriber);
+      return () => subscribers.delete(subscriber);
+    },
+    setSheet(sheet) {
+      const wasActive = isActive();
+      currentSheet = sheet;
+      state = 'inactive';
+      if (wasActive) activate();
+
+      return () => {
+        if (currentSheet === sheet) {
+          currentSheet = null;
+        }
+      };
+    },
+    setTrigger(trigger) {
+      currentTrigger = trigger;
+      update();
+
+      return () => {
+        if (currentTrigger === trigger) {
+          currentTrigger = null;
+        }
+      };
+    },
+  };
+
+  return controller;
+}
+
+function usePopoverActive(controller: PopoverController) {
   const [activeState, setActiveState] = useState(() => ({
     id: controller.activationId,
     active: controller.active,
@@ -220,22 +243,7 @@ export function Popover({
     return controller.subscribe(checkForUpdates);
   }, [controller]);
 
-  const implicitAction = useMemo<Action>(() => {
-    return {
-      id: controlledBy ?? `${controller.id}Trigger`,
-      perform: () => controller.set(!controller.active),
-    };
-  }, [controller, controlledBy]);
-
-  return (
-    <PopoverActiveContext.Provider value={active}>
-      <PopoverControllerContext.Provider value={controller}>
-        <ImplicitActionContext action={implicitAction}>
-          <PopoverTrigger>{children}</PopoverTrigger>
-        </ImplicitActionContext>
-      </PopoverControllerContext.Provider>
-    </PopoverActiveContext.Provider>
-  );
+  return active;
 }
 
 interface PopoverTriggerProps {}
@@ -320,7 +328,20 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
           return;
         }
 
-        sheet.style.left = `${geometry.trigger.left}px`;
+        // eslint-disable-next-line no-warning-comments
+        // TODO (CS): Need an "implicit sheet" to be relative to, for modals/ sheets in sheets
+        // const windowWidth = window.innerWidth;
+
+        // const relativePosition =
+        //   (geometry.trigger.left + geometry.trigger.width / 2) /
+        //   window.innerWidth;
+
+        const startPosition =
+          geometry.trigger.left +
+          geometry.trigger.width / 2 -
+          geometry.sheet.inline / 2;
+
+        sheet.style.left = `${startPosition}px`;
         sheet.style.top = `${geometry.trigger.top + geometry.trigger.height}px`;
       },
       async prepare() {
