@@ -3,10 +3,14 @@ import {createContext, useContext, useEffect} from 'react';
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown';
 
 export class GlobalEventManager {
-  private readonly eventMap = new Map<GlobalEvent, Set<() => void>>();
+  private readonly eventMap = new Map<
+    GlobalEvent,
+    Set<(target: HTMLElement) => void>
+  >();
+
   private readonly listenerMap = new Map<GlobalEvent, () => void>();
 
-  on(event: GlobalEvent, handler: () => void): () => void {
+  on(event: GlobalEvent, handler: (target: HTMLElement) => void): () => void {
     let handlers = this.eventMap.get(event);
 
     if (handlers == null) {
@@ -15,14 +19,13 @@ export class GlobalEventManager {
     }
 
     if (!this.listenerMap.has(event)) {
-      const listener = () => {
+      const listener = (element: HTMLElement) => {
         for (const handler of handlers!) {
-          handler();
+          handler(element);
         }
       };
 
-      addEventListener(event, listener);
-      this.listenerMap.set(event, listener);
+      this.listenerMap.set(event, addEventListener(event, listener));
     }
 
     handlers.add(handler);
@@ -33,7 +36,7 @@ export class GlobalEventManager {
         const listener = this.listenerMap.get(event);
 
         if (listener) {
-          removeEventListener(event, listener);
+          listener();
           this.listenerMap.delete(event);
         }
       }
@@ -41,11 +44,27 @@ export class GlobalEventManager {
   }
 }
 
-function addEventListener(event: GlobalEvent, listener: () => void) {
-  targetForEvent(event).addEventListener(event, listener, {passive: true});
+function addEventListener(
+  event: GlobalEvent,
+  listener: (element: HTMLElement) => void,
+) {
+  const wrappedListener = (event: Event) => {
+    listener(event.target as any);
+  };
+
+  targetForEvent(event).addEventListener(event, wrappedListener, {
+    passive: true,
+  });
+
+  return () => {
+    removeEventListener(event, wrappedListener);
+  };
 }
 
-function removeEventListener(event: GlobalEvent, listener: () => void) {
+function removeEventListener(
+  event: GlobalEvent,
+  listener: (event: Event) => void,
+) {
   targetForEvent(event).removeEventListener(event, listener, {passive: true});
 }
 

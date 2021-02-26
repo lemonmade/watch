@@ -11,7 +11,7 @@ import type {PropsWithChildren} from 'react';
 import {ImplicitActionContext} from '../../utilities/actions';
 import type {Action} from '../../utilities/actions';
 import {useUniqueId} from '../../utilities/id';
-// import {useGlobalEvents} from '../../utilities/global-events';
+import {useGlobalEvents} from '../../utilities/global-events';
 
 import styles from './Popover.css';
 
@@ -23,10 +23,12 @@ interface PopoverSheetController {
   close(id: string): Promise<void>;
   update(geometry: any): void;
   measure(): any;
+  contains(element: HTMLElement): boolean;
 }
 
 interface PopoverTriggerController {
   measure(): any;
+  contains(element: HTMLElement): boolean;
 }
 
 interface PopoverController {
@@ -51,7 +53,11 @@ export function Popover({
   controlledBy,
 }: PropsWithChildren<PopoverProps>) {
   const id = useUniqueId('Popover');
-  const controller = useMemo(() => createPopoverController(id), [id]);
+  const globalEvents = useGlobalEvents();
+  const controller = useMemo(() => createPopoverController(id, globalEvents), [
+    id,
+    globalEvents,
+  ]);
   const active = usePopoverActive(controller);
 
   const implicitAction = useMemo<Action>(() => {
@@ -72,16 +78,28 @@ export function Popover({
   );
 }
 
-function createPopoverController(id: string) {
+function createPopoverController(
+  id: string,
+  globalEvents: ReturnType<typeof useGlobalEvents>,
+) {
   let currentSheet: PopoverSheetController | null = null;
   let currentTrigger: PopoverTriggerController | null = null;
   let activationCount = 0;
   let closing = false;
   let state: PopoverController['state'] = 'inactive';
 
+  const cleanupTasks = new Set<() => void>();
   const subscribers = new Set<() => void>();
 
   const currentActivationId = () => `Activation${activationCount}`;
+
+  function cleanup() {
+    for (const task of cleanupTasks) {
+      task();
+    }
+
+    cleanupTasks.clear();
+  }
 
   function update() {
     if (
@@ -103,6 +121,19 @@ function createPopoverController(id: string) {
 
     activationCount += 1;
     closing = false;
+
+    const stopPointerDownListen = globalEvents.on('pointerdown', (target) => {
+      if (currentSheet?.contains(target) || currentTrigger?.contains(target)) {
+        return;
+      }
+
+      deactivate();
+    });
+
+    cleanupTasks.add(() => {
+      stopPointerDownListen();
+    });
+
     await setState(state === 'inactive' ? 'preparing' : 'opening');
   }
 
@@ -110,6 +141,8 @@ function createPopoverController(id: string) {
     if (state === 'closing' || state === 'inactive') return;
 
     closing = true;
+    cleanup();
+
     await setState(state === 'preparing' ? 'inactive' : 'closing');
   }
 
@@ -263,6 +296,11 @@ function PopoverTrigger({children}: PropsWithChildren<PopoverTriggerProps>) {
 
         return trigger.getBoundingClientRect();
       },
+      contains(element) {
+        return (
+          (ref.current === element || ref.current?.contains(element)) ?? false
+        );
+      },
     });
   }, [controller]);
 
@@ -320,6 +358,11 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
           inline: sheet.offsetWidth,
           block: sheet.offsetHeight,
         };
+      },
+      contains(element) {
+        return (
+          (ref.current === element || ref.current?.contains(element)) ?? false
+        );
       },
       update(geometry) {
         const {current: sheet} = ref;
