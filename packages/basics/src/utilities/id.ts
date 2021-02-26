@@ -13,8 +13,12 @@ export class UniqueIdFactory {
 
 export const UniqueIdContext = createContext(new UniqueIdFactory());
 
+export function useUniqueIdFactory() {
+  return useContext(UniqueIdContext);
+}
+
 export function useUniqueId(prefix: string, explicitId?: string) {
-  const factory = useContext(UniqueIdContext);
+  const factory = useUniqueIdFactory();
   const autoId = useMemo(() => factory.next(prefix), [factory, prefix]);
   return explicitId ?? autoId;
 }

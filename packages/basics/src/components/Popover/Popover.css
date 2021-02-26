@@ -1,0 +1,26 @@
+.PopoverTrigger {
+  position: relative;
+}
+
+.PopoverSheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  background: var(--zest-color-surface-raised-2);
+  border-radius: var(--zest-border-radius);
+  max-width: 20rem;
+  word-break: break-all;
+  transition: transform 0.2s ease;
+  transform-origin: 0 0;
+}
+
+.PopoverSheet[data-state='inactive'],
+.PopoverSheet[data-state='closing'] {
+  transform: scale(0);
+}
+
+.PopoverSheet[data-state='opening'],
+.PopoverSheet[data-state='open'] {
+  transform: scale(100%);
+}

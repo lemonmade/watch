@@ -1,21 +1,14 @@
 import {createContext, useContext} from 'react';
 import type {PropsWithChildren} from 'react';
 
-export interface ImplicitActionTarget {
-  id: string;
-  type?: 'popover';
-  active?: boolean;
-}
-
-export interface ImplicitAction {
+export interface Action {
   id?: string;
-  target?: ImplicitActionTarget;
-  onAction?(): void;
+  perform(): void;
 }
 
-export const ImplicitActionInternalContext = createContext<
-  ImplicitAction | undefined
->(undefined);
+export const ImplicitActionInternalContext = createContext<Action | undefined>(
+  undefined,
+);
 
 export function useImplicitAction(id?: string) {
   const implicitAction = useContext(ImplicitActionInternalContext);
@@ -26,7 +19,7 @@ export function useImplicitAction(id?: string) {
 }
 
 interface Props {
-  action?: ImplicitAction;
+  action?: Action;
 }
 
 export function ImplicitActionContext({

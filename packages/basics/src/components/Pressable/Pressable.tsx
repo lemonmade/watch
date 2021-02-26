@@ -1,6 +1,7 @@
 import type {PropsWithChildren} from 'react';
 
-import {useImplicitAction} from '../ImplicitAction';
+import {useImplicitAction} from '../../utilities/actions';
+import {useImplicitTarget, ariaForTarget} from '../../utilities/targets';
 
 import styles from './Pressable.css';
 
@@ -10,22 +11,17 @@ interface Props {
 
 export function Pressable({onPress, children}: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction();
-  const target = implicitAction?.target;
+  const implicitTarget = useImplicitTarget();
 
   return (
     <button
       type="button"
       className={styles.Pressable}
       onClick={() => {
-        if (onPress) {
-          onPress();
-        } else {
-          implicitAction?.onAction?.();
-        }
+        implicitAction?.perform();
+        onPress?.();
       }}
-      aria-expanded={target?.active ?? false}
-      aria-controls={target?.id}
-      aria-owns={target?.id}
+      {...ariaForTarget(implicitTarget)}
     >
       {children}
     </button>

@@ -1,0 +1,45 @@
+/* @see https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
+.blockSizeFitContent > .InputContainer {
+  display: grid;
+}
+
+.blockSizeFitContent .Input {
+  resize: none;
+  overflow: hidden;
+}
+
+.multiline .Input {
+  min-height: calc(
+    var(--x-TextField-lines, 2) * 1em + var(--zest-spacing-mini) * 2
+  );
+}
+
+.InputContainer {
+  background: var(--zest-color-action);
+  border-radius: var(--zest-border-radius);
+  overflow: hidden;
+}
+
+.Input {
+  appearance: none;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  resize: vertical;
+  color: var(--zest-color-text);
+}
+
+.Input,
+.AutoGrowWrap {
+  grid-area: 1 / 1 / 2 / 2;
+  font-size: 1rem;
+  line-height: 1;
+  font-family: inherit;
+  padding: var(--zest-spacing-mini) var(--zest-spacing);
+}
+
+.AutoGrowWrap {
+  white-space: pre-wrap;
+  visibility: hidden;
+}
