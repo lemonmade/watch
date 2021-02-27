@@ -65,7 +65,7 @@ function removeEventListener(
   event: GlobalEvent,
   listener: (event: Event) => void,
 ) {
-  targetForEvent(event).removeEventListener(event, listener, {passive: true});
+  targetForEvent(event).removeEventListener(event, listener);
 }
 
 function targetForEvent(event: GlobalEvent) {

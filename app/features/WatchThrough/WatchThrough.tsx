@@ -4,15 +4,21 @@ import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
 import {
   BlockStack,
   InlineStack,
-  Page,
   Button,
   Heading,
   TextBlock,
   TextField,
   Rating,
   Image,
+  Text,
   DateField,
+  Menu,
+  Pressable,
+  Link,
 } from '@lemon/zest';
+
+import {Page} from 'components';
+import {parseGid} from 'utilities/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
@@ -33,10 +39,28 @@ export default function WatchThrough({id}: Props) {
 
   if (data?.watchThrough == null) return null;
 
-  const {nextEpisode, status} = data.watchThrough;
+  const {nextEpisode, status, series} = data.watchThrough;
 
   return (
-    <Page title={data.watchThrough.series.name}>
+    <Page
+      header={
+        <BlockStack spacing="small">
+          {nextEpisode && (
+            <Text>Watching season {nextEpisode.season.number}</Text>
+          )}
+          <Heading>{series.name}</Heading>
+        </BlockStack>
+      }
+      actions={
+        <Menu>
+          <Link to={`/series/${parseGid(series.id).id}`}>
+            More about {series.name}
+          </Link>
+          <Pressable onPress={() => console.log('PAUSE')}>Pause</Pressable>
+          <Pressable onPress={() => console.log('DELETE')}>Delete</Pressable>
+        </Menu>
+      }
+    >
       <BlockStack>
         {nextEpisode && (
           <NextEpisode

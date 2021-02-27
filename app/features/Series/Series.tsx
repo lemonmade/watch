@@ -7,9 +7,11 @@ import {
   InlineStack,
   Heading,
   Text,
+  Menu,
+  Pressable,
 } from '@lemon/zest';
 
-import {Link, Clip} from 'components';
+import {Link, Clip, Page} from 'components';
 import type {ClipProps} from 'components';
 import {parseGid} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
@@ -63,19 +65,22 @@ function SeriesWithData({
   }, [series]);
 
   return (
-    <BlockStack>
-      <Heading>{series.name}</Heading>
-      <View>
-        <Button
-          onPress={async () => {
-            await subscribeToSeries({
-              variables: {id: series.id},
-            });
-          }}
-        >
-          Subscribe
-        </Button>
-      </View>
+    <Page
+      header={<Heading>{series.name}</Heading>}
+      actions={
+        <Menu>
+          <Pressable
+            onPress={async () => {
+              await subscribeToSeries({
+                variables: {id: series.id},
+              });
+            }}
+          >
+            Subscribe
+          </Pressable>
+        </Menu>
+      }
+    >
       {series.overview && <Text>{series.overview}</Text>}
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
@@ -155,7 +160,7 @@ function SeriesWithData({
           />
         ))}
       </BlockStack>
-    </BlockStack>
+    </Page>
   );
 }
 

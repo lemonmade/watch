@@ -1,7 +1,7 @@
 import {useQuery} from '@quilted/quilt';
-import {MediaGrid, Poster, Page} from '@lemon/zest';
+import {MediaGrid, Poster, Heading} from '@lemon/zest';
 
-import {Link} from 'components';
+import {Link, Page} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
@@ -14,7 +14,7 @@ export function Subscriptions() {
   }
 
   return (
-    <Page title="Subscriptions">
+    <Page header={<Heading>Subscriptions</Heading>}>
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
           <Link key={id} to={`/series/${parseGid(series.id).id}`}>

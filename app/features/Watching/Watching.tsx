@@ -1,8 +1,9 @@
 import {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@quilted/quilt';
 
-import {Page, MediaGrid} from '@lemon/zest';
+import {MediaGrid} from '@lemon/zest';
 
+import {Page} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import watchingQuery, {
@@ -37,7 +38,7 @@ export function Watching(_: Props) {
   }, [data?.watchThroughs]);
 
   return (
-    <Page title="Watching">
+    <Page header="Watching">
       <MediaGrid>
         {availableWatchThroughs.map(({id, ...props}) => (
           <WatchThroughItem key={id} {...props} />

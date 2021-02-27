@@ -1,5 +1,7 @@
 .PopoverTrigger {
-  max-width: max-content;
+  display: var(--x-implicit-display, flex);
+  max-inline-size: var(--x-implicit-container-inline-size, max-content);
+  align-items: stretch;
 }
 
 .PopoverSheet {

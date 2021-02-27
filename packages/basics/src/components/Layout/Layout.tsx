@@ -116,44 +116,50 @@ function getMaximum(value: ViewportSize) {
 }
 
 function sizesToSelectors(root: string, sizes: Size[]) {
-  const hiddenChildren: number[] = [];
   const columns: string[] = [];
+  const rules: string[] = [];
 
-  sizes.forEach((size, index) => {
-    if (size) {
-      switch (size) {
-        case 'auto': {
-          columns.push('auto');
-          break;
-        }
-        case 'fill': {
-          columns.push('minmax(0, 1fr)');
-          break;
-        }
-        case 'hidden': {
-          hiddenChildren.push(index);
-          break;
-        }
-        default: {
-          columns.push(`${size}px`);
-        }
-      }
-    } else {
-      hiddenChildren.push(index);
+  for (const [index, size] of sizes.entries()) {
+    if (!size || size === 'hidden') {
+      rules.push(
+        `${root} > :nth-child(${index + 1}) { --x-implicit-display: none; }`,
+      );
+      continue;
     }
-  });
 
-  let content = `${root} { grid-template-columns: ${columns.join(
-    ' ',
-  )}; }\n${root} > :nth-child(n + 1) { --x-implicit-display: initial; } `;
-
-  if (hiddenChildren.length) {
-    content += `\n${hiddenChildren
-      .map((hiddenIndex) => `${root} > :nth-child(${hiddenIndex + 1})`)
-      .join(', ')} { --x-implicit-display: none; }`;
+    switch (size) {
+      case 'auto': {
+        columns.push('auto');
+        rules.push(
+          `${root} > :nth-child(${
+            index + 1
+          }) { --x-implicit-display: initial; }`,
+        );
+        break;
+      }
+      case 'fill': {
+        columns.push('minmax(0, 1fr)');
+        rules.push(
+          `${root} > :nth-child(${
+            index + 1
+          }) { --x-implicit-display: initial; --x-implicit-container-inline-size: 100%; }`,
+        );
+        break;
+      }
+      default: {
+        columns.push(`${size}px`);
+        rules.push(
+          `${root} > :nth-child(${
+            index + 1
+          }) { --x-implicit-display: initial; --x-implicit-container-inline-size: 100%; }`,
+        );
+      }
+    }
   }
 
-  return content;
+  return `${root} { grid-template-columns: ${columns.join(
+    ' ',
+  )}; }\n${rules.join('\n')}`;
 }
 
 function* normalizeMaybeMediaList<T>(maybeMediaList: ValueOrMediaList<T>) {
