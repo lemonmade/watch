@@ -4,6 +4,8 @@ module.exports = {
     'node_modules/',
     'build/',
     'packages/*/*.d.ts',
+    'packages/*/*.mjs',
+    'packages/*/*.esnext',
     'packages/*/build/',
     'app/graphql/types*',
     '**/*.graphql.d.ts',

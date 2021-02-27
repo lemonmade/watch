@@ -56,8 +56,8 @@ export default function WatchThrough({id}: Props) {
           <Link to={`/series/${parseGid(series.id).id}`}>
             More about {series.name}
           </Link>
-          <Pressable onPress={() => console.log('PAUSE')}>Pause</Pressable>
-          <Pressable onPress={() => console.log('DELETE')}>Delete</Pressable>
+          <Pressable>Pause</Pressable>
+          <Pressable>Delete</Pressable>
         </Menu>
       }
     >
