@@ -24,6 +24,7 @@ import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
 import stopWatchThroughMutation from './graphql/StopWatchThroughMutation.graphql';
+import deleteWatchThroughMutation from './graphql/DeleteWatchThroughMutation.graphql';
 
 export interface Props {
   id: string;
@@ -36,6 +37,7 @@ export default function WatchThrough({id}: Props) {
   });
   const navigate = useNavigate();
   const stopWatchThrough = useMutation(stopWatchThroughMutation);
+  const deleteWatchThrough = useMutation(deleteWatchThroughMutation);
 
   if (data?.watchThrough == null) return null;
 
@@ -56,8 +58,32 @@ export default function WatchThrough({id}: Props) {
           <Link to={`/series/${parseGid(series.id).id}`}>
             More about {series.name}
           </Link>
-          <Pressable>Pause</Pressable>
-          <Pressable>Delete</Pressable>
+          <Pressable
+            onPress={async () => {
+              const {data} = await stopWatchThrough({
+                variables: {id},
+              });
+
+              if (data?.stopWatchThrough.watchThrough?.id) {
+                navigate('/');
+              }
+            }}
+          >
+            Stop watching
+          </Pressable>
+          <Pressable
+            onPress={async () => {
+              const {data} = await deleteWatchThrough({
+                variables: {id},
+              });
+
+              if (data?.deleteWatchThrough) {
+                navigate('/');
+              }
+            }}
+          >
+            Delete
+          </Pressable>
         </Menu>
       }
     >

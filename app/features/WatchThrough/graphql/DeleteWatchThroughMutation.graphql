@@ -1,0 +1,5 @@
+mutation DeleteWatchThrough($id: ID!) {
+  deleteWatchThrough(id: $id) {
+    deletedWatchThroughId
+  }
+}
