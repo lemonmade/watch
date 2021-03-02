@@ -1,8 +1,15 @@
 import {createContext, useContext} from 'react';
 import type {PropsWithChildren} from 'react';
 
+export interface Target {
+  readonly id: string;
+  readonly type?: 'popover';
+  readonly active?: boolean;
+}
+
 export interface Action {
-  id?: string;
+  readonly id?: string;
+  readonly target?: Target;
   perform(): void;
 }
 
@@ -31,4 +38,15 @@ export function ImplicitActionContext({
       {children}
     </ImplicitActionInternalContext.Provider>
   );
+}
+
+export function ariaForTarget(target?: Target) {
+  if (!target) return undefined;
+
+  return {
+    'aria-expanded':
+      target.type === 'popover' ? target.active ?? false : undefined,
+    'aria-controls': target.id,
+    'aria-owns': target.id,
+  };
 }

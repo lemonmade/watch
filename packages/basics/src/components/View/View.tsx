@@ -25,13 +25,13 @@ export function View({
   // concentric border radius is handled with a class
   if (typeof cornerRadius === 'number') {
     const radius = relativeSize(cornerRadius);
-    (style as any)[`--x-container-corner-radius`] = radius;
+    (style as any)[`--z-container-corner-radius`] = radius;
     style.borderRadius = radius;
   }
 
   if (padding) {
     const relativePadding = relativeSize(padding);
-    (style as any)['--x-container-inset'] = relativePadding;
+    (style as any)['--z-container-inset'] = relativePadding;
     style.padding = relativePadding;
   }
 

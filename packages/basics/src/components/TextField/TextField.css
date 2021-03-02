@@ -10,7 +10,7 @@
 
 .multiline .Input {
   min-height: calc(
-    var(--x-TextField-lines, 2) * 1em + var(--zest-spacing-mini) * 2
+    var(--z-TextField-lines, 2) * 1em + var(--zest-spacing-mini) * 2
   );
 }
 

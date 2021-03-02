@@ -1,8 +1,7 @@
 import {classes, variation} from '@lemon/css';
 import type {PropsWithChildren} from 'react';
 
-import {useImplicitAction} from '../../utilities/actions';
-import {useImplicitTarget, ariaForTarget} from '../../utilities/targets';
+import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
 
 import styles from './Pressable.css';
 
@@ -19,7 +18,6 @@ export function Pressable({
   children,
 }: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction();
-  const implicitTarget = useImplicitTarget();
 
   return (
     <button
@@ -29,11 +27,14 @@ export function Pressable({
         alignContent && styles[variation('alignContent', alignContent)],
         blockSize && styles[variation('blockSize', blockSize)],
       )}
-      onClick={() => {
-        implicitAction?.perform();
-        onPress?.();
-      }}
-      {...ariaForTarget(implicitTarget)}
+      onClick={
+        (implicitAction ?? onPress) &&
+        (() => {
+          implicitAction?.perform();
+          onPress?.();
+        })
+      }
+      {...ariaForTarget(implicitAction?.target)}
     >
       {children}
     </button>

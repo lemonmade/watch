@@ -6,14 +6,14 @@
 }
 
 .Layout > * {
-  --x-implicit-connection-inline-start: 0;
-  --x-implicit-connection-inline-end: 0;
+  --z-implicit-connection-inline-start: 0;
+  --z-implicit-connection-inline-end: 0;
 }
 
 .Layout > *:first-child {
-  --x-implicit-connection-inline-start: initial;
+  --z-implicit-connection-inline-start: initial;
 }
 
 .Layout > *:last-child {
-  --x-implicit-connection-inline-end: initial;
+  --z-implicit-connection-inline-end: initial;
 }

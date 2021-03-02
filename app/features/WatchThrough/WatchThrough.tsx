@@ -58,19 +58,21 @@ export default function WatchThrough({id}: Props) {
           <Link to={`/series/${parseGid(series.id).id}`}>
             More about {series.name}
           </Link>
-          <Pressable
-            onPress={async () => {
-              const {data} = await stopWatchThrough({
-                variables: {id},
-              });
+          {status === 'ONGOING' && (
+            <Pressable
+              onPress={async () => {
+                const {data} = await stopWatchThrough({
+                  variables: {id},
+                });
 
-              if (data?.stopWatchThrough.watchThrough?.id) {
-                navigate('/');
-              }
-            }}
-          >
-            Stop watching
-          </Pressable>
+                if (data?.stopWatchThrough.watchThrough?.id) {
+                  navigate('/');
+                }
+              }}
+            >
+              Stop watching
+            </Pressable>
+          )}
           <Pressable
             onPress={async () => {
               const {data} = await deleteWatchThrough({
@@ -105,16 +107,6 @@ export default function WatchThrough({id}: Props) {
             overview={nextEpisode.overview ?? undefined}
             onAction={() => setKey((key) => key + 1)}
           />
-        )}
-        {status === 'ONGOING' && (
-          <Button
-            onPress={async () => {
-              const {data} = await stopWatchThrough({variables: {id}});
-              if (data) navigate('/');
-            }}
-          >
-            Stop watchthrough
-          </Button>
         )}
       </BlockStack>
     </Page>

@@ -1,10 +1,6 @@
 import {ReactNode} from 'react';
 import {classes} from '@lemon/css';
-import {
-  useImplicitAction,
-  useImplicitTarget,
-  ariaForTarget,
-} from '@lemon/basics';
+import {useImplicitAction, ariaForTarget} from '@lemon/basics';
 
 import styles from './Button.css';
 
@@ -17,7 +13,6 @@ interface Props {
 
 export function Button({id, children, primary, onPress}: Props) {
   const implicitAction = useImplicitAction(id);
-  const implicitTarget = useImplicitTarget();
 
   return (
     <button
@@ -30,7 +25,7 @@ export function Button({id, children, primary, onPress}: Props) {
           implicitAction?.perform();
         }
       }}
-      {...ariaForTarget(implicitTarget)}
+      {...ariaForTarget(implicitAction?.target)}
     >
       {children}
     </button>

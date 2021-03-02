@@ -23,11 +23,12 @@
   --zest-color-action-primary-focus: #395ba6;
   --zest-color-action-primary-active: #294789;
 
-  --zest-action-size: 2.75rem; /* 44px / 16px */
+  --zest-action-size: 2.5rem; /* 44px / 16px */
 
   --zest-spacing: 1rem;
   --zest-spacing-small: 0.75rem;
   --zest-spacing-mini: 0.5rem;
+  --zest-spacing-tiny: 0.25rem;
   --zest-spacing-large: 1.5rem;
   --zest-spacing-extra-large: 2rem;
 

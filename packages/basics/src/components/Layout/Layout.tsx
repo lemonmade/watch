@@ -122,7 +122,9 @@ function sizesToSelectors(root: string, sizes: Size[]) {
   for (const [index, size] of sizes.entries()) {
     if (!size || size === 'hidden') {
       rules.push(
-        `${root} > :nth-child(${index + 1}) { --x-implicit-display: none; }`,
+        `:where(${root}) > :where(:nth-child(${
+          index + 1
+        })) { --z-implicit-display-none: none; }`,
       );
       continue;
     }
@@ -131,27 +133,27 @@ function sizesToSelectors(root: string, sizes: Size[]) {
       case 'auto': {
         columns.push('auto');
         rules.push(
-          `${root} > :nth-child(${
+          `:where(${root}) > :where(:nth-child(${
             index + 1
-          }) { --x-implicit-display: initial; }`,
+          })) { --z-implicit-display-none: initial; --z-implicit-display: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-implicit-container-inline-size: initial; }`,
         );
         break;
       }
       case 'fill': {
         columns.push('minmax(0, 1fr)');
         rules.push(
-          `${root} > :nth-child(${
+          `:where(${root}) > :where(:nth-child(${
             index + 1
-          }) { --x-implicit-display: initial; --x-implicit-container-inline-size: 100%; }`,
+          })) { --z-implicit-display-none: initial; --z-implicit-display: block; --z-implicit-display-flex: flex; --z-implicit-display-grid: grid; --z-implicit-container-inline-size: 100%; }`,
         );
         break;
       }
       default: {
         columns.push(`${size}px`);
         rules.push(
-          `${root} > :nth-child(${
+          `:where(${root}) > :where(:nth-child(${
             index + 1
-          }) { --x-implicit-display: initial; --x-implicit-container-inline-size: 100%; }`,
+          })) { --z-implicit-display-none: initial; --z-implicit-display: block; --z-implicit-display-flex: flex; --z-implicit-display-grid: grid; --z-implicit-container-inline-size: 100%; }`,
         );
       }
     }

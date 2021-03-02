@@ -1,20 +1,35 @@
 .Pressable {
+  --z-Pressable-align-content: var(--z-implicit-align-content, center);
+  --z-Pressable-display: var(
+    --z-implicit-display-none,
+    var(--z-implicit-display, inline-block)
+  );
+  --z-Pressable-min-block-size: var(--zest-action-size);
+  --z-Pressable-padding: var(--zest-spacing-mini);
+  --z-Pressable-color: var(--zest-color-text);
+  --z-Pressable-background: transparent;
+  --z-Pressable-inline-size: var(--z-implicit-container-inline-size);
+
   appearance: none;
   border: none;
-  background: var(--zest-color-action);
+  background: var(--z-Pressable-background);
   transition: background 0.2s ease;
   font-size: 1rem;
-  color: var(--zest-color-text);
-  min-height: var(--zest-action-size);
-  padding: var(--zest-spacing-mini);
+  color: var(--z-Pressable-color);
+  display: var(--z-Pressable-display);
+  padding: var(--z-Pressable-padding);
+  min-block-size: var(--z-Pressable-min-block-size);
+  inline-size: var(--z-Pressable-inline-size);
+  text-align: var(--z-Pressable-align-content);
   border-radius: var(
-      --x-implicit-connection-inline-start,
+      --z-implicit-connection-inline-start,
       var(--zest-border-radius)
     )
-    var(--x-implicit-connection-inline-end, var(--zest-border-radius))
-    var(--x-implicit-connection-inline-end, var(--zest-border-radius))
-    var(--x-implicit-connection-inline-start, var(--zest-border-radius));
+    var(--z-implicit-connection-inline-end, var(--zest-border-radius))
+    var(--z-implicit-connection-inline-end, var(--zest-border-radius))
+    var(--z-implicit-connection-inline-start, var(--zest-border-radius));
   overflow: hidden;
+  cursor: pointer;
 }
 
 .Pressable:focus {
@@ -23,18 +38,18 @@
 
 .Pressable:active,
 .Pressable:focus-visible {
-  background: var(--zest-color-action-active);
+  --z-Pressable-background: var(--zest-color-action-active);
 }
 
 .blockSizeFill {
-  display: block;
-  width: 100%;
+  --z-Pressable-display: var(--z-implicit-display-none, block);
+  inline-size: 100%;
 }
 
 .alignContentStart {
-  text-align: start;
+  --z-Pressable-align-content: start;
 }
 
 .alignContentEnd {
-  text-align: end;
+  --z-Pressable-align-content: end;
 }

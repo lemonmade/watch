@@ -62,10 +62,15 @@ export function Popover({
 
   const implicitAction = useMemo<Action>(() => {
     return {
-      id: controlledBy ?? `${controller.id}Trigger`,
+      id: controlledBy,
       perform: () => controller.set(!controller.active),
+      target: {
+        id,
+        type: 'popover',
+        active,
+      },
     };
-  }, [controller, controlledBy]);
+  }, [controller, controlledBy, id, active]);
 
   return (
     <PopoverActiveContext.Provider value={active}>
@@ -425,14 +430,16 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
   }, [rendered]);
 
   return rendered ? (
-    <div
-      className={styles.PopoverSheet}
-      id={controller.id}
-      ref={ref}
-      data-state="inactive"
-    >
-      <div>{children}</div>
-    </div>
+    <ImplicitActionContext action={undefined}>
+      <div
+        className={styles.PopoverSheet}
+        id={controller.id}
+        ref={ref}
+        data-state="inactive"
+      >
+        {children}
+      </div>
+    </ImplicitActionContext>
   ) : null;
 }
 

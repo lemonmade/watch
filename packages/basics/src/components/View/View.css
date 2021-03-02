@@ -1,14 +1,19 @@
 .View {
-  display: var(--x-implicit-display, block);
+  display: var(
+    --z-implicit-display-none,
+    var(--z-implicit-display-block, block)
+  );
 }
 
 .View > * {
-  --x-implicit-display: initial;
-  --x-implicit-container-inline-size: initial;
+  --z-implicit-display: initial;
+  --z-implicit-display-flex: initial;
+  --z-implicit-display-grid: initial;
+  --z-implicit-container-inline-size: initial;
 }
 
 .cornerRadiusConcentric {
   border-radius: calc(
-    var(--x-container-corner-radius, 0) - var(--x-container-inset, 0)
+    var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
   );
 }

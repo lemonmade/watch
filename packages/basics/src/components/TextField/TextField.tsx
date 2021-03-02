@@ -23,7 +23,7 @@ export function TextField({
 
   const style =
     typeof multiline === 'number'
-      ? {'--x-TextField-lines': multiline}
+      ? {'--z-TextField-lines': multiline}
       : undefined;
 
   return (

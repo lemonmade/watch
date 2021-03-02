@@ -1,25 +1,36 @@
 import type {PropsWithChildren} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Link as RouterLink} from '@quilted/quilt';
+import {classes, variation} from '@lemon/css';
 
-import {useImplicitAction} from '../../utilities/actions';
-import {useImplicitTarget, ariaForTarget} from '../../utilities/targets';
+import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
 
 import styles from './Link.css';
 
 interface Props {
   to: string;
   onPress?(): void;
+  blockSize?: 'fill';
+  alignContent?: 'start' | 'end' | 'center';
 }
 
-export function Link({to, onPress, children}: PropsWithChildren<Props>) {
+export function Link({
+  to,
+  onPress,
+  alignContent,
+  blockSize,
+  children,
+}: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction();
-  const implicitTarget = useImplicitTarget();
 
   return (
     <RouterLink
       to={to}
-      className={styles.Link}
+      className={classes(
+        styles.Link,
+        alignContent && styles[variation('alignContent', alignContent)],
+        blockSize && styles[variation('blockSize', blockSize)],
+      )}
       onClick={
         (implicitAction ?? onPress) &&
         (() => {
@@ -27,7 +38,7 @@ export function Link({to, onPress, children}: PropsWithChildren<Props>) {
           onPress?.();
         })
       }
-      {...ariaForTarget(implicitTarget)}
+      {...ariaForTarget(implicitAction?.target)}
     >
       {children}
     </RouterLink>
