@@ -45,7 +45,7 @@ export default function WatchThrough({id}: Props) {
 
   return (
     <Page
-      header={
+      heading={
         <BlockStack spacing="small">
           {nextEpisode && (
             <Text>Watching season {nextEpisode.season.number}</Text>

@@ -5,7 +5,6 @@ import {
   Button,
   BlockStack,
   InlineStack,
-  Heading,
   Text,
   Menu,
   Pressable,
@@ -66,7 +65,7 @@ function SeriesWithData({
 
   return (
     <Page
-      header={<Heading>{series.name}</Heading>}
+      heading={series.name}
       actions={
         <Menu>
           <Pressable

@@ -38,7 +38,7 @@ export function Watching(_: Props) {
   }, [data?.watchThroughs]);
 
   return (
-    <Page header="Watching">
+    <Page heading="Watching">
       <MediaGrid>
         {availableWatchThroughs.map(({id, ...props}) => (
           <WatchThroughItem key={id} {...props} />

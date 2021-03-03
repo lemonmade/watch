@@ -8,6 +8,7 @@ export {List, Item} from './List';
 export {Layout} from './Layout';
 export {Menu} from './Menu';
 export {Popover, PopoverSheet} from './Popover';
+export {Portal} from './Portal';
 export {Pressable} from './Pressable';
 export {Section} from './Section';
 export {Text} from './Text';

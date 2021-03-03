@@ -1,47 +1,22 @@
+import {useEffect} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
-import {
-  Link,
-  Menu,
-  Pressable,
-  Layout,
-  View,
-  Popover,
-  PopoverSheet,
-} from '@lemon/zest';
+import {View} from '@lemon/zest';
+import {usePageDelegate} from 'utilities/page';
 
 interface Props {
-  header: ReactNode;
+  heading: ReactNode;
   actions?: ReactNode;
 }
 
-export function Page({children, actions, header}: PropsWithChildren<Props>) {
-  return (
-    <View padding={16}>
-      <Layout sizes={['fill', 'auto']}>
-        {actions ? (
-          <Popover>
-            <Pressable alignContent="start" blockSize="fill">
-              {header}
-            </Pressable>
-            <PopoverSheet>{actions}</PopoverSheet>
-          </Popover>
-        ) : (
-          <View>{header}</View>
-        )}
-        <Popover>
-          <Pressable>Mega menu</Pressable>
-          <PopoverSheet>
-            <Menu>
-              <Link to="/">Watching</Link>
-              <Link to="/subscriptions">Subscriptions</Link>
-              <Link to="/search">Search</Link>
-              <Link to="/settings">Settings</Link>
-            </Menu>
-          </PopoverSheet>
-        </Popover>
-      </Layout>
-      <View>{children}</View>
-    </View>
-  );
+export function Page({children, actions, heading}: PropsWithChildren<Props>) {
+  const delegate = usePageDelegate();
+
+  useEffect(() => delegate.claim({heading, actions}), [
+    heading,
+    actions,
+    delegate,
+  ]);
+
+  return <View padding={16}>{children}</View>;
 }
