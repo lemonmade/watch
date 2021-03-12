@@ -5,14 +5,17 @@
   );
   --z-Menu-padding: var(--zest-spacing-mini);
 
+  padding: var(--z-Menu-padding);
+  display: var(--z-Menu-display);
+  align-items: center;
+}
+
+:where(.Menu) > * {
   --z-implicit-display: block;
   --z-implicit-display-flex: flex;
   --z-implicit-display-grid: grid;
   --z-implicit-align-content: start;
   --z-implicit-connection-inline-start: initial;
   --z-implicit-connection-inline-end: initial;
-
-  padding: var(--z-Menu-padding);
-  display: var(--z-Menu-display);
-  align-items: center;
+  --z-implicit-container-inline-size: 100%;
 }

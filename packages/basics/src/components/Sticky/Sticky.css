@@ -1,0 +1,5 @@
+.Sticky {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-stacking-layer-1);
+}

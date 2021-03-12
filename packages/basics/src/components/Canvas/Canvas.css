@@ -33,6 +33,10 @@
   --zest-spacing-extra-large: 2rem;
 
   --zest-border: 1px solid var(--zest-color-action-active);
+
+  --z-stacking-layer-0: 10;
+  --z-stacking-layer-1: 20;
+  --z-stacking-layer-2: 30;
 }
 
 *,

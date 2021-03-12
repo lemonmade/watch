@@ -1,7 +1,9 @@
 import {useState, useRef, useEffect} from 'react';
 import {Link, useQuery} from '@quilted/quilt';
 
-import {Page, BlockStack, TextField} from '@lemon/zest';
+import {BlockStack, TextField} from '@lemon/zest';
+
+import {Page} from 'components';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 
@@ -27,7 +29,7 @@ export function Search() {
   const series = data?.search.series ?? [];
 
   return (
-    <Page title="Search">
+    <Page heading="Search">
       <BlockStack>
         <TextField
           value={search}

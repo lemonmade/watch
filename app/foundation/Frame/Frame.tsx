@@ -11,6 +11,7 @@ import {
   PopoverSheet,
   Pressable,
   Heading,
+  Sticky,
 } from '@lemon/zest';
 
 import {PageDelegateContext} from 'utilities/page';
@@ -55,12 +56,16 @@ export function Frame({children}: PropsWithChildren<Props>) {
             {value: ['auto', 'fill'], viewport: {min: 'medium'}},
           ]}
         >
-          <Menu>
-            <Link to="/">Watching</Link>
-            <Link to="/subscriptions">Subscriptions</Link>
-            <Link to="/search">Search</Link>
-            <Link to="/settings">Settings</Link>
-          </Menu>
+          <View>
+            <Sticky>
+              <Menu>
+                <Link to="/">Watching</Link>
+                <Link to="/subscriptions">Subscriptions</Link>
+                <Link to="/search">Search</Link>
+                <Link to="/settings">Settings</Link>
+              </Menu>
+            </Sticky>
+          </View>
           <View>
             <Header actions={actions}>{heading}</Header>
             <View>{children}</View>
@@ -76,28 +81,32 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
     typeof children === 'string' ? <Heading>{children}</Heading> : children;
 
   return (
-    <Layout sizes={['fill', 'auto']}>
-      {actions ? (
-        <Popover>
-          <Pressable alignContent="start" blockSize="fill">
-            {normalizedHeading}
-          </Pressable>
-          <PopoverSheet>{actions}</PopoverSheet>
-        </Popover>
-      ) : (
-        <View>{normalizedHeading}</View>
-      )}
-      <Popover>
-        <Pressable>Mega menu</Pressable>
-        <PopoverSheet>
-          <Menu>
-            <Link to="/">Watching</Link>
-            <Link to="/subscriptions">Subscriptions</Link>
-            <Link to="/search">Search</Link>
-            <Link to="/settings">Settings</Link>
-          </Menu>
-        </PopoverSheet>
-      </Popover>
-    </Layout>
+    <Sticky>
+      <View padding={16} background="black">
+        <Layout sizes={['fill', 'auto']}>
+          {actions ? (
+            <Popover>
+              <Pressable alignContent="start" blockSize="fill">
+                {normalizedHeading}
+              </Pressable>
+              <PopoverSheet>{actions}</PopoverSheet>
+            </Popover>
+          ) : (
+            <View>{normalizedHeading}</View>
+          )}
+          <Popover>
+            <Pressable>Mega menu</Pressable>
+            <PopoverSheet>
+              <Menu>
+                <Link to="/">Watching</Link>
+                <Link to="/subscriptions">Subscriptions</Link>
+                <Link to="/search">Search</Link>
+                <Link to="/settings">Settings</Link>
+              </Menu>
+            </PopoverSheet>
+          </Popover>
+        </Layout>
+      </View>
+    </Sticky>
   );
 }

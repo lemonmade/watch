@@ -1,5 +1,5 @@
-import {Page} from '@lemon/zest';
+import {Page} from 'components';
 
 export function Settings() {
-  return <Page title="Settings">Settings will be here</Page>;
+  return <Page heading="Settings">Settings will be here</Page>;
 }
