@@ -182,7 +182,6 @@ function NextEpisode({
           </TextBlock>
           <Heading>{title}</Heading>
           {overview && <TextBlock>{overview}</TextBlock>}
-          <TextField />
           <TextField multiline value={notes ?? ''} onChange={setNotes} />
         </BlockStack>
         <InlineStack>
