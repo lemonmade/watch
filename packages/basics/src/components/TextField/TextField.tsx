@@ -1,6 +1,9 @@
 import {useState, useRef} from 'react';
 import type {PropsWithChildren, ChangeEvent} from 'react';
 import {classes, variation} from '@lemon/css';
+
+import {useContainingForm} from '../../utilities/forms';
+
 import styles from './TextField.css';
 
 interface Props {
@@ -19,6 +22,8 @@ export function TextField({
   onChange,
 }: PropsWithChildren<Props>) {
   const [value, setValue] = usePartiallyControlledState(currentValue);
+  const containingForm = useContainingForm();
+
   const InputElement = multiline ? 'textarea' : 'input';
 
   const style =
@@ -47,6 +52,7 @@ export function TextField({
             onInput?.(currentTarget.value);
           }}
           onBlur={() => onChange?.(value ?? '')}
+          form={containingForm?.nested ? containingForm.id : undefined}
         />
         {blockSize === 'fitContent' && (
           <div className={styles.AutoGrowWrap}>{value} </div>
@@ -56,7 +62,7 @@ export function TextField({
   );
 }
 
-function usePartiallyControlledState(value?: string) {
+function usePartiallyControlledState(value = '') {
   const [localValue, setLocalValue] = useState(value);
   const lastExplicitValue = useRef(value);
 

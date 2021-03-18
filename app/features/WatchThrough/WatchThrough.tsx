@@ -15,6 +15,7 @@ import {
   Menu,
   Pressable,
   Link,
+  Form,
 } from '@lemon/zest';
 
 import {Page} from 'components';
@@ -140,84 +141,86 @@ function NextEpisode({
   const skipNextEpisode = useMutation(skipNextEpisodeMutation);
   const [at, setAt] = useState<Date | null>(() => new Date());
 
+  const markEpisodeAsWatched = async () => {
+    const optionalArguments: {[key: string]: any} = {
+      finishedAt: at,
+    };
+
+    if (notes) optionalArguments.notes = notes;
+    if (rating) optionalArguments.rating = rating;
+
+    try {
+      await watchNextEpisode({
+        variables: {
+          ...optionalArguments,
+          episode: id,
+          watchThrough: watchThroughId,
+        },
+      });
+    } finally {
+      onAction?.();
+    }
+  };
+
   return (
-    <BlockStack>
-      {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
+    <Form onSubmit={markEpisodeAsWatched}>
       <BlockStack>
-        <TextBlock>
-          Season {seasonNumber}, episode {episodeNumber}
-          {firstAired && (
-            <span>
-              {' • '}
-              {firstAired.toLocaleDateString(undefined, {
-                month: 'long',
-                year: 'numeric',
-                day: 'numeric',
-              })}
-            </span>
-          )}
-        </TextBlock>
-        <Heading>{title}</Heading>
-        {overview && <TextBlock>{overview}</TextBlock>}
-        <TextField multiline value={notes ?? ''} onChange={setNotes} />
+        {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
+        <BlockStack>
+          <TextBlock>
+            Season {seasonNumber}, episode {episodeNumber}
+            {firstAired && (
+              <span>
+                {' • '}
+                {firstAired.toLocaleDateString(undefined, {
+                  month: 'long',
+                  year: 'numeric',
+                  day: 'numeric',
+                })}
+              </span>
+            )}
+          </TextBlock>
+          <Heading>{title}</Heading>
+          {overview && <TextBlock>{overview}</TextBlock>}
+          <TextField />
+          <TextField multiline value={notes ?? ''} onChange={setNotes} />
+        </BlockStack>
+        <InlineStack>
+          <Rating
+            value={rating ?? undefined}
+            onChange={(rating) =>
+              rating === 0 ? setRating(null) : setRating(rating)
+            }
+          />
+          {at && <DateField value={at} onChange={setAt} />}
+        </InlineStack>
+        <InlineStack>
+          <Button primary onPress={markEpisodeAsWatched}>
+            Watch
+          </Button>
+          <Button
+            onPress={async () => {
+              const optionalArguments: {[key: string]: any} = {at};
+
+              if (notes) optionalArguments.notes = notes;
+
+              try {
+                await skipNextEpisode({
+                  variables: {
+                    ...optionalArguments,
+                    episode: id,
+                    watchThrough: watchThroughId,
+                  },
+                });
+              } finally {
+                onAction?.();
+              }
+            }}
+          >
+            Skip
+          </Button>
+        </InlineStack>
       </BlockStack>
-      <InlineStack>
-        <Rating
-          value={rating ?? undefined}
-          onChange={(rating) =>
-            rating === 0 ? setRating(null) : setRating(rating)
-          }
-        />
-        {at && <DateField value={at} onChange={setAt} />}
-      </InlineStack>
-      <InlineStack>
-        <Button
-          primary
-          onPress={async () => {
-            const optionalArguments: {[key: string]: any} = {
-              finishedAt: at,
-            };
-
-            if (notes) optionalArguments.notes = notes;
-            if (rating) optionalArguments.rating = rating;
-
-            try {
-              await watchNextEpisode({
-                variables: {
-                  ...optionalArguments,
-                  episode: id,
-                  watchThrough: watchThroughId,
-                },
-              });
-            } finally {
-              onAction?.();
-            }
-          }}
-        >
-          Watch
-        </Button>
-        <Button
-          onPress={async () => {
-            const optionalArguments: {[key: string]: any} = {at};
-
-            if (notes) optionalArguments.notes = notes;
-
-            try {
-              await skipNextEpisode({
-                variables: {
-                  ...optionalArguments,
-                  episode: id,
-                  watchThrough: watchThroughId,
-                },
-              });
-            } finally {
-              onAction?.();
-            }
-          }}
-        >
-          Skip
-        </Button>
-      </InlineStack>
-    </BlockStack>
+    </Form>
   );
 }

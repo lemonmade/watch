@@ -1,8 +1,9 @@
 export {BlockStack} from './BlockStack';
 export {Canvas} from './Canvas';
-export {InlineStack} from './InlineStack';
+export {Form} from './Form';
 export {Heading, HeadingGroup} from './Heading';
 export {Image} from './Image';
+export {InlineStack} from './InlineStack';
 export {Link} from './Link';
 export {List, Item} from './List';
 export {Layout} from './Layout';
