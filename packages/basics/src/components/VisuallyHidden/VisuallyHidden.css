@@ -1,6 +1,4 @@
 .VisuallyHidden {
-  /* Need to make sure we override any existing styles. */
-  /* stylelint-disable declaration-no-important */
   position: absolute !important;
   top: 0;
   clip: rect(1px, 1px, 1px, 1px) !important;
@@ -9,5 +7,4 @@
   width: 1px !important;
   padding: 0 !important;
   border: 0 !important;
-  /* stylelint-enable declaration-no-important */
 }
