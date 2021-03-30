@@ -1,6 +1,7 @@
 import DataLoader from 'dataloader';
 
 export enum Table {
+  Users = 'Users',
   Watches = 'Watches',
   Skips = 'Skips',
   Series = 'Series',
@@ -18,9 +19,11 @@ export enum Table {
 
 export type Context = ReturnType<typeof createContext>;
 
-export function createContext(db: import('knex')) {
+export function createContext(db: import('knex'), user: {id: string}) {
   return {
     db,
+    user,
+    userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),
     watchLoader: new DataLoader(createBatchLoaderForTable(db, Table.Watches)),
     skipLoader: new DataLoader(createBatchLoaderForTable(db, Table.Skips)),
     seriesLoader: new DataLoader(createBatchLoaderForTable(db, Table.Series)),

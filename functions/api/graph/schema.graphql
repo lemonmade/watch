@@ -2,6 +2,11 @@ scalar Date
 scalar Notes
 scalar Url
 
+type User {
+  id: ID!
+  email: String!
+}
+
 interface Watchable {
   id: ID!
   watches: [Watch!]!
@@ -348,6 +353,7 @@ type InstallClipsExtensionPayload {
 union AppExtensionInstallation = ClipsExtensionInstallation
 
 type Query {
+  me: User!
   watch(id: ID!): Watch
   series(id: ID!): Series
   watchThrough(id: ID!): WatchThrough
