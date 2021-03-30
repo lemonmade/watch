@@ -1,13 +1,7 @@
 import {useMemo} from 'react';
 import {createGraphQL, createHttpFetch, App as QuiltApp} from '@quilted/quilt';
 
-import {
-  Frame,
-  Head,
-  Http,
-  LocalDevelopmentOrchestrator,
-  Routes,
-} from './foundation';
+import {Head, Http, LocalDevelopmentOrchestrator, Routes} from './foundation';
 
 export default function App() {
   const graphql = useMemo(
@@ -23,9 +17,7 @@ export default function App() {
       <Http />
       <Head />
       <LocalDevelopmentOrchestrator>
-        <Frame>
-          <Routes />
-        </Frame>
+        <Routes />
       </LocalDevelopmentOrchestrator>
     </QuiltApp>
   );

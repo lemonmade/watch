@@ -1,0 +1,10 @@
+query GithubViewer {
+  viewer {
+    id
+    url
+    name
+    email
+    login
+    avatarUrl
+  }
+}

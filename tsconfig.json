@@ -24,6 +24,9 @@
       "path": "./functions/tmdb-refresher-scheduler"
     },
     {
+      "path": "./functions/oauth-github"
+    },
+    {
       "path": "./packages/basics"
     },
     {
@@ -40,6 +43,12 @@
     },
     {
       "path": "./packages/webpack-hot-worker"
+    },
+    {
+      "path": "./packages/tiny-server"
+    },
+    {
+      "path": "./packages/tiny-server-aws"
     },
     {
       "path": "./packages/zest"

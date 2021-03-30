@@ -11,7 +11,8 @@ import {
   ViewerCertificate,
 } from '@aws-cdk/aws-cloudfront';
 import {DnsValidatedCertificate} from '@aws-cdk/aws-certificatemanager';
-import {LambdaRestApi} from '@aws-cdk/aws-apigateway';
+import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
+import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 import {Bucket, BucketProps} from '@aws-cdk/aws-s3';
 import {
   HostedZone,
@@ -67,8 +68,19 @@ export class WatchAppStack extends Stack {
       functionName: 'WatchAppFunction',
     });
 
-    const appApiGateway = new LambdaRestApi(this, 'WatchAppApiGateway', {
-      handler: appFunction,
+    const oauthFunction = new Function(this, 'WatchAppOauthFunction', {
+      runtime: Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: Code.fromInline('module.exports.handler = () => {}'),
+      functionName: 'WatchAppOauthFunction',
+    });
+
+    const appHttpApi = new HttpApi(this, 'WatchAppHttpApi', {
+      defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
+    });
+
+    const githubOAuthApi = new HttpApi(this, 'WatchGithubOAuthApi', {
+      defaultIntegration: new LambdaProxyIntegration({handler: oauthFunction}),
     });
 
     const tmdbRefresherSchedulerFunction = new Function(
@@ -160,6 +172,7 @@ export class WatchAppStack extends Stack {
         viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
           aliases: [DOMAIN],
         }),
+
         originConfigs: [
           {
             s3OriginSource: {s3BucketSource: appAssetsBucket},
@@ -205,13 +218,42 @@ export class WatchAppStack extends Stack {
           },
           {
             customOriginSource: {
-              domainName: appApiGateway.url
-                .replace(/^https:[/][/]/, '')
+              domainName: githubOAuthApi
+                .url!.replace(/^https:[/][/]/, '')
                 .split('/')[0],
-              originPath: '/prod',
               originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             },
-            behaviors: [{compress: true, isDefaultBehavior: true}],
+            behaviors: [
+              {
+                pathPattern: '/me/oauth/github*',
+                compress: true,
+                isDefaultBehavior: false,
+                forwardedValues: {
+                  queryString: true,
+                  cookies: {forward: 'all'},
+                  // headers: ['Host'],
+                },
+              },
+            ],
+          },
+          {
+            customOriginSource: {
+              domainName: appHttpApi
+                .url!.replace(/^https:[/][/]/, '')
+                .split('/')[0],
+              originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+            },
+            behaviors: [
+              {
+                compress: true,
+                isDefaultBehavior: true,
+                forwardedValues: {
+                  queryString: true,
+                  cookies: {forward: 'all'},
+                  headers: ['Host'],
+                },
+              },
+            ],
           },
         ],
       },

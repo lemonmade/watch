@@ -8,36 +8,44 @@ import {
   WatchThrough,
   Settings,
   Search,
+  Login,
 } from '../../features';
+import {Frame} from '../Frame';
 
 export function Routes() {
   return useRoutes(
     useMemo<Parameters<typeof useRoutes>[0]>(
       () => [
-        {match: '/', render: () => <Watching />},
-        {match: 'subscriptions', render: () => <Subscriptions />},
-        {match: 'settings', render: () => <Settings />},
-        {match: 'search', render: () => <Search />},
+        {match: 'login', render: () => <Login />},
         {
-          match: 'series',
+          render: ({children}) => <Frame>{children}</Frame>,
           children: [
+            {match: '/', render: () => <Watching />},
+            {match: 'subscriptions', render: () => <Subscriptions />},
+            {match: 'settings', render: () => <Settings />},
+            {match: 'search', render: () => <Search />},
             {
-              match: /[\w-]+/,
-              render: ({matched}) => (
-                <Series id={`gid://watch/Series/${matched}`} />
-              ),
+              match: 'series',
+              children: [
+                {
+                  match: /[\w-]+/,
+                  render: ({matched}) => (
+                    <Series id={`gid://watch/Series/${matched}`} />
+                  ),
+                },
+              ],
             },
-          ],
-        },
-        {
-          match: 'watchthrough',
-          children: [
             {
-              match: /[\w-]+/,
-              renderPrefetch: () => <WatchThrough.Prefetch />,
-              render: ({matched}) => (
-                <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
-              ),
+              match: 'watchthrough',
+              children: [
+                {
+                  match: /[\w-]+/,
+                  renderPrefetch: () => <WatchThrough.Prefetch />,
+                  render: ({matched}) => (
+                    <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
+                  ),
+                },
+              ],
             },
           ],
         },
