@@ -8,8 +8,7 @@ import {
   flush as flushSentry,
 } from '@sentry/node';
 
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import typeDefs from 'raw-loader!./graph/schema.graphql';
+import typeDefs from './graph/schema.graphql';
 
 import {resolvers, createContext} from './graph';
 
