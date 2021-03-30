@@ -39,8 +39,8 @@ jobs:
         run: yarn type-check && yarn build
 
       - name: Zip API Lambda
-        run: zip -r ../api.zip ./*
-        working-directory: ./build/service
+        run: zip -r ../../api.zip ./*
+        working-directory: ./build/services/api
 
       - name: Zip UI Lambda
         run: zip -r ../../ui.zip ./*
