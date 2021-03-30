@@ -1,0 +1,16 @@
+{
+  "name": "@lemon/tiny-server-aws",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "@types/aws-lambda": "^8.0.0"
+  },
+  "peerDependencies": {
+    "@lemon/tiny-server": "*"
+  },
+  "devDependencies": {
+    "@lemon/tiny-server": "*"
+  }
+}

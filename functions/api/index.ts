@@ -1,1 +1,1 @@
-export {watchApi as default} from './api';
+export {default} from './api';

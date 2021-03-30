@@ -1,7 +1,7 @@
-import type {APIGatewayProxyHandlerV2} from 'aws-lambda';
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 import knex from 'knex';
+import {createApp, json} from '@lemon/tiny-server';
 import {
   captureException,
   init as sentryInit,
@@ -33,14 +33,27 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-export const watchApi: APIGatewayProxyHandlerV2 = async (event) => {
-  const {operationName, query, variables} = JSON.parse(event.body!);
+const app = createApp();
+
+app.post(async (request) => {
+  const {operationName, query, variables} = JSON.parse(String(request.body!));
 
   /* eslint-disable no-console */
   console.log(`Performing operation: ${operationName}`);
   console.log(`Variables:\n${JSON.stringify(variables ?? {}, null, 2)}`);
   console.log(`Document:\n${query}`);
   /* eslint-enable no-console */
+
+  // const request = new Request(
+  //   `${event.headers.origin}${event.rawPath}${
+  //     event.rawQueryString ? `?${event.rawQueryString}` : ''
+  //   }`,
+  //   {
+  //     method: event.requestContext.http.method,
+  //     body: event.body,
+  //     headers: event.headers as Record<string, string>,
+  //   },
+  // );
 
   try {
     const result = await graphql(
@@ -52,24 +65,24 @@ export const watchApi: APIGatewayProxyHandlerV2 = async (event) => {
       operationName,
     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-    };
+    return json(result, {
+      status: 200,
+      headers: {'Access-Control-Allow-Origin': '*'},
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
     captureException(error);
     await flushSentry(2000);
-    return {
-      statusCode: error.statusCode ?? 500,
-      body: JSON.stringify({message: error.message}),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
+
+    return json(
+      {message: error.message},
+      {
+        status: error.statusCode ?? 500,
+        headers: {'Access-Control-Allow-Origin': '*'},
       },
-    };
+    );
   }
-};
+});
+
+export default app;

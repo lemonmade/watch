@@ -4,3 +4,4 @@ export {Search} from './Search';
 export {Series} from './Series';
 export {Settings} from './Settings';
 export {Subscriptions} from './Subscriptions';
+export {Login} from './Login';

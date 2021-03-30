@@ -1,0 +1,14 @@
+{
+  "name": "oauth-github",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "@lemon/tiny-server": "*",
+    "@quilted/graphql": "^0.3.0",
+    "@quilted/polyfills": "^0.0.5",
+    "knex": "^0.21.1"
+  }
+}
