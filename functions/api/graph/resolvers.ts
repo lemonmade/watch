@@ -5,6 +5,9 @@ import {Context, Table} from './context';
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
 export const Query: Resolver = {
+  me(_, __, {user, userLoader}) {
+    return userLoader.load(user.id);
+  },
   async search(_, {query}: {query?: string}, context) {
     if (!query?.length) {
       return {series: []};
@@ -643,6 +646,10 @@ export const AppExtension: Resolver = {
 
 export const AppExtensionInstallation: Resolver = {
   __resolveType: resolveType,
+};
+
+export const User: Resolver = {
+  id: ({id}) => toGid(id, 'User'),
 };
 
 export const Series: Resolver<{

@@ -55,12 +55,14 @@ app.post(async (request) => {
   //   },
   // );
 
+  const [user] = await db.select('*').from('Users').limit(1);
+
   try {
     const result = await graphql(
       schema,
       query,
       {},
-      createContext(db),
+      createContext(db, user),
       variables,
       operationName,
     );
