@@ -20,7 +20,7 @@ module.exports = {
             },
           ],
           schema: [
-            {kind: 'definitions'},
+            {kind: 'definitions', outputPath: 'functions/api/graph/schema.ts'},
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],
         },
