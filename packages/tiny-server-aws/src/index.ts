@@ -5,6 +5,7 @@ export function createLambdaApiGatewayProxy(
   app: App,
 ): APIGatewayProxyHandlerV2 {
   return async (event) => {
+    console.log(event);
     const headers = new Headers(event.headers as Record<string, string>);
 
     const response = await app.run({
