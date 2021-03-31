@@ -8,7 +8,7 @@ import {
   flush as flushSentry,
 } from '@sentry/node';
 
-import typeDefs from './graph/schema.graphql';
+import typeDefs from './graph/schema';
 
 import {resolvers, createContext} from './graph';
 
