@@ -6,6 +6,7 @@
     "@aws-sdk/client-s3": "^3.10.0",
     "@aws-sdk/s3-request-presigner": "^3.10.0",
     "@lemon/tiny-server": "*",
+    "@quilted/polyfills": "^0.0.5",
     "@sentry/node": "^5.15.5",
     "dataloader": "^2.0.0",
     "graphql": "^15.0.0",
