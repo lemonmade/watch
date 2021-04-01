@@ -3,7 +3,7 @@
 import {Stack, Construct} from '@aws-cdk/core';
 import {Function, Runtime, Code} from '@aws-cdk/aws-lambda';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
-import {Vpc, Port} from '@aws-cdk/aws-ec2';
+import {Vpc} from '@aws-cdk/aws-ec2';
 import {
   CloudFrontAllowedCachedMethods,
   CloudFrontAllowedMethods,
