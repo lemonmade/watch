@@ -168,4 +168,4 @@ jobs:
 
       - name: Update Lambda
         run: |
-          aws lambda update-function-code --function-name WatchApi --zip-file fileb://build/api.zip
+          aws lambda update-function-code --function-name WatchGraphQLFunction --zip-file fileb://build/api.zip
