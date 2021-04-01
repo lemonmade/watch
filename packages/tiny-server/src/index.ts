@@ -66,6 +66,8 @@ export interface App {
   get(match: RouteMatch, handler: RequestHandler): void;
   post(handler: RequestHandler): void;
   post(match: RouteMatch, handler: RequestHandler): void;
+  options(handler: RequestHandler): void;
+  options(match: RouteMatch, handler: RequestHandler): void;
   run(request: ExtendedRequestOptions): Promise<ExtendedResponse>;
 }
 
@@ -74,7 +76,7 @@ export interface AppOptions {
 }
 
 interface RequestHandlerRegistration {
-  readonly method?: 'GET' | 'POST';
+  readonly method?: 'GET' | 'POST' | 'OPTIONS';
   readonly handler: RequestHandler;
   readonly match: RouteMatch;
 }
@@ -94,6 +96,10 @@ export function createApp({prefix}: AppOptions = {}): App {
     post(...args: any[]) {
       const [match, handler] = normalizeRouteArguments(...args);
       registrations.push({method: 'POST', match, handler});
+    },
+    options(...args: any[]) {
+      const [match, handler] = normalizeRouteArguments(...args);
+      registrations.push({method: 'OPTIONS', match, handler});
     },
     async run(requestOptions) {
       const request = createRequest(requestOptions, prefix);
@@ -233,6 +239,13 @@ export function response(
 
 export function notFound() {
   return response(null, {status: 404});
+}
+
+export function noContent({
+  headers,
+  cookies,
+}: Pick<ExtendedResponseInit, 'headers' | 'cookies'>) {
+  return response(null, {status: 204, headers, cookies});
 }
 
 export function redirect(

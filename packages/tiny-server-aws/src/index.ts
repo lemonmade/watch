@@ -5,6 +5,9 @@ export function createLambdaApiGatewayProxy(
   app: App,
 ): APIGatewayProxyHandlerV2 {
   return async (event) => {
+    // eslint-disable-next-line no-console
+    console.log(event);
+
     const headers = new Headers(event.headers as Record<string, string>);
 
     const response = await app.run({

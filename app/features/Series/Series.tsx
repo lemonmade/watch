@@ -105,7 +105,9 @@ function SeriesWithData({
                   const watchThroughId =
                     data?.startWatchThrough?.watchThrough?.id;
                   if (watchThroughId)
-                    navigate(`/watchthrough/${parseGid(watchThroughId).id}`);
+                    navigate(
+                      `/app/watchthrough/${parseGid(watchThroughId).id}`,
+                    );
                 }}
               >
                 Start season watch through
@@ -132,7 +134,7 @@ function SeriesWithData({
 
             const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
             if (watchThroughId)
-              navigate(`/watchthrough/${watchThroughId.split('/').pop()}`);
+              navigate(`/app/watchthrough/${watchThroughId.split('/').pop()}`);
           }}
         >
           Start watch through

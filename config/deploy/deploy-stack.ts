@@ -3,7 +3,10 @@
 import {Stack, Construct} from '@aws-cdk/core';
 import {Function, Runtime, Code} from '@aws-cdk/aws-lambda';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
+import {Vpc} from '@aws-cdk/aws-ec2';
 import {
+  CloudFrontAllowedCachedMethods,
+  CloudFrontAllowedMethods,
   CloudFrontWebDistribution,
   // LambdaEdgeEventType,
   OriginProtocolPolicy,
@@ -68,6 +71,20 @@ export class WatchAppStack extends Stack {
       functionName: 'WatchAppFunction',
     });
 
+    const vpc = Vpc.fromLookup(this, 'WatchDatabaseVpc', {
+      vpcId: 'vpc-0e09f839483ce344c',
+    });
+
+    const graphqlFunction = new Function(this, 'WatchGraphQLFunction', {
+      vpc,
+      runtime: Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: Code.fromInline('module.exports.handler = () => {}'),
+      functionName: 'WatchGraphQLFunction',
+    });
+
+    graphqlFunction.connections.allowDefaultPortFromAnyIpv4();
+
     const oauthFunction = new Function(this, 'WatchAppOauthFunction', {
       runtime: Runtime.NODEJS_12_X,
       handler: 'index.handler',
@@ -77,6 +94,12 @@ export class WatchAppStack extends Stack {
 
     const appHttpApi = new HttpApi(this, 'WatchAppHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
+    });
+
+    const graphqlHttpApi = new HttpApi(this, 'WatchGraphQLHttpApi', {
+      defaultIntegration: new LambdaProxyIntegration({
+        handler: graphqlFunction,
+      }),
     });
 
     const githubOAuthApi = new HttpApi(this, 'WatchGithubOAuthApi', {
@@ -218,6 +241,27 @@ export class WatchAppStack extends Stack {
           },
           {
             customOriginSource: {
+              domainName: graphqlHttpApi
+                .url!.replace(/^https:[/][/]/, '')
+                .split('/')[0],
+              originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+            },
+            behaviors: [
+              {
+                pathPattern: '/api/graphql*',
+                compress: true,
+                isDefaultBehavior: false,
+                allowedMethods: CloudFrontAllowedMethods.ALL,
+                cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS,
+                forwardedValues: {
+                  queryString: true,
+                  cookies: {forward: 'all'},
+                },
+              },
+            ],
+          },
+          {
+            customOriginSource: {
               domainName: githubOAuthApi
                 .url!.replace(/^https:[/][/]/, '')
                 .split('/')[0],
@@ -231,7 +275,6 @@ export class WatchAppStack extends Stack {
                 forwardedValues: {
                   queryString: true,
                   cookies: {forward: 'all'},
-                  // headers: ['Host'],
                 },
               },
             ],
@@ -250,7 +293,6 @@ export class WatchAppStack extends Stack {
                 forwardedValues: {
                   queryString: true,
                   cookies: {forward: 'all'},
-                  headers: ['Host'],
                 },
               },
             ],

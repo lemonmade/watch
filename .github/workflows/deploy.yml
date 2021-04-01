@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - update-deployment
+      - more-deployment
 
 jobs:
   build:
@@ -143,7 +143,7 @@ jobs:
 
       - name: Update Lambda
         run: |
-          aws lambda update-function-code --function-name WatchUi --zip-file fileb://build/ui.zip
+          aws lambda update-function-code --function-name WatchAppFunction --zip-file fileb://build/ui.zip
 
   aws-api:
     needs: build
@@ -168,4 +168,4 @@ jobs:
 
       - name: Update Lambda
         run: |
-          aws lambda update-function-code --function-name WatchApi --zip-file fileb://build/api.zip
+          aws lambda update-function-code --function-name WatchGraphQLFunction --zip-file fileb://build/api.zip

@@ -1,8 +1,11 @@
-import {useResponseHeader} from '@quilted/quilt/http';
+import {ResponseHeader} from '@quilted/quilt/http';
 
 export function Http() {
-  useResponseHeader('Content-Type', 'text/html');
-  useResponseHeader('X-Lemon', '1');
-
-  return null;
+  return (
+    <>
+      <ResponseHeader header="Content-Type" value="text/html" />
+      <ResponseHeader header="Cache-Control" value="no-cache" />
+      <ResponseHeader header="X-Lemon" value="1" />
+    </>
+  );
 }

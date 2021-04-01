@@ -1,5 +1,6 @@
 import {useMemo} from 'react';
 import {useRoutes} from '@quilted/quilt';
+import {NotFound} from '@quilted/quilt/http';
 
 import {
   Watching,
@@ -18,6 +19,7 @@ export function Routes() {
       () => [
         {match: 'login', render: () => <Login />},
         {
+          match: 'app',
           render: ({children}) => <Frame>{children}</Frame>,
           children: [
             {match: '/', render: () => <Watching />},
@@ -48,6 +50,9 @@ export function Routes() {
               ],
             },
           ],
+        },
+        {
+          render: () => <NotFound />,
         },
       ],
       [],

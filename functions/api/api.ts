@@ -1,7 +1,7 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 import knex from 'knex';
-import {createApp, json} from '@lemon/tiny-server';
+import {createApp, json, noContent} from '@lemon/tiny-server';
 import {
   captureException,
   init as sentryInit,
@@ -33,6 +33,16 @@ const schema = makeExecutableSchema({
 });
 
 const app = createApp();
+
+app.options(() =>
+  noContent({
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Method': 'POST',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  }),
+);
 
 app.post(async (request) => {
   const {operationName, query, variables} = JSON.parse(String(request.body!));
