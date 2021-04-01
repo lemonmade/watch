@@ -56,7 +56,7 @@ export default function WatchThrough({id}: Props) {
       }
       actions={
         <Menu>
-          <Link to={`/series/${parseGid(series.id).id}`}>
+          <Link to={`/app/series/${parseGid(series.id).id}`}>
             More about {series.name}
           </Link>
           {status === 'ONGOING' && (
@@ -67,7 +67,7 @@ export default function WatchThrough({id}: Props) {
                 });
 
                 if (data?.stopWatchThrough.watchThrough?.id) {
-                  navigate('/');
+                  navigate('/app');
                 }
               }}
             >
@@ -81,7 +81,7 @@ export default function WatchThrough({id}: Props) {
               });
 
               if (data?.deleteWatchThrough) {
-                navigate('/');
+                navigate('/app');
               }
             }}
           >

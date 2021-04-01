@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {useRoutes} from '@quilted/quilt';
-import {useResponseStatus} from '@quilted/quilt/http';
+import {NotFound} from '@quilted/quilt/http';
 
 import {
   Watching,
@@ -58,9 +58,4 @@ export function Routes() {
       [],
     ),
   );
-}
-
-function NotFound() {
-  useResponseStatus(404);
-  return null;
 }

@@ -59,10 +59,10 @@ export function Frame({children}: PropsWithChildren<Props>) {
           <View>
             <Sticky>
               <Menu>
-                <Link to="/">Watching</Link>
-                <Link to="/subscriptions">Subscriptions</Link>
-                <Link to="/search">Search</Link>
-                <Link to="/settings">Settings</Link>
+                <Link to="/app">Watching</Link>
+                <Link to="/app/subscriptions">Subscriptions</Link>
+                <Link to="/app/search">Search</Link>
+                <Link to="/app/settings">Settings</Link>
               </Menu>
             </Sticky>
           </View>
@@ -98,10 +98,10 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
             <Pressable>Mega menu</Pressable>
             <PopoverSheet>
               <Menu>
-                <Link to="/">Watching</Link>
-                <Link to="/subscriptions">Subscriptions</Link>
-                <Link to="/search">Search</Link>
-                <Link to="/settings">Settings</Link>
+                <Link to="/app">Watching</Link>
+                <Link to="/app/subscriptions">Subscriptions</Link>
+                <Link to="/app/search">Search</Link>
+                <Link to="/app/settings">Settings</Link>
               </Menu>
             </PopoverSheet>
           </Popover>
