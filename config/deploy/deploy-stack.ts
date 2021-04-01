@@ -269,7 +269,6 @@ export class WatchAppStack extends Stack {
                 forwardedValues: {
                   queryString: true,
                   cookies: {forward: 'all'},
-                  // headers: ['Host'],
                 },
               },
             ],
@@ -288,7 +287,6 @@ export class WatchAppStack extends Stack {
                 forwardedValues: {
                   queryString: true,
                   cookies: {forward: 'all'},
-                  headers: ['Host'],
                 },
               },
             ],
