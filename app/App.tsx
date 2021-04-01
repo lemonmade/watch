@@ -7,7 +7,9 @@ export default function App() {
   const graphql = useMemo(
     () =>
       createGraphQL({
-        fetch: createHttpFetch({uri: 'https://api.lemon.tools/watch'}),
+        fetch: createHttpFetch({
+          uri: 'https://watch-test.lemon.tools/api/graphql',
+        }),
       }),
     [],
   );
