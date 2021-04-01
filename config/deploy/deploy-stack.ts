@@ -5,6 +5,8 @@ import {Function, Runtime, Code} from '@aws-cdk/aws-lambda';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
 import {Vpc} from '@aws-cdk/aws-ec2';
 import {
+  CloudFrontAllowedCachedMethods,
+  CloudFrontAllowedMethods,
   CloudFrontWebDistribution,
   // LambdaEdgeEventType,
   OriginProtocolPolicy,
@@ -247,6 +249,8 @@ export class WatchAppStack extends Stack {
                 pathPattern: '/api/graphql*',
                 compress: true,
                 isDefaultBehavior: false,
+                allowedMethods: CloudFrontAllowedMethods.ALL,
+                cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS,
                 forwardedValues: {
                   queryString: true,
                   cookies: {forward: 'all'},

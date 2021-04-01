@@ -34,7 +34,15 @@ const schema = makeExecutableSchema({
 
 const app = createApp();
 
-app.options(() => noContent({headers: {'Access-Control-Allow-Origin': '*'}}));
+app.options(() =>
+  noContent({
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Method': 'POST',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  }),
+);
 
 app.post(async (request) => {
   const {operationName, query, variables} = JSON.parse(String(request.body!));
