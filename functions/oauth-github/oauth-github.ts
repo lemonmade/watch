@@ -1,5 +1,5 @@
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {createApp, redirect, fetchJson, html} from '@lemon/tiny-server';
+import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
 import type {CookieDefinition, ExtendedResponse} from '@lemon/tiny-server';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
@@ -32,21 +32,6 @@ enum GithubSearchParam {
 
 const app = createApp({prefix: '/me/oauth/github'});
 
-app.get('/', () => {
-  return html(
-    `
-    <html>
-      <body>
-        <a href="/me/oauth/github/start">Auth with github</a>
-      </body>
-    </html>
-  `,
-    {
-      headers: {'Cache-Control': 'no-cache'},
-    },
-  );
-});
-
 app.get('/start', (request) => {
   const state = '123';
   const redirectTo = request.url.searchParams.get(SearchParam.Redirect);
@@ -76,13 +61,13 @@ app.get('/callback', async (request) => {
   const state = url.searchParams.get('state');
 
   if (expectedState == null || expectedState !== state) {
-    // const loginUrl = new URL('/login');
+    const loginUrl = new URL('/login');
 
-    // if (redirectTo) {
-    //   loginUrl.searchParams.set(SearchParam.Redirect, redirectTo);
-    // }
+    if (redirectTo) {
+      loginUrl.searchParams.set(SearchParam.Redirect, redirectTo);
+    }
 
-    return deleteCookies(redirect('/me/oauth/github'));
+    return deleteCookies(redirect(loginUrl));
   }
 
   const {access_token: accessToken} = await fetchJson<{access_token: string}>(
@@ -111,7 +96,7 @@ app.get('/callback', async (request) => {
   // eslint-disable-next-line no-console
   console.log(githubResult);
 
-  return deleteCookies(redirect(redirectTo ?? '/'));
+  return deleteCookies(redirect(redirectTo ?? '/app'));
 });
 
 export default app;
