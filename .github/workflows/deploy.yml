@@ -56,6 +56,12 @@ jobs:
           name: api
           path: build/api.zip
 
+      - name: Save Github OAuth API build artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: oauth-github
+          path: build/oauth-github.zip
+
       - name: Save UI build artifact
         uses: actions/upload-artifact@v1
         with:
