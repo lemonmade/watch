@@ -8,7 +8,7 @@ export default function App() {
     () =>
       createGraphQL({
         fetch: createHttpFetch({
-          uri: 'https://watch-test.lemon.tools/api/graphql',
+          uri: 'https://watch.lemon.tools/api/graphql',
         }),
       }),
     [],

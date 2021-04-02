@@ -1307,14 +1307,14 @@ async function createSignedClipsVersionUpload({
 
   const [version] = versionId
     ? await db
-        .update({scriptUrl: `https://watch-test.lemon.tools/${path}`}, '*')
+        .update({scriptUrl: `https://watch.lemon.tools/${path}`}, '*')
         .into(Table.ClipsExtensionVersions)
         .where({id: versionId})
     : await db
         .insert(
           {
             extensionId,
-            scriptUrl: `https://watch-test.lemon.tools/${path}`,
+            scriptUrl: `https://watch.lemon.tools/${path}`,
             status: 'BUILDING',
           },
           '*',
