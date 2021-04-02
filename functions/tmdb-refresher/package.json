@@ -6,6 +6,6 @@
     "knex": "^0.21.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.0.0"
+    "@types/aws-lambda": "^8.10.73"
   }
 }

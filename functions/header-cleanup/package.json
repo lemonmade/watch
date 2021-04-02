@@ -1,8 +1,8 @@
 {
-  "name": "assets-header-rewrite",
+  "name": "header-cleanup",
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
-    "@types/aws-lambda": "^8.0.0"
+    "@types/aws-lambda": "^8.10.73"
   }
 }

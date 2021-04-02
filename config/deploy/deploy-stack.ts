@@ -1,18 +1,24 @@
 /* eslint import/no-extraneous-dependencies: off */
 
-import {Stack, Construct} from '@aws-cdk/core';
+import {Stack, Construct, Duration} from '@aws-cdk/core';
 import {Function, Runtime, Code} from '@aws-cdk/aws-lambda';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
-import {Vpc} from '@aws-cdk/aws-ec2';
+import {Port, Vpc} from '@aws-cdk/aws-ec2';
 import {
-  CloudFrontAllowedCachedMethods,
-  CloudFrontAllowedMethods,
-  CloudFrontWebDistribution,
-  // LambdaEdgeEventType,
-  OriginProtocolPolicy,
   PriceClass,
-  ViewerCertificate,
+  Distribution,
+  CachePolicy,
+  CacheCookieBehavior,
+  CacheHeaderBehavior,
+  CacheQueryStringBehavior,
+  OriginRequestPolicy,
+  OriginRequestQueryStringBehavior,
+  OriginRequestCookieBehavior,
+  OriginRequestHeaderBehavior,
+  ViewerProtocolPolicy,
+  LambdaEdgeEventType,
 } from '@aws-cdk/aws-cloudfront';
+import {HttpOrigin, S3Origin} from '@aws-cdk/aws-cloudfront-origins';
 import {DnsValidatedCertificate} from '@aws-cdk/aws-certificatemanager';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
 import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
@@ -29,7 +35,7 @@ import {Queue} from '@aws-cdk/aws-sqs';
 import {Rule, Schedule} from '@aws-cdk/aws-events';
 import {LambdaFunction} from '@aws-cdk/aws-events-targets';
 
-const DOMAIN = 'watch-test.lemon.tools';
+const DOMAIN = 'watch.lemon.tools';
 const DEFAULT_REGION = 'us-east-1';
 
 class PublicBucket extends Bucket {
@@ -83,7 +89,7 @@ export class WatchAppStack extends Stack {
       functionName: 'WatchGraphQLFunction',
     });
 
-    graphqlFunction.connections.allowDefaultPortFromAnyIpv4();
+    graphqlFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
     const oauthFunction = new Function(this, 'WatchAppOauthFunction', {
       runtime: Runtime.NODEJS_12_X,
@@ -148,31 +154,18 @@ export class WatchAppStack extends Stack {
       new SqsEventSource(tmdbRefresherQueue),
     );
 
-    // const assetsHeaderRewriteFunction = new Function(
-    //   this,
-    //   'WatchAssetsHeaderRewriteFunction',
-    //   {
-    //     code: Code.fromInline(
-    //       'module.exports.handler = (event, _, callback) => callback(null, event.Records[0].cf.response)',
-    //     ),
-    //     runtime: Runtime.NODEJS_12_X,
-    //     handler: 'index.handler',
-    //     functionName: 'WatchAssetsHeaderRewriteFunction',
-    //   },
-    // );
-
-    // const assetsBrotliPathRewriteFunction = new Function(
-    //   this,
-    //   'WatchAssetsBrotliPathRewriteFunction',
-    //   {
-    //     code: Code.fromInline(
-    //       'module.exports.handler = (event, _, callback) => callback(null, event.Records[0].cf.request)',
-    //     ),
-    //     runtime: Runtime.NODEJS_12_X,
-    //     handler: 'index.handler',
-    //     functionName: 'WatchAssetsBrotliPathRewriteFunction',
-    //   },
-    // );
+    const cloudfrontHeadersCleanupFunction = new Function(
+      this,
+      'WatchHeadersCleanupFunction',
+      {
+        code: Code.fromInline(
+          'module.exports.handler = (event, _, callback) => callback(null, event.Records[0].cf.response)',
+        ),
+        runtime: Runtime.NODEJS_12_X,
+        handler: 'index.handler',
+        functionName: 'WatchAHeadersCleanupFunction',
+      },
+    );
 
     const zone = HostedZone.fromLookup(this, 'WatchDomainZone', {
       domainName: 'lemon.tools',
@@ -187,117 +180,167 @@ export class WatchAppStack extends Stack {
       },
     );
 
-    const cloudfrontDistribution = new CloudFrontWebDistribution(
+    const cloudfrontDistribution = new Distribution(
       this,
-      'WatchCloudFront',
+      'WatchCloudFrontDistribution',
       {
         priceClass: PriceClass.PRICE_CLASS_ALL,
-        viewerCertificate: ViewerCertificate.fromAcmCertificate(certificate, {
-          aliases: [DOMAIN],
-        }),
-
-        originConfigs: [
-          {
-            s3OriginSource: {s3BucketSource: appAssetsBucket},
-            behaviors: [
-              {
-                pathPattern: '/assets/app*',
-                compress: true,
-                isDefaultBehavior: false,
-                // lambdaFunctionAssociations: [
-                //   {
-                //     eventType: LambdaEdgeEventType.VIEWER_REQUEST,
-                //     lambdaFunction:
-                //       assetsBrotliPathRewriteFunction.currentVersion,
-                //   },
-                //   {
-                //     eventType: LambdaEdgeEventType.ORIGIN_RESPONSE,
-                //     lambdaFunction: assetsHeaderRewriteFunction.currentVersion,
-                //   },
-                // ],
-              },
-            ],
-          },
-          {
-            s3OriginSource: {s3BucketSource: clipsAssetsBucket},
-            behaviors: [
-              {
-                pathPattern: '/assets/clips*',
-                compress: true,
-                isDefaultBehavior: false,
-                // lambdaFunctionAssociations: [
-                //   {
-                //     eventType: LambdaEdgeEventType.VIEWER_REQUEST,
-                //     lambdaFunction:
-                //       assetsBrotliPathRewriteFunction.currentVersion,
-                //   },
-                //   {
-                //     eventType: LambdaEdgeEventType.ORIGIN_RESPONSE,
-                //     lambdaFunction: assetsHeaderRewriteFunction.currentVersion,
-                //   },
-                // ],
-              },
-            ],
-          },
-          {
-            customOriginSource: {
-              domainName: graphqlHttpApi
-                .url!.replace(/^https:[/][/]/, '')
-                .split('/')[0],
-              originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+        certificate,
+        domainNames: [DOMAIN],
+        defaultBehavior: {
+          origin: new HttpOrigin(
+            appHttpApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
+          ),
+          compress: true,
+          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: new CachePolicy(this, 'WatchAppCachePolicy', {
+            defaultTtl: Duration.seconds(0),
+            cookieBehavior: CacheCookieBehavior.none(),
+            headerBehavior: CacheHeaderBehavior.none(),
+            queryStringBehavior: CacheQueryStringBehavior.none(),
+            enableAcceptEncodingGzip: true,
+            enableAcceptEncodingBrotli: true,
+          }),
+          originRequestPolicy: new OriginRequestPolicy(
+            this,
+            'WatchAppOriginRequestPolicy',
+            {
+              cookieBehavior: OriginRequestCookieBehavior.all(),
+              headerBehavior: OriginRequestHeaderBehavior.allowList(
+                'User-Agent',
+              ),
+              queryStringBehavior: OriginRequestQueryStringBehavior.all(),
             },
-            behaviors: [
-              {
-                pathPattern: '/api/graphql*',
-                compress: true,
-                isDefaultBehavior: false,
-                allowedMethods: CloudFrontAllowedMethods.ALL,
-                cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS,
-                forwardedValues: {
-                  queryString: true,
-                  cookies: {forward: 'all'},
-                },
-              },
-            ],
-          },
-          {
-            customOriginSource: {
-              domainName: githubOAuthApi
-                .url!.replace(/^https:[/][/]/, '')
-                .split('/')[0],
-              originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+          ),
+          edgeLambdas: [
+            {
+              eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
+              functionVersion: cloudfrontHeadersCleanupFunction.currentVersion,
             },
-            behaviors: [
+          ],
+        },
+        additionalBehaviors: {
+          '/assets/app*': {
+            origin: new S3Origin(appAssetsBucket),
+            compress: true,
+            viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+            cachePolicy: new CachePolicy(this, 'WatchAppAssetsCachePolicy', {
+              cookieBehavior: CacheCookieBehavior.none(),
+              headerBehavior: CacheHeaderBehavior.none(),
+              queryStringBehavior: CacheQueryStringBehavior.none(),
+              enableAcceptEncodingGzip: true,
+              enableAcceptEncodingBrotli: true,
+            }),
+            originRequestPolicy: new OriginRequestPolicy(
+              this,
+              'WatchAppAssetsOriginRequestPolicy',
               {
-                pathPattern: '/me/oauth/github*',
-                compress: true,
-                isDefaultBehavior: false,
-                forwardedValues: {
-                  queryString: true,
-                  cookies: {forward: 'all'},
-                },
+                cookieBehavior: OriginRequestCookieBehavior.none(),
+                headerBehavior: OriginRequestHeaderBehavior.none(),
+                queryStringBehavior: OriginRequestQueryStringBehavior.none(),
+              },
+            ),
+            edgeLambdas: [
+              {
+                eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
+                functionVersion:
+                  cloudfrontHeadersCleanupFunction.currentVersion,
               },
             ],
           },
-          {
-            customOriginSource: {
-              domainName: appHttpApi
-                .url!.replace(/^https:[/][/]/, '')
-                .split('/')[0],
-              originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
-            },
-            behaviors: [
+          '/assets/clips*': {
+            origin: new S3Origin(clipsAssetsBucket),
+            compress: true,
+            viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+            cachePolicy: new CachePolicy(this, 'WatchClipsAssetsCachePolicy', {
+              cookieBehavior: CacheCookieBehavior.none(),
+              headerBehavior: CacheHeaderBehavior.none(),
+              queryStringBehavior: CacheQueryStringBehavior.none(),
+              enableAcceptEncodingGzip: true,
+              enableAcceptEncodingBrotli: true,
+            }),
+            originRequestPolicy: new OriginRequestPolicy(
+              this,
+              'WatchClipsAssetsOriginRequestPolicy',
               {
-                compress: true,
-                isDefaultBehavior: true,
-                forwardedValues: {
-                  queryString: true,
-                  cookies: {forward: 'all'},
-                },
+                cookieBehavior: OriginRequestCookieBehavior.none(),
+                headerBehavior: OriginRequestHeaderBehavior.none(),
+                queryStringBehavior: OriginRequestQueryStringBehavior.none(),
+              },
+            ),
+            edgeLambdas: [
+              {
+                eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
+                functionVersion:
+                  cloudfrontHeadersCleanupFunction.currentVersion,
               },
             ],
           },
-        ],
+          '/api/graphql*': {
+            origin: new HttpOrigin(
+              graphqlHttpApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
+            ),
+            compress: true,
+            viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
+            cachePolicy: new CachePolicy(this, 'WatchGraphQLApiCachePolicy', {
+              defaultTtl: Duration.seconds(0),
+              cookieBehavior: CacheCookieBehavior.none(),
+              headerBehavior: CacheHeaderBehavior.none(),
+              queryStringBehavior: CacheQueryStringBehavior.none(),
+              enableAcceptEncodingGzip: true,
+              enableAcceptEncodingBrotli: true,
+            }),
+            originRequestPolicy: new OriginRequestPolicy(
+              this,
+              'WatchGraphQLApiOriginRequestPolicy',
+              {
+                cookieBehavior: OriginRequestCookieBehavior.all(),
+                headerBehavior: OriginRequestHeaderBehavior.allowList(
+                  'X-Debug',
+                ),
+                queryStringBehavior: OriginRequestQueryStringBehavior.none(),
+              },
+            ),
+            edgeLambdas: [
+              {
+                eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
+                functionVersion:
+                  cloudfrontHeadersCleanupFunction.currentVersion,
+              },
+            ],
+          },
+          '/me/oauth/github*': {
+            origin: new HttpOrigin(
+              githubOAuthApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
+            ),
+            compress: true,
+            viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            cachePolicy: new CachePolicy(this, 'WatchGithubOAuthCachePolicy', {
+              defaultTtl: Duration.seconds(0),
+              cookieBehavior: CacheCookieBehavior.none(),
+              headerBehavior: CacheHeaderBehavior.none(),
+              queryStringBehavior: CacheQueryStringBehavior.none(),
+              enableAcceptEncodingGzip: true,
+              enableAcceptEncodingBrotli: true,
+            }),
+            originRequestPolicy: new OriginRequestPolicy(
+              this,
+              'WatchGithubOAuthOriginRequestPolicy',
+              {
+                cookieBehavior: OriginRequestCookieBehavior.all(),
+                headerBehavior: OriginRequestHeaderBehavior.none(),
+                queryStringBehavior: OriginRequestQueryStringBehavior.all(),
+              },
+            ),
+            edgeLambdas: [
+              {
+                eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
+                functionVersion:
+                  cloudfrontHeadersCleanupFunction.currentVersion,
+              },
+            ],
+          },
+        },
       },
     );
 

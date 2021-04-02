@@ -17,7 +17,7 @@
     "pg": "^8.0.3"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.0.0",
+    "@types/aws-lambda": "^8.10.73",
     "@types/knex": "^0.16.1",
     "@types/mime": "^2.0.0",
     "@types/node-fetch": "^2.5.7",

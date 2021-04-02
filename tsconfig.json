@@ -12,10 +12,7 @@
       "path": "./functions/api"
     },
     {
-      "path": "./functions/assets-brotli-path-rewrite"
-    },
-    {
-      "path": "./functions/assets-header-rewrite"
+      "path": "./functions/header-cleanup"
     },
     {
       "path": "./functions/tmdb-refresher"
