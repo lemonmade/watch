@@ -1,5 +1,8 @@
 import type {CloudFrontResponseHandler} from 'aws-lambda';
 
+const REMOVE_HEADERS = new Set(['x-cache', 'server', 'via']);
+const REMOVE_HEADER_REGEX = /^(x-amz|apigw-)/i;
+
 export const headerCleanup: CloudFrontResponseHandler = (
   event,
   _,
@@ -16,7 +19,10 @@ export const headerCleanup: CloudFrontResponseHandler = (
   };
 
   for (const [header, value] of Object.entries(headers)) {
-    if (/^x-amz-meta/i.test(header)) continue;
+    if (REMOVE_HEADERS.has(header) || REMOVE_HEADER_REGEX.test(header)) {
+      continue;
+    }
+
     newHeaders[header] = value;
   }
 

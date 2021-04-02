@@ -17,6 +17,8 @@ import {
   OriginRequestHeaderBehavior,
   ViewerProtocolPolicy,
   LambdaEdgeEventType,
+  AllowedMethods,
+  CachedMethods,
 } from '@aws-cdk/aws-cloudfront';
 import {HttpOrigin, S3Origin} from '@aws-cdk/aws-cloudfront-origins';
 import {DnsValidatedCertificate} from '@aws-cdk/aws-certificatemanager';
@@ -281,6 +283,8 @@ export class WatchAppStack extends Stack {
               graphqlHttpApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
             ),
             compress: true,
+            allowedMethods: AllowedMethods.ALLOW_ALL,
+            cachedMethods: CachedMethods.CACHE_GET_HEAD_OPTIONS,
             viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
             cachePolicy: new CachePolicy(this, 'WatchGraphQLApiCachePolicy', {
               defaultTtl: Duration.seconds(0),
