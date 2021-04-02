@@ -15,6 +15,7 @@ export enum Table {
   ClipsExtensionVersions = 'ClipsExtensionVersions',
   AppInstallations = 'AppInstallations',
   ClipsExtensionInstallations = 'ClipsExtensionInstallations',
+  GithubAccounts = 'GithubAccounts',
 }
 
 export type Context = ReturnType<typeof createContext>;
@@ -49,6 +50,9 @@ export function createContext(db: import('knex'), user: {id: string}) {
     ),
     clipsExtensionVersionsLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
+    ),
+    githubAccountsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.GithubAccounts),
     ),
   };
 }

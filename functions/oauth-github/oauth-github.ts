@@ -1,14 +1,16 @@
+import crypto from 'crypto';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
 import type {CookieDefinition, ExtendedResponse} from '@lemon/tiny-server';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 
+const ROOT_PATH = '/internal/auth/github';
 const CLIENT_ID = '60c6903025bfd274db53';
-const SCOPES = 'user';
+const SCOPES = 'read:user';
 
 const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
-  path: '/me/oauth/github',
+  path: ROOT_PATH,
   maxAge: 60 * 60,
   sameSite: 'lax',
   secure: true,
@@ -17,42 +19,60 @@ const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
 
 enum Cookie {
   State = 'state',
-  RedirectTo = 'redirectTo',
+  RedirectTo = 'redirect',
 }
 
 enum SearchParam {
-  Redirect = 'redirect',
+  RedirectTo = 'redirect',
 }
 
 enum GithubSearchParam {
   Scope = 'scope',
   State = 'state',
   ClientId = 'client_id',
+  Redirect = 'redirect_uri',
 }
 
-const app = createApp({prefix: '/me/oauth/github'});
+const app = createApp({prefix: ROOT_PATH});
 
-app.get('/start', (request) => {
-  const state = '123';
-  const redirectTo = request.url.searchParams.get(SearchParam.Redirect);
+app.get(/^[/]sign-(in|up)$/, (request) => {
+  const state = crypto
+    .randomBytes(15)
+    .map((byte) => byte % 10)
+    .join('');
+
+  const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubOAuthUrl.searchParams.set(GithubSearchParam.ClientId, CLIENT_ID);
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
+  githubOAuthUrl.searchParams.set(
+    GithubSearchParam.Redirect,
+    new URL('callback', request.url).href,
+  );
 
-  const response = redirect(githubOAuthUrl);
+  const response = redirect(githubOAuthUrl, {
+    headers: {
+      'Cache-Control': 'no-cache',
+    },
+  });
 
-  response.cookies.set(Cookie.State, state, DEFAULT_COOKIE_OPTIONS);
+  const cookieOptions = {
+    ...DEFAULT_COOKIE_OPTIONS,
+    path: request.url.pathname,
+  };
+
+  response.cookies.set(Cookie.State, state, cookieOptions);
 
   if (redirectTo) {
-    response.cookies.set(Cookie.RedirectTo, redirectTo, DEFAULT_COOKIE_OPTIONS);
+    response.cookies.set(Cookie.RedirectTo, redirectTo, cookieOptions);
   }
 
   return response;
 });
 
-app.get('/callback', async (request) => {
+app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   const {url, cookies} = request;
 
   const expectedState = cookies.get(Cookie.State);
@@ -61,10 +81,10 @@ app.get('/callback', async (request) => {
   const state = url.searchParams.get('state');
 
   if (expectedState == null || expectedState !== state) {
-    const loginUrl = new URL('/login');
+    const loginUrl = new URL('/login', url);
 
     if (redirectTo) {
-      loginUrl.searchParams.set(SearchParam.Redirect, redirectTo);
+      loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
     }
 
     return deleteCookies(redirect(loginUrl));
@@ -85,7 +105,7 @@ app.get('/callback', async (request) => {
     fetch: createHttpFetch({
       uri: 'https://api.github.com/graphql',
       headers: {
-        Authorization: `bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     }),
@@ -97,6 +117,17 @@ app.get('/callback', async (request) => {
   console.log(githubResult);
 
   return deleteCookies(redirect(redirectTo ?? '/app'));
+});
+
+app.get((request) => {
+  const loginUrl = new URL('/login', request.url);
+  const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
+
+  if (redirectTo) {
+    loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+  }
+
+  return deleteCookies(redirect(loginUrl));
 });
 
 export default app;

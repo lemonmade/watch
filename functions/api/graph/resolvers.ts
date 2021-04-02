@@ -650,6 +650,23 @@ export const AppExtensionInstallation: Resolver = {
 
 export const User: Resolver = {
   id: ({id}) => toGid(id, 'User'),
+  githubAccount: async ({id, githubAccountId}, _, {db}) => {
+    if (githubAccountId == null) return null;
+
+    const [result] = await db
+      .select('*')
+      .from(Table.GithubAccounts)
+      .where({userId: id})
+      .limit(1);
+
+    return result;
+  },
+};
+
+export const GithubAccount: Resolver = {
+  avatarImage: ({avatarImage}: {avatarImage: string}) => {
+    return {source: avatarImage};
+  },
 };
 
 export const Series: Resolver<{

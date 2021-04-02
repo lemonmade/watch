@@ -1,10 +1,21 @@
 scalar Date
 scalar Notes
 scalar Url
+scalar Email
+scalar GithubID
 
 type User {
   id: ID!
-  email: String!
+  email: Email!
+  githubAccount: GithubAccount
+}
+
+type GithubAccount {
+  id: GithubID!
+  email: Email!
+  username: String!
+  profileUrl: Url!
+  avatarImage: Image
 }
 
 interface Watchable {

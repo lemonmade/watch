@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {PropsWithChildren, ComponentProps} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Link as RouterLink} from '@quilted/quilt';
 import {classes, variation} from '@lemon/css';
@@ -8,7 +8,7 @@ import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
 import styles from './Link.css';
 
 interface Props {
-  to: string;
+  to: ComponentProps<typeof RouterLink>['to'];
   onPress?(): void;
   blockSize?: 'fill';
   alignContent?: 'start' | 'end' | 'center';

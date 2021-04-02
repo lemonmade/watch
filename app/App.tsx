@@ -1,5 +1,6 @@
 import {useMemo} from 'react';
 import {createGraphQL, createHttpFetch, App as QuiltApp} from '@quilted/quilt';
+import {Canvas} from '@lemon/zest';
 
 import {Head, Http, LocalDevelopmentOrchestrator, Routes} from './foundation';
 
@@ -16,11 +17,13 @@ export default function App() {
 
   return (
     <QuiltApp graphql={graphql}>
-      <Http />
-      <Head />
-      <LocalDevelopmentOrchestrator>
-        <Routes />
-      </LocalDevelopmentOrchestrator>
+      <Canvas>
+        <Http />
+        <Head />
+        <LocalDevelopmentOrchestrator>
+          <Routes />
+        </LocalDevelopmentOrchestrator>
+      </Canvas>
     </QuiltApp>
   );
 }

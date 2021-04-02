@@ -2,7 +2,6 @@ import {useMemo, useState} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {
-  Canvas,
   Link,
   Menu,
   Layout,
@@ -49,29 +48,27 @@ export function Frame({children}: PropsWithChildren<Props>) {
 
   return (
     <PageDelegateContext delegate={pageDelegate}>
-      <Canvas>
-        <Layout
-          sizes={[
-            {value: [false, 'fill']},
-            {value: ['auto', 'fill'], viewport: {min: 'medium'}},
-          ]}
-        >
-          <View>
-            <Sticky>
-              <Menu>
-                <Link to="/app">Watching</Link>
-                <Link to="/app/subscriptions">Subscriptions</Link>
-                <Link to="/app/search">Search</Link>
-                <Link to="/app/settings">Settings</Link>
-              </Menu>
-            </Sticky>
-          </View>
-          <View>
-            <Header actions={actions}>{heading}</Header>
-            <View>{children}</View>
-          </View>
-        </Layout>
-      </Canvas>
+      <Layout
+        sizes={[
+          {value: [false, 'fill']},
+          {value: ['auto', 'fill'], viewport: {min: 'medium'}},
+        ]}
+      >
+        <View>
+          <Sticky>
+            <Menu>
+              <Link to="/app">Watching</Link>
+              <Link to="/app/subscriptions">Subscriptions</Link>
+              <Link to="/app/search">Search</Link>
+              <Link to="/app/settings">Settings</Link>
+            </Menu>
+          </Sticky>
+        </View>
+        <View>
+          <Header actions={actions}>{heading}</Header>
+          <View>{children}</View>
+        </View>
+      </Layout>
     </PageDelegateContext>
   );
 }

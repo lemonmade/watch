@@ -1,0 +1,14 @@
+query Profile {
+  me {
+    id
+    email
+    githubAccount {
+      id
+      username
+      profileUrl
+      avatarImage {
+        source
+      }
+    }
+  }
+}

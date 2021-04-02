@@ -313,7 +313,7 @@ export class WatchAppStack extends Stack {
               },
             ],
           },
-          '/me/oauth/github*': {
+          '/internal/auth/github*': {
             origin: new HttpOrigin(
               githubOAuthApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
             ),
