@@ -93,12 +93,15 @@ export class WatchAppStack extends Stack {
 
     graphqlFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
-    const oauthFunction = new Function(this, 'WatchAppOauthFunction', {
+    const githubOAuthFunction = new Function(this, 'WatchGithubOAuthFunction', {
+      vpc,
       runtime: Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: Code.fromInline('module.exports.handler = () => {}'),
-      functionName: 'WatchAppOauthFunction',
+      functionName: 'WatchGithubOAuthFunction',
     });
+
+    githubOAuthFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
     const appHttpApi = new HttpApi(this, 'WatchAppHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
@@ -111,7 +114,9 @@ export class WatchAppStack extends Stack {
     });
 
     const githubOAuthApi = new HttpApi(this, 'WatchGithubOAuthApi', {
-      defaultIntegration: new LambdaProxyIntegration({handler: oauthFunction}),
+      defaultIntegration: new LambdaProxyIntegration({
+        handler: githubOAuthFunction,
+      }),
     });
 
     const tmdbRefresherSchedulerFunction = new Function(
