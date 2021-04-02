@@ -9,18 +9,6 @@ const [, , action] = process.argv;
 if (action) {
   execSync(`rm -rf ${buildDir}`);
   execSync(`mkdir -p ${buildDir}`);
-  // execSync(`zip -r ${path.join(buildDir, 'api.zip')} ./*`, {
-  //   cwd: path.join(root, 'build/service'),
-  // });
-  // execSync(
-  //   `zip -r ${path.join(buildDir, 'assets-brotli-path-rewrite.zip')} ./*`,
-  //   {
-  //     cwd: path.join(root, 'functions/assets-brotli-path-rewrite'),
-  //   },
-  // );
-  // execSync(`zip -r ${path.join(buildDir, 'assets-header-rewrite.zip')} ./*`, {
-  //   cwd: path.join(root, 'functions/assets-header-rewrite'),
-  // });
 
   execSync(
     `node_modules/.bin/cdk ${action} --app ${JSON.stringify(
