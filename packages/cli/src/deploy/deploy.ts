@@ -20,7 +20,7 @@ import createClipsExtensionAndInitialVersionMutation from './graphql/CreateClips
 
 export async function deploy() {
   const graphql = createGraphQL({
-    fetch: createHttpFetch({uri: 'https://api.lemon.tools/watch'}),
+    fetch: createHttpFetch({uri: 'https://watch.lemon.tools/api/graphql'}),
   });
 
   const localApp = await loadLocalApp();

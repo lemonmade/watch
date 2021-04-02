@@ -236,7 +236,7 @@ async function updateSeries({
         }
 
         results.push(
-          `**${name}** (updated existing season)\nhttps://tv.lemon.tools/series/${seriesId}\nSeason ${
+          `**${name}** (updated existing season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${
             season.season_number
           }${
             firstAired ? ` (started ${formatDate(firstAired)})` : ''
@@ -308,7 +308,7 @@ async function updateSeries({
           .into('WatchThroughEpisodes');
 
         results.push(
-          `**${name}** (add new season)\nhttps://tv.lemon.tools/series/${seriesId}\nhttp://localhost:8082/watchthrough/${watchThroughId}\nSeason ${
+          `**${name}** (add new season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nhttp://localhost:8082/watchthrough/${watchThroughId}\nSeason ${
             season.season_number
           }${
             firstAired ? ` (started ${formatDate(firstAired)})` : ''

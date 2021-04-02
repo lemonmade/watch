@@ -11,7 +11,7 @@ import publishLatestClipsExtensionVersion from './graphql/PublishLatestClipsExte
 
 export async function publish() {
   const graphql = createGraphQL({
-    fetch: createHttpFetch({uri: 'https://api.lemon.tools/watch'}),
+    fetch: createHttpFetch({uri: 'https://watch.lemon.tools/api/graphql'}),
   });
 
   const localApp = await loadLocalApp();
