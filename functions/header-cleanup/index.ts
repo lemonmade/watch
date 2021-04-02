@@ -1,1 +1,1 @@
-export {headerCleanup as default} from './assets-header-rewrite';
+export {headerCleanup as default} from './header-cleanup';
