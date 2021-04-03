@@ -201,8 +201,8 @@ function augmentResponse(
 
       response.headers.delete('Set-Cookie');
 
-      for (const [cookie, value] of serializedCookies) {
-        response.headers.append(cookie, value);
+      for (const cookie of serializedCookies.values()) {
+        response.headers.append('Set-Cookie', cookie);
       }
     },
     delete(cookie) {
