@@ -1,13 +1,21 @@
 import DataLoader from 'dataloader';
+import type {ExtendedRequest, ExtendedResponse} from '@lemon/tiny-server';
 import {Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
 export type Context = ReturnType<typeof createContext>;
 
-export function createContext(db: Database, user: {id: string}) {
+export function createContext(
+  db: Database,
+  user: {id: string},
+  request: ExtendedRequest,
+  response: ExtendedResponse,
+) {
   return {
     db,
     user,
+    request,
+    response,
     userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),
     watchLoader: new DataLoader(createBatchLoaderForTable(db, Table.Watches)),
     skipLoader: new DataLoader(createBatchLoaderForTable(db, Table.Skips)),

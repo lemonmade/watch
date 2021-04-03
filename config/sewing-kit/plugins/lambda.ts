@@ -36,21 +36,32 @@ export function lambdaBuild() {
       },
       {asEntry: true, include: [Task.Build]},
     ),
-    createProjectPlugin(`${PLUGIN}.WebpackConfig`, ({tasks: {build}}) => {
-      build.hook(({hooks}) => {
-        hooks.target.hook(({hooks}) => {
-          hooks.configure.hook((configure) => {
-            configure.webpackOutputFilename?.hook(() => 'index.js');
-            configure.webpackConfig?.hook((config) => ({
-              ...config,
-              output: {
-                ...config.output,
-                libraryTarget: 'commonjs2',
-              },
-            }));
+    createProjectPlugin(
+      `${PLUGIN}.WebpackConfig`,
+      ({workspace, tasks: {build}}) => {
+        build.hook(({hooks}) => {
+          hooks.target.hook(({hooks}) => {
+            hooks.configure.hook((configure) => {
+              configure.webpackExternals?.hook((externals) => [
+                ...externals,
+                'aws-sdk',
+              ]);
+              configure.webpackAliases?.hook((aliases) => ({
+                ...aliases,
+                shared: workspace.fs.resolvePath('functions/shared'),
+              }));
+              configure.webpackOutputFilename?.hook(() => 'index.js');
+              configure.webpackConfig?.hook((config) => ({
+                ...config,
+                output: {
+                  ...config.output,
+                  libraryTarget: 'commonjs2',
+                },
+              }));
+            });
           });
         });
-      });
-    }),
+      },
+    ),
   ]);
 }

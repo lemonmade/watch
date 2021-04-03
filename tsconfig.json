@@ -15,6 +15,9 @@
       "path": "./functions/api"
     },
     {
+      "path": "./functions/email"
+    },
+    {
       "path": "./functions/cdn-request-prepare-app"
     },
     {

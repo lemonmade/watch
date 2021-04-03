@@ -42,6 +42,10 @@ export function tinyServer() {
         build.hook(({hooks}) => {
           hooks.target.hook(({hooks}) => {
             hooks.configure.hook((configure) => {
+              configure.webpackExternals?.hook((externals) => [
+                ...externals,
+                'aws-sdk',
+              ]);
               configure.webpackAliases?.hook((aliases) => ({
                 ...aliases,
                 shared: workspace.fs.resolvePath('functions/shared'),

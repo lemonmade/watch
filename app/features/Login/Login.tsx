@@ -1,10 +1,21 @@
-import {Link, View, Heading, BlockStack} from '@lemon/zest';
+import {useState} from 'react';
+import {
+  Link,
+  View,
+  TextField,
+  Form,
+  Heading,
+  BlockStack,
+  TextBlock,
+} from '@lemon/zest';
 
 enum SearchParam {
   RedirectTo = 'redirect',
 }
 
 export function Login() {
+  const [email, setEmail] = useState('');
+
   return (
     <View padding={16}>
       <BlockStack>
@@ -24,6 +35,8 @@ export function Login() {
           Login with Github
         </Link>
 
+        <TextBlock>or</TextBlock>
+
         <Link
           to={(url) => {
             const targetUrl = new URL('/internal/auth/github/sign-up', url);
@@ -38,6 +51,19 @@ export function Login() {
         >
           Sign up with Github
         </Link>
+
+        <TextBlock>or</TextBlock>
+
+        <Form
+          onSubmit={() => {
+            // eslint-disable-next-line no-console
+            console.log({email});
+          }}
+        >
+          <BlockStack>
+            <TextField onChange={(value) => setEmail(value)} />
+          </BlockStack>
+        </Form>
       </BlockStack>
     </View>
   );

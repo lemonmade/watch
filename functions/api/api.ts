@@ -46,16 +46,13 @@ app.post(async (request) => {
   console.log(`Document:\n${query}`);
   /* eslint-enable no-console */
 
-  // const request = new Request(
-  //   `${event.headers.origin}${event.rawPath}${
-  //     event.rawQueryString ? `?${event.rawQueryString}` : ''
-  //   }`,
-  //   {
-  //     method: event.requestContext.http.method,
-  //     body: event.body,
-  //     headers: event.headers as Record<string, string>,
-  //   },
-  // );
+  const response = json(
+    {},
+    {
+      status: 200,
+      headers: {'Access-Control-Allow-Origin': '*'},
+    },
+  );
 
   const [user] = await db.select('*').from('Users').limit(1);
 
@@ -64,14 +61,14 @@ app.post(async (request) => {
       schema,
       query,
       {},
-      createContext(db, user),
+      createContext(db, user, request, response),
       variables,
       operationName,
     );
 
     return json(result, {
       status: 200,
-      headers: {'Access-Control-Allow-Origin': '*'},
+      headers: response.headers,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
