@@ -2,15 +2,16 @@ import {useMemo} from 'react';
 import {useRoutes} from '@quilted/quilt';
 import {NotFound} from '@quilted/quilt/http';
 
-import {
-  Watching,
-  Series,
-  Subscriptions,
-  WatchThrough,
-  Settings,
-  Search,
-  Login,
-} from '../../features';
+import {Watching} from '../../features/Watching';
+import {Series} from '../../features/Series';
+import {Subscriptions} from '../../features/Subscriptions';
+import {WatchThrough} from '../../features/WatchThrough';
+import {Settings} from '../../features/Settings';
+import {Search} from '../../features/Search';
+import {Login} from '../../features/Login';
+import {Profile} from '../../features/Profile';
+import {Developer} from '../../features/Developer';
+
 import {Frame} from '../Frame';
 
 export function Routes() {
@@ -23,6 +24,8 @@ export function Routes() {
           render: ({children}) => <Frame>{children}</Frame>,
           children: [
             {match: '/', render: () => <Watching />},
+            {match: 'me', render: () => <Profile />},
+            {match: 'developer', render: () => <Developer />},
             {match: 'subscriptions', render: () => <Subscriptions />},
             {match: 'settings', render: () => <Settings />},
             {match: 'search', render: () => <Search />},

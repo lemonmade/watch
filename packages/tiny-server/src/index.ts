@@ -35,6 +35,7 @@ export interface CookieDefinition {
 }
 
 export interface ResponseCookies {
+  [Symbol.iterator](): IterableIterator<string>;
   set(cookie: string, value: string, definition?: CookieDefinition): void;
   delete(cookie: string): void;
 }
@@ -116,7 +117,7 @@ export function createApp({prefix}: AppOptions = {}): App {
         return 'cookies' in response ? response : augmentResponse(response);
       }
 
-      return response(null, {status: 404});
+      return notFound();
     },
   };
 }
@@ -195,13 +196,16 @@ function augmentResponse(
   const serializedCookies = new Map<string, string>();
 
   const responseCookies: ResponseCookies = {
+    [Symbol.iterator]: () => serializedCookies.values(),
     set(cookie, value, options) {
       const setCookie = Cookies.serialize(cookie, value, options);
       serializedCookies.set(cookie, setCookie);
-      response.headers.set(
-        'Set-Cookie',
-        [...serializedCookies.values()].join('; '),
-      );
+
+      response.headers.delete('Set-Cookie');
+
+      for (const cookie of serializedCookies.values()) {
+        response.headers.append('Set-Cookie', cookie);
+      }
     },
     delete(cookie) {
       responseCookies.set(cookie, '', {expires: new Date(0)});

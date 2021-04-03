@@ -1,0 +1,8 @@
+{
+  "name": "cdn-response-header-cleanup",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.73"
+  }
+}

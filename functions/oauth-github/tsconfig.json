@@ -4,9 +4,11 @@
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "build/ts",
-    "paths": {}
+    "paths": {
+      "shared/*": ["../shared/*"]
+    }
   },
   "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../../packages/tiny-server"}]
+  "references": [{"path": "../shared"}, {"path": "../../packages/tiny-server"}]
 }

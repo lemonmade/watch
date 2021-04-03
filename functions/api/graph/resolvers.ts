@@ -1,6 +1,9 @@
 import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
-import {Context, Table} from './context';
+
+import {Table} from 'shared/utilities/database';
+
+import {Context} from './context';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -650,6 +653,23 @@ export const AppExtensionInstallation: Resolver = {
 
 export const User: Resolver = {
   id: ({id}) => toGid(id, 'User'),
+  githubAccount: async ({id, githubAccountId}, _, {db}) => {
+    if (githubAccountId == null) return null;
+
+    const [result] = await db
+      .select('*')
+      .from(Table.GithubAccounts)
+      .where({userId: id})
+      .limit(1);
+
+    return result;
+  },
+};
+
+export const GithubAccount: Resolver = {
+  avatarImage: ({avatarUrl}: {avatarUrl?: string}) => {
+    return {source: avatarUrl};
+  },
 };
 
 export const Series: Resolver<{

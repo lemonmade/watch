@@ -1,4 +1,5 @@
 import type {App} from '@lemon/tiny-server';
+import * as Cookies from 'cookie';
 import type {APIGatewayProxyHandlerV2} from 'aws-lambda';
 
 export function createLambdaApiGatewayProxy(
@@ -9,6 +10,8 @@ export function createLambdaApiGatewayProxy(
     console.log(event);
 
     const headers = new Headers(event.headers as Record<string, string>);
+
+    const cookies = Cookies.parse(event.cookies?.join('; ') ?? '');
 
     const response = await app.run({
       headers,
@@ -22,15 +25,18 @@ export function createLambdaApiGatewayProxy(
         }`,
       ),
       cookies: {
-        get: () => undefined,
+        get: (key) => cookies[key],
       },
     });
 
     return {
       statusCode: response.status,
       body: await response.text(),
+      cookies: [...response.cookies],
       headers: [...response.headers].reduce<Record<string, string>>(
         (allHeaders, [header, value]) => {
+          if (header.toLowerCase() === 'set-cookie') return allHeaders;
+
           allHeaders[header] = value;
           return allHeaders;
         },

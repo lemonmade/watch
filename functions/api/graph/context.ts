@@ -1,25 +1,10 @@
 import DataLoader from 'dataloader';
-
-export enum Table {
-  Users = 'Users',
-  Watches = 'Watches',
-  Skips = 'Skips',
-  Series = 'Series',
-  SeriesSubscriptions = 'SeriesSubscriptions',
-  Seasons = 'Seasons',
-  Episodes = 'Episodes',
-  WatchThroughs = 'WatchThroughs',
-  WatchThroughEpisodes = 'WatchThroughEpisodes',
-  Apps = 'Apps',
-  ClipsExtensions = 'ClipsExtensions',
-  ClipsExtensionVersions = 'ClipsExtensionVersions',
-  AppInstallations = 'AppInstallations',
-  ClipsExtensionInstallations = 'ClipsExtensionInstallations',
-}
+import {Table} from 'shared/utilities/database';
+import type {Database} from 'shared/utilities/database';
 
 export type Context = ReturnType<typeof createContext>;
 
-export function createContext(db: import('knex'), user: {id: string}) {
+export function createContext(db: Database, user: {id: string}) {
   return {
     db,
     user,
@@ -49,6 +34,9 @@ export function createContext(db: import('knex'), user: {id: string}) {
     ),
     clipsExtensionVersionsLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
+    ),
+    githubAccountsLoader: new DataLoader(
+      createBatchLoaderForTable(db, Table.GithubAccounts),
     ),
   };
 }
