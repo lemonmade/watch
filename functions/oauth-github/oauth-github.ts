@@ -5,7 +5,7 @@ import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
 import type {CookieDefinition, ExtendedResponse} from '@lemon/tiny-server';
 
-import {sign} from 'shared/utilities/auth';
+import {addAuthenticationCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
@@ -97,10 +97,10 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
     }
 
-    return deleteCookies(redirect(loginUrl));
+    return deleteOAuthCookies(redirect(loginUrl));
   }
 
-  const accessTokenResponse = await fetchJson<{access_token: string}>(
+  const {access_token: accessToken} = await fetchJson<{access_token: string}>(
     'https://github.com/login/oauth/access_token',
     {
       client_id: CLIENT_ID,
@@ -109,9 +109,6 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       state,
     },
   );
-
-  console.log(accessTokenResponse);
-  const {access_token: accessToken} = accessTokenResponse;
 
   const githubClient = createGraphQL({
     cache: false,
@@ -136,30 +133,29 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   if (githubResult == null) {
     // Need better error handling
     console.log('No result fetched from Github!');
-    return deleteCookies(redirect('/login'));
+    return deleteOAuthCookies(redirect('/login'));
   }
 
   console.log(githubResult);
 
   const db = createDatabaseConnection();
 
-  const [{userId}] = await db
-    .select('userId')
+  const [account] = await db
+    .select(['userId'])
     .from(Table.GithubAccounts)
     .where({id: githubResult.viewer.id})
     .limit(1);
 
-  if (signUp) {
-    if (userId) {
-      console.log(`Found existing user during sign-up: ${userId}`);
+  const existingUserId = account?.userId;
 
-      const token = sign({id: userId});
-      const response = deleteCookies(redirect(redirectTo ?? '/app'));
-      response.cookies.set(Cookie.Auth, token, {
-        ...DEFAULT_COOKIE_OPTIONS,
-        path: '/',
-      });
-      return response;
+  if (signUp) {
+    if (existingUserId) {
+      console.log(`Found existing user during sign-up: ${existingUserId}`);
+
+      return addAuthenticationCookies(
+        {id: existingUserId},
+        deleteOAuthCookies(redirect(redirectTo ?? '/app')),
+      );
     }
 
     const {
@@ -191,31 +187,24 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 
     console.log(`Created new user during sign-up: ${updatedUserId}`);
 
-    const token = sign({id: updatedUserId});
-    const response = deleteCookies(redirect(redirectTo ?? '/app'));
-    response.cookies.set(Cookie.Auth, token, {
-      ...DEFAULT_COOKIE_OPTIONS,
-      path: '/',
-    });
-    return response;
+    return addAuthenticationCookies(
+      {id: updatedUserId},
+      deleteOAuthCookies(redirect(redirectTo ?? '/app')),
+    );
   }
 
-  if (userId) {
-    console.log(`Found existing user during sign-in: ${userId}`);
+  if (existingUserId) {
+    console.log(`Found existing user during sign-in: ${existingUserId}`);
 
-    const token = sign({id: userId});
-    const response = deleteCookies(redirect(redirectTo ?? '/app'));
-    response.cookies.set(Cookie.Auth, token, {
-      ...DEFAULT_COOKIE_OPTIONS,
-      path: '/',
-    });
-
-    return response;
+    return addAuthenticationCookies(
+      {id: existingUserId},
+      deleteOAuthCookies(redirect(redirectTo ?? '/app')),
+    );
   } else {
     // Need better error handling
     console.log(`No user, oh no!`);
 
-    return deleteCookies(redirect('/login'));
+    return deleteOAuthCookies(redirect('/login'));
   }
 });
 
@@ -229,12 +218,12 @@ app.get((request) => {
     loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
   }
 
-  return deleteCookies(redirect(loginUrl));
+  return deleteOAuthCookies(redirect(loginUrl));
 });
 
 export default app;
 
-function deleteCookies(response: ExtendedResponse) {
+function deleteOAuthCookies(response: ExtendedResponse) {
   response.cookies.delete(Cookie.State);
   response.cookies.delete(Cookie.RedirectTo);
 
