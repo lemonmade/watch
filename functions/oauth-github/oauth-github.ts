@@ -88,6 +88,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
 
+  console.log({code, state, expectedState, redirectTo});
+
   if (expectedState == null || expectedState !== state) {
     const loginUrl = new URL('/login', url);
 
@@ -208,6 +210,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 });
 
 app.get((request) => {
+  console.log('Fallback route');
+
   const loginUrl = new URL('/login', request.url);
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
