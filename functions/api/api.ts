@@ -1,12 +1,13 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
-import knex from 'knex';
 import {createApp, json, noContent} from '@lemon/tiny-server';
 import {
   captureException,
   init as sentryInit,
   flush as flushSentry,
 } from '@sentry/node';
+
+import {createDatabaseConnection} from 'shared/utilities/database';
 
 import typeDefs from './graph/schema';
 
@@ -15,16 +16,6 @@ import {resolvers, createContext} from './graph';
 sentryInit({
   dsn: 'https://d6cff1e3f8c34a44a22253995b47ccfb@sentry.io/1849967',
   enabled: process.env.NODE_ENV !== 'development',
-});
-
-const db = knex({
-  client: 'pg',
-  connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-  },
 });
 
 const schema = makeExecutableSchema({
@@ -43,6 +34,8 @@ app.options(() =>
     },
   }),
 );
+
+const db = createDatabaseConnection();
 
 app.post(async (request) => {
   const {operationName, query, variables} = JSON.parse(String(request.body!));
