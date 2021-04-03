@@ -129,9 +129,9 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
     return deleteCookies(redirect('/login'));
   }
 
-  const db = createDatabaseConnection();
-
   console.log(githubResult);
+
+  const db = createDatabaseConnection();
 
   const [{userId}] = await db
     .select('userId')
