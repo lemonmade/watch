@@ -100,7 +100,7 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
     return deleteCookies(redirect(loginUrl));
   }
 
-  const {access_token: accessToken} = await fetchJson<{access_token: string}>(
+  const accessTokenResponse = await fetchJson<{access_token: string}>(
     'https://github.com/login/oauth/access_token',
     {
       client_id: CLIENT_ID,
@@ -109,6 +109,9 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       state,
     },
   );
+
+  console.log(accessTokenResponse);
+  const {access_token: accessToken} = accessTokenResponse;
 
   const githubClient = createGraphQL({
     cache: false,
