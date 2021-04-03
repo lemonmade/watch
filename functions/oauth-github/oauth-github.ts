@@ -174,13 +174,15 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
         .into(Table.Users)
         .returning<string>('id');
 
-      await trx.insert({
-        id: githubUserId,
-        userId,
-        login,
-        profileUrl: githubUserUrl,
-        avatarUrl,
-      });
+      await trx
+        .insert({
+          id: githubUserId,
+          userId,
+          login,
+          profileUrl: githubUserUrl,
+          avatarUrl,
+        })
+        .into(Table.GithubAccounts);
 
       return userId;
     });
