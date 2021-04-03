@@ -53,7 +53,7 @@ app.get(/^[/]sign-(in|up)$/, (request) => {
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
   githubOAuthUrl.searchParams.set(
     GithubSearchParam.Redirect,
-    new URL('callback', request.url).href,
+    new URL('callback', `${request.url.origin}${request.url.pathname}/`).href,
   );
 
   const response = redirect(githubOAuthUrl, {
