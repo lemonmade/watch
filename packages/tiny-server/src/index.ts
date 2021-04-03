@@ -35,6 +35,7 @@ export interface CookieDefinition {
 }
 
 export interface ResponseCookies {
+  [Symbol.iterator](): IterableIterator<string>;
   set(cookie: string, value: string, definition?: CookieDefinition): void;
   delete(cookie: string): void;
 }
@@ -195,6 +196,7 @@ function augmentResponse(
   const serializedCookies = new Map<string, string>();
 
   const responseCookies: ResponseCookies = {
+    [Symbol.iterator]: () => serializedCookies.values(),
     set(cookie, value, options) {
       const setCookie = Cookies.serialize(cookie, value, options);
       serializedCookies.set(cookie, setCookie);

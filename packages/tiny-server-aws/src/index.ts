@@ -32,8 +32,11 @@ export function createLambdaApiGatewayProxy(
     return {
       statusCode: response.status,
       body: await response.text(),
+      cookies: [...response.cookies],
       headers: [...response.headers].reduce<Record<string, string>>(
         (allHeaders, [header, value]) => {
+          if (header.toLowerCase() === 'set-cookie') return allHeaders;
+
           allHeaders[header] = value;
           return allHeaders;
         },
