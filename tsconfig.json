@@ -9,10 +9,16 @@
       "path": "./app"
     },
     {
+      "path": "./functions/shared"
+    },
+    {
       "path": "./functions/api"
     },
     {
-      "path": "./functions/header-cleanup"
+      "path": "./functions/cdn-request-prepare-app"
+    },
+    {
+      "path": "./functions/cdn-response-header-cleanup"
     },
     {
       "path": "./functions/tmdb-refresher"

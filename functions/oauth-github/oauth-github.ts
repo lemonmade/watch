@@ -3,6 +3,9 @@ import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
 import type {CookieDefinition, ExtendedResponse} from '@lemon/tiny-server';
 
+import {sign} from 'shared/utilities/auth';
+import {createDatabaseConnection, Table} from 'shared/utilities/database';
+
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 
 const ROOT_PATH = '/internal/auth/github';
@@ -18,6 +21,7 @@ const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
 };
 
 enum Cookie {
+  Auth = 'auth',
   State = 'state',
   RedirectTo = 'redirect',
 }
@@ -75,6 +79,8 @@ app.get(/^[/]sign-(in|up)$/, (request) => {
 app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   const {url, cookies} = request;
 
+  const signUp = request.url.normalizedPath.startsWith('/sign-up');
+
   const expectedState = cookies.get(Cookie.State);
   const redirectTo = cookies.get(Cookie.RedirectTo);
   const code = url.searchParams.get('code');
@@ -113,10 +119,82 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 
   const {data: githubResult} = await githubClient.query(viewerQuery);
 
+  if (githubResult == null) {
+    // Need better error handling
+    return deleteCookies(redirect('/login'));
+  }
+
+  const db = createDatabaseConnection();
+
   // eslint-disable-next-line no-console
   console.log(githubResult);
 
-  return deleteCookies(redirect(redirectTo ?? '/app'));
+  const [{userId}] = await db
+    .select('userId')
+    .from(Table.GithubAccounts)
+    .where({id: githubResult.viewer.id})
+    .limit(1);
+
+  if (signUp) {
+    if (userId) {
+      const token = sign({id: userId});
+      const response = deleteCookies(redirect(redirectTo ?? '/app'));
+      response.cookies.set(Cookie.Auth, token, {
+        ...DEFAULT_COOKIE_OPTIONS,
+        path: '/',
+      });
+      return response;
+    }
+
+    const {
+      id: githubUserId,
+      email,
+      url: githubUserUrl,
+      login,
+      avatarUrl,
+    } = githubResult.viewer;
+
+    const updatedUserId = await db.transaction(async (trx) => {
+      const [userId] = await trx
+        .insert({
+          email,
+        })
+        .into(Table.Users)
+        .returning<string>('id');
+
+      await trx.insert({
+        id: githubUserId,
+        userId,
+        login,
+        profileUrl: githubUserUrl,
+        avatarUrl,
+      });
+
+      return userId;
+    });
+
+    const token = sign({id: updatedUserId});
+    const response = deleteCookies(redirect(redirectTo ?? '/app'));
+    response.cookies.set(Cookie.Auth, token, {
+      ...DEFAULT_COOKIE_OPTIONS,
+      path: '/',
+    });
+    return response;
+  }
+
+  if (userId) {
+    const token = sign({id: userId});
+    const response = deleteCookies(redirect(redirectTo ?? '/app'));
+    response.cookies.set(Cookie.Auth, token, {
+      ...DEFAULT_COOKIE_OPTIONS,
+      path: '/',
+    });
+
+    return response;
+  } else {
+    // Need better error handling
+    return deleteCookies(redirect('/login'));
+  }
 });
 
 app.get((request) => {

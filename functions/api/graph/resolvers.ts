@@ -1,6 +1,9 @@
 import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
-import {Context, Table} from './context';
+
+import {Table} from 'shared/utilities/database';
+
+import {Context} from './context';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -664,8 +667,8 @@ export const User: Resolver = {
 };
 
 export const GithubAccount: Resolver = {
-  avatarImage: ({avatarImage}: {avatarImage: string}) => {
-    return {source: avatarImage};
+  avatarImage: ({avatarUrl}: {avatarUrl?: string}) => {
+    return {source: avatarUrl};
   },
 };
 

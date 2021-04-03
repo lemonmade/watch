@@ -16,7 +16,7 @@ export default function App() {
   );
 
   return (
-    <QuiltApp graphql={graphql}>
+    <QuiltApp graphql={graphql} urlIsExternal={urlIsExternal}>
       <Canvas>
         <Http />
         <Head />
@@ -25,5 +25,12 @@ export default function App() {
         </LocalDevelopmentOrchestrator>
       </Canvas>
     </QuiltApp>
+  );
+}
+
+function urlIsExternal(url: URL, currentUrl: URL) {
+  return (
+    url.origin !== currentUrl.origin ||
+    url.pathname.startsWith('/internal/auth')
   );
 }

@@ -170,7 +170,23 @@ export class WatchAppStack extends Stack {
         ),
         runtime: Runtime.NODEJS_12_X,
         handler: 'index.handler',
-        functionName: 'WatchAHeadersCleanupFunction',
+        functionName: 'WatchHeadersCleanupFunction',
+      },
+    );
+
+    const cdnPrepareAppRequestFunction = new Function(
+      this,
+      'WatchCdnPrepareAppRequestFunction',
+      {
+        code: Code.fromInline(`
+          module.exports.handler = (event, _, callback) => {
+            console.log(event);
+            callback(null, event.Records[0].cf.request);
+          }
+        `),
+        runtime: Runtime.NODEJS_12_X,
+        handler: 'index.handler',
+        functionName: 'WatchCdnPrepareAppRequestFunction',
       },
     );
 
@@ -215,6 +231,7 @@ export class WatchAppStack extends Stack {
               cookieBehavior: OriginRequestCookieBehavior.all(),
               headerBehavior: OriginRequestHeaderBehavior.allowList(
                 'User-Agent',
+                'X-Forwarded-Host',
               ),
               queryStringBehavior: OriginRequestQueryStringBehavior.all(),
             },
@@ -223,6 +240,10 @@ export class WatchAppStack extends Stack {
             {
               eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
               functionVersion: cloudfrontHeadersCleanupFunction.currentVersion,
+            },
+            {
+              eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+              functionVersion: cdnPrepareAppRequestFunction.currentVersion,
             },
           ],
         },
@@ -306,6 +327,7 @@ export class WatchAppStack extends Stack {
                 cookieBehavior: OriginRequestCookieBehavior.all(),
                 headerBehavior: OriginRequestHeaderBehavior.allowList(
                   'X-Debug',
+                  'X-Forwarded-Host',
                 ),
                 queryStringBehavior: OriginRequestQueryStringBehavior.none(),
               },
@@ -315,6 +337,10 @@ export class WatchAppStack extends Stack {
                 eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
                 functionVersion:
                   cloudfrontHeadersCleanupFunction.currentVersion,
+              },
+              {
+                eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+                functionVersion: cdnPrepareAppRequestFunction.currentVersion,
               },
             ],
           },
@@ -337,7 +363,9 @@ export class WatchAppStack extends Stack {
               'WatchGithubOAuthOriginRequestPolicy',
               {
                 cookieBehavior: OriginRequestCookieBehavior.all(),
-                headerBehavior: OriginRequestHeaderBehavior.none(),
+                headerBehavior: OriginRequestHeaderBehavior.allowList(
+                  'X-Forwarded-Host',
+                ),
                 queryStringBehavior: OriginRequestQueryStringBehavior.all(),
               },
             ),
@@ -346,6 +374,10 @@ export class WatchAppStack extends Stack {
                 eventType: LambdaEdgeEventType.VIEWER_RESPONSE,
                 functionVersion:
                   cloudfrontHeadersCleanupFunction.currentVersion,
+              },
+              {
+                eventType: LambdaEdgeEventType.VIEWER_REQUEST,
+                functionVersion: cdnPrepareAppRequestFunction.currentVersion,
               },
             ],
           },

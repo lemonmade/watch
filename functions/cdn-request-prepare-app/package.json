@@ -1,5 +1,5 @@
 {
-  "name": "header-cleanup",
+  "name": "cdn-request-prepare-app",
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
