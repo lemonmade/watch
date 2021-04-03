@@ -176,7 +176,7 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
         .insert({
           id: githubUserId,
           userId,
-          login,
+          username: login,
           profileUrl: githubUserUrl,
           avatarUrl,
         })
