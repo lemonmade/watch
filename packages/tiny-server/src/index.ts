@@ -198,10 +198,12 @@ function augmentResponse(
     set(cookie, value, options) {
       const setCookie = Cookies.serialize(cookie, value, options);
       serializedCookies.set(cookie, setCookie);
-      response.headers.set(
-        'Set-Cookie',
-        [...serializedCookies.values()].join('; '),
-      );
+
+      response.headers.delete('Set-Cookie');
+
+      for (const [cookie, value] of serializedCookies) {
+        response.headers.append(cookie, value);
+      }
     },
     delete(cookie) {
       responseCookies.set(cookie, '', {expires: new Date(0)});
