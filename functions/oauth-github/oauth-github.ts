@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 import crypto from 'crypto';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
@@ -121,12 +123,12 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 
   if (githubResult == null) {
     // Need better error handling
+    console.log('No result fetched from GitHub!');
     return deleteCookies(redirect('/login'));
   }
 
   const db = createDatabaseConnection();
 
-  // eslint-disable-next-line no-console
   console.log(githubResult);
 
   const [{userId}] = await db
@@ -137,6 +139,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 
   if (signUp) {
     if (userId) {
+      console.log(`Found existing user during sign-up: ${userId}`);
+
       const token = sign({id: userId});
       const response = deleteCookies(redirect(redirectTo ?? '/app'));
       response.cookies.set(Cookie.Auth, token, {
@@ -173,6 +177,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       return userId;
     });
 
+    console.log(`Created new user during sign-up: ${updatedUserId}`);
+
     const token = sign({id: updatedUserId});
     const response = deleteCookies(redirect(redirectTo ?? '/app'));
     response.cookies.set(Cookie.Auth, token, {
@@ -183,6 +189,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   }
 
   if (userId) {
+    console.log(`Found existing user during sign-in: ${userId}`);
+
     const token = sign({id: userId});
     const response = deleteCookies(redirect(redirectTo ?? '/app'));
     response.cookies.set(Cookie.Auth, token, {
@@ -193,6 +201,8 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
     return response;
   } else {
     // Need better error handling
+    console.log(`No user, oh no!`);
+
     return deleteCookies(redirect('/login'));
   }
 });
