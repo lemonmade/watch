@@ -116,7 +116,7 @@ export function createApp({prefix}: AppOptions = {}): App {
         return 'cookies' in response ? response : augmentResponse(response);
       }
 
-      return response(null, {status: 404});
+      return notFound();
     },
   };
 }
