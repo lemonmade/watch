@@ -121,11 +121,18 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
     }),
   });
 
-  const {data: githubResult} = await githubClient.query(viewerQuery);
+  const {data: githubResult, error: githubError} = await githubClient.query(
+    viewerQuery,
+  );
+
+  if (githubError != null) {
+    console.error('Github error');
+    console.error(githubError);
+  }
 
   if (githubResult == null) {
     // Need better error handling
-    console.log('No result fetched from GitHub!');
+    console.log('No result fetched from Github!');
     return deleteCookies(redirect('/login'));
   }
 
