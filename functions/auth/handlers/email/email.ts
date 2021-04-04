@@ -17,12 +17,15 @@ export async function signInFromEmail(request: ExtendedRequest) {
   if (token == null) return restartAuth({request});
 
   try {
-    const {redirectTo, sub: email} = verifySignedToken<{
+    const {
+      subject: email,
+      data: {redirectTo},
+      expired,
+    } = verifySignedToken<{
       redirectTo?: string | null;
-      sub: string;
     }>(token);
 
-    if (email == null) {
+    if (email == null || expired) {
       restartAuth({request, redirectTo: redirectTo ?? undefined});
     }
 

@@ -16,14 +16,30 @@ export function createSignedToken(
   return jwt.sign(data, secret, options);
 }
 
+interface SignedTokenResult<T> {
+  data: T;
+  subject?: string;
+  expired: boolean;
+  expiresAt?: Date;
+}
+
 export function verifySignedToken<T = Record<string, unknown>>(
   token: string,
   {
     secret = process.env.JWT_DEFAULT_SECRET!,
     ...options
   }: VerifyOptions & {secret?: string} = {},
-) {
-  return (jwt.verify(token, secret, options) as any) as T;
+): SignedTokenResult<T> {
+  const {exp, sub, ...data} = (jwt.verify(
+    token,
+    secret,
+    options,
+  ) as any) as T & {exp?: number; sub?: string};
+
+  const expiresAt = exp ? new Date(exp) : undefined;
+  const expired = expiresAt != null && expiresAt.getTime() < Date.now();
+
+  return {data: data as T, subject: sub || undefined, expired, expiresAt};
 }
 
 export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
