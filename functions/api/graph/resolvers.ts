@@ -117,14 +117,20 @@ interface Slice {
 export const Mutation: Resolver = {
   async signIn(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
     await enqueueSendEmail('signIn', {
-      token: createSignedToken({redirectTo}, {subject: email}),
+      token: createSignedToken(
+        {redirectTo},
+        {subject: email, expiresIn: '15 minutes'},
+      ),
       userEmail: email,
     });
     return {email};
   },
   async signUp(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
     await enqueueSendEmail('welcome', {
-      token: createSignedToken({redirectTo}, {subject: email}),
+      token: createSignedToken(
+        {redirectTo},
+        {subject: email, expiresIn: '15 minutes'},
+      ),
       userEmail: email,
     });
     return {email};

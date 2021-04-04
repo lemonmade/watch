@@ -43,7 +43,7 @@ export function verifySignedToken<T = Record<string, unknown>>(
 }
 
 export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
-  const token = createSignedToken({}, {expiresIn: '7d', subject: user.id});
+  const token = createSignedToken({}, {expiresIn: '7 days', subject: user.id});
 
   response.cookies.set(Cookie.Auth, token, {
     path: '/',
