@@ -124,7 +124,7 @@ export const Mutation: Resolver = {
   },
   async signUp(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
     await enqueueSendEmail('welcome', {
-      token: createSignedToken({redirectTo}),
+      token: createSignedToken({redirectTo}, {subject: email}),
       userEmail: email,
     });
     return {email};

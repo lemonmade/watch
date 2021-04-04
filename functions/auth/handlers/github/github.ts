@@ -7,7 +7,7 @@ import type {
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {redirect, fetchJson} from '@lemon/tiny-server';
 
-import {addAuthenticationCookies} from 'shared/utilities/auth';
+import {addAuthCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
@@ -149,7 +149,7 @@ export async function handleGithubOAuthCallback(
       // eslint-disable-next-line no-console
       console.log(`Found existing user during sign-up: ${existingUserId}`);
 
-      return addAuthenticationCookies(
+      return addAuthCookies(
         {id: existingUserId},
         deleteOAuthCookies(redirect(redirectTo ?? '/app')),
       );
@@ -187,7 +187,7 @@ export async function handleGithubOAuthCallback(
     // eslint-disable-next-line no-console
     console.log(`Created new user during sign-up: ${updatedUserId}`);
 
-    return addAuthenticationCookies(
+    return addAuthCookies(
       {id: updatedUserId},
       deleteOAuthCookies(redirect(redirectTo ?? '/app')),
     );
@@ -197,7 +197,7 @@ export async function handleGithubOAuthCallback(
     // eslint-disable-next-line no-console
     console.log(`Found existing user during sign-in: ${existingUserId}`);
 
-    return addAuthenticationCookies(
+    return addAuthCookies(
       {id: existingUserId},
       deleteOAuthCookies(redirect(redirectTo ?? '/app')),
     );
