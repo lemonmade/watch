@@ -1,10 +1,15 @@
 import {SES} from 'aws-sdk';
 import type {SQSHandler} from 'aws-lambda';
 import {runEmail, Html, render} from '@lemon/react-email';
+import type {Sender} from '@lemon/react-email';
 
 import {Email} from './Email';
 
 export type {EmailType, PropsForEmail} from './types';
+
+const DEFAULT_SENDER: Sender = {
+  email: 'no-reply@lemon.tools',
+};
 
 const sendEmail: SQSHandler = async (event) => {
   // eslint-disable-next-line no-console
@@ -12,9 +17,9 @@ const sendEmail: SQSHandler = async (event) => {
   const {
     Records: [
       {
+        body: propsJson,
         messageAttributes: {
           type: {stringValue: type},
-          props: {stringValue: propsJson = '{}'},
         },
       },
     ],
@@ -32,9 +37,7 @@ const sendEmail: SQSHandler = async (event) => {
     cc,
     bcc,
     plainText,
-    sender: {name: senderName, email: senderEmail} = {
-      email: 'no-reply@lemon.tools',
-    },
+    sender: {name: senderName, email: senderEmail} = DEFAULT_SENDER,
   } = email.state;
 
   if (to == null || to.length === 0 || subject == null) {

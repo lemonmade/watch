@@ -11,3 +11,4 @@ export {
 export {EmailContext} from './context';
 export {EmailManager} from './manager';
 export {runEmail} from './server';
+export type {Sender} from './types';
