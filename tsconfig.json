@@ -30,7 +30,7 @@
       "path": "./functions/tmdb-refresher-scheduler"
     },
     {
-      "path": "./functions/oauth-github"
+      "path": "./functions/auth"
     },
     {
       "path": "./packages/basics"

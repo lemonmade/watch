@@ -15,7 +15,7 @@ export function SignIn({token, userEmail}: Props) {
   useSender({name: 'Sign in Bot', email: 'accounts@lemon.tools'});
   useSendTo(userEmail);
 
-  const url = `https://watch.lemon.tools/internal/sign-in?token=${token}`;
+  const url = `https://watch.lemon.tools/internal/auth/email/sign-in?token=${token}`;
 
   usePlainTextEmail(() => `Sign in by clicking this link: ${url}.`);
 

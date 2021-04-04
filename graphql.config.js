@@ -41,13 +41,13 @@ module.exports = {
     },
     github: {
       schema: 'graphql/github/schema.graphql',
-      documents: 'functions/oauth-github/**/*.graphql',
+      documents: 'functions/auth/handlers/github/**/*.graphql',
       extensions: {
         quilt: {
           schema: [
             {
               kind: 'inputTypes',
-              outputPath: 'functions/oauth-github/graphql/schema.d.ts',
+              outputPath: 'functions/auth/handlers/github/graphql/schema.d.ts',
             },
           ],
         },

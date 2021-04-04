@@ -1,29 +1,28 @@
-/* eslint no-console: off */
-
 import crypto from 'crypto';
+import type {
+  ExtendedRequest,
+  CookieDefinition,
+  ExtendedResponse,
+} from '@lemon/tiny-server';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {createApp, redirect, fetchJson} from '@lemon/tiny-server';
-import type {CookieDefinition, ExtendedResponse} from '@lemon/tiny-server';
+import {redirect, fetchJson} from '@lemon/tiny-server';
 
 import {addAuthenticationCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 
-const ROOT_PATH = '/internal/auth/github';
 const CLIENT_ID = '60c6903025bfd274db53';
 const SCOPES = 'read:user';
 
 const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
-  path: ROOT_PATH,
-  maxAge: 60 * 60,
+  maxAge: 60 * 5,
   sameSite: 'lax',
   secure: true,
   httpOnly: true,
 };
 
 enum Cookie {
-  Auth = 'auth',
   State = 'state',
   RedirectTo = 'redirect',
 }
@@ -39,9 +38,7 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-const app = createApp({prefix: ROOT_PATH});
-
-app.get(/^[/]sign-(in|up)$/, (request) => {
+export function startGithubOAuth(request: ExtendedRequest) {
   const state = crypto
     .randomBytes(15)
     .map((byte) => byte % 10)
@@ -76,19 +73,18 @@ app.get(/^[/]sign-(in|up)$/, (request) => {
   }
 
   return response;
-});
+}
 
-app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
+export async function handleGithubOAuthCallback(
+  request: ExtendedRequest,
+  {signUp = false} = {},
+) {
   const {url, cookies} = request;
-
-  const signUp = request.url.normalizedPath.startsWith('/sign-up');
 
   const expectedState = cookies.get(Cookie.State);
   const redirectTo = cookies.get(Cookie.RedirectTo);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
-
-  console.log({code, state, expectedState, redirectTo});
 
   if (expectedState == null || expectedState !== state) {
     const loginUrl = new URL('/login', url);
@@ -126,12 +122,14 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   );
 
   if (githubError != null) {
+    // eslint-disable-next-line no-console
     console.error('Github error');
+    // eslint-disable-next-line no-console
     console.error(githubError);
   }
 
   if (githubResult == null) {
-    // Need better error handling
+    // eslint-disable-next-line no-console
     console.log('No result fetched from Github!');
     return deleteOAuthCookies(redirect('/login'));
   }
@@ -148,6 +146,7 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
 
   if (signUp) {
     if (existingUserId) {
+      // eslint-disable-next-line no-console
       console.log(`Found existing user during sign-up: ${existingUserId}`);
 
       return addAuthenticationCookies(
@@ -185,6 +184,7 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       return userId;
     });
 
+    // eslint-disable-next-line no-console
     console.log(`Created new user during sign-up: ${updatedUserId}`);
 
     return addAuthenticationCookies(
@@ -194,6 +194,7 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
   }
 
   if (existingUserId) {
+    // eslint-disable-next-line no-console
     console.log(`Found existing user during sign-in: ${existingUserId}`);
 
     return addAuthenticationCookies(
@@ -201,27 +202,12 @@ app.get(/^[/]sign-(in|up)[/]callback$/, async (request) => {
       deleteOAuthCookies(redirect(redirectTo ?? '/app')),
     );
   } else {
-    // Need better error handling
-    console.log(`No user, oh no!`);
+    // eslint-disable-next-line no-console
+    console.log(`No user found!`);
 
     return deleteOAuthCookies(redirect('/login'));
   }
-});
-
-app.get((request) => {
-  console.log('Fallback route');
-
-  const loginUrl = new URL('/login', request.url);
-  const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
-
-  if (redirectTo) {
-    loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-  }
-
-  return deleteOAuthCookies(redirect(loginUrl));
-});
-
-export default app;
+}
 
 function deleteOAuthCookies(response: ExtendedResponse) {
   response.cookies.delete(Cookie.State);

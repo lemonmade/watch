@@ -42,9 +42,9 @@ jobs:
         run: zip -r ../../api.zip ./*
         working-directory: ./build/services/api
 
-      - name: Zip Github OAuth API Lambda
-        run: zip -r ../../oauth-github.zip ./*
-        working-directory: ./build/services/oauth-github
+      - name: Zip Auth API Lambda
+        run: zip -r ../../auth.zip ./*
+        working-directory: ./build/services/auth
 
       - name: Zip Email Lambda
         run: zip -r ../../email.zip ./*
@@ -60,11 +60,11 @@ jobs:
           name: api
           path: build/api.zip
 
-      - name: Save Github OAuth API build artifact
+      - name: Save auth API build artifact
         uses: actions/upload-artifact@v1
         with:
-          name: oauth-github
-          path: build/oauth-github.zip
+          name: auth
+          path: build/auth.zip
 
       - name: Save email build artifact
         uses: actions/upload-artifact@v1
@@ -190,7 +190,7 @@ jobs:
         run: |
           aws lambda update-function-code --function-name WatchGraphQLFunction --zip-file fileb://build/api.zip
 
-  aws-github-oauth:
+  aws-auth:
     needs: build
     runs-on: ubuntu-latest
 
@@ -201,7 +201,7 @@ jobs:
       - name: Restore build artifacts
         uses: actions/download-artifact@v1
         with:
-          name: oauth-github
+          name: auth
           path: build
 
       - name: Configure AWS Credentials
@@ -213,7 +213,7 @@ jobs:
 
       - name: Update Lambda
         run: |
-          aws lambda update-function-code --function-name WatchGithubOAuthFunction --zip-file fileb://build/oauth-github.zip
+          aws lambda update-function-code --function-name WatchAuthFunction --zip-file fileb://build/auth.zip
 
   aws-email:
     needs: build

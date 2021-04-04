@@ -15,7 +15,7 @@ export function Welcome({token, userEmail}: Props) {
   useSender({name: 'Welcome Bot', email: 'welcome@lemon.tools'});
   useSendTo(userEmail);
 
-  const url = `https://watch.lemon.tools/internal/sign-up?token=${token}`;
+  const url = `https://watch.lemon.tools/internal/auth/email/sign-up?token=${token}`;
 
   usePlainTextEmail(
     () =>
