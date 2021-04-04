@@ -1,15 +1,33 @@
 import * as jwt from 'jsonwebtoken';
-import type {ExtendedResponse} from '@lemon/tiny-server';
+import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
+import type {ExtendedRequest, ExtendedResponse} from '@lemon/tiny-server';
 
 export enum Cookie {
   Auth = 'Auth',
 }
 
-export function addAuthenticationCookies(
-  user: {id: string},
-  response: ExtendedResponse,
+export function createSignedToken(
+  data: Record<string, any>,
+  {
+    secret = process.env.JWT_DEFAULT_SECRET!,
+    ...options
+  }: SignOptions & {secret?: string} = {},
 ) {
-  const token = jwt.sign({}, '123', {expiresIn: '7d', subject: user.id});
+  return jwt.sign(data, secret, options);
+}
+
+export function verifySignedToken<T = Record<string, unknown>>(
+  token: string,
+  {
+    secret = process.env.JWT_DEFAULT_SECRET!,
+    ...options
+  }: VerifyOptions & {secret?: string} = {},
+) {
+  return (jwt.verify(token, secret, options) as any) as T;
+}
+
+export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
+  const token = createSignedToken({}, {expiresIn: '7d', subject: user.id});
 
   response.cookies.set(Cookie.Auth, token, {
     path: '/',
@@ -18,6 +36,17 @@ export function addAuthenticationCookies(
     httpOnly: true,
     sameSite: 'lax',
   });
+
+  return response;
+}
+
+export function removeAuthCookies(
+  response: ExtendedResponse,
+  {request}: {request?: ExtendedRequest} = {},
+) {
+  if (request == null || request.cookies.has(Cookie.Auth)) {
+    response.cookies.delete(Cookie.Auth);
+  }
 
   return response;
 }

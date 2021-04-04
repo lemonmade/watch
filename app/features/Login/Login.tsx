@@ -54,10 +54,10 @@ function LoginForm() {
             return targetUrl;
           }}
         >
-          Login with Github
+          Sign in with Github
         </Link>
 
-        <TextBlock>or</TextBlock>
+        <TextBlock>Or with email:</TextBlock>
 
         <Form
           onSubmit={async () => {
@@ -71,11 +71,11 @@ function LoginForm() {
           }}
         >
           <BlockStack>
-            <TextField onChange={(value) => setEmail(value)} />
+            <TextField label="Email" onChange={(value) => setEmail(value)} />
           </BlockStack>
         </Form>
 
-        <TextBlock>or</TextBlock>
+        <TextBlock>or...</TextBlock>
 
         <Link
           to={(url) => {
@@ -92,7 +92,7 @@ function LoginForm() {
           Sign up with Github
         </Link>
 
-        <TextBlock>or</TextBlock>
+        <TextBlock>or with email:</TextBlock>
 
         <Form
           onSubmit={async () => {
@@ -106,7 +106,7 @@ function LoginForm() {
           }}
         >
           <BlockStack>
-            <TextField onChange={(value) => setEmail(value)} />
+            <TextField label="Email" onChange={(value) => setEmail(value)} />
           </BlockStack>
         </Form>
       </BlockStack>

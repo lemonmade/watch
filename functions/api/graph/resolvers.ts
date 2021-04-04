@@ -1,10 +1,11 @@
 import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 
+import {createSignedToken} from 'shared/utilities/auth';
 import {Table} from 'shared/utilities/database';
 
 import {Context} from './context';
-import {sendEmail} from './utilities/email';
+import {enqueueSendEmail} from './utilities/email';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -115,11 +116,17 @@ interface Slice {
 
 export const Mutation: Resolver = {
   async signIn(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
-    await sendEmail('signIn', {token: '123456', userEmail: email, redirectTo});
+    await enqueueSendEmail('signIn', {
+      token: createSignedToken({redirectTo}, {subject: email}),
+      userEmail: email,
+    });
     return {email};
   },
   async signUp(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
-    await sendEmail('welcome', {token: '123456', userEmail: email, redirectTo});
+    await enqueueSendEmail('welcome', {
+      token: createSignedToken({redirectTo}),
+      userEmail: email,
+    });
     return {email};
   },
   async watchEpisode(

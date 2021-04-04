@@ -1,6 +1,6 @@
 import type {EmailType, PropsForEmail} from '../../../email';
 
-export async function sendEmail<T extends EmailType>(
+export async function enqueueSendEmail<T extends EmailType>(
   type: T,
   props: PropsForEmail<T>,
 ) {
