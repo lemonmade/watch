@@ -360,6 +360,14 @@ type InstallClipsExtensionPayload {
   installation: ClipsExtensionInstallation
 }
 
+type SignInPayload {
+  email: Email!
+}
+
+type SignUpPayload {
+  email: Email!
+}
+
 union AppExtensionInstallation = ClipsExtensionInstallation
 
 type Query {
@@ -383,6 +391,8 @@ input CreateClipsInitialVersion {
 }
 
 type Mutation {
+  signIn(email: Email!): SignInPayload
+  signUp(email: Email!): SignUpPayload
   skipEpisode(
     episode: ID!
     watchThrough: ID

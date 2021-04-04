@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import {Table} from 'shared/utilities/database';
 
 import {Context} from './context';
+import {sendEmail} from './utilities/email';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -113,6 +114,14 @@ interface Slice {
 }
 
 export const Mutation: Resolver = {
+  async signIn(_, {email}: {email: string}) {
+    await sendEmail('signIn', {token: '123456', userEmail: email});
+    return {email};
+  },
+  async signUp(_, {email}: {email: string}) {
+    await sendEmail('welcome', {token: '123456', userEmail: email});
+    return {email};
+  },
   async watchEpisode(
     _,
     {

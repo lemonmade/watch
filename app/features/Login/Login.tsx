@@ -1,4 +1,6 @@
 import {useState} from 'react';
+import {useMutation, useRoutes, useNavigate} from '@quilted/quilt';
+import {NotFound} from '@quilted/quilt/http';
 import {
   Link,
   View,
@@ -9,12 +11,26 @@ import {
   TextBlock,
 } from '@lemon/zest';
 
+import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
+import signUpWithEmailMutation from './graphql/SignUpWithEmailMutation.graphql';
+
 enum SearchParam {
   RedirectTo = 'redirect',
 }
 
 export function Login() {
+  return useRoutes([
+    {match: '/', render: () => <LoginForm />},
+    {match: 'check-your-email', render: () => <CheckYourEmail />},
+    {render: () => <NotFound />},
+  ]);
+}
+
+function LoginForm() {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const signInWithEmail = useMutation(signInWithEmailMutation);
+  const signUpWithEmail = useMutation(signUpWithEmailMutation);
 
   return (
     <View padding={16}>
@@ -37,6 +53,19 @@ export function Login() {
 
         <TextBlock>or</TextBlock>
 
+        <Form
+          onSubmit={async () => {
+            await signInWithEmail({variables: {email}});
+            navigate('check-your-email');
+          }}
+        >
+          <BlockStack>
+            <TextField onChange={(value) => setEmail(value)} />
+          </BlockStack>
+        </Form>
+
+        <TextBlock>or</TextBlock>
+
         <Link
           to={(url) => {
             const targetUrl = new URL('/internal/auth/github/sign-up', url);
@@ -55,9 +84,9 @@ export function Login() {
         <TextBlock>or</TextBlock>
 
         <Form
-          onSubmit={() => {
-            // eslint-disable-next-line no-console
-            console.log({email});
+          onSubmit={async () => {
+            await signUpWithEmail({variables: {email}});
+            navigate('check-your-email');
           }}
         >
           <BlockStack>
@@ -67,4 +96,8 @@ export function Login() {
       </BlockStack>
     </View>
   );
+}
+
+function CheckYourEmail() {
+  return <TextBlock>Check your email!</TextBlock>;
 }

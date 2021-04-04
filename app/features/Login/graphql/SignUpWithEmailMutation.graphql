@@ -1,0 +1,5 @@
+mutation SignUpWithEmail($email: Email!) {
+  signUp(email: $email) {
+    email
+  }
+}
