@@ -48,6 +48,9 @@
       "path": "./packages/css"
     },
     {
+      "path": "./packages/react-email"
+    },
+    {
       "path": "./packages/webpack-hot-worker"
     },
     {

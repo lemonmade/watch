@@ -8,7 +8,7 @@
       "shared/*": ["../shared/*"]
     }
   },
-  "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
+  "include": ["../../config/typescript/globals.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../shared"}]
+  "references": [{"path": "../shared"}, {"path": "../../packages/react-email"}]
 }

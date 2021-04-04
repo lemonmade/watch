@@ -1,30 +1,73 @@
 import {SES} from 'aws-sdk';
-import {renderToStaticMarkup} from 'react-dom/server';
+import type {SQSHandler} from 'aws-lambda';
+import {runEmail, Html, render} from '@lemon/react-email';
+
 import {Email} from './Email';
 
-export async function handler() {
-  const {Welcome} = await import('./emails/Welcome');
+export type {EmailType, PropsForEmail} from './types';
 
-  const content = renderToStaticMarkup(
-    <Email>
-      <Welcome />
-    </Email>,
+const sendEmail: SQSHandler = async (event) => {
+  // eslint-disable-next-line no-console
+  console.log(event);
+  const {
+    Records: [
+      {
+        messageAttributes: {
+          type: {stringValue: type},
+          props: {stringValue: propsJson = '{}'},
+        },
+      },
+    ],
+  } = event;
+
+  const props = JSON.parse(propsJson);
+
+  const {markup, html, email} = await runEmail(
+    <Email type={type as any} props={props} />,
   );
 
-  const ses = new SES();
+  const {
+    subject,
+    to,
+    cc,
+    bcc,
+    plainText,
+    sender: {name: senderName, email: senderEmail} = {
+      email: 'no-reply@lemon.tools',
+    },
+  } = email.state;
 
-  const email: SES.Types.SendEmailRequest = {
-    Source: `${JSON.stringify('Welcome Bot')} <hello@lemon.tools>`,
+  if (to == null || to.length === 0 || subject == null) {
+    throw new Error();
+  }
+
+  const ses = new SES();
+  const sender = senderName
+    ? `${JSON.stringify(senderName)} <${senderEmail}>`
+    : senderEmail;
+
+  // eslint-disable-next-line no-console
+  console.log(`Sending ${type} email:`);
+  // eslint-disable-next-line no-console
+  console.log({sender, subject, to, cc, bcc});
+
+  const sesEmail: SES.Types.SendEmailRequest = {
+    Source: sender,
     Destination: {
-      ToAddresses: ['chrismsauve@gmail.com'],
+      ToAddresses: to,
+      CcAddresses: cc,
+      BccAddresses: bcc,
     },
     Message: {
-      Subject: {Data: 'Test email'},
+      Subject: {Data: subject},
       Body: {
-        Html: {Data: content},
+        Html: {Data: render(<Html manager={html}>{markup}</Html>)},
+        Text: plainText == null ? undefined : {Data: plainText},
       },
     },
   };
 
-  await ses.sendEmail(email).promise();
-}
+  await ses.sendEmail(sesEmail).promise();
+};
+
+export default sendEmail;
