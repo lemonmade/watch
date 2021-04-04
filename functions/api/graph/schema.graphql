@@ -391,8 +391,8 @@ input CreateClipsInitialVersion {
 }
 
 type Mutation {
-  signIn(email: Email!): SignInPayload
-  signUp(email: Email!): SignUpPayload
+  signIn(email: Email!, redirectTo: Url): SignInPayload
+  signUp(email: Email!, redirectTo: Url): SignUpPayload
   skipEpisode(
     episode: ID!
     watchThrough: ID

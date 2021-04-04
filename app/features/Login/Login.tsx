@@ -1,5 +1,10 @@
 import {useState} from 'react';
-import {useMutation, useRoutes, useNavigate} from '@quilted/quilt';
+import {
+  useMutation,
+  useRoutes,
+  useNavigate,
+  useCurrentUrl,
+} from '@quilted/quilt';
 import {NotFound} from '@quilted/quilt/http';
 import {
   Link,
@@ -29,6 +34,7 @@ export function Login() {
 function LoginForm() {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
   const signUpWithEmail = useMutation(signUpWithEmailMutation);
 
@@ -55,7 +61,12 @@ function LoginForm() {
 
         <Form
           onSubmit={async () => {
-            await signInWithEmail({variables: {email}});
+            await signInWithEmail({
+              variables: {
+                email,
+                redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+              },
+            });
             navigate('check-your-email');
           }}
         >
@@ -85,7 +96,12 @@ function LoginForm() {
 
         <Form
           onSubmit={async () => {
-            await signUpWithEmail({variables: {email}});
+            await signUpWithEmail({
+              variables: {
+                email,
+                redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+              },
+            });
             navigate('check-your-email');
           }}
         >

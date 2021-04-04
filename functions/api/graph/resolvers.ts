@@ -114,12 +114,12 @@ interface Slice {
 }
 
 export const Mutation: Resolver = {
-  async signIn(_, {email}: {email: string}) {
-    await sendEmail('signIn', {token: '123456', userEmail: email});
+  async signIn(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
+    await sendEmail('signIn', {token: '123456', userEmail: email, redirectTo});
     return {email};
   },
-  async signUp(_, {email}: {email: string}) {
-    await sendEmail('welcome', {token: '123456', userEmail: email});
+  async signUp(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
+    await sendEmail('welcome', {token: '123456', userEmail: email, redirectTo});
     return {email};
   },
   async watchEpisode(
