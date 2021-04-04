@@ -113,6 +113,8 @@ export class WatchAppStack extends Stack {
       },
     });
 
+    emailQueue.grantSendMessages(graphqlFunction);
+
     const emailFunction = new Function(this, 'WatchEmailFunction', {
       vpc,
       runtime: Runtime.NODEJS_12_X,
@@ -185,6 +187,7 @@ export class WatchAppStack extends Stack {
       },
     });
 
+    tmdbRefresherQueue.grantSendMessages(tmdbRefresherSchedulerFunction);
     tmdbRefresherFunction.addEventSource(
       new SqsEventSource(tmdbRefresherQueue),
     );
