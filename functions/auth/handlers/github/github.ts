@@ -7,10 +7,17 @@ import type {
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {redirect, fetchJson} from '@lemon/tiny-server';
 
-import {addAuthCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
+import type {Database} from 'shared/utilities/database';
+
+import {
+  restartAuth as baseRestartAuth,
+  completeAuth as baseCompleteAuth,
+} from '../shared';
+import {SearchParam} from '../../constants';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
+import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
 
 const CLIENT_ID = '60c6903025bfd274db53';
 const SCOPES = 'read:user';
@@ -27,16 +34,18 @@ enum Cookie {
   RedirectTo = 'redirect',
 }
 
-enum SearchParam {
-  RedirectTo = 'redirect',
-}
-
 enum GithubSearchParam {
   Scope = 'scope',
   State = 'state',
   ClientId = 'client_id',
   Redirect = 'redirect_uri',
 }
+
+const completeAuth: typeof baseCompleteAuth = (userId, options) =>
+  deleteOAuthCookies(baseCompleteAuth(userId, options), options);
+
+const restartAuth: typeof baseRestartAuth = (options) =>
+  deleteOAuthCookies(baseRestartAuth(options), options);
 
 export function startGithubOAuth(request: ExtendedRequest) {
   const state = crypto
@@ -75,9 +84,87 @@ export function startGithubOAuth(request: ExtendedRequest) {
   return response;
 }
 
-export async function handleGithubOAuthCallback(
+export function handleGithubOAuthSignIn(request: ExtendedRequest) {
+  return handleGithubOAuthCallback(request, ({userId, redirectTo}) => {
+    if (userId) {
+      // eslint-disable-next-line no-console
+      console.log(`Found existing user during sign-in: ${userId}`);
+
+      return completeAuth(userId, {redirectTo, request});
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`No user found!`);
+
+      return restartAuth({request});
+    }
+  });
+}
+
+export function handleGithubOAuthSignUp(request: ExtendedRequest) {
+  return handleGithubOAuthCallback(
+    request,
+    async ({db, userId: existingUserId, redirectTo, githubUser}) => {
+      if (existingUserId) {
+        // eslint-disable-next-line no-console
+        console.log(`Found existing user during sign-up: ${existingUserId}`);
+        return completeAuth(existingUserId, {request, redirectTo});
+      }
+
+      const {
+        id: githubUserId,
+        email,
+        url: githubUserUrl,
+        login,
+        avatarUrl,
+      } = githubUser;
+
+      try {
+        const updatedUserId = await db.transaction(async (trx) => {
+          const [userId] = await trx
+            .insert({
+              email,
+            })
+            .into(Table.Users)
+            .returning<string>('id');
+
+          await trx
+            .insert({
+              id: githubUserId,
+              userId,
+              username: login,
+              profileUrl: githubUserUrl,
+              avatarUrl,
+            })
+            .into(Table.GithubAccounts);
+
+          return userId;
+        });
+
+        // eslint-disable-next-line no-console
+        console.log(`Created new user during sign-up: ${updatedUserId}`);
+
+        return completeAuth(updatedUserId, {redirectTo, request});
+      } catch {
+        return restartAuth({redirectTo, request});
+      }
+    },
+  );
+}
+
+interface GithubCallbackResult {
+  readonly db: Database;
+  readonly userId?: string;
+  readonly githubUser: GithubViewerQueryData.Viewer;
+  readonly redirectTo?: string;
+}
+
+const db = createDatabaseConnection();
+
+async function handleGithubOAuthCallback(
   request: ExtendedRequest,
-  {signUp = false} = {},
+  handleGithubResult: (
+    result: GithubCallbackResult,
+  ) => ExtendedResponse | Promise<ExtendedResponse>,
 ) {
   const {url, cookies} = request;
 
@@ -87,13 +174,7 @@ export async function handleGithubOAuthCallback(
   const state = url.searchParams.get('state');
 
   if (expectedState == null || expectedState !== state) {
-    const loginUrl = new URL('/login', url);
-
-    if (redirectTo) {
-      loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-    }
-
-    return deleteOAuthCookies(redirect(loginUrl));
+    return restartAuth({request, redirectTo});
   }
 
   const {access_token: accessToken} = await fetchJson<{access_token: string}>(
@@ -131,10 +212,8 @@ export async function handleGithubOAuthCallback(
   if (githubResult == null) {
     // eslint-disable-next-line no-console
     console.log('No result fetched from Github!');
-    return deleteOAuthCookies(redirect('/login'));
+    return restartAuth({request});
   }
-
-  const db = createDatabaseConnection();
 
   const [account] = await db
     .select(['userId'])
@@ -142,76 +221,27 @@ export async function handleGithubOAuthCallback(
     .where({id: githubResult.viewer.id})
     .limit(1);
 
-  const existingUserId = account?.userId;
+  const response = await handleGithubResult({
+    db,
+    userId: account?.userId,
+    githubUser: githubResult.viewer,
+    redirectTo,
+  });
 
-  if (signUp) {
-    if (existingUserId) {
-      // eslint-disable-next-line no-console
-      console.log(`Found existing user during sign-up: ${existingUserId}`);
-
-      return addAuthCookies(
-        {id: existingUserId},
-        deleteOAuthCookies(redirect(redirectTo ?? '/app')),
-      );
-    }
-
-    const {
-      id: githubUserId,
-      email,
-      url: githubUserUrl,
-      login,
-      avatarUrl,
-    } = githubResult.viewer;
-
-    const updatedUserId = await db.transaction(async (trx) => {
-      const [userId] = await trx
-        .insert({
-          email,
-        })
-        .into(Table.Users)
-        .returning<string>('id');
-
-      await trx
-        .insert({
-          id: githubUserId,
-          userId,
-          username: login,
-          profileUrl: githubUserUrl,
-          avatarUrl,
-        })
-        .into(Table.GithubAccounts);
-
-      return userId;
-    });
-
-    // eslint-disable-next-line no-console
-    console.log(`Created new user during sign-up: ${updatedUserId}`);
-
-    return addAuthCookies(
-      {id: updatedUserId},
-      deleteOAuthCookies(redirect(redirectTo ?? '/app')),
-    );
-  }
-
-  if (existingUserId) {
-    // eslint-disable-next-line no-console
-    console.log(`Found existing user during sign-in: ${existingUserId}`);
-
-    return addAuthCookies(
-      {id: existingUserId},
-      deleteOAuthCookies(redirect(redirectTo ?? '/app')),
-    );
-  } else {
-    // eslint-disable-next-line no-console
-    console.log(`No user found!`);
-
-    return deleteOAuthCookies(redirect('/login'));
-  }
+  return response;
 }
 
-function deleteOAuthCookies(response: ExtendedResponse) {
-  response.cookies.delete(Cookie.State);
-  response.cookies.delete(Cookie.RedirectTo);
+function deleteOAuthCookies(
+  response: ExtendedResponse,
+  {request}: {request?: ExtendedRequest},
+) {
+  if (request == null || request.cookies.has(Cookie.State)) {
+    response.cookies.delete(Cookie.State);
+  }
+
+  if (request == null || request.cookies.has(Cookie.RedirectTo)) {
+    response.cookies.delete(Cookie.RedirectTo);
+  }
 
   return response;
 }

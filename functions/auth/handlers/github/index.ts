@@ -1,1 +1,5 @@
-export {startGithubOAuth, handleGithubOAuthCallback} from './github';
+export {
+  startGithubOAuth,
+  handleGithubOAuthSignIn,
+  handleGithubOAuthSignUp,
+} from './github';

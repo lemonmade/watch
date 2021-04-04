@@ -2,7 +2,11 @@ import {createApp, redirect} from '@lemon/tiny-server';
 
 import {SearchParam, ROOT_PATH} from './constants';
 import {signInFromEmail, signUpFromEmail} from './handlers/email';
-import {startGithubOAuth, handleGithubOAuthCallback} from './handlers/github';
+import {
+  startGithubOAuth,
+  handleGithubOAuthSignIn,
+  handleGithubOAuthSignUp,
+} from './handlers/github';
 
 const app = createApp({prefix: ROOT_PATH});
 
@@ -10,14 +14,10 @@ app.get('/email/sign-in', signInFromEmail);
 app.get('/email/sign-up', signUpFromEmail);
 
 app.get('/github/sign-in', startGithubOAuth);
-app.get('/github/sign-in/callback', (request) =>
-  handleGithubOAuthCallback(request, {signUp: false}),
-);
+app.get('/github/sign-in/callback', handleGithubOAuthSignIn);
 
 app.get('/github/sign-up', startGithubOAuth);
-app.get('/github/sign-up/callback', (request) =>
-  handleGithubOAuthCallback(request, {signUp: true}),
-);
+app.get('/github/sign-up/callback', handleGithubOAuthSignUp);
 
 app.get((request) => {
   // eslint-disable-next-line no-console

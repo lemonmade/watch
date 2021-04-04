@@ -3,25 +3,49 @@ import type {ExtendedRequest} from '@lemon/tiny-server';
 
 import {
   // addAuthCookies,
-  removeAuthCookies,
   verifySignedToken,
 } from 'shared/utilities/auth';
-// import {createDatabaseConnection, Table} from 'shared/utilities/database';
+import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
+import {completeAuth, restartAuth} from '../shared';
 import {SearchParam} from '../../constants';
 
-export function signInFromEmail(request: ExtendedRequest) {
+const db = createDatabaseConnection();
+
+export async function signInFromEmail(request: ExtendedRequest) {
   const token = request.url.searchParams.get(SearchParam.Token);
-  if (token == null) return removeAuthCookies(redirect('/login'), {request});
+  if (token == null) return restartAuth({request});
 
-  const decodedToken = verifySignedToken<{redirectTo?: string}>(token);
+  try {
+    const {redirectTo, sub: email} = verifySignedToken<{
+      redirectTo?: string | null;
+      sub: string;
+    }>(token);
 
-  // eslint-disable-next-line no-console
-  console.log({token, decodedToken});
+    if (email == null) {
+      restartAuth({request, redirectTo: redirectTo ?? undefined});
+    }
 
-  const {redirectTo = '/app'} = decodedToken;
+    // eslint-disable-next-line no-console
+    console.log(
+      `Signing in user with email: ${email}, redirect to: ${redirectTo}`,
+    );
 
-  return redirect(redirectTo);
+    const [user] = await db
+      .select(['id'])
+      .from(Table.Users)
+      .where({email})
+      .limit(1);
+
+    return completeAuth(user.id, {
+      request,
+      redirectTo: redirectTo ?? undefined,
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    restartAuth({request});
+  }
 }
 
 export function signUpFromEmail(request: ExtendedRequest) {
