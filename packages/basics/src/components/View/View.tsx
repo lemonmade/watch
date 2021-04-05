@@ -15,6 +15,7 @@ interface Props {
   background?: string;
   cornerRadius?: number | 'concentric';
   accessibility?: 'hidden';
+  accessibilityRole?: 'section';
 }
 
 // type Unset = '_';
@@ -43,7 +44,9 @@ export function View({
   padding,
   background,
   accessibility,
+  accessibilityRole,
 }: PropsWithChildren<Props>) {
+  const Element = accessibilityRole === 'section' ? 'section' : 'div';
   const style: CSSProperties = {
     border,
     backgroundColor: background,
@@ -118,7 +121,7 @@ export function View({
   }
 
   return (
-    <div
+    <Element
       style={style}
       className={classes(
         styles.View,
@@ -128,7 +131,7 @@ export function View({
       {...moreProps}
     >
       {children}
-    </div>
+    </Element>
   );
 }
 
