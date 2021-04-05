@@ -1,11 +1,11 @@
 import {useState} from 'react';
+import type {ReactNode} from 'react';
 import {
   useMutation,
   useRoutes,
   useNavigate,
   useCurrentUrl,
 } from '@quilted/quilt';
-import {NotFound} from '@quilted/quilt/http';
 import {
   Link,
   View,
@@ -14,19 +14,27 @@ import {
   Heading,
   BlockStack,
   TextBlock,
+  Banner,
 } from '@lemon/zest';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
 enum SearchParam {
+  Reason = 'reason',
   RedirectTo = 'redirect',
+}
+
+export enum SignInErrorReason {
+  Expired = 'expired',
+  Generic = 'generic-error',
+  GithubError = 'github-error',
+  GithubNoAccount = 'github-no-account',
 }
 
 export function SignIn() {
   return useRoutes([
     {match: '/', render: () => <SignInForm />},
     {match: 'check-your-email', render: () => <CheckYourEmail />},
-    {render: () => <NotFound />},
   ]);
 }
 
@@ -36,10 +44,59 @@ function SignInForm() {
   const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
 
+  const signInReason = currentUrl.searchParams.get('reason');
+
+  let errorBanner: ReactNode = null;
+
+  if (signInReason) {
+    switch (signInReason) {
+      case SignInErrorReason.GithubNoAccount: {
+        errorBanner = (
+          <Banner status="error">
+            You authenticated with Github, but no account is linked with your
+            Github profile. You’ll need to sign in with email, then connect
+            Github from the <Link to="/app/me">account page</Link>.
+          </Banner>
+        );
+        break;
+      }
+      case SignInErrorReason.GithubError: {
+        errorBanner = (
+          <Banner status="error">
+            There was an error while trying to sign in with Github. You can try
+            again, or sign in with your email instead. Sorry for the
+            inconvenience!
+          </Banner>
+        );
+        break;
+      }
+      case SignInErrorReason.Expired: {
+        errorBanner = (
+          <Banner status="error">
+            Your temporary sign-in token expired, so you’ll need to try in
+            again. Sorry for the inconvenience!
+          </Banner>
+        );
+        break;
+      }
+      case SignInErrorReason.Generic: {
+        errorBanner = (
+          <Banner status="error">
+            Something went wrong while trying to sign you in, so you’ll need to
+            try again. Sorry for the inconvenience!
+          </Banner>
+        );
+        break;
+      }
+    }
+  }
+
   return (
     <View padding={16}>
       <BlockStack>
         <Heading>Sign in</Heading>
+
+        {errorBanner}
 
         <Form
           onSubmit={async () => {

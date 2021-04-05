@@ -3,7 +3,7 @@ import {redirect} from '@lemon/tiny-server';
 
 import {addAuthCookies} from 'shared/utilities/auth';
 
-import {SearchParam} from '../constants';
+import {SearchParam, SignInErrorReason} from '../constants';
 
 export function completeAuth(
   userId: string,
@@ -35,6 +35,37 @@ export function restartAuth({
   }
 
   return redirect(loginUrl);
+}
+
+export function restartSignIn({
+  request,
+  reason = SignInErrorReason.Expired,
+  redirectTo,
+}: {
+  request: ExtendedRequest;
+  reason?: SignInErrorReason;
+  redirectTo?: string;
+}) {
+  const signInUrl = new URL('/sign-in', request.url);
+  signInUrl.searchParams.set(SearchParam.Reason, reason);
+
+  const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
+
+  if (normalizedRedirectTo) {
+    signInUrl.searchParams.set(SearchParam.RedirectTo, normalizedRedirectTo);
+  }
+
+  return redirect(signInUrl);
+}
+
+export function restartConnect({
+  request,
+  redirectTo,
+}: {
+  request: ExtendedRequest;
+  redirectTo?: string;
+}) {
+  return redirect(validateRedirectTo(redirectTo, request) ?? '/app');
 }
 
 function validateRedirectTo(

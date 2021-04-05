@@ -12,10 +12,11 @@ import {createDatabaseConnection, Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
 import {
-  restartAuth as baseRestartAuth,
+  restartSignIn as baseRestartSignIn,
+  restartConnect as baseRestartConnect,
   completeAuth as baseCompleteAuth,
 } from '../shared';
-import {SearchParam} from '../../constants';
+import {SearchParam, SignInErrorReason} from '../../constants';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
@@ -45,8 +46,11 @@ enum GithubSearchParam {
 const completeAuth: typeof baseCompleteAuth = (userId, options) =>
   deleteOAuthCookies(baseCompleteAuth(userId, options), options);
 
-const restartAuth: typeof baseRestartAuth = (options) =>
-  deleteOAuthCookies(baseRestartAuth(options), options);
+const restartSignIn: typeof baseRestartSignIn = (options) =>
+  deleteOAuthCookies(baseRestartSignIn(options), options);
+
+const restartConnect: typeof baseRestartConnect = (options) =>
+  deleteOAuthCookies(baseRestartConnect(options), options);
 
 export function startGithubOAuth(request: ExtendedRequest) {
   const state = crypto
@@ -86,29 +90,49 @@ export function startGithubOAuth(request: ExtendedRequest) {
 }
 
 export function handleGithubOAuthSignIn(request: ExtendedRequest) {
-  return handleGithubOAuthCallback(request, ({userId, redirectTo}) => {
-    if (userId) {
-      // eslint-disable-next-line no-console
-      console.log(`Found existing user during sign-in: ${userId}`);
+  return handleGithubOAuthCallback(request, {
+    onFailure({request, redirectTo}) {
+      return restartSignIn({
+        request,
+        redirectTo,
+        reason: SignInErrorReason.GithubError,
+      });
+    },
+    onSuccess({userIdFromExistingAccount, redirectTo}) {
+      if (userIdFromExistingAccount) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `Found existing user during sign-in: ${userIdFromExistingAccount}`,
+        );
 
-      return completeAuth(userId, {redirectTo, request});
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(`No user found!`);
+        return completeAuth(userIdFromExistingAccount, {redirectTo, request});
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(`No user found!`);
 
-      return restartAuth({request});
-    }
+        return restartSignIn({
+          request,
+          redirectTo,
+          reason: SignInErrorReason.GithubNoAccount,
+        });
+      }
+    },
   });
 }
 
 export function handleGithubOAuthSignUp(request: ExtendedRequest) {
-  return handleGithubOAuthCallback(
-    request,
-    async ({db, userId: existingUserId, redirectTo, githubUser}) => {
-      if (existingUserId) {
+  return handleGithubOAuthCallback(request, {
+    onFailure({request, redirectTo}) {
+      return restartSignIn({redirectTo, request});
+    },
+    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+      if (userIdFromExistingAccount) {
         // eslint-disable-next-line no-console
-        console.log(`Found existing user during sign-up: ${existingUserId}`);
-        return completeAuth(existingUserId, {request, redirectTo});
+        console.log(
+          `Found existing user during sign-up: ${userIdFromExistingAccount}`,
+        );
+
+        return completeAuth(userIdFromExistingAccount, {request, redirectTo});
       }
 
       const {
@@ -146,29 +170,32 @@ export function handleGithubOAuthSignUp(request: ExtendedRequest) {
 
         return completeAuth(updatedUserId, {redirectTo, request});
       } catch {
-        return restartAuth({redirectTo, request});
+        return restartSignIn({redirectTo, request});
       }
     },
-  );
+  });
 }
 
 export function handleGithubOAuthConnect(request: ExtendedRequest) {
-  return handleGithubOAuthCallback(
-    request,
-    async ({db, userId: existingUserId, redirectTo, githubUser}) => {
-      if (existingUserId) {
+  return handleGithubOAuthCallback(request, {
+    onFailure({request, redirectTo}) {
+      return restartConnect({redirectTo, request});
+    },
+    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+      if (userIdFromExistingAccount) {
         // eslint-disable-next-line no-console
         console.log(
-          `Found existing connection during sign up: ${existingUserId}`,
+          `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
         );
-        return completeAuth(existingUserId, {request, redirectTo});
+
+        return completeAuth(userIdFromExistingAccount, {request, redirectTo});
       }
 
       // We are trying to connect, but there is no user signed in!
       const userIdFromRequest = getUserIdFromRequest(request);
 
       if (userIdFromRequest == null) {
-        return restartAuth({redirectTo, request});
+        return restartSignIn({redirectTo, request});
       }
 
       const {
@@ -196,16 +223,30 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
 
         return completeAuth(userIdFromRequest, {redirectTo, request});
       } catch {
-        return restartAuth({redirectTo, request});
+        // Should have better behavior here, what do we do if
+        // the db request to connect the account failed? Probably
+        // need a URL param for the next page to pick up
+        return restartConnect({request, redirectTo});
       }
     },
-  );
+  });
 }
 
 interface GithubCallbackResult {
   readonly db: Database;
-  readonly userId?: string;
   readonly githubUser: GithubViewerQueryData.Viewer;
+  readonly redirectTo?: string;
+  readonly userIdFromExistingAccount?: string;
+}
+
+enum GithubCallbackFailureReason {
+  StateMismatch,
+  FailedToFetchUser,
+}
+
+interface GithubCallbackFailureResult {
+  readonly request: ExtendedRequest;
+  readonly reason: GithubCallbackFailureReason;
   readonly redirectTo?: string;
 }
 
@@ -213,9 +254,15 @@ const db = createDatabaseConnection();
 
 async function handleGithubOAuthCallback(
   request: ExtendedRequest,
-  handleGithubResult: (
-    result: GithubCallbackResult,
-  ) => ExtendedResponse | Promise<ExtendedResponse>,
+  {
+    onSuccess,
+    onFailure,
+  }: {
+    onSuccess(
+      result: GithubCallbackResult,
+    ): ExtendedResponse | Promise<ExtendedResponse>;
+    onFailure(result: GithubCallbackFailureResult): ExtendedResponse;
+  },
 ) {
   const {url, cookies} = request;
 
@@ -225,7 +272,11 @@ async function handleGithubOAuthCallback(
   const state = url.searchParams.get('state');
 
   if (expectedState == null || expectedState !== state) {
-    return restartAuth({request, redirectTo});
+    return onFailure({
+      reason: GithubCallbackFailureReason.StateMismatch,
+      request,
+      redirectTo,
+    });
   }
 
   const {access_token: accessToken} = await fetchJson<{access_token: string}>(
@@ -263,7 +314,7 @@ async function handleGithubOAuthCallback(
   if (githubResult == null) {
     // eslint-disable-next-line no-console
     console.log('No result fetched from Github!');
-    return restartAuth({request});
+    return restartSignIn({request});
   }
 
   const [account] = await db
@@ -272,11 +323,11 @@ async function handleGithubOAuthCallback(
     .where({id: githubResult.viewer.id})
     .limit(1);
 
-  const response = await handleGithubResult({
+  const response = await onSuccess({
     db,
-    userId: account?.userId,
-    githubUser: githubResult.viewer,
     redirectTo,
+    githubUser: githubResult.viewer,
+    userIdFromExistingAccount: account?.userId,
   });
 
   return response;

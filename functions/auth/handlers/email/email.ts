@@ -7,14 +7,17 @@ import {
 } from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
-import {completeAuth, restartAuth} from '../shared';
-import {SearchParam} from '../../constants';
+import {completeAuth, restartSignIn} from '../shared';
+import {SearchParam, SignInErrorReason} from '../../constants';
 
 const db = createDatabaseConnection();
 
 export async function signInFromEmail(request: ExtendedRequest) {
   const token = request.url.searchParams.get(SearchParam.Token);
-  if (token == null) return restartAuth({request});
+
+  if (token == null) {
+    return restartSignIn({request});
+  }
 
   try {
     const {
@@ -25,8 +28,19 @@ export async function signInFromEmail(request: ExtendedRequest) {
       redirectTo?: string | null;
     }>(token);
 
-    if (email == null || expired) {
-      restartAuth({request, redirectTo: redirectTo ?? undefined});
+    if (email == null) {
+      restartSignIn({
+        request,
+        redirectTo: redirectTo ?? undefined,
+      });
+    }
+
+    if (expired) {
+      restartSignIn({
+        request,
+        reason: SignInErrorReason.Expired,
+        redirectTo: redirectTo ?? undefined,
+      });
     }
 
     // eslint-disable-next-line no-console
@@ -47,7 +61,7 @@ export async function signInFromEmail(request: ExtendedRequest) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
-    restartAuth({request});
+    restartSignIn({request});
   }
 }
 

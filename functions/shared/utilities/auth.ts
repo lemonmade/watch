@@ -30,11 +30,10 @@ export function verifySignedToken<T = Record<string, unknown>>(
     ...options
   }: VerifyOptions & {secret?: string} = {},
 ): SignedTokenResult<T> {
-  const {exp, sub, ...data} = (jwt.verify(
-    token,
-    secret,
-    options,
-  ) as any) as T & {exp?: number; sub?: string};
+  const {exp, sub, ...data} = (jwt.verify(token, secret, {
+    ...options,
+    ignoreExpiration: true,
+  }) as any) as T & {exp?: number; sub?: string};
 
   const expiresAt = exp ? new Date(exp * 1_000) : undefined;
   const expired = expiresAt != null && expiresAt.getTime() < Date.now();
