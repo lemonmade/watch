@@ -9,6 +9,7 @@ import {
   Button,
   Section,
   Link,
+  Text,
 } from '@lemon/zest';
 
 import {Page} from 'components';
@@ -107,7 +108,9 @@ function GithubSection({
             await disconnectAccount();
             onDisconnectAccount();
           }}
-        />
+        >
+          Disconnect <Text emphasis="strong">{username}</Text>
+        </Button>
       </BlockStack>
     </Section>
   );
