@@ -17,47 +17,29 @@ import {
 } from '@lemon/zest';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
-import signUpWithEmailMutation from './graphql/SignUpWithEmailMutation.graphql';
 
 enum SearchParam {
   RedirectTo = 'redirect',
 }
 
-export function Login() {
+export function SignIn() {
   return useRoutes([
-    {match: '/', render: () => <LoginForm />},
+    {match: '/', render: () => <SignInForm />},
     {match: 'check-your-email', render: () => <CheckYourEmail />},
     {render: () => <NotFound />},
   ]);
 }
 
-function LoginForm() {
+function SignInForm() {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
-  const signUpWithEmail = useMutation(signUpWithEmailMutation);
 
   return (
     <View padding={16}>
       <BlockStack>
-        <Heading>Login</Heading>
-        <Link
-          to={(url) => {
-            const targetUrl = new URL('/internal/auth/github/sign-in', url);
-            const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
-
-            if (redirectTo) {
-              targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-            }
-
-            return targetUrl;
-          }}
-        >
-          Sign in with Github
-        </Link>
-
-        <TextBlock>Or with email:</TextBlock>
+        <Heading>Sign in</Heading>
 
         <Form
           onSubmit={async () => {
@@ -79,7 +61,7 @@ function LoginForm() {
 
         <Link
           to={(url) => {
-            const targetUrl = new URL('/internal/auth/github/sign-up', url);
+            const targetUrl = new URL('/internal/auth/github/sign-in', url);
             const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
 
             if (redirectTo) {
@@ -89,26 +71,8 @@ function LoginForm() {
             return targetUrl;
           }}
         >
-          Sign up with Github
+          Sign in with Github
         </Link>
-
-        <TextBlock>or with email:</TextBlock>
-
-        <Form
-          onSubmit={async () => {
-            await signUpWithEmail({
-              variables: {
-                email,
-                redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-              },
-            });
-            navigate('check-your-email');
-          }}
-        >
-          <BlockStack>
-            <TextField label="Email" onChange={(value) => setEmail(value)} />
-          </BlockStack>
-        </Form>
       </BlockStack>
     </View>
   );

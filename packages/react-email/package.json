@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "sideEffects": false,
   "dependencies": {
-    "@quilted/react-html": "^0.2.3",
+    "@quilted/react-html": "^0.2.4",
     "@quilted/react-server-render": "^0.2.1"
   },
   "peerDependencies": {

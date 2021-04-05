@@ -125,7 +125,10 @@ export const Mutation: Resolver = {
     });
     return {email};
   },
-  async signUp(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
+  async createAccount(
+    _,
+    {email, redirectTo}: {email: string; redirectTo?: string},
+  ) {
     await enqueueSendEmail('welcome', {
       token: createSignedToken(
         {redirectTo},
@@ -134,6 +137,10 @@ export const Mutation: Resolver = {
       userEmail: email,
     });
     return {email};
+  },
+  async deleteAccount(_, __, {db, user}) {
+    await db.delete().from(Table.Users).where({id: user.id});
+    return {deletedId: user.id};
   },
   async watchEpisode(
     _,

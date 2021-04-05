@@ -1,14 +1,14 @@
 import {useMemo} from 'react';
 import {useRoutes} from '@quilted/quilt';
-import {NotFound} from '@quilted/quilt/http';
 
+import {CreateAccount} from '../../features/CreateAccount';
 import {Watching} from '../../features/Watching';
 import {Series} from '../../features/Series';
 import {Subscriptions} from '../../features/Subscriptions';
 import {WatchThrough} from '../../features/WatchThrough';
 import {Settings} from '../../features/Settings';
 import {Search} from '../../features/Search';
-import {Login} from '../../features/Login';
+import {SignIn} from '../../features/SignIn';
 import {Profile} from '../../features/Profile';
 import {Developer} from '../../features/Developer';
 
@@ -18,7 +18,8 @@ export function Routes() {
   return useRoutes(
     useMemo<Parameters<typeof useRoutes>[0]>(
       () => [
-        {match: 'login', render: () => <Login />},
+        {match: 'sign-in', render: () => <SignIn />},
+        {match: 'create-account', render: () => <CreateAccount />},
         {
           match: 'app',
           render: ({children}) => <Frame>{children}</Frame>,
@@ -53,9 +54,6 @@ export function Routes() {
               ],
             },
           ],
-        },
-        {
-          render: () => <NotFound />,
         },
       ],
       [],

@@ -1,6 +1,7 @@
 import {SES} from 'aws-sdk';
 import type {SQSHandler} from 'aws-lambda';
-import {runEmail, Html, render} from '@lemon/react-email';
+
+import {renderEmail} from '@lemon/react-email';
 import type {Sender} from '@lemon/react-email';
 
 import {Email} from './Email';
@@ -27,18 +28,15 @@ const sendEmail: SQSHandler = async (event) => {
 
   const props = JSON.parse(propsJson);
 
-  const {markup, html, email} = await runEmail(
-    <Email type={type as any} props={props} />,
-  );
-
   const {
     subject,
     to,
     cc,
     bcc,
+    html,
     plainText,
     sender: {name: senderName, email: senderEmail} = DEFAULT_SENDER,
-  } = email.state;
+  } = await renderEmail(<Email type={type as any} props={props} />);
 
   if (to == null || to.length === 0 || subject == null) {
     throw new Error();
@@ -64,7 +62,7 @@ const sendEmail: SQSHandler = async (event) => {
     Message: {
       Subject: {Data: subject},
       Body: {
-        Html: {Data: render(<Html manager={html}>{markup}</Html>)},
+        Html: {Data: html},
         Text: plainText == null ? undefined : {Data: plainText},
       },
     },

@@ -1,5 +1,3 @@
-export {Html, render} from '@quilted/react-html/server';
-
 export {
   usePlainTextEmail,
   useSender,
@@ -10,5 +8,5 @@ export {
 } from './hooks';
 export {EmailContext} from './context';
 export {EmailManager} from './manager';
-export {runEmail} from './server';
+export {renderEmail} from './server';
 export type {Sender} from './types';

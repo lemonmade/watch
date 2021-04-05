@@ -2,14 +2,19 @@ import type {ReactElement} from 'react';
 
 import {extract} from '@quilted/react-server-render/server';
 import type {Options as ExtractOptions} from '@quilted/react-server-render/server';
-import {HtmlManager, HtmlContext} from '@quilted/react-html/server';
+import {
+  HtmlManager,
+  HtmlContext,
+  Html,
+  render,
+} from '@quilted/react-html/server';
 
 import {EmailContext} from './context';
 import {EmailManager} from './manager';
 
 interface Options extends ExtractOptions {}
 
-export async function runEmail(
+export async function renderEmail(
   app: ReactElement<any>,
   {decorate, ...rest}: Options = {},
 ) {
@@ -30,5 +35,11 @@ export async function runEmail(
     ...rest,
   });
 
-  return {markup, html, email};
+  return {
+    ...email.state,
+    html: render(<Html manager={html}>{markup}</Html>, {
+      doctype:
+        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+    }),
+  };
 }

@@ -1,5 +1,0 @@
-mutation SignUpWithEmail($email: Email!, $redirectTo: Url) {
-  signUp(email: $email, redirectTo: $redirectTo) {
-    email
-  }
-}
