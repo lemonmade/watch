@@ -36,7 +36,7 @@ export function verifySignedToken<T = Record<string, unknown>>(
     options,
   ) as any) as T & {exp?: number; sub?: string};
 
-  const expiresAt = exp ? new Date(exp) : undefined;
+  const expiresAt = exp ? new Date(exp * 1_000) : undefined;
   const expired = expiresAt != null && expiresAt.getTime() < Date.now();
 
   return {data: data as T, subject: sub || undefined, expired, expiresAt};
@@ -48,13 +48,7 @@ export function getUserIdFromRequest(request: ExtendedRequest) {
   if (!cookie) return undefined;
 
   try {
-    const decodedToken = verifySignedToken(cookie);
-
-    // eslint-disable-next-line no-console
-    console.log({cookie, decodedToken});
-
-    const {subject, expired} = decodedToken;
-
+    const {subject, expired} = verifySignedToken(cookie);
     return expired ? undefined : subject;
   } catch {
     return undefined;
