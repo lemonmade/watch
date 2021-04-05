@@ -682,9 +682,7 @@ export const AppExtensionInstallation: Resolver = {
 
 export const User: Resolver = {
   id: ({id}) => toGid(id, 'User'),
-  githubAccount: async ({id, githubAccountId}, _, {db}) => {
-    if (githubAccountId == null) return null;
-
+  githubAccount: async ({id}, _, {db}) => {
     const [result] = await db
       .select('*')
       .from(Table.GithubAccounts)
