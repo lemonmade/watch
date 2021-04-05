@@ -39,7 +39,7 @@ export function Profile() {
         <Button
           onPress={async () => {
             await signOut();
-            navigate('/login');
+            navigate('/sign-in');
           }}
         >
           Sign out
@@ -56,7 +56,7 @@ export function Profile() {
             <Button
               onPress={async () => {
                 await deleteAccount();
-                navigate('/login');
+                navigate('/goodbye');
               }}
             >
               Delete account
