@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
 import {NotFound} from '@quilted/quilt/http';
 
@@ -15,10 +16,13 @@ import {Page} from 'components';
 import profileQuery from './graphql/ProfileQuery.graphql';
 import type {ProfileQueryData} from './graphql/ProfileQuery.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
+import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
 
 export function Profile() {
+  const [key, setKey] = useState(1);
+
   const navigate = useNavigate();
-  const {data} = useQuery(profileQuery);
+  const {data} = useQuery(profileQuery, {variables: {key} as any});
   const deleteAccount = useMutation(deleteAccountMutation);
 
   if (data == null) return <NotFound />;
@@ -29,7 +33,12 @@ export function Profile() {
     <Page heading="Profile">
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
-        <GithubSection account={githubAccount ?? undefined} />
+        <GithubSection
+          account={githubAccount ?? undefined}
+          onDisconnectAccount={() => {
+            setKey((key) => key + 1);
+          }}
+        />
         <Section>
           <BlockStack>
             <Heading>Danger zone</Heading>
@@ -50,9 +59,13 @@ export function Profile() {
 
 function GithubSection({
   account,
+  onDisconnectAccount,
 }: {
   account?: ProfileQueryData.Me.GithubAccount;
+  onDisconnectAccount(): void;
 }) {
+  const disconnectAccount = useMutation(disconnectGithubAccountMutation);
+
   if (account == null) {
     return (
       <Section>
@@ -89,6 +102,12 @@ function GithubSection({
         <Link to={profileUrl} target="newTab">
           Visit profile
         </Link>
+        <Button
+          onPress={async () => {
+            await disconnectAccount();
+            onDisconnectAccount();
+          }}
+        />
       </BlockStack>
     </Section>
   );
