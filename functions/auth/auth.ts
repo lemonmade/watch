@@ -6,6 +6,7 @@ import {
   startGithubOAuth,
   handleGithubOAuthSignIn,
   handleGithubOAuthSignUp,
+  handleGithubOAuthConnect,
 } from './handlers/github';
 
 const app = createApp({prefix: ROOT_PATH});
@@ -13,11 +14,14 @@ const app = createApp({prefix: ROOT_PATH});
 app.get('/email/sign-in', signInFromEmail);
 app.get('/email/sign-up', signUpFromEmail);
 
+app.get('/github/sign-up', startGithubOAuth);
+app.get('/github/sign-up/callback', handleGithubOAuthSignUp);
+
 app.get('/github/sign-in', startGithubOAuth);
 app.get('/github/sign-in/callback', handleGithubOAuthSignIn);
 
-app.get('/github/sign-up', startGithubOAuth);
-app.get('/github/sign-up/callback', handleGithubOAuthSignUp);
+app.get('/github/connect', startGithubOAuth);
+app.get('/github/connect/callback', handleGithubOAuthConnect);
 
 app.get((request) => {
   // eslint-disable-next-line no-console

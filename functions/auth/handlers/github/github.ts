@@ -7,6 +7,7 @@ import type {
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {redirect, fetchJson} from '@lemon/tiny-server';
 
+import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
@@ -144,6 +145,56 @@ export function handleGithubOAuthSignUp(request: ExtendedRequest) {
         console.log(`Created new user during sign-up: ${updatedUserId}`);
 
         return completeAuth(updatedUserId, {redirectTo, request});
+      } catch {
+        return restartAuth({redirectTo, request});
+      }
+    },
+  );
+}
+
+export function handleGithubOAuthConnect(request: ExtendedRequest) {
+  return handleGithubOAuthCallback(
+    request,
+    async ({db, userId: existingUserId, redirectTo, githubUser}) => {
+      if (existingUserId) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `Found existing connection during sign up: ${existingUserId}`,
+        );
+        return completeAuth(existingUserId, {request, redirectTo});
+      }
+
+      // We are trying to connect, but there is no user signed in!
+      const userIdFromRequest = getUserIdFromRequest(request);
+
+      if (userIdFromRequest == null) {
+        return restartAuth({redirectTo, request});
+      }
+
+      const {
+        id: githubUserId,
+        url: githubUserUrl,
+        login,
+        avatarUrl,
+      } = githubUser;
+
+      try {
+        await db
+          .insert({
+            id: githubUserId,
+            userId: userIdFromRequest,
+            username: login,
+            profileUrl: githubUserUrl,
+            avatarUrl,
+          })
+          .into(Table.GithubAccounts);
+
+        // eslint-disable-next-line no-console
+        console.log(
+          `Connected Github account ${login} to user: ${userIdFromRequest}`,
+        );
+
+        return completeAuth(userIdFromRequest, {redirectTo, request});
       } catch {
         return restartAuth({redirectTo, request});
       }

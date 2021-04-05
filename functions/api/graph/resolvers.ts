@@ -142,6 +142,16 @@ export const Mutation: Resolver = {
     await db.delete().from(Table.Users).where({id: user.id});
     return {deletedId: user.id};
   },
+  async disconnectGithubAccount(_, __, {db, user}) {
+    const [githubAccount] = await db
+      .delete()
+      .from(Table.GithubAccounts)
+      .where({userId: user.id})
+      .limit(1)
+      .returning('*');
+
+    return {githubAccount};
+  },
   async watchEpisode(
     _,
     {

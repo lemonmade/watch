@@ -7,6 +7,7 @@ import {
   flush as flushSentry,
 } from '@sentry/node';
 
+import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {createDatabaseConnection} from 'shared/utilities/database';
 
 import typeDefs from './graph/schema';
@@ -54,14 +55,14 @@ app.post(async (request) => {
     },
   );
 
-  const [user] = await db.select('*').from('Users').limit(1);
+  const userId = getUserIdFromRequest(request);
 
   try {
     const result = await graphql(
       schema,
       query,
       {},
-      createContext(db, user, request, response),
+      createContext(db, userId ? {id: userId} : undefined, request, response),
       variables,
       operationName,
     );

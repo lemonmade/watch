@@ -42,6 +42,20 @@ export function verifySignedToken<T = Record<string, unknown>>(
   return {data: data as T, subject: sub || undefined, expired, expiresAt};
 }
 
+export function getUserIdFromRequest(request: ExtendedRequest) {
+  const cookie = request.cookies.get(Cookie.Auth);
+
+  if (!cookie) return undefined;
+
+  try {
+    const {subject, expired} = verifySignedToken(cookie);
+
+    return expired ? undefined : subject;
+  } catch {
+    return undefined;
+  }
+}
+
 export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
   const token = createSignedToken({}, {expiresIn: '7 days', subject: user.id});
 

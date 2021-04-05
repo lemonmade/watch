@@ -7,13 +7,19 @@ export type Context = ReturnType<typeof createContext>;
 
 export function createContext(
   db: Database,
-  user: {id: string},
+  user: {id: string} | undefined,
   request: ExtendedRequest,
   response: ExtendedResponse,
 ) {
   return {
     db,
-    user,
+    get user() {
+      if (user == null) {
+        throw new Error('No user exists for this request!');
+      }
+
+      return user;
+    },
     request,
     response,
     userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),

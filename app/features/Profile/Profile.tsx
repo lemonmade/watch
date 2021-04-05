@@ -29,30 +29,66 @@ export function Profile() {
     <Page heading="Profile">
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
-        <Button
-          onPress={async () => {
-            await deleteAccount();
-            navigate('/login');
-          }}
-        >
-          Delete account
-        </Button>
-        {githubAccount && <GithubProfile {...githubAccount} />}
+        <GithubSection account={githubAccount ?? undefined} />
+        <Section>
+          <BlockStack>
+            <Heading>Danger zone</Heading>
+            <Button
+              onPress={async () => {
+                await deleteAccount();
+                navigate('/login');
+              }}
+            >
+              Delete account
+            </Button>
+          </BlockStack>
+        </Section>
       </BlockStack>
     </Page>
   );
 }
 
-function GithubProfile({
-  profileUrl,
-  username,
-}: Omit<ProfileQueryData.Me.GithubAccount, '__typename'>) {
+function GithubSection({
+  account,
+}: {
+  account?: ProfileQueryData.Me.GithubAccount;
+}) {
+  if (account == null) {
+    return (
+      <Section>
+        <BlockStack>
+          <Heading>Github account</Heading>
+          <TextBlock>
+            Connecting your Github account lets you sign in with Github
+          </TextBlock>
+          <Link
+            to={(currentUrl) => {
+              const target = new URL(
+                '/internal/auth/github/connect',
+                currentUrl,
+              );
+              target.searchParams.set('redirect', currentUrl.pathname);
+              return target;
+            }}
+          >
+            Connect Github
+          </Link>
+        </BlockStack>
+      </Section>
+    );
+  }
+
+  const {username, profileUrl} = account;
+
   return (
     <Section>
       <BlockStack>
         <Heading>Github account</Heading>
+        <TextBlock />
         <TextBlock>username: {username}</TextBlock>
-        <Link to={profileUrl}>Visit profile</Link>
+        <Link to={profileUrl} target="newTab">
+          Visit profile
+        </Link>
       </BlockStack>
     </Section>
   );
