@@ -1,7 +1,7 @@
 import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 
-import {createSignedToken} from 'shared/utilities/auth';
+import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
 import {Table} from 'shared/utilities/database';
 
 import {Context} from './context';
@@ -125,6 +125,10 @@ export const Mutation: Resolver = {
     });
     return {email};
   },
+  async signOut(_, __, {user, response, request}) {
+    removeAuthCookies(response, {request});
+    return {userId: toGid(user.id, 'User')};
+  },
   async createAccount(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
@@ -140,7 +144,7 @@ export const Mutation: Resolver = {
   },
   async deleteAccount(_, __, {db, user}) {
     await db.delete().from(Table.Users).where({id: user.id});
-    return {deletedId: user.id};
+    return {deletedId: toGid(user.id, 'User')};
   },
   async disconnectGithubAccount(_, __, {db, user}) {
     const [githubAccount] = await db

@@ -16,6 +16,7 @@ import {Page} from 'components';
 
 import profileQuery from './graphql/ProfileQuery.graphql';
 import type {ProfileQueryData} from './graphql/ProfileQuery.graphql';
+import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
 
@@ -24,6 +25,7 @@ export function Profile() {
 
   const navigate = useNavigate();
   const {data} = useQuery(profileQuery, {variables: {key} as any});
+  const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
 
   if (data == null) return <NotFound />;
@@ -34,6 +36,14 @@ export function Profile() {
     <Page heading="Profile">
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
+        <Button
+          onPress={async () => {
+            await signOut();
+            navigate('/login');
+          }}
+        >
+          Sign out
+        </Button>
         <GithubSection
           account={githubAccount ?? undefined}
           onDisconnectAccount={() => {

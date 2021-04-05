@@ -376,6 +376,10 @@ type DisconnectGithubAccountPayload {
   deletedAccount: GithubAccount
 }
 
+type SignOutPayload {
+  userId: ID!
+}
+
 union AppExtensionInstallation = ClipsExtensionInstallation
 
 type Query {
@@ -399,9 +403,10 @@ input CreateClipsInitialVersion {
 }
 
 type Mutation {
-  signIn(email: Email!, redirectTo: Url): SignInPayload!
   createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
   deleteAccount: DeleteAccountPayload!
+  signIn(email: Email!, redirectTo: Url): SignInPayload!
+  signOut: SignOutPayload!
   disconnectGithubAccount: DisconnectGithubAccountPayload!
   skipEpisode(
     episode: ID!
