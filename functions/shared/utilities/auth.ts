@@ -48,7 +48,12 @@ export function getUserIdFromRequest(request: ExtendedRequest) {
   if (!cookie) return undefined;
 
   try {
-    const {subject, expired} = verifySignedToken(cookie);
+    const decodedToken = verifySignedToken(cookie);
+
+    // eslint-disable-next-line no-console
+    console.log({cookie, decodedToken});
+
+    const {subject, expired} = decodedToken;
 
     return expired ? undefined : subject;
   } catch {
