@@ -108,7 +108,6 @@ function GithubSection({
     <Section>
       <BlockStack>
         <Heading>Github account</Heading>
-        <TextBlock />
         <TextBlock>username: {username}</TextBlock>
         <Link to={profileUrl} target="newTab">
           Visit profile
