@@ -76,7 +76,7 @@ export function startGithubOAuth(request: ExtendedRequest) {
 
   const response = redirect(githubOAuthUrl, {
     headers: {
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-store',
     },
   });
 
@@ -361,7 +361,11 @@ function restartConnect({
   redirectTo?: string;
 }) {
   return deleteOAuthCookies(
-    redirect(validateRedirectTo(redirectTo, request) ?? '/app'),
+    redirect(validateRedirectTo(redirectTo, request) ?? '/app', {
+      headers: {
+        'Cache-Control': 'no-store',
+      },
+    }),
     {request},
   );
 }

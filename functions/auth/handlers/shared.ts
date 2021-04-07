@@ -45,7 +45,11 @@ export function restartSignIn({
     signInUrl.searchParams.set(SearchParam.RedirectTo, normalizedRedirectTo);
   }
 
-  return redirect(signInUrl);
+  return redirect(signInUrl, {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  });
 }
 
 export function restartCreateAccount({
@@ -72,7 +76,11 @@ export function restartCreateAccount({
     );
   }
 
-  return redirect(createAccountUrl);
+  return redirect(createAccountUrl, {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  });
 }
 
 export function validateRedirectTo(

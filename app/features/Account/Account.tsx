@@ -14,17 +14,17 @@ import {
 
 import {Page} from 'components';
 
-import profileQuery from './graphql/ProfileQuery.graphql';
-import type {ProfileQueryData} from './graphql/ProfileQuery.graphql';
+import accountQuery from './graphql/AccountQuery.graphql';
+import type {AccountQueryData} from './graphql/AccountQuery.graphql';
 import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
 
-export function Profile() {
+export function Account() {
   const [key, setKey] = useState(1);
 
   const navigate = useNavigate();
-  const {data} = useQuery(profileQuery, {variables: {key} as any});
+  const {data} = useQuery(accountQuery, {variables: {key} as any});
   const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
 
@@ -33,13 +33,13 @@ export function Profile() {
   const {email, githubAccount} = data.me;
 
   return (
-    <Page heading="Profile">
+    <Page heading="Account">
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
         <Button
           onPress={async () => {
             await signOut();
-            navigate('/sign-in');
+            navigate('/signed-out');
           }}
         >
           Sign out
@@ -72,7 +72,7 @@ function GithubSection({
   account,
   onDisconnectAccount,
 }: {
-  account?: ProfileQueryData.Me.GithubAccount;
+  account?: AccountQueryData.Me.GithubAccount;
   onDisconnectAccount(): void;
 }) {
   const disconnectAccount = useMutation(disconnectGithubAccountMutation);

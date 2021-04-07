@@ -1,0 +1,1 @@
+export {Goodbye} from './Goodbye';
