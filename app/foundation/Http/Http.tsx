@@ -1,11 +1,12 @@
-import {ResponseHeader} from '@quilted/quilt/http';
+import {ResponseHeader, CacheControl} from '@quilted/quilt/http';
 
 export function Http() {
   return (
     <>
-      <ResponseHeader header="Content-Type" value="text/html" />
-      <ResponseHeader header="Cache-Control" value="no-cache" />
-      <ResponseHeader header="X-Lemon" value="1" />
+      {/** quilt should do this automatically... */}
+      <ResponseHeader name="Content-Type" value="text/html" />
+      <ResponseHeader name="X-Lemon" value="1" />
+      <CacheControl cache={false} />
     </>
   );
 }
