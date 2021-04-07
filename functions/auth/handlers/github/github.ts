@@ -5,7 +5,7 @@ import type {
   ExtendedResponse,
 } from '@lemon/tiny-server';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {redirect, fetchJson} from '@lemon/tiny-server';
+import {redirect, html, fetchJson} from '@lemon/tiny-server';
 
 import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
@@ -63,15 +63,20 @@ export function startGithubOAuth(request: ExtendedRequest) {
     .map((byte) => byte % 10)
     .join('');
 
+  const strategy = request.url.searchParams.get(SearchParam.Strategy);
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubOAuthUrl.searchParams.set(GithubSearchParam.ClientId, CLIENT_ID);
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
+
+  const callbackTarget = strategy === 'modal' ? 'callback-modal' : 'callback';
+
   githubOAuthUrl.searchParams.set(
     GithubSearchParam.Redirect,
-    new URL('callback', `${request.url.origin}${request.url.pathname}/`).href,
+    new URL(callbackTarget, `${request.url.origin}${request.url.pathname}/`)
+      .href,
   );
 
   const response = redirect(githubOAuthUrl, {
@@ -92,6 +97,21 @@ export function startGithubOAuth(request: ExtendedRequest) {
   }
 
   return response;
+}
+
+export function handleGithubOAuthSignInModal(request: ExtendedRequest) {
+  return handleGithubOAuthCallback(request, {
+    onFailure() {
+      return modalResponse();
+    },
+    onSuccess() {
+      return modalResponse();
+    },
+  });
+}
+
+function modalResponse() {
+  return html('Github response in a modal!');
 }
 
 export function handleGithubOAuthSignIn(request: ExtendedRequest) {

@@ -15,12 +15,14 @@ import {
   BlockStack,
   TextBlock,
   Banner,
+  Pressable,
 } from '@lemon/zest';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
+  Strategy = 'strategy',
   RedirectTo = 'redirect',
 }
 
@@ -119,6 +121,8 @@ function SignInForm() {
         <Link
           to={(url) => {
             const targetUrl = new URL('/internal/auth/github/sign-in', url);
+            targetUrl.searchParams.set(SearchParam.Strategy, 'modal');
+
             const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
 
             if (redirectTo) {
@@ -130,6 +134,28 @@ function SignInForm() {
         >
           Sign in with Github
         </Link>
+        <Pressable
+          onPress={() => {
+            const targetUrl = new URL(
+              '/internal/auth/github/sign-in',
+              currentUrl,
+            );
+
+            targetUrl.searchParams.set(SearchParam.Strategy, 'modal');
+
+            const redirectTo = currentUrl.searchParams.get(
+              SearchParam.RedirectTo,
+            );
+
+            if (redirectTo) {
+              targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+            }
+
+            window.open(targetUrl.href);
+          }}
+        >
+          Sign in with Github (modal)
+        </Pressable>
       </BlockStack>
     </View>
   );

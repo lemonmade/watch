@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - email
+      - improve-github-flow
 
 jobs:
   build:
