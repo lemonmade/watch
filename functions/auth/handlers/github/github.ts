@@ -193,18 +193,27 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
       return restartConnect({redirectTo, request});
     },
     async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
-      if (userIdFromExistingAccount) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
-        );
+      const userIdFromRequest = getUserIdFromRequest(request);
 
-        return completeAuth(userIdFromExistingAccount, {request, redirectTo});
+      if (userIdFromExistingAccount) {
+        if (userIdFromRequest === userIdFromExistingAccount) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
+          );
+
+          return completeAuth(userIdFromRequest, {request, redirectTo});
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(
+            `Attempted to connect a Github account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
+          );
+
+          return restartConnect({request, redirectTo});
+        }
       }
 
       // We are trying to connect, but there is no user signed in!
-      const userIdFromRequest = getUserIdFromRequest(request);
-
       if (userIdFromRequest == null) {
         return restartSignIn({redirectTo, request});
       }
