@@ -115,7 +115,23 @@ interface Slice {
 }
 
 export const Mutation: Resolver = {
-  async signIn(_, {email, redirectTo}: {email: string; redirectTo?: string}) {
+  async signIn(
+    _,
+    {email, redirectTo}: {email: string; redirectTo?: string},
+    {db},
+  ) {
+    const [user] = await db
+      .select('email')
+      .from(Table.Users)
+      .where({email})
+      .limit(1);
+
+    if (user == null) {
+      // Need to make this take roughly the same amount of time as
+      // enqueuing a message, which can sometimes take a long time...
+      return {email};
+    }
+
     await enqueueSendEmail('signIn', {
       token: createSignedToken(
         {redirectTo},
@@ -132,7 +148,26 @@ export const Mutation: Resolver = {
   async createAccount(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
+    {db},
   ) {
+    const [user] = await db
+      .select('email')
+      .from(Table.Users)
+      .where({email})
+      .limit(1);
+
+    if (user != null) {
+      await enqueueSendEmail('signIn', {
+        token: createSignedToken(
+          {redirectTo},
+          {subject: email, expiresIn: '15 minutes'},
+        ),
+        userEmail: email,
+      });
+
+      return {email};
+    }
+
     await enqueueSendEmail('welcome', {
       token: createSignedToken(
         {redirectTo},
@@ -140,6 +175,7 @@ export const Mutation: Resolver = {
       ),
       userEmail: email,
     });
+
     return {email};
   },
   async deleteAccount(_, __, {db, user}) {
