@@ -13,10 +13,15 @@ import type {Database} from 'shared/utilities/database';
 
 import {
   restartSignIn as baseRestartSignIn,
-  restartConnect as baseRestartConnect,
+  restartCreateAccount as baseRestartCreateAccount,
   completeAuth as baseCompleteAuth,
+  validateRedirectTo,
 } from '../shared';
-import {SearchParam, SignInErrorReason} from '../../constants';
+import {
+  CreateAccountErrorReason,
+  SearchParam,
+  SignInErrorReason,
+} from '../../constants';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
@@ -49,8 +54,8 @@ const completeAuth: typeof baseCompleteAuth = (userId, options) =>
 const restartSignIn: typeof baseRestartSignIn = (options) =>
   deleteOAuthCookies(baseRestartSignIn(options), options);
 
-const restartConnect: typeof baseRestartConnect = (options) =>
-  deleteOAuthCookies(baseRestartConnect(options), options);
+const restartCreateAccount: typeof baseRestartCreateAccount = (options) =>
+  deleteOAuthCookies(baseRestartCreateAccount(options), options);
 
 export function startGithubOAuth(request: ExtendedRequest) {
   const state = crypto
@@ -120,10 +125,14 @@ export function handleGithubOAuthSignIn(request: ExtendedRequest) {
   });
 }
 
-export function handleGithubOAuthSignUp(request: ExtendedRequest) {
+export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
-      return restartSignIn({redirectTo, request});
+      return restartCreateAccount({
+        redirectTo,
+        request,
+        reason: CreateAccountErrorReason.GithubError,
+      });
     },
     async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
       if (userIdFromExistingAccount) {
@@ -144,11 +153,13 @@ export function handleGithubOAuthSignUp(request: ExtendedRequest) {
       } = githubUser;
 
       try {
+        // Don’t try to be clever here and give feedback to the user if
+        // this failed because their email already exists. It’s tempting
+        // to just log them in or tell them they have an account already,
+        // but that feedback could be used to probe for emails.
         const updatedUserId = await db.transaction(async (trx) => {
           const [userId] = await trx
-            .insert({
-              email,
-            })
+            .insert({email})
             .into(Table.Users)
             .returning<string>('id');
 
@@ -170,7 +181,7 @@ export function handleGithubOAuthSignUp(request: ExtendedRequest) {
 
         return completeAuth(updatedUserId, {redirectTo, request});
       } catch {
-        return restartSignIn({redirectTo, request});
+        return restartCreateAccount({redirectTo, request});
       }
     },
   });
@@ -331,6 +342,19 @@ async function handleGithubOAuthCallback(
   });
 
   return response;
+}
+
+function restartConnect({
+  request,
+  redirectTo,
+}: {
+  request: ExtendedRequest;
+  redirectTo?: string;
+}) {
+  return deleteOAuthCookies(
+    redirect(validateRedirectTo(redirectTo, request) ?? '/app'),
+    {request},
+  );
 }
 
 function deleteOAuthCookies(

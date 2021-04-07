@@ -12,3 +12,9 @@ export enum SignInErrorReason {
   GithubError = 'github-error',
   GithubNoAccount = 'github-no-account',
 }
+
+export enum CreateAccountErrorReason {
+  Expired = 'expired',
+  Generic = 'generic-error',
+  GithubError = 'github-error',
+}

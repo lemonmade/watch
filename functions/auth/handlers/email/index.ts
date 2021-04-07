@@ -1,1 +1,1 @@
-export {signInFromEmail, signUpFromEmail} from './email';
+export {signInFromEmail, createAccountFromEmail} from './email';

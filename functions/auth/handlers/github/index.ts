@@ -1,6 +1,6 @@
 export {
   startGithubOAuth,
   handleGithubOAuthSignIn,
-  handleGithubOAuthSignUp,
+  handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
 } from './github';

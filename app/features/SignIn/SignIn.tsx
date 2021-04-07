@@ -44,7 +44,7 @@ function SignInForm() {
   const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
 
-  const signInReason = currentUrl.searchParams.get('reason');
+  const signInReason = currentUrl.searchParams.get(SearchParam.Reason);
 
   let errorBanner: ReactNode = null;
 
@@ -73,7 +73,7 @@ function SignInForm() {
       case SignInErrorReason.Expired: {
         errorBanner = (
           <Banner status="error">
-            Your temporary sign-in token expired, so you’ll need to try in
+            Your temporary sign in token expired, so you’ll need to sign in
             again. Sorry for the inconvenience!
           </Banner>
         );

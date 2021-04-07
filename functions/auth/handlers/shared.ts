@@ -3,7 +3,11 @@ import {redirect} from '@lemon/tiny-server';
 
 import {addAuthCookies} from 'shared/utilities/auth';
 
-import {SearchParam, SignInErrorReason} from '../constants';
+import {
+  SearchParam,
+  SignInErrorReason,
+  CreateAccountErrorReason,
+} from '../constants';
 
 export function completeAuth(
   userId: string,
@@ -20,26 +24,9 @@ export function completeAuth(
   return addAuthCookies({id: userId}, redirect(redirectTarget));
 }
 
-export function restartAuth({
-  request,
-  redirectTo,
-}: {
-  request: ExtendedRequest;
-  redirectTo?: string;
-}) {
-  const loginUrl = new URL('/login', request.url);
-  const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
-
-  if (normalizedRedirectTo) {
-    loginUrl.searchParams.set(SearchParam.RedirectTo, normalizedRedirectTo);
-  }
-
-  return redirect(loginUrl);
-}
-
 export function restartSignIn({
   request,
-  reason = SignInErrorReason.Expired,
+  reason = SignInErrorReason.Generic,
   redirectTo,
 }: {
   request: ExtendedRequest;
@@ -47,7 +34,10 @@ export function restartSignIn({
   redirectTo?: string;
 }) {
   const signInUrl = new URL('/sign-in', request.url);
-  signInUrl.searchParams.set(SearchParam.Reason, reason);
+
+  if (reason) {
+    signInUrl.searchParams.set(SearchParam.Reason, reason);
+  }
 
   const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
 
@@ -58,17 +48,34 @@ export function restartSignIn({
   return redirect(signInUrl);
 }
 
-export function restartConnect({
+export function restartCreateAccount({
   request,
+  reason = CreateAccountErrorReason.Generic,
   redirectTo,
 }: {
   request: ExtendedRequest;
+  reason?: CreateAccountErrorReason;
   redirectTo?: string;
 }) {
-  return redirect(validateRedirectTo(redirectTo, request) ?? '/app');
+  const createAccountUrl = new URL('/create-account', request.url);
+
+  if (reason) {
+    createAccountUrl.searchParams.set(SearchParam.Reason, reason);
+  }
+
+  const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
+
+  if (normalizedRedirectTo) {
+    createAccountUrl.searchParams.set(
+      SearchParam.RedirectTo,
+      normalizedRedirectTo,
+    );
+  }
+
+  return redirect(createAccountUrl);
 }
 
-function validateRedirectTo(
+export function validateRedirectTo(
   redirectTo: string | undefined,
   {url}: ExtendedRequest,
 ) {

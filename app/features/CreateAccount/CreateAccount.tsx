@@ -1,16 +1,33 @@
 import {useState} from 'react';
+import type {ReactNode} from 'react';
 import {
   useMutation,
   useRoutes,
   useNavigate,
   useCurrentUrl,
 } from '@quilted/quilt';
-import {Link, View, TextField, Form, BlockStack, TextBlock} from '@lemon/zest';
+import {
+  Link,
+  View,
+  Banner,
+  TextField,
+  Form,
+  BlockStack,
+  TextBlock,
+  Heading,
+} from '@lemon/zest';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 
 enum SearchParam {
+  Reason = 'reason',
   RedirectTo = 'redirect',
+}
+
+export enum CreateAccountErrorReason {
+  Expired = 'expired',
+  Generic = 'generic-error',
+  GithubError = 'github-error',
 }
 
 export function CreateAccount() {
@@ -27,24 +44,49 @@ export function CreateAccountForm() {
   const currentUrl = useCurrentUrl();
   const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
 
+  const createAccountReason = currentUrl.searchParams.get(SearchParam.Reason);
+
+  let errorBanner: ReactNode = null;
+
+  if (createAccountReason) {
+    switch (createAccountReason) {
+      case CreateAccountErrorReason.GithubError: {
+        errorBanner = (
+          <Banner status="error">
+            There was an error while trying to create your account with Github.
+            You can try again, or create an account with your email instead (you
+            can always connect your Github account later). Sorry for the
+            inconvenience!
+          </Banner>
+        );
+        break;
+      }
+      case CreateAccountErrorReason.Expired: {
+        errorBanner = (
+          <Banner status="error">
+            Your temporary account creation token expired, so you’ll need to
+            create your account again. Sorry for the inconvenience!
+          </Banner>
+        );
+        break;
+      }
+      case CreateAccountErrorReason.Generic: {
+        errorBanner = (
+          <Banner status="error">
+            Something went wrong while trying to create your account, so you’ll
+            need to try again. Sorry for the inconvenience!
+          </Banner>
+        );
+        break;
+      }
+    }
+  }
+
   return (
     <View padding={16}>
-      <Link
-        to={(url) => {
-          const targetUrl = new URL('/internal/auth/github/sign-up', url);
-          const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
+      <Heading>Create account</Heading>
 
-          if (redirectTo) {
-            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-          }
-
-          return targetUrl;
-        }}
-      >
-        Sign up with Github
-      </Link>
-
-      <TextBlock>or with email:</TextBlock>
+      {errorBanner}
 
       <Form
         onSubmit={async () => {
@@ -61,6 +103,26 @@ export function CreateAccountForm() {
           <TextField label="Email" onChange={(value) => setEmail(value)} />
         </BlockStack>
       </Form>
+
+      <TextBlock>or...</TextBlock>
+
+      <Link
+        to={(url) => {
+          const targetUrl = new URL(
+            '/internal/auth/github/create-account',
+            url,
+          );
+          const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
+
+          if (redirectTo) {
+            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+          }
+
+          return targetUrl;
+        }}
+      >
+        Create account with Github
+      </Link>
     </View>
   );
 }
