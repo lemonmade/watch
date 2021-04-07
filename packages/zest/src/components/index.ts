@@ -1,3 +1,4 @@
+export {Banner} from './Banner';
 export {Button} from './Button';
 export {CollapseGroup} from './CollapseGroup';
 export {DateField} from './DateField';

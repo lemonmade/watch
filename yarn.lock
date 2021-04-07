@@ -4161,10 +4161,10 @@
   optionalDependencies:
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/http@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.0.2.tgz#ffeda0bef2f0c8c856efc75dfa1def30df487cf5"
-  integrity sha512-B/WWGlnBWzCjePHxI/a9S8nqFTLSOZcFwmOz+5M61YIiH4kCfl0u1FQSMCLFiyLIT50zPJUEAqiu0KxBoQyfjQ==
+"@quilted/http@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.1.0.tgz#b1534cef162871bdb85823627017e505d560d515"
+  integrity sha512-F9gZGypvr34F8a6+BLClinoQRsAtyEjnzR+uuIZWkiJggul/AnVvL+/6NsWrhMxEhY+6lsQl5NAnfs+hCwx30Q==
 
 "@quilted/polyfills@^0.0.5":
   version "0.0.5"
@@ -4183,33 +4183,33 @@
   resolved "https://registry.yarnpkg.com/@quilted/preact-mini-compat/-/preact-mini-compat-0.1.3.tgz#ad650272895073927cca192ad580e67cb2ffcf04"
   integrity sha512-dPHS3w39l+xXSezYFTkLLvw9VOSaRCG79UxMTY7WzvC7Csd/bsS1QmlDEzo1b+YTAXm3fGpc33iYpTH6XtCyOw==
 
-"@quilted/quilt@^0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.4.14.tgz#e965346f3b416cc669fde8a4e65e30cbd6ef1d91"
-  integrity sha512-NfHFRNFD23Yijd0W41vvFTitk0JmfBzWGMPdHul8kG6LFuVfAR3NtnDpwWE5IqANi01NL83tPgwCPXMLYo0BJQ==
+"@quilted/quilt@^0.4.18":
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.4.18.tgz#7c148f3c053f6cdeb89fef1e4d60b60d0588a9cc"
+  integrity sha512-VwngQjLMZYrhHBXYUoiHzCDQdZQ0xz6hq8gcrGfZ2LyL8dArQ3QrJl8edKArpXUs6nZeE9y3gf12cePaz7ujEQ==
   dependencies:
     "@quilted/async" "^0.2.0"
     "@quilted/graphql" "^0.3.3"
     "@quilted/polyfills" "^0.0.5"
     "@quilted/preact-mini-compat" "^0.1.3"
-    "@quilted/react-async" "^0.2.6"
+    "@quilted/react-async" "^0.2.7"
     "@quilted/react-auto-headings" "^0.2.1"
-    "@quilted/react-graphql" "^0.3.5"
-    "@quilted/react-html" "^0.2.3"
-    "@quilted/react-http" "^0.1.3"
+    "@quilted/react-graphql" "^0.3.6"
+    "@quilted/react-html" "^0.2.4"
+    "@quilted/react-http" "^0.1.6"
     "@quilted/react-idle" "^0.2.1"
-    "@quilted/react-router" "^0.2.11"
+    "@quilted/react-router" "^0.2.15"
     "@quilted/react-server-render" "^0.2.1"
     "@quilted/react-testing" "^0.3.4"
     "@quilted/react-web-workers" "^0.2.4"
 
-"@quilted/react-async@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@quilted/react-async/-/react-async-0.2.6.tgz#ef769682a3954ac3826f5319febbab80458b5bc0"
-  integrity sha512-+Cus3bt/SqZsiQcgZ2mYtnJdgkdy8v3Bb4ub+847C1+HQKC+AQFs/HYn4tpQj+8ti5OPhe+ZEBsSEBKEEz9nog==
+"@quilted/react-async@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@quilted/react-async/-/react-async-0.2.7.tgz#c9bcd255ca8f5af479f24ffd26ec314fa9055553"
+  integrity sha512-UTRTDs+7fjUknkByDs46CE5mpKIzvGYFplSXINZDV17M58X/olQqpZnt0gDxg5K6Bj4WuEB4SuhYB0Q0UycoGw==
   dependencies:
     "@quilted/async" "^0.2.0"
-    "@quilted/react-html" "^0.2.3"
+    "@quilted/react-html" "^0.2.4"
     "@quilted/react-server-render" "^0.2.1"
     "@quilted/use-subscription" "^0.1.1"
 
@@ -4218,19 +4218,19 @@
   resolved "https://registry.yarnpkg.com/@quilted/react-auto-headings/-/react-auto-headings-0.2.1.tgz#2ba485d09a602d6aac359401522e67d592ad791b"
   integrity sha512-bO/UYpF1dR3XTcNboBwInq4+XchjKqXsum7sphUH9IkSGoS1c/+2hRRxNY3KGa3cp63Iw4iNLBXEfl2mv4XAlA==
 
-"@quilted/react-graphql@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@quilted/react-graphql/-/react-graphql-0.3.5.tgz#e1892033ed6ab38a2efa373dfd8ce4d6fb621aa6"
-  integrity sha512-98BLn03f946lpb2zmx3NeSJwNeoK8i76P4Xwk7+GJ+/fQQwckWm9DzdSsAdIDhFMnEGENvBNUUpqYuDJ2zyGrQ==
+"@quilted/react-graphql@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@quilted/react-graphql/-/react-graphql-0.3.6.tgz#c4d6cf3e138179eda52ac498050116fc51883b88"
+  integrity sha512-JYayUkObD1kCETZWSsx1Zsbox/nUmnI64g/oMCj1/XRUJuqsvEmOUPUtTmIeC8IEcq6SDKmaujRyV3Lt+0NSlQ==
   dependencies:
     "@quilted/graphql" "^0.3.3"
-    "@quilted/react-async" "^0.2.6"
+    "@quilted/react-async" "^0.2.7"
     "@quilted/useful-types" "^0.1.0"
 
-"@quilted/react-html@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@quilted/react-html/-/react-html-0.2.3.tgz#04274e6d51263d8a7141aa5337e287e1268ea67b"
-  integrity sha512-dp/dudyRk+23gVyQRuIoRsnTmm8MS3KdTYzwhe/qSukQsfZmfUeGSXIfq6h2tCDMZbwQ7wkkQKrOEAl075u5cQ==
+"@quilted/react-html@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@quilted/react-html/-/react-html-0.2.4.tgz#0869d43c1d81860e09f9a232c7f12fd62c72029d"
+  integrity sha512-GOnZauMUpiD4V13B+OzRQGj5p9WI8gF+gdyL7S696ZyYcWuTGfMPAZK71O0NUX4Dz2aAIOhJCPfneHF4mK0vYw==
   dependencies:
     "@quilted/react-server-render" "^0.2.1"
     "@types/multistream" "^2.1.1"
@@ -4238,13 +4238,13 @@
     multistream "^4.0.1"
     serialize-javascript "^5.0.1"
 
-"@quilted/react-http@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@quilted/react-http/-/react-http-0.1.3.tgz#34d9837dff11699ce0f7a80c0dca759ac370e5f7"
-  integrity sha512-6lgzdXh5sj/GfwVbZLxf6LLudWrbocLGC1PYs/uvcOqapbfAw3eLD45csQ5CPbzhF99O2NEoMxESFJtfFgK7Sw==
+"@quilted/react-http@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@quilted/react-http/-/react-http-0.1.6.tgz#5b721890092ffd42144f13749589f39eef6d49cd"
+  integrity sha512-sUqlbAngjKcfXEzDiDrA0hdPRCh1DjkkefHXKXXOeS7mJHuJcX0y0u2Zl6TE+5V5FJV8FFOceQl+8kktn2oKwA==
   dependencies:
-    "@quilted/http" "^0.0.2"
-    "@quilted/react-html" "^0.2.3"
+    "@quilted/http" "^0.1.0"
+    "@quilted/react-html" "^0.2.4"
     "@quilted/react-server-render" "^0.2.1"
 
 "@quilted/react-idle@^0.2.1":
@@ -4252,12 +4252,13 @@
   resolved "https://registry.yarnpkg.com/@quilted/react-idle/-/react-idle-0.2.1.tgz#54df573c301ef56129cad07296763d0f2f30997f"
   integrity sha512-jyaizVVVzsttf3AsFboAXaDNgCZySe7aiNs/4xyDoNPb5MulMUExj4xc1z8oeVRcJeJndvBiJ06dNtMsGzMqtA==
 
-"@quilted/react-router@^0.2.11":
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.2.11.tgz#60c6dacb42bb0b52e2009f96d49cacc2ea23cc54"
-  integrity sha512-UxwyUsHilskj8DvWBJu5Y7R3tCa5/qiDwq8yZeb8mAu7QZ7lRGtw6vAvlvVO9Zr23M/ks7Hysv7BucVONSZTTw==
+"@quilted/react-router@^0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.2.15.tgz#4ce0905d3ac487060a336fc5f43729714a34ef55"
+  integrity sha512-XI5AqZjpK1coT+C1go2snWp+jvdJ2qDBZBcc1p6ZI2D46n7QjKzJpXdKebavtvLisnkOIibOsLv30IfS94VGzw==
   dependencies:
-    "@quilted/react-html" "^0.2.3"
+    "@quilted/react-html" "^0.2.4"
+    "@quilted/react-http" "^0.1.6"
     "@quilted/react-server-render" "^0.2.1"
 
 "@quilted/react-server-render@^0.2.1":
@@ -6365,6 +6366,21 @@ aws-sdk@^2.848.0, aws-sdk@^2.878.0:
   version "2.878.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.878.0.tgz#0c18f464766555c86bdd2e70a3db9f473702c4b2"
   integrity sha512-Mi6ASjd6UugdIskkXqTBgn6tC5I61BlEPwKXYtC6FFrNyvxMF+USH7FHD0O3ZBwqDCSI+BR9a296ReRNzQ//tw==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.879.0:
+  version "2.879.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.879.0.tgz#d9fb5a8babac1ed0b3d0fb38a88e561580256082"
+  integrity sha512-HRfjGwST1U9AvCJFAyqpAJwbjFR4LqUyEUk77qdJpdYHL9pGPHdnEfGRkBkPn36xcC7Em6gVvFveVoEihbQUyQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -14975,6 +14991,15 @@ raw-loader@^4.0.1:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
+react-dom@^17.0.0:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
+  integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
+
 react-dom@^17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.1.tgz#1de2560474ec9f0e334285662ede52dbc5426fc6"
@@ -15032,6 +15057,14 @@ react-test-renderer@^17.0.0:
     react-is "^17.0.1"
     react-shallow-renderer "^16.13.1"
     scheduler "^0.20.1"
+
+react@^17.0.0:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 react@^17.0.1:
   version "17.0.1"
@@ -15638,6 +15671,14 @@ scheduler@^0.20.1:
   version "0.20.1"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.1.tgz#da0b907e24026b01181ecbc75efdc7f27b5a000c"
   integrity sha512-LKTe+2xNJBNxu/QhHvDR14wUXHRQbVY5ZOYpOGWRzhydZUqrLb2JBvLPY7cAqFmqrWuDED0Mjk7013SZiOz6Bw==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"

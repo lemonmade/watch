@@ -360,6 +360,26 @@ type InstallClipsExtensionPayload {
   installation: ClipsExtensionInstallation
 }
 
+type SignInPayload {
+  email: Email!
+}
+
+type CreateAccountPayload {
+  email: Email!
+}
+
+type DeleteAccountPayload {
+  deletedId: ID!
+}
+
+type DisconnectGithubAccountPayload {
+  deletedAccount: GithubAccount
+}
+
+type SignOutPayload {
+  userId: ID!
+}
+
 union AppExtensionInstallation = ClipsExtensionInstallation
 
 type Query {
@@ -383,6 +403,11 @@ input CreateClipsInitialVersion {
 }
 
 type Mutation {
+  createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
+  deleteAccount: DeleteAccountPayload!
+  signIn(email: Email!, redirectTo: Url): SignInPayload!
+  signOut: SignOutPayload!
+  disconnectGithubAccount: DisconnectGithubAccountPayload!
   skipEpisode(
     episode: ID!
     watchThrough: ID

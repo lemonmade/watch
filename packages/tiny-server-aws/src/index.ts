@@ -26,6 +26,7 @@ export function createLambdaApiGatewayProxy(
       ),
       cookies: {
         get: (key) => cookies[key],
+        has: (key) => cookies[key] != null,
       },
     });
 

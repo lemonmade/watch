@@ -1,0 +1,7 @@
+mutation DisconnectGithubAccount {
+  disconnectGithubAccount {
+    deletedAccount {
+      username
+    }
+  }
+}

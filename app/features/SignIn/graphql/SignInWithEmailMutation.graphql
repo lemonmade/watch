@@ -1,0 +1,5 @@
+mutation SignInWithEmail($email: Email!, $redirectTo: Url) {
+  signIn(email: $email, redirectTo: $redirectTo) {
+    email
+  }
+}

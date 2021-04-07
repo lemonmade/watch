@@ -7,6 +7,7 @@ import {
   flush as flushSentry,
 } from '@sentry/node';
 
+import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {createDatabaseConnection} from 'shared/utilities/database';
 
 import typeDefs from './graph/schema';
@@ -46,32 +47,29 @@ app.post(async (request) => {
   console.log(`Document:\n${query}`);
   /* eslint-enable no-console */
 
-  // const request = new Request(
-  //   `${event.headers.origin}${event.rawPath}${
-  //     event.rawQueryString ? `?${event.rawQueryString}` : ''
-  //   }`,
-  //   {
-  //     method: event.requestContext.http.method,
-  //     body: event.body,
-  //     headers: event.headers as Record<string, string>,
-  //   },
-  // );
+  const response = json(
+    {},
+    {
+      status: 200,
+      headers: {'Access-Control-Allow-Origin': '*'},
+    },
+  );
 
-  const [user] = await db.select('*').from('Users').limit(1);
+  const userId = getUserIdFromRequest(request);
 
   try {
     const result = await graphql(
       schema,
       query,
       {},
-      createContext(db, user),
+      createContext(db, userId ? {id: userId} : undefined, request, response),
       variables,
       operationName,
     );
 
     return json(result, {
       status: 200,
-      headers: {'Access-Control-Allow-Origin': '*'},
+      headers: response.headers,
     });
   } catch (error) {
     // eslint-disable-next-line no-console

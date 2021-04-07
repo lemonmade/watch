@@ -1,7 +1,16 @@
-import type {ReactNode} from 'react';
+import type {ComponentProps} from 'react';
 
-import styles from './Section.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {AutoHeadingGroup} from '@quilted/react-auto-headings';
 
-export function Section({children}: {children?: ReactNode}) {
-  return <section className={styles.Section}>{children}</section>;
+import {View} from '../View';
+
+export function Section(
+  props: Omit<ComponentProps<typeof View>, 'accessibilityRole'>,
+) {
+  return (
+    <AutoHeadingGroup>
+      <View accessibilityRole="section" {...props} />
+    </AutoHeadingGroup>
+  );
 }

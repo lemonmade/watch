@@ -1,12 +1,15 @@
 import {useState, useRef} from 'react';
-import type {PropsWithChildren, ChangeEvent} from 'react';
+import type {PropsWithChildren, ChangeEvent, KeyboardEvent} from 'react';
 import {classes, variation} from '@lemon/css';
 
+import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
 
 import styles from './TextField.css';
 
 interface Props {
+  id?: string;
+  label?: string;
   value?: string;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
@@ -15,12 +18,15 @@ interface Props {
 }
 
 export function TextField({
+  id: explicitId,
+  label,
   value: currentValue,
   multiline = false,
   blockSize = multiline === true ? 'fitContent' : undefined,
   onInput,
   onChange,
 }: PropsWithChildren<Props>) {
+  const id = useUniqueId('TextField', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
 
@@ -40,8 +46,10 @@ export function TextField({
       )}
       style={style as any}
     >
+      {label && <label htmlFor={id}>{label}</label>}
       <div className={styles.InputContainer}>
         <InputElement
+          id={id}
           type={multiline ? undefined : 'text'}
           className={styles.Input}
           value={value}
@@ -50,6 +58,16 @@ export function TextField({
           }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             setValue(currentTarget.value);
             onInput?.(currentTarget.value);
+          }}
+          onKeyPress={({
+            key,
+            currentTarget,
+          }: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            if (key.toLowerCase() === 'enter') {
+              setValue(currentTarget.value);
+              onInput?.(currentTarget.value);
+              onChange?.(currentTarget.value);
+            }
           }}
           onBlur={() => onChange?.(value ?? '')}
           form={containingForm?.nested ? containingForm.id : undefined}

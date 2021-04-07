@@ -250,11 +250,11 @@ function ClipFrame({
         <Popover>
           <Pressable>{name}</Pressable>
           <PopoverSheet>
-            <Section>
+            <Section padding={16}>
               <ClipTimings controller={controller} />
             </Section>
             {additionalSectionContents && (
-              <Section>{additionalSectionContents}</Section>
+              <Section padding={16}>{additionalSectionContents}</Section>
             )}
             {actionContents && <Menu>{actionContents}</Menu>}
           </PopoverSheet>

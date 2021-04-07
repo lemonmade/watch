@@ -1,6 +1,7 @@
 import * as Cookies from 'cookie';
 
 export interface RequestCookies {
+  has(cookie: string): boolean;
   get(cookie: string): string | undefined;
 }
 
@@ -185,6 +186,7 @@ function cookiesFromHeaders(headers: Headers): ExtendedRequest['cookies'] {
 
   return {
     get: (key) => cookies[key],
+    has: (key) => cookies[key] != null,
   };
 }
 

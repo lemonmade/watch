@@ -1,0 +1,5 @@
+mutation CreateAccountWithEmail($email: Email!, $redirectTo: Url) {
+  createAccount(email: $email, redirectTo: $redirectTo) {
+    email
+  }
+}

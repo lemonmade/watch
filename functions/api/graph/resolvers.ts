@@ -1,9 +1,11 @@
 import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 
+import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
 import {Table} from 'shared/utilities/database';
 
 import {Context} from './context';
+import {enqueueSendEmail} from './utilities/email';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -113,6 +115,83 @@ interface Slice {
 }
 
 export const Mutation: Resolver = {
+  async signIn(
+    _,
+    {email, redirectTo}: {email: string; redirectTo?: string},
+    {db},
+  ) {
+    const [user] = await db
+      .select('email')
+      .from(Table.Users)
+      .where({email})
+      .limit(1);
+
+    if (user == null) {
+      // Need to make this take roughly the same amount of time as
+      // enqueuing a message, which can sometimes take a long time...
+      return {email};
+    }
+
+    await enqueueSendEmail('signIn', {
+      token: createSignedToken(
+        {redirectTo},
+        {subject: email, expiresIn: '15 minutes'},
+      ),
+      userEmail: email,
+    });
+    return {email};
+  },
+  async signOut(_, __, {user, response, request}) {
+    removeAuthCookies(response, {request});
+    return {userId: toGid(user.id, 'User')};
+  },
+  async createAccount(
+    _,
+    {email, redirectTo}: {email: string; redirectTo?: string},
+    {db},
+  ) {
+    const [user] = await db
+      .select('email')
+      .from(Table.Users)
+      .where({email})
+      .limit(1);
+
+    if (user != null) {
+      await enqueueSendEmail('signIn', {
+        token: createSignedToken(
+          {redirectTo},
+          {subject: email, expiresIn: '15 minutes'},
+        ),
+        userEmail: email,
+      });
+
+      return {email};
+    }
+
+    await enqueueSendEmail('welcome', {
+      token: createSignedToken(
+        {redirectTo},
+        {subject: email, expiresIn: '15 minutes'},
+      ),
+      userEmail: email,
+    });
+
+    return {email};
+  },
+  async deleteAccount(_, __, {db, user}) {
+    await db.delete().from(Table.Users).where({id: user.id});
+    return {deletedId: toGid(user.id, 'User')};
+  },
+  async disconnectGithubAccount(_, __, {db, user}) {
+    const [githubAccount] = await db
+      .delete()
+      .from(Table.GithubAccounts)
+      .where({userId: user.id})
+      .limit(1)
+      .returning('*');
+
+    return {githubAccount};
+  },
   async watchEpisode(
     _,
     {
@@ -653,9 +732,7 @@ export const AppExtensionInstallation: Resolver = {
 
 export const User: Resolver = {
   id: ({id}) => toGid(id, 'User'),
-  githubAccount: async ({id, githubAccountId}, _, {db}) => {
-    if (githubAccountId == null) return null;
-
+  githubAccount: async ({id}, _, {db}) => {
     const [result] = await db
       .select('*')
       .from(Table.GithubAccounts)

@@ -32,7 +32,7 @@ import {
   RecordTarget,
 } from '@aws-cdk/aws-route53';
 import {CloudFrontTarget} from '@aws-cdk/aws-route53-targets';
-import {AnyPrincipal} from '@aws-cdk/aws-iam';
+import {AnyPrincipal, PolicyStatement, Effect} from '@aws-cdk/aws-iam';
 import {Queue} from '@aws-cdk/aws-sqs';
 import {Rule, Schedule} from '@aws-cdk/aws-events';
 import {LambdaFunction} from '@aws-cdk/aws-events-targets';
@@ -93,15 +93,45 @@ export class WatchAppStack extends Stack {
 
     graphqlFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
-    const githubOAuthFunction = new Function(this, 'WatchGithubOAuthFunction', {
+    const authFunction = new Function(this, 'WatchAuthFunction', {
       vpc,
       runtime: Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: Code.fromInline('module.exports.handler = () => {}'),
-      functionName: 'WatchGithubOAuthFunction',
+      functionName: 'WatchAuthFunction',
     });
 
-    githubOAuthFunction.connections.allowFromAnyIpv4(Port.allTraffic());
+    authFunction.connections.allowFromAnyIpv4(Port.allTraffic());
+
+    const emailQueue = new Queue(this, 'WatchEmailQueue', {
+      queueName: 'WatchEmailQueue',
+      deadLetterQueue: {
+        queue: new Queue(this, 'WatchEmailDeadLetterQueue', {
+          queueName: 'WatchEmailDeadLetterQueue',
+        }),
+        maxReceiveCount: 5,
+      },
+    });
+
+    emailQueue.grantSendMessages(graphqlFunction);
+
+    const emailFunction = new Function(this, 'WatchEmailFunction', {
+      vpc,
+      runtime: Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: Code.fromInline('module.exports.handler = () => {}'),
+      functionName: 'WatchEmailFunction',
+    });
+
+    emailFunction.addEventSource(new SqsEventSource(emailQueue));
+    emailFunction.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['ses:SendEmail', 'SES:SendRawEmail'],
+        resources: ['*'],
+        effect: Effect.ALLOW,
+      }),
+    );
+    // Need to properly set the connection policy to allow traffic from anywhere...
 
     const appHttpApi = new HttpApi(this, 'WatchAppHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
@@ -113,9 +143,9 @@ export class WatchAppStack extends Stack {
       }),
     });
 
-    const githubOAuthApi = new HttpApi(this, 'WatchGithubOAuthApi', {
+    const authHttpApi = new HttpApi(this, 'WatchAuthHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({
-        handler: githubOAuthFunction,
+        handler: authFunction,
       }),
     });
 
@@ -157,6 +187,7 @@ export class WatchAppStack extends Stack {
       },
     });
 
+    tmdbRefresherQueue.grantSendMessages(tmdbRefresherSchedulerFunction);
     tmdbRefresherFunction.addEventSource(
       new SqsEventSource(tmdbRefresherQueue),
     );
@@ -344,13 +375,13 @@ export class WatchAppStack extends Stack {
               },
             ],
           },
-          '/internal/auth/github*': {
+          '/internal/auth*': {
             origin: new HttpOrigin(
-              githubOAuthApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
+              authHttpApi.url!.replace(/^https:[/][/]/, '').split('/')[0],
             ),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-            cachePolicy: new CachePolicy(this, 'WatchGithubOAuthCachePolicy', {
+            cachePolicy: new CachePolicy(this, 'WatchAuthCachePolicy', {
               defaultTtl: Duration.seconds(0),
               cookieBehavior: CacheCookieBehavior.none(),
               headerBehavior: CacheHeaderBehavior.none(),
@@ -360,7 +391,7 @@ export class WatchAppStack extends Stack {
             }),
             originRequestPolicy: new OriginRequestPolicy(
               this,
-              'WatchGithubOAuthOriginRequestPolicy',
+              'WatchAuthOriginRequestPolicy',
               {
                 cookieBehavior: OriginRequestCookieBehavior.all(),
                 headerBehavior: OriginRequestHeaderBehavior.allowList(

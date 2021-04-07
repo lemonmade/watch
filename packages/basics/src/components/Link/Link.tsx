@@ -9,6 +9,7 @@ import styles from './Link.css';
 
 interface Props {
   to: ComponentProps<typeof RouterLink>['to'];
+  target?: 'currentTab' | 'newTab';
   onPress?(): void;
   blockSize?: 'fill';
   alignContent?: 'start' | 'end' | 'center';
@@ -16,12 +17,16 @@ interface Props {
 
 export function Link({
   to,
+  target,
   onPress,
   alignContent,
   blockSize,
   children,
 }: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction();
+
+  const externalProps =
+    target === 'newTab' ? {target: '_blank', rel: 'noopener noreferrer'} : {};
 
   return (
     <RouterLink
@@ -39,6 +44,7 @@ export function Link({
         })
       }
       {...ariaForTarget(implicitAction?.target)}
+      {...externalProps}
     >
       {children}
     </RouterLink>
