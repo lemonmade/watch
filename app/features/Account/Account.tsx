@@ -34,7 +34,10 @@ export function Account() {
   const [key, setKey] = useState(1);
 
   const navigate = useNavigate();
-  const {data} = useQuery(accountQuery, {variables: {key} as any});
+  const {data} = useQuery(accountQuery, {
+    variables: {key} as any,
+    cache: false,
+  });
   const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
 

@@ -28,7 +28,6 @@ import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
-  Strategy = 'strategy',
   RedirectTo = 'redirect',
 }
 
@@ -137,8 +136,6 @@ function SignInForm() {
               '/internal/auth/github/sign-in',
               currentUrl,
             );
-
-            targetUrl.searchParams.set(SearchParam.Strategy, 'modal');
 
             const redirectTo = currentUrl.searchParams.get(
               SearchParam.RedirectTo,
