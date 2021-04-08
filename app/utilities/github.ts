@@ -31,7 +31,9 @@ export function useGithubOAuthPopoverEvents(
   handleEventRef.current = handleEvent;
 
   useEffect(() => {
-    function handler({data, source}: MessageEvent) {
+    function handler({data, origin, source}: MessageEvent) {
+      if (origin !== window.location.origin) return;
+
       let parsed: any;
 
       try {

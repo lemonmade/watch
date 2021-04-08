@@ -488,20 +488,10 @@ function modalAuthResponse({
     <html>
       <script>
         try {
-          if (
-            window.opener &&
-            window.opener.location &&
-            window.opener.location.origin === ${JSON.stringify(
-              redirectTo.origin,
-            )} &&
-            window.opener.location.pathname === ${JSON.stringify(
-              redirectTo.pathname,
-            )}) {
+          if (window.opener) {
             window.opener.postMessage(${JSON.stringify(
-              {topic: 'github:oauth', ...event},
-              null,
-              2,
-            )})
+              JSON.stringify({topic: 'github:oauth', ...event}),
+            )}, ${JSON.stringify(request.url.origin)})
           } else {
             window.location.replace(${JSON.stringify(redirectTo.href)});
           }
