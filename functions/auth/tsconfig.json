@@ -5,10 +5,15 @@
     "rootDir": ".",
     "outDir": "build/ts",
     "paths": {
+      "global/*": ["../../global/*"],
       "shared/*": ["../shared/*"]
     }
   },
   "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../shared"}, {"path": "../../packages/tiny-server"}]
+  "references": [
+    {"path": "../shared"},
+    {"path": "../../global"},
+    {"path": "../../packages/tiny-server"}
+  ]
 }

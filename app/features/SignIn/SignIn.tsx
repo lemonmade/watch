@@ -15,8 +15,14 @@ import {
   BlockStack,
   TextBlock,
   Banner,
-  Pressable,
+  Button,
 } from '@lemon/zest';
+
+import {
+  openGithubOAuthPopover,
+  useGithubOAuthPopoverEvents,
+} from 'utilities/github';
+import {SignInErrorReason} from 'global/utilities/auth';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
@@ -24,13 +30,6 @@ enum SearchParam {
   Reason = 'reason',
   Strategy = 'strategy',
   RedirectTo = 'redirect',
-}
-
-export enum SignInErrorReason {
-  Expired = 'expired',
-  Generic = 'generic-error',
-  GithubError = 'github-error',
-  GithubNoAccount = 'github-no-account',
 }
 
 export function SignIn() {
@@ -46,9 +45,23 @@ function SignInForm() {
   const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
 
-  const signInReason = currentUrl.searchParams.get(SearchParam.Reason);
+  const [signInReason, setSignInReason] = useState(
+    currentUrl.searchParams.get(SearchParam.Reason) ?? undefined,
+  );
 
   let errorBanner: ReactNode = null;
+
+  useGithubOAuthPopoverEvents((event, popover) => {
+    if (event.type !== 'signIn') return;
+
+    popover.close();
+
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      setSignInReason(event.reason ?? SignInErrorReason.Generic);
+    }
+  });
 
   if (signInReason) {
     switch (signInReason) {
@@ -118,23 +131,7 @@ function SignInForm() {
 
         <TextBlock>or...</TextBlock>
 
-        <Link
-          to={(url) => {
-            const targetUrl = new URL('/internal/auth/github/sign-in', url);
-            targetUrl.searchParams.set(SearchParam.Strategy, 'modal');
-
-            const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
-
-            if (redirectTo) {
-              targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-            }
-
-            return targetUrl;
-          }}
-        >
-          Sign in with Github
-        </Link>
-        <Pressable
+        <Button
           onPress={() => {
             const targetUrl = new URL(
               '/internal/auth/github/sign-in',
@@ -151,11 +148,11 @@ function SignInForm() {
               targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
             }
 
-            window.open(targetUrl.href);
+            openGithubOAuthPopover(targetUrl);
           }}
         >
-          Sign in with Github (modal)
-        </Pressable>
+          Sign in with Github
+        </Button>
       </BlockStack>
     </View>
   );

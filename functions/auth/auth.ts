@@ -5,7 +5,6 @@ import {signInFromEmail, createAccountFromEmail} from './handlers/email';
 import {
   startGithubOAuth,
   handleGithubOAuthSignIn,
-  handleGithubOAuthSignInModal,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
 } from './handlers/github';
@@ -17,7 +16,6 @@ app.get('/email/create-account', createAccountFromEmail);
 
 app.get('/github/sign-in', startGithubOAuth);
 app.get('/github/sign-in/callback', handleGithubOAuthSignIn);
-app.get('/github/sign-in/callback-modal', handleGithubOAuthSignInModal);
 
 app.get('/github/create-account', startGithubOAuth);
 app.get('/github/create-account/callback', handleGithubOAuthCreateAccount);

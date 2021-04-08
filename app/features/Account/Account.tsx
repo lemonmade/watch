@@ -1,5 +1,10 @@
 import {useState} from 'react';
-import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
+import {
+  useQuery,
+  useMutation,
+  useNavigate,
+  useCurrentUrl,
+} from '@quilted/quilt';
 import {NotFound} from '@quilted/quilt/http';
 
 import {
@@ -10,9 +15,14 @@ import {
   Section,
   Link,
   Text,
+  Banner,
 } from '@lemon/zest';
 
 import {Page} from 'components';
+import {
+  openGithubOAuthPopover,
+  useGithubOAuthPopoverEvents,
+} from 'utilities/github';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';
@@ -68,6 +78,47 @@ export function Account() {
   );
 }
 
+function ConnectGithubAccount() {
+  const currentUrl = useCurrentUrl();
+  const [error, setError] = useState(false);
+
+  useGithubOAuthPopoverEvents((event, popover) => {
+    if (event.type !== 'connect') return;
+    popover.close();
+    setError(!event.success);
+  });
+
+  const errorContent = error ? (
+    <Banner status="error">
+      There was an error connecting your Github account. You’ll need to try
+      again.
+    </Banner>
+  ) : null;
+
+  return (
+    <Section>
+      <BlockStack>
+        {errorContent}
+        <Heading>Github account</Heading>
+        <TextBlock>
+          Connecting your Github account lets you sign in with Github.
+        </TextBlock>
+        <Button
+          onPress={() => {
+            const target = new URL('/internal/auth/github/connect', currentUrl);
+            target.searchParams.set('redirect', currentUrl.pathname);
+
+            setError(false);
+            openGithubOAuthPopover(target);
+          }}
+        >
+          Connect Github
+        </Button>
+      </BlockStack>
+    </Section>
+  );
+}
+
 function GithubSection({
   account,
   onDisconnectAccount,
@@ -78,28 +129,7 @@ function GithubSection({
   const disconnectAccount = useMutation(disconnectGithubAccountMutation);
 
   if (account == null) {
-    return (
-      <Section>
-        <BlockStack>
-          <Heading>Github account</Heading>
-          <TextBlock>
-            Connecting your Github account lets you sign in with Github
-          </TextBlock>
-          <Link
-            to={(currentUrl) => {
-              const target = new URL(
-                '/internal/auth/github/connect',
-                currentUrl,
-              );
-              target.searchParams.set('redirect', currentUrl.pathname);
-              return target;
-            }}
-          >
-            Connect Github
-          </Link>
-        </BlockStack>
-      </Section>
-    );
+    return <ConnectGithubAccount />;
   }
 
   const {username, profileUrl} = account;
