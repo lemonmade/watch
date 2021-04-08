@@ -48,6 +48,7 @@ export function tinyServer() {
               ]);
               configure.webpackAliases?.hook((aliases) => ({
                 ...aliases,
+                global: workspace.fs.resolvePath('global'),
                 shared: workspace.fs.resolvePath('functions/shared'),
               }));
               configure.webpackOutputFilename?.hook(() => 'index.js');

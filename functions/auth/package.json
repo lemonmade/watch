@@ -8,6 +8,7 @@
   "dependencies": {
     "@lemon/tiny-server": "*",
     "@quilted/graphql": "^0.3.0",
-    "@quilted/polyfills": "^0.0.5"
+    "@quilted/polyfills": "^0.0.5",
+    "common-tags": "^1.8.0"
   }
 }

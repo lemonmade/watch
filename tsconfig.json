@@ -6,6 +6,9 @@
       "path": "./tsconfig.project.json"
     },
     {
+      "path": "./global"
+    },
+    {
       "path": "./app"
     },
     {

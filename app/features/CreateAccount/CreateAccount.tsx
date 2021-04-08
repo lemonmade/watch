@@ -7,7 +7,7 @@ import {
   useCurrentUrl,
 } from '@quilted/quilt';
 import {
-  Link,
+  Button,
   View,
   Banner,
   TextField,
@@ -17,17 +17,17 @@ import {
   Heading,
 } from '@lemon/zest';
 
+import {
+  openGithubOAuthPopover,
+  useGithubOAuthPopoverEvents,
+} from 'utilities/github';
+import {CreateAccountErrorReason} from 'global/utilities/auth';
+
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
   RedirectTo = 'redirect',
-}
-
-export enum CreateAccountErrorReason {
-  Expired = 'expired',
-  Generic = 'generic-error',
-  GithubError = 'github-error',
 }
 
 export function CreateAccount() {
@@ -44,7 +44,21 @@ export function CreateAccountForm() {
   const currentUrl = useCurrentUrl();
   const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
 
-  const createAccountReason = currentUrl.searchParams.get(SearchParam.Reason);
+  const [createAccountReason, setCreateAccountReason] = useState(
+    currentUrl.searchParams.get(SearchParam.Reason) ?? undefined,
+  );
+
+  useGithubOAuthPopoverEvents((event, popover) => {
+    if (event.type !== 'createAccount') return;
+
+    popover.close();
+
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      setCreateAccountReason(event.reason ?? CreateAccountErrorReason.Generic);
+    }
+  });
 
   let errorBanner: ReactNode = null;
 
@@ -106,23 +120,26 @@ export function CreateAccountForm() {
 
       <TextBlock>or...</TextBlock>
 
-      <Link
-        to={(url) => {
+      <Button
+        onPress={() => {
           const targetUrl = new URL(
             '/internal/auth/github/create-account',
-            url,
+            currentUrl,
           );
-          const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
+
+          const redirectTo = currentUrl.searchParams.get(
+            SearchParam.RedirectTo,
+          );
 
           if (redirectTo) {
             targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
           }
 
-          return targetUrl;
+          openGithubOAuthPopover(targetUrl);
         }}
       >
         Create account with Github
-      </Link>
+      </Button>
     </View>
   );
 }

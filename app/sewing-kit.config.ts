@@ -37,21 +37,33 @@ export default createWebApp((app) => {
 });
 
 function randomBits() {
-  return createProjectPlugin<WebApp>('Watch.App.Etcetera', ({tasks}) => {
-    tasks.dev.hook(({hooks}) => {
-      hooks.configure.hook((configuration) => {
-        // Shouldn't need this...
-        configuration.webpackPublicPath?.hook(
-          () => `http://localhost:3002/assets/`,
-        );
-      });
-    });
-
-    tasks.build.hook(({hooks}) => {
-      hooks.target.hook(({hooks}) => {
+  return createProjectPlugin<WebApp>(
+    'Watch.App.Etcetera',
+    ({tasks, workspace}) => {
+      tasks.dev.hook(({hooks}) => {
         hooks.configure.hook((configuration) => {
-          configuration.quiltAutoServerContent?.hook(
-            () => `
+          // Shouldn't need this...
+          configuration.webpackPublicPath?.hook(
+            () => `http://localhost:3002/assets/`,
+          );
+
+          configuration.webpackAliases?.hook((aliases) => ({
+            ...aliases,
+            global: workspace.fs.resolvePath('global'),
+          }));
+        });
+      });
+
+      tasks.build.hook(({hooks}) => {
+        hooks.target.hook(({hooks}) => {
+          hooks.configure.hook((configuration) => {
+            configuration.webpackAliases?.hook((aliases) => ({
+              ...aliases,
+              global: workspace.fs.resolvePath('global'),
+            }));
+
+            configuration.quiltAutoServerContent?.hook(
+              () => `
               import App from ${JSON.stringify(MAGIC_MODULE_APP_COMPONENT)};
               import assets from ${JSON.stringify(
                 MAGIC_MODULE_APP_AUTO_SERVER_ASSETS,
@@ -98,11 +110,12 @@ function randomBits() {
 
               export const handler = createLambdaApiGatewayProxy(app);
             `,
-          );
+            );
+          });
         });
       });
-    });
-  });
+    },
+  );
 }
 
 function bundleAnalyzer() {

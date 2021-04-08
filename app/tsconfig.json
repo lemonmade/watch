@@ -3,11 +3,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": ".",
-    "outDir": "build/ts"
+    "outDir": "build/ts",
+    "paths": {
+      "global/*": ["../global/*"]
+    }
   },
   "include": ["**/*", "../config/typescript/globals.d.ts"],
   "exclude": ["sewing-kit.config.ts", "build"],
   "references": [
+    {
+      "path": "../global"
+    },
     {
       "path": "../packages/basics"
     },

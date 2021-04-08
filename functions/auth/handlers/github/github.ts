@@ -5,23 +5,20 @@ import type {
   ExtendedResponse,
 } from '@lemon/tiny-server';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {redirect, fetchJson} from '@lemon/tiny-server';
+import {redirect, html, fetchJson} from '@lemon/tiny-server';
+import {stripIndent} from 'common-tags';
 
-import {getUserIdFromRequest} from 'shared/utilities/auth';
+import {
+  SignInErrorReason,
+  CreateAccountErrorReason,
+} from 'global/utilities/auth';
+import type {GithubOAuthPopoverMessage} from 'global/utilities/auth';
+import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
-import {
-  restartSignIn as baseRestartSignIn,
-  restartCreateAccount as baseRestartCreateAccount,
-  completeAuth as baseCompleteAuth,
-  validateRedirectTo,
-} from '../shared';
-import {
-  CreateAccountErrorReason,
-  SearchParam,
-  SignInErrorReason,
-} from '../../constants';
+import {validateRedirectTo} from '../shared';
+import {SearchParam} from '../../constants';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
@@ -48,15 +45,6 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-const completeAuth: typeof baseCompleteAuth = (userId, options) =>
-  deleteOAuthCookies(baseCompleteAuth(userId, options), options);
-
-const restartSignIn: typeof baseRestartSignIn = (options) =>
-  deleteOAuthCookies(baseRestartSignIn(options), options);
-
-const restartCreateAccount: typeof baseRestartCreateAccount = (options) =>
-  deleteOAuthCookies(baseRestartCreateAccount(options), options);
-
 export function startGithubOAuth(request: ExtendedRequest) {
   const state = crypto
     .randomBytes(15)
@@ -69,6 +57,7 @@ export function startGithubOAuth(request: ExtendedRequest) {
   githubOAuthUrl.searchParams.set(GithubSearchParam.ClientId, CLIENT_ID);
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
+
   githubOAuthUrl.searchParams.set(
     GithubSearchParam.Redirect,
     new URL('callback', `${request.url.origin}${request.url.pathname}/`).href,
@@ -110,7 +99,7 @@ export function handleGithubOAuthSignIn(request: ExtendedRequest) {
           `Found existing user during sign-in: ${userIdFromExistingAccount}`,
         );
 
-        return completeAuth(userIdFromExistingAccount, {redirectTo, request});
+        return completeSignIn(userIdFromExistingAccount, {redirectTo, request});
       } else {
         // eslint-disable-next-line no-console
         console.log(`No user found!`);
@@ -123,6 +112,20 @@ export function handleGithubOAuthSignIn(request: ExtendedRequest) {
       }
     },
   });
+}
+
+function completeSignIn(
+  id: string,
+  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+) {
+  return addAuthCookies(
+    {id},
+    modalAuthResponse({
+      request,
+      event: {type: 'signIn', success: true},
+      redirectTo: validatedRedirectUrl(redirectTo, request),
+    }),
+  );
 }
 
 export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
@@ -141,7 +144,10 @@ export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
           `Found existing user during sign-up: ${userIdFromExistingAccount}`,
         );
 
-        return completeAuth(userIdFromExistingAccount, {request, redirectTo});
+        return completeCreateAccount(userIdFromExistingAccount, {
+          request,
+          redirectTo,
+        });
       }
 
       const {
@@ -179,12 +185,26 @@ export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
         // eslint-disable-next-line no-console
         console.log(`Created new user during sign-up: ${updatedUserId}`);
 
-        return completeAuth(updatedUserId, {redirectTo, request});
+        return completeCreateAccount(updatedUserId, {redirectTo, request});
       } catch {
         return restartCreateAccount({redirectTo, request});
       }
     },
   });
+}
+
+function completeCreateAccount(
+  id: string,
+  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+) {
+  return addAuthCookies(
+    {id},
+    modalAuthResponse({
+      request,
+      event: {type: 'createAccount', success: true},
+      redirectTo: validatedRedirectUrl(redirectTo, request),
+    }),
+  );
 }
 
 export function handleGithubOAuthConnect(request: ExtendedRequest) {
@@ -202,7 +222,10 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
             `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
           );
 
-          return completeAuth(userIdFromRequest, {request, redirectTo});
+          return completeConnect(userIdFromRequest, {
+            request,
+            redirectTo,
+          });
         } else {
           // eslint-disable-next-line no-console
           console.log(
@@ -241,7 +264,10 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
           `Connected Github account ${login} to user: ${userIdFromRequest}`,
         );
 
-        return completeAuth(userIdFromRequest, {redirectTo, request});
+        return completeConnect(userIdFromRequest, {
+          request,
+          redirectTo,
+        });
       } catch {
         // Should have better behavior here, what do we do if
         // the db request to connect the account failed? Probably
@@ -250,6 +276,20 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
       }
     },
   });
+}
+
+function completeConnect(
+  id: string,
+  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+) {
+  return addAuthCookies(
+    {id},
+    modalAuthResponse({
+      request,
+      event: {type: 'connect', success: true},
+      redirectTo: validatedRedirectUrl(redirectTo, request),
+    }),
+  );
 }
 
 interface GithubCallbackResult {
@@ -353,6 +393,65 @@ async function handleGithubOAuthCallback(
   return response;
 }
 
+function restartSignIn({
+  request,
+  reason = SignInErrorReason.Generic,
+  redirectTo,
+}: {
+  request: ExtendedRequest;
+  reason?: SignInErrorReason;
+  redirectTo?: string;
+}) {
+  const signInUrl = new URL('/sign-in', request.url);
+
+  if (reason) {
+    signInUrl.searchParams.set(SearchParam.Reason, reason);
+  }
+
+  const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
+
+  if (normalizedRedirectTo) {
+    signInUrl.searchParams.set(SearchParam.RedirectTo, normalizedRedirectTo);
+  }
+
+  return modalAuthResponse({
+    request,
+    redirectTo: signInUrl,
+    event: {type: 'signIn', success: false, reason},
+  });
+}
+
+function restartCreateAccount({
+  request,
+  reason = CreateAccountErrorReason.Generic,
+  redirectTo,
+}: {
+  request: ExtendedRequest;
+  reason?: CreateAccountErrorReason;
+  redirectTo?: string;
+}) {
+  const createAccountUrl = new URL('/create-account', request.url);
+
+  if (reason) {
+    createAccountUrl.searchParams.set(SearchParam.Reason, reason);
+  }
+
+  const normalizedRedirectTo = validateRedirectTo(redirectTo, request);
+
+  if (normalizedRedirectTo) {
+    createAccountUrl.searchParams.set(
+      SearchParam.RedirectTo,
+      normalizedRedirectTo,
+    );
+  }
+
+  return modalAuthResponse({
+    request,
+    redirectTo: createAccountUrl,
+    event: {type: 'createAccount', success: false, reason},
+  });
+}
+
 function restartConnect({
   request,
   redirectTo,
@@ -360,8 +459,55 @@ function restartConnect({
   request: ExtendedRequest;
   redirectTo?: string;
 }) {
+  const targetUrl = validatedRedirectUrl(redirectTo, request);
+
+  return modalAuthResponse({
+    request,
+    redirectTo: targetUrl,
+    event: {type: 'connect', success: false},
+  });
+}
+
+function validatedRedirectUrl(
+  redirect: string | undefined,
+  request: ExtendedRequest,
+) {
+  return new URL(validateRedirectTo(redirect, request) ?? '/app', request.url);
+}
+
+function modalAuthResponse({
+  event,
+  redirectTo,
+  request,
+}: {
+  event: Omit<GithubOAuthPopoverMessage, 'topic' | 'redirectTo'>;
+  redirectTo: URL;
+  request: ExtendedRequest;
+}) {
+  const content = stripIndent`
+    <html>
+      <script>
+        try {
+          if (window.opener) {
+            window.opener.postMessage(${JSON.stringify(
+              JSON.stringify({
+                topic: 'github:oauth',
+                redirectTo: redirectTo.href,
+                ...event,
+              }),
+            )}, ${JSON.stringify(request.url.origin)})
+          } else {
+            window.location.replace(${JSON.stringify(redirectTo.href)});
+          }
+        } catch (error) {
+          window.location.replace(${JSON.stringify(redirectTo.href)});
+        }
+      </script>
+    </html>
+  `;
+
   return deleteOAuthCookies(
-    redirect(validateRedirectTo(redirectTo, request) ?? '/app', {
+    html(content, {
       headers: {
         'Cache-Control': 'no-store',
       },
