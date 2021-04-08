@@ -480,7 +480,7 @@ function modalAuthResponse({
   redirectTo,
   request,
 }: {
-  event: Omit<GithubOAuthPopoverMessage, 'topic'>;
+  event: Omit<GithubOAuthPopoverMessage, 'topic' | 'redirectTo'>;
   redirectTo: URL;
   request: ExtendedRequest;
 }) {
@@ -490,7 +490,11 @@ function modalAuthResponse({
         try {
           if (window.opener) {
             window.opener.postMessage(${JSON.stringify(
-              JSON.stringify({topic: 'github:oauth', ...event}),
+              JSON.stringify({
+                topic: 'github:oauth',
+                redirectTo: redirectTo.href,
+                ...event,
+              }),
             )}, ${JSON.stringify(request.url.origin)})
           } else {
             window.location.replace(${JSON.stringify(redirectTo.href)});
