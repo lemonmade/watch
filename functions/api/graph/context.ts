@@ -23,35 +23,67 @@ export function createContext(
     request,
     response,
     userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),
-    watchLoader: new DataLoader(createBatchLoaderForTable(db, Table.Watches)),
-    skipLoader: new DataLoader(createBatchLoaderForTable(db, Table.Skips)),
+    watchLoader: new DataLoader(
+      createUserScopedBatchLoaderForTable(db, Table.Watches, user),
+    ),
+    skipLoader: new DataLoader(
+      createUserScopedBatchLoaderForTable(db, Table.Skips, user),
+    ),
     seriesLoader: new DataLoader(createBatchLoaderForTable(db, Table.Series)),
     seriesSubscriptionsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.SeriesSubscriptions),
+      createUserScopedBatchLoaderForTable(db, Table.SeriesSubscriptions, user),
     ),
     seasonLoader: new DataLoader(createBatchLoaderForTable(db, Table.Seasons)),
     episodeLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.Episodes),
     ),
     watchThroughLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.WatchThroughs),
+      createUserScopedBatchLoaderForTable(db, Table.WatchThroughs, user),
     ),
     appsLoader: new DataLoader(createBatchLoaderForTable(db, Table.Apps)),
     clipsExtensionsLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.ClipsExtensions),
     ),
     appInstallationsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.AppInstallations),
+      createUserScopedBatchLoaderForTable(db, Table.AppInstallations, user),
     ),
     clipsExtensionInstallationsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.ClipsExtensionInstallations),
+      createUserScopedBatchLoaderForTable(
+        db,
+        Table.ClipsExtensionInstallations,
+        user,
+      ),
     ),
     clipsExtensionVersionsLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
     ),
     githubAccountsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.GithubAccounts),
+      createUserScopedBatchLoaderForTable(db, Table.GithubAccounts, user),
     ),
+  };
+}
+
+function createUserScopedBatchLoaderForTable(
+  db: import('knex'),
+  table: Table,
+  user: {id: string} | undefined,
+) {
+  return async (ids: readonly string[]) => {
+    if (user == null) {
+      throw new Error(`Need a user for ${table}!`);
+    }
+
+    const results = ((await db
+      .select<{id: string}>('*')
+      .from(table)
+      .where({userId: user.id})
+      .whereIn('id', ids as string[])) as any) as {id: string}[];
+
+    return ids.map((id, index) =>
+      results[index] && results[index].id === id
+        ? results[index]
+        : results.find((result) => result.id === id) || null,
+    );
   };
 }
 

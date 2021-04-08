@@ -61,11 +61,12 @@ export const Query: Resolver = {
   subscription(_, {id}: {id: string}, {seriesSubscriptionsLoader}) {
     return seriesSubscriptionsLoader.load(fromGid(id).id);
   },
-  async subscriptions(_, __, {db, seriesSubscriptionsLoader}) {
+  async subscriptions(_, __, {db, seriesSubscriptionsLoader, user}) {
     const seriesSubscriptions = await db
       .select('id')
       .from(Table.SeriesSubscriptions)
-      .limit(50);
+      .limit(50)
+      .where({userId: user.id});
 
     return Promise.all(
       seriesSubscriptions.map(({id}) => seriesSubscriptionsLoader.load(id)),
@@ -77,12 +78,12 @@ export const Query: Resolver = {
   async watchThroughs(
     _,
     {status = 'ONGOING'}: {status?: string},
-    {db, watchThroughLoader},
+    {db, watchThroughLoader, user},
   ) {
     const watchThroughs = await db
       .select('id')
       .from(Table.WatchThroughs)
-      .where({status})
+      .where({status, userId: user.id})
       .limit(50);
 
     return Promise.all(
@@ -95,12 +96,12 @@ export const Query: Resolver = {
   async clipsInstallations(
     _,
     {extensionPoint}: {extensionPoint: string},
-    {db, clipsExtensionInstallationsLoader},
+    {db, clipsExtensionInstallationsLoader, user},
   ) {
     const installations = await db
       .select('id')
       .from(Table.ClipsExtensionInstallations)
-      .where({extensionPoint})
+      .where({extensionPoint, userId: user.id})
       .limit(50);
 
     return Promise.all(
@@ -209,7 +210,7 @@ export const Mutation: Resolver = {
       startedAt?: string;
       finishedAt?: string;
     },
-    {db, watchLoader, episodeLoader, watchThroughLoader},
+    {db, user, watchLoader, episodeLoader, watchThroughLoader},
   ) {
     const episodeId = episodeGid && fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
@@ -222,6 +223,7 @@ export const Mutation: Resolver = {
         notes,
         startedAt,
         finishedAt,
+        userId: user.id,
       })
       .into(Table.Watches)
       .returning<string>('id');
@@ -256,7 +258,7 @@ export const Mutation: Resolver = {
       notes,
       at,
     }: {episode: string; watchThrough?: string; notes?: string; at?: string},
-    {db, skipLoader, episodeLoader, watchThroughLoader},
+    {db, user, skipLoader, episodeLoader, watchThroughLoader},
   ) {
     const episodeId = episodeGid && fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
@@ -267,6 +269,7 @@ export const Mutation: Resolver = {
         watchThroughId,
         notes,
         at,
+        userId: user.id,
       })
       .into(Table.Skips)
       .returning<string>('id');
@@ -293,10 +296,17 @@ export const Mutation: Resolver = {
 
     return {skip, episode, watchThrough};
   },
-  async stopWatchThrough(_, {id: gid}: {id: string}, {db, watchThroughLoader}) {
+  async stopWatchThrough(
+    _,
+    {id: gid}: {id: string},
+    {db, watchThroughLoader, user},
+  ) {
     const {id} = fromGid(gid);
 
-    await db.from(Table.WatchThroughs).update({status: 'STOPPED'}).where({id});
+    await db
+      .from(Table.WatchThroughs)
+      .update({status: 'STOPPED'})
+      .where({id, userId: user.id});
     const watchThrough = await watchThroughLoader.load(id);
 
     return {watchThrough};
@@ -314,7 +324,7 @@ export const Mutation: Resolver = {
       episodes?: string[];
       includeSpecials?: boolean;
     },
-    {db, watchThroughLoader},
+    {db, user, watchThroughLoader},
   ) {
     const {id: seriesId} = fromGid(seriesGid);
 
@@ -363,6 +373,7 @@ export const Mutation: Resolver = {
           {
             startedAt: new Date(),
             seriesId,
+            userId: user.id,
           },
           ['id'],
         )
@@ -385,30 +396,27 @@ export const Mutation: Resolver = {
 
     return {watchThrough};
   },
-  async subscribeToSeries(
-    _,
-    {id: seriesGid}: {id: string},
-    {db, seriesSubscriptionsLoader},
-  ) {
+  async subscribeToSeries(_, {id: seriesGid}: {id: string}, {db, user}) {
     const {id: seriesId} = fromGid(seriesGid);
 
-    const [{id: seriesSubscriptionId}] = await db
-      .insert({seriesId}, ['id'])
-      .into(Table.SeriesSubscriptions);
-
-    const subscription = await seriesSubscriptionsLoader.load(
-      seriesSubscriptionId,
-    );
+    const [subscription] = await db
+      .insert({seriesId, userId: user.id})
+      .into(Table.SeriesSubscriptions)
+      .returning('*');
 
     return {subscription};
   },
-  async deleteWatch(_, {id: gid}: {id: string}, {db, watchThroughLoader}) {
+  async deleteWatch(
+    _,
+    {id: gid}: {id: string},
+    {db, user, watchThroughLoader},
+  ) {
     const {id} = fromGid(gid);
     const [{watchThroughId}] = await db
       .select('watchThroughId')
       .from(Table.Watches)
-      .where({id});
-    await db.from(Table.Watches).where({id}).delete();
+      .where({id, userId: User.id});
+    await db.from(Table.Watches).where({id, userId: user.id}).delete();
 
     return {
       deletedWatchId: gid,
@@ -417,9 +425,9 @@ export const Mutation: Resolver = {
         : null,
     };
   },
-  async deleteWatchThrough(_, {id: gid}: {id: string}, {db}) {
+  async deleteWatchThrough(_, {id: gid}: {id: string}, {db, user}) {
     const {id} = fromGid(gid);
-    await db.from(Table.WatchThroughs).where({id}).delete();
+    await db.from(Table.WatchThroughs).where({id, userId: user.id}).delete();
     return {deletedWatchThroughId: gid};
   },
   async updateSeason(
@@ -457,7 +465,7 @@ export const Mutation: Resolver = {
       series: seriesGid,
       slice,
     }: {series: string; slice?: {from?: Slice; to?: Slice}},
-    {db, seriesLoader},
+    {db, user, seriesLoader},
   ) {
     const {id: seriesId} = fromGid(seriesGid);
 
@@ -500,6 +508,7 @@ export const Mutation: Resolver = {
         .insert(
           episodes.map(({id: episodeId}) => ({
             episodeId,
+            userId: user.id,
           })),
         )
         .into(Table.Watches);
@@ -664,9 +673,9 @@ export const Mutation: Resolver = {
       extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
-  async installApp(_, {id}: {id: string}, {db, appsLoader}) {
+  async installApp(_, {id}: {id: string}, {db, user, appsLoader}) {
     const [installation] = await db
-      .insert({appId: fromGid(id).id}, '*')
+      .insert({appId: fromGid(id).id, userId: user.id}, '*')
       .into(Table.AppInstallations);
 
     return {app: await appsLoader.load(fromGid(id).id), installation};
@@ -674,7 +683,7 @@ export const Mutation: Resolver = {
   async installClipsExtension(
     _,
     {id, extensionPoint}: {id: string; extensionPoint: string},
-    {db, clipsExtensionsLoader},
+    {db, user, clipsExtensionsLoader},
   ) {
     const [appInstallation] = await db
       .select({id: 'AppInstallations.id'})
@@ -698,6 +707,7 @@ export const Mutation: Resolver = {
           extensionId: fromGid(id).id,
           appInstallId: appInstallation.id,
           extensionPoint,
+          userId: user.id,
         },
         '*',
       )
@@ -884,11 +894,11 @@ export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
   series({seriesId}, _, {seriesLoader}) {
     return seriesLoader.load(seriesId);
   },
-  async watches({id}, _, {db, watchLoader}) {
+  async watches({id}, _, {db, user, watchLoader}) {
     const watches = await db
       .select('id')
       .from(Table.Watches)
-      .where({watchThroughId: id})
+      .where({watchThroughId: id, userId: user.id})
       .limit(50);
     return Promise.all(watches.map(({id}) => watchLoader.load(id)));
   },
