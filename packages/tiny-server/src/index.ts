@@ -201,16 +201,22 @@ function augmentResponse(
     existingCookies?.entries() ?? [],
   );
 
+  function updateSetCookieHeader() {
+    response.headers.delete('Set-Cookie');
+
+    for (const cookie of serializedCookies.values()) {
+      response.headers.append('Set-Cookie', cookie);
+    }
+  }
+
+  updateSetCookieHeader();
+
   const responseCookies: ResponseCookies = {
     set(cookie, value, options) {
       const setCookie = Cookies.serialize(cookie, value, options);
       serializedCookies.set(cookie, setCookie);
 
-      response.headers.delete('Set-Cookie');
-
-      for (const cookie of serializedCookies.values()) {
-        response.headers.append('Set-Cookie', cookie);
-      }
+      updateSetCookieHeader();
     },
     delete(cookie) {
       responseCookies.set(cookie, '', {expires: new Date(0)});
