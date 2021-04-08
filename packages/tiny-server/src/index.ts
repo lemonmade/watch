@@ -45,9 +45,7 @@ export interface ExtendedResponse extends Response {
   readonly cookies: ResponseCookies;
 }
 
-export interface ExtendedResponseInit extends ResponseInit {
-  cookies?: Record<string, CookieDefinition>;
-}
+export interface ExtendedResponseInit extends ResponseInit {}
 
 export type ValueOrPromise<T> = T | Promise<T>;
 
@@ -195,7 +193,9 @@ function augmentResponse(
 ): ExtendedResponse {
   if ('cookies' in response) return response;
 
-  const serializedCookies = new Map<string, string>();
+  const serializedCookies = new Map<string, string>(
+    Object.entries(Cookies.parse(response.headers.get('Set-Cookie') ?? '')),
+  );
 
   const responseCookies: ResponseCookies = {
     [Symbol.iterator]: () => serializedCookies.values(),
@@ -228,18 +228,10 @@ export function response(
     status = 200,
     statusText,
     headers: explicitHeaders,
-    cookies: explicitCookies,
   }: ExtendedResponseInit = {},
 ): ExtendedResponse {
   const headers = normalizeHeaders(explicitHeaders);
-
-  if (explicitCookies) {
-    // eslint-disable-next-line no-warning-comments
-    // TODO
-  }
-
   const response = new Response(body, {status, statusText, headers});
-
   return augmentResponse(response);
 }
 
@@ -247,11 +239,8 @@ export function notFound() {
   return response(null, {status: 404});
 }
 
-export function noContent({
-  headers,
-  cookies,
-}: Pick<ExtendedResponseInit, 'headers' | 'cookies'>) {
-  return response(null, {status: 204, headers, cookies});
+export function noContent({headers}: Pick<ExtendedResponseInit, 'headers'>) {
+  return response(null, {status: 204, headers});
 }
 
 export function redirect(
@@ -259,12 +248,11 @@ export function redirect(
   {
     status = 302,
     headers,
-    cookies,
   }: Omit<ExtendedResponseInit, 'status' | 'statusText'> & {
     status?: 302 | 303;
   } = {},
 ): ExtendedResponse {
-  const redirectResponse = response(null, {status, headers, cookies});
+  const redirectResponse = response(null, {status, headers});
   redirectResponse.headers.set('Location', urlToString(location));
   return redirectResponse;
 }
