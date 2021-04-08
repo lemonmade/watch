@@ -194,7 +194,10 @@ function augmentResponse(
   if ('cookies' in response) return response;
 
   const serializedCookies = new Map<string, string>(
-    Object.entries(Cookies.parse(response.headers.get('Set-Cookie') ?? '')),
+    response.headers
+      .get('Set-Cookie')
+      ?.split(/\s?,\s?/)
+      .map((cookie) => [cookie.split('=')[0], cookie]),
   );
 
   const responseCookies: ResponseCookies = {
