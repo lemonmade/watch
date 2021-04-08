@@ -37,7 +37,10 @@ export interface CookieDefinition {
 
 export interface ResponseCookies {
   set(cookie: string, value: string, definition?: CookieDefinition): void;
-  delete(cookie: string): void;
+  delete(
+    cookie: string,
+    definition?: Pick<CookieDefinition, 'path' | 'domain'>,
+  ): void;
   entries(): IterableIterator<readonly [string, string]>;
   [Symbol.iterator](): IterableIterator<string>;
 }
@@ -218,8 +221,8 @@ function augmentResponse(
 
       updateSetCookieHeader();
     },
-    delete(cookie) {
-      responseCookies.set(cookie, '', {expires: new Date(0)});
+    delete(cookie, options) {
+      responseCookies.set(cookie, '', {expires: new Date(0), ...options});
     },
     entries: () => serializedCookies.entries(),
     [Symbol.iterator]: () => serializedCookies.values(),

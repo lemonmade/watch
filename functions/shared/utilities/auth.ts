@@ -73,7 +73,7 @@ export function removeAuthCookies(
   {request}: {request?: ExtendedRequest} = {},
 ) {
   if (request == null || request.cookies.has(Cookie.Auth)) {
-    response.cookies.delete(Cookie.Auth);
+    response.cookies.delete(Cookie.Auth, {path: '/'});
   }
 
   return response;
