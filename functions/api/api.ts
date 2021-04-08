@@ -69,6 +69,7 @@ app.post(async (request) => {
 
     return json(result, {
       status: 200,
+      cookies: response.cookies,
       headers: response.headers,
     });
   } catch (error) {

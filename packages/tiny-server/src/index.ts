@@ -36,16 +36,19 @@ export interface CookieDefinition {
 }
 
 export interface ResponseCookies {
-  [Symbol.iterator](): IterableIterator<string>;
   set(cookie: string, value: string, definition?: CookieDefinition): void;
   delete(cookie: string): void;
+  entries(): IterableIterator<readonly [string, string]>;
+  [Symbol.iterator](): IterableIterator<string>;
 }
 
 export interface ExtendedResponse extends Response {
   readonly cookies: ResponseCookies;
 }
 
-export interface ExtendedResponseInit extends ResponseInit {}
+export interface ExtendedResponseInit extends ResponseInit {
+  cookies?: ResponseCookies;
+}
 
 export type ValueOrPromise<T> = T | Promise<T>;
 
@@ -190,18 +193,15 @@ function cookiesFromHeaders(headers: Headers): ExtendedRequest['cookies'] {
 
 function augmentResponse(
   response: Response | ExtendedResponse,
+  existingCookies?: ResponseCookies,
 ): ExtendedResponse {
   if ('cookies' in response) return response;
 
   const serializedCookies = new Map<string, string>(
-    response.headers
-      .get('Set-Cookie')
-      ?.split(/\s?,\s?/)
-      .map((cookie) => [cookie.split('=')[0], cookie]),
+    existingCookies?.entries() ?? [],
   );
 
   const responseCookies: ResponseCookies = {
-    [Symbol.iterator]: () => serializedCookies.values(),
     set(cookie, value, options) {
       const setCookie = Cookies.serialize(cookie, value, options);
       serializedCookies.set(cookie, setCookie);
@@ -215,6 +215,8 @@ function augmentResponse(
     delete(cookie) {
       responseCookies.set(cookie, '', {expires: new Date(0)});
     },
+    entries: () => serializedCookies.entries(),
+    [Symbol.iterator]: () => serializedCookies.values(),
   };
 
   Reflect.defineProperty(response, 'cookies', {
@@ -230,32 +232,37 @@ export function response(
   {
     status = 200,
     statusText,
+    cookies,
     headers: explicitHeaders,
   }: ExtendedResponseInit = {},
 ): ExtendedResponse {
   const headers = normalizeHeaders(explicitHeaders);
   const response = new Response(body, {status, statusText, headers});
-  return augmentResponse(response);
+  return augmentResponse(response, cookies);
 }
 
-export function notFound() {
-  return response(null, {status: 404});
+export function notFound(
+  options: Pick<ExtendedResponseInit, 'headers' | 'cookies'> = {},
+) {
+  return response(null, {status: 404, ...options});
 }
 
-export function noContent({headers}: Pick<ExtendedResponseInit, 'headers'>) {
-  return response(null, {status: 204, headers});
+export function noContent(
+  options: Pick<ExtendedResponseInit, 'headers' | 'cookies'> = {},
+) {
+  return response(null, {status: 204, ...options});
 }
 
 export function redirect(
   location: string | URL,
   {
     status = 302,
-    headers,
+    ...options
   }: Omit<ExtendedResponseInit, 'status' | 'statusText'> & {
-    status?: 302 | 303;
+    status?: 301 | 302 | 303 | 304;
   } = {},
 ): ExtendedResponse {
-  const redirectResponse = response(null, {status, headers});
+  const redirectResponse = response(null, {status, ...options});
   redirectResponse.headers.set('Location', urlToString(location));
   return redirectResponse;
 }
