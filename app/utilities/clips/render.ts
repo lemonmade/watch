@@ -89,7 +89,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
     let timings: {renderStart?: number; renderEnd?: number} | undefined;
     const listeners = new Map<'render', Set<() => void>>();
 
-    const controller: RenderController<ExtensionPoint> = {
+    const renderController: RenderController<ExtensionPoint> = {
       sandbox,
       timings: {
         get start() {
@@ -205,7 +205,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
       },
     };
 
-    return controller;
+    return renderController;
 
     function emit(event: 'render') {
       const listenersForEvent = listeners.get(event);
