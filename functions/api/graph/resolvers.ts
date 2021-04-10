@@ -118,7 +118,7 @@ export const Query: Resolver = {
       .from(Table.ClipsExtensionInstallations)
       .join(
         'ClipsExtensions',
-        'ClipsExtension.id',
+        'ClipsExtensions.id',
         '=',
         'ClipsExtensionInstallations.extensionId',
       )
