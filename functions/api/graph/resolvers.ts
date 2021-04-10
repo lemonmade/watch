@@ -1228,6 +1228,8 @@ export const ClipsExtensionVersion: Resolver<{
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
   translations: ({translations}) =>
     translations && JSON.stringify(translations),
+  supports: ({supports}) => supports ?? [],
+  configurationSchema: ({configurationSchema}) => configurationSchema ?? [],
 };
 
 function resolveClipsExtensionPointCondition(condition: {type: string}) {
