@@ -129,7 +129,7 @@ export const Query: Resolver = {
       .limit(50);
 
     const versions = await db
-      .select(['id', 'conditions', 'status'])
+      .select(['id', 'supports', 'status'])
       .from(Table.ClipsExtensionVersions)
       .whereIn(
         'id',
@@ -147,14 +147,18 @@ export const Query: Resolver = {
         return false;
       }
 
-      const versionConditions = JSON.parse(version.conditions);
+      const extensionPointSupport = JSON.parse(version.supports);
 
       return conditions.every((condition) => {
         if (condition.seriesId) {
-          return versionConditions.every((versionCondition: any) => {
+          return extensionPointSupport.every((supports: any) => {
             return (
-              versionCondition.type !== 'series' ||
-              versionCondition.id === condition.seriesId
+              extensionPoint !== supports.extensionPoint ||
+              supports.conditions.every(
+                (supportCondition: any) =>
+                  supportCondition.type !== 'series' ||
+                  supportCondition.id === condition.seriesId,
+              )
             );
           });
         }
