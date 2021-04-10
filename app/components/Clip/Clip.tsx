@@ -153,9 +153,9 @@ function InstalledClipConfiguration({id}: {id: string}) {
 
   if (data?.clipsInstallation == null) {
     return (
-      <View padding={16}>
+      <Text>
         {loading ? 'Loading configuration...' : 'Something went wrong!'}
-      </View>
+      </Text>
     );
   }
 
