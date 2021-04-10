@@ -167,10 +167,13 @@ async function pushExtension(
   };
 
   if (production) {
-    // eslint-disable-next-line no-console
+    /* eslint-disable no-console */
     console.log(
       `Updating existing extension ${extension.configuration.name} (id: ${production.id})`,
     );
+
+    console.log(JSON.stringify(buildOptions, null, 2));
+    /* eslint-enable no-console */
 
     const {data, error} = await graphql.mutate(pushClipsExtensionMutation, {
       variables: {
@@ -235,7 +238,28 @@ async function loadTranslationsForExtension(extension: LocalExtension) {
       path.join(extension.root, 'translations/en.json'),
       {encoding: 'utf-8'},
     );
-    return JSON.parse(result);
+    const parsed = JSON.parse(result);
+
+    const flattened: Record<string, string> = {};
+
+    const flattenObject = (
+      object: Record<string, unknown>,
+      nestedKey?: string,
+    ) => {
+      for (const [key, value] of Object.entries(object)) {
+        const fullKey = nestedKey ? `${nestedKey}.${key}` : key;
+
+        if (typeof value === 'string') {
+          flattened[fullKey] = value;
+        } else if (typeof value === 'object' && value != null) {
+          flattenObject(value as Record<string, unknown>, fullKey);
+        }
+      }
+    };
+
+    flattenObject(parsed);
+
+    return flattened;
   } catch {
     return null;
   }
