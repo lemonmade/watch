@@ -33,12 +33,17 @@ import type {
   JSON as GraphQlJSON,
 } from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
-import type {RenderController, ExtensionSandbox} from 'utilities/clips';
+import type {
+  RenderController,
+  ExtensionSandbox,
+  LocalExtension,
+} from 'utilities/clips';
 import type {ArrayElement, ThenType} from 'utilities/types';
 
 import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurationQuery.graphql';
 import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';
 import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
+import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -54,13 +59,65 @@ export interface Props<T extends ExtensionPoint> {
   name: string;
   version: ClipsExtensionApiVersion;
   script: string;
-  api: Omit<
-    ApiForExtensionPoint<T>,
-    'extensionPoint' | 'version' | 'configuration'
+  api: () => NoInfer<
+    Omit<
+      ApiForExtensionPoint<T>,
+      'extensionPoint' | 'version' | 'configuration'
+    >
   >;
-  components: ReactComponentsForRuntimeExtension<T>;
   local?: string;
   configuration?: GraphQlJSON;
+}
+
+type NoInfer<T> = T & {[K in keyof T]: T[K]};
+
+const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
+  Text,
+  View,
+};
+
+export function InstalledClip<T extends ExtensionPoint>({
+  id,
+  api,
+  extension,
+  version,
+  configuration,
+  extensionPoint,
+}: InstalledClipExtensionFragmentData &
+  Pick<Props<T>, 'api' | 'extensionPoint'>) {
+  return (
+    <Clip
+      id={id}
+      key={id}
+      api={api}
+      name={extension.name}
+      version={version.apiVersion}
+      script={version.assets[0].source}
+      configuration={configuration ?? undefined}
+      extensionPoint={extensionPoint}
+    />
+  );
+}
+
+export function LocalClip<T extends ExtensionPoint>({
+  id,
+  api,
+  name,
+  script,
+  version,
+  extensionPoint,
+}: LocalExtension & Pick<Props<T>, 'api' | 'extensionPoint'>) {
+  return (
+    <Clip
+      id={id}
+      key={id}
+      api={api}
+      name={name}
+      version={version}
+      script={script}
+      extensionPoint={extensionPoint}
+    />
+  );
 }
 
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -72,16 +129,15 @@ export function Clip<T extends ExtensionPoint>({
   script,
   local,
   api,
-  components,
   configuration,
 }: Props<T>) {
-  const controller = useMemo(() => createController(components), [
+  const controller = useMemo(() => createController(COMPONENTS), [
     extensionPoint,
   ]);
 
   const [receiver, sandboxController] = useRenderSandbox({
-    api,
-    components,
+    api: api(),
+    components: COMPONENTS as any,
     extensionPoint,
     version: version as any,
     script,
@@ -95,23 +151,23 @@ export function Clip<T extends ExtensionPoint>({
   });
 
   return local ? (
-    <LocalDevelopmentClip
+    <LocalClipFrame
       name={name}
       socketUrl={local}
       controller={sandboxController}
       script={script}
     >
       <RemoteRenderer controller={controller} receiver={receiver} />
-    </LocalDevelopmentClip>
+    </LocalClipFrame>
   ) : (
-    <InstalledClip
+    <InstalledClipFrame
       id={id}
       name={name}
       controller={sandboxController}
       script={script}
     >
       <RemoteRenderer controller={controller} receiver={receiver} />
-    </InstalledClip>
+    </InstalledClipFrame>
   );
 }
 /* eslint-enable react-hooks/exhaustive-deps */
@@ -132,7 +188,7 @@ function useValueOnChange<T>(
   }, [value]);
 }
 
-interface InstalledClipProps<T extends ExtensionPoint>
+interface InstalledClipFrameProps<T extends ExtensionPoint>
   extends Omit<
     ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
@@ -140,11 +196,11 @@ interface InstalledClipProps<T extends ExtensionPoint>
   id: string;
 }
 
-function InstalledClip<T extends ExtensionPoint>({
+function InstalledClipFrame<T extends ExtensionPoint>({
   controller,
   id,
   ...rest
-}: PropsWithChildren<InstalledClipProps<T>>) {
+}: PropsWithChildren<InstalledClipFrameProps<T>>) {
   return (
     <ClipFrame
       {...rest}
@@ -329,7 +385,7 @@ function InstalledClipLoadedConfiguration({
   );
 }
 
-interface LocalDevelopmentClipProps<T extends ExtensionPoint>
+interface LocalClipFrameProps<T extends ExtensionPoint>
   extends Omit<
     ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
@@ -339,12 +395,12 @@ interface LocalDevelopmentClipProps<T extends ExtensionPoint>
 
 type BuildState = EventMap['connect'];
 
-function LocalDevelopmentClip<T extends ExtensionPoint>({
+function LocalClipFrame<T extends ExtensionPoint>({
   socketUrl,
   children,
   controller,
   ...rest
-}: PropsWithChildren<LocalDevelopmentClipProps<T>>) {
+}: PropsWithChildren<LocalClipFrameProps<T>>) {
   const [compiling, setCompiling] = useState(false);
   const [buildState, setBuildState] = useState<BuildState | undefined>(
     undefined,

@@ -10,7 +10,7 @@ import {
   Pressable,
 } from '@lemon/zest';
 
-import {Link, Clip, Page} from 'components';
+import {Link, LocalClip, InstalledClip, Page} from 'components';
 import type {ClipProps} from 'components';
 import {parseGid} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
@@ -60,7 +60,7 @@ function SeriesWithData({
   const apiForClips = useMemo<
     ClipProps<'Watch::Series::Details'>['api']
   >(() => {
-    return {series: {id: series.id, name: series.name}};
+    return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
 
   return (
@@ -85,26 +85,20 @@ function SeriesWithData({
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
       )}
       <BlockStack spacing="large">
-        {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
-          <SeriesDetailsClip
-            id={id}
-            key={id}
+        {localDevelopmentClips.map((localClip) => (
+          <LocalClip
+            {...localClip}
+            key={localClip.id}
             api={apiForClips}
-            name={name}
-            version={version}
-            script={script}
-            local={socketUrl}
+            extensionPoint="Watch::Series::Details"
           />
         ))}
-        {clipsInstallations.map(({id, version, extension, configuration}) => (
-          <SeriesDetailsClip
-            id={id}
-            key={id}
+        {clipsInstallations.map((installedClip) => (
+          <InstalledClip
+            {...installedClip}
+            key={installedClip.id}
             api={apiForClips}
-            name={extension.name}
-            version={version.apiVersion}
-            script={version.assets[0].source}
-            configuration={configuration ?? undefined}
+            extensionPoint="Watch::Series::Details"
           />
         ))}
       </BlockStack>
@@ -165,20 +159,5 @@ function SeriesWithData({
         </Button>
       </View>
     </Page>
-  );
-}
-
-function SeriesDetailsClip(
-  props: Pick<
-    ClipProps<'Watch::Series::Details'>,
-    'id' | 'script' | 'version' | 'local' | 'api' | 'name' | 'configuration'
-  >,
-) {
-  return (
-    <Clip
-      extensionPoint="Watch::Series::Details"
-      components={{Text, View}}
-      {...props}
-    />
   );
 }

@@ -1,0 +1,16 @@
+fragment InstalledClipExtension on ClipsExtensionInstallation {
+  id
+  extensionPoint
+  configuration
+  version {
+    id
+    apiVersion
+    assets {
+      source
+    }
+  }
+  extension {
+    id
+    name
+  }
+}
