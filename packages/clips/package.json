@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
@@ -20,7 +20,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^2.0.0",
-    "@remote-ui/async-subscription": "^2.0.0"
+    "@remote-ui/async-subscription": "^2.0.0",
+    "@remote-ui/core": "^2.0.0"
   }
 }
