@@ -46,7 +46,7 @@ async function publishExtension(
     console.log(
       `No production extension found matching local extension ${JSON.stringify(
         extension.configuration.name,
-      )}. Have you run \`watchapp deploy\` yet?`,
+      )}. Have you run \`watchapp push\` yet?`,
     );
     return;
   }

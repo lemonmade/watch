@@ -4,8 +4,14 @@ import fetch from 'node-fetch';
 import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
 import {Table} from 'shared/utilities/database';
 
+import type {
+  ClipsExtensionPointSupportInput,
+  ClipsExtensionConfigurationSchemaFieldsInput,
+  ClipsExtensionConfigurationStringInput,
+} from './schema.input';
 import {Context} from './context';
 import {enqueueSendEmail} from './utilities/email';
+import {ClipsExtensionPointConditionInput} from './schema';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
@@ -95,18 +101,80 @@ export const Query: Resolver = {
   },
   async clipsInstallations(
     _,
-    {extensionPoint}: {extensionPoint: string},
+    {
+      extensionPoint,
+      conditions = [],
+    }: {
+      extensionPoint: string;
+      conditions?: ClipsExtensionPointConditionInput[];
+    },
     {db, clipsExtensionInstallationsLoader, user},
   ) {
     const installations = await db
-      .select('id')
+      .select({
+        id: 'ClipsExtensionInstallations.id',
+        latestVersionId: 'ClipsExtensions.latestVersionId',
+      })
       .from(Table.ClipsExtensionInstallations)
-      .where({extensionPoint, userId: user.id})
+      .join(
+        'ClipsExtensions',
+        'ClipsExtension.id',
+        '=',
+        'ClipsExtensionInstallations.extensionId',
+      )
+      .where({
+        'ClipsExtensionInstallations.extensionPoint': extensionPoint,
+        'ClipsExtensionInstallations.userId': user.id,
+      })
       .limit(50);
 
+    const versions = await db
+      .select(['id', 'conditions', 'status'])
+      .from(Table.ClipsExtensionVersions)
+      .whereIn(
+        'id',
+        installations
+          .map((installation) => installation.latestVersionId)
+          .filter(Boolean),
+      );
+
+    const filteredInstallations = installations.filter((installation) => {
+      const version = versions.find(
+        (version) => version.id === installation.latestVersionId,
+      );
+
+      if (version == null || version.status !== 'PUBLISHED') {
+        return false;
+      }
+
+      const versionConditions = JSON.parse(version.conditions);
+
+      return conditions.every((condition) => {
+        if (condition.seriesId) {
+          return versionConditions.every((versionCondition: any) => {
+            return (
+              versionCondition.type !== 'series' ||
+              versionCondition.id === condition.seriesId
+            );
+          });
+        }
+
+        throw new Error();
+      });
+    });
+
     return Promise.all(
-      installations.map(({id}) => clipsExtensionInstallationsLoader.load(id)),
+      filteredInstallations.map(({id}) =>
+        clipsExtensionInstallationsLoader.load(id),
+      ),
     );
+  },
+  clipsInstallation(
+    _,
+    {id}: {id: string},
+    {clipsExtensionInstallationsLoader},
+  ) {
+    return clipsExtensionInstallationsLoader.load(fromGid(id).id);
   },
 };
 
@@ -543,7 +611,16 @@ export const Mutation: Resolver = {
       name,
       appId,
       initialVersion,
-    }: {appId: string; name: string; initialVersion?: {hash: string}},
+    }: {
+      appId: string;
+      name: string;
+      initialVersion?: {
+        hash: string;
+        translations?: string;
+        supports?: ClipsExtensionPointSupportInput[];
+        configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
+      };
+    },
     {db, appsLoader},
   ) {
     const [extension] = await db
@@ -555,10 +632,10 @@ export const Mutation: Resolver = {
     if (initialVersion) {
       additionalResults = await createSignedClipsVersionUpload({
         db,
-        hash: initialVersion.hash,
         appId: fromGid(appId).id,
         extensionId: extension.id,
         extensionName: name,
+        ...initialVersion,
       });
     }
 
@@ -590,13 +667,23 @@ export const Mutation: Resolver = {
 
     return {extension};
   },
-  async createClipsExtensionVersion(
+  async pushClipsExtension(
     _,
     {
       extensionId,
       hash,
       name,
-    }: {extensionId: string; hash: string; name?: string},
+      translations,
+      supports,
+      configurationSchema,
+    }: {
+      extensionId: string;
+      hash: string;
+      name?: string;
+      translations?: string;
+      supports?: ClipsExtensionPointSupportInput[];
+      configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
+    },
     {db, clipsExtensionsLoader},
   ) {
     const [existingVersion] = await db
@@ -622,6 +709,9 @@ export const Mutation: Resolver = {
       appId: details.appId,
       extensionId: fromGid(extensionId).id,
       extensionName: name ?? details.extensionName,
+      translations,
+      supports,
+      configurationSchema,
     });
 
     return {
@@ -682,7 +772,11 @@ export const Mutation: Resolver = {
   },
   async installClipsExtension(
     _,
-    {id, extensionPoint}: {id: string; extensionPoint: string},
+    {
+      id,
+      extensionPoint,
+      configuration,
+    }: {id: string; extensionPoint: string; configuration?: string},
     {db, user, clipsExtensionsLoader},
   ) {
     const [appInstallation] = await db
@@ -707,11 +801,32 @@ export const Mutation: Resolver = {
           extensionId: fromGid(id).id,
           appInstallId: appInstallation.id,
           extensionPoint,
+          configuration,
           userId: user.id,
         },
         '*',
       )
       .into(Table.ClipsExtensionInstallations);
+
+    return {
+      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      installation,
+    };
+  },
+  async updateClipsExtensionInstallation(
+    _,
+    {id, configuration}: {id: string; configuration?: string},
+    {db, user, clipsExtensionsLoader},
+  ) {
+    const [installation] = await db
+      .update(
+        {
+          configuration,
+        },
+        '*',
+      )
+      .from(Table.ClipsExtensionInstallations)
+      .where({id: fromGid(id).id, userId: user.id});
 
     return {
       extension: await clipsExtensionsLoader.load(fromGid(id).id),
@@ -1101,11 +1216,77 @@ export const ClipsExtensionVersion: Resolver<{
   id: string;
   extensionId: string;
   scriptUrl?: string;
+  supports?: string;
+  configurationSchema?: string;
+  translations?: string;
 }> = {
   id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
   extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
     clipsExtensionsLoader.load(extensionId),
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
+  supports: ({supports}) => {
+    return supports ? JSON.parse(supports) : [];
+  },
+  configurationSchema: ({configurationSchema}) => {
+    return configurationSchema ? JSON.parse(configurationSchema) : [];
+  },
+};
+
+function resolveClipsExtensionPointCondition(condition: {type: string}) {
+  switch (condition.type) {
+    case 'series':
+      return 'ClipsExtensionPointSeriesCondition';
+  }
+
+  throw new Error(`Unknown condition: ${condition}`);
+}
+
+export const ClipsExtensionPointSeriesCondition: Resolver = {
+  __resolveType: resolveClipsExtensionPointCondition,
+};
+
+function resolveClipsExtensionString(stringType: {type: string}) {
+  switch (stringType.type) {
+    case 'static':
+      return 'ClipsExtensionConfigurationStringStatic';
+    case 'translation':
+      return 'ClipsExtensionConfigurationStringTranslation';
+  }
+
+  throw new Error(`Unknown stringType: ${stringType}`);
+}
+
+export const ClipsExtensionConfigurationStringTranslation: Resolver = {
+  __resolveType: resolveClipsExtensionString,
+};
+
+export const ClipsExtensionConfigurationStringStatic: Resolver = {
+  __resolveType: resolveClipsExtensionString,
+};
+
+function resolveClipsConfigurationField(configurationField: {type: string}) {
+  switch (configurationField.type) {
+    case 'string':
+      return 'ClipsExtensionStringConfigurationField';
+    case 'number':
+      return 'ClipsExtensionNumberConfigurationField';
+    case 'options':
+      return 'ClipsExtensionOptionsConfigurationField';
+  }
+
+  throw new Error(`Unknown configuration field: ${configurationField}`);
+}
+
+export const ClipsExtensionStringConfigurationField: Resolver = {
+  __resolveType: resolveClipsConfigurationField,
+};
+
+export const ClipsExtensionNumberConfigurationField: Resolver = {
+  __resolveType: resolveClipsConfigurationField,
+};
+
+export const ClipsExtensionOptionsConfigurationField: Resolver = {
+  __resolveType: resolveClipsConfigurationField,
 };
 
 export const ClipsExtensionInstallation: Resolver<{
@@ -1374,6 +1555,9 @@ async function createSignedClipsVersionUpload({
   extensionName,
   versionId,
   db,
+  translations,
+  supports,
+  configurationSchema,
 }: {
   hash: string;
   appId: string;
@@ -1381,6 +1565,9 @@ async function createSignedClipsVersionUpload({
   extensionName: string;
   versionId?: string;
   db: Context['db'];
+  translations?: string;
+  supports?: ClipsExtensionPointSupportInput[];
+  configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
 }) {
   const [
     {S3Client, PutObjectCommand},
@@ -1412,23 +1599,112 @@ async function createSignedClipsVersionUpload({
     expiresIn: 3_600,
   });
 
+  const upsert = {
+    scriptUrl: `https://watch.lemon.tools/${path}`,
+    translations,
+    supports:
+      supports &&
+      JSON.stringify(
+        supports.map(({extensionPoint, conditions}) => {
+          return {
+            extensionPoint,
+            conditions: conditions?.map((condition) => {
+              let resolvedCondition;
+
+              if (condition.seriesId) {
+                resolvedCondition = {type: 'series', id: condition.seriesId};
+              }
+
+              if (resolvedCondition == null) {
+                throw new Error();
+              }
+
+              return resolvedCondition;
+            }),
+          };
+        }),
+      ),
+    configurationSchema:
+      configurationSchema &&
+      JSON.stringify(
+        configurationSchema.map(
+          ({
+            string: stringField,
+            number: numberField,
+            options: optionsField,
+          }) => {
+            if (stringField) {
+              const {key, label, default: defaultValue} = stringField;
+
+              return {
+                type: 'string',
+                key,
+                default: defaultValue,
+                label: normalizeClipsString(label),
+              };
+            }
+
+            if (numberField) {
+              const {key, label, default: defaultValue} = numberField;
+
+              return {
+                type: 'number',
+                key,
+                default: defaultValue,
+                label: normalizeClipsString(label),
+              };
+            }
+
+            if (optionsField) {
+              const {key, label, options, default: defaultValue} = optionsField;
+              return {
+                type: 'options',
+                key,
+                default: defaultValue,
+                label: normalizeClipsString(label),
+                options: options.map(({label, value}) => ({
+                  value,
+                  label: normalizeClipsString(label),
+                })),
+              };
+            }
+          },
+        ),
+      ),
+  };
+
   const [version] = versionId
     ? await db
-        .update({scriptUrl: `https://watch.lemon.tools/${path}`}, '*')
+        .update(upsert, '*')
         .into(Table.ClipsExtensionVersions)
         .where({id: versionId})
     : await db
         .insert(
           {
             extensionId,
-            scriptUrl: `https://watch.lemon.tools/${path}`,
             status: 'BUILDING',
+            ...upsert,
           },
           '*',
         )
         .into(Table.ClipsExtensionVersions);
 
   return {version, signedScriptUpload};
+}
+
+function normalizeClipsString({
+  static: staticString,
+  translation,
+}: ClipsExtensionConfigurationStringInput) {
+  if (staticString) {
+    return {type: 'static', value: staticString};
+  }
+
+  if (translation) {
+    return {type: 'translation', key: translation};
+  }
+
+  throw new Error();
 }
 
 function fromGid(gid: string) {

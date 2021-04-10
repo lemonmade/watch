@@ -4,6 +4,8 @@ import {readFile, stat} from 'fs/promises';
 import {sync as glob} from 'glob';
 import {parse} from '@iarna/toml';
 
+import type {ExtensionPoint} from '@watching/clips';
+
 export interface LocalAppConfiguration {
   readonly id: string;
   readonly name: string;
@@ -17,10 +19,66 @@ export interface LocalApp {
   readonly configuration: LocalAppConfiguration;
 }
 
+interface LocalExtensionConfigurationTranslatedString {
+  readonly translation: string;
+}
+
+export type LocalExtensionConfigurationString =
+  | string
+  | LocalExtensionConfigurationTranslatedString;
+
+interface LocalExtensionUserConfigurationSchemaStringField {
+  type: 'string';
+  key: string;
+  label: LocalExtensionConfigurationString;
+  default?: string;
+}
+
+interface LocalExtensionUserConfigurationSchemaNumberField {
+  type: 'number';
+  key: string;
+  label: LocalExtensionConfigurationString;
+  default?: number;
+}
+
+interface LocalExtensionUserConfigurationSchemaOptionsFieldOption {
+  readonly value: string;
+  readonly label: LocalExtensionConfigurationString;
+}
+
+interface LocalExtensionUserConfigurationSchemaOptionsField {
+  type: 'options';
+  key: string;
+  label: LocalExtensionConfigurationString;
+  default?: string;
+  options: readonly LocalExtensionUserConfigurationSchemaOptionsFieldOption[];
+}
+
+type LocalExtensionUserConfigurationSchemaField =
+  | LocalExtensionUserConfigurationSchemaStringField
+  | LocalExtensionUserConfigurationSchemaNumberField
+  | LocalExtensionUserConfigurationSchemaOptionsField;
+
+interface LocalExtensionUserConfiguration {
+  readonly schema?: readonly LocalExtensionUserConfigurationSchemaField[];
+}
+
+interface ExtensionPointSupportSeriesCondition {
+  readonly series: string;
+}
+
+type ExtensionPointSupportCondition = ExtensionPointSupportSeriesCondition;
+
+interface ExtensionPointSupport {
+  readonly id: ExtensionPoint;
+  readonly conditions?: ExtensionPointSupportCondition[];
+}
+
 interface LocalExtensionConfiguration {
   readonly id?: string;
   readonly name: string;
-  readonly userConfiguration?: unknown;
+  readonly extensionPoints: readonly ExtensionPointSupport[];
+  readonly userConfiguration?: LocalExtensionUserConfiguration;
 }
 
 export interface LocalExtension {

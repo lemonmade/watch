@@ -3,6 +3,8 @@ scalar Notes
 scalar Url
 scalar Email
 scalar GithubID
+scalar JSON
+scalar TranslationKey
 
 type User {
   id: ID!
@@ -242,45 +244,126 @@ scalar ClipsExtensionPoint
 
 # union ClipsExtensionSettings = ClipsExtensionBasicSettings
 
+# Extension point conditions
+
+type ClipsExtensionPointSeriesCondition {
+  id: ID!
+}
+
+union ClipsExtensionPointCondition = ClipsExtensionPointSeriesCondition
+
+type ClipsExtensionPointSupport {
+  extensionPoint: ClipsExtensionPoint!
+  conditions: [ClipsExtensionPointCondition!]!
+}
+
+input ClipsExtensionPointConditionInput {
+  seriesId: ID
+}
+
+input ClipsExtensionPointSupportInput {
+  extensionPoint: ClipsExtensionPoint!
+  conditions: [ClipsExtensionPointConditionInput!]
+}
+
+# Extension point configuration
+
+type ClipsExtensionConfigurationSchema {
+  fields: [ClipsExtensionConfigurationField!]!
+}
+
+type ClipsExtensionConfigurationStringTranslation {
+  key: TranslationKey!
+}
+
+type ClipsExtensionConfigurationStringStatic {
+  value: String!
+}
+
+union ClipsExtensionConfigurationString =
+    ClipsExtensionConfigurationStringTranslation
+  | ClipsExtensionConfigurationStringStatic
+
+interface ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+}
+
+type ClipsExtensionStringConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: String
+}
+
+type ClipsExtensionNumberConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: Float
+}
+
+type ClipsExtensionOptionConfigurationFieldOption {
+  value: String!
+  label: ClipsExtensionConfigurationString!
+}
+
+type ClipsExtensionOptionsConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: String
+  options: [ClipsExtensionOptionConfigurationFieldOption!]!
+}
+
+union ClipsExtensionConfigurationField =
+    ClipsExtensionStringConfigurationField
+  | ClipsExtensionNumberConfigurationField
+  | ClipsExtensionOptionsConfigurationField
+
+input ClipsExtensionConfigurationSchemaFieldsInput {
+  string: ClipsExtensionConfigurationSchemaStringFieldInput
+  number: ClipsExtensionConfigurationSchemaNumberFieldInput
+  options: ClipsExtensionConfigurationSchemaOptionsFieldInput
+}
+
+input ClipsExtensionConfigurationStringInput {
+  static: String
+  translation: TranslationKey
+}
+
+input ClipsExtensionConfigurationSchemaStringFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: String
+}
+
+input ClipsExtensionConfigurationSchemaNumberFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: Float
+}
+
+input ClipsExtensionConfigurationSchemaOptionsFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: String
+  options: [ClipsExtensionOptionConfigurationFieldOptionInput!]!
+}
+
+type ClipsExtensionOptionConfigurationFieldOptionInput {
+  value: String!
+  label: ClipsExtensionConfigurationStringInput!
+}
+
 type ClipsExtensionVersion {
   id: ID!
   status: ClipsExtensionVersionStatus!
   assets: [Asset!]!
   apiVersion: ClipsExtensionApiVersion!
   extension: ClipsExtension!
-  # allowedExtensionPoints: [ClipsExtensionPoint!]!
-  # configurationSchema: ClipsExtensionConfigurationSchema
+  supports: [ClipsExtensionPointSupport!]!
+  configurationSchema: [ClipsExtensionConfigurationField!]!
+  translations: JSON
   # settings: ClipsExtensionSettings
 }
-
-# type ClipsExtensionConfigurationSchema {
-#   fields: [ClipsExtensionConfigurationField!]!
-# }
-
-# scalar TranslationKey
-
-# type ClipsExtensionConfigurationStringTranslation {
-#   key: TranslationKey!
-# }
-
-# type ClipsExtensionConfigurationStringStatic {
-#   value: String!
-# }
-
-# union ClipsExtensionConfigurationString =
-#     ClipsExtensionConfigurationStringTranslation
-#   | ClipsExtensionConfigurationStringStatic
-
-# interface ClipsExtensionTypedConfigurationField {
-#   name: String!
-# }
-
-# type ClipsExtensionStringConfigurationField implements ClipsExtensionTypedConfigurationField {
-#   name: String!
-#   label: ClipsExtensionConfigurationString!
-# }
-
-# union ClipsExtensionConfigurationField = ClipsExtensionStringConfigurationField
 
 type Asset {
   source: Url!
@@ -307,7 +390,7 @@ type ClipsExtensionInstallation {
   version: ClipsExtensionVersion!
   extensionPoint: ClipsExtensionPoint!
   appInstallation: AppInstallation!
-  # configuration: ClipsExtensionConfigurationBlob
+  configuration: JSON
 }
 
 type CreateAppPayload {
@@ -339,7 +422,7 @@ type UpdateClipsExtensionPayload {
   extension: ClipsExtension
 }
 
-type CreateClipsExtensionVersionPayload {
+type PushClipsExtensionPayload {
   extension: ClipsExtension
   version: ClipsExtensionVersion
   signedScriptUpload: Url
@@ -356,6 +439,11 @@ type InstallAppPayload {
 }
 
 type InstallClipsExtensionPayload {
+  extension: ClipsExtension
+  installation: ClipsExtensionInstallation
+}
+
+type UpdateClipsExtensionInstallationPayload {
   extension: ClipsExtension
   installation: ClipsExtensionInstallation
 }
@@ -393,13 +481,18 @@ type Query {
   search(query: String!): SearchResults!
 
   app(id: ID!): App
+  clipsInstallation(id: ID!): ClipsExtensionInstallation
   clipsInstallations(
     extensionPoint: ClipsExtensionPoint
+    conditions: [ClipsExtensionPointConditionInput!]
   ): [ClipsExtensionInstallation!]!
 }
 
 input CreateClipsInitialVersion {
   hash: String!
+  translations: JSON
+  supports: [ClipsExtensionPointSupportInput!]
+  configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
 }
 
 type Mutation {
@@ -447,11 +540,14 @@ type Mutation {
   ): CreateClipsExtensionPayload!
   deleteClipsExtension(id: ID!): DeleteClipsExtensionPayload!
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
-  createClipsExtensionVersion(
+  pushClipsExtension(
     extensionId: ID!
     hash: String!
     name: String
-  ): CreateClipsExtensionVersionPayload!
+    translations: JSON
+    supports: [[ClipsExtensionPointSupportInput!]!]!
+    configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]!
+  ): PushClipsExtensionPayload!
   publishLatestClipsExtensionVersion(
     extensionId: ID!
   ): PublishClipsExtensionVersionPayload!
@@ -459,7 +555,12 @@ type Mutation {
   installClipsExtension(
     id: ID!
     extensionPoint: ClipsExtensionPoint
+    configuration: JSON
   ): InstallClipsExtensionPayload!
+  updateClipsExtensionInstallation(
+    id: ID!
+    configuration: JSON
+  ): UpdateClipsExtensionInstallationPayload!
 }
 
 schema {
