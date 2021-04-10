@@ -20,6 +20,7 @@
   },
   "sideEffects": false,
   "dependencies": {
+    "@remote-ui/async-subscription": "^2.0.0",
     "@remote-ui/core": "^2.0.0",
     "@remote-ui/mini-react": "^1.2.0",
     "@watching/clips": "^0.1.0"
