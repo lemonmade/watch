@@ -8,7 +8,7 @@ import type {
   ClipsExtensionPointSupportInput,
   ClipsExtensionConfigurationSchemaFieldsInput,
   ClipsExtensionConfigurationStringInput,
-} from './schema.input';
+} from './schema-input-types';
 import {Context} from './context';
 import {enqueueSendEmail} from './utilities/email';
 import {ClipsExtensionPointConditionInput} from './schema';
