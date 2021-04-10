@@ -545,8 +545,8 @@ type Mutation {
     hash: String!
     name: String
     translations: JSON
-    supports: [[ClipsExtensionPointSupportInput!]!]!
-    configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]!
+    supports: [ClipsExtensionPointSupportInput!]
+    configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
   ): PushClipsExtensionPayload!
   publishLatestClipsExtensionVersion(
     extensionId: ID!
