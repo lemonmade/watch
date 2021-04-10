@@ -240,8 +240,8 @@ function InstalledClipLoadedConfiguration({
 
       return state;
     },
-    configuration as Record<string, unknown> | null,
-    (configuration) => ({...(configuration ?? {})}),
+    configuration,
+    (configuration) => ({...JSON.parse(configuration ?? '{}')}),
   );
 
   const translateLabel = useMemo(() => {
