@@ -21,12 +21,20 @@ import {
   Text,
   Menu,
   Pressable,
+  Form,
+  TextField,
+  Select,
 } from '@lemon/zest';
+import {useQuery, useMutation} from '@quilted/quilt';
 
 import type {ClipsExtensionApiVersion} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
 import type {RenderController, ExtensionSandbox} from 'utilities/clips';
 import type {ArrayElement, ThenType} from 'utilities/types';
+
+import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurationQuery.graphql';
+import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';
+import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -37,6 +45,7 @@ type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
 };
 
 export interface Props<T extends ExtensionPoint> {
+  id: string;
   extensionPoint: T;
   name: string;
   version: ClipsExtensionApiVersion;
@@ -48,6 +57,7 @@ export interface Props<T extends ExtensionPoint> {
 
 /* eslint-disable react-hooks/exhaustive-deps */
 export function Clip<T extends ExtensionPoint>({
+  id,
   name,
   extensionPoint,
   version,
@@ -78,7 +88,12 @@ export function Clip<T extends ExtensionPoint>({
       <RemoteRenderer controller={controller} receiver={receiver} />
     </LocalDevelopmentClip>
   ) : (
-    <InstalledClip name={name} controller={sandboxController} script={script}>
+    <InstalledClip
+      id={id}
+      name={name}
+      controller={sandboxController}
+      script={script}
+    >
       <RemoteRenderer controller={controller} receiver={receiver} />
     </InstalledClip>
   );
@@ -89,16 +104,20 @@ interface InstalledClipProps
   extends Omit<
     ClipFrameProps,
     'renderPopoverContent' | 'renderPopoverActions'
-  > {}
+  > {
+  id: string;
+}
 
 function InstalledClip({
   controller,
+  id,
   ...rest
 }: PropsWithChildren<InstalledClipProps>) {
   return (
     <ClipFrame
       {...rest}
       controller={controller}
+      renderPopoverContent={() => <InstalledClipConfiguration id={id} />}
       renderPopoverActions={() => (
         <>
           <Pressable
@@ -123,6 +142,116 @@ function InstalledClip({
         </>
       )}
     />
+  );
+}
+
+function InstalledClipConfiguration({id}: {id: string}) {
+  const {data, loading} = useQuery(clipsExtensionConfigurationQuery, {
+    variables: {id},
+  });
+
+  if (data?.clipsInstallation == null) {
+    return (
+      <View padding={16}>
+        {loading ? 'Loading configuration...' : 'Something went wrong!'}
+      </View>
+    );
+  }
+
+  const {
+    clipsInstallation: {
+      version: {translations, configurationSchema},
+    },
+  } = data;
+
+  return (
+    <InstalledClipLoadedConfiguration
+      id={id}
+      translations={translations}
+      configurationSchema={configurationSchema}
+    />
+  );
+}
+
+function InstalledClipLoadedConfiguration({
+  id,
+  translations,
+  configurationSchema,
+}: Pick<
+  ClipExtensionConfigurationQueryData.ClipsInstallation.Version,
+  'translations' | 'configurationSchema'
+> & {id: string}) {
+  const updateClipsExtensionConfiguration = useMutation(
+    updateClipsExtensionConfigurationMutation,
+  );
+
+  const translateLabel = useMemo(() => {
+    const parsedTranslations = JSON.parse(translations ?? '{}');
+
+    return (
+      field: ClipExtensionConfigurationQueryData.ClipsInstallation.Version.ConfigurationSchema_ClipsExtensionNumberConfigurationField.Label,
+    ) => {
+      switch (field.__typename) {
+        case 'ClipsExtensionConfigurationStringStatic': {
+          return field.value;
+        }
+        case 'ClipsExtensionConfigurationStringTranslation': {
+          const translated = parsedTranslations[field.key];
+          if (translated == null) {
+            throw new Error(`No translation found for ${field.key}`);
+          }
+
+          return translated;
+        }
+      }
+
+      throw new Error(`Unknown type: ${field.__typename}`);
+    };
+  }, [translations]);
+
+  const handleSubmit = () => {
+    updateClipsExtensionConfiguration({
+      variables: {id},
+    });
+  };
+
+  return (
+    <View padding={16}>
+      <Form onSubmit={handleSubmit}>
+        <BlockStack>
+          {configurationSchema.map((field, index) => {
+            const key = `${field.__typename}${index}`;
+
+            switch (field.__typename) {
+              case 'ClipsExtensionStringConfigurationField': {
+                return (
+                  <TextField key={key} label={translateLabel(field.label)} />
+                );
+              }
+              case 'ClipsExtensionNumberConfigurationField': {
+                return (
+                  <TextField key={key} label={translateLabel(field.label)} />
+                );
+              }
+              case 'ClipsExtensionOptionsConfigurationField': {
+                return (
+                  <Select
+                    key={key}
+                    label={translateLabel(field.label)}
+                    options={field.options.map((option) => ({
+                      value: option.value,
+                      label: translateLabel(option.label),
+                    }))}
+                  />
+                );
+              }
+            }
+
+            throw new Error();
+          })}
+        </BlockStack>
+      </Form>
+    </View>
   );
 }
 

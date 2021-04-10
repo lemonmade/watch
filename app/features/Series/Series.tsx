@@ -143,6 +143,7 @@ function SeriesWithData({
       <BlockStack spacing="large">
         {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
           <SeriesDetailsClip
+            id={id}
             key={id}
             api={apiForClips}
             name={name}
@@ -153,6 +154,7 @@ function SeriesWithData({
         ))}
         {clipsInstallations.map(({id, version, extension}) => (
           <SeriesDetailsClip
+            id={id}
             key={id}
             api={apiForClips}
             name={extension.name}
@@ -168,7 +170,7 @@ function SeriesWithData({
 function SeriesDetailsClip(
   props: Pick<
     ClipProps<'Watch::Series::Details'>,
-    'script' | 'version' | 'local' | 'api' | 'name'
+    'id' | 'script' | 'version' | 'local' | 'api' | 'name'
   >,
 ) {
   return (

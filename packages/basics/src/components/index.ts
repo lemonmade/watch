@@ -12,6 +12,7 @@ export {Popover, PopoverSheet} from './Popover';
 export {Portal} from './Portal';
 export {Pressable} from './Pressable';
 export {Section} from './Section';
+export {Select} from './Select';
 export {Sticky} from './Sticky';
 export {Text} from './Text';
 export {TextBlock} from './TextBlock';

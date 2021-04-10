@@ -16,6 +16,8 @@ query Series($id: ID!) {
   }
   clipsInstallations(extensionPoint: "Watch::Series::Details") {
     id
+    extensionPoint
+    configuration
     version {
       id
       apiVersion
