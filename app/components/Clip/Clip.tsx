@@ -297,7 +297,20 @@ function InstalledClipLoadedConfiguration({
       return state;
     },
     configuration,
-    (configuration) => ({...JSON.parse(configuration ?? '{}')}),
+    (configuration) => {
+      const parsed = {...JSON.parse(configuration ?? '{}')};
+
+      return configurationSchema.reduce<Record<string, unknown>>(
+        (normalized, field) =>
+          'key' in field
+            ? {
+                ...normalized,
+                [field.key]: parsed[field.key],
+              }
+            : normalized,
+        {},
+      );
+    },
   );
 
   const translateLabel = useMemo(() => {
