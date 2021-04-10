@@ -348,7 +348,7 @@ input ClipsExtensionConfigurationSchemaOptionsFieldInput {
   options: [ClipsExtensionOptionConfigurationFieldOptionInput!]!
 }
 
-type ClipsExtensionOptionConfigurationFieldOptionInput {
+input ClipsExtensionOptionConfigurationFieldOptionInput {
   value: String!
   label: ClipsExtensionConfigurationStringInput!
 }
