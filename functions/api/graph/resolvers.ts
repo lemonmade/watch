@@ -147,11 +147,9 @@ export const Query: Resolver = {
         return false;
       }
 
-      const extensionPointSupport = JSON.parse(version.supports);
-
       return conditions.every((condition) => {
         if (condition.seriesId) {
-          return extensionPointSupport.every((supports: any) => {
+          return (version.supports ?? []).every((supports: any) => {
             return (
               extensionPoint !== supports.extensionPoint ||
               supports.conditions.every(
@@ -1220,20 +1218,16 @@ export const ClipsExtensionVersion: Resolver<{
   id: string;
   extensionId: string;
   scriptUrl?: string;
-  supports?: string;
-  configurationSchema?: string;
-  translations?: string;
+  supports?: Record<string, unknown>[];
+  translations?: Record<string, unknown>;
+  configurationSchema?: Record<string, unknown>[];
 }> = {
   id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
   extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
     clipsExtensionsLoader.load(extensionId),
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
-  supports: ({supports}) => {
-    return supports ? JSON.parse(supports) : [];
-  },
-  configurationSchema: ({configurationSchema}) => {
-    return configurationSchema ? JSON.parse(configurationSchema) : [];
-  },
+  translations: ({translations}) =>
+    translations && JSON.stringify(translations),
 };
 
 function resolveClipsExtensionPointCondition(condition: {type: string}) {
