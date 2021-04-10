@@ -223,7 +223,10 @@ async function pushExtension(
     throw new Error('Nowhere to upload built extension :/');
   }
 
-  await fetch(assetUploadUrl, {
+  // eslint-disable-next-line no-console
+  console.log(`Uploading to ${assetUploadUrl}`);
+
+  const result = await fetch(assetUploadUrl, {
     method: 'PUT',
     body: scriptContents,
     headers: {
@@ -231,6 +234,10 @@ async function pushExtension(
       'Content-Type': 'application/javascript',
     },
   });
+
+  if (!result.ok) {
+    throw new Error(await result.text());
+  }
 }
 
 async function loadTranslationsForExtension(extension: LocalExtension) {

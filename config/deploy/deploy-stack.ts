@@ -91,6 +91,10 @@ export class WatchAppStack extends Stack {
       functionName: 'WatchGraphQLFunction',
     });
 
+    // Needed for the API to push new clips versions
+    clipsAssetsBucket.grantPut(graphqlFunction);
+
+    // Lets the public internet connect to the function (in a VPC)
     graphqlFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
     const authFunction = new Function(this, 'WatchAuthFunction', {
