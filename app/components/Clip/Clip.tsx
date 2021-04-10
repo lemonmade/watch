@@ -1,4 +1,4 @@
-import {useMemo, useEffect, useState, useRef} from 'react';
+import {useMemo, useEffect, useState, useRef, useReducer} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 import type {IdentifierForRemoteComponent} from '@remote-ui/core';
 import {createController, RemoteRenderer} from '@remote-ui/react/host';
@@ -24,6 +24,7 @@ import {
   Form,
   TextField,
   Select,
+  Button,
 } from '@lemon/zest';
 import {useQuery, useMutation} from '@quilted/quilt';
 
@@ -160,6 +161,7 @@ function InstalledClipConfiguration({id}: {id: string}) {
 
   const {
     clipsInstallation: {
+      configuration,
       version: {translations, configurationSchema},
     },
   } = data;
@@ -167,6 +169,7 @@ function InstalledClipConfiguration({id}: {id: string}) {
   return (
     <InstalledClipLoadedConfiguration
       id={id}
+      configuration={configuration}
       translations={translations}
       configurationSchema={configurationSchema}
     />
@@ -175,14 +178,39 @@ function InstalledClipConfiguration({id}: {id: string}) {
 
 function InstalledClipLoadedConfiguration({
   id,
+  configuration,
   translations,
   configurationSchema,
 }: Pick<
   ClipExtensionConfigurationQueryData.ClipsInstallation.Version,
   'translations' | 'configurationSchema'
-> & {id: string}) {
+> &
+  Pick<
+    ClipExtensionConfigurationQueryData.ClipsInstallation,
+    'id' | 'configuration'
+  >) {
   const updateClipsExtensionConfiguration = useMutation(
     updateClipsExtensionConfigurationMutation,
+  );
+
+  const [values, dispatch] = useReducer(
+    (
+      state: Record<string, unknown>,
+      action: {type: 'set'; field: string; value?: string},
+    ) => {
+      switch (action.type) {
+        case 'set': {
+          return {
+            ...state,
+            [action.field]: action.value,
+          };
+        }
+      }
+
+      return state;
+    },
+    configuration as Record<string, unknown> | null,
+    (configuration) => ({...(configuration ?? {})}),
   );
 
   const translateLabel = useMemo(() => {
@@ -215,43 +243,58 @@ function InstalledClipLoadedConfiguration({
     });
   };
 
+  const propsForField = (field: string) => {
+    return {
+      value: values[field] ? String(values[field]) : undefined,
+      onChange(value: string) {
+        dispatch({type: 'set', field, value});
+      },
+    };
+  };
+
   return (
-    <View padding={16}>
-      <Form onSubmit={handleSubmit}>
-        <BlockStack>
-          {configurationSchema.map((field, index) => {
-            const key = `${field.__typename}${index}`;
-
-            switch (field.__typename) {
-              case 'ClipsExtensionStringConfigurationField': {
-                return (
-                  <TextField key={key} label={translateLabel(field.label)} />
-                );
-              }
-              case 'ClipsExtensionNumberConfigurationField': {
-                return (
-                  <TextField key={key} label={translateLabel(field.label)} />
-                );
-              }
-              case 'ClipsExtensionOptionsConfigurationField': {
-                return (
-                  <Select
-                    key={key}
-                    label={translateLabel(field.label)}
-                    options={field.options.map((option) => ({
-                      value: option.value,
-                      label: translateLabel(option.label),
-                    }))}
-                  />
-                );
-              }
+    <Form onSubmit={handleSubmit}>
+      <BlockStack>
+        {configurationSchema.map((field) => {
+          switch (field.__typename) {
+            case 'ClipsExtensionStringConfigurationField': {
+              return (
+                <TextField
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  {...propsForField(field.key)}
+                />
+              );
             }
+            case 'ClipsExtensionNumberConfigurationField': {
+              return (
+                <TextField
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  {...propsForField(field.key)}
+                />
+              );
+            }
+            case 'ClipsExtensionOptionsConfigurationField': {
+              return (
+                <Select
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  options={field.options.map((option) => ({
+                    value: option.value,
+                    label: translateLabel(option.label),
+                  }))}
+                  {...propsForField(field.key)}
+                />
+              );
+            }
+          }
 
-            throw new Error();
-          })}
-        </BlockStack>
-      </Form>
-    </View>
+          throw new Error();
+        })}
+        <Button onPress={handleSubmit}>Update</Button>
+      </BlockStack>
+    </Form>
   );
 }
 

@@ -1,26 +1,27 @@
 query ClipExtensionConfiguration($id: ID!) {
   clipsInstallation(id: $id) {
+    id
     configuration
     version {
       translations
       configurationSchema {
         ... on ClipsExtensionStringConfigurationField {
           key
-          default
+          stringDefault: default
           label {
             ...ClipsExtensionConfigurationStringFragment
           }
         }
         ... on ClipsExtensionNumberConfigurationField {
           key
-          default
+          numberDefault: default
           label {
             ...ClipsExtensionConfigurationStringFragment
           }
         }
         ... on ClipsExtensionOptionsConfigurationField {
           key
-          default
+          optionsDefault: default
           label {
             ...ClipsExtensionConfigurationStringFragment
           }
