@@ -6,6 +6,8 @@ import type {
   IdentifierForRemoteComponent,
 } from '@remote-ui/core';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
+import {createRemoteSubscribable} from '@remote-ui/async-subscription';
+import type {RemoteSubscribable} from '@remote-ui/async-subscription';
 import type {
   AnyComponent,
   ExtensionPoint,
@@ -22,9 +24,13 @@ import type {
 } from './worker';
 
 export interface Options<T extends ExtensionPoint> extends BaseOptions {
-  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
+  api: Omit<
+    ApiForExtensionPoint<T>,
+    'extensionPoint' | 'version' | 'configuration'
+  >;
   components: ReactComponentsForRuntimeExtension<T>;
   extensionPoint: T;
+  configuration?: string;
 }
 
 export type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
@@ -40,11 +46,16 @@ export interface RenderControllerTiming extends SandboxControllerTiming {
   readonly renderEnd?: number;
 }
 
-export interface RenderController {
+interface RenderControllerInternals<_T extends ExtensionPoint> {
+  configuration: {update(value: Record<string, unknown>): void};
+}
+
+export interface RenderController<T extends ExtensionPoint> {
   readonly id: string;
   readonly timings: RenderControllerTiming;
   readonly sandbox: ExtensionSandbox;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
+  readonly internals: RenderControllerInternals<T>;
   on(
     event: 'start' | 'stop' | 'load' | 'render',
     handler: () => void,
@@ -54,9 +65,10 @@ export interface RenderController {
 }
 
 export function useRenderSandbox<T extends ExtensionPoint>({
-  api,
+  api: customApi,
   components,
   extensionPoint,
+  configuration,
   ...options
 }: Options<T>) {
   const [sandbox, controller] = useExtensionSandbox(options);
@@ -68,14 +80,16 @@ export function useRenderSandbox<T extends ExtensionPoint>({
     options.version,
     receiver,
     components,
-    api,
+    customApi,
   ];
 
-  const renderController = useMemo<RenderController>(() => {
+  const renderController = useMemo<RenderController<ExtensionPoint>>(() => {
+    let api: ApiForExtensionPoint<T>;
+    let internals: RenderControllerInternals<T>;
     let timings: {renderStart?: number; renderEnd?: number} | undefined;
     const listeners = new Map<'render', Set<() => void>>();
 
-    return {
+    const renderController: RenderController<ExtensionPoint> = {
       sandbox,
       timings: {
         get start() {
@@ -104,6 +118,9 @@ export function useRenderSandbox<T extends ExtensionPoint>({
 
         return controller.state;
       },
+      get internals() {
+        return internals;
+      },
       render(explicitReceiver?: RemoteReceiver) {
         if (timings != null) return;
 
@@ -114,7 +131,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           version,
           receiver,
           components,
-          api = {},
+          customApi = {},
         ] = renderArgumentsRef.current;
 
         if (controller.state === 'loaded') {
@@ -136,11 +153,29 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           }
         });
 
+        const [
+          configurationSubscribable,
+          updateConfiguration,
+        ] = createStaticRemoteSubscribable<Record<string, unknown>>(
+          JSON.parse(configuration ?? '{}'),
+        );
+
+        internals = {
+          configuration: {update: updateConfiguration},
+        };
+
+        api = {
+          ...customApi,
+          version,
+          extensionPoint,
+          configuration: configurationSubscribable,
+        };
+
         sandbox.render(
           extensionPoint,
           finalReceiver.receive,
           Object.keys(components),
-          {...api, version, extensionPoint},
+          api as any,
         );
       },
       restart() {
@@ -170,6 +205,8 @@ export function useRenderSandbox<T extends ExtensionPoint>({
       },
     };
 
+    return renderController;
+
     function emit(event: 'render') {
       const listenersForEvent = listeners.get(event);
       if (listenersForEvent == null) return;
@@ -195,4 +232,33 @@ export function useRenderSandbox<T extends ExtensionPoint>({
   }, [controller, sandbox]);
 
   return [receiver, renderController] as const;
+}
+
+function createStaticRemoteSubscribable<T>(
+  initial: T,
+): [RemoteSubscribable<T>, (update: T) => void] {
+  let current = initial;
+  const subscribers = new Set<
+    Parameters<RemoteSubscribable<T>['subscribe']>[0]
+  >();
+
+  const update = (value: T) => {
+    current = value;
+
+    for (const subscriber of subscribers) {
+      subscriber(value);
+    }
+  };
+
+  const subscribable = createRemoteSubscribable({
+    get current() {
+      return current;
+    },
+    subscribe: (subscriber) => {
+      subscribers.add(subscriber);
+      return () => subscribers.delete(subscriber);
+    },
+  });
+
+  return [subscribable, update];
 }

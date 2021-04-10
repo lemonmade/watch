@@ -10,7 +10,7 @@ import {
   Pressable,
 } from '@lemon/zest';
 
-import {Link, Clip, Page} from 'components';
+import {Link, LocalClip, InstalledClip, Page} from 'components';
 import type {ClipProps} from 'components';
 import {parseGid} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
@@ -60,7 +60,7 @@ function SeriesWithData({
   const apiForClips = useMemo<
     ClipProps<'Watch::Series::Details'>['api']
   >(() => {
-    return {series: {id: series.id, name: series.name}};
+    return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
 
   return (
@@ -84,6 +84,24 @@ function SeriesWithData({
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
       )}
+      <BlockStack spacing="large">
+        {localDevelopmentClips.map((localClip) => (
+          <LocalClip
+            {...localClip}
+            key={localClip.id}
+            api={apiForClips}
+            extensionPoint="Watch::Series::Details"
+          />
+        ))}
+        {clipsInstallations.map((installedClip) => (
+          <InstalledClip
+            {...installedClip}
+            key={installedClip.id}
+            api={apiForClips}
+            extensionPoint="Watch::Series::Details"
+          />
+        ))}
+      </BlockStack>
       <BlockStack>
         {series.seasons.map(({id, number, status}: any) => (
           <View key={id}>
@@ -140,42 +158,6 @@ function SeriesWithData({
           Start watch through
         </Button>
       </View>
-      <BlockStack spacing="large">
-        {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
-          <SeriesDetailsClip
-            key={id}
-            api={apiForClips}
-            name={name}
-            version={version}
-            script={script}
-            local={socketUrl}
-          />
-        ))}
-        {clipsInstallations.map(({id, version, extension}) => (
-          <SeriesDetailsClip
-            key={id}
-            api={apiForClips}
-            name={extension.name}
-            version={version.apiVersion}
-            script={version.assets[0].source}
-          />
-        ))}
-      </BlockStack>
     </Page>
-  );
-}
-
-function SeriesDetailsClip(
-  props: Pick<
-    ClipProps<'Watch::Series::Details'>,
-    'script' | 'version' | 'local' | 'api' | 'name'
-  >,
-) {
-  return (
-    <Clip
-      extensionPoint="Watch::Series::Details"
-      components={{Text, View}}
-      {...props}
-    />
   );
 }

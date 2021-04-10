@@ -1,4 +1,4 @@
-import {useMemo, useEffect, useState, useRef} from 'react';
+import {useMemo, useEffect, useState, useRef, useReducer} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 import type {IdentifierForRemoteComponent} from '@remote-ui/core';
 import {createController, RemoteRenderer} from '@remote-ui/react/host';
@@ -21,12 +21,29 @@ import {
   Text,
   Menu,
   Pressable,
+  Form,
+  TextField,
+  Select,
+  Button,
 } from '@lemon/zest';
+import {useQuery, useMutation} from '@quilted/quilt';
 
-import type {ClipsExtensionApiVersion} from 'graphql/types';
+import type {
+  ClipsExtensionApiVersion,
+  JSON as GraphQlJSON,
+} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
-import type {RenderController, ExtensionSandbox} from 'utilities/clips';
+import type {
+  RenderController,
+  ExtensionSandbox,
+  LocalExtension,
+} from 'utilities/clips';
 import type {ArrayElement, ThenType} from 'utilities/types';
+
+import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurationQuery.graphql';
+import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';
+import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
+import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -37,68 +54,158 @@ type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
 };
 
 export interface Props<T extends ExtensionPoint> {
+  id: string;
   extensionPoint: T;
   name: string;
   version: ClipsExtensionApiVersion;
   script: string;
-  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
-  components: ReactComponentsForRuntimeExtension<T>;
+  api: () => NoInfer<
+    Omit<
+      ApiForExtensionPoint<T>,
+      'extensionPoint' | 'version' | 'configuration'
+    >
+  >;
   local?: string;
+  configuration?: GraphQlJSON;
+}
+
+type NoInfer<T> = T & {[K in keyof T]: T[K]};
+
+const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
+  Text,
+  View,
+};
+
+export function InstalledClip<T extends ExtensionPoint>({
+  id,
+  api,
+  extension,
+  version,
+  configuration,
+  extensionPoint,
+}: InstalledClipExtensionFragmentData &
+  Pick<Props<T>, 'api' | 'extensionPoint'>) {
+  return (
+    <Clip
+      id={id}
+      key={id}
+      api={api}
+      name={extension.name}
+      version={version.apiVersion}
+      script={version.assets[0].source}
+      configuration={configuration ?? undefined}
+      extensionPoint={extensionPoint}
+    />
+  );
+}
+
+export function LocalClip<T extends ExtensionPoint>({
+  id,
+  api,
+  name,
+  script,
+  version,
+  extensionPoint,
+}: LocalExtension & Pick<Props<T>, 'api' | 'extensionPoint'>) {
+  return (
+    <Clip
+      id={id}
+      key={id}
+      api={api}
+      name={name}
+      version={version}
+      script={script}
+      extensionPoint={extensionPoint}
+    />
+  );
 }
 
 /* eslint-disable react-hooks/exhaustive-deps */
 export function Clip<T extends ExtensionPoint>({
+  id,
   name,
   extensionPoint,
   version,
   script,
   local,
   api,
-  components,
+  configuration,
 }: Props<T>) {
-  const controller = useMemo(() => createController(components), [
+  const controller = useMemo(() => createController(COMPONENTS), [
     extensionPoint,
   ]);
 
   const [receiver, sandboxController] = useRenderSandbox({
-    api,
-    components,
+    api: api(),
+    components: COMPONENTS as any,
     extensionPoint,
     version: version as any,
     script,
+    configuration,
+  });
+
+  useValueOnChange(configuration, () => {
+    sandboxController.internals.configuration.update(
+      JSON.parse(configuration ?? '{}'),
+    );
   });
 
   return local ? (
-    <LocalDevelopmentClip
+    <LocalClipFrame
       name={name}
       socketUrl={local}
       controller={sandboxController}
       script={script}
     >
       <RemoteRenderer controller={controller} receiver={receiver} />
-    </LocalDevelopmentClip>
+    </LocalClipFrame>
   ) : (
-    <InstalledClip name={name} controller={sandboxController} script={script}>
+    <InstalledClipFrame
+      id={id}
+      name={name}
+      controller={sandboxController}
+      script={script}
+    >
       <RemoteRenderer controller={controller} receiver={receiver} />
-    </InstalledClip>
+    </InstalledClipFrame>
   );
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-interface InstalledClipProps
-  extends Omit<
-    ClipFrameProps,
-    'renderPopoverContent' | 'renderPopoverActions'
-  > {}
+function useValueOnChange<T>(
+  value: T,
+  onChange: (value: T, lastValue: T) => void,
+) {
+  const internals = useRef<[T, typeof onChange]>([value, onChange]);
 
-function InstalledClip({
+  useEffect(() => {
+    const [lastValue, onChange] = internals.current;
+
+    if (lastValue !== value) {
+      internals.current[0] = value;
+      onChange(value, lastValue);
+    }
+  }, [value]);
+}
+
+interface InstalledClipFrameProps<T extends ExtensionPoint>
+  extends Omit<
+    ClipFrameProps<T>,
+    'renderPopoverContent' | 'renderPopoverActions'
+  > {
+  id: string;
+}
+
+function InstalledClipFrame<T extends ExtensionPoint>({
   controller,
+  id,
   ...rest
-}: PropsWithChildren<InstalledClipProps>) {
+}: PropsWithChildren<InstalledClipFrameProps<T>>) {
   return (
     <ClipFrame
       {...rest}
       controller={controller}
+      renderPopoverContent={() => <InstalledClipConfiguration id={id} />}
       renderPopoverActions={() => (
         <>
           <Pressable
@@ -126,9 +233,174 @@ function InstalledClip({
   );
 }
 
-interface LocalDevelopmentClipProps
+function InstalledClipConfiguration({id}: {id: string}) {
+  const {data, loading} = useQuery(clipsExtensionConfigurationQuery, {
+    variables: {id},
+  });
+
+  if (data?.clipsInstallation == null) {
+    return (
+      <Text>
+        {loading ? 'Loading configuration...' : 'Something went wrong!'}
+      </Text>
+    );
+  }
+
+  const {
+    clipsInstallation: {
+      configuration,
+      version: {translations, configurationSchema},
+    },
+  } = data;
+
+  return (
+    <InstalledClipLoadedConfiguration
+      id={id}
+      configuration={configuration}
+      translations={translations}
+      configurationSchema={configurationSchema}
+    />
+  );
+}
+
+function InstalledClipLoadedConfiguration({
+  id,
+  configuration,
+  translations,
+  configurationSchema,
+}: Pick<
+  ClipExtensionConfigurationQueryData.ClipsInstallation.Version,
+  'translations' | 'configurationSchema'
+> &
+  Pick<
+    ClipExtensionConfigurationQueryData.ClipsInstallation,
+    'id' | 'configuration'
+  >) {
+  const updateClipsExtensionConfiguration = useMutation(
+    updateClipsExtensionConfigurationMutation,
+  );
+
+  const [values, dispatch] = useReducer(
+    (
+      state: Record<string, unknown>,
+      action: {type: 'set'; field: string; value?: string},
+    ) => {
+      switch (action.type) {
+        case 'set': {
+          return {
+            ...state,
+            [action.field]: action.value,
+          };
+        }
+      }
+
+      return state;
+    },
+    configuration,
+    (configuration) => {
+      const parsed = {...JSON.parse(configuration ?? '{}')};
+
+      return configurationSchema.reduce<Record<string, unknown>>(
+        (normalized, field) =>
+          'key' in field
+            ? {
+                ...normalized,
+                [field.key]: parsed[field.key],
+              }
+            : normalized,
+        {},
+      );
+    },
+  );
+
+  const translateLabel = useMemo(() => {
+    const parsedTranslations = JSON.parse(translations ?? '{}');
+
+    return (
+      field: ClipExtensionConfigurationQueryData.ClipsInstallation.Version.ConfigurationSchema_ClipsExtensionNumberConfigurationField.Label,
+    ) => {
+      switch (field.__typename) {
+        case 'ClipsExtensionConfigurationStringStatic': {
+          return field.value;
+        }
+        case 'ClipsExtensionConfigurationStringTranslation': {
+          const translated = parsedTranslations[field.key];
+          if (translated == null) {
+            throw new Error(`No translation found for ${field.key}`);
+          }
+
+          return translated;
+        }
+      }
+
+      throw new Error(`Unknown type: ${field.__typename}`);
+    };
+  }, [translations]);
+
+  const handleSubmit = () => {
+    updateClipsExtensionConfiguration({
+      variables: {id, configuration: JSON.stringify(values)},
+    });
+  };
+
+  const propsForField = (field: string) => {
+    return {
+      value: values[field] ? String(values[field]) : undefined,
+      onChange(value: string) {
+        dispatch({type: 'set', field, value});
+      },
+    };
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <BlockStack>
+        {configurationSchema.map((field) => {
+          switch (field.__typename) {
+            case 'ClipsExtensionStringConfigurationField': {
+              return (
+                <TextField
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  {...propsForField(field.key)}
+                />
+              );
+            }
+            case 'ClipsExtensionNumberConfigurationField': {
+              return (
+                <TextField
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  {...propsForField(field.key)}
+                />
+              );
+            }
+            case 'ClipsExtensionOptionsConfigurationField': {
+              return (
+                <Select
+                  key={field.key}
+                  label={translateLabel(field.label)}
+                  options={field.options.map((option) => ({
+                    value: option.value,
+                    label: translateLabel(option.label),
+                  }))}
+                  {...propsForField(field.key)}
+                />
+              );
+            }
+          }
+
+          throw new Error();
+        })}
+        <Button onPress={handleSubmit}>Update</Button>
+      </BlockStack>
+    </Form>
+  );
+}
+
+interface LocalClipFrameProps<T extends ExtensionPoint>
   extends Omit<
-    ClipFrameProps,
+    ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
   > {
   socketUrl: string;
@@ -136,12 +408,12 @@ interface LocalDevelopmentClipProps
 
 type BuildState = EventMap['connect'];
 
-function LocalDevelopmentClip({
+function LocalClipFrame<T extends ExtensionPoint>({
   socketUrl,
   children,
   controller,
   ...rest
-}: PropsWithChildren<LocalDevelopmentClipProps>) {
+}: PropsWithChildren<LocalClipFrameProps<T>>) {
   const [compiling, setCompiling] = useState(false);
   const [buildState, setBuildState] = useState<BuildState | undefined>(
     undefined,
@@ -185,7 +457,7 @@ function LocalDevelopmentClip({
   }, [controller]);
 
   return (
-    <ClipFrame
+    <ClipFrame<T>
       controller={controller}
       {...rest}
       renderPopoverContent={() => (
@@ -226,21 +498,21 @@ function LocalDevelopmentOverview({
   return <Text>{JSON.stringify(buildState)}</Text>;
 }
 
-interface ClipFrameProps {
+interface ClipFrameProps<T extends ExtensionPoint> {
   name: string;
   script: string;
-  controller: RenderController;
+  controller: RenderController<T>;
   renderPopoverContent?(): ReactNode;
   renderPopoverActions?(): ReactNode;
 }
 
-function ClipFrame({
+function ClipFrame<T extends ExtensionPoint>({
   name,
   controller,
   children,
   renderPopoverContent,
   renderPopoverActions,
-}: PropsWithChildren<ClipFrameProps>) {
+}: PropsWithChildren<ClipFrameProps<T>>) {
   const additionalSectionContents = renderPopoverContent?.() ?? null;
   const actionContents = renderPopoverActions?.() ?? null;
 
@@ -265,11 +537,13 @@ function ClipFrame({
   );
 }
 
-interface ClipTimingsProps {
-  controller: RenderController;
+interface ClipTimingsProps<T extends ExtensionPoint> {
+  controller: RenderController<T>;
 }
 
-function ClipTimings({controller}: ClipTimingsProps) {
+function ClipTimings<T extends ExtensionPoint>({
+  controller,
+}: ClipTimingsProps<T>) {
   const timings = useTimings(controller);
   const scripts = useSandboxScripts(controller);
 
@@ -338,7 +612,7 @@ function DownloadedScript({
   );
 }
 
-function useSandboxScripts(controller: RenderController) {
+function useSandboxScripts(controller: RenderController<any>) {
   const [scripts, setScripts] = useState<Script[]>([]);
 
   useEffect(() => {
@@ -376,11 +650,11 @@ function useSandboxScripts(controller: RenderController) {
   return scripts;
 }
 
-function useTimings(controller: RenderController) {
+function useTimings(controller: RenderController<any>) {
   const [state, setState] = useState<{
-    id: RenderController['id'];
-    timings: RenderController['timings'];
-    controller: RenderController;
+    id: RenderController<any>['id'];
+    timings: RenderController<any>['timings'];
+    controller: RenderController<any>;
   }>(() => ({
     id: controller.id,
     timings: {...controller.timings},

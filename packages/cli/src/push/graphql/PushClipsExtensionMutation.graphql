@@ -1,0 +1,22 @@
+mutation PushClipsExtension(
+  $extensionId: ID!
+  $hash: String!
+  $name: String
+  $translations: JSON
+  $supports: [ClipsExtensionPointSupportInput!]
+  $configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
+) {
+  pushClipsExtension(
+    extensionId: $extensionId
+    hash: $hash
+    name: $name
+    translations: $translations
+    supports: $supports
+    configurationSchema: $configurationSchema
+  ) {
+    signedScriptUpload
+    version {
+      id
+    }
+  }
+}

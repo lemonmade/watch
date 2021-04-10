@@ -4,8 +4,8 @@ module.exports = {
       schema: 'functions/api/graph/schema.graphql',
       documents: [
         'app/**/*.graphql',
-        'packages/cli/src/deploy/**/*.graphql',
         'packages/cli/src/publish/**/*.graphql',
+        'packages/cli/src/push/**/*.graphql',
         'packages/cli/src/app/**/*.graphql',
       ],
       exclude: [
@@ -21,6 +21,10 @@ module.exports = {
           ],
           schema: [
             {kind: 'definitions', outputPath: 'functions/api/graph/schema.ts'},
+            {
+              kind: 'inputTypes',
+              outputPath: 'functions/api/graph/schema-input-types.d.ts',
+            },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],
         },

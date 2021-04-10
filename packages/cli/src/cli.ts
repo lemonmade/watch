@@ -1,6 +1,6 @@
 import arg from 'arg';
 
-const KNOWN_COMMANDS = new Set(['dev', 'build', 'deploy', 'publish']);
+const KNOWN_COMMANDS = new Set(['dev', 'build', 'push', 'publish']);
 
 run();
 
@@ -28,9 +28,9 @@ async function run() {
       await build();
       break;
     }
-    case 'deploy': {
-      const {deploy} = await import('./deploy');
-      await deploy();
+    case 'push': {
+      const {push} = await import('./push');
+      await push();
       break;
     }
     case 'publish': {

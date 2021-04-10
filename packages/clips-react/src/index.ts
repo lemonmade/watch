@@ -14,4 +14,4 @@ export type {
 
 export {render} from './render';
 export {Text, View} from './components';
-export {useApi} from './hooks';
+export {useApi, useConfiguration, useSubscription} from './hooks';

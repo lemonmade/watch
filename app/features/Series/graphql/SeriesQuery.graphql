@@ -14,8 +14,13 @@ query Series($id: ID!) {
       overview
     }
   }
-  clipsInstallations(extensionPoint: "Watch::Series::Details") {
+  clipsInstallations(
+    extensionPoint: "Watch::Series::Details"
+    conditions: [{seriesId: $id}]
+  ) {
     id
+    extensionPoint
+    configuration
     version {
       id
       apiVersion

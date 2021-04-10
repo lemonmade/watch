@@ -1,0 +1,47 @@
+query ClipExtensionConfiguration($id: ID!) {
+  clipsInstallation(id: $id) {
+    id
+    configuration
+    version {
+      translations
+      configurationSchema {
+        ... on ClipsExtensionStringConfigurationField {
+          key
+          stringDefault: default
+          label {
+            ...ClipsExtensionConfigurationStringFragment
+          }
+        }
+        ... on ClipsExtensionNumberConfigurationField {
+          key
+          numberDefault: default
+          label {
+            ...ClipsExtensionConfigurationStringFragment
+          }
+        }
+        ... on ClipsExtensionOptionsConfigurationField {
+          key
+          optionsDefault: default
+          label {
+            ...ClipsExtensionConfigurationStringFragment
+          }
+          options {
+            value
+            label {
+              ...ClipsExtensionConfigurationStringFragment
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ClipsExtensionConfigurationStringFragment on ClipsExtensionConfigurationString {
+  ... on ClipsExtensionConfigurationStringStatic {
+    value
+  }
+  ... on ClipsExtensionConfigurationStringTranslation {
+    key
+  }
+}
