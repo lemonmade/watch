@@ -1241,7 +1241,7 @@ function resolveClipsExtensionPointCondition(condition: {type: string}) {
   throw new Error(`Unknown condition: ${condition}`);
 }
 
-export const ClipsExtensionPointSeriesCondition: Resolver = {
+export const ClipsExtensionPointCondition: Resolver = {
   __resolveType: resolveClipsExtensionPointCondition,
 };
 
@@ -1256,11 +1256,7 @@ function resolveClipsExtensionString(stringType: {type: string}) {
   throw new Error(`Unknown stringType: ${stringType}`);
 }
 
-export const ClipsExtensionConfigurationStringTranslation: Resolver = {
-  __resolveType: resolveClipsExtensionString,
-};
-
-export const ClipsExtensionConfigurationStringStatic: Resolver = {
+export const ClipsExtensionConfigurationString: Resolver = {
   __resolveType: resolveClipsExtensionString,
 };
 
@@ -1277,15 +1273,7 @@ function resolveClipsConfigurationField(configurationField: {type: string}) {
   throw new Error(`Unknown configuration field: ${configurationField}`);
 }
 
-export const ClipsExtensionStringConfigurationField: Resolver = {
-  __resolveType: resolveClipsConfigurationField,
-};
-
-export const ClipsExtensionNumberConfigurationField: Resolver = {
-  __resolveType: resolveClipsConfigurationField,
-};
-
-export const ClipsExtensionOptionsConfigurationField: Resolver = {
+export const ClipsExtensionConfigurationField: Resolver = {
   __resolveType: resolveClipsConfigurationField,
 };
 
