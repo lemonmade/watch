@@ -1,6 +1,7 @@
 import {createRemoteRoot, retain} from '@remote-ui/core';
 import type {RemoteChannel} from '@remote-ui/core';
 import type {Endpoint} from '@remote-ui/rpc';
+import {makeStatefulSubscribable} from '@remote-ui/async-subscription';
 import {endpoint as untypedEndpoint} from '@remote-ui/web-workers/worker';
 
 import type {
@@ -54,7 +55,10 @@ export async function render<T extends ExtensionPoint>(
 
   // TypeScript has a very hard time understanding the various union types going on here :/
   // @ts-ignore
-  let result = runExtensionPoint(id, root, api);
+  let result = runExtensionPoint(id, root, {
+    ...(api as any),
+    configuration: makeStatefulSubscribable((api as any).configuration),
+  });
 
   if (typeof result === 'object' && result != null && 'then' in result) {
     result = await result;
