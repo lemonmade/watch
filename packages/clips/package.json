@@ -20,6 +20,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^2.0.0"
+    "@remote-ui/core": "^2.0.0",
+    "@remote-ui/async-subscription": "^2.0.0"
   }
 }

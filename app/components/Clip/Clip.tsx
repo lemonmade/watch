@@ -28,7 +28,10 @@ import {
 } from '@lemon/zest';
 import {useQuery, useMutation} from '@quilted/quilt';
 
-import type {ClipsExtensionApiVersion} from 'graphql/types';
+import type {
+  ClipsExtensionApiVersion,
+  JSON as GraphQlJSON,
+} from 'graphql/types';
 import {useRenderSandbox} from 'utilities/clips';
 import type {RenderController, ExtensionSandbox} from 'utilities/clips';
 import type {ArrayElement, ThenType} from 'utilities/types';
@@ -51,9 +54,13 @@ export interface Props<T extends ExtensionPoint> {
   name: string;
   version: ClipsExtensionApiVersion;
   script: string;
-  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version'>;
+  api: Omit<
+    ApiForExtensionPoint<T>,
+    'extensionPoint' | 'version' | 'configuration'
+  >;
   components: ReactComponentsForRuntimeExtension<T>;
   local?: string;
+  configuration?: GraphQlJSON;
 }
 
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -66,6 +73,7 @@ export function Clip<T extends ExtensionPoint>({
   local,
   api,
   components,
+  configuration,
 }: Props<T>) {
   const controller = useMemo(() => createController(components), [
     extensionPoint,
@@ -77,6 +85,13 @@ export function Clip<T extends ExtensionPoint>({
     extensionPoint,
     version: version as any,
     script,
+    configuration,
+  });
+
+  useValueOnChange(configuration, () => {
+    sandboxController.internals.configuration.update(
+      JSON.parse(configuration ?? '{}'),
+    );
   });
 
   return local ? (
@@ -101,19 +116,35 @@ export function Clip<T extends ExtensionPoint>({
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-interface InstalledClipProps
+function useValueOnChange<T>(
+  value: T,
+  onChange: (value: T, lastValue: T) => void,
+) {
+  const internals = useRef<[T, typeof onChange]>([value, onChange]);
+
+  useEffect(() => {
+    const [lastValue, onChange] = internals.current;
+
+    if (lastValue !== value) {
+      internals.current[0] = value;
+      onChange(value, lastValue);
+    }
+  }, [value]);
+}
+
+interface InstalledClipProps<T extends ExtensionPoint>
   extends Omit<
-    ClipFrameProps,
+    ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
   > {
   id: string;
 }
 
-function InstalledClip({
+function InstalledClip<T extends ExtensionPoint>({
   controller,
   id,
   ...rest
-}: PropsWithChildren<InstalledClipProps>) {
+}: PropsWithChildren<InstalledClipProps<T>>) {
   return (
     <ClipFrame
       {...rest}
@@ -239,7 +270,7 @@ function InstalledClipLoadedConfiguration({
 
   const handleSubmit = () => {
     updateClipsExtensionConfiguration({
-      variables: {id},
+      variables: {id, configuration: JSON.stringify(values)},
     });
   };
 
@@ -298,9 +329,9 @@ function InstalledClipLoadedConfiguration({
   );
 }
 
-interface LocalDevelopmentClipProps
+interface LocalDevelopmentClipProps<T extends ExtensionPoint>
   extends Omit<
-    ClipFrameProps,
+    ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
   > {
   socketUrl: string;
@@ -308,12 +339,12 @@ interface LocalDevelopmentClipProps
 
 type BuildState = EventMap['connect'];
 
-function LocalDevelopmentClip({
+function LocalDevelopmentClip<T extends ExtensionPoint>({
   socketUrl,
   children,
   controller,
   ...rest
-}: PropsWithChildren<LocalDevelopmentClipProps>) {
+}: PropsWithChildren<LocalDevelopmentClipProps<T>>) {
   const [compiling, setCompiling] = useState(false);
   const [buildState, setBuildState] = useState<BuildState | undefined>(
     undefined,
@@ -357,7 +388,7 @@ function LocalDevelopmentClip({
   }, [controller]);
 
   return (
-    <ClipFrame
+    <ClipFrame<T>
       controller={controller}
       {...rest}
       renderPopoverContent={() => (
@@ -398,21 +429,21 @@ function LocalDevelopmentOverview({
   return <Text>{JSON.stringify(buildState)}</Text>;
 }
 
-interface ClipFrameProps {
+interface ClipFrameProps<T extends ExtensionPoint> {
   name: string;
   script: string;
-  controller: RenderController;
+  controller: RenderController<T>;
   renderPopoverContent?(): ReactNode;
   renderPopoverActions?(): ReactNode;
 }
 
-function ClipFrame({
+function ClipFrame<T extends ExtensionPoint>({
   name,
   controller,
   children,
   renderPopoverContent,
   renderPopoverActions,
-}: PropsWithChildren<ClipFrameProps>) {
+}: PropsWithChildren<ClipFrameProps<T>>) {
   const additionalSectionContents = renderPopoverContent?.() ?? null;
   const actionContents = renderPopoverActions?.() ?? null;
 
@@ -437,11 +468,13 @@ function ClipFrame({
   );
 }
 
-interface ClipTimingsProps {
-  controller: RenderController;
+interface ClipTimingsProps<T extends ExtensionPoint> {
+  controller: RenderController<T>;
 }
 
-function ClipTimings({controller}: ClipTimingsProps) {
+function ClipTimings<T extends ExtensionPoint>({
+  controller,
+}: ClipTimingsProps<T>) {
   const timings = useTimings(controller);
   const scripts = useSandboxScripts(controller);
 
@@ -510,7 +543,7 @@ function DownloadedScript({
   );
 }
 
-function useSandboxScripts(controller: RenderController) {
+function useSandboxScripts(controller: RenderController<any>) {
   const [scripts, setScripts] = useState<Script[]>([]);
 
   useEffect(() => {
@@ -548,11 +581,11 @@ function useSandboxScripts(controller: RenderController) {
   return scripts;
 }
 
-function useTimings(controller: RenderController) {
+function useTimings(controller: RenderController<any>) {
   const [state, setState] = useState<{
-    id: RenderController['id'];
-    timings: RenderController['timings'];
-    controller: RenderController;
+    id: RenderController<any>['id'];
+    timings: RenderController<any>['timings'];
+    controller: RenderController<any>;
   }>(() => ({
     id: controller.id,
     timings: {...controller.timings},
