@@ -1291,6 +1291,7 @@ export const ClipsExtensionInstallation: Resolver<{
   id: string;
   extensionId: string;
   appInstallId: string;
+  configuration?: Record<string, unknown>;
 }> = {
   id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
   extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
@@ -1307,6 +1308,8 @@ export const ClipsExtensionInstallation: Resolver<{
       ? clipsExtensionVersionsLoader.load(extension.latestVersionId)
       : null;
   },
+  configuration: ({configuration}) =>
+    configuration ? JSON.stringify(configuration) : null,
 };
 
 function addResolvedType(type: string) {
