@@ -84,6 +84,30 @@ function SeriesWithData({
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
       )}
+      <BlockStack spacing="large">
+        {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
+          <SeriesDetailsClip
+            id={id}
+            key={id}
+            api={apiForClips}
+            name={name}
+            version={version}
+            script={script}
+            local={socketUrl}
+          />
+        ))}
+        {clipsInstallations.map(({id, version, extension, configuration}) => (
+          <SeriesDetailsClip
+            id={id}
+            key={id}
+            api={apiForClips}
+            name={extension.name}
+            version={version.apiVersion}
+            script={version.assets[0].source}
+            configuration={configuration ?? undefined}
+          />
+        ))}
+      </BlockStack>
       <BlockStack>
         {series.seasons.map(({id, number, status}: any) => (
           <View key={id}>
@@ -140,30 +164,6 @@ function SeriesWithData({
           Start watch through
         </Button>
       </View>
-      <BlockStack spacing="large">
-        {localDevelopmentClips.map(({id, script, name, version, socketUrl}) => (
-          <SeriesDetailsClip
-            id={id}
-            key={id}
-            api={apiForClips}
-            name={name}
-            version={version}
-            script={script}
-            local={socketUrl}
-          />
-        ))}
-        {clipsInstallations.map(({id, version, extension, configuration}) => (
-          <SeriesDetailsClip
-            id={id}
-            key={id}
-            api={apiForClips}
-            name={extension.name}
-            version={version.apiVersion}
-            script={version.assets[0].source}
-            configuration={configuration ?? undefined}
-          />
-        ))}
-      </BlockStack>
     </Page>
   );
 }
