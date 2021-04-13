@@ -4127,14 +4127,14 @@
     "@sewing-kit/plugin-javascript" "^0.2.0"
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/aws@^0.2.11":
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.11.tgz#2870e009e6697606f99c943b852d203403f2e27d"
-  integrity sha512-14gYt0zmWUuCIl3ukNtzy4tWeZqXFmceZFmaz+Bg+LhB4d85llM9oQbGbbycgfD9vAXwkVBvravmEKW8oO1f7w==
+"@quilted/aws@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.12.tgz#cbeb06c99e108b30d1c0aea19a6bb120d764d3ee"
+  integrity sha512-568nX6pBUhFhOY5stYk7t/YBuLi6604WJEQ1t9g2INVgwr8/EiXmP9TUPD1YwFS/F5ZPmCyiA98Oz4gYwG+qyA==
   dependencies:
     "@quilted/asset-upload-s3" "^0.1.8"
     "@quilted/http-handlers" "^0.1.1"
-    "@quilted/sewing-kit-plugins" "^0.2.10"
+    "@quilted/sewing-kit-plugins" "^0.2.11"
     "@sewing-kit/plugins" "^0.1.6"
     "@types/aws-lambda" "^8.0.0"
     cookie "^0.4.0"
@@ -4327,10 +4327,10 @@
   resolved "https://registry.yarnpkg.com/@quilted/routing/-/routing-0.1.0.tgz#b80f71ee0625cdba8ac13d8012def6c1f5632857"
   integrity sha512-EqO+Q0xlGeTrw2vG4SVx8UKV7r0EKzMkJ2LC+zJ7N44VzaS8rJWpF5NylpDq9kC80ltwO7DWRKD2euM9O+1ekw==
 
-"@quilted/sewing-kit-plugins@^0.2.10":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.2.10.tgz#288612317fe85616664d472c5581ef7ce7081b3f"
-  integrity sha512-B7Dp0DOIMttbITUdFpjrk3X65fwdJAG5LjXp45rb1oJo1ZyefzuTNLlrfDGTW8mPeesNnFelpgSehY24n3E0mQ==
+"@quilted/sewing-kit-plugins@^0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.2.11.tgz#d2873d83d0af4c69e5890b391975a554eef809ab"
+  integrity sha512-onFp/aNGM5urEJn44xjvqkySnnICzHQd4qPyrlMlQ1fs75W/QYDSccmpnF+lVBjHiWd4g1g3z7U30Gzq5JCvdg==
   dependencies:
     "@quilted/polyfills" "^0.0.5"
     "@sewing-kit/plugin-css" "^0.1.21"
@@ -4990,11 +4990,6 @@
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@types/content-disposition/-/content-disposition-0.5.3.tgz#0aa116701955c2faa0717fc69cd1596095e49d96"
   integrity sha512-P1bffQfhD3O4LW0ioENXUhZ9OIa0Zn+P7M+pWgkCKaT53wVLSq0mrKksCID/FGHpFhRSxRGhgrQmfhRuzwtKdg==
-
-"@types/cookie@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.0.tgz#14f854c0f93d326e39da6e3b6f34f7d37513d108"
-  integrity sha512-y7mImlc/rNkvCRmg8gC3/lj87S7pTUIJ6QGjwHR9WQJcFs+ZMTOaoPrkdFA/YdbuqVEmEbb5RdhVxMkAcgOnpg==
 
 "@types/cookies@*":
   version "0.7.6"
