@@ -1,4 +1,5 @@
 import {createService} from '@sewing-kit/config';
+import {lambda} from '@quilted/aws/sewing-kit';
 import {quiltService} from '@quilted/sewing-kit-plugins';
 
 import {
@@ -13,6 +14,7 @@ export default createService((service) => {
     // server build...
     quiltService({devServer: false /* , features: ['base', 'fetch'] */}),
     knex(),
+    lambda(),
     functionConvenienceAliases(),
   );
 });

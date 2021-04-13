@@ -6,6 +6,7 @@ import {createService} from '@sewing-kit/config';
 //   createComposedProjectPlugin,
 // } from '@sewing-kit/plugins';
 import {quiltService} from '@quilted/sewing-kit-plugins';
+import {lambda} from '@quilted/aws/sewing-kit';
 import {
   webpackAliases,
   noopModuleWithWebpack,
@@ -32,6 +33,7 @@ export default createService((service) => {
     knex(),
     webpackAliases({'any-promise': anyPromiseStub}),
     noopModuleWithWebpack(/vue-template-compiler/),
+    lambda(),
     functionConvenienceAliases(),
     // lambdaDev(),
   );
