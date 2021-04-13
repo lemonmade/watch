@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
-import type {ExtendedRequest, ExtendedResponse} from '@lemon/tiny-server';
+import type {Request, Response} from '@quilted/http-handlers';
 
 export enum Cookie {
   Auth = 'Auth',
@@ -41,7 +41,7 @@ export function verifySignedToken<T = Record<string, unknown>>(
   return {data: data as T, subject: sub || undefined, expired, expiresAt};
 }
 
-export function getUserIdFromRequest(request: ExtendedRequest) {
+export function getUserIdFromRequest(request: Request) {
   const cookie = request.cookies.get(Cookie.Auth);
 
   if (!cookie) return undefined;
@@ -54,7 +54,7 @@ export function getUserIdFromRequest(request: ExtendedRequest) {
   }
 }
 
-export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
+export function addAuthCookies(user: {id: string}, response: Response) {
   const token = createSignedToken({}, {expiresIn: '7 days', subject: user.id});
 
   response.cookies.set(Cookie.Auth, token, {
@@ -69,8 +69,8 @@ export function addAuthCookies(user: {id: string}, response: ExtendedResponse) {
 }
 
 export function removeAuthCookies(
-  response: ExtendedResponse,
-  {request}: {request?: ExtendedRequest} = {},
+  response: Response,
+  {request}: {request?: Request} = {},
 ) {
   if (request == null || request.cookies.has(Cookie.Auth)) {
     response.cookies.delete(Cookie.Auth, {path: '/'});

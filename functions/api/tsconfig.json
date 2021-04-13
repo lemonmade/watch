@@ -10,9 +10,5 @@
   },
   "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [
-    {"path": "../shared"},
-    {"path": "../email"},
-    {"path": "../../packages/tiny-server"}
-  ]
+  "references": [{"path": "../shared"}, {"path": "../email"}]
 }

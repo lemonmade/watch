@@ -7,6 +7,5 @@
     "paths": {}
   },
   "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
-  "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../../packages/tiny-server"}]
+  "exclude": ["sewing-kit.config.ts", "build"]
 }

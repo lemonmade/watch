@@ -1,8 +1,8 @@
-import type {ExtendedRequest} from '@lemon/tiny-server';
+import type {Request} from '@quilted/http-handlers';
 
 export function validateRedirectTo(
   redirectTo: string | undefined,
-  {url}: ExtendedRequest,
+  {url}: Request,
 ) {
   const normalizedRedirectTo =
     typeof redirectTo === 'string' ? new URL(redirectTo, url) : redirectTo;

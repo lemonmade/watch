@@ -2,8 +2,8 @@ import {
   useSubject,
   useSender,
   useSendTo,
-  usePlainTextEmail,
-} from '@lemon/react-email';
+  usePlainTextContent,
+} from '@quilted/quilt/email';
 
 interface Props {
   token: string;
@@ -20,7 +20,7 @@ export function Welcome({token, userEmail}: Props) {
   );
   url.searchParams.set('token', token);
 
-  usePlainTextEmail(
+  usePlainTextContent(
     () =>
       `Welcome! Finish setting up your account by clicking this link: ${url.href}`,
   );

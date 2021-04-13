@@ -1,6 +1,6 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
-import {createApp, json, noContent} from '@lemon/tiny-server';
+import {createHttpHandler, json, noContent} from '@quilted/http-handlers';
 import {
   captureException,
   init as sentryInit,
@@ -24,7 +24,7 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-const app = createApp();
+const app = createHttpHandler();
 
 app.options(() =>
   noContent({

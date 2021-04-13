@@ -2,8 +2,8 @@ import {
   useSubject,
   useSender,
   useSendTo,
-  usePlainTextEmail,
-} from '@lemon/react-email';
+  usePlainTextContent,
+} from '@quilted/quilt/email';
 
 interface Props {
   token: string;
@@ -18,7 +18,7 @@ export function SignIn({token, userEmail}: Props) {
   const url = new URL('https://watch.lemon.tools/internal/auth/email/sign-in');
   url.searchParams.set('token', token);
 
-  usePlainTextEmail(() => `Sign in by clicking this link: ${url.href}.`);
+  usePlainTextContent(() => `Sign in by clicking this link: ${url.href}.`);
 
   return (
     <p>

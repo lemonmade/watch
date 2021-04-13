@@ -13,7 +13,10 @@ import {
 
 // import {virtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
 
-import {knex, tinyServer} from '../../config/sewing-kit/plugins';
+import {
+  knex,
+  functionConvenienceAliases,
+} from '../../config/sewing-kit/plugins';
 
 // const PLUGIN = 'Watch.Api';
 
@@ -29,7 +32,7 @@ export default createService((service) => {
     knex(),
     webpackAliases({'any-promise': anyPromiseStub}),
     noopModuleWithWebpack(/vue-template-compiler/),
-    tinyServer(),
+    functionConvenienceAliases(),
     // lambdaDev(),
   );
 });

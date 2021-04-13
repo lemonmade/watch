@@ -1,11 +1,7 @@
 import crypto from 'crypto';
-import type {
-  ExtendedRequest,
-  CookieDefinition,
-  ExtendedResponse,
-} from '@lemon/tiny-server';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {redirect, html, fetchJson} from '@lemon/tiny-server';
+import {redirect, html, fetchJson} from '@quilted/http-handlers';
+import type {Request, Response, CookieDefinition} from '@quilted/http-handlers';
 import {stripIndent} from 'common-tags';
 
 import {
@@ -45,7 +41,7 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-export function startGithubOAuth(request: ExtendedRequest) {
+export function startGithubOAuth(request: Request) {
   const state = crypto
     .randomBytes(15)
     .map((byte) => byte % 10)
@@ -83,7 +79,7 @@ export function startGithubOAuth(request: ExtendedRequest) {
   return response;
 }
 
-export function handleGithubOAuthSignIn(request: ExtendedRequest) {
+export function handleGithubOAuthSignIn(request: Request) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartSignIn({
@@ -116,7 +112,7 @@ export function handleGithubOAuthSignIn(request: ExtendedRequest) {
 
 function completeSignIn(
   id: string,
-  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+  {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id},
@@ -128,7 +124,7 @@ function completeSignIn(
   );
 }
 
-export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
+export function handleGithubOAuthCreateAccount(request: Request) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartCreateAccount({
@@ -195,7 +191,7 @@ export function handleGithubOAuthCreateAccount(request: ExtendedRequest) {
 
 function completeCreateAccount(
   id: string,
-  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+  {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id},
@@ -207,7 +203,7 @@ function completeCreateAccount(
   );
 }
 
-export function handleGithubOAuthConnect(request: ExtendedRequest) {
+export function handleGithubOAuthConnect(request: Request) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartConnect({redirectTo, request});
@@ -280,7 +276,7 @@ export function handleGithubOAuthConnect(request: ExtendedRequest) {
 
 function completeConnect(
   id: string,
-  {request, redirectTo}: {request: ExtendedRequest; redirectTo?: string},
+  {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id},
@@ -305,7 +301,7 @@ enum GithubCallbackFailureReason {
 }
 
 interface GithubCallbackFailureResult {
-  readonly request: ExtendedRequest;
+  readonly request: Request;
   readonly reason: GithubCallbackFailureReason;
   readonly redirectTo?: string;
 }
@@ -313,15 +309,13 @@ interface GithubCallbackFailureResult {
 const db = createDatabaseConnection();
 
 async function handleGithubOAuthCallback(
-  request: ExtendedRequest,
+  request: Request,
   {
     onSuccess,
     onFailure,
   }: {
-    onSuccess(
-      result: GithubCallbackResult,
-    ): ExtendedResponse | Promise<ExtendedResponse>;
-    onFailure(result: GithubCallbackFailureResult): ExtendedResponse;
+    onSuccess(result: GithubCallbackResult): Response | Promise<Response>;
+    onFailure(result: GithubCallbackFailureResult): Response;
   },
 ) {
   const {url, cookies} = request;
@@ -398,7 +392,7 @@ function restartSignIn({
   reason = SignInErrorReason.Generic,
   redirectTo,
 }: {
-  request: ExtendedRequest;
+  request: Request;
   reason?: SignInErrorReason;
   redirectTo?: string;
 }) {
@@ -426,7 +420,7 @@ function restartCreateAccount({
   reason = CreateAccountErrorReason.Generic,
   redirectTo,
 }: {
-  request: ExtendedRequest;
+  request: Request;
   reason?: CreateAccountErrorReason;
   redirectTo?: string;
 }) {
@@ -456,7 +450,7 @@ function restartConnect({
   request,
   redirectTo,
 }: {
-  request: ExtendedRequest;
+  request: Request;
   redirectTo?: string;
 }) {
   const targetUrl = validatedRedirectUrl(redirectTo, request);
@@ -468,10 +462,7 @@ function restartConnect({
   });
 }
 
-function validatedRedirectUrl(
-  redirect: string | undefined,
-  request: ExtendedRequest,
-) {
+function validatedRedirectUrl(redirect: string | undefined, request: Request) {
   return new URL(validateRedirectTo(redirect, request) ?? '/app', request.url);
 }
 
@@ -482,7 +473,7 @@ function modalAuthResponse({
 }: {
   event: Omit<GithubOAuthPopoverMessage, 'topic' | 'redirectTo'>;
   redirectTo: URL;
-  request: ExtendedRequest;
+  request: Request;
 }) {
   const content = stripIndent`
     <html>
@@ -517,8 +508,8 @@ function modalAuthResponse({
 }
 
 function deleteOAuthCookies(
-  response: ExtendedResponse,
-  {request}: {request?: ExtendedRequest},
+  response: Response,
+  {request}: {request?: Request},
 ) {
   if (request == null || request.cookies.has(Cookie.State)) {
     response.cookies.delete(Cookie.State);

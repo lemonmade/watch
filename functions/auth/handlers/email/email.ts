@@ -1,5 +1,5 @@
-import {redirect} from '@lemon/tiny-server';
-import type {ExtendedRequest} from '@lemon/tiny-server';
+import {redirect} from '@quilted/http-handlers';
+import type {Request} from '@quilted/http-handlers';
 
 import {
   SignInErrorReason,
@@ -17,7 +17,7 @@ import {SearchParam} from '../../constants';
 
 const db = createDatabaseConnection();
 
-export async function signInFromEmail(request: ExtendedRequest) {
+export async function signInFromEmail(request: Request) {
   const token = request.url.searchParams.get(SearchParam.Token);
 
   if (token == null) {
@@ -70,7 +70,7 @@ export async function signInFromEmail(request: ExtendedRequest) {
   }
 }
 
-export async function createAccountFromEmail(request: ExtendedRequest) {
+export async function createAccountFromEmail(request: Request) {
   const token = request.url.searchParams.get(SearchParam.Token);
 
   if (token == null) {
@@ -147,7 +147,7 @@ export function completeAuth(
     request,
     redirectTo,
   }: {
-    request: ExtendedRequest;
+    request: Request;
     redirectTo?: string;
   },
 ) {
@@ -161,7 +161,7 @@ export function restartSignIn({
   reason = SignInErrorReason.Generic,
   redirectTo,
 }: {
-  request: ExtendedRequest;
+  request: Request;
   reason?: SignInErrorReason;
   redirectTo?: string;
 }) {
@@ -189,7 +189,7 @@ export function restartCreateAccount({
   reason = CreateAccountErrorReason.Generic,
   redirectTo,
 }: {
-  request: ExtendedRequest;
+  request: Request;
   reason?: CreateAccountErrorReason;
   redirectTo?: string;
 }) {
