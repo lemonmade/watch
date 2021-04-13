@@ -1,4 +1,4 @@
-import {createApp, redirect} from '@lemon/tiny-server';
+import {createHttpHandler, redirect} from '@quilted/http-handlers';
 
 import {SearchParam, ROOT_PATH} from './constants';
 import {signInFromEmail, createAccountFromEmail} from './handlers/email';
@@ -9,7 +9,7 @@ import {
   handleGithubOAuthConnect,
 } from './handlers/github';
 
-const app = createApp({prefix: ROOT_PATH});
+const app = createHttpHandler({prefix: ROOT_PATH});
 
 app.get('/email/sign-in', signInFromEmail);
 app.get('/email/create-account', createAccountFromEmail);

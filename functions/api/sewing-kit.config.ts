@@ -6,6 +6,7 @@ import {createService} from '@sewing-kit/config';
 //   createComposedProjectPlugin,
 // } from '@sewing-kit/plugins';
 import {quiltService} from '@quilted/sewing-kit-plugins';
+import {lambda} from '@quilted/aws/sewing-kit';
 import {
   webpackAliases,
   noopModuleWithWebpack,
@@ -13,7 +14,10 @@ import {
 
 // import {virtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
 
-import {knex, tinyServer} from '../../config/sewing-kit/plugins';
+import {
+  knex,
+  functionConvenienceAliases,
+} from '../../config/sewing-kit/plugins';
 
 // const PLUGIN = 'Watch.Api';
 
@@ -29,7 +33,8 @@ export default createService((service) => {
     knex(),
     webpackAliases({'any-promise': anyPromiseStub}),
     noopModuleWithWebpack(/vue-template-compiler/),
-    tinyServer(),
+    lambda(),
+    functionConvenienceAliases(),
     // lambdaDev(),
   );
 });

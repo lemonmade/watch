@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import type {ExtendedRequest, ExtendedResponse} from '@lemon/tiny-server';
+import type {Request, Response} from '@quilted/http-handlers';
 import {Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
@@ -8,8 +8,8 @@ export type Context = ReturnType<typeof createContext>;
 export function createContext(
   db: Database,
   user: {id: string} | undefined,
-  request: ExtendedRequest,
-  response: ExtendedResponse,
+  request: Request,
+  response: Response,
 ) {
   return {
     db,

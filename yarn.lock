@@ -4127,14 +4127,17 @@
     "@sewing-kit/plugin-javascript" "^0.2.0"
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/aws@^0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.9.tgz#9fc0713c6b8128890361c8ef5028bad9fa1574e0"
-  integrity sha512-6sxZiExMDbdkqPeZyK7RwtzTwU087ND/acuPkHN/UHaQVuYGckebAppFlN5v4Ui1GylMUUkZ8OY3WT4Lk5D9lw==
+"@quilted/aws@^0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.14.tgz#d4123862e5f3b13e28c6b1df6ab0393b3b31715f"
+  integrity sha512-XVcAo3/M6l1scYuP2Y+HIWNtFz4tHgri80thk9uM+NoKwh17QA9zGLqMs3BXJSUB7ShRTQYlIzX3/xQYS1Y0CQ==
   dependencies:
     "@quilted/asset-upload-s3" "^0.1.8"
-    "@quilted/sewing-kit-plugins" "^0.2.9"
+    "@quilted/http-handlers" "^0.1.1"
+    "@quilted/sewing-kit-plugins" "^0.2.13"
     "@sewing-kit/plugins" "^0.1.6"
+    "@types/aws-lambda" "^8.0.0"
+    cookie "^0.4.0"
 
 "@quilted/graphql@^0.3.0", "@quilted/graphql@^0.3.3":
   version "0.3.3"
@@ -4161,6 +4164,15 @@
   optionalDependencies:
     "@sewing-kit/plugins" "^0.1.6"
 
+"@quilted/http-handlers@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@quilted/http-handlers/-/http-handlers-0.1.1.tgz#cfd97f15a1c6b14e98b616061ca14aef1bbb94ba"
+  integrity sha512-yfbBjq38d8QbA6GIg0MV0F9jLxCTRll/DHfm0TiknkzSKX1ACSqrWUNu9pLYHCGfvR8DqVHYBfDnOjBGFvcUMQ==
+  dependencies:
+    "@quilted/http" "^0.1.0"
+    "@quilted/routing" "^0.1.0"
+    cookie "^0.4.0"
+
 "@quilted/http@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.1.0.tgz#b1534cef162871bdb85823627017e505d560d515"
@@ -4183,22 +4195,24 @@
   resolved "https://registry.yarnpkg.com/@quilted/preact-mini-compat/-/preact-mini-compat-0.1.3.tgz#ad650272895073927cca192ad580e67cb2ffcf04"
   integrity sha512-dPHS3w39l+xXSezYFTkLLvw9VOSaRCG79UxMTY7WzvC7Csd/bsS1QmlDEzo1b+YTAXm3fGpc33iYpTH6XtCyOw==
 
-"@quilted/quilt@^0.4.18":
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.4.18.tgz#7c148f3c053f6cdeb89fef1e4d60b60d0588a9cc"
-  integrity sha512-VwngQjLMZYrhHBXYUoiHzCDQdZQ0xz6hq8gcrGfZ2LyL8dArQ3QrJl8edKArpXUs6nZeE9y3gf12cePaz7ujEQ==
+"@quilted/quilt@^0.4.22":
+  version "0.4.22"
+  resolved "https://registry.yarnpkg.com/@quilted/quilt/-/quilt-0.4.22.tgz#4c4d1f0ba4b1470f1158bc01b370aad0b206bf05"
+  integrity sha512-EifeZYOGivx3Ho8+8cv/mAutQwjBIiiTRyhliy5BFSRixg580h7qi3J5N43jwyDCF8qO+Wt3FAaHcdGNF1xPDQ==
   dependencies:
     "@quilted/async" "^0.2.0"
     "@quilted/graphql" "^0.3.3"
+    "@quilted/http-handlers" "^0.1.1"
     "@quilted/polyfills" "^0.0.5"
     "@quilted/preact-mini-compat" "^0.1.3"
     "@quilted/react-async" "^0.2.7"
     "@quilted/react-auto-headings" "^0.2.1"
+    "@quilted/react-email" "^0.1.0"
     "@quilted/react-graphql" "^0.3.6"
     "@quilted/react-html" "^0.2.4"
     "@quilted/react-http" "^0.1.6"
     "@quilted/react-idle" "^0.2.1"
-    "@quilted/react-router" "^0.2.15"
+    "@quilted/react-router" "^0.2.16"
     "@quilted/react-server-render" "^0.2.1"
     "@quilted/react-testing" "^0.3.4"
     "@quilted/react-web-workers" "^0.2.4"
@@ -4217,6 +4231,14 @@
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@quilted/react-auto-headings/-/react-auto-headings-0.2.1.tgz#2ba485d09a602d6aac359401522e67d592ad791b"
   integrity sha512-bO/UYpF1dR3XTcNboBwInq4+XchjKqXsum7sphUH9IkSGoS1c/+2hRRxNY3KGa3cp63Iw4iNLBXEfl2mv4XAlA==
+
+"@quilted/react-email@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@quilted/react-email/-/react-email-0.1.0.tgz#3afa22ba85433e7c6637d2cabc79405cc5f79ecb"
+  integrity sha512-ja0qcKHQdKjIm6bh0Ss0D/Q8r12jI0NFlQ1avffjzei7JE6pP1kXC1dY1mnTNTJk2Z9XRsRrti+P5rgF0/xEaA==
+  dependencies:
+    "@quilted/react-html" "^0.2.4"
+    "@quilted/react-server-render" "^0.2.1"
 
 "@quilted/react-graphql@^0.3.6":
   version "0.3.6"
@@ -4252,14 +4274,15 @@
   resolved "https://registry.yarnpkg.com/@quilted/react-idle/-/react-idle-0.2.1.tgz#54df573c301ef56129cad07296763d0f2f30997f"
   integrity sha512-jyaizVVVzsttf3AsFboAXaDNgCZySe7aiNs/4xyDoNPb5MulMUExj4xc1z8oeVRcJeJndvBiJ06dNtMsGzMqtA==
 
-"@quilted/react-router@^0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.2.15.tgz#4ce0905d3ac487060a336fc5f43729714a34ef55"
-  integrity sha512-XI5AqZjpK1coT+C1go2snWp+jvdJ2qDBZBcc1p6ZI2D46n7QjKzJpXdKebavtvLisnkOIibOsLv30IfS94VGzw==
+"@quilted/react-router@^0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@quilted/react-router/-/react-router-0.2.16.tgz#a64ed00a570df54cc3c888f7c1299b0c50434673"
+  integrity sha512-Cuxxfx9mXmKinKsUH4QcUi7hgXeNQggiXWCwP9nviYc6NbEdvgNMfp/yImENAvAV5kaOdofDoq0vbN9IFuIogg==
   dependencies:
     "@quilted/react-html" "^0.2.4"
     "@quilted/react-http" "^0.1.6"
     "@quilted/react-server-render" "^0.2.1"
+    "@quilted/routing" "^0.1.0"
 
 "@quilted/react-server-render@^0.2.1":
   version "0.2.1"
@@ -4299,10 +4322,15 @@
     "@remote-ui/web-workers" "^1.4.0"
     "@types/react" "^17.0.0"
 
-"@quilted/sewing-kit-plugins@^0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.2.9.tgz#b49fe24857d52c1ccda678337edd7b53f020e819"
-  integrity sha512-KD1pnXuawZ2DgPymAjyJon1Sb5w5MVxMOn7g+43yKLw3JVR9oeFKZXwNcnibh+OCFs9U7DBjvcBjqlGb6sLBGQ==
+"@quilted/routing@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@quilted/routing/-/routing-0.1.0.tgz#b80f71ee0625cdba8ac13d8012def6c1f5632857"
+  integrity sha512-EqO+Q0xlGeTrw2vG4SVx8UKV7r0EKzMkJ2LC+zJ7N44VzaS8rJWpF5NylpDq9kC80ltwO7DWRKD2euM9O+1ekw==
+
+"@quilted/sewing-kit-plugins@^0.2.13":
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/@quilted/sewing-kit-plugins/-/sewing-kit-plugins-0.2.13.tgz#30deee0a1ff160d2258df1413e717e8128bbf400"
+  integrity sha512-4Vzz9girUgrV6ETGMTAMk/tHwmiajptgAU/hdeGkFxz0pmnAYryZosotptkX+qVHffvK1zX+RcskYxJ//X6UKA==
   dependencies:
     "@quilted/polyfills" "^0.0.5"
     "@sewing-kit/plugin-css" "^0.1.21"
@@ -4962,11 +4990,6 @@
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@types/content-disposition/-/content-disposition-0.5.3.tgz#0aa116701955c2faa0717fc69cd1596095e49d96"
   integrity sha512-P1bffQfhD3O4LW0ioENXUhZ9OIa0Zn+P7M+pWgkCKaT53wVLSq0mrKksCID/FGHpFhRSxRGhgrQmfhRuzwtKdg==
-
-"@types/cookie@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.0.tgz#14f854c0f93d326e39da6e3b6f34f7d37513d108"
-  integrity sha512-y7mImlc/rNkvCRmg8gC3/lj87S7pTUIJ6QGjwHR9WQJcFs+ZMTOaoPrkdFA/YdbuqVEmEbb5RdhVxMkAcgOnpg==
 
 "@types/cookies@*":
   version "0.7.6"
@@ -7718,7 +7741,7 @@ cookie@0.4.0:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz#beb437e7022b3b6d49019d088665303ebe9c14ba"
   integrity sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==
 
-cookie@^0.4.1:
+cookie@^0.4.0, cookie@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.1.tgz#afd713fe26ebd21ba95ceb61f9a8116e50a537d1"
   integrity sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==

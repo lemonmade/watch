@@ -5,12 +5,8 @@ import {
   createProjectPlugin,
   createProjectBuildPlugin,
 } from '@sewing-kit/plugins';
-import {
-  quiltWebApp,
-  MAGIC_MODULE_APP_COMPONENT,
-  MAGIC_MODULE_APP_AUTO_SERVER_ASSETS,
-} from '@quilted/sewing-kit-plugins';
-import {aws} from '@quilted/aws/sewing-kit';
+import {quiltWebApp} from '@quilted/sewing-kit-plugins';
+import {lambda} from '@quilted/aws/sewing-kit';
 import type {BuildWebAppTargetOptions} from '@sewing-kit/hooks';
 import type {} from '@sewing-kit/plugin-webpack';
 
@@ -30,7 +26,7 @@ export default createWebApp((app) => {
       features: ['base', 'fetch'],
       browserGroups: ['evergreen', 'latest-chrome'],
     }),
-    aws(),
+    lambda(),
     randomBits(),
     bundleAnalyzer(),
   );
@@ -61,56 +57,6 @@ function randomBits() {
               ...aliases,
               global: workspace.fs.resolvePath('global'),
             }));
-
-            configuration.quiltAutoServerContent?.hook(
-              () => `
-              import App from ${JSON.stringify(MAGIC_MODULE_APP_COMPONENT)};
-              import assets from ${JSON.stringify(
-                MAGIC_MODULE_APP_AUTO_SERVER_ASSETS,
-              )};
-
-              import {createApp, html} from '@lemon/tiny-server';
-              import {createLambdaApiGatewayProxy} from '@lemon/tiny-server-aws';
-              import {render, runApp, Html} from '@quilted/quilt/server';
-
-              const app = createApp();
-
-              app.get(async (request) => {
-                console.log(request);
-
-                const runContext = await runApp(<App />, {
-                  url: request.url,
-                });
-
-                const {headers, statusCode = 200} = runContext.http.state;
-
-                const usedAssets = runContext.asyncAssets.used({timing: 'immediate'});
-
-                const assetOptions = {userAgent: request.headers.get('User-Agent')};
-              
-                const [styles, scripts, preload] = await Promise.all([
-                  assets.styles({async: usedAssets, options: assetOptions}),
-                  assets.scripts({async: usedAssets, options: assetOptions}),
-                  assets.asyncAssets(runContext.asyncAssets.used({timing: 'soon'}), {
-                    options: assetOptions,
-                  }),
-                ]);
-
-                return html(
-                  render(
-                    <Html manager={runContext.html} styles={styles} scripts={scripts} preloadAssets={preload}>
-                      {runContext.markup}
-                    </Html>,
-                  ), {
-                    headers,
-                    status: statusCode,
-                  }
-                );
-              });
-
-              export const handler = createLambdaApiGatewayProxy(app);
-            `,
-            );
           });
         });
       });
@@ -119,7 +65,7 @@ function randomBits() {
 }
 
 function bundleAnalyzer() {
-  return createProjectBuildPlugin('Watch.BundleAnalyzer', ({hooks}) => {
+  return createProjectBuildPlugin<WebApp>('Watch.BundleAnalyzer', ({hooks}) => {
     hooks.target.hook(({target, hooks}) => {
       hooks.configure.hook((configuration) => {
         if (

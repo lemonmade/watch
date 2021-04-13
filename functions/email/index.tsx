@@ -1,8 +1,8 @@
 import {SES} from 'aws-sdk';
 import type {SQSHandler} from 'aws-lambda';
 
-import {renderEmail} from '@lemon/react-email';
-import type {Sender} from '@lemon/react-email';
+import {renderEmail} from '@quilted/quilt/server';
+import type {Sender} from '@quilted/quilt/email';
 
 import {Email} from './Email';
 

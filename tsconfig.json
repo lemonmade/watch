@@ -51,16 +51,7 @@
       "path": "./packages/css"
     },
     {
-      "path": "./packages/react-email"
-    },
-    {
       "path": "./packages/webpack-hot-worker"
-    },
-    {
-      "path": "./packages/tiny-server"
-    },
-    {
-      "path": "./packages/tiny-server-aws"
     },
     {
       "path": "./packages/zest"
