@@ -2,6 +2,7 @@ import {redirect} from '@quilted/http-handlers';
 import type {Request} from '@quilted/http-handlers';
 
 import {
+  SearchParam,
   SignInErrorReason,
   CreateAccountErrorReason,
 } from 'global/utilities/auth';
@@ -13,7 +14,6 @@ import {
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
 import {validateRedirectTo} from '../shared';
-import {SearchParam} from '../../constants';
 
 const db = createDatabaseConnection();
 

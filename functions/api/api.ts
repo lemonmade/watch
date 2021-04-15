@@ -47,13 +47,19 @@ app.post(async (request) => {
   console.log(`Document:\n${query}`);
   /* eslint-enable no-console */
 
-  const response = json(
+  const {cookies, headers} = json(
     {},
     {
       status: 200,
       headers: {'Access-Control-Allow-Origin': '*'},
     },
   );
+
+  const response = {
+    status: 200,
+    headers,
+    cookies,
+  };
 
   const userId = getUserIdFromRequest(request);
 
@@ -68,7 +74,7 @@ app.post(async (request) => {
     );
 
     return json(result, {
-      status: 200,
+      status: response.status,
       cookies: response.cookies,
       headers: response.headers,
     });

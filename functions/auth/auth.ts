@@ -1,6 +1,7 @@
 import {createHttpHandler, redirect} from '@quilted/http-handlers';
 
-import {SearchParam, ROOT_PATH} from './constants';
+import {SearchParam} from 'global/utilities/auth';
+
 import {signInFromEmail, createAccountFromEmail} from './handlers/email';
 import {
   startGithubOAuth,
@@ -9,7 +10,7 @@ import {
   handleGithubOAuthConnect,
 } from './handlers/github';
 
-const app = createHttpHandler({prefix: ROOT_PATH});
+const app = createHttpHandler({prefix: '/internal/auth'});
 
 app.get('/email/sign-in', signInFromEmail);
 app.get('/email/create-account', createAccountFromEmail);

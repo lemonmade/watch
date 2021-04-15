@@ -5,6 +5,7 @@ import type {Request, Response, CookieDefinition} from '@quilted/http-handlers';
 import {stripIndent} from 'common-tags';
 
 import {
+  SearchParam,
   SignInErrorReason,
   CreateAccountErrorReason,
 } from 'global/utilities/auth';
@@ -14,7 +15,6 @@ import {createDatabaseConnection, Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
 import {validateRedirectTo} from '../shared';
-import {SearchParam} from '../../constants';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';

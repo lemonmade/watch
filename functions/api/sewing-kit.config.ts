@@ -29,7 +29,7 @@ export default createService((service) => {
   service.entry('./index');
   service.use(
     // quiltService({devServer: {ip: 'localhost', port: 8080}}),
-    quiltService({devServer: false}),
+    quiltService({devServer: false, features: ['base', 'fetch']}),
     knex(),
     webpackAliases({'any-promise': anyPromiseStub}),
     noopModuleWithWebpack(/vue-template-compiler/),

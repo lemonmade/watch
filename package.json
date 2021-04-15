@@ -58,7 +58,7 @@
     "@aws-cdk/aws-s3-deployment": "^1.96.0",
     "@aws-cdk/core": "^1.95.1",
     "@babel/node": "^7.10.3",
-    "@quilted/aws": "^0.2.14",
+    "@quilted/aws": "^0.2.15",
     "@quilted/sewing-kit-plugins": "^0.2.13",
     "@sewing-kit/cli": "^0.1.6",
     "@sewing-kit/eslint-plugin": "^0.0.14",
