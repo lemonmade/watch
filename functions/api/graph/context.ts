@@ -31,33 +31,49 @@ export function createContext(
     response,
     userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),
     watchLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.Watches, user),
+      createUserScopedBatchLoaderForTable(db, Table.Watches, response, user),
     ),
     skipLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.Skips, user),
+      createUserScopedBatchLoaderForTable(db, Table.Skips, response, user),
     ),
     seriesLoader: new DataLoader(createBatchLoaderForTable(db, Table.Series)),
     seriesSubscriptionsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.SeriesSubscriptions, user),
+      createUserScopedBatchLoaderForTable(
+        db,
+        Table.SeriesSubscriptions,
+        response,
+        user,
+      ),
     ),
     seasonLoader: new DataLoader(createBatchLoaderForTable(db, Table.Seasons)),
     episodeLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.Episodes),
     ),
     watchThroughLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.WatchThroughs, user),
+      createUserScopedBatchLoaderForTable(
+        db,
+        Table.WatchThroughs,
+        response,
+        user,
+      ),
     ),
     appsLoader: new DataLoader(createBatchLoaderForTable(db, Table.Apps)),
     clipsExtensionsLoader: new DataLoader(
       createBatchLoaderForTable(db, Table.ClipsExtensions),
     ),
     appInstallationsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.AppInstallations, user),
+      createUserScopedBatchLoaderForTable(
+        db,
+        Table.AppInstallations,
+        response,
+        user,
+      ),
     ),
     clipsExtensionInstallationsLoader: new DataLoader(
       createUserScopedBatchLoaderForTable(
         db,
         Table.ClipsExtensionInstallations,
+        response,
         user,
       ),
     ),
@@ -65,7 +81,12 @@ export function createContext(
       createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
     ),
     githubAccountsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(db, Table.GithubAccounts, user),
+      createUserScopedBatchLoaderForTable(
+        db,
+        Table.GithubAccounts,
+        response,
+        user,
+      ),
     ),
   };
 }
@@ -73,10 +94,12 @@ export function createContext(
 function createUserScopedBatchLoaderForTable(
   db: import('knex'),
   table: Table,
+  response: MutableResponse,
   user: {id: string} | undefined,
 ) {
   return async (ids: readonly string[]) => {
     if (user == null) {
+      response.status = 401;
       throw new Error(`Need a user for ${table}!`);
     }
 
