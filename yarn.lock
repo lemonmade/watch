@@ -4127,10 +4127,10 @@
     "@sewing-kit/plugin-javascript" "^0.2.0"
     "@sewing-kit/plugins" "^0.1.6"
 
-"@quilted/aws@^0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.14.tgz#d4123862e5f3b13e28c6b1df6ab0393b3b31715f"
-  integrity sha512-XVcAo3/M6l1scYuP2Y+HIWNtFz4tHgri80thk9uM+NoKwh17QA9zGLqMs3BXJSUB7ShRTQYlIzX3/xQYS1Y0CQ==
+"@quilted/aws@^0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@quilted/aws/-/aws-0.2.15.tgz#93796c1b8686e55a647190f2422f4000886ccbf4"
+  integrity sha512-ntmFM6cuWcnsVDC5b6VzbpFg7n3aV+sNhYxEuOemp9NyEu5g0iCFm1+lY6FZyKm+/oVIP29GrqBjYBZiqj2kAw==
   dependencies:
     "@quilted/asset-upload-s3" "^0.1.8"
     "@quilted/http-handlers" "^0.1.1"
