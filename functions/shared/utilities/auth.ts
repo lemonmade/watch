@@ -68,8 +68,8 @@ export function addAuthCookies(user: {id: string}, response: Response) {
   return response;
 }
 
-export function removeAuthCookies(
-  response: Response,
+export function removeAuthCookies<T extends Pick<Response, 'cookies'>>(
+  response: T,
   {request}: {request?: Request} = {},
 ) {
   if (request == null || request.cookies.has(Cookie.Auth)) {

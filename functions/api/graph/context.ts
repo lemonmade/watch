@@ -5,16 +5,23 @@ import type {Database} from 'shared/utilities/database';
 
 export type Context = ReturnType<typeof createContext>;
 
+interface MutableResponse {
+  status: Response['status'];
+  readonly headers: Response['headers'];
+  readonly cookies: Response['cookies'];
+}
+
 export function createContext(
   db: Database,
   user: {id: string} | undefined,
   request: Request,
-  response: Response,
+  response: MutableResponse,
 ) {
   return {
     db,
     get user() {
       if (user == null) {
+        response.status = 401;
         throw new Error('No user exists for this request!');
       }
 

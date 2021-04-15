@@ -1,3 +1,10 @@
+export enum SearchParam {
+  Token = 'token',
+  Reason = 'reason',
+  Strategy = 'strategy',
+  RedirectTo = 'redirect',
+}
+
 export enum SignInErrorReason {
   Expired = 'expired',
   Generic = 'generic-error',
