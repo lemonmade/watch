@@ -18,11 +18,7 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page} from 'components';
-import {
-  openGithubOAuthPopover,
-  useGithubOAuthPopoverEvents,
-} from 'utilities/github';
+import {Page, GithubOAuthModal} from 'components';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';
@@ -83,13 +79,8 @@ export function Account() {
 
 function ConnectGithubAccount() {
   const currentUrl = useCurrentUrl();
+  const [open, setOpen] = useState<false | URL>(false);
   const [error, setError] = useState(false);
-
-  useGithubOAuthPopoverEvents((event, popover) => {
-    if (event.type !== 'connect') return;
-    popover.close();
-    setError(!event.success);
-  });
 
   const errorContent = error ? (
     <Banner status="error">
@@ -112,11 +103,19 @@ function ConnectGithubAccount() {
             target.searchParams.set('redirect', currentUrl.pathname);
 
             setError(false);
-            openGithubOAuthPopover(target);
+            setOpen(target);
           }}
         >
           Connect Github
         </Button>
+        <GithubOAuthModal
+          type="connect"
+          open={open}
+          onEvent={(event, modal) => {
+            modal.close();
+            setError(!event.success);
+          }}
+        />
       </BlockStack>
     </Section>
   );

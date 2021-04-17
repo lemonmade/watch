@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import type {ReactNode} from 'react';
 import {
   useMutation,
   useRoutes,
@@ -18,11 +17,8 @@ import {
   Button,
 } from '@lemon/zest';
 
-import {
-  openGithubOAuthPopover,
-  useGithubOAuthPopoverEvents,
-} from 'utilities/github';
 import {SignInErrorReason} from 'global/utilities/auth';
+import {GithubOAuthModal} from 'components';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
@@ -39,120 +35,139 @@ export function SignIn() {
 }
 
 function SignInForm() {
-  const [email, setEmail] = useState('');
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
-  const signInWithEmail = useMutation(signInWithEmailMutation);
 
-  const [signInReason, setSignInReason] = useState(
-    currentUrl.searchParams.get(SearchParam.Reason) ?? undefined,
+  const [reason, setReason] = useState<SignInErrorReason | undefined>(
+    (currentUrl.searchParams.get(SearchParam.Reason) as any) ?? undefined,
   );
-
-  let errorBanner: ReactNode = null;
-
-  useGithubOAuthPopoverEvents((event, popover) => {
-    if (event.type !== 'signIn') return;
-
-    popover.close();
-
-    if (event.success) {
-      navigate(event.redirectTo);
-    } else {
-      setSignInReason(event.reason ?? SignInErrorReason.Generic);
-    }
-  });
-
-  if (signInReason) {
-    switch (signInReason) {
-      case SignInErrorReason.GithubNoAccount: {
-        errorBanner = (
-          <Banner status="error">
-            You authenticated with Github, but no account is linked with your
-            Github profile. You’ll need to sign in with email, then connect
-            Github from the <Link to="/app/me">account page</Link>.
-          </Banner>
-        );
-        break;
-      }
-      case SignInErrorReason.GithubError: {
-        errorBanner = (
-          <Banner status="error">
-            There was an error while trying to sign in with Github. You can try
-            again, or sign in with your email instead. Sorry for the
-            inconvenience!
-          </Banner>
-        );
-        break;
-      }
-      case SignInErrorReason.Expired: {
-        errorBanner = (
-          <Banner status="error">
-            Your temporary sign in token expired, so you’ll need to sign in
-            again. Sorry for the inconvenience!
-          </Banner>
-        );
-        break;
-      }
-      case SignInErrorReason.Generic: {
-        errorBanner = (
-          <Banner status="error">
-            Something went wrong while trying to sign you in, so you’ll need to
-            try again. Sorry for the inconvenience!
-          </Banner>
-        );
-        break;
-      }
-    }
-  }
 
   return (
     <View padding={16}>
       <BlockStack>
         <Heading>Sign in</Heading>
 
-        {errorBanner}
+        {reason && <ErrorBanner reason={reason} />}
 
-        <Form
-          onSubmit={async () => {
-            await signInWithEmail({
-              variables: {
-                email,
-                redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-              },
-            });
-            navigate('check-your-email');
-          }}
-        >
-          <BlockStack>
-            <TextField label="Email" onChange={(value) => setEmail(value)} />
-          </BlockStack>
-        </Form>
+        <SignInWithEmail />
 
         <TextBlock>or...</TextBlock>
 
-        <Button
-          onPress={() => {
-            const targetUrl = new URL(
-              '/internal/auth/github/sign-in',
-              currentUrl,
-            );
-
-            const redirectTo = currentUrl.searchParams.get(
-              SearchParam.RedirectTo,
-            );
-
-            if (redirectTo) {
-              targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-            }
-
-            openGithubOAuthPopover(targetUrl);
-          }}
-        >
-          Sign in with Github
-        </Button>
+        <SignInWithGithub onError={setReason} />
       </BlockStack>
     </View>
   );
+}
+
+function SignInWithEmail() {
+  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const signInWithEmail = useMutation(signInWithEmailMutation);
+
+  return (
+    <Form
+      onSubmit={async () => {
+        await signInWithEmail({
+          variables: {
+            email,
+            redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+          },
+        });
+        navigate('check-your-email');
+      }}
+    >
+      <BlockStack>
+        <TextField label="Email" onChange={(value) => setEmail(value)} />
+      </BlockStack>
+    </Form>
+  );
+}
+
+function SignInWithGithub({
+  onError,
+}: {
+  onError(reason: SignInErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const [open, setOpen] = useState<false | URL>(false);
+
+  return (
+    <>
+      <GithubOAuthModal
+        type="signIn"
+        open={open}
+        onEvent={(event, modal) => {
+          modal.close();
+
+          if (event.success) {
+            navigate(event.redirectTo);
+          } else {
+            onError(event.reason ?? SignInErrorReason.Generic);
+          }
+        }}
+      />
+      <Button
+        onPress={() => {
+          const targetUrl = new URL(
+            '/internal/auth/github/sign-in',
+            currentUrl,
+          );
+
+          const redirectTo = currentUrl.searchParams.get(
+            SearchParam.RedirectTo,
+          );
+
+          if (redirectTo) {
+            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+          }
+
+          setOpen(targetUrl);
+        }}
+      >
+        Sign in with Github
+      </Button>
+    </>
+  );
+}
+
+function ErrorBanner({reason}: {reason: SignInErrorReason}) {
+  switch (reason) {
+    case SignInErrorReason.GithubNoAccount: {
+      return (
+        <Banner status="error">
+          You authenticated with Github, but no account is linked with your
+          Github profile. You’ll need to sign in with email, then connect Github
+          from the <Link to="/app/me">account page</Link>.
+        </Banner>
+      );
+    }
+    case SignInErrorReason.GithubError: {
+      return (
+        <Banner status="error">
+          There was an error while trying to sign in with Github. You can try
+          again, or sign in with your email instead. Sorry for the
+          inconvenience!
+        </Banner>
+      );
+    }
+    case SignInErrorReason.Expired: {
+      return (
+        <Banner status="error">
+          Your temporary sign in token expired, so you’ll need to sign in again.
+          Sorry for the inconvenience!
+        </Banner>
+      );
+    }
+    default: {
+      return (
+        <Banner status="error">
+          Something went wrong while trying to sign you in, so you’ll need to
+          try again. Sorry for the inconvenience!
+        </Banner>
+      );
+    }
+  }
 }
 
 function CheckYourEmail() {

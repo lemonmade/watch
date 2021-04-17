@@ -18,7 +18,7 @@ export enum CreateAccountErrorReason {
   GithubError = 'github-error',
 }
 
-export type GithubOAuthPopoverMessage =
+export type GithubOAuthMessage =
   | {
       topic: 'github:oauth';
       type: 'signIn';

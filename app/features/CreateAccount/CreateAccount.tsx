@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import type {ReactNode} from 'react';
 import {
   useMutation,
   useRoutes,
@@ -17,11 +16,8 @@ import {
   Heading,
 } from '@lemon/zest';
 
-import {
-  openGithubOAuthPopover,
-  useGithubOAuthPopoverEvents,
-} from 'utilities/github';
 import {CreateAccountErrorReason} from 'global/utilities/auth';
+import {GithubOAuthModal} from 'components';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 
@@ -38,88 +34,76 @@ export function CreateAccount() {
 }
 
 export function CreateAccountForm() {
-  const [email, setEmail] = useState('');
-
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
-  const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
 
-  const [createAccountReason, setCreateAccountReason] = useState(
-    currentUrl.searchParams.get(SearchParam.Reason) ?? undefined,
+  const [reason, setReason] = useState<CreateAccountErrorReason | undefined>(
+    (currentUrl.searchParams.get(SearchParam.Reason) as any) ?? undefined,
   );
-
-  useGithubOAuthPopoverEvents((event, popover) => {
-    if (event.type !== 'createAccount') return;
-
-    popover.close();
-
-    if (event.success) {
-      navigate(event.redirectTo);
-    } else {
-      setCreateAccountReason(event.reason ?? CreateAccountErrorReason.Generic);
-    }
-  });
-
-  let errorBanner: ReactNode = null;
-
-  if (createAccountReason) {
-    switch (createAccountReason) {
-      case CreateAccountErrorReason.GithubError: {
-        errorBanner = (
-          <Banner status="error">
-            There was an error while trying to create your account with Github.
-            You can try again, or create an account with your email instead (you
-            can always connect your Github account later). Sorry for the
-            inconvenience!
-          </Banner>
-        );
-        break;
-      }
-      case CreateAccountErrorReason.Expired: {
-        errorBanner = (
-          <Banner status="error">
-            Your temporary account creation token expired, so you’ll need to
-            create your account again. Sorry for the inconvenience!
-          </Banner>
-        );
-        break;
-      }
-      case CreateAccountErrorReason.Generic: {
-        errorBanner = (
-          <Banner status="error">
-            Something went wrong while trying to create your account, so you’ll
-            need to try again. Sorry for the inconvenience!
-          </Banner>
-        );
-        break;
-      }
-    }
-  }
 
   return (
     <View padding={16}>
       <Heading>Create account</Heading>
 
-      {errorBanner}
+      {reason && <ErrorBanner reason={reason} />}
 
-      <Form
-        onSubmit={async () => {
-          await createAccountWithEmail({
-            variables: {
-              email,
-              redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-            },
-          });
-          navigate('check-your-email');
-        }}
-      >
-        <BlockStack>
-          <TextField label="Email" onChange={(value) => setEmail(value)} />
-        </BlockStack>
-      </Form>
+      <CreateAccountWithEmail />
 
       <TextBlock>or...</TextBlock>
 
+      <CreateAccountWithGithub onError={setReason} />
+    </View>
+  );
+}
+
+function CreateAccountWithEmail() {
+  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
+
+  return (
+    <Form
+      onSubmit={async () => {
+        await createAccountWithEmail({
+          variables: {
+            email,
+            redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+          },
+        });
+        navigate('check-your-email');
+      }}
+    >
+      <BlockStack>
+        <TextField label="Email" onChange={(value) => setEmail(value)} />
+      </BlockStack>
+    </Form>
+  );
+}
+
+function CreateAccountWithGithub({
+  onError,
+}: {
+  onError(reason: CreateAccountErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const [open, setOpen] = useState<false | URL>(false);
+
+  return (
+    <>
+      <GithubOAuthModal
+        type="createAccount"
+        open={open}
+        onEvent={(event, modal) => {
+          modal.close();
+
+          if (event.success) {
+            navigate(event.redirectTo);
+          } else {
+            onError(event.reason ?? CreateAccountErrorReason.Generic);
+          }
+        }}
+      />
       <Button
         onPress={() => {
           const targetUrl = new URL(
@@ -135,13 +119,44 @@ export function CreateAccountForm() {
             targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
           }
 
-          openGithubOAuthPopover(targetUrl);
+          setOpen(targetUrl);
         }}
       >
-        Create account with Github
+        Sign in with Github
       </Button>
-    </View>
+    </>
   );
+}
+
+function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
+  switch (reason) {
+    case CreateAccountErrorReason.GithubError: {
+      return (
+        <Banner status="error">
+          There was an error while trying to create your account with Github.
+          You can try again, or create an account with your email instead (you
+          can always connect your Github account later). Sorry for the
+          inconvenience!
+        </Banner>
+      );
+    }
+    case CreateAccountErrorReason.Expired: {
+      return (
+        <Banner status="error">
+          Your temporary account creation token expired, so you’ll need to
+          create your account again. Sorry for the inconvenience!
+        </Banner>
+      );
+    }
+    default: {
+      return (
+        <Banner status="error">
+          Something went wrong while trying to create your account, so you’ll
+          need to try again. Sorry for the inconvenience!
+        </Banner>
+      );
+    }
+  }
 }
 
 function CheckYourEmail() {
