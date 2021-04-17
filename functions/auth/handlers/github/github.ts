@@ -9,7 +9,7 @@ import {
   SignInErrorReason,
   CreateAccountErrorReason,
 } from 'global/utilities/auth';
-import type {GithubOAuthPopoverMessage} from 'global/utilities/auth';
+import type {GithubOAuthMessage} from 'global/utilities/auth';
 import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
 import {createDatabaseConnection, Table} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
@@ -471,7 +471,7 @@ function modalAuthResponse({
   redirectTo,
   request,
 }: {
-  event: Omit<GithubOAuthPopoverMessage, 'topic' | 'redirectTo'>;
+  event: Omit<GithubOAuthMessage, 'topic' | 'redirectTo'>;
   redirectTo: URL;
   request: Request;
 }) {
