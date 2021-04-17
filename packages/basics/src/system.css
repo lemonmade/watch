@@ -14,6 +14,17 @@
   padding: var(--View-padding);
 }
 
+:where(.View) > * {
+  --z-implicit-display-none: initial;
+  --z-implicit-display: initial;
+  --z-implicit-display-flex: initial;
+  --z-implicit-display-grid: initial;
+  --z-implicit-align-content: initial;
+  --z-implicit-connection-inline-start: initial;
+  --z-implicit-connection-inline-end: initial;
+  --z-implicit-container-inline-size: initial;
+}
+
 .paddingSmall {
   --View-padding: var(--x-spacing-small);
 }

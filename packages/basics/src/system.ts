@@ -1,3 +1,8 @@
+import type {CSSProperties, HTMLAttributes} from 'react';
+import {variation} from '@lemon/css';
+
+import systemStyles from './system.css';
+
 export type PixelValue = `@px@${number}`;
 
 export function Pixels(num: number): PixelValue {
@@ -14,6 +19,123 @@ export function Keyword<T extends string>(value: T): KeywordValue<T> {
 }
 
 export type SpacingKeyword = 'none' | 'small' | 'base' | 'large';
+
+export interface SystemProps {
+  padding?: number | SpacingKeyword | PixelValue | KeywordValue<SpacingKeyword>;
+  visibility?: 'hidden' | 'visible';
+  accessibilityVisibility?: 'hidden' | 'visible';
+}
+
+const PADDING_CLASS_MAP = new Map<string, string | false>([
+  [Keyword<SpacingKeyword>('none'), false],
+  [Keyword<SpacingKeyword>('small'), systemStyles.paddingSmall],
+  [Keyword<SpacingKeyword>('base'), systemStyles.paddingBase],
+  [Keyword<SpacingKeyword>('large'), systemStyles.paddingLarge],
+]);
+
+interface SystemDomProps {
+  readonly styles: CSSProperties | undefined;
+  readonly className: string;
+  readonly attributes: Omit<HTMLAttributes<any>, 'styles'>;
+  addStyles(styles: CSSProperties | Record<string, any>): void;
+  addClassName(classNames: string | undefined | null | false): void;
+  addAttributes(attributes: Omit<HTMLAttributes<any>, 'styles'>): void;
+}
+
+export function toProps({styles, className, attributes}: SystemDomProps) {
+  return attributes
+    ? {...attributes, style: styles, className}
+    : {style: styles, className};
+}
+
+export function useDomProps({
+  display,
+  padding,
+  visibility,
+  accessibilityVisibility,
+}: SystemProps & {display?: 'block' | 'grid'} = {}): SystemDomProps {
+  let className = systemStyles.View;
+  let styles: SystemDomProps['styles'];
+  let attributes: SystemDomProps['attributes'];
+
+  const addStyles: SystemDomProps['addStyles'] = (newStyles) => {
+    if (styles == null) styles = {};
+    Object.assign(styles, newStyles);
+  };
+
+  const addClassName: SystemDomProps['addClassName'] = (
+    newClassNames: string | undefined | null | false,
+  ) => {
+    if (!newClassNames) return;
+    if (className.length > 0) className += ' ';
+    className += newClassNames;
+  };
+
+  const addAttributes: SystemDomProps['addAttributes'] = (newAttributes) => {
+    if (attributes == null) attributes = {};
+    Object.assign(attributes, newAttributes);
+  };
+
+  if (display) {
+    addClassName(systemStyles[variation('display', display)]);
+  }
+
+  if (visibility === 'hidden') {
+    addClassName(
+      systemStyles[
+        variation(
+          'visibility',
+          accessibilityVisibility === 'visible' ? 'visuallyHidden' : 'hidden',
+        )
+      ],
+    );
+  }
+
+  if (padding != null) {
+    let normalizedPadding: PixelValue | KeywordValue;
+
+    if (typeof padding === 'number') {
+      normalizedPadding = Pixels(padding);
+    } else if (padding.startsWith('@')) {
+      normalizedPadding = padding as any;
+    } else {
+      normalizedPadding = Keyword(padding as SpacingKeyword);
+    }
+
+    const systemClassName = PADDING_CLASS_MAP.get(normalizedPadding);
+
+    if (systemClassName == null) {
+      addStyles({
+        padding: relativeSize(Pixels.parse(normalizedPadding as PixelValue)),
+      });
+    } else if (systemClassName) {
+      addClassName(systemClassName);
+    }
+  }
+
+  if (accessibilityVisibility === 'hidden' && visibility !== 'hidden') {
+    addAttributes({'aria-hidden': true});
+  }
+
+  return {
+    get styles() {
+      return styles;
+    },
+    get className() {
+      return className;
+    },
+    get attributes() {
+      return attributes;
+    },
+    addStyles,
+    addClassName,
+    addAttributes,
+  };
+}
+
+export function relativeSize(pixels: number) {
+  return `${pixels / 16}rem`;
+}
 
 // type PercentValue = `@%@${number}`;
 

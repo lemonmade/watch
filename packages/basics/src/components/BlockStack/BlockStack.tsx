@@ -1,17 +1,22 @@
 import type {PropsWithChildren} from 'react';
 
-import {relativeSize} from '../../utilities/css';
-
-import {Pixels, Keyword} from '../../system';
-import type {PixelValue, SpacingKeyword, KeywordValue} from '../../system';
-
-import {ViewInternal} from '../ViewInternal';
-import type {ViewInternalProps} from '../ViewInternal';
+import {
+  Pixels,
+  Keyword,
+  useDomProps,
+  relativeSize,
+  toProps,
+} from '../../system';
+import type {
+  PixelValue,
+  SpacingKeyword,
+  KeywordValue,
+  SystemProps,
+} from '../../system';
 
 import styles from './BlockStack.css';
 
-interface Props
-  extends Pick<ViewInternalProps, 'padding' | 'accessibilityVisibility'> {
+interface Props extends SystemProps {
   spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;
 }
 
@@ -23,21 +28,12 @@ const SPACING_CLASS_MAP = new Map<string, string | false>([
 ]);
 
 export function BlockStack({
-  children,
-  padding,
   spacing,
-  accessibilityVisibility,
+  children,
+  ...systemProps
 }: PropsWithChildren<Props>) {
-  let className = styles.BlockStack;
-  const appendClassName = (
-    newClassNames: string | undefined | null | false,
-  ) => {
-    if (!newClassNames) return;
-    if (className.length > 0) className += ' ';
-    className += newClassNames;
-  };
-
-  const extraStyles: Record<string, any> = {};
+  const dom = useDomProps({...systemProps, display: 'grid'});
+  dom.addClassName(styles.BlockStack);
 
   if (spacing != null) {
     let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;
@@ -53,23 +49,13 @@ export function BlockStack({
     const systemClassName = SPACING_CLASS_MAP.get(normalizedSpacing);
 
     if (systemClassName == null) {
-      extraStyles.gap = relativeSize(
-        Pixels.parse(normalizedSpacing as PixelValue),
-      );
+      dom.addStyles({
+        gap: relativeSize(Pixels.parse(normalizedSpacing as PixelValue)),
+      });
     } else if (systemClassName) {
-      appendClassName(systemClassName);
+      dom.addClassName(systemClassName);
     }
   }
 
-  return (
-    <ViewInternal
-      cssDisplay="grid"
-      cssClass={className}
-      cssStyles={extraStyles}
-      padding={padding}
-      accessibilityVisibility={accessibilityVisibility}
-    >
-      {children}
-    </ViewInternal>
-  );
+  return <div {...toProps(dom)}>{children}</div>;
 }

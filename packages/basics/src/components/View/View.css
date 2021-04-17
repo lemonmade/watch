@@ -1,21 +1,3 @@
-.View {
-  display: var(
-    --z-implicit-display-none,
-    var(--z-implicit-display-block, block)
-  );
-}
-
-:where(.View) > * {
-  --z-implicit-display-none: initial;
-  --z-implicit-display: initial;
-  --z-implicit-display-flex: initial;
-  --z-implicit-display-grid: initial;
-  --z-implicit-align-content: initial;
-  --z-implicit-connection-inline-start: initial;
-  --z-implicit-connection-inline-end: initial;
-  --z-implicit-container-inline-size: initial;
-}
-
 .cornerRadiusConcentric {
   border-radius: calc(
     var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
