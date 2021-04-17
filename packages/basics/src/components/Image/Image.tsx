@@ -122,7 +122,7 @@ type MaybeProps<T = Record<string, unknown>> = PropsWithChildren<
 
 function MaybeHiddenForA11y({children, condition}: MaybeProps) {
   return condition ? (
-    <View accessibility="hidden">{children}</View>
+    <View accessibilityVisibility="hidden">{children}</View>
   ) : (
     <>{children}</>
   );
