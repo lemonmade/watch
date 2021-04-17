@@ -41,7 +41,7 @@ export function CreateAccountForm() {
   );
 
   return (
-    <View padding={16}>
+    <BlockStack padding="base">
       <Heading>Create account</Heading>
 
       {reason && <ErrorBanner reason={reason} />}
@@ -51,7 +51,7 @@ export function CreateAccountForm() {
       <TextBlock>or...</TextBlock>
 
       <CreateAccountWithGithub onError={setReason} />
-    </View>
+    </BlockStack>
   );
 }
 
@@ -73,9 +73,7 @@ function CreateAccountWithEmail() {
         navigate('check-your-email');
       }}
     >
-      <BlockStack>
-        <TextField label="Email" onChange={(value) => setEmail(value)} />
-      </BlockStack>
+      <TextField label="Email" onChange={(value) => setEmail(value)} />
     </Form>
   );
 }
@@ -160,5 +158,9 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
 }
 
 function CheckYourEmail() {
-  return <TextBlock>Check your email!</TextBlock>;
+  return (
+    <View padding="base">
+      <TextBlock>Check your email!</TextBlock>
+    </View>
+  );
 }

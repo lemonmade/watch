@@ -15,7 +15,6 @@ import {
   TextBlock,
   Banner,
   Button,
-  View,
 } from '@lemon/zest';
 
 import {SignInErrorReason} from 'global/utilities/auth';
@@ -43,19 +42,17 @@ function SignInForm() {
   );
 
   return (
-    <View padding={16}>
-      <BlockStack>
-        <Heading>Sign in</Heading>
+    <BlockStack padding="base">
+      <Heading>Sign in</Heading>
 
-        {reason && <ErrorBanner reason={reason} />}
+      {reason && <ErrorBanner reason={reason} />}
 
-        <SignInWithEmail />
+      <SignInWithEmail />
 
-        <TextBlock>or...</TextBlock>
+      <TextBlock>or...</TextBlock>
 
-        <SignInWithGithub onError={setReason} />
-      </BlockStack>
-    </View>
+      <SignInWithGithub onError={setReason} />
+    </BlockStack>
   );
 }
 
@@ -77,9 +74,7 @@ function SignInWithEmail() {
         navigate('check-your-email');
       }}
     >
-      <BlockStack>
-        <TextField label="Email" onChange={(value) => setEmail(value)} />
-      </BlockStack>
+      <TextField label="Email" onChange={(value) => setEmail(value)} />
     </Form>
   );
 }
