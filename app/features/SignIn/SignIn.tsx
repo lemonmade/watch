@@ -15,6 +15,7 @@ import {
   TextBlock,
   Banner,
   Button,
+  View,
 } from '@lemon/zest';
 
 import {SignInErrorReason} from 'global/utilities/auth';
@@ -171,5 +172,9 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
 }
 
 function CheckYourEmail() {
-  return <TextBlock>Check your email!</TextBlock>;
+  return (
+    <View padding="base">
+      <TextBlock>Check your email!</TextBlock>
+    </View>
+  );
 }

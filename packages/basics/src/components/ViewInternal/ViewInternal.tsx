@@ -11,7 +11,9 @@ import styles from './ViewInternal.css';
 export interface Props {
   padding?: number | SpacingKeyword | PixelValue | KeywordValue<SpacingKeyword>;
   accessibilityRole?: 'section';
-  accessibilityVisibility?: 'hidden';
+
+  visibility?: 'hidden' | 'visible';
+  accessibilityVisibility?: 'hidden' | 'visible';
 
   // position?: Position | Position['type'];
   // border?: string;
@@ -34,7 +36,7 @@ const PADDING_CLASS_MAP = new Map<string, string | false>([
 export function ViewInternal({
   children,
   padding,
-  cssClass = '',
+  cssClass,
   cssDisplay,
   cssStyles,
   accessibilityRole,
@@ -42,7 +44,11 @@ export function ViewInternal({
 }: PropsWithChildren<Props>) {
   const Element = accessibilityRole === 'section' ? 'section' : 'div';
 
-  let className = cssClass;
+  let className =
+    cssClass && cssClass.length > 0
+      ? `${styles.View} ${cssClass}`
+      : styles.View;
+
   const appendClassName = (
     newClassNames: string | undefined | null | false,
   ) => {
@@ -83,7 +89,7 @@ export function ViewInternal({
     <Element
       className={className}
       style={extraStyles}
-      aria-hidden={accessibilityVisibility === 'hidden'}
+      aria-hidden={accessibilityVisibility === 'hidden' || undefined}
     >
       {children}
     </Element>
