@@ -1,0 +1,31 @@
+:root {
+  --x-spacing-small: 0.75rem;
+  --x-spacing-base: 1rem;
+  --x-spacing-large: 1.5rem;
+}
+
+.View {
+  --View-padding: 0;
+  --View-default-display: block;
+  display: var(
+    --z-implicit-display-none,
+    var(--z-implicit-display-block, var(--View-default-display))
+  );
+  padding: var(--View-padding);
+}
+
+.paddingSmall {
+  --View-padding: var(--x-spacing-small);
+}
+
+.paddingBase {
+  --View-padding: var(--x-spacing-base);
+}
+
+.paddingLarge {
+  --View-padding: var(--x-spacing-large);
+}
+
+.displayGrid {
+  --View-default-display: grid;
+}

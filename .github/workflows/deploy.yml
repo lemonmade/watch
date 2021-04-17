@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - github-oauth-component
+      - better-basic-components
 
 jobs:
   build:

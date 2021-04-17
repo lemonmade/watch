@@ -1,5 +1,9 @@
-import {PropsWithChildren, CSSProperties, ComponentProps} from 'react';
+import {PropsWithChildren, CSSProperties} from 'react';
 import {classes, variation} from '@lemon/css';
+
+import {ViewInternal} from '../ViewInternal';
+import type {ViewInternalProps} from '../ViewInternal';
+
 import styles from './View.css';
 
 interface Position {
@@ -8,14 +12,15 @@ interface Position {
   inline?: 'start' | 'center' | 'end';
 }
 
-interface Props {
+interface Props
+  extends Pick<
+    ViewInternalProps,
+    'padding' | 'accessibilityRole' | 'accessibilityVisibility'
+  > {
   position?: Position | Position['type'];
-  padding?: number;
   border?: string;
   background?: string;
   cornerRadius?: number | 'concentric';
-  accessibility?: 'hidden';
-  accessibilityRole?: 'section';
 }
 
 // type Unset = '_';
@@ -40,31 +45,22 @@ export function View({
   children,
   position,
   border,
-  cornerRadius,
   padding,
+  cornerRadius,
   background,
-  accessibility,
   accessibilityRole,
+  accessibilityVisibility,
 }: PropsWithChildren<Props>) {
-  const Element = accessibilityRole === 'section' ? 'section' : 'div';
   const style: CSSProperties = {
     border,
     backgroundColor: background,
   };
-
-  const moreProps: ComponentProps<'div'> = {};
 
   // concentric border radius is handled with a class
   if (typeof cornerRadius === 'number') {
     const radius = relativeSize(cornerRadius);
     (style as any)[`--z-container-corner-radius`] = radius;
     style.borderRadius = radius;
-  }
-
-  if (padding) {
-    const relativePadding = relativeSize(padding);
-    (style as any)['--z-container-inset'] = relativePadding;
-    style.padding = relativePadding;
   }
 
   if (position) {
@@ -116,22 +112,20 @@ export function View({
     }
   }
 
-  if (accessibility === 'hidden') {
-    moreProps['aria-hidden'] = true;
-  }
-
   return (
-    <Element
-      style={style}
-      className={classes(
+    <ViewInternal
+      padding={padding}
+      accessibilityRole={accessibilityRole}
+      accessibilityVisibility={accessibilityVisibility}
+      cssStyles={style}
+      cssClass={classes(
         styles.View,
         cornerRadius === 'concentric' &&
           styles[variation('cornerRadius', cornerRadius)],
       )}
-      {...moreProps}
     >
       {children}
-    </Element>
+    </ViewInternal>
   );
 }
 
