@@ -13,10 +13,7 @@ interface Position {
 }
 
 interface Props
-  extends Pick<
-    ViewInternalProps,
-    'padding' | 'accessibilityRole' | 'accessibilityVisibility'
-  > {
+  extends Omit<ViewInternalProps, 'cssStyles' | 'cssClass' | 'cssDisplay'> {
   position?: Position | Position['type'];
   border?: string;
   background?: string;
@@ -49,6 +46,7 @@ export function View({
   cornerRadius,
   background,
   accessibilityRole,
+  visibility,
   accessibilityVisibility,
 }: PropsWithChildren<Props>) {
   const style: CSSProperties = {
@@ -116,6 +114,7 @@ export function View({
     <ViewInternal
       padding={padding}
       accessibilityRole={accessibilityRole}
+      visibility={visibility}
       accessibilityVisibility={accessibilityVisibility}
       cssStyles={style}
       cssClass={classes(

@@ -36,11 +36,12 @@ const PADDING_CLASS_MAP = new Map<string, string | false>([
 export function ViewInternal({
   children,
   padding,
+  accessibilityRole,
+  visibility,
+  accessibilityVisibility,
   cssClass,
   cssDisplay,
   cssStyles,
-  accessibilityRole,
-  accessibilityVisibility,
 }: PropsWithChildren<Props>) {
   const Element = accessibilityRole === 'section' ? 'section' : 'div';
 
@@ -61,6 +62,17 @@ export function ViewInternal({
 
   if (cssDisplay) {
     appendClassName(styles[variation('display', cssDisplay)]);
+  }
+
+  if (visibility === 'hidden') {
+    appendClassName(
+      styles[
+        variation(
+          'visibility',
+          accessibilityVisibility === 'visible' ? 'visuallyHidden' : 'hidden',
+        )
+      ],
+    );
   }
 
   if (padding != null) {

@@ -2,7 +2,7 @@ import {useMemo} from 'react';
 import type {PropsWithChildren, ReactNode, FormEventHandler} from 'react';
 
 import {Portal} from '../Portal';
-import {VisuallyHidden} from '../VisuallyHidden';
+import {View} from '../View';
 
 import {useUniqueId} from '../../utilities/id';
 import {FormContext, useContainingForm} from '../../utilities/forms';
@@ -32,17 +32,17 @@ export function Form({
 
   if (implicitSubmit === true) {
     implicitSubmitContent = (
-      <VisuallyHidden>
+      <View visibility="hidden" accessibilityVisibility="visible">
         <ImplicitSubmitter form={formDetails}>Submit</ImplicitSubmitter>
-      </VisuallyHidden>
+      </View>
     );
   } else if (typeof implicitSubmit === 'object') {
     implicitSubmitContent = (
-      <VisuallyHidden>
+      <View visibility="hidden" accessibilityVisibility="visible">
         <ImplicitSubmitter form={formDetails}>
           {implicitSubmit.label}
         </ImplicitSubmitter>
-      </VisuallyHidden>
+      </View>
     );
   }
 
