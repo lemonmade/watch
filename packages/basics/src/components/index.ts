@@ -14,6 +14,7 @@ export {Heading} from './Heading';
 // Controls
 
 export {Pressable} from './Pressable';
+export {Link} from './Link';
 export {TextField} from './TextField';
 export {Select} from './Select';
 
@@ -30,7 +31,6 @@ export {Portal} from './Portal';
 // Other...
 
 export {Image} from './Image';
-export {Link} from './Link';
 export {List, Item} from './List';
 export {Menu} from './Menu';
 export {Popover, PopoverSheet} from './Popover';

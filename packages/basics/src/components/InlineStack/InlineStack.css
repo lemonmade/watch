@@ -1,8 +1,7 @@
-.Stack {
-  --Stack-spacing: var(--zest-spacing);
+.InlineStack {
+  --x-InlineStack-spacing: var(--zest-spacing);
 
-  display: grid;
-  gap: var(--Stack-spacing);
+  gap: var(--x-InlineStack-spacing);
   justify-content: start;
   grid-auto-flow: column;
   align-items: center;
@@ -10,13 +9,13 @@
 }
 
 .spacingNone {
-  --Stack-spacing: 0;
+  --x-InlineStack-spacing: 0;
 }
 
 .spacingSmall {
-  --Stack-spacing: var(--zest-spacing-small);
+  --x-InlineStack-spacing: var(--zest-spacing-small);
 }
 
 .spacingLarge {
-  --Stack-spacing: var(--zest-spacing-small);
+  --x-InlineStack-spacing: var(--zest-spacing-small);
 }
