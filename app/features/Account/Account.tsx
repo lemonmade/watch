@@ -77,6 +77,42 @@ export function Account() {
   );
 }
 
+function GithubSection({
+  account,
+  onDisconnectAccount,
+}: {
+  account?: AccountQueryData.Me.GithubAccount;
+  onDisconnectAccount(): void;
+}) {
+  const disconnectAccount = useMutation(disconnectGithubAccountMutation);
+
+  if (account == null) {
+    return <ConnectGithubAccount />;
+  }
+
+  const {username, profileUrl} = account;
+
+  return (
+    <Section>
+      <BlockStack>
+        <Heading>Github account</Heading>
+        <TextBlock>username: {username}</TextBlock>
+        <Link to={profileUrl} target="newTab">
+          Visit profile
+        </Link>
+        <Button
+          onPress={async () => {
+            await disconnectAccount();
+            onDisconnectAccount();
+          }}
+        >
+          Disconnect <Text emphasis="strong">{username}</Text>
+        </Button>
+      </BlockStack>
+    </Section>
+  );
+}
+
 function ConnectGithubAccount() {
   const currentUrl = useCurrentUrl();
   const [open, setOpen] = useState<false | URL>(false);
@@ -116,42 +152,6 @@ function ConnectGithubAccount() {
             setError(!event.success);
           }}
         />
-      </BlockStack>
-    </Section>
-  );
-}
-
-function GithubSection({
-  account,
-  onDisconnectAccount,
-}: {
-  account?: AccountQueryData.Me.GithubAccount;
-  onDisconnectAccount(): void;
-}) {
-  const disconnectAccount = useMutation(disconnectGithubAccountMutation);
-
-  if (account == null) {
-    return <ConnectGithubAccount />;
-  }
-
-  const {username, profileUrl} = account;
-
-  return (
-    <Section>
-      <BlockStack>
-        <Heading>Github account</Heading>
-        <TextBlock>username: {username}</TextBlock>
-        <Link to={profileUrl} target="newTab">
-          Visit profile
-        </Link>
-        <Button
-          onPress={async () => {
-            await disconnectAccount();
-            onDisconnectAccount();
-          }}
-        >
-          Disconnect <Text emphasis="strong">{username}</Text>
-        </Button>
       </BlockStack>
     </Section>
   );
