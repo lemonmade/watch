@@ -16,7 +16,6 @@ interface Props extends SystemProps {
   border?: string;
   background?: string;
   cornerRadius?: number | 'concentric';
-  accessibilityRole?: 'section';
 }
 
 // type Unset = '_';
@@ -43,11 +42,8 @@ export function View({
   border,
   cornerRadius,
   background,
-  accessibilityRole,
   ...systemProps
 }: PropsWithChildren<Props>) {
-  const Element = accessibilityRole === 'section' ? 'section' : 'div';
-
   const dom = useDomProps(systemProps);
 
   dom.addStyles({border, backgroundColor: background});
@@ -118,7 +114,7 @@ export function View({
     dom.addClassName(styles.cornerRadiusConcentric);
   }
 
-  return <Element {...toProps(dom)}>{children}</Element>;
+  return <div {...toProps(dom)}>{children}</div>;
 }
 
 function relativeSize(points: number) {
