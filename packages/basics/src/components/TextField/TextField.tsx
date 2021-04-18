@@ -1,15 +1,17 @@
 import {useState, useRef} from 'react';
-import type {PropsWithChildren, ChangeEvent, KeyboardEvent} from 'react';
-import {classes, variation} from '@lemon/css';
+import type {ChangeEvent, KeyboardEvent} from 'react';
+import {variation} from '@lemon/css';
+
+import {useDomProps, toProps} from '../../system';
+import type {SystemProps} from '../../system';
 
 import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
 
 import styles from './TextField.css';
 
-interface Props {
+interface Props extends SystemProps {
   id?: string;
-  label?: string;
   value?: string;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
@@ -19,63 +21,62 @@ interface Props {
 
 export function TextField({
   id: explicitId,
-  label,
   value: currentValue,
   multiline = false,
   blockSize = multiline === true ? 'fitContent' : undefined,
   onInput,
   onChange,
-}: PropsWithChildren<Props>) {
+  ...systemProps
+}: Props) {
   const id = useUniqueId('TextField', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
 
+  const dom = useDomProps({
+    ...systemProps,
+    display: multiline ? 'grid' : undefined,
+  });
+
+  dom.addClassName(styles.TextField);
+
+  if (multiline) dom.addClassName(styles.multiline);
+  if (blockSize) dom.addClassName(styles[variation('blockSize', blockSize)]);
+
+  if (typeof multiline === 'number') {
+    dom.addStyles({'--x-TextField-lines': multiline});
+  }
+
   const InputElement = multiline ? 'textarea' : 'input';
 
-  const style =
-    typeof multiline === 'number'
-      ? {'--z-TextField-lines': multiline}
-      : undefined;
-
   return (
-    <div
-      className={classes(
-        styles.TextField,
-        multiline && styles.multiline,
-        blockSize && styles[variation('blockSize', blockSize)],
-      )}
-      style={style as any}
-    >
-      {label && <label htmlFor={id}>{label}</label>}
-      <div className={styles.InputContainer}>
-        <InputElement
-          id={id}
-          type={multiline ? undefined : 'text'}
-          className={styles.Input}
-          value={value}
-          onChange={({
-            currentTarget,
-          }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    <div {...toProps(dom)}>
+      <InputElement
+        id={id}
+        type={multiline ? undefined : 'text'}
+        className={styles.Input}
+        value={value}
+        onChange={({
+          currentTarget,
+        }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          setValue(currentTarget.value);
+          onInput?.(currentTarget.value);
+        }}
+        onKeyPress={({
+          key,
+          currentTarget,
+        }: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          if (!multiline && key.toLowerCase() === 'enter') {
             setValue(currentTarget.value);
             onInput?.(currentTarget.value);
-          }}
-          onKeyPress={({
-            key,
-            currentTarget,
-          }: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            if (key.toLowerCase() === 'enter') {
-              setValue(currentTarget.value);
-              onInput?.(currentTarget.value);
-              onChange?.(currentTarget.value);
-            }
-          }}
-          onBlur={() => onChange?.(value ?? '')}
-          form={containingForm?.nested ? containingForm.id : undefined}
-        />
-        {blockSize === 'fitContent' && (
-          <div className={styles.AutoGrowWrap}>{value} </div>
-        )}
-      </div>
+            onChange?.(currentTarget.value);
+          }
+        }}
+        onBlur={() => onChange?.(value ?? '')}
+        form={containingForm?.nested ? containingForm.id : undefined}
+      />
+      {blockSize === 'fitContent' && (
+        <div className={styles.AutoGrowWrap}>{value} </div>
+      )}
     </div>
   );
 }

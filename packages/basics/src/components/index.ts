@@ -1,6 +1,5 @@
 // Layout
 
-export {View} from './View';
 export {BlockStack} from './BlockStack';
 export {InlineStack} from './InlineStack';
 export {Layout} from './Layout';
@@ -8,6 +7,7 @@ export {Layout} from './Layout';
 // Text
 
 export {Text} from './Text';
+export {Label} from './Label';
 export {TextBlock} from './TextBlock';
 export {Heading} from './Heading';
 
@@ -18,12 +18,13 @@ export {Link} from './Link';
 export {TextField} from './TextField';
 export {Select} from './Select';
 
-// Semantics
+// Containers
 
+export {View} from './View';
 export {Form} from './Form';
 export {Section} from './Section';
 
-// Special
+// Special...
 
 export {Canvas} from './Canvas';
 export {Portal} from './Portal';

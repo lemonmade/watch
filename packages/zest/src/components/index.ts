@@ -5,4 +5,5 @@ export {DateField} from './DateField';
 export {MediaGrid} from './MediaGrid';
 export {Poster} from './Poster';
 export {Rating} from './Rating';
+export {TextField} from './TextField';
 export {SpacingScale} from './SpacingScale';
