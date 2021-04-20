@@ -41,6 +41,10 @@
   --View-default-display: grid;
 }
 
+.displayInline {
+  --View-default-display: inline;
+}
+
 .visibilityHidden {
   --z-implicit-display-none: none;
 }

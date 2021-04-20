@@ -14,7 +14,7 @@ export function Text({
   emphasis,
   ...systemProps
 }: PropsWithChildren<Props>) {
-  const dom = useDomProps(systemProps);
+  const dom = useDomProps({...systemProps, display: 'inline'});
   dom.addClassName(styles.Text);
 
   let Element: 'span' | 'strong' = 'span';

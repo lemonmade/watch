@@ -53,7 +53,7 @@ export function useDomProps({
   padding,
   visibility,
   accessibilityVisibility,
-}: SystemProps & {display?: 'block' | 'grid'} = {}): SystemDomProps {
+}: SystemProps & {display?: 'block' | 'grid' | 'inline'} = {}): SystemDomProps {
   let className = systemStyles.View;
   let styles: SystemDomProps['styles'];
   let attributes: SystemDomProps['attributes'];
