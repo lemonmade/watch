@@ -18,7 +18,7 @@ import {
 } from '@lemon/zest';
 
 import {SignInErrorReason} from 'global/utilities/auth';
-import {GithubOAuthModal} from 'components';
+import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
@@ -86,44 +86,26 @@ function SignInWithGithub({
 }) {
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
-  const [open, setOpen] = useState<false | URL>(false);
+
+  const open = useGithubOAuthModal(GithubOAuthFlow.SignIn, (event) => {
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      onError(event.reason ?? SignInErrorReason.Generic);
+    }
+  });
 
   return (
-    <>
-      <GithubOAuthModal
-        type="signIn"
-        open={open}
-        onEvent={(event, modal) => {
-          modal.close();
-
-          if (event.success) {
-            navigate(event.redirectTo);
-          } else {
-            onError(event.reason ?? SignInErrorReason.Generic);
-          }
-        }}
-      />
-      <Button
-        onPress={() => {
-          const targetUrl = new URL(
-            '/internal/auth/github/sign-in',
-            currentUrl,
-          );
-
-          const redirectTo = currentUrl.searchParams.get(
-            SearchParam.RedirectTo,
-          );
-
-          if (redirectTo) {
-            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-          }
-
-          setOpen(targetUrl);
-        }}
-      >
-        Sign in with Github
-      </Button>
-    </>
+    <Button
+      onPress={() => {
+        open({
+          redirectTo:
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+        });
+      }}
+    >
+      Sign in with Github
+    </Button>
   );
 }
 

@@ -18,7 +18,8 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page, GithubOAuthModal} from 'components';
+import {Page} from 'components';
+import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';
@@ -115,8 +116,11 @@ function GithubSection({
 
 function ConnectGithubAccount() {
   const currentUrl = useCurrentUrl();
-  const [open, setOpen] = useState<false | URL>(false);
   const [error, setError] = useState(false);
+
+  const open = useGithubOAuthModal(GithubOAuthFlow.Connect, (event) => {
+    setError(!event.success);
+  });
 
   const errorContent = error ? (
     <Banner status="error">
@@ -135,23 +139,12 @@ function ConnectGithubAccount() {
         </TextBlock>
         <Button
           onPress={() => {
-            const target = new URL('/internal/auth/github/connect', currentUrl);
-            target.searchParams.set('redirect', currentUrl.pathname);
-
             setError(false);
-            setOpen(target);
+            open({redirectTo: currentUrl.href});
           }}
         >
           Connect Github
         </Button>
-        <GithubOAuthModal
-          type="connect"
-          open={open}
-          onEvent={(event, modal) => {
-            modal.close();
-            setError(!event.success);
-          }}
-        />
       </BlockStack>
     </Section>
   );
