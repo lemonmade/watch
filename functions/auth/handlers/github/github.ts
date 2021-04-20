@@ -65,10 +65,7 @@ export function startGithubOAuth(request: Request) {
     callbackUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
   }
 
-  githubOAuthUrl.searchParams.set(
-    GithubSearchParam.Redirect,
-    new URL('callback', `${request.url.origin}${request.url.pathname}/`).href,
-  );
+  githubOAuthUrl.searchParams.set(GithubSearchParam.Redirect, callbackUrl.href);
 
   const response = redirect(githubOAuthUrl, {
     headers: {
