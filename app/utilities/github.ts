@@ -71,7 +71,9 @@ export function useGithubOAuthModal<Flow extends GithubOAuthFlow>(
 
             window.removeEventListener('message', handler);
             eventHandlerRef.current = undefined;
+
             (source as Window)?.close?.();
+            handleEventRef.current(parsed);
           } catch {
             // Intentional no-op
           }
