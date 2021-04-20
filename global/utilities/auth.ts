@@ -1,5 +1,4 @@
 export enum SearchParam {
-  Id = 'id',
   Token = 'token',
   Reason = 'reason',
   Strategy = 'strategy',

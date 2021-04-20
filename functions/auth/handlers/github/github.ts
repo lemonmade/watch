@@ -49,12 +49,6 @@ export function startGithubOAuth(request: Request) {
     .map((byte) => byte % 10)
     .join('');
 
-  const id = request.url.searchParams.get(SearchParam.Id);
-
-  if (id == null) {
-    throw new Error('No ID found!');
-  }
-
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
@@ -66,8 +60,6 @@ export function startGithubOAuth(request: Request) {
     'callback',
     `${request.url.origin}${request.url.pathname}/`,
   );
-
-  callbackUrl.searchParams.set(SearchParam.Id, id);
 
   if (redirectTo) {
     callbackUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
@@ -338,12 +330,7 @@ async function handleGithubOAuthCallback(
 ) {
   const {url, cookies} = request;
 
-  const id = url.searchParams.get(SearchParam.Id);
   const redirectTo = url.searchParams.get(SearchParam.RedirectTo) ?? undefined;
-
-  if (id == null) {
-    throw new Error('No ID found!');
-  }
 
   const expectedState = cookies.get(Cookie.State);
   const code = url.searchParams.get(GithubSearchParam.Code);
