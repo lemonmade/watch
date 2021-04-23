@@ -13,7 +13,6 @@ import {
   Text,
   DateField,
   Menu,
-  Pressable,
   Link,
   Form,
 } from '@lemon/zest';
@@ -60,7 +59,7 @@ export default function WatchThrough({id}: Props) {
             More about {series.name}
           </Link>
           {status === 'ONGOING' && (
-            <Pressable
+            <Button
               onPress={async () => {
                 const {data} = await stopWatchThrough({
                   variables: {id},
@@ -72,9 +71,9 @@ export default function WatchThrough({id}: Props) {
               }}
             >
               Stop watching
-            </Pressable>
+            </Button>
           )}
-          <Pressable
+          <Button
             onPress={async () => {
               const {data} = await deleteWatchThrough({
                 variables: {id},
@@ -86,7 +85,7 @@ export default function WatchThrough({id}: Props) {
             }}
           >
             Delete
-          </Pressable>
+          </Button>
         </Menu>
       }
     >

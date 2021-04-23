@@ -18,6 +18,14 @@ export function Keyword<T extends string>(value: T): KeywordValue<T> {
   return `@kw@${value}` as any;
 }
 
+Keyword.test = <T extends string = string>(
+  value: unknown,
+): value is KeywordValue<T> =>
+  typeof value === 'string' && value.startsWith('@kw@');
+
+Keyword.parse = <T extends string = string>(value: KeywordValue<T>): T =>
+  value.substring(4) as T;
+
 export type SpacingKeyword = 'none' | 'small' | 'base' | 'large';
 
 export interface SystemProps {

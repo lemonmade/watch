@@ -29,3 +29,16 @@
 .primary:focus-visible {
   background: var(--zest-color-action-primary-active);
 }
+
+.blockSizeFill {
+  --z-Pressable-display: var(--z-implicit-display-none, block);
+  inline-size: 100%;
+}
+
+.alignContentStart {
+  --z-Pressable-align-content: start;
+}
+
+.alignContentEnd {
+  --z-Pressable-align-content: end;
+}

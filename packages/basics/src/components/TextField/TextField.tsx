@@ -32,6 +32,8 @@ export function TextField({
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
 
+  // TODO: split out the font + padding properties into a separate object,
+  // spread over the autogrow wrap and input element
   const dom = useDomProps({
     ...systemProps,
     display: multiline ? 'grid' : undefined,

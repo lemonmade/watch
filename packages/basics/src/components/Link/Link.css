@@ -1,5 +1,5 @@
 .Link {
-  --z-Link-align-content: var(--z-implicit-align-content, center);
+  --z-Link-align: var(--z-implicit-align, center);
   --z-Link-display: var(
     --z-implicit-display-none,
     var(--z-implicit-display-flex, inline-flex)
@@ -20,7 +20,7 @@
   padding: var(--z-Link-padding);
   min-block-size: var(--z-Link-min-block-size);
   inline-size: var(--z-Link-inline-size);
-  text-align: var(--z-Link-align-content);
+  text-align: var(--z-Link-align);
   border-radius: var(
       --z-implicit-connection-inline-start,
       var(--zest-border-radius)
