@@ -14,7 +14,7 @@
   --z-implicit-display: block;
   --z-implicit-display-flex: flex;
   --z-implicit-display-grid: grid;
-  --z-implicit-align-content: start;
+  --z-implicit-align: start;
   --z-implicit-connection-inline-start: initial;
   --z-implicit-connection-inline-end: initial;
   --z-implicit-container-inline-size: 100%;

@@ -1,7 +1,18 @@
-import {PropsWithChildren} from 'react';
+import type {PropsWithChildren} from 'react';
+
+import {toProps, useDomProps} from '../../system';
+import type {SystemProps} from '../../system';
+
 import styles from './TextBlock.css';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function TextBlock({children}: PropsWithChildren<{}>) {
-  return <p className={styles.TextBlock}>{children}</p>;
+interface Props extends SystemProps {}
+
+export function TextBlock({
+  children,
+  ...systemProps
+}: PropsWithChildren<Props>) {
+  const dom = useDomProps(systemProps);
+  dom.addClassName(styles.TextBlock);
+
+  return <p {...toProps(dom)}>{children}</p>;
 }

@@ -18,7 +18,8 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page, GithubOAuthModal} from 'components';
+import {Page} from 'components';
+import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';
@@ -77,50 +78,6 @@ export function Account() {
   );
 }
 
-function ConnectGithubAccount() {
-  const currentUrl = useCurrentUrl();
-  const [open, setOpen] = useState<false | URL>(false);
-  const [error, setError] = useState(false);
-
-  const errorContent = error ? (
-    <Banner status="error">
-      There was an error connecting your Github account. You’ll need to try
-      again.
-    </Banner>
-  ) : null;
-
-  return (
-    <Section>
-      <BlockStack>
-        {errorContent}
-        <Heading>Github account</Heading>
-        <TextBlock>
-          Connecting your Github account lets you sign in with Github.
-        </TextBlock>
-        <Button
-          onPress={() => {
-            const target = new URL('/internal/auth/github/connect', currentUrl);
-            target.searchParams.set('redirect', currentUrl.pathname);
-
-            setError(false);
-            setOpen(target);
-          }}
-        >
-          Connect Github
-        </Button>
-        <GithubOAuthModal
-          type="connect"
-          open={open}
-          onEvent={(event, modal) => {
-            modal.close();
-            setError(!event.success);
-          }}
-        />
-      </BlockStack>
-    </Section>
-  );
-}
-
 function GithubSection({
   account,
   onDisconnectAccount,
@@ -151,6 +108,42 @@ function GithubSection({
           }}
         >
           Disconnect <Text emphasis="strong">{username}</Text>
+        </Button>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function ConnectGithubAccount() {
+  const currentUrl = useCurrentUrl();
+  const [error, setError] = useState(false);
+
+  const open = useGithubOAuthModal(GithubOAuthFlow.Connect, (event) => {
+    setError(!event.success);
+  });
+
+  const errorContent = error ? (
+    <Banner status="error">
+      There was an error connecting your Github account. You’ll need to try
+      again.
+    </Banner>
+  ) : null;
+
+  return (
+    <Section>
+      <BlockStack>
+        {errorContent}
+        <Heading>Github account</Heading>
+        <TextBlock>
+          Connecting your Github account lets you sign in with Github.
+        </TextBlock>
+        <Button
+          onPress={() => {
+            setError(false);
+            open({redirectTo: currentUrl.href});
+          }}
+        >
+          Connect Github
         </Button>
       </BlockStack>
     </Section>

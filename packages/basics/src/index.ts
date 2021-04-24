@@ -7,3 +7,4 @@ export {
   useImplicitAction,
   ariaForTarget,
 } from './utilities/actions';
+export {useContainingForm} from './utilities/forms';

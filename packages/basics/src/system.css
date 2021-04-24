@@ -1,0 +1,61 @@
+:root {
+  --x-spacing-small: 0.75rem;
+  --x-spacing-base: 1rem;
+  --x-spacing-large: 1.5rem;
+}
+
+.View {
+  --View-padding: 0;
+  --View-default-display: block;
+  display: var(
+    --z-implicit-display-none,
+    var(--z-implicit-display-block, var(--View-default-display))
+  );
+  padding: var(--View-padding);
+}
+
+:where(.View) > * {
+  --z-implicit-display-none: initial;
+  --z-implicit-display: initial;
+  --z-implicit-display-flex: initial;
+  --z-implicit-display-grid: initial;
+  --z-implicit-align: initial;
+  --z-implicit-connection-inline-start: initial;
+  --z-implicit-connection-inline-end: initial;
+  --z-implicit-container-inline-size: initial;
+}
+
+.paddingSmall {
+  --View-padding: var(--x-spacing-small);
+}
+
+.paddingBase {
+  --View-padding: var(--x-spacing-base);
+}
+
+.paddingLarge {
+  --View-padding: var(--x-spacing-large);
+}
+
+.displayGrid {
+  --View-default-display: grid;
+}
+
+.displayInline {
+  --View-default-display: inline;
+}
+
+.visibilityHidden {
+  --z-implicit-display-none: none;
+}
+
+.visibilityVisuallyHidden {
+  position: absolute !important;
+  top: 0;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  overflow: hidden !important;
+  height: 1px !important;
+  width: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}

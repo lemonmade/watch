@@ -8,7 +8,7 @@ import {
   View,
   Popover,
   PopoverSheet,
-  Pressable,
+  Button,
   Heading,
   Sticky,
 } from '@lemon/zest';
@@ -85,16 +85,16 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
         <Layout sizes={['fill', 'auto']}>
           {actions ? (
             <Popover>
-              <Pressable alignContent="start" blockSize="fill">
+              <Button alignContent="start" blockSize="fill">
                 {normalizedHeading}
-              </Pressable>
+              </Button>
               <PopoverSheet>{actions}</PopoverSheet>
             </Popover>
           ) : (
             <View>{normalizedHeading}</View>
           )}
           <Popover>
-            <Pressable>Mega menu</Pressable>
+            <Button>Mega menu</Button>
             <PopoverSheet>
               <Menu>
                 <Link to="/app">Watching</Link>

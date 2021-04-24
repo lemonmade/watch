@@ -17,7 +17,7 @@ import {
 } from '@lemon/zest';
 
 import {CreateAccountErrorReason} from 'global/utilities/auth';
-import {GithubOAuthModal} from 'components';
+import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 
@@ -41,7 +41,7 @@ export function CreateAccountForm() {
   );
 
   return (
-    <View padding={16}>
+    <BlockStack padding="base">
       <Heading>Create account</Heading>
 
       {reason && <ErrorBanner reason={reason} />}
@@ -51,7 +51,7 @@ export function CreateAccountForm() {
       <TextBlock>or...</TextBlock>
 
       <CreateAccountWithGithub onError={setReason} />
-    </View>
+    </BlockStack>
   );
 }
 
@@ -73,9 +73,7 @@ function CreateAccountWithEmail() {
         navigate('check-your-email');
       }}
     >
-      <BlockStack>
-        <TextField label="Email" onChange={(value) => setEmail(value)} />
-      </BlockStack>
+      <TextField label="Email" onChange={(value) => setEmail(value)} />
     </Form>
   );
 }
@@ -87,44 +85,26 @@ function CreateAccountWithGithub({
 }) {
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
-  const [open, setOpen] = useState<false | URL>(false);
+
+  const open = useGithubOAuthModal(GithubOAuthFlow.CreateAccount, (event) => {
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      onError(event.reason ?? CreateAccountErrorReason.Generic);
+    }
+  });
 
   return (
-    <>
-      <GithubOAuthModal
-        type="createAccount"
-        open={open}
-        onEvent={(event, modal) => {
-          modal.close();
-
-          if (event.success) {
-            navigate(event.redirectTo);
-          } else {
-            onError(event.reason ?? CreateAccountErrorReason.Generic);
-          }
-        }}
-      />
-      <Button
-        onPress={() => {
-          const targetUrl = new URL(
-            '/internal/auth/github/create-account',
-            currentUrl,
-          );
-
-          const redirectTo = currentUrl.searchParams.get(
-            SearchParam.RedirectTo,
-          );
-
-          if (redirectTo) {
-            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-          }
-
-          setOpen(targetUrl);
-        }}
-      >
-        Sign in with Github
-      </Button>
-    </>
+    <Button
+      onPress={() => {
+        open({
+          redirectTo:
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+        });
+      }}
+    >
+      Sign in with Github
+    </Button>
   );
 }
 
@@ -160,5 +140,9 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
 }
 
 function CheckYourEmail() {
-  return <TextBlock>Check your email!</TextBlock>;
+  return (
+    <View padding="base">
+      <TextBlock>Check your email!</TextBlock>
+    </View>
+  );
 }

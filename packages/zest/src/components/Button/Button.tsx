@@ -1,23 +1,36 @@
-import {ReactNode} from 'react';
-import {classes} from '@lemon/css';
+import type {PropsWithChildren} from 'react';
+import {classes, variation} from '@lemon/css';
 import {useImplicitAction, ariaForTarget} from '@lemon/basics';
 
 import styles from './Button.css';
 
 interface Props {
   id?: string;
-  children?: ReactNode;
   primary?: boolean;
+  blockSize?: 'fill';
+  alignContent?: 'start' | 'end' | 'center';
   onPress?(): void;
 }
 
-export function Button({id, children, primary, onPress}: Props) {
+export function Button({
+  id,
+  children,
+  primary,
+  blockSize,
+  alignContent,
+  onPress,
+}: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction(id);
 
   return (
     <button
       type="button"
-      className={classes(styles.Button, primary && styles.primary)}
+      className={classes(
+        styles.Button,
+        primary && styles.primary,
+        alignContent && styles[variation('alignContent', alignContent)],
+        blockSize && styles[variation('blockSize', blockSize)],
+      )}
       onClick={() => {
         if (onPress) {
           onPress();

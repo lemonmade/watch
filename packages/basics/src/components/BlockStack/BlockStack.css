@@ -1,21 +1,19 @@
 .BlockStack {
-  --Stack-spacing: var(--zest-spacing);
-
-  display: grid;
-  gap: var(--Stack-spacing);
+  --x-BlockStack-spacing: var(--x-spacing-base);
+  gap: var(--x-BlockStack-spacing);
   justify-content: stretch;
   align-items: center;
   align-content: center;
 }
 
 .spacingNone {
-  --Stack-spacing: 0;
+  --x-BlockStack-spacing: 0;
 }
 
 .spacingSmall {
-  --Stack-spacing: var(--zest-spacing-small);
+  --x-BlockStack-spacing: var(--x-spacing-small);
 }
 
 .spacingLarge {
-  --Stack-spacing: var(--zest-spacing-large);
+  --x-BlockStack-spacing: var(--x-spacing-large);
 }

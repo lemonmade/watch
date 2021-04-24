@@ -1,16 +1,24 @@
-import type {ComponentProps} from 'react';
+import type {PropsWithChildren} from 'react';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {AutoHeadingGroup} from '@quilted/react-auto-headings';
+import {toProps, useDomProps} from '../../system';
+import type {SystemProps} from '../../system';
+import {
+  AutoHeadingContext,
+  useAutoHeadingLevel,
+} from '../../utilities/headings';
+import type {HeadingLevel} from '../../utilities/headings';
 
-import {View} from '../View';
+interface Props extends SystemProps {}
 
-export function Section(
-  props: Omit<ComponentProps<typeof View>, 'accessibilityRole'>,
-) {
+export function Section({children, ...systemProps}: PropsWithChildren<Props>) {
+  const dom = useDomProps(systemProps);
+  const currentLevel = useAutoHeadingLevel();
+
+  const level = ((currentLevel ?? 0) + 1) as HeadingLevel;
+
   return (
-    <AutoHeadingGroup>
-      <View accessibilityRole="section" {...props} />
-    </AutoHeadingGroup>
+    <AutoHeadingContext.Provider value={level}>
+      <section {...toProps(dom)}>{children}</section>
+    </AutoHeadingContext.Provider>
   );
 }

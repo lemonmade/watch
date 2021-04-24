@@ -8,8 +8,7 @@ export function useConfiguration<
   Configuration extends Record<string, unknown> = Record<string, unknown>
 >() {
   return useSubscription(
-    useApi<ExtensionPoint>().configuration as StatefulRemoteSubscribable<
-      Configuration
-    >,
+    useApi<ExtensionPoint>()
+      .configuration as StatefulRemoteSubscribable<Configuration>,
   );
 }

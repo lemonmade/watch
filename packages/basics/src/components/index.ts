@@ -1,20 +1,38 @@
+// Layout
+
 export {BlockStack} from './BlockStack';
-export {Canvas} from './Canvas';
-export {Form} from './Form';
-export {Heading, HeadingGroup} from './Heading';
-export {Image} from './Image';
 export {InlineStack} from './InlineStack';
-export {Link} from './Link';
-export {List, Item} from './List';
 export {Layout} from './Layout';
+
+// Text
+
+export {Text} from './Text';
+export {Label} from './Label';
+export {TextBlock} from './TextBlock';
+export {Heading} from './Heading';
+
+// Controls
+
+export {Pressable} from './Pressable';
+export {Link} from './Link';
+export {TextField} from './TextField';
+export {Select} from './Select';
+
+// Containers
+
+export {View} from './View';
+export {Form} from './Form';
+export {Section} from './Section';
+
+// Special...
+
+export {Canvas} from './Canvas';
+export {Portal} from './Portal';
+
+// Other...
+
+export {Image} from './Image';
+export {List, Item} from './List';
 export {Menu} from './Menu';
 export {Popover, PopoverSheet} from './Popover';
-export {Portal} from './Portal';
-export {Pressable} from './Pressable';
-export {Section} from './Section';
-export {Select} from './Select';
 export {Sticky} from './Sticky';
-export {Text} from './Text';
-export {TextBlock} from './TextBlock';
-export {TextField} from './TextField';
-export {View} from './View';

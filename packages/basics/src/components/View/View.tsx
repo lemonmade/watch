@@ -1,5 +1,8 @@
-import {PropsWithChildren, CSSProperties, ComponentProps} from 'react';
-import {classes, variation} from '@lemon/css';
+import {PropsWithChildren} from 'react';
+
+import {useDomProps, toProps} from '../../system';
+import type {SystemProps} from '../../system';
+
 import styles from './View.css';
 
 interface Position {
@@ -8,14 +11,11 @@ interface Position {
   inline?: 'start' | 'center' | 'end';
 }
 
-interface Props {
+interface Props extends SystemProps {
   position?: Position | Position['type'];
-  padding?: number;
   border?: string;
   background?: string;
   cornerRadius?: number | 'concentric';
-  accessibility?: 'hidden';
-  accessibilityRole?: 'section';
 }
 
 // type Unset = '_';
@@ -41,54 +41,46 @@ export function View({
   position,
   border,
   cornerRadius,
-  padding,
   background,
-  accessibility,
-  accessibilityRole,
+  ...systemProps
 }: PropsWithChildren<Props>) {
-  const Element = accessibilityRole === 'section' ? 'section' : 'div';
-  const style: CSSProperties = {
-    border,
-    backgroundColor: background,
-  };
+  const dom = useDomProps(systemProps);
 
-  const moreProps: ComponentProps<'div'> = {};
+  dom.addStyles({border, backgroundColor: background});
 
   // concentric border radius is handled with a class
   if (typeof cornerRadius === 'number') {
     const radius = relativeSize(cornerRadius);
-    (style as any)[`--z-container-corner-radius`] = radius;
-    style.borderRadius = radius;
-  }
-
-  if (padding) {
-    const relativePadding = relativeSize(padding);
-    (style as any)['--z-container-inset'] = relativePadding;
-    style.padding = relativePadding;
+    dom.addStyles({
+      '--z-container-corner-radius': radius,
+      borderRadius: radius,
+    });
   }
 
   if (position) {
     if (typeof position === 'string') {
-      style.position = position;
+      dom.addStyles({position});
     } else {
       const {type, block, inline} = position;
-      style.position = type;
+      dom.addStyles({position: type});
 
       if (inline) {
         switch (inline) {
           case 'start': {
-            style.left = 0;
+            dom.addStyles({left: 0});
             break;
           }
           case 'center': {
-            style.left = 0;
-            style.right = 0;
-            style.marginLeft = 'auto';
-            style.marginRight = 'auto';
+            dom.addStyles({
+              left: 0,
+              right: 0,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            });
             break;
           }
           case 'end': {
-            style.right = 0;
+            dom.addStyles({right: 0});
             break;
           }
         }
@@ -97,18 +89,20 @@ export function View({
       if (block) {
         switch (block) {
           case 'start': {
-            style.top = 0;
+            dom.addStyles({top: 0});
             break;
           }
           case 'center': {
-            style.top = 0;
-            style.bottom = 0;
-            style.marginTop = 'auto';
-            style.marginBottom = 'auto';
+            dom.addStyles({
+              top: 0,
+              bottom: 0,
+              marginTop: 'auto',
+              marginBottom: 'auto',
+            });
             break;
           }
           case 'end': {
-            style.bottom = 0;
+            dom.addStyles({bottom: 0});
             break;
           }
         }
@@ -116,23 +110,11 @@ export function View({
     }
   }
 
-  if (accessibility === 'hidden') {
-    moreProps['aria-hidden'] = true;
+  if (cornerRadius === 'concentric') {
+    dom.addClassName(styles.cornerRadiusConcentric);
   }
 
-  return (
-    <Element
-      style={style}
-      className={classes(
-        styles.View,
-        cornerRadius === 'concentric' &&
-          styles[variation('cornerRadius', cornerRadius)],
-      )}
-      {...moreProps}
-    >
-      {children}
-    </Element>
-  );
+  return <div {...toProps(dom)}>{children}</div>;
 }
 
 function relativeSize(points: number) {

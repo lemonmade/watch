@@ -18,5 +18,5 @@ export function Page({children, actions, heading}: PropsWithChildren<Props>) {
     delegate,
   ]);
 
-  return <View padding={16}>{children}</View>;
+  return <View padding="base">{children}</View>;
 }

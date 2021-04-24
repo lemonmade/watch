@@ -1,14 +1,6 @@
 import {useMemo} from 'react';
 import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
-import {
-  View,
-  Button,
-  BlockStack,
-  InlineStack,
-  Text,
-  Menu,
-  Pressable,
-} from '@lemon/zest';
+import {View, Button, BlockStack, InlineStack, Text, Menu} from '@lemon/zest';
 
 import {Link, LocalClip, InstalledClip, Page} from 'components';
 import type {ClipProps} from 'components';
@@ -68,7 +60,7 @@ function SeriesWithData({
       heading={series.name}
       actions={
         <Menu>
-          <Pressable
+          <Button
             onPress={async () => {
               await subscribeToSeries({
                 variables: {id: series.id},
@@ -76,7 +68,7 @@ function SeriesWithData({
             }}
           >
             Subscribe
-          </Pressable>
+          </Button>
         </Menu>
       }
     >

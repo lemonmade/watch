@@ -8,6 +8,8 @@ import {
   SearchParam,
   SignInErrorReason,
   CreateAccountErrorReason,
+  GITHUB_OAUTH_MESSAGE_TOPIC,
+  GithubOAuthFlow,
 } from 'global/utilities/auth';
 import type {GithubOAuthMessage} from 'global/utilities/auth';
 import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
@@ -31,10 +33,10 @@ const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
 
 enum Cookie {
   State = 'state',
-  RedirectTo = 'redirect',
 }
 
 enum GithubSearchParam {
+  Code = 'code',
   Scope = 'scope',
   State = 'state',
   ClientId = 'client_id',
@@ -54,10 +56,16 @@ export function startGithubOAuth(request: Request) {
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
 
-  githubOAuthUrl.searchParams.set(
-    GithubSearchParam.Redirect,
-    new URL('callback', `${request.url.origin}${request.url.pathname}/`).href,
+  const callbackUrl = new URL(
+    'callback',
+    `${request.url.origin}${request.url.pathname}/`,
   );
+
+  if (redirectTo) {
+    callbackUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+  }
+
+  githubOAuthUrl.searchParams.set(GithubSearchParam.Redirect, callbackUrl.href);
 
   const response = redirect(githubOAuthUrl, {
     headers: {
@@ -71,10 +79,6 @@ export function startGithubOAuth(request: Request) {
   };
 
   response.cookies.set(Cookie.State, state, cookieOptions);
-
-  if (redirectTo) {
-    response.cookies.set(Cookie.RedirectTo, redirectTo, cookieOptions);
-  }
 
   return response;
 }
@@ -95,7 +99,10 @@ export function handleGithubOAuthSignIn(request: Request) {
           `Found existing user during sign-in: ${userIdFromExistingAccount}`,
         );
 
-        return completeSignIn(userIdFromExistingAccount, {redirectTo, request});
+        return completeSignIn(userIdFromExistingAccount, {
+          redirectTo,
+          request,
+        });
       } else {
         // eslint-disable-next-line no-console
         console.log(`No user found!`);
@@ -111,14 +118,14 @@ export function handleGithubOAuthSignIn(request: Request) {
 }
 
 function completeSignIn(
-  id: string,
+  userId: string,
   {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
-    {id},
+    {id: userId},
     modalAuthResponse({
       request,
-      event: {type: 'signIn', success: true},
+      event: {flow: GithubOAuthFlow.SignIn, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
   );
@@ -190,14 +197,14 @@ export function handleGithubOAuthCreateAccount(request: Request) {
 }
 
 function completeCreateAccount(
-  id: string,
+  userId: string,
   {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
-    {id},
+    {id: userId},
     modalAuthResponse({
       request,
-      event: {type: 'createAccount', success: true},
+      event: {flow: GithubOAuthFlow.CreateAccount, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
   );
@@ -275,14 +282,14 @@ export function handleGithubOAuthConnect(request: Request) {
 }
 
 function completeConnect(
-  id: string,
+  userId: string,
   {request, redirectTo}: {request: Request; redirectTo?: string},
 ) {
   return addAuthCookies(
-    {id},
+    {id: userId},
     modalAuthResponse({
       request,
-      event: {type: 'connect', success: true},
+      event: {flow: GithubOAuthFlow.Connect, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
   );
@@ -320,10 +327,11 @@ async function handleGithubOAuthCallback(
 ) {
   const {url, cookies} = request;
 
+  const redirectTo = url.searchParams.get(SearchParam.RedirectTo) ?? undefined;
+
   const expectedState = cookies.get(Cookie.State);
-  const redirectTo = cookies.get(Cookie.RedirectTo);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
+  const code = url.searchParams.get(GithubSearchParam.Code);
+  const state = url.searchParams.get(GithubSearchParam.State);
 
   if (expectedState == null || expectedState !== state) {
     return onFailure({
@@ -368,7 +376,11 @@ async function handleGithubOAuthCallback(
   if (githubResult == null) {
     // eslint-disable-next-line no-console
     console.log('No result fetched from Github!');
-    return restartSignIn({request});
+    return onFailure({
+      request,
+      redirectTo,
+      reason: GithubCallbackFailureReason.FailedToFetchUser,
+    });
   }
 
   const [account] = await db
@@ -411,7 +423,7 @@ function restartSignIn({
   return modalAuthResponse({
     request,
     redirectTo: signInUrl,
-    event: {type: 'signIn', success: false, reason},
+    event: {flow: GithubOAuthFlow.SignIn, success: false, reason},
   });
 }
 
@@ -442,7 +454,7 @@ function restartCreateAccount({
   return modalAuthResponse({
     request,
     redirectTo: createAccountUrl,
-    event: {type: 'createAccount', success: false, reason},
+    event: {flow: GithubOAuthFlow.CreateAccount, success: false, reason},
   });
 }
 
@@ -458,7 +470,7 @@ function restartConnect({
   return modalAuthResponse({
     request,
     redirectTo: targetUrl,
-    event: {type: 'connect', success: false},
+    event: {flow: GithubOAuthFlow.Connect, success: false},
   });
 }
 
@@ -482,7 +494,7 @@ function modalAuthResponse({
           if (window.opener) {
             window.opener.postMessage(${JSON.stringify(
               JSON.stringify({
-                topic: 'github:oauth',
+                topic: GITHUB_OAUTH_MESSAGE_TOPIC,
                 redirectTo: redirectTo.href,
                 ...event,
               }),
@@ -513,10 +525,6 @@ function deleteOAuthCookies(
 ) {
   if (request == null || request.cookies.has(Cookie.State)) {
     response.cookies.delete(Cookie.State);
-  }
-
-  if (request == null || request.cookies.has(Cookie.RedirectTo)) {
-    response.cookies.delete(Cookie.RedirectTo);
   }
 
   return response;

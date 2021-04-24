@@ -18,24 +18,32 @@ export enum CreateAccountErrorReason {
   GithubError = 'github-error',
 }
 
+export enum GithubOAuthFlow {
+  SignIn,
+  CreateAccount,
+  Connect,
+}
+
+export const GITHUB_OAUTH_MESSAGE_TOPIC = 'github:oauth';
+
 export type GithubOAuthMessage =
   | {
-      topic: 'github:oauth';
-      type: 'signIn';
+      topic: typeof GITHUB_OAUTH_MESSAGE_TOPIC;
+      flow: GithubOAuthFlow.SignIn;
       success: boolean;
       redirectTo: string;
       reason?: SignInErrorReason;
     }
   | {
-      topic: 'github:oauth';
-      type: 'createAccount';
+      topic: typeof GITHUB_OAUTH_MESSAGE_TOPIC;
+      flow: GithubOAuthFlow.CreateAccount;
       success: boolean;
       redirectTo: string;
       reason?: CreateAccountErrorReason;
     }
   | {
-      topic: 'github:oauth';
-      type: 'connect';
+      topic: typeof GITHUB_OAUTH_MESSAGE_TOPIC;
+      flow: GithubOAuthFlow.Connect;
       success: boolean;
       redirectTo?: never;
       reason?: never;

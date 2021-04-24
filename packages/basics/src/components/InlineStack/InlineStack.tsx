@@ -1,36 +1,61 @@
-import {ReactNode} from 'react';
-import {classes, variation} from '@lemon/css';
+import type {PropsWithChildren} from 'react';
+
+import {
+  Pixels,
+  Keyword,
+  useDomProps,
+  relativeSize,
+  toProps,
+} from '../../system';
+import type {
+  PixelValue,
+  SpacingKeyword,
+  KeywordValue,
+  SystemProps,
+} from '../../system';
 
 import styles from './InlineStack.css';
 
-interface Props {
-  children?: ReactNode;
-  spacing?: 'none' | 'small' | 'large';
+interface Props extends SystemProps {
+  spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;
 }
 
-export function BlockStack({children, spacing}: Props) {
-  return (
-    <div
-      className={classes(
-        styles.Stack,
-        styles.block,
-        spacing && styles[variation('spacing', spacing)],
-      )}
-    >
-      {children}
-    </div>
-  );
-}
+const SPACING_CLASS_MAP = new Map<string, string | false>([
+  [Keyword<SpacingKeyword>('none'), styles.spacingNone],
+  [Keyword<SpacingKeyword>('small'), styles.spacingSmall],
+  [Keyword<SpacingKeyword>('base'), false],
+  [Keyword<SpacingKeyword>('large'), styles.spacingLarge],
+]);
 
-export function InlineStack({children, spacing}: Props) {
-  return (
-    <div
-      className={classes(
-        styles.InlineStack,
-        spacing && styles[variation('spacing', spacing)],
-      )}
-    >
-      {children}
-    </div>
-  );
+export function InlineStack({
+  spacing,
+  children,
+  ...systemProps
+}: PropsWithChildren<Props>) {
+  const dom = useDomProps({...systemProps, display: 'grid'});
+  dom.addClassName(styles.InlineStack);
+
+  if (spacing != null) {
+    let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;
+
+    if (typeof spacing === 'number') {
+      normalizedSpacing = Pixels(spacing);
+    } else if (spacing.startsWith('@')) {
+      normalizedSpacing = spacing as any;
+    } else {
+      normalizedSpacing = Keyword(spacing as SpacingKeyword);
+    }
+
+    const systemClassName = SPACING_CLASS_MAP.get(normalizedSpacing);
+
+    if (systemClassName == null) {
+      dom.addStyles({
+        gap: relativeSize(Pixels.parse(normalizedSpacing as PixelValue)),
+      });
+    } else if (systemClassName) {
+      dom.addClassName(systemClassName);
+    }
+  }
+
+  return <div {...toProps(dom)}>{children}</div>;
 }

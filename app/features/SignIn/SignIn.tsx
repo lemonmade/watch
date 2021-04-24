@@ -18,7 +18,7 @@ import {
 } from '@lemon/zest';
 
 import {SignInErrorReason} from 'global/utilities/auth';
-import {GithubOAuthModal} from 'components';
+import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
@@ -42,19 +42,17 @@ function SignInForm() {
   );
 
   return (
-    <View padding={16}>
-      <BlockStack>
-        <Heading>Sign in</Heading>
+    <BlockStack padding="base">
+      <Heading>Sign in</Heading>
 
-        {reason && <ErrorBanner reason={reason} />}
+      {reason && <ErrorBanner reason={reason} />}
 
-        <SignInWithEmail />
+      <SignInWithEmail />
 
-        <TextBlock>or...</TextBlock>
+      <TextBlock>or...</TextBlock>
 
-        <SignInWithGithub onError={setReason} />
-      </BlockStack>
-    </View>
+      <SignInWithGithub onError={setReason} />
+    </BlockStack>
   );
 }
 
@@ -76,9 +74,7 @@ function SignInWithEmail() {
         navigate('check-your-email');
       }}
     >
-      <BlockStack>
-        <TextField label="Email" onChange={(value) => setEmail(value)} />
-      </BlockStack>
+      <TextField label="Email" onChange={(value) => setEmail(value)} />
     </Form>
   );
 }
@@ -90,44 +86,26 @@ function SignInWithGithub({
 }) {
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
-  const [open, setOpen] = useState<false | URL>(false);
+
+  const open = useGithubOAuthModal(GithubOAuthFlow.SignIn, (event) => {
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      onError(event.reason ?? SignInErrorReason.Generic);
+    }
+  });
 
   return (
-    <>
-      <GithubOAuthModal
-        type="signIn"
-        open={open}
-        onEvent={(event, modal) => {
-          modal.close();
-
-          if (event.success) {
-            navigate(event.redirectTo);
-          } else {
-            onError(event.reason ?? SignInErrorReason.Generic);
-          }
-        }}
-      />
-      <Button
-        onPress={() => {
-          const targetUrl = new URL(
-            '/internal/auth/github/sign-in',
-            currentUrl,
-          );
-
-          const redirectTo = currentUrl.searchParams.get(
-            SearchParam.RedirectTo,
-          );
-
-          if (redirectTo) {
-            targetUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-          }
-
-          setOpen(targetUrl);
-        }}
-      >
-        Sign in with Github
-      </Button>
-    </>
+    <Button
+      onPress={() => {
+        open({
+          redirectTo:
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+        });
+      }}
+    >
+      Sign in with Github
+    </Button>
   );
 }
 
@@ -171,5 +149,9 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
 }
 
 function CheckYourEmail() {
-  return <TextBlock>Check your email!</TextBlock>;
+  return (
+    <View padding="base">
+      <TextBlock>Check your email!</TextBlock>
+    </View>
+  );
 }

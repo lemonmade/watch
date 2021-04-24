@@ -1,10 +1,9 @@
 import {useMemo, useState} from 'react';
 import type {PropsWithChildren, ContextType} from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {AutoHeadingGroup} from '@quilted/react-auto-headings';
 
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
 import {PortalContainerContext} from '../../utilities/portals';
+import {AutoHeadingContext} from '../../utilities/headings';
 
 import './Canvas.css';
 
@@ -15,9 +14,9 @@ export function Canvas({children}: PropsWithChildren<Props>) {
 
   return (
     <UniqueIdContext.Provider value={idFactory}>
-      <PortalContainer>
-        <AutoHeadingGroup>{children}</AutoHeadingGroup>
-      </PortalContainer>
+      <AutoHeadingContext.Provider value={1}>
+        <PortalContainer>{children}</PortalContainer>
+      </AutoHeadingContext.Provider>
     </UniqueIdContext.Provider>
   );
 }

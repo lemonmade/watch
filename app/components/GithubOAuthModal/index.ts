@@ -1,1 +1,0 @@
-export {GithubOAuthModal} from './GithubOAuthModal';

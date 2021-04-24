@@ -20,7 +20,6 @@ import {
   Section,
   Text,
   Menu,
-  Pressable,
   Form,
   TextField,
   Select,
@@ -208,25 +207,25 @@ function InstalledClipFrame<T extends ExtensionPoint>({
       renderPopoverContent={() => <InstalledClipConfiguration id={id} />}
       renderPopoverActions={() => (
         <>
-          <Pressable
+          <Button
             // eslint-disable-next-line no-alert
             onPress={() => alert('App page not implemented yet!')}
           >
             View app
-          </Pressable>
-          <Pressable onPress={() => controller.restart()}>Restart</Pressable>
-          <Pressable
+          </Button>
+          <Button onPress={() => controller.restart()}>Restart</Button>
+          <Button
             // eslint-disable-next-line no-alert
             onPress={() => alert('Uninstall not implemented yet!')}
           >
             Uninstall
-          </Pressable>
-          <Pressable
+          </Button>
+          <Button
             // eslint-disable-next-line no-alert
             onPress={() => alert('Reporting not implemented yet!')}
           >
             Report an issue
-          </Pressable>
+          </Button>
         </>
       )}
     />
@@ -467,7 +466,7 @@ function LocalClipFrame<T extends ExtensionPoint>({
         />
       )}
       renderPopoverActions={() => (
-        <Pressable onPress={() => controller.restart()}>Restart</Pressable>
+        <Button onPress={() => controller.restart()}>Restart</Button>
       )}
     >
       <div
@@ -520,7 +519,7 @@ function ClipFrame<T extends ExtensionPoint>({
     <BlockStack spacing="small">
       <View>
         <Popover>
-          <Pressable>{name}</Pressable>
+          <Button>{name}</Button>
           <PopoverSheet>
             <Section padding={16}>
               <ClipTimings controller={controller} />
