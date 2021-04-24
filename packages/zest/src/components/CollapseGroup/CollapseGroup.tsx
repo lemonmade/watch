@@ -1,5 +1,5 @@
 import {ReactNode} from 'react';
-import styles from './CollapseGroup.css';
+import styles from './CollapseGroup.module.css';
 
 interface Props {
   title: string;

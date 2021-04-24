@@ -5,7 +5,7 @@ import type {SystemProps} from '../../system';
 
 import {useAutoHeadingLevel} from '../../utilities/headings';
 
-import styles from './Heading.css';
+import styles from './Heading.module.css';
 
 interface Props extends SystemProps {
   accessibilityRole?: 'heading' | 'presentation';

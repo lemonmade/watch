@@ -3,7 +3,7 @@ import {PropsWithChildren} from 'react';
 import {useDomProps, toProps} from '../../system';
 import type {SystemProps} from '../../system';
 
-import styles from './View.css';
+import styles from './View.module.css';
 
 interface Position {
   type: 'relative' | 'absolute';

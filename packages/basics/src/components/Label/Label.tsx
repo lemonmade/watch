@@ -3,7 +3,7 @@ import type {PropsWithChildren} from 'react';
 import {toProps, useDomProps} from '../../system';
 import type {SystemProps} from '../../system';
 
-import styles from './Label.css';
+import styles from './Label.module.css';
 
 interface Props extends SystemProps {
   target: string;

@@ -6,7 +6,7 @@
     "@lemon/basics": "*",
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@quilted/quilt": "^0.4.23",
+    "@quilted/quilt": "^0.4.25",
     "@remote-ui/async-subscription": "^2.0.0",
     "@remote-ui/core": "^2.0.0",
     "@remote-ui/react": "^4.0.0",

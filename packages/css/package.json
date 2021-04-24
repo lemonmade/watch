@@ -3,11 +3,5 @@
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
-  "sideEffects": false,
-  "dependencies": {
-    "classnames": "^2.2.6"
-  },
-  "devDependencies": {
-    "@types/classnames": "^2.2.10"
-  }
+  "sideEffects": false
 }

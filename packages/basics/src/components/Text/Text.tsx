@@ -3,7 +3,7 @@ import type {PropsWithChildren} from 'react';
 import {toProps, useDomProps} from '../../system';
 import type {SystemProps} from '../../system';
 
-import styles from './Text.css';
+import styles from './Text.module.css';
 
 interface Props extends SystemProps {
   emphasis?: 'strong' | 'subdued';

@@ -2,7 +2,7 @@ import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 import {useImplicitAction, ariaForTarget} from '@lemon/basics';
 
-import styles from './Button.css';
+import styles from './Button.module.css';
 
 interface Props {
   id?: string;

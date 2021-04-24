@@ -1,3 +1,5 @@
+import {readFile} from 'fs/promises';
+
 import {createWebApp} from '@sewing-kit/config';
 import {
   Runtime,
@@ -10,16 +12,15 @@ import {lambda} from '@quilted/aws/sewing-kit';
 import type {BuildWebAppTargetOptions} from '@sewing-kit/hooks';
 import type {} from '@sewing-kit/plugin-webpack';
 
+import type {TransformPluginContext} from 'rollup';
+
 import {CDN_ROOT} from '../config/deploy/constants';
 
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     quiltWebApp({
-      // eslint-disable-next-line no-warning-comments
-      // TODO: this option doesn't work with fast refresh because it still configures
-      // react-refresh
-      // preact: true,
+      preact: true,
       autoServer: false,
       assetServer: false,
       cdn: CDN_ROOT,
@@ -40,7 +41,10 @@ function randomBits() {
         hooks.steps.hook((steps) => [
           ...steps,
           api.createStep({id: 'Quilt.Vite', label: 'Run vite'}, async () => {
-            const {createServer} = await import('vite');
+            const [{createServer}, {default: prefresh}] = await Promise.all([
+              import('vite'),
+              import('@prefresh/vite'),
+            ]);
 
             const server = await createServer({
               configFile: false,
@@ -77,8 +81,15 @@ function randomBits() {
                   'preact/jsx-dev-runtime': 'preact/jsx-runtime',
                 },
               },
-              // esbuild:
+              esbuild: {
+                // @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/plugins/esbuild.ts#L92-L95
+                include: /\.(tsx?|jsx|esnext)$/,
+                // Vite uses the extension as the loader, which fails for esnext. Would be nice to have a per-file
+                // API for this...
+                loader: 'ts',
+              },
               plugins: [
+                prefresh(),
                 {
                   name: '@quilted/magic/browser',
                   resolveId(id) {
@@ -129,29 +140,91 @@ function randomBits() {
 
                     const {transformAsync} = await import('@babel/core');
 
-                    const {
-                      code: transformedCode,
-                      map,
-                      ast,
-                    } = await transformAsync(code, {
-                      filename: id,
-                      configFile: false,
-                      presets: [
-                        [
-                          '@babel/preset-react',
-                          {
-                            development: true,
-                            runtime: 'automatic',
-                            importSource: 'preact',
-                          },
+                    const {code: transformedCode, map} =
+                      (await transformAsync(code, {
+                        filename: id,
+                        configFile: false,
+                        presets: [
+                          [
+                            '@babel/preset-react',
+                            {
+                              development: true,
+                              runtime: 'automatic',
+                              importSource: 'preact',
+                            },
+                          ],
                         ],
-                      ],
-                      plugins: [
-                        ['@babel/plugin-syntax-typescript', {isTSX: true}],
-                      ],
-                    });
+                        plugins: [
+                          ['@babel/plugin-syntax-typescript', {isTSX: true}],
+                        ],
+                      })) ?? {};
 
-                    return {code: transformedCode, map, ast};
+                    return {code: transformedCode ?? undefined, map};
+                  },
+                },
+                {
+                  name: '@quilted/graphql',
+                  async transform(code, id) {
+                    if (!id.endsWith('.graphql')) return null;
+
+                    const [
+                      {parse},
+                      {cleanDocument, extractImports, toSimpleDocument},
+                    ] = await Promise.all([
+                      import('graphql'),
+                      import('@sewing-kit/graphql'),
+                    ]);
+
+                    const document = toSimpleDocument(
+                      cleanDocument(await loadDocument(code, id, this)),
+                    );
+
+                    return `export default JSON.stringify(${JSON.stringify(
+                      JSON.stringify(document),
+                    )})`;
+
+                    async function loadDocument(
+                      code: string,
+                      file: string,
+                      plugin: TransformPluginContext,
+                    ) {
+                      const {imports, source} = extractImports(code);
+                      const document = parse(source);
+
+                      if (imports.length === 0) {
+                        return document;
+                      }
+
+                      const resolvedImports = await Promise.all(
+                        imports.map(async (imported) => {
+                          const resolvedId = await plugin.resolve(
+                            imported,
+                            file,
+                          );
+
+                          if (resolvedId == null) {
+                            throw new Error(
+                              `Could not find ${JSON.stringify(
+                                imported,
+                              )} from ${JSON.stringify(file)}`,
+                            );
+                          }
+
+                          plugin.addWatchFile(resolvedId.id);
+                          const contents = await readFile(resolvedId.id, {
+                            encoding: 'utf8',
+                          });
+
+                          return loadDocument(contents, resolvedId.id, plugin);
+                        }),
+                      );
+
+                      for (const {definitions} of resolvedImports) {
+                        (document.definitions as any[]).push(...definitions);
+                      }
+
+                      return document;
+                    }
                   },
                 },
                 {
@@ -198,18 +271,6 @@ function randomBits() {
             await server.listen(3002);
           }),
         ]);
-
-        hooks.configure.hook((configuration) => {
-          // Shouldn't need this...
-          configuration.webpackPublicPath?.hook(
-            () => `http://localhost:3002/assets/`,
-          );
-
-          configuration.webpackAliases?.hook((aliases) => ({
-            ...aliases,
-            global: workspace.fs.resolvePath('global'),
-          }));
-        });
       });
 
       tasks.build.hook(({hooks}) => {

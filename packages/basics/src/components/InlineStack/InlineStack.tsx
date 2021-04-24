@@ -14,7 +14,7 @@ import type {
   SystemProps,
 } from '../../system';
 
-import styles from './InlineStack.css';
+import styles from './InlineStack.module.css';
 
 interface Props extends SystemProps {
   spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;

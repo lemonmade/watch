@@ -1,7 +1,7 @@
 import type {CSSProperties, HTMLAttributes} from 'react';
 import {variation} from '@lemon/css';
 
-import systemStyles from './system.css';
+import systemStyles from './system.module.css';
 
 export type PixelValue = `@px@${number}`;
 

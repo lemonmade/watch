@@ -5,7 +5,7 @@ import {useDomProps, Keyword, toProps} from '../../system';
 import type {KeywordValue, SystemProps} from '../../system';
 import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
 
-import styles from './Pressable.css';
+import styles from './Pressable.module.css';
 
 export type Alignment = 'start' | 'center' | 'end';
 

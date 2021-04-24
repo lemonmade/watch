@@ -1,5 +1,5 @@
 import {ReactNode} from 'react';
-import styles from './MediaGrid.css';
+import styles from './MediaGrid.module.css';
 
 interface Props {
   children?: ReactNode;

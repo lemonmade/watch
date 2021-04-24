@@ -5,7 +5,7 @@ import {classes, variation} from '@lemon/css';
 
 import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
 
-import styles from './Link.css';
+import styles from './Link.module.css';
 
 interface Props {
   to: ComponentProps<typeof RouterLink>['to'];

@@ -13,7 +13,7 @@ import type {Action} from '../../utilities/actions';
 import {useUniqueId} from '../../utilities/id';
 import {useGlobalEvents} from '../../utilities/global-events';
 
-import styles from './Popover.css';
+import styles from './Popover.module.css';
 
 const PopoverActiveContext = createContext(false);
 

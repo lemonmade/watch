@@ -4,7 +4,7 @@ import {PropsWithChildren, ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {View} from '../View';
-import styles from './Image.css';
+import styles from './Image.module.css';
 
 type ViewportSize = 'small' | 'medium' | 'large';
 type Fit = 'cover' | 'contain';

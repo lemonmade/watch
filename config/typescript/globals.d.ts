@@ -3,7 +3,7 @@ declare module 'raw-loader!*' {
   export default contents;
 }
 
-declare module '*.css' {
+declare module '*.module.css {
   const classnames: {[key: string]: string};
   export default classnames;
 }

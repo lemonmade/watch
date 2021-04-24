@@ -3,7 +3,7 @@ import {Poster} from '@lemon/zest';
 
 import {Link} from 'components';
 
-import styles from './WatchThroughItem.css';
+import styles from './WatchThroughItem.module.css';
 
 interface Series {
   poster?: string;
