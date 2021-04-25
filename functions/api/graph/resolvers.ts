@@ -62,19 +62,17 @@ export const Query: Resolver = {
   series(_, {id}: {id: string}, {prisma}) {
     return prisma.series.findFirst({where: {id: fromGid(id).id}});
   },
-  subscription(_, {id}: {id: string}, {seriesSubscriptionsLoader}) {
-    return seriesSubscriptionsLoader.load(fromGid(id).id);
+  subscription(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.seriesSubscription.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
-  async subscriptions(_, __, {db, seriesSubscriptionsLoader, user}) {
-    const seriesSubscriptions = await db
-      .select('id')
-      .from(Table.SeriesSubscriptions)
-      .limit(50)
-      .where({userId: user.id});
-
-    return Promise.all(
-      seriesSubscriptions.map(({id}) => seriesSubscriptionsLoader.load(id)),
-    );
+  subscriptions(_, __, {user, prisma}) {
+    return prisma.seriesSubscription.findMany({
+      where: {userId: user.id},
+      orderBy: {createdAt: 'desc'},
+      take: 50,
+    });
   },
   watchThrough(_, {id}: {id: string}, {watchThroughLoader}) {
     return watchThroughLoader.load(fromGid(id).id);
@@ -438,13 +436,10 @@ export const Mutation: Resolver = {
 
     return {watchThrough};
   },
-  async subscribeToSeries(_, {id: seriesGid}: {id: string}, {db, user}) {
-    const {id: seriesId} = fromGid(seriesGid);
-
-    const [subscription] = await db
-      .insert({seriesId, userId: user.id})
-      .into(Table.SeriesSubscriptions)
-      .returning('*');
+  async subscribeToSeries(_, {id}: {id: string}, {user, prisma}) {
+    const subscription = await prisma.seriesSubscription.create({
+      data: {seriesId: fromGid(id).id, userId: user.id},
+    });
 
     return {subscription};
   },
@@ -1055,15 +1050,13 @@ export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
   },
 };
 
-export const SeriesSubscription: Resolver<{
-  id: string;
-  seriesId: string;
-  createdAt: string;
-}> = {
+export const SeriesSubscription: Resolver<
+  import('@prisma/client').SeriesSubscription
+> = {
   id: ({id}) => toGid(id, 'SeriesSubscription'),
   subscribedOn: ({createdAt}) => createdAt,
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
 };
 
