@@ -16,7 +16,7 @@ import {Head, Http, LocalDevelopmentOrchestrator, Routes} from './foundation';
 
 const fetch = createHttpFetch({
   credentials: 'include',
-  uri: 'https://watch.lemon.tools/api/graphql',
+  uri: '/api/graphql',
 });
 
 export default function App() {

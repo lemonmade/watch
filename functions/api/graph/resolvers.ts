@@ -16,8 +16,8 @@ import {ClipsExtensionPointConditionInput} from './schema';
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
 export const Query: Resolver = {
-  me(_, __, {user, userLoader}) {
-    return userLoader.load(user.id);
+  me(_, __, {prisma, user}) {
+    return prisma.user.findFirst({where: {id: user.id}});
   },
   async search(_, {query}: {query?: string}, context) {
     if (!query?.length) {
@@ -189,13 +189,9 @@ export const Mutation: Resolver = {
   async signIn(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
-    {db},
+    {prisma},
   ) {
-    const [user] = await db
-      .select('email')
-      .from(Table.Users)
-      .where({email})
-      .limit(1);
+    const user = await prisma.user.findFirst({where: {email}});
 
     if (user == null) {
       // Need to make this take roughly the same amount of time as
@@ -219,13 +215,12 @@ export const Mutation: Resolver = {
   async createAccount(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
-    {db},
+    {prisma},
   ) {
-    const [user] = await db
-      .select('email')
-      .from(Table.Users)
-      .where({email})
-      .limit(1);
+    const user = await prisma.user.findFirst({
+      where: {email},
+      select: {id: true},
+    });
 
     if (user != null) {
       await enqueueSendEmail('signIn', {
@@ -249,19 +244,20 @@ export const Mutation: Resolver = {
 
     return {email};
   },
-  async deleteAccount(_, __, {db, user}) {
-    await db.delete().from(Table.Users).where({id: user.id});
-    return {deletedId: toGid(user.id, 'User')};
+  async deleteAccount(_, __, {prisma, user}) {
+    const deleted = await prisma.user.delete({where: {id: user.id}});
+    return {deletedId: toGid(deleted.id, 'User')};
   },
-  async disconnectGithubAccount(_, __, {db, user}) {
-    const [githubAccount] = await db
-      .delete()
-      .from(Table.GithubAccounts)
-      .where({userId: user.id})
-      .limit(1)
-      .returning('*');
+  async disconnectGithubAccount(_, __, {prisma, user}) {
+    const githubAccount = await prisma.githubAccount.findFirst({
+      where: {userId: user.id},
+    });
 
-    return {githubAccount};
+    if (githubAccount) {
+      await prisma.githubAccount.delete({where: {id: githubAccount.id}});
+    }
+
+    return {deletedAccount: githubAccount};
   },
   async watchEpisode(
     _,
@@ -859,14 +855,9 @@ export const AppExtensionInstallation: Resolver = {
 
 export const User: Resolver = {
   id: ({id}) => toGid(id, 'User'),
-  githubAccount: async ({id}, _, {db}) => {
-    const [result] = await db
-      .select('*')
-      .from(Table.GithubAccounts)
-      .where({userId: id})
-      .limit(1);
-
-    return result;
+  githubAccount: async ({id}, _, {prisma}) => {
+    const account = await prisma.githubAccount.findFirst({where: {userId: id}});
+    return account;
   },
 };
 

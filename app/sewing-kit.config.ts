@@ -50,6 +50,13 @@ function randomBits() {
               configFile: false,
               clearScreen: false,
               cacheDir: api.cachePath('vite'),
+              server: {
+                port: 8912,
+                hmr: {
+                  protocol: 'ws',
+                  host: 'localhost',
+                },
+              },
               resolve: {
                 conditions: [
                   'esnext',
@@ -179,7 +186,7 @@ function randomBits() {
                       cleanDocument(await loadDocument(code, id, this)),
                     );
 
-                    return `export default JSON.stringify(${JSON.stringify(
+                    return `export default JSON.parse(${JSON.stringify(
                       JSON.stringify(document),
                     )})`;
 
@@ -250,7 +257,7 @@ function randomBits() {
                             <html>
                               <body>
                                 <div id="app"></div>
-                                <script defer src="@quilted/magic/browser.tsx" type="module"></script>
+                                <script defer src="/@quilted/magic/browser.tsx" type="module"></script>
                               </body>
                             </html>
                           `,
@@ -268,7 +275,7 @@ function randomBits() {
               ],
             });
 
-            await server.listen(3002);
+            await server.listen();
           }),
         ]);
       });

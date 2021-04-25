@@ -1,7 +1,12 @@
 import knex from 'knex';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+export {PrismaClient as Prisma} from '@prisma/client';
+// eslint-disable-next-line import/no-extraneous-dependencies
+export type {User, GithubAccount} from '@prisma/client';
+
 export enum Table {
-  Users = 'Users',
+  User = 'User',
   Watches = 'Watches',
   Skips = 'Skips',
   Series = 'Series',
@@ -15,7 +20,7 @@ export enum Table {
   ClipsExtensionVersions = 'ClipsExtensionVersions',
   AppInstallations = 'AppInstallations',
   ClipsExtensionInstallations = 'ClipsExtensionInstallations',
-  GithubAccounts = 'GithubAccounts',
+  GithubAccount = 'GithubAccount',
 }
 
 export type Database = ReturnType<typeof createDatabaseConnection>;

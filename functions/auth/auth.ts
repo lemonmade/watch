@@ -26,7 +26,7 @@ app.get('/github/connect/callback', handleGithubOAuthConnect);
 
 app.get((request) => {
   // eslint-disable-next-line no-console
-  console.log('Fallback route');
+  console.log('Fallback route', request.url.href);
 
   const loginUrl = new URL('/login', request.url);
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);

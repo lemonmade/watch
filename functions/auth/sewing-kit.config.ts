@@ -4,6 +4,7 @@ import {lambda} from '@quilted/aws/sewing-kit';
 
 import {
   knex,
+  httpDev,
   functionConvenienceAliases,
 } from '../../config/sewing-kit/plugins';
 
@@ -14,5 +15,6 @@ export default createService((service) => {
     knex(),
     lambda(),
     functionConvenienceAliases(),
+    httpDev({port: 8911}),
   );
 });

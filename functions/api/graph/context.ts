@@ -1,6 +1,7 @@
 import DataLoader from 'dataloader';
 import type {Request, Response} from '@quilted/http-handlers';
-import {Table} from 'shared/utilities/database';
+
+import {Table, Prisma} from 'shared/utilities/database';
 import type {Database} from 'shared/utilities/database';
 
 export type Context = ReturnType<typeof createContext>;
@@ -19,6 +20,7 @@ export function createContext(
 ) {
   return {
     db,
+    prisma: new Prisma(),
     get user() {
       if (user == null) {
         response.status = 401;
@@ -29,7 +31,7 @@ export function createContext(
     },
     request,
     response,
-    userLoader: new DataLoader(createBatchLoaderForTable(db, Table.Users)),
+    userLoader: new DataLoader(createBatchLoaderForTable(db, Table.User)),
     watchLoader: new DataLoader(
       createUserScopedBatchLoaderForTable(db, Table.Watches, response, user),
     ),
@@ -83,7 +85,7 @@ export function createContext(
     githubAccountsLoader: new DataLoader(
       createUserScopedBatchLoaderForTable(
         db,
-        Table.GithubAccounts,
+        Table.GithubAccount,
         response,
         user,
       ),

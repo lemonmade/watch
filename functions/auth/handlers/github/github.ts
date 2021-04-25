@@ -13,15 +13,13 @@ import {
 } from 'global/utilities/auth';
 import type {GithubOAuthMessage} from 'global/utilities/auth';
 import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
-import {createDatabaseConnection, Table} from 'shared/utilities/database';
-import type {Database} from 'shared/utilities/database';
+import {Prisma} from 'shared/utilities/database';
 
 import {validateRedirectTo} from '../shared';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
 
-const CLIENT_ID = '60c6903025bfd274db53';
 const SCOPES = 'read:user';
 
 const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
@@ -52,7 +50,10 @@ export function startGithubOAuth(request: Request) {
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
-  githubOAuthUrl.searchParams.set(GithubSearchParam.ClientId, CLIENT_ID);
+  githubOAuthUrl.searchParams.set(
+    GithubSearchParam.ClientId,
+    process.env.GITHUB_CLIENT_ID!,
+  );
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
 
@@ -85,7 +86,8 @@ export function startGithubOAuth(request: Request) {
 
 export function handleGithubOAuthSignIn(request: Request) {
   return handleGithubOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
+    onFailure({request, redirectTo, reason}) {
+      console.log({reason});
       return restartSignIn({
         request,
         redirectTo,
@@ -140,7 +142,12 @@ export function handleGithubOAuthCreateAccount(request: Request) {
         reason: CreateAccountErrorReason.GithubError,
       });
     },
-    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+    async onSuccess({
+      prisma,
+      userIdFromExistingAccount,
+      redirectTo,
+      githubUser,
+    }) {
       if (userIdFromExistingAccount) {
         // eslint-disable-next-line no-console
         console.log(
@@ -166,23 +173,18 @@ export function handleGithubOAuthCreateAccount(request: Request) {
         // this failed because their email already exists. It’s tempting
         // to just log them in or tell them they have an account already,
         // but that feedback could be used to probe for emails.
-        const updatedUserId = await db.transaction(async (trx) => {
-          const [userId] = await trx
-            .insert({email})
-            .into(Table.Users)
-            .returning<string>('id');
-
-          await trx
-            .insert({
-              id: githubUserId,
-              userId,
-              username: login,
-              profileUrl: githubUserUrl,
-              avatarUrl,
-            })
-            .into(Table.GithubAccounts);
-
-          return userId;
+        const {id: updatedUserId} = await prisma.user.create({
+          data: {
+            email,
+            githubAccount: {
+              create: {
+                id: githubUserId,
+                username: login,
+                profileUrl: githubUserUrl,
+                avatarUrl,
+              },
+            },
+          },
         });
 
         // eslint-disable-next-line no-console
@@ -215,7 +217,12 @@ export function handleGithubOAuthConnect(request: Request) {
     onFailure({request, redirectTo}) {
       return restartConnect({redirectTo, request});
     },
-    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+    async onSuccess({
+      prisma,
+      userIdFromExistingAccount,
+      redirectTo,
+      githubUser,
+    }) {
       const userIdFromRequest = getUserIdFromRequest(request);
 
       if (userIdFromExistingAccount) {
@@ -252,15 +259,15 @@ export function handleGithubOAuthConnect(request: Request) {
       } = githubUser;
 
       try {
-        await db
-          .insert({
+        await prisma.githubAccount.create({
+          data: {
             id: githubUserId,
             userId: userIdFromRequest,
             username: login,
             profileUrl: githubUserUrl,
             avatarUrl,
-          })
-          .into(Table.GithubAccounts);
+          },
+        });
 
         // eslint-disable-next-line no-console
         console.log(
@@ -296,7 +303,7 @@ function completeConnect(
 }
 
 interface GithubCallbackResult {
-  readonly db: Database;
+  readonly prisma: Prisma;
   readonly githubUser: GithubViewerQueryData.Viewer;
   readonly redirectTo?: string;
   readonly userIdFromExistingAccount?: string;
@@ -313,7 +320,7 @@ interface GithubCallbackFailureResult {
   readonly redirectTo?: string;
 }
 
-const db = createDatabaseConnection();
+const prisma = new Prisma();
 
 async function handleGithubOAuthCallback(
   request: Request,
@@ -333,70 +340,74 @@ async function handleGithubOAuthCallback(
   const code = url.searchParams.get(GithubSearchParam.Code);
   const state = url.searchParams.get(GithubSearchParam.State);
 
-  if (expectedState == null || expectedState !== state) {
-    return onFailure({
-      reason: GithubCallbackFailureReason.StateMismatch,
-      request,
-      redirectTo,
-    });
-  }
+  try {
+    if (expectedState == null || expectedState !== state) {
+      return onFailure({
+        reason: GithubCallbackFailureReason.StateMismatch,
+        request,
+        redirectTo,
+      });
+    }
 
-  const {access_token: accessToken} = await fetchJson<{access_token: string}>(
-    'https://github.com/login/oauth/access_token',
-    {
-      client_id: CLIENT_ID,
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code,
-      state,
-    },
-  );
-
-  const githubClient = createGraphQL({
-    cache: false,
-    fetch: createHttpFetch({
-      uri: 'https://api.github.com/graphql',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+    const {access_token: accessToken} = await fetchJson<{access_token: string}>(
+      'https://github.com/login/oauth/access_token',
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+        state,
       },
-    }),
-  });
+    );
 
-  const {data: githubResult, error: githubError} = await githubClient.query(
-    viewerQuery,
-  );
-
-  if (githubError != null) {
-    // eslint-disable-next-line no-console
-    console.error('Github error');
-    // eslint-disable-next-line no-console
-    console.error(githubError);
-  }
-
-  if (githubResult == null) {
-    // eslint-disable-next-line no-console
-    console.log('No result fetched from Github!');
-    return onFailure({
-      request,
-      redirectTo,
-      reason: GithubCallbackFailureReason.FailedToFetchUser,
+    const githubClient = createGraphQL({
+      cache: false,
+      fetch: createHttpFetch({
+        uri: 'https://api.github.com/graphql',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }),
     });
+
+    const {data: githubResult, error: githubError} = await githubClient.query(
+      viewerQuery,
+    );
+
+    if (githubError != null) {
+      // eslint-disable-next-line no-console
+      console.error('Github error');
+      // eslint-disable-next-line no-console
+      console.error(githubError);
+    }
+
+    if (githubResult == null) {
+      // eslint-disable-next-line no-console
+      console.log('No result fetched from Github!');
+      return onFailure({
+        request,
+        redirectTo,
+        reason: GithubCallbackFailureReason.FailedToFetchUser,
+      });
+    }
+
+    const account = await prisma.githubAccount.findFirst({
+      where: {id: githubResult.viewer.id},
+      select: {userId: true},
+    });
+
+    const response = await onSuccess({
+      prisma,
+      redirectTo,
+      githubUser: githubResult.viewer,
+      userIdFromExistingAccount: account?.userId,
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
-
-  const [account] = await db
-    .select(['userId'])
-    .from(Table.GithubAccounts)
-    .where({id: githubResult.viewer.id})
-    .limit(1);
-
-  const response = await onSuccess({
-    db,
-    redirectTo,
-    githubUser: githubResult.viewer,
-    userIdFromExistingAccount: account?.userId,
-  });
-
-  return response;
 }
 
 function restartSignIn({
