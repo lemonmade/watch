@@ -12,9 +12,12 @@ generator client {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  githubAccount GithubAccount?
+  id    String @id @default(uuid())
+  email String @unique
+
+  githubAccount               GithubAccount?
+  appInstallations            AppInstallation[]
+  clipsExtensionInstallations ClipsExtensionInstallation[]
 }
 
 model GithubAccount {
@@ -22,8 +25,9 @@ model GithubAccount {
   username   String
   profileUrl String
   avatarUrl  String?
-  user       User    @relation(fields: [userId], references: [id])
-  userId     String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 enum SeriesStatus {
@@ -74,4 +78,76 @@ model Episode {
 
   season   Season @relation(fields: [seasonId], references: [id])
   seasonId String
+}
+
+model App {
+  id   String @id @default(uuid())
+  name String
+
+  installations   AppInstallation[]
+  clipsExtensions ClipsExtension[]
+}
+
+model AppInstallation {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  app                App                          @relation(fields: [appId], references: [id])
+  appId              String
+  clipsInstallations ClipsExtensionInstallation[]
+}
+
+model ClipsExtension {
+  id   String @id @default(uuid())
+  name String
+
+  app   App    @relation(fields: [appId], references: [id])
+  appId String
+
+  activeVersion   ClipsExtensionVersion? @relation(name: "activeVersion", fields: [activeVersionId], references: [id])
+  activeVersionId String?
+
+  versions      ClipsExtensionVersion[]
+  installations ClipsExtensionInstallation[]
+}
+
+enum ClipsApiVersion {
+  UNSTABLE
+}
+
+enum ClipsExtensionVersionStatus {
+  PUBLISHED
+  BUILDING
+}
+
+model ClipsExtensionVersion {
+  id                  String                      @id @default(uuid())
+  status              ClipsExtensionVersionStatus
+  apiVersion          ClipsApiVersion
+  scriptUrl           String?
+  supports            Json?
+  translations        Json?
+  configurationSchema Json?
+
+  extension   ClipsExtension @relation(fields: [extensionId], references: [id])
+  extensionId String
+
+  activeForExtension ClipsExtension[] @relation("activeVersion")
+}
+
+model ClipsExtensionInstallation {
+  id             String @id @default(uuid())
+  extensionPoint String
+  configuration  Json?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  extension   ClipsExtension @relation(fields: [extensionId], references: [id])
+  extensionId String
+
+  appInstallation   AppInstallation @relation(fields: [appInstallationId], references: [id])
+  appInstallationId String
 }

@@ -31,7 +31,6 @@ export function createContext(
     },
     request,
     response,
-    userLoader: new DataLoader(createBatchLoaderForTable(db, Table.User)),
     watchLoader: new DataLoader(
       createUserScopedBatchLoaderForTable(db, Table.Watches, response, user),
     ),
@@ -55,37 +54,6 @@ export function createContext(
       createUserScopedBatchLoaderForTable(
         db,
         Table.WatchThroughs,
-        response,
-        user,
-      ),
-    ),
-    appsLoader: new DataLoader(createBatchLoaderForTable(db, Table.Apps)),
-    clipsExtensionsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.ClipsExtensions),
-    ),
-    appInstallationsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(
-        db,
-        Table.AppInstallations,
-        response,
-        user,
-      ),
-    ),
-    clipsExtensionInstallationsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(
-        db,
-        Table.ClipsExtensionInstallations,
-        response,
-        user,
-      ),
-    ),
-    clipsExtensionVersionsLoader: new DataLoader(
-      createBatchLoaderForTable(db, Table.ClipsExtensionVersions),
-    ),
-    githubAccountsLoader: new DataLoader(
-      createUserScopedBatchLoaderForTable(
-        db,
-        Table.GithubAccount,
         response,
         user,
       ),

@@ -5,6 +5,7 @@ import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
 import {Table} from 'shared/utilities/database';
 
 import type {
+  CreateClipsInitialVersion,
   ClipsExtensionPointSupportInput,
   ClipsExtensionConfigurationSchemaFieldsInput,
   ClipsExtensionConfigurationStringInput,
@@ -93,8 +94,8 @@ export const Query: Resolver = {
       watchThroughs.map(({id}) => watchThroughLoader.load(id)),
     );
   },
-  app(_, {id}: {id: string}, {appsLoader}) {
-    return appsLoader.load(fromGid(id).id);
+  app(_, {id}: {id: string}, {prisma}) {
+    return prisma.app.findFirst({where: {id: fromGid(id).id}});
   },
   async clipsInstallations(
     _,
@@ -105,42 +106,24 @@ export const Query: Resolver = {
       extensionPoint: string;
       conditions?: ClipsExtensionPointConditionInput[];
     },
-    {db, clipsExtensionInstallationsLoader, user},
+    {user, prisma},
   ) {
-    return [];
+    const installations = await prisma.clipsExtensionInstallation.findMany({
+      where: {
+        userId: user.id,
+        extensionPoint,
+        extension: {activeVersion: {status: 'PUBLISHED'}},
+      },
+      include: {
+        extension: {
+          select: {activeVersion: {select: {status: true, supports: true}}},
+        },
+      },
+      take: 50,
+    });
 
-    const installations = await db
-      .select({
-        id: 'ClipsExtensionInstallations.id',
-        latestVersionId: 'ClipsExtensions.latestVersionId',
-      })
-      .from(Table.ClipsExtensionInstallations)
-      .join(
-        'ClipsExtensions',
-        'ClipsExtensions.id',
-        '=',
-        'ClipsExtensionInstallations.extensionId',
-      )
-      .where({
-        'ClipsExtensionInstallations.extensionPoint': extensionPoint,
-        'ClipsExtensionInstallations.userId': user.id,
-      })
-      .limit(50);
-
-    const versions = await db
-      .select(['id', 'supports', 'status'])
-      .from(Table.ClipsExtensionVersions)
-      .whereIn(
-        'id',
-        installations
-          .map((installation) => installation.latestVersionId)
-          .filter(Boolean),
-      );
-
-    const filteredInstallations = installations.filter((installation) => {
-      const version = versions.find(
-        (version) => version.id === installation.latestVersionId,
-      );
+    return installations.filter((installation) => {
+      const version = installation.extension.activeVersion;
 
       if (version == null || version.status !== 'PUBLISHED') {
         return false;
@@ -148,7 +131,7 @@ export const Query: Resolver = {
 
       return conditions.every((condition) => {
         if (condition.seriesId) {
-          return (version.supports ?? []).every((supports: any) => {
+          return ((version.supports as any[]) ?? []).every((supports: any) => {
             return (
               extensionPoint !== supports.extensionPoint ||
               supports.conditions.every(
@@ -163,19 +146,11 @@ export const Query: Resolver = {
         throw new Error();
       });
     });
-
-    return Promise.all(
-      filteredInstallations.map(({id}) =>
-        clipsExtensionInstallationsLoader.load(id),
-      ),
-    );
   },
-  clipsInstallation(
-    _,
-    {id}: {id: string},
-    {clipsExtensionInstallationsLoader},
-  ) {
-    return clipsExtensionInstallationsLoader.load(fromGid(id).id);
+  clipsInstallation(_, {id}: {id: string}, {prisma}) {
+    return prisma.clipsExtensionInstallation.findFirst({
+      where: {id: fromGid(id).id},
+    });
   },
 };
 
@@ -587,25 +562,15 @@ export const Mutation: Resolver = {
     const series = await seriesLoader.load(seriesId);
     return {series};
   },
-  async createApp(_, {name}: {name: string}, {db}) {
-    const [app] = await db.insert({name}, '*').into(Table.Apps);
-
-    return {app};
+  createApp(_, {name}: {name: string}, {prisma}) {
+    return prisma.app.create({data: {name}});
   },
-  async deleteApp(_, {id}: {id: string}, {db}) {
-    await db
-      .from(Table.Apps)
-      .where({id: fromGid(id).id})
-      .delete();
+  async deleteApp(_, {id}: {id: string}, {prisma}) {
+    await prisma.app.delete({where: {id: fromGid(id).id}});
     return {deletedId: id};
   },
-  async updateApp(_, {id, name}: {id: string; name?: string}, {db}) {
-    const [app] = await db
-      .update(name == null ? {} : {name}, '*')
-      .where({id: fromGid(id).id})
-      .into(Table.Apps);
-
-    return {app};
+  updateApp(_, {id, name}: {id: string; name?: string}, {prisma}) {
+    return prisma.app.update({where: {id: fromGid(id).id}, data: {name}});
   },
   async createClipsExtension(
     _,
@@ -616,58 +581,60 @@ export const Mutation: Resolver = {
     }: {
       appId: string;
       name: string;
-      initialVersion?: {
-        hash: string;
-        translations?: string;
-        supports?: ClipsExtensionPointSupportInput[];
-        configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
-      };
+      initialVersion?: CreateClipsInitialVersion;
     },
-    {db, appsLoader},
+    {prisma},
   ) {
-    const [extension] = await db
-      .insert({name, appId: fromGid(appId).id}, '*')
-      .into(Table.ClipsExtensions);
-
-    let additionalResults = {};
-
-    if (initialVersion) {
-      additionalResults = await createSignedClipsVersionUpload({
-        db,
+    const {app, ...extension} = await prisma.clipsExtension.create({
+      data: {
+        name,
         appId: fromGid(appId).id,
-        extensionId: extension.id,
-        extensionName: name,
-        ...initialVersion,
-      });
+      },
+      include: {app: true},
+    });
+
+    if (initialVersion == null) {
+      return {app, extension};
     }
 
+    const {
+      version: versionInput,
+      signedScriptUpload,
+    } = await createStagedClipsVersion({
+      appId: fromGid(appId).id,
+      extensionId: extension.id,
+      extensionName: name,
+      ...initialVersion,
+    });
+
+    const version = await prisma.clipsExtensionVersion.create({
+      data: {...versionInput, extensionId: extension.id, status: 'BUILDING'},
+    });
+
     return {
+      app,
       extension,
-      app: await appsLoader.load(fromGid(appId).id),
-      ...additionalResults,
+      version,
+      signedScriptUpload,
     };
   },
-  async deleteClipsExtension(_, {id}: {id: string}, {db, appsLoader}) {
-    const [{appId}] = await db
-      .select('appId')
-      .from(Table.ClipsExtensions)
-      .where({id: fromGid(id).id})
-      .limit(1);
+  async deleteClipsExtension(_, {id}: {id: string}, {prisma}) {
+    const {app} = await prisma.clipsExtension.delete({
+      where: {id: fromGid(id).id},
+      select: {app: true},
+    });
 
-    await db
-      .from(Table.ClipsExtensions)
-      .where({id: fromGid(id).id})
-      .delete();
-
-    return {deletedId: id, app: await appsLoader.load(appId)};
+    return {deletedId: id, app};
   },
-  async updateClipsExtension(_, {id, name}: {id: string; name?: string}, {db}) {
-    const [extension] = await db
-      .update(name == null ? {} : {name}, '*')
-      .where({id: fromGid(id).id})
-      .into(Table.ClipsExtensions);
+  updateClipsExtension(_, {id, name}: {id: string; name?: string}, {prisma}) {
+    if (name == null) {
+      throw new Error();
+    }
 
-    return {extension};
+    return prisma.clipsExtension.update({
+      data: {name},
+      where: {id: fromGid(id).id},
+    });
   },
   async pushClipsExtension(
     _,
@@ -686,91 +653,95 @@ export const Mutation: Resolver = {
       supports?: ClipsExtensionPointSupportInput[];
       configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
     },
-    {db, clipsExtensionsLoader},
+    {prisma},
   ) {
-    const [existingVersion] = await db
-      .select('*')
-      .from(Table.ClipsExtensionVersions)
-      .where({
-        status: 'BUILDING',
-        extensionId: fromGid(extensionId).id,
-      })
-      .limit(1);
+    const id = fromGid(extensionId).id;
 
-    const [details] = await db
-      .select({appId: 'Apps.id', extensionName: 'ClipsExtensions.name'})
-      .from(Table.Apps)
-      .join(Table.ClipsExtensions, 'ClipsExtensions.appId', '=', 'Apps.id')
-      .where({'ClipsExtensions.id': fromGid(extensionId).id})
-      .limit(1);
+    const existingVersion = await prisma.clipsExtensionVersion.findFirst({
+      where: {extensionId: id, status: 'BUILDING'},
+      select: {id: true},
+    });
 
-    const {version, signedScriptUpload} = await createSignedClipsVersionUpload({
-      db,
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id},
+      rejectOnNotFound: true,
+    });
+
+    const {
+      version: versionInput,
+      signedScriptUpload,
+    } = await createStagedClipsVersion({
       hash,
-      versionId: existingVersion?.id,
-      appId: details.appId,
-      extensionId: fromGid(extensionId).id,
-      extensionName: name ?? details.extensionName,
+      appId: extension.appId,
+      extensionId: id,
+      extensionName: name ?? extension.name,
       translations,
       supports,
       configurationSchema,
     });
 
+    if (existingVersion) {
+      const version = await prisma.clipsExtensionVersion.update({
+        where: {id: existingVersion.id},
+        data: {...versionInput},
+      });
+
+      return {
+        version,
+        signedScriptUpload,
+        extension,
+      };
+    }
+
+    const version = await prisma.clipsExtensionVersion.create({
+      data: {...versionInput, extensionId: id, status: 'BUILDING'},
+    });
+
     return {
+      extension,
       version,
       signedScriptUpload,
-      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
   async publishLatestClipsExtensionVersion(
     _,
     {extensionId}: {extensionId: string},
-    {db, clipsExtensionsLoader},
+    {prisma},
   ) {
-    const [version] = await db
-      .select({id: 'ClipsExtensionVersions.id'})
-      .from(Table.ClipsExtensions)
-      .join(
-        Table.ClipsExtensionVersions,
-        'ClipsExtensionVersions.extensionId',
-        '=',
-        'ClipsExtensions.id',
-      )
-      .where({
-        'ClipsExtensions.id': fromGid(extensionId).id,
-        'ClipsExtensionVersions.status': 'BUILDING',
-      })
-      .limit(1);
+    const result = await prisma.clipsExtensionVersion.findFirst({
+      where: {status: 'BUILDING', extensionId: fromGid(extensionId).id},
+      include: {extension: true},
+    });
 
-    if (version == null) {
+    if (result == null) {
       return {};
     }
 
-    await db.transaction(async (trx) => {
-      await Promise.all([
-        trx
-          .update({status: 'PUBLISHED'}, '*')
-          .into(Table.ClipsExtensionVersions)
-          .where({id: version.id}),
+    const {extension, ...version} = result;
 
-        trx
-          .update({latestVersionId: version.id})
-          .into(Table.ClipsExtensions)
-          .where({id: fromGid(extensionId).id}),
-      ]);
-    });
+    await prisma.$transaction([
+      prisma.clipsExtensionVersion.update({
+        where: {id: version.id},
+        data: {status: 'PUBLISHED'},
+      }),
+      prisma.clipsExtension.update({
+        where: {id: extension.id},
+        data: {activeVersionId: version.id},
+      }),
+    ]);
 
     return {
       version,
-      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
+      extension,
     };
   },
-  async installApp(_, {id}: {id: string}, {db, user, appsLoader}) {
-    const [installation] = await db
-      .insert({appId: fromGid(id).id, userId: user.id}, '*')
-      .into(Table.AppInstallations);
+  async installApp(_, {id}: {id: string}, {user, prisma}) {
+    const {app, ...installation} = await prisma.appInstallation.create({
+      data: {appId: fromGid(id).id, userId: user.id},
+      include: {app: true},
+    });
 
-    return {app: await appsLoader.load(fromGid(id).id), installation};
+    return {app, installation};
   },
   async installClipsExtension(
     _,
@@ -779,59 +750,66 @@ export const Mutation: Resolver = {
       extensionPoint,
       configuration,
     }: {id: string; extensionPoint: string; configuration?: string},
-    {db, user, clipsExtensionsLoader},
+    {user, prisma},
   ) {
-    const [appInstallation] = await db
-      .select({id: 'AppInstallations.id'})
-      .from(Table.ClipsExtensions)
-      .join(
-        Table.AppInstallations,
-        'AppInstallations.appId',
-        '=',
-        'ClipsExtensions.appId',
-      )
-      .where({'ClipsExtensions.id': fromGid(id).id})
-      .limit(1);
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id: fromGid(id).id},
+      rejectOnNotFound: true,
+    });
+
+    const appInstallation = await prisma.appInstallation.findFirst({
+      where: {userId: user.id, appId: extension.appId},
+    });
 
     if (appInstallation == null) {
       throw new Error(`You must install the app for extension ${id} first`);
     }
 
-    const [installation] = await db
-      .insert(
-        {
-          extensionId: fromGid(id).id,
-          appInstallId: appInstallation.id,
-          extensionPoint,
-          configuration,
-          userId: user.id,
-        },
-        '*',
-      )
-      .into(Table.ClipsExtensionInstallations);
+    const installation = await prisma.clipsExtensionInstallation.create({
+      data: {
+        userId: user.id,
+        extensionId: extension.id,
+        extensionPoint,
+        configuration,
+        appInstallationId: appInstallation.id,
+      },
+    });
 
     return {
-      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      extension,
       installation,
     };
   },
   async updateClipsExtensionInstallation(
     _,
     {id, configuration}: {id: string; configuration?: string},
-    {db, user, clipsExtensionsLoader},
+    {user, prisma},
   ) {
-    const [installation] = await db
-      .update(
-        {
-          configuration,
-        },
-        '*',
-      )
-      .from(Table.ClipsExtensionInstallations)
-      .where({id: fromGid(id).id, userId: user.id});
+    const installationDetails = await prisma.clipsExtensionInstallation.findFirst(
+      {
+        where: {id: fromGid(id).id},
+        select: {id: true, userId: true},
+        rejectOnNotFound: true,
+      },
+    );
+
+    if (installationDetails.userId !== user.id) {
+      throw new Error();
+    }
+
+    const {
+      extension,
+      ...installation
+    } = await prisma.clipsExtensionInstallation.update({
+      where: {id: installationDetails.id},
+      include: {extension: true},
+      data: {
+        configuration,
+      },
+    });
 
     return {
-      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      extension,
       installation,
     };
   },
@@ -1121,85 +1099,63 @@ export const Skip: Resolver<{
   },
 };
 
-export const App: Resolver<{id: string}> = {
+export const App: Resolver<import('@prisma/client').App> = {
   id: ({id}) => toGid(id, 'App'),
-  async extensions({id}, _, {db, clipsExtensionsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensions)
-      .select('id')
-      .where({appId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
+  async extensions({id}, _, {prisma}) {
+    const extensions = await prisma.clipsExtension.findMany({
+      where: {appId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
 
-    return Promise.all(
-      versions.map(({id}) =>
-        clipsExtensionsLoader.load(id).then(addResolvedType('ClipsExtension')),
-      ),
-    );
+    return extensions.map(addResolvedType('ClipsExtension'));
   },
 };
 
-export const AppInstallation: Resolver<{
-  id: string;
-  appId: string;
-}> = {
+export const AppInstallation: Resolver<
+  import('@prisma/client').AppInstallation
+> = {
   id: ({id}) => toGid(id, 'AppInstallation'),
-  app: ({appId}, _, {appsLoader}) => appsLoader.load(fromGid(appId).id),
-  async extensions({id}, _, {db, clipsExtensionInstallationsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensionInstallations)
-      .select('id')
-      .where({appInstallId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
+  app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
+  async extensions({id}, _, {prisma}) {
+    const installations = await prisma.clipsExtensionInstallation.findMany({
+      where: {appInstallationId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
 
-    return Promise.all(
-      versions.map(({id}) =>
-        clipsExtensionInstallationsLoader
-          .load(id)
-          .then(addResolvedType('ClipsExtensionInstallation')),
-      ),
-    );
+    return installations.map(addResolvedType('ClipsExtensionInstallation'));
   },
 };
 
-export const ClipsExtension: Resolver<{
-  id: string;
-  appId: string;
-  latestVersionId?: string;
-}> = {
+export const ClipsExtension: Resolver<
+  import('@prisma/client').ClipsExtension
+> = {
   id: ({id}) => toGid(id, 'ClipsExtension'),
-  app: ({appId}, _, {appsLoader}) => appsLoader.load(appId),
-  latestVersion({latestVersionId}, _, {clipsExtensionVersionsLoader}) {
-    return latestVersionId
-      ? clipsExtensionVersionsLoader.load(latestVersionId)
-      : null;
-  },
-  async versions({id}, _, {db, clipsExtensionVersionsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensionVersions)
-      .select('id')
-      .where({extensionId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
-
-    return Promise.all(
-      versions.map(({id}) => clipsExtensionVersionsLoader.load(id)),
+  app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
+  latestVersion({activeVersionId}, _, {prisma}) {
+    return (
+      activeVersionId &&
+      prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
     );
+  },
+  async versions({id}, _, {prisma}) {
+    const versions = await prisma.clipsExtensionVersion.findMany({
+      where: {extensionId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
+
+    return versions;
   },
 };
 
-export const ClipsExtensionVersion: Resolver<{
-  id: string;
-  extensionId: string;
-  scriptUrl?: string;
-  supports?: Record<string, unknown>[];
-  translations?: Record<string, unknown>;
-  configurationSchema?: Record<string, unknown>[];
-}> = {
+export const ClipsExtensionVersion: Resolver<
+  import('@prisma/client').ClipsExtensionVersion
+> = {
   id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
-  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
-    clipsExtensionsLoader.load(extensionId),
+  extension: ({extensionId}, _, {prisma}) =>
+    prisma.clipsExtension.findFirst({where: {id: extensionId}}),
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
   translations: ({translations}) =>
     translations && JSON.stringify(translations),
@@ -1252,26 +1208,21 @@ export const ClipsExtensionConfigurationField: Resolver = {
   __resolveType: resolveClipsConfigurationField,
 };
 
-export const ClipsExtensionInstallation: Resolver<{
-  id: string;
-  extensionId: string;
-  appInstallId: string;
-  configuration?: Record<string, unknown>;
-}> = {
+export const ClipsExtensionInstallation: Resolver<
+  import('@prisma/client').ClipsExtensionInstallation
+> = {
   id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
-  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
-    clipsExtensionsLoader.load(extensionId),
-  appInstallation: ({appInstallId}, _, {appInstallationsLoader}) =>
-    appInstallationsLoader.load(appInstallId),
-  async version(
-    {extensionId},
-    _,
-    {clipsExtensionsLoader, clipsExtensionVersionsLoader},
-  ) {
-    const extension = (await clipsExtensionsLoader.load(extensionId)) as any;
-    return extension?.latestVersionId
-      ? clipsExtensionVersionsLoader.load(extension.latestVersionId)
-      : null;
+  extension: ({extensionId}, _, {prisma}) =>
+    prisma.clipsExtension.findFirst({where: {id: extensionId}}),
+  appInstallation: ({appInstallationId}, _, {prisma}) =>
+    prisma.appInstallation.findFirst({where: {id: appInstallationId}}),
+  async version({extensionId}, _, {prisma}) {
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id: extensionId},
+      select: {activeVersion: true},
+    });
+
+    return extension?.activeVersion;
   },
   configuration: ({configuration}) =>
     configuration ? JSON.stringify(configuration) : null,
@@ -1504,13 +1455,11 @@ async function loadTmdbSeries(
   return series;
 }
 
-async function createSignedClipsVersionUpload({
+async function createStagedClipsVersion({
   hash,
   appId,
   extensionId,
   extensionName,
-  versionId,
-  db,
   translations,
   supports,
   configurationSchema,
@@ -1519,12 +1468,7 @@ async function createSignedClipsVersionUpload({
   appId: string;
   extensionId: string;
   extensionName: string;
-  versionId?: string;
-  db: Context['db'];
-  translations?: string;
-  supports?: ClipsExtensionPointSupportInput[];
-  configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
-}) {
+} & CreateClipsInitialVersion) {
   const [
     {S3Client, PutObjectCommand},
     {getSignedUrl},
@@ -1555,97 +1499,77 @@ async function createSignedClipsVersionUpload({
     expiresIn: 3_600,
   });
 
-  const upsert = {
+  const version: Omit<
+    import('@prisma/client').Prisma.ClipsExtensionVersionCreateWithoutExtensionInput,
+    'status'
+  > = {
     scriptUrl: `https://watch.lemon.tools/${path}`,
-    translations,
+    apiVersion: 'UNSTABLE',
+    translations: translations && JSON.parse(translations),
     supports:
       supports &&
-      JSON.stringify(
-        supports.map(({extensionPoint, conditions}) => {
-          return {
-            extensionPoint,
-            conditions: conditions?.map((condition) => {
-              let resolvedCondition;
+      (supports.map(({extensionPoint, conditions}) => {
+        return {
+          extensionPoint,
+          conditions: conditions?.map((condition) => {
+            let resolvedCondition;
 
-              if (condition.seriesId) {
-                resolvedCondition = {type: 'series', id: condition.seriesId};
-              }
+            if (condition.seriesId) {
+              resolvedCondition = {type: 'series', id: condition.seriesId};
+            }
 
-              if (resolvedCondition == null) {
-                throw new Error();
-              }
+            if (resolvedCondition == null) {
+              throw new Error();
+            }
 
-              return resolvedCondition;
-            }),
-          };
-        }),
-      ),
+            return resolvedCondition;
+          }),
+        };
+      }) as any),
     configurationSchema:
       configurationSchema &&
-      JSON.stringify(
-        configurationSchema.map(
-          ({
-            string: stringField,
-            number: numberField,
-            options: optionsField,
-          }) => {
-            if (stringField) {
-              const {key, label, default: defaultValue} = stringField;
+      (configurationSchema.map(
+        ({string: stringField, number: numberField, options: optionsField}) => {
+          if (stringField) {
+            const {key, label, default: defaultValue} = stringField;
 
-              return {
-                type: 'string',
-                key,
-                default: defaultValue,
+            return {
+              type: 'string',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+            };
+          }
+
+          if (numberField) {
+            const {key, label, default: defaultValue} = numberField;
+
+            return {
+              type: 'number',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+            };
+          }
+
+          if (optionsField) {
+            const {key, label, options, default: defaultValue} = optionsField;
+            return {
+              type: 'options',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+              options: options.map(({label, value}) => ({
+                value,
                 label: normalizeClipsString(label),
-              };
-            }
-
-            if (numberField) {
-              const {key, label, default: defaultValue} = numberField;
-
-              return {
-                type: 'number',
-                key,
-                default: defaultValue,
-                label: normalizeClipsString(label),
-              };
-            }
-
-            if (optionsField) {
-              const {key, label, options, default: defaultValue} = optionsField;
-              return {
-                type: 'options',
-                key,
-                default: defaultValue,
-                label: normalizeClipsString(label),
-                options: options.map(({label, value}) => ({
-                  value,
-                  label: normalizeClipsString(label),
-                })),
-              };
-            }
-          },
-        ),
-      ),
+              })),
+            };
+          }
+        },
+      ) as any),
   };
 
-  const [version] = versionId
-    ? await db
-        .update(upsert, '*')
-        .into(Table.ClipsExtensionVersions)
-        .where({id: versionId})
-    : await db
-        .insert(
-          {
-            extensionId,
-            status: 'BUILDING',
-            ...upsert,
-          },
-          '*',
-        )
-        .into(Table.ClipsExtensionVersions);
-
-  return {version, signedScriptUpload};
+  return {signedScriptUpload, version};
 }
 
 function normalizeClipsString({
