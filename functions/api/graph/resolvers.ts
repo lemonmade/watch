@@ -30,13 +30,9 @@ export const Query: Resolver = {
     const cappedResults = results.slice(0, 5);
     const existingSeries =
       cappedResults.length > 0
-        ? await context.db
-            .select('*')
-            .from(Table.Series)
-            .whereIn(
-              'tmdbId',
-              cappedResults.map(({id}) => String(id)),
-            )
+        ? await context.prisma.series.findMany({
+            where: {tmdbId: {in: cappedResults.map(({id}) => String(id))}},
+          })
         : [];
 
     const idToResult = new Map(
@@ -56,13 +52,14 @@ export const Query: Resolver = {
     const returnedSeries = cappedResults.map(({id}) =>
       idToResult.get(String(id)),
     );
+
     return {series: returnedSeries};
   },
   watch(_, {id}: {id: string}, {watchLoader}) {
     return watchLoader.load(fromGid(id).id);
   },
-  series(_, {id}: {id: string}, {seriesLoader}) {
-    return seriesLoader.load(fromGid(id).id);
+  series(_, {id}: {id: string}, {prisma}) {
+    return prisma.series.findFirst({where: {id: fromGid(id).id}});
   },
   subscription(_, {id}: {id: string}, {seriesSubscriptionsLoader}) {
     return seriesSubscriptionsLoader.load(fromGid(id).id);
@@ -110,6 +107,8 @@ export const Query: Resolver = {
     },
     {db, clipsExtensionInstallationsLoader, user},
   ) {
+    return [];
+
     const installations = await db
       .select({
         id: 'ClipsExtensionInstallations.id',
@@ -276,7 +275,7 @@ export const Mutation: Resolver = {
       startedAt?: string;
       finishedAt?: string;
     },
-    {db, user, watchLoader, episodeLoader, watchThroughLoader},
+    {db, prisma, user, watchLoader, episodeLoader, watchThroughLoader},
   ) {
     const episodeId = episodeGid && fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
@@ -302,6 +301,7 @@ export const Mutation: Resolver = {
 
       await updateWatchThrough(watchThroughId, {
         db,
+        prisma,
         timestamp: startedAt ?? finishedAt,
       });
     }
@@ -324,7 +324,7 @@ export const Mutation: Resolver = {
       notes,
       at,
     }: {episode: string; watchThrough?: string; notes?: string; at?: string},
-    {db, user, skipLoader, episodeLoader, watchThroughLoader},
+    {db, prisma, user, skipLoader, episodeLoader, watchThroughLoader},
   ) {
     const episodeId = episodeGid && fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
@@ -348,6 +348,7 @@ export const Mutation: Resolver = {
 
       await updateWatchThrough(watchThroughId, {
         db,
+        prisma,
         timestamp: at,
       });
     }
@@ -498,16 +499,19 @@ export const Mutation: Resolver = {
   },
   async updateSeason(
     _,
-    {id: gid, status}: {id: string; status: string},
-    {db, seasonLoader},
+    {
+      id: gid,
+      status,
+    }: {id: string; status: import('@prisma/client').SeasonStatus},
+    {db, prisma},
   ) {
     const {id} = fromGid(gid);
-    await db.from(Table.Seasons).where({id}).update({status});
+    const season = await prisma.season.update({where: {id}, data: {status}});
 
     if (status === 'ENDED') {
       const watchThroughsToCheck = await db
         .select({id: 'WatchThroughs.id', updatedAt: 'WatchThroughs.updatedAt'})
-        .from(Table.Seasons)
+        .from(Table.Season)
         .join(
           'WatchThroughs',
           'WatchThroughs.seriesId',
@@ -518,12 +522,12 @@ export const Mutation: Resolver = {
 
       await Promise.all(
         watchThroughsToCheck.map(({id, updatedAt}) =>
-          updateWatchThrough(id, {db, timestamp: updatedAt}),
+          updateWatchThrough(id, {db, prisma, timestamp: updatedAt}),
         ),
       );
     }
 
-    return {season: await seasonLoader.load(id)};
+    return {season};
   },
   async watchEpisodesFromSeries(
     _,
@@ -853,7 +857,7 @@ export const AppExtensionInstallation: Resolver = {
   __resolveType: resolveType,
 };
 
-export const User: Resolver = {
+export const User: Resolver<import('@prisma/client').User> = {
   id: ({id}) => toGid(id, 'User'),
   githubAccount: async ({id}, _, {prisma}) => {
     const account = await prisma.githubAccount.findFirst({where: {userId: id}});
@@ -861,93 +865,73 @@ export const User: Resolver = {
   },
 };
 
-export const GithubAccount: Resolver = {
+export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
   avatarImage: ({avatarUrl}: {avatarUrl?: string}) => {
     return {source: avatarUrl};
   },
 };
 
-export const Series: Resolver<{
-  id: string;
-  poster?: string;
-}> = {
+export const Series: Resolver<import('@prisma/client').Series> = {
   id: ({id}) => toGid(id, 'Series'),
-  async season({id}, {number}: {number: number}, {db}) {
-    const seasonResults = await db
-      .select('*')
-      .from(Table.Seasons)
-      .where({seriesId: id, number})
-      .limit(1);
-    return seasonResults[0] || null;
+  season({id}, {number}: {number: number}, {prisma}) {
+    return prisma.season.findFirst({where: {seriesId: id, number}});
   },
-  async seasons({id}, _, {db, seasonLoader}) {
-    const seasons = await db
-      .select('id')
-      .from(Table.Seasons)
-      .where({seriesId: id});
-    return Promise.all(seasons.map(({id}) => seasonLoader.load(id)));
+  seasons({id}, _, {prisma}) {
+    return prisma.season.findMany({where: {seriesId: id}});
   },
-  async episode(
+  episode(
     {id},
-    {number, seasonNumber}: {number: number; seasonNumber: string},
-    {db},
+    {number, seasonNumber}: {number: number; seasonNumber: number},
+    {prisma},
   ) {
-    const [seasonResult] = await db
-      .select('id')
-      .from(Table.Seasons)
-      .where({seriesId: id, number: seasonNumber})
-      .limit(1);
-    const episodeResult = seasonResult
-      ? await db
-          .select('*')
-          .from(Table.Episodes)
-          .where({seriesId: id, seasonId: seasonResult.id, number})
-          .limit(1)
-      : null;
-    return episodeResult && episodeResult[0];
+    return prisma.episode.findFirst({
+      where: {number, season: {number: seasonNumber, seriesId: id}},
+    });
   },
-  async episodes({id}, _, {db, episodeLoader}) {
-    const seasons = await db
-      .select('id')
-      .from(Table.Episodes)
-      .where({seriesId: id});
-    return Promise.all(seasons.map(({id}) => episodeLoader.load(id)));
+  episodes({id}, _, {prisma}) {
+    return prisma.episode.findMany({take: 50, where: {season: {seriesId: id}}});
   },
-  poster({poster}) {
-    return poster ? {source: poster} : null;
+  poster({posterUrl}) {
+    return posterUrl ? {source: posterUrl} : null;
   },
 };
 
-export const Season: Resolver = {
+export const Season: Resolver<import('@prisma/client').Season> = {
   id: ({id}) => toGid(id, 'Season'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
-  async episodes({id, seriesId}, _, {db, episodeLoader}) {
-    const episodes = await db
-      .select('id')
-      .from(Table.Episodes)
-      .where({seriesId, seasonId: id});
-    return Promise.all(episodes.map(({id}) => episodeLoader.load(id)));
+  async episodes({id}, _, {prisma}) {
+    const episodes = await prisma.episode.findMany({
+      where: {seasonId: id},
+      orderBy: {number: 'asc'},
+    });
+
+    return episodes;
   },
-  poster({poster}) {
-    return poster ? {source: poster} : null;
+  poster({posterUrl}) {
+    return posterUrl ? {source: posterUrl} : null;
   },
   isSpecials({number}) {
     return number === 0;
   },
 };
 
-export const Episode: Resolver = {
+export const Episode: Resolver<import('@prisma/client').Episode> = {
   id: ({id}) => toGid(id, 'Episode'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  async series({seasonId}, _, {prisma}) {
+    const foundSeason = await prisma.season.findFirst({
+      where: {id: seasonId},
+      select: {series: true},
+    });
+
+    return foundSeason?.series;
   },
-  season({seasonId}, _, {seasonLoader}) {
-    return seasonLoader.load(seasonId);
+  season({seasonId}, _, {prisma}) {
+    return prisma.season.findFirst({where: {id: seasonId}});
   },
-  still({still}) {
-    return still ? {source: still} : null;
+  still({stillUrl}) {
+    return stillUrl ? {source: stillUrl} : null;
   },
   async watches({id}, _, {db, watchLoader}) {
     const watches = await db
@@ -1385,9 +1369,16 @@ interface TmdbEpisode {
 
 async function updateWatchThrough(
   watchThroughId: string,
-  {db, timestamp = 'now()'}: Pick<Context, 'db'> & {timestamp?: string},
+  {
+    db,
+    prisma,
+    timestamp = 'now()',
+  }: Pick<Context, 'db' | 'prisma'> & {timestamp?: string},
 ) {
-  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {db}))
+  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {
+    db,
+    prisma,
+  }))
     ? {status: 'FINISHED', finishedAt: timestamp}
     : {};
 
@@ -1399,7 +1390,7 @@ async function updateWatchThrough(
 
 async function watchThroughIsFinished(
   watchThroughId: string,
-  {db}: Pick<Context, 'db'>,
+  {db, prisma}: Pick<Context, 'db' | 'prisma'>,
 ) {
   const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
     db,
@@ -1415,11 +1406,9 @@ async function watchThroughIsFinished(
     .orderBy('index', 'desc')
     .limit(1);
 
-  const [season] = await db
-    .from(Table.Episodes)
-    .select({id: 'Seasons.id', status: 'Seasons.status'})
-    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-    .whereIn('Episodes.id', [watched]);
+  const season = await prisma.season.findFirst({
+    where: {episodes: {some: {id: watched}}},
+  });
 
   return season?.status === 'ENDED';
 }
@@ -1447,7 +1436,10 @@ async function unfinishedEpisodeCount(
   return parseInt(String(count), 10);
 }
 
-async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
+async function loadTmdbSeries(
+  tmdbId: string,
+  {prisma}: Pick<Context, 'prisma'>,
+) {
   const [seriesResult, seriesIds] = await Promise.all([
     tmdbFetch<TmdbSeries>(`/tv/${tmdbId}`),
     tmdbFetch<TmdbExternalIds>(`/tv/${tmdbId}/external_ids`),
@@ -1461,73 +1453,55 @@ async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
     )
   ).filter(({season_number: seasonNumber}) => seasonNumber != null);
 
-  return db.transaction(async (trx) => {
-    const [series] = await trx
-      .insert(
-        {
-          tmdbId,
-          imdbId: seriesIds.imdb_id,
-          name: seriesResult.name,
-          firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
-          status: tmdbStatusToEnum(seriesResult.status),
-          overview: seriesResult.overview || null,
-          poster: seriesResult.poster_path
-            ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
-            : null,
-        },
-        '*',
-      )
-      .into(Table.Series);
-
-    const {id: seriesId} = series;
-
-    const seasonsToInsert = seasonResults.map((season) => ({
-      seriesId,
-      number: season.season_number,
-      firstAired: tmdbAirDateToDate(season.air_date),
-      overview: season.overview ?? null,
-      status:
-        season.season_number === seriesResult.number_of_seasons &&
-        tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
-          ? 'CONTINUING'
-          : 'ENDED',
-      poster: season.poster_path
-        ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+  const series = await prisma.series.create({
+    data: {
+      tmdbId: String(tmdbId),
+      imdbId: seriesIds.imdb_id,
+      name: seriesResult.name,
+      firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
+      status: tmdbStatusToEnum(seriesResult.status),
+      overview: seriesResult.overview || null,
+      posterUrl: seriesResult.poster_path
+        ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
         : null,
-    }));
-
-    const seasonIds: {id: string; number: number}[] =
-      seasonsToInsert.length > 0
-        ? await trx
-            .insert(seasonsToInsert, ['id', 'number'])
-            .into(Table.Seasons)
-        : [];
-
-    const seasonToId = new Map(seasonIds.map(({id, number}) => [number, id]));
-
-    const episodesToInsert = seasonResults.reduce<any[]>((episodes, season) => {
-      return [
-        ...episodes,
-        ...season.episodes.map((episode) => ({
-          seriesId,
-          seasonId: seasonToId.get(episode.season_number),
-          number: episode.episode_number,
-          title: episode.name,
-          firstAired: tmdbAirDateToDate(episode.air_date),
-          overview: episode.overview || null,
-          still: episode.still_path
-            ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-            : null,
-        })),
-      ];
-    }, []);
-
-    if (episodesToInsert.length > 0) {
-      await trx.insert(episodesToInsert, ['id']).into(Table.Episodes);
-    }
-
-    return series;
+      seasons: {
+        create: seasonResults.map(
+          (
+            season,
+          ): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput => ({
+            number: season.season_number,
+            firstAired: tmdbAirDateToDate(season.air_date),
+            overview: season.overview ?? null,
+            status:
+              season.season_number === seriesResult.number_of_seasons &&
+              tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
+                ? 'CONTINUING'
+                : 'ENDED',
+            posterUrl: season.poster_path
+              ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+              : null,
+            episodes: {
+              create: season.episodes.map(
+                (
+                  episode,
+                ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({
+                  number: episode.episode_number,
+                  title: episode.name,
+                  firstAired: tmdbAirDateToDate(episode.air_date),
+                  overview: episode.overview || null,
+                  stillUrl: episode.still_path
+                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+                    : null,
+                }),
+              ),
+            },
+          }),
+        ),
+      },
+    },
   });
+
+  return series;
 }
 
 async function createSignedClipsVersionUpload({

@@ -25,3 +25,53 @@ model GithubAccount {
   user       User    @relation(fields: [userId], references: [id])
   userId     String
 }
+
+enum SeriesStatus {
+  ENDED
+  CANCELLED
+  RETURNING
+}
+
+model Series {
+  id         String       @id @default(uuid())
+  tmdbId     String
+  imdbId     String?
+  name       String
+  firstAired DateTime?
+  status     SeriesStatus
+  overview   String?
+  posterUrl  String?
+
+  seasons Season[]
+}
+
+enum SeasonStatus {
+  ENDED
+  CONTINUING
+}
+
+model Season {
+  id         String       @id @default(uuid())
+  number     Int
+  status     SeasonStatus
+  firstAired DateTime?
+  overview   String?
+  posterUrl  String?
+
+  series   Series @relation(fields: [seriesId], references: [id])
+  seriesId String
+
+  episodes Episode[]
+}
+
+model Episode {
+  id         String    @id @default(uuid())
+  number     Int
+  title      String
+  firstAired DateTime?
+  overview   String?
+  stillUrl   String?
+
+  season   Season @relation(fields: [seasonId], references: [id])
+  seasonId String
+}
