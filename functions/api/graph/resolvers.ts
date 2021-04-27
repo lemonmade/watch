@@ -377,9 +377,9 @@ export const Mutation: Resolver = {
 
     const normalizedFrom: Slice =
       from ??
-      (includeSpecials && series.seasons.some((season) => season.number === 0))
+      (includeSpecials && series.seasons.some((season) => season.number === 0)
         ? {season: 0, episode: 1}
-        : {season: 1, episode: 1};
+        : {season: 1, episode: 1});
 
     const normalizedTo: Slice = to ?? {
       season: Math.max(...series.seasons.map((season) => season.number)),
@@ -391,7 +391,7 @@ export const Mutation: Resolver = {
         userId: user.id,
         from: bufferFromSlice(normalizedFrom),
         to: bufferFromSlice(normalizedTo),
-        current: bufferFromSlice(normalizedFrom),
+        current: bufferFromSlice({episode: 1, ...normalizedFrom}),
       },
     });
 

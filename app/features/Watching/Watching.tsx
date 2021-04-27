@@ -86,6 +86,8 @@ function sortWatchThroughs(
   {updatedAt: updatedAtOne}: WatchThrough,
   {updatedAt: updatedAtTwo}: WatchThrough,
 ) {
+  // This sorting is too simplified, we need to also look at when
+  // the most recent episode came out
   return new Date(updatedAtOne).getTime() > new Date(updatedAtTwo).getTime()
     ? -1
     : 1;
