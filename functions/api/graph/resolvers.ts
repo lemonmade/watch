@@ -939,7 +939,7 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
       }
 
       return current.season === season.number
-        ? season.episodeCount - current.episode!
+        ? season.episodeCount - current.episode! + 1
         : season.episodeCount;
     }, 0);
   },
