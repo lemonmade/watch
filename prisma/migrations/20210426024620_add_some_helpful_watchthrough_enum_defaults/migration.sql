@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Season" ALTER COLUMN "status" SET DEFAULT E'CONTINUING';
+
+-- AlterTable
+ALTER TABLE "WatchThrough" ALTER COLUMN "status" SET DEFAULT E'ONGOING';

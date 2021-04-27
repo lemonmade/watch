@@ -8,7 +8,6 @@ import {
 } from '@sentry/node';
 
 import {getUserIdFromRequest} from 'shared/utilities/auth';
-import {createDatabaseConnection} from 'shared/utilities/database';
 
 import typeDefs from './graph/schema';
 
@@ -35,8 +34,6 @@ app.options(() =>
     },
   }),
 );
-
-const db = createDatabaseConnection();
 
 app.post(async (request) => {
   const {operationName, query, variables} = JSON.parse(String(request.body!));
@@ -68,7 +65,7 @@ app.post(async (request) => {
       schema,
       query,
       {},
-      createContext(db, userId ? {id: userId} : undefined, request, response),
+      createContext(userId ? {id: userId} : undefined, request, response),
       variables,
       operationName,
     );

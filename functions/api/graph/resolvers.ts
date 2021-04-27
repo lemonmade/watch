@@ -2,7 +2,6 @@ import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 
 import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
-import {Table} from 'shared/utilities/database';
 
 import type {
   CreateClipsInitialVersion,
@@ -56,8 +55,10 @@ export const Query: Resolver = {
 
     return {series: returnedSeries};
   },
-  watch(_, {id}: {id: string}, {watchLoader}) {
-    return watchLoader.load(fromGid(id).id);
+  watch(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
   series(_, {id}: {id: string}, {prisma}) {
     return prisma.series.findFirst({where: {id: fromGid(id).id}});
@@ -74,23 +75,22 @@ export const Query: Resolver = {
       take: 50,
     });
   },
-  watchThrough(_, {id}: {id: string}, {watchThroughLoader}) {
-    return watchThroughLoader.load(fromGid(id).id);
+  watchThrough(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.watchThrough.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
-  async watchThroughs(
+  watchThroughs(
     _,
-    {status = 'ONGOING'}: {status?: string},
-    {db, watchThroughLoader, user},
+    {
+      status = 'ONGOING',
+    }: {status?: import('@prisma/client').WatchThroughStatus},
+    {prisma, user},
   ) {
-    const watchThroughs = await db
-      .select('id')
-      .from(Table.WatchThroughs)
-      .where({status, userId: user.id})
-      .limit(50);
-
-    return Promise.all(
-      watchThroughs.map(({id}) => watchThroughLoader.load(id)),
-    );
+    return prisma.watchThrough.findMany({
+      where: {status, userId: user.id},
+      take: 50,
+    });
   },
   app(_, {id}: {id: string}, {prisma}) {
     return prisma.app.findFirst({where: {id: fromGid(id).id}});
@@ -153,8 +153,8 @@ export const Query: Resolver = {
 };
 
 interface Slice {
-  episodeNumber: number;
-  seasonNumber: number;
+  season: number;
+  episode?: number;
 }
 
 export const Mutation: Resolver = {
@@ -248,44 +248,44 @@ export const Mutation: Resolver = {
       startedAt?: string;
       finishedAt?: string;
     },
-    {db, prisma, user, watchLoader, episodeLoader, watchThroughLoader},
+    {prisma, user},
   ) {
-    const episodeId = episodeGid && fromGid(episodeGid).id;
+    const episodeId = fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
 
-    const [watchId] = await db
-      .insert({
+    const validatedWatchThroughId = watchThroughId
+      ? (
+          await prisma.watchThrough.findFirst({
+            where: {id: watchThroughId, userId: user.id},
+            rejectOnNotFound: true,
+          })
+        ).id
+      : undefined;
+
+    const {episode, ...watch} = await prisma.watch.create({
+      data: {
         episodeId,
-        watchThroughId,
+        watchThroughId: validatedWatchThroughId,
         rating,
         notes,
         startedAt,
         finishedAt,
         userId: user.id,
-      })
-      .into(Table.Watches)
-      .returning<string>('id');
+      },
+      include: {
+        episode: true,
+      },
+    });
 
-    if (watchThroughId && watchId) {
-      await db
-        .update({watchId})
-        .from(Table.WatchThroughEpisodes)
-        .where({watchThroughId, episodeId});
+    let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
-      await updateWatchThrough(watchThroughId, {
-        db,
+    if (validatedWatchThroughId) {
+      watchThrough = await updateWatchThrough(validatedWatchThroughId, {
         prisma,
-        timestamp: startedAt ?? finishedAt,
+        watch,
+        episode,
       });
     }
-
-    const [watch, episode, watchThrough] = await Promise.all([
-      watchLoader.load(watchId),
-      episodeLoader.load(episodeId),
-      watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : Promise.resolve(null),
-    ]);
 
     return {watch, episode, watchThrough};
   },
@@ -297,57 +297,58 @@ export const Mutation: Resolver = {
       notes,
       at,
     }: {episode: string; watchThrough?: string; notes?: string; at?: string},
-    {db, prisma, user, skipLoader, episodeLoader, watchThroughLoader},
+    {prisma, user},
   ) {
-    const episodeId = episodeGid && fromGid(episodeGid).id;
+    const episodeId = fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
 
-    const [skipId] = await db
-      .insert({
+    const validatedWatchThroughId = watchThroughId
+      ? (
+          await prisma.watchThrough.findFirst({
+            where: {id: watchThroughId, userId: user.id},
+            rejectOnNotFound: true,
+          })
+        ).id
+      : undefined;
+
+    const {episode, ...skip} = await prisma.skip.create({
+      data: {
         episodeId,
-        watchThroughId,
+        watchThroughId: validatedWatchThroughId,
         notes,
         at,
         userId: user.id,
-      })
-      .into(Table.Skips)
-      .returning<string>('id');
+      },
+      include: {
+        episode: true,
+      },
+    });
 
-    if (watchThroughId && skipId) {
-      await db
-        .update({skipId})
-        .from(Table.WatchThroughEpisodes)
-        .where({watchThroughId, episodeId});
+    let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
-      await updateWatchThrough(watchThroughId, {
-        db,
+    if (validatedWatchThroughId) {
+      watchThrough = await updateWatchThrough(validatedWatchThroughId, {
         prisma,
-        timestamp: at,
+        skip,
+        episode,
       });
     }
 
-    const [skip, episode, watchThrough] = await Promise.all([
-      skipLoader.load(skipId),
-      episodeLoader.load(episodeId),
-      watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : Promise.resolve(null),
-    ]);
-
     return {skip, episode, watchThrough};
   },
-  async stopWatchThrough(
-    _,
-    {id: gid}: {id: string},
-    {db, watchThroughLoader, user},
-  ) {
+  async stopWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    await db
-      .from(Table.WatchThroughs)
-      .update({status: 'STOPPED'})
-      .where({id, userId: user.id});
-    const watchThrough = await watchThroughLoader.load(id);
+    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    const watchThrough = await prisma.watchThrough.update({
+      data: {status: 'STOPPED', updatedAt: new Date()},
+      where: {id: validatedWatchThrough.id},
+    });
 
     return {watchThrough};
   },
@@ -355,84 +356,44 @@ export const Mutation: Resolver = {
     _,
     {
       series: seriesGid,
-      seasons: seasonGids,
-      episodes: episodeGids,
+      from,
+      to,
       includeSpecials = false,
     }: {
       series: string;
-      seasons?: string[];
-      episodes?: string[];
+      from?: Slice;
+      to?: Slice;
       includeSpecials?: boolean;
     },
-    {db, user, watchThroughLoader},
+    {user, prisma},
   ) {
     const {id: seriesId} = fromGid(seriesGid);
 
-    const watchThroughId = await db.transaction(async (trx) => {
-      const episodes = [
-        ...((episodeGids && episodeGids.map((gid) => fromGid(gid).id)) || []),
-      ];
-
-      if (seasonGids) {
-        episodes.push(
-          ...((await trx
-            .select({id: 'Episodes.id'})
-            .from(Table.Episodes)
-            .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-            .whereIn(
-              'Episodes.seasonId',
-              seasonGids.map((gid) => fromGid(gid).id),
-            )
-            .orderBy(['Seasons.number', 'Episodes.number'])) as {
-            id: string;
-          }[]).map(({id}) => id),
-        );
-      }
-
-      if (seasonGids == null && episodeGids == null) {
-        episodes.push(
-          ...((await trx
-            .select({id: 'Episodes.id'})
-            .from(Table.Episodes)
-            .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-            .where((clause) => {
-              clause.where({'Episodes.seriesId': seriesId});
-
-              if (!includeSpecials) {
-                clause.whereNot({'Seasons.number': 0});
-              }
-            })
-            .orderBy(['Seasons.number', 'Episodes.number'])) as {
-            id: string;
-          }[]).map(({id}) => id),
-        );
-      }
-
-      const [{id: watchThroughId}] = await trx
-        .insert(
-          {
-            startedAt: new Date(),
-            seriesId,
-            userId: user.id,
-          },
-          ['id'],
-        )
-        .into(Table.WatchThroughs);
-
-      await trx
-        .insert(
-          episodes.map((episodeId, index) => ({
-            index,
-            episodeId,
-            watchThroughId,
-          })),
-        )
-        .into(Table.WatchThroughEpisodes);
-
-      return watchThroughId;
+    const series = await prisma.series.findFirst({
+      where: {id: seriesId},
+      include: {seasons: {select: {number: true}}},
+      rejectOnNotFound: true,
     });
 
-    const watchThrough = await watchThroughLoader.load(watchThroughId);
+    const normalizedFrom: Slice =
+      from ??
+      (includeSpecials && series.seasons.some((season) => season.number === 0))
+        ? {season: 0, episode: 1}
+        : {season: 1, episode: 1};
+
+    const normalizedTo: Slice = to ?? {
+      season: Math.max(...series.seasons.map((season) => season.number)),
+    };
+
+    const watchThrough = await prisma.watchThrough.create({
+      data: {
+        seriesId,
+        userId: user.id,
+        from: bufferFromSlice(normalizedFrom),
+        to: bufferFromSlice(normalizedTo),
+        current: bufferFromSlice(normalizedFrom),
+      },
+    });
 
     return {watchThrough};
   },
@@ -443,58 +404,72 @@ export const Mutation: Resolver = {
 
     return {subscription};
   },
-  async deleteWatch(
-    _,
-    {id: gid}: {id: string},
-    {db, user, watchThroughLoader},
-  ) {
+  async deleteWatch(_, {id: gid}: {id: string}, {user, prisma}) {
     const {id} = fromGid(gid);
-    const [{watchThroughId}] = await db
-      .select('watchThroughId')
-      .from(Table.Watches)
-      .where({id, userId: User.id});
-    await db.from(Table.Watches).where({id, userId: user.id}).delete();
+
+    const validatedWatch = await prisma.watch.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    // We should be making sure we don’t need to reset the `current`
+    // field...
+    const {watchThrough} = await prisma.watch.delete({
+      where: {id: validatedWatch.id},
+      include: {watchThrough: true},
+    });
 
     return {
-      deletedWatchId: gid,
-      watchThrough: watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : null,
+      deletedWatchId: toGid(validatedWatch.id, 'Watch'),
+      watchThrough,
     };
   },
-  async deleteWatchThrough(_, {id: gid}: {id: string}, {db, user}) {
+  async deleteWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
     const {id} = fromGid(gid);
-    await db.from(Table.WatchThroughs).where({id, userId: user.id}).delete();
-    return {deletedWatchThroughId: gid};
+
+    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    await prisma.watchThrough.delete({
+      where: {id: validatedWatchThrough.id},
+    });
+
+    return {
+      deletedWatchThroughId: toGid(validatedWatchThrough.id, 'WatchThrough'),
+    };
   },
+  // Should be gated on permissions, and should update watchthroughs async
   async updateSeason(
     _,
     {
       id: gid,
       status,
     }: {id: string; status: import('@prisma/client').SeasonStatus},
-    {db, prisma},
+    {prisma},
   ) {
     const {id} = fromGid(gid);
     const season = await prisma.season.update({where: {id}, data: {status}});
 
     if (status === 'ENDED') {
-      const watchThroughsToCheck = await db
-        .select({id: 'WatchThroughs.id', updatedAt: 'WatchThroughs.updatedAt'})
-        .from(Table.Season)
-        .join(
-          'WatchThroughs',
-          'WatchThroughs.seriesId',
-          '=',
-          'Seasons.seriesId',
-        )
-        .where({'Seasons.id': id, 'WatchThroughs.status': 'ONGOING'});
-
-      await Promise.all(
-        watchThroughsToCheck.map(({id, updatedAt}) =>
-          updateWatchThrough(id, {db, prisma, timestamp: updatedAt}),
-        ),
-      );
+      await prisma.watchThrough.updateMany({
+        where: {
+          to: bufferFromSlice({season: season.number}),
+          current: bufferFromSlice({
+            season: season.number,
+            episode: season.episodeCount + 1,
+          }),
+          seriesId: season.seriesId,
+          status: 'ONGOING',
+        },
+        data: {
+          status: 'FINISHED',
+          current: null,
+        },
+      });
     }
 
     return {season};
@@ -505,56 +480,63 @@ export const Mutation: Resolver = {
       series: seriesGid,
       slice,
     }: {series: string; slice?: {from?: Slice; to?: Slice}},
-    {db, user, seriesLoader},
+    {user, prisma},
   ) {
-    const {id: seriesId} = fromGid(seriesGid);
+    const {id} = fromGid(seriesGid);
 
-    await db.transaction(async (trx) => {
-      const episodes = (await trx
-        .select({id: 'Episodes.id'})
-        .from(Table.Episodes)
-        .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-        .where((clause) => {
-          clause.where({'Episodes.seriesId': seriesId});
+    const {from, to} = slice ?? {};
 
-          const {from, to} = slice ?? {};
-
-          if (from) {
-            clause.andWhere((clause) => {
-              clause
-                .where('Seasons.number', '>', from.seasonNumber)
-                .orWhere((clause) => {
-                  clause
-                    .where('Seasons.number', '=', from.seasonNumber)
-                    .andWhere('Episodes.number', '>', from.episodeNumber - 1);
-                });
-            });
-          }
-
-          if (to) {
-            clause.andWhere((clause) => {
-              clause
-                .where('Seasons.number', '<', to.seasonNumber)
-                .orWhere((clause) => {
-                  clause
-                    .where('Seasons.number', '=', to.seasonNumber)
-                    .andWhere('Episodes.number', '<', to.episodeNumber + 1);
-                });
-            });
-          }
-        })) as {id: string}[];
-
-      await trx
-        .insert(
-          episodes.map(({id: episodeId}) => ({
-            episodeId,
-            userId: user.id,
-          })),
-        )
-        .into(Table.Watches);
+    const series = await prisma.series.findFirst({
+      where: {id},
+      select: {
+        seasons: {
+          where:
+            from || to
+              ? {
+                  number: {gte: from?.season, lte: to?.season},
+                }
+              : undefined,
+          select: {
+            number: true,
+            episodes: {select: {id: true, number: true}},
+          },
+        },
+      },
+      rejectOnNotFound: true,
     });
 
-    const series = await seriesLoader.load(seriesId);
+    await prisma.watch.createMany({
+      data: series.seasons.reduce<
+        import('@prisma/client').Prisma.WatchCreateManyInput[]
+      >((watches, season) => {
+        let matchingEpisodes = season.episodes;
+
+        if (from?.episode && from.season === season.number) {
+          matchingEpisodes = matchingEpisodes.filter(
+            (episode) => episode.number >= from.episode!,
+          );
+        }
+
+        if (to?.episode && to.season === season.number) {
+          matchingEpisodes = matchingEpisodes.filter(
+            (episode) => episode.number <= to.episode!,
+          );
+        }
+
+        return [
+          ...watches,
+          ...matchingEpisodes.map(
+            (
+              episode,
+            ): import('@prisma/client').Prisma.WatchCreateManyInput => ({
+              userId: user.id,
+              episodeId: episode.id,
+            }),
+          ),
+        ];
+      }, []),
+    });
+
     return {series};
   },
   createApp(_, {name}: {name: string}, {prisma}) {
@@ -906,147 +888,73 @@ export const Episode: Resolver<import('@prisma/client').Episode> = {
   still({stillUrl}) {
     return stillUrl ? {source: stillUrl} : null;
   },
-  async watches({id}, _, {db, watchLoader}) {
-    const watches = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({episodeId: id})
-      .limit(50);
-    return Promise.all(watches.map(({id}) => watchLoader.load(id)));
+  watches({id}, _, {prisma, user}) {
+    return prisma.watch.findMany({
+      where: {episodeId: id, userId: user.id},
+      take: 50,
+    });
   },
-  async latestWatch({id}, __, {db, watchLoader}) {
-    const [lastWatch] = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({episodeId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(1);
-
-    return lastWatch ? watchLoader.load(lastWatch.id) : null;
+  latestWatch({id}, __, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {episodeId: id, userId: user.id},
+      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
+    });
   },
 };
 
-export const WatchThroughEpisode: Resolver<{
-  id: string;
-  watchId?: string;
-  skipId?: string;
-  watchThroughId: string;
-  episodeId?: string;
-}> = {
-  id: ({id}) => toGid(id, 'WatchThroughEpisode'),
-  episode({episodeId}, _, {episodeLoader}) {
-    return episodeId ? episodeLoader.load(episodeId) : null;
-  },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughLoader.load(watchThroughId);
-  },
-  finished({watchId, skipId}) {
-    return watchId != null || skipId != null;
-  },
-  action({watchId, skipId}, _, {watchLoader, skipLoader}) {
-    if (watchId != null)
-      return watchLoader.load(watchId).then(addResolvedType('Watch'));
-
-    if (skipId != null)
-      return skipLoader.load(skipId).then(addResolvedType('Skip'));
-
-    return null;
-  },
-};
-
-export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
+export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
-  async watches({id}, _, {db, user, watchLoader}) {
-    const watches = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({watchThroughId: id, userId: user.id})
-      .limit(50);
-    return Promise.all(watches.map(({id}) => watchLoader.load(id)));
+  watches({id}, _, {user, prisma}) {
+    return prisma.watch.findMany({
+      where: {watchThroughId: id, userId: user.id},
+      take: 50,
+    });
   },
-  async episodes(
-    {id},
-    {
-      watched,
-      finished,
-    }: {watched?: 'WATCHED' | 'UNWATCHED'; finished?: boolean},
-    {db},
+  async unfinishedEpisodeCount(
+    {seriesId, current: currentBuffer, to: toBuffer},
+    _,
+    {prisma},
   ) {
-    const episodes = await db
-      .from(Table.WatchThroughEpisodes)
-      .select('*')
-      .where((clause) => {
-        clause.where({watchThroughId: id});
+    if (currentBuffer == null) return 0;
 
-        if (finished) {
-          clause.whereNotNull('watchId').orWhereNotNull('skipId');
-        }
+    const to = sliceFromBuffer(toBuffer);
+    const current = sliceFromBuffer(currentBuffer);
 
-        if (watched === 'WATCHED') {
-          clause.whereNotNull('watchId');
-        } else if (watched === 'UNWATCHED') {
-          clause.whereNull('watchId');
-        }
-      })
-      .orderBy('index', 'asc')
-      .limit(50);
+    // This logic is a bit incorrect right now, because there can be
+    // episodes that are in the future. For now, the client can query
+    // `nextEpisode` to check for that case
+    const {seasons} = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {
+        seasons: {
+          where: {number: {gte: current.season, lte: to.season}},
+          select: {number: true, episodeCount: true},
+        },
+      },
+      rejectOnNotFound: true,
+    });
 
-    return episodes;
+    return seasons.reduce((count, season) => {
+      if (current.season > season.number || to.season < season.number) {
+        return count;
+      }
+
+      return current.season === season.number
+        ? season.episodeCount - current.episode!
+        : season.episodeCount;
+    }, 0);
   },
-  unfinishedEpisodeCount({id: watchThroughId}, _, {db}) {
-    return unfinishedEpisodeCount(watchThroughId, {db});
-  },
-  async nextEpisode({id}, _, {db, episodeLoader}) {
-    const [episodeId] = (await db
-      .from(Table.WatchThroughEpisodes)
-      .pluck('episodeId')
-      .where({watchThroughId: id})
-      .andWhere((clause) => clause.whereNull('skipId').whereNull('watchId'))
-      .orderBy('index', 'asc')
-      .limit(50)) as string[];
+  nextEpisode({current, seriesId}, _, {prisma}) {
+    if (current == null) return null;
 
-    return episodeId ? episodeLoader.load(episodeId) : null;
-  },
-  async lastAction({id}, _, {db, watchLoader, skipLoader}) {
-    const [action] = await db
-      .from(Table.WatchThroughEpisodes)
-      .select(['watchId', 'skipId'])
-      .where((clause) => {
-        clause.whereNotNull('watchId').orWhereNotNull('skipId');
-      })
-      .where({watchThroughId: id})
-      .orderBy('index', 'desc')
-      .limit(1);
+    const slice = sliceFromBuffer(current);
 
-    if (action == null) {
-      return null;
-    }
-
-    const {watchId, skipId} = action;
-
-    if (watchId != null)
-      return watchLoader.load(watchId).then(addResolvedType('Watch'));
-
-    if (skipId != null)
-      return skipLoader.load(skipId).then(addResolvedType('Skip'));
-
-    return null;
-  },
-  async lastEpisode({id}, _, {db}) {
-    const [lastEpisode] = await db
-      .from(Table.WatchThroughEpisodes)
-      .select('*')
-      .where((clause) => {
-        clause.whereNotNull('watchId').orWhereNotNull('skipId');
-      })
-      .where({watchThroughId: id})
-      .orderBy('index', 'desc')
-      .limit(1);
-
-    return lastEpisode || null;
+    return prisma.episode.findFirst({
+      where: {number: slice.episode, season: {number: slice.season, seriesId}},
+    });
   },
 };
 
@@ -1060,35 +968,43 @@ export const SeriesSubscription: Resolver<
   },
 };
 
-export const Watch: Resolver<{
-  id: string;
-  episodeId?: string;
-  watchThroughId?: string;
-}> = {
+export const Watch: Resolver<import('@prisma/client').Watch> = {
   id: ({id}) => toGid(id, 'Watch'),
-  media({episodeId}, _, {episodeLoader}) {
-    return episodeId
-      ? episodeLoader.load(episodeId).then(addResolvedType('Episode'))
-      : null;
+  async media({episodeId}, _, {prisma}) {
+    const episode = await prisma.episode.findFirst({
+      where: {id: episodeId},
+      rejectOnNotFound: true,
+    });
+
+    return addResolvedType('Episode')(episode);
   },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
   },
 };
 
-export const Skip: Resolver<{
-  id: string;
-  episodeId?: string;
-  watchThroughId?: string;
-}> = {
+export const Skip: Resolver<import('@prisma/client').Skip> = {
   id: ({id}) => toGid(id, 'Skip'),
-  media({episodeId}, _, {episodeLoader}) {
-    return episodeId
-      ? episodeLoader.load(episodeId).then(addResolvedType('Episode'))
-      : null;
+  async media({episodeId}, _, {prisma}) {
+    const episode = await prisma.episode.findFirst({
+      where: {id: episodeId},
+      rejectOnNotFound: true,
+    });
+
+    return addResolvedType('Episode')(episode);
   },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
   },
 };
 
@@ -1311,73 +1227,73 @@ interface TmdbEpisode {
   still_path?: string;
 }
 
+// Assumes you already validated ownership of the watchthrough!
 async function updateWatchThrough(
-  watchThroughId: string,
+  id: string,
   {
-    db,
     prisma,
-    timestamp = 'now()',
-  }: Pick<Context, 'db' | 'prisma'> & {timestamp?: string},
+    episode,
+    ...action
+  }: Pick<Context, 'prisma'> & {
+    episode: import('@prisma/client').Episode;
+  } & (
+      | {watch: import('@prisma/client').Watch}
+      | {skip: import('@prisma/client').Skip}
+    ),
 ) {
-  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {
-    db,
-    prisma,
-  }))
-    ? {status: 'FINISHED', finishedAt: timestamp}
-    : {};
-
-  await db
-    .from(Table.WatchThroughs)
-    .where({id: watchThroughId})
-    .update({...finishedUpdate, updatedAt: timestamp});
-}
-
-async function watchThroughIsFinished(
-  watchThroughId: string,
-  {db, prisma}: Pick<Context, 'db' | 'prisma'>,
-) {
-  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
-    db,
+  const watchThrough = await prisma.watchThrough.findFirst({
+    where: {id},
+    rejectOnNotFound: true,
   });
 
-  if (unfinishedEpisodes !== 0) return false;
-
-  const [watched] = await db
-    .from(Table.WatchThroughEpisodes)
-    .pluck<string>('episodeId')
-    .where({watchThroughId})
-    .andWhere((clause) => clause.whereNotNull('watchId'))
-    .orderBy('index', 'desc')
-    .limit(1);
+  const episodeNumber = episode.number;
 
   const season = await prisma.season.findFirst({
-    where: {episodes: {some: {id: watched}}},
+    where: {id: episode.seasonId},
+    select: {status: true, number: true, episodeCount: true},
+    rejectOnNotFound: true,
   });
 
-  return season?.status === 'ENDED';
-}
+  const to = sliceFromBuffer(watchThrough.to);
 
-async function unfinishedEpisodeCount(
-  watchThroughId: string,
-  {db}: Pick<Context, 'db'>,
-) {
-  const [{count}] = await db
-    .from(Table.WatchThroughEpisodes)
-    .join('Episodes', 'Episodes.id', '=', 'WatchThroughEpisodes.episodeId')
-    .where((clause) => {
-      clause
-        .where({watchThroughId})
-        .whereNull('WatchThroughEpisodes.watchId')
-        .whereNull('WatchThroughEpisodes.skipId');
-    })
-    .where(
-      'Episodes.firstAired',
-      '<',
-      db.raw(`CURRENT_DATE + interval '1 day'`),
-    )
-    .count({count: 'WatchThroughEpisodes.id'});
+  const nextEpisodeInSeasonNumber =
+    episodeNumber === season.episodeCount ? undefined : episodeNumber + 1;
 
-  return parseInt(String(count), 10);
+  const updatedAt =
+    'watch' in action
+      ? action.watch.finishedAt ??
+        action.watch.startedAt ??
+        action.watch.createdAt
+      : action.skip.at ?? action.skip.createdAt;
+
+  if (
+    to.season === season.number &&
+    (to.episode === episodeNumber ||
+      (to.episode == null &&
+        nextEpisodeInSeasonNumber == null &&
+        season.status === 'ENDED'))
+  ) {
+    return prisma.watchThrough.update({
+      where: {id},
+      data: {
+        status: 'FINISHED',
+        current: null,
+        updatedAt,
+        finishedAt: updatedAt,
+      },
+    });
+  }
+
+  return prisma.watchThrough.update({
+    where: {id},
+    data: {
+      current: Buffer.from([
+        nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
+        nextEpisodeInSeasonNumber ?? 1,
+      ]),
+      updatedAt,
+    },
+  });
 }
 
 async function loadTmdbSeries(
@@ -1408,6 +1324,7 @@ async function loadTmdbSeries(
       posterUrl: seriesResult.poster_path
         ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
         : null,
+      seasonCount: seasonResults.length,
       seasons: {
         create: seasonResults.map(
           (
@@ -1424,6 +1341,7 @@ async function loadTmdbSeries(
             posterUrl: season.poster_path
               ? `https://image.tmdb.org/t/p/original${season.poster_path}`
               : null,
+            episodeCount: season.episodes.length,
             episodes: {
               create: season.episodes.map(
                 (
@@ -1593,4 +1511,17 @@ function toGid(id: string, type: string) {
 
 function toParam(name: string) {
   return name.trim().toLocaleLowerCase().replace(/\s+/g, '-');
+}
+
+function bufferFromSlice(slice: Slice) {
+  return slice.episode == null
+    ? Buffer.from([slice.season])
+    : Buffer.from([slice.season, slice.episode]);
+}
+
+function sliceFromBuffer(buffer: Buffer): Slice {
+  const sliceArray = new Uint8Array(buffer);
+  return sliceArray.length === 1
+    ? {season: sliceArray[0]}
+    : {season: sliceArray[0], episode: sliceArray[1]};
 }

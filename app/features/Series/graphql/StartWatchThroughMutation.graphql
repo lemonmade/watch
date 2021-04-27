@@ -1,5 +1,9 @@
-mutation SeriesStartWatchThrough($series: ID!, $seasons: [ID!]) {
-  startWatchThrough(series: $series, seasons: $seasons) {
+mutation SeriesStartWatchThrough(
+  $series: ID!
+  $from: EpisodeSlice
+  $to: EpisodeSlice
+) {
+  startWatchThrough(series: $series, from: $from, to: $to) {
     watchThrough {
       id
     }

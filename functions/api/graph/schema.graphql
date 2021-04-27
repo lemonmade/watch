@@ -92,33 +92,16 @@ enum SeasonStatus {
   ENDED
 }
 
-union WatchThroughEpisodeAction = Watch | Skip
-
-type WatchThroughEpisode {
-  id: ID!
-  episode: Episode!
-  finished: Boolean!
-  watchThrough: WatchThrough!
-  action: WatchThroughEpisodeAction
-}
-
-type WatchThrough implements Reviewable {
+type WatchThrough {
   id: ID!
   series: Series!
   startedAt: Date
+  createdAt: Date!
   updatedAt: Date!
-  lastAction: WatchThroughEpisodeAction
   finishedAt: Date
+  status: WatchThroughStatus!
   watches: [Watch!]!
   nextEpisode: Episode
-  status: WatchThroughStatus!
-  rating: Int
-  notes: Notes
-  lastEpisode: WatchThroughEpisode
-  episodes(
-    finished: Boolean
-    watched: EpisodeWatchedFilter
-  ): [WatchThroughEpisode!]!
   unfinishedEpisodeCount: Int!
 }
 
@@ -127,6 +110,8 @@ type Watch implements Reviewable {
   media: Watchable!
   startedAt: Date
   finishedAt: Date
+  createdAt: Date!
+  updatedAt: Date!
   rating: Int
   notes: Notes
   watchThrough: WatchThrough
@@ -135,6 +120,8 @@ type Watch implements Reviewable {
 type Skip {
   id: ID!
   at: Date
+  createdAt: Date!
+  updatedAt: Date!
   media: Watchable!
   notes: Notes
   watchThrough: WatchThrough
@@ -173,14 +160,9 @@ type SearchResults {
   series: [Series!]!
 }
 
-input SeriesSliceEndpoint {
-  episodeNumber: Int!
-  seasonNumber: Int!
-}
-
-input SeriesSlice {
-  from: SeriesSliceEndpoint
-  to: SeriesSliceEndpoint!
+input EpisodeSlice {
+  season: Int!
+  episode: Int
 }
 
 type WatchEpisodesFromSeriesPayload {
@@ -517,12 +499,14 @@ type Mutation {
   ): WatchEpisodePayload!
   watchEpisodesFromSeries(
     series: ID!
-    slice: SeriesSlice
+    from: EpisodeSlice
+    to: EpisodeSlice
   ): WatchEpisodesFromSeriesPayload!
   startWatchThrough(
     series: ID!
-    seasons: [ID!]
-    episodes: [ID!]
+    from: EpisodeSlice
+    to: EpisodeSlice
+    includeSpecials: Boolean
   ): StartWatchThroughPayload!
   stopWatchThrough(id: ID!): StopWatchThroughPayload!
   subscribeToSeries(id: ID!): SeriesSubscriptionPayload!

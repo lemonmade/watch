@@ -5,30 +5,6 @@ fragment WatchThroughDetails on WatchThrough {
     name
   }
   status
-  episodes {
-    id
-    finished
-    action {
-      ... on Watch {
-        id
-        rating
-        notes
-      }
-    }
-    episode {
-      id
-      number
-      title
-      firstAired
-      still {
-        source
-      }
-      season {
-        id
-        number
-      }
-    }
-  }
   nextEpisode {
     id
     title
