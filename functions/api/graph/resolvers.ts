@@ -800,10 +800,6 @@ export const Reviewable: Resolver = {
   __resolveType: resolveType,
 };
 
-export const WatchThroughEpisodeAction: Resolver = {
-  __resolveType: resolveType,
-};
-
 export const AppExtension: Resolver = {
   __resolveType: resolveType,
 };
