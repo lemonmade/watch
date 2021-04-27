@@ -52,7 +52,6 @@ function watchThroughToProps({
   id,
   series,
   nextEpisode,
-  lastEpisode,
   unfinishedEpisodeCount,
 }: WatchThrough): ComponentProps<typeof WatchThroughItem> & {
   id: string;
@@ -76,93 +75,18 @@ function watchThroughToProps({
       : undefined,
     series: {
       poster:
-        lastEpisode?.episode.season.poster?.source!.replace(
-          '/original/',
-          '/w342/',
-        ) ?? series.poster?.source!.replace('/original/', '/w342/'),
+        nextEpisode?.season.poster?.source!.replace('/original/', '/w342/') ??
+        series.poster?.source!.replace('/original/', '/w342/'),
     },
     unfinishedEpisodeCount,
   };
 }
 
 function sortWatchThroughs(
-  {
-    lastAction: lastActionOne,
-    nextEpisode: nextEpisodeOne,
-    series: seriesOne,
-  }: WatchThrough,
-  {
-    lastAction: lastActionTwo,
-    nextEpisode: nextEpisodeTwo,
-    series: seriesTwo,
-  }: WatchThrough,
+  {updatedAt: updatedAtOne}: WatchThrough,
+  {updatedAt: updatedAtTwo}: WatchThrough,
 ) {
-  const lastActionOneDate = actionToDate(lastActionOne);
-  const lastActionTwoDate = actionToDate(lastActionTwo);
-
-  if (lastActionOneDate != null && lastActionTwoDate != null) {
-    const lastActionOneTime = lastActionOneDate.getTime();
-    const lastActionTwoTime = lastActionTwoDate.getTime();
-
-    if (lastActionOneTime === lastActionTwoTime) {
-      return seriesOne.name.localeCompare(seriesTwo.name);
-    }
-
-    return lastActionOneDate.getTime() > lastActionTwoDate.getTime() ? -1 : 1;
-  }
-
-  if (lastActionOneDate != null && lastActionTwoDate == null) {
-    return -1;
-  }
-
-  if (lastActionTwoDate != null && lastActionOneDate == null) {
-    return 1;
-  }
-
-  const nextEpisodeOneDate = getFirstAired(seriesOne, nextEpisodeOne);
-  const nextEpisodeTwoDate = getFirstAired(seriesTwo, nextEpisodeTwo);
-
-  if (nextEpisodeOneDate != null && nextEpisodeTwoDate != null) {
-    const nextEpisodeOneTime = nextEpisodeOneDate.getTime();
-    const nextEpisodeTwoTime = nextEpisodeTwoDate.getTime();
-
-    if (nextEpisodeOneTime === nextEpisodeTwoTime) {
-      return seriesOne.name.localeCompare(seriesTwo.name);
-    }
-
-    return nextEpisodeOneDate.getTime() > nextEpisodeTwoDate.getTime() ? -1 : 1;
-  }
-
-  if (nextEpisodeOneDate != null && nextEpisodeTwoDate == null) {
-    return -1;
-  }
-
-  if (nextEpisodeTwoDate != null && nextEpisodeOneDate == null) {
-    return 1;
-  }
-
-  return seriesOne.name.localeCompare(seriesTwo.name);
-}
-
-function getFirstAired(
-  series: Pick<WatchingQueryData.WatchThroughs.Series, 'firstAired'>,
-  episode?: Pick<
-    WatchingQueryData.WatchThroughs.NextEpisode,
-    'firstAired'
-  > | null,
-) {
-  const firstAired = episode?.firstAired ?? series.firstAired;
-  return firstAired ? new Date(firstAired) : undefined;
-}
-
-function actionToDate(
-  action?: WatchingQueryData.WatchThroughs.LastAction | null,
-) {
-  if (action == null) return undefined;
-  switch (action.__typename) {
-    case 'Skip':
-      return action.at ? new Date(action.at) : undefined;
-    case 'Watch':
-      return action.finishedAt ? new Date(action.finishedAt) : undefined;
-  }
+  return new Date(updatedAtOne).getTime() > new Date(updatedAtTwo).getTime()
+    ? -1
+    : 1;
 }

@@ -2,29 +2,13 @@ query Watching {
   watchThroughs {
     id
     unfinishedEpisodeCount
-    lastAction {
-      ... on Watch {
-        finishedAt
-      }
-      ... on Skip {
-        at
-      }
-    }
+    updatedAt
     series {
       id
       name
       firstAired
       poster {
         source
-      }
-    }
-    lastEpisode {
-      episode {
-        season {
-          poster {
-            source
-          }
-        }
       }
     }
     nextEpisode {
