@@ -2,8 +2,21 @@
 
 import {Stack, Construct, Duration} from '@aws-cdk/core';
 import {Function, Runtime, Code} from '@aws-cdk/aws-lambda';
+import {Secret} from '@aws-cdk/aws-secretsmanager';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
-import {Port, Vpc} from '@aws-cdk/aws-ec2';
+import {
+  InstanceClass,
+  InstanceSize,
+  InstanceType,
+  Port,
+  Vpc,
+} from '@aws-cdk/aws-ec2';
+import {
+  Credentials,
+  DatabaseInstance,
+  DatabaseInstanceEngine,
+  PostgresEngineVersion,
+} from '@aws-cdk/aws-rds';
 import {
   PriceClass,
   Distribution,
@@ -40,6 +53,9 @@ import {LambdaFunction} from '@aws-cdk/aws-events-targets';
 const DOMAIN = 'watch.lemon.tools';
 const DEFAULT_REGION = 'us-east-1';
 
+const DATABASE_NAME = 'watch';
+const DATABASE_PORT = 5432;
+
 class PublicBucket extends Bucket {
   constructor(scope: Construct, id: string, props?: BucketProps) {
     super(scope, id, props);
@@ -64,13 +80,48 @@ export class WatchAppStack extends Stack {
       bucketName: 'watch-assets-clips',
     });
 
-    // new Bucket(this, 'AppImagesBucket', {
-    //   bucketName: 'watch-app-images',
-    // });
+    const vpc = new Vpc(this, 'WatchVpc');
 
-    // new Bucket(this, 'LambdaBucket', {
-    //   bucketName: 'watch-lambda',
-    // });
+    const primaryDatabaseCredentialsSecret = Secret.fromSecretNameV2(
+      this,
+      'WatchPrimaryDatabaseCredentialsSecret',
+      'Watch/PrimaryDatabase/Credentials',
+    );
+
+    const primaryDatabase = new DatabaseInstance(this, 'WatchPrimaryDatabase', {
+      databaseName: DATABASE_NAME,
+      engine: DatabaseInstanceEngine.postgres({
+        version: PostgresEngineVersion.VER_11_1,
+      }),
+      instanceType: InstanceType.of(
+        InstanceClass.BURSTABLE3,
+        InstanceSize.SMALL,
+      ),
+      credentials: Credentials.fromSecret(primaryDatabaseCredentialsSecret),
+      vpc,
+      port: DATABASE_PORT,
+      publiclyAccessible: false,
+      autoMinorVersionUpgrade: true,
+      backupRetention: Duration.days(3),
+      deletionProtection: true,
+    });
+
+    primaryDatabase.addRotationSingleUser();
+
+    const primaryDatabaseProxy = primaryDatabase.addProxy(
+      'WatchDatabaseProxy',
+      {
+        vpc,
+        dbProxyName: `${DATABASE_NAME}Proxy`,
+        secrets: [primaryDatabaseCredentialsSecret],
+      },
+    );
+
+    const primaryDatabaseEnvironmentVariables = {
+      DATABASE_PORT: String(DATABASE_PORT),
+      DATABASE_HOST: primaryDatabaseProxy.endpoint,
+      DATABASE_CREDENTIALS_SECRET: primaryDatabaseCredentialsSecret.secretName,
+    };
 
     const appFunction = new Function(this, 'WatchAppFunction', {
       runtime: Runtime.NODEJS_12_X,
@@ -79,22 +130,23 @@ export class WatchAppStack extends Stack {
       functionName: 'WatchAppFunction',
     });
 
-    const vpc = Vpc.fromLookup(this, 'WatchDatabaseVpc', {
-      vpcId: 'vpc-0e09f839483ce344c',
-    });
-
     const graphqlFunction = new Function(this, 'WatchGraphQLFunction', {
       vpc,
       runtime: Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: Code.fromInline('module.exports.handler = () => {}'),
       functionName: 'WatchGraphQLFunction',
+      environment: {...primaryDatabaseEnvironmentVariables},
     });
 
     // Needed for the API to push new clips versions
     clipsAssetsBucket.grantPut(graphqlFunction);
 
-    // Lets the public internet connect to the function (in a VPC)
+    // Allow connection to the database
+    primaryDatabaseProxy.grantConnect(graphqlFunction);
+    primaryDatabaseCredentialsSecret.grantRead(graphqlFunction);
+
+    // Lets the public internet connect to the function
     graphqlFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
     const authFunction = new Function(this, 'WatchAuthFunction', {
@@ -103,8 +155,14 @@ export class WatchAppStack extends Stack {
       handler: 'index.handler',
       code: Code.fromInline('module.exports.handler = () => {}'),
       functionName: 'WatchAuthFunction',
+      environment: {...primaryDatabaseEnvironmentVariables},
     });
 
+    // Allow connection to the database
+    primaryDatabaseProxy.grantConnect(authFunction);
+    primaryDatabaseCredentialsSecret.grantRead(graphqlFunction);
+
+    // Lets the public internet connect to the function
     authFunction.connections.allowFromAnyIpv4(Port.allTraffic());
 
     const emailQueue = new Queue(this, 'WatchEmailQueue', {
@@ -117,6 +175,7 @@ export class WatchAppStack extends Stack {
       },
     });
 
+    // Let our GraphQL API trigger emails to send
     emailQueue.grantSendMessages(graphqlFunction);
 
     const emailFunction = new Function(this, 'WatchEmailFunction', {
@@ -135,7 +194,6 @@ export class WatchAppStack extends Stack {
         effect: Effect.ALLOW,
       }),
     );
-    // Need to properly set the connection policy to allow traffic from anywhere...
 
     const appHttpApi = new HttpApi(this, 'WatchAppHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
@@ -168,12 +226,18 @@ export class WatchAppStack extends Stack {
       this,
       'WatchTmdbRefresherFunction',
       {
+        vpc,
         runtime: Runtime.NODEJS_12_X,
         handler: 'index.handler',
         code: Code.fromInline('module.exports.handler = () => {}'),
         functionName: 'WatchTmdbRefresherFunction',
+        environment: {...primaryDatabaseEnvironmentVariables},
       },
     );
+
+    // Allow connection to the database
+    primaryDatabaseProxy.grantConnect(tmdbRefresherFunction);
+    primaryDatabaseCredentialsSecret.grantRead(graphqlFunction);
 
     new Rule(this, 'WatchTmdbRefresherRule', {
       ruleName: 'WatchTmdbRefresherRule',

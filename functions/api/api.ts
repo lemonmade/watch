@@ -65,7 +65,7 @@ app.post(async (request) => {
       schema,
       query,
       {},
-      createContext(userId ? {id: userId} : undefined, request, response),
+      await createContext(userId ? {id: userId} : undefined, request, response),
       variables,
       operationName,
     );

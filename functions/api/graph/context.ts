@@ -1,6 +1,6 @@
 import type {Request, Response} from '@quilted/http-handlers';
 
-import {Prisma} from 'shared/utilities/database';
+import {createPrisma} from 'shared/utilities/database';
 
 export type Context = ReturnType<typeof createContext>;
 
@@ -10,13 +10,13 @@ interface MutableResponse {
   readonly cookies: Response['cookies'];
 }
 
-const prisma = new Prisma();
-
-export function createContext(
+export async function createContext(
   user: {id: string} | undefined,
   request: Request,
   response: MutableResponse,
 ) {
+  const prisma = await createPrisma();
+
   return {
     prisma,
     get user() {
