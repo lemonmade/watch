@@ -3,7 +3,7 @@ import type {PropsWithChildren, ComponentProps} from 'react';
 import {Link as RouterLink} from '@quilted/quilt';
 import {classes, variation} from '@lemon/css';
 
-import {useImplicitAction, ariaForTarget} from '../../utilities/actions';
+import {useImplicitAction, ariaForAction} from '../../utilities/actions';
 
 import styles from './Link.css';
 
@@ -43,7 +43,7 @@ export function Link({
           onPress?.();
         })
       }
-      {...ariaForTarget(implicitAction?.target)}
+      {...ariaForAction(implicitAction)}
       {...externalProps}
     >
       {children}

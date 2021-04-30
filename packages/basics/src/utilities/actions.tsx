@@ -7,8 +7,11 @@ export interface Target {
   readonly active?: boolean;
 }
 
+export type ImplicitActionType = 'activation';
+
 export interface Action {
   readonly id?: string;
+  readonly type?: ImplicitActionType;
   readonly target?: Target;
   perform(): void;
 }
@@ -40,7 +43,9 @@ export function ImplicitActionContext({
   );
 }
 
-export function ariaForTarget(target?: Target) {
+export function ariaForAction(action?: Action) {
+  const target = action?.target;
+
   if (!target) return undefined;
 
   return {

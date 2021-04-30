@@ -5,6 +5,6 @@ export type {Action, Target} from './utilities/actions';
 export {
   ImplicitActionContext,
   useImplicitAction,
-  ariaForTarget,
+  ariaForAction,
 } from './utilities/actions';
 export {useContainingForm} from './utilities/forms';

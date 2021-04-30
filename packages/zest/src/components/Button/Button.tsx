@@ -1,6 +1,6 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
-import {useImplicitAction, ariaForTarget} from '@lemon/basics';
+import {useImplicitAction, ariaForAction} from '@lemon/basics';
 
 import styles from './Button.css';
 
@@ -38,7 +38,7 @@ export function Button({
           implicitAction?.perform();
         }
       }}
-      {...ariaForTarget(implicitAction?.target)}
+      {...ariaForAction(implicitAction)}
     >
       {children}
     </button>
