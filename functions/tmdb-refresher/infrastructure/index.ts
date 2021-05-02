@@ -4,7 +4,7 @@ import {
   Construct,
   QuiltServiceLambda,
   Database,
-  TMDB_ENVIRONMENT_VARIABLES,
+  Secret,
 } from '../../../global/utilities/infrastructure';
 
 import type {TmdbRefresherScheduler} from '../../tmdb-refresher-scheduler/infrastructure';
@@ -13,9 +13,11 @@ export class TmdbRefresher extends Construct {
   constructor(
     parent: Construct,
     {
+      tmdb,
       database,
       scheduler,
     }: {
+      tmdb: Secret;
       database: Database;
       scheduler: TmdbRefresherScheduler;
     },
@@ -32,7 +34,7 @@ export class TmdbRefresher extends Construct {
         functionName: 'WatchTmdbRefresherFunction',
         environment: {
           ...database.environmentVariables,
-          ...TMDB_ENVIRONMENT_VARIABLES,
+          TMDB_ACCESS_TOKEN: tmdb.asEnvironmentVariable({key: 'token'}),
           TMDB_REFRESHER_QUEUE_URL: scheduler.queueUrl,
         },
       },

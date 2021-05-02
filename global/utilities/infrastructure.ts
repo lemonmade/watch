@@ -16,7 +16,10 @@ import {
   LayerVersionProps,
   AssetCode,
 } from '@aws-cdk/aws-lambda';
-import {Secret, ISecret} from '@aws-cdk/aws-secretsmanager';
+import {
+  ISecret,
+  Secret as SecretManagerSecret,
+} from '@aws-cdk/aws-secretsmanager';
 import {
   IConnectable,
   InstanceClass,
@@ -42,15 +45,6 @@ const DEFAULT_ENVIRONMENT = {
 };
 
 const DATABASE_PORT = 5432;
-
-export const TMDB_ENVIRONMENT_VARIABLES = {
-  TMDB_ACCESS_TOKEN: process.env.TMDB_ACCESS_TOKEN!,
-};
-
-export const GITHUB_OAUTH_ENVIRONMENT_VARIABLES = {
-  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID!,
-  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET!,
-};
 
 const root = path.resolve(__dirname, '../..');
 
@@ -160,26 +154,35 @@ export class PrismaLayer extends QuiltLayer {
   }
 }
 
-export class JsonWebToken extends Construct {
-  private readonly secretFromName: ISecret;
+export class Secret extends Construct {
+  readonly secret: ISecret;
 
-  get secret() {
-    return SecretValue.secretsManager(this.secretFromName.secretArn, {
-      jsonField: 'secret',
-    }).toString();
+  get secretName() {
+    return this.secret.secretName;
   }
 
   constructor(
     construct: Construct,
-    {name, secretName}: {name: string; secretName: string},
+    id: string,
+    {secretName}: {secretName: string},
   ) {
-    super(construct, `Watch${name}JsonWebToken`);
+    super(construct, id);
 
-    this.secretFromName = Secret.fromSecretNameV2(
+    this.secret = SecretManagerSecret.fromSecretNameV2(
       this,
-      `Watch${name}JsonWebTokenSecret`,
+      `${id}SecretFromName`,
       secretName,
     );
+  }
+
+  asEnvironmentVariable({key}: {key: string}) {
+    return SecretValue.secretsManager(this.secret.secretArn, {
+      jsonField: key,
+    }).toString();
+  }
+
+  grantRead(grantable: IGrantable) {
+    this.secret.grantRead(grantable);
   }
 }
 
@@ -197,7 +200,7 @@ export class Database extends Construct {
   };
 
   private readonly instance: DatabaseInstance;
-  private readonly credentialsSecret: ISecret;
+  private readonly credentialsSecret: Secret;
 
   get vpc() {
     return this.instance.vpc;
@@ -221,11 +224,9 @@ export class Database extends Construct {
   ) {
     super(construct, `Watch${name}`);
 
-    this.credentialsSecret = Secret.fromSecretNameV2(
-      this,
-      `Watch${name}CredentialsSecret`,
-      `Watch/${name}/Credentials`,
-    );
+    this.credentialsSecret = new Secret(this, `Watch${name}CredentialsSecret`, {
+      secretName: `Watch/${name}/Credentials`,
+    });
 
     this.instance = new DatabaseInstance(this, `Watch${name}Instance`, {
       databaseName,
@@ -236,7 +237,7 @@ export class Database extends Construct {
         InstanceClass.BURSTABLE3,
         InstanceSize.SMALL,
       ),
-      credentials: Credentials.fromSecret(this.credentialsSecret),
+      credentials: Credentials.fromSecret(this.credentialsSecret.secret),
       vpc,
       port: DATABASE_PORT,
       publiclyAccessible: false,

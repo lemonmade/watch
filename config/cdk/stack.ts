@@ -3,11 +3,7 @@ import 'dotenv/config';
 import {App} from '@aws-cdk/core';
 import {Vpc} from '@aws-cdk/aws-ec2';
 
-import {
-  Database,
-  Stack,
-  JsonWebToken,
-} from '../../global/utilities/infrastructure';
+import {Database, Stack, Secret} from '../../global/utilities/infrastructure';
 
 import {WebApp} from '../../app/infrastructure';
 import {MigrateDatabase} from '../../functions/migrate/infrastructure';
@@ -33,18 +29,26 @@ export class WatchStack extends Stack {
 
     new MigrateDatabase(this, {database});
 
-    const jwt = new JsonWebToken(this, {
-      name: 'Default',
+    const jwt = new Secret(this, 'WatchDefaultJWTSecret', {
       secretName: 'Watch/DefaultJWT',
+    });
+
+    const github = new Secret(this, 'WatchGithubOAuthClientSecret', {
+      secretName: 'Watch/Github/OAuthCredentials',
+    });
+
+    const tmdb = new Secret(this, 'WatchTmdbApiCredentialsSecret', {
+      secretName: 'Watch/Tmdb/ApiCredentials',
     });
 
     const webApp = new WebApp(this);
     const email = new Email(this, {database});
-    const graphqlApi = new GraphQLApi(this, {jwt, database, email});
-    const authApi = new AuthApi(this, {jwt, database});
+    const graphqlApi = new GraphQLApi(this, {jwt, tmdb, database, email});
+    const authApi = new AuthApi(this, {jwt, github, database});
 
     const tmdbRefreshScheduler = new TmdbRefresherScheduler(this, {database});
     new TmdbRefresher(this, {
+      tmdb,
       database,
       scheduler: tmdbRefreshScheduler,
     });

@@ -4,10 +4,9 @@ import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 import {
   Construct,
   Database,
-  JsonWebToken,
+  Secret,
   PublicBucket,
   QuiltServiceLambda,
-  TMDB_ENVIRONMENT_VARIABLES,
 } from '../../../global/utilities/infrastructure';
 
 import type {Email} from '../../email/infrastructure';
@@ -24,10 +23,12 @@ export class GraphQLApi extends Construct {
     parent: Construct,
     {
       jwt,
+      tmdb,
       email,
       database,
     }: {
-      jwt: JsonWebToken;
+      jwt: Secret;
+      tmdb: Secret;
       email: Email;
       database: Database;
     },
@@ -48,11 +49,10 @@ export class GraphQLApi extends Construct {
         functionName: 'WatchGraphQLFunction',
         layers: [database.layers.query],
         environment: {
-          // ...TMDB_ENVIRONMENT_VARIABLES,
           ...database.environmentVariables,
-          ...TMDB_ENVIRONMENT_VARIABLES,
+          TMDB_ACCESS_TOKEN: tmdb.asEnvironmentVariable({key: 'token'}),
           EMAIL_QUEUE_URL: email.queueUrl,
-          JWT_DEFAULT_SECRET: jwt.secret,
+          JWT_DEFAULT_SECRET: jwt.asEnvironmentVariable({key: 'secret'}),
         },
       },
     );

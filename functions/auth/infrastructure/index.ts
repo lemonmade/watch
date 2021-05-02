@@ -5,8 +5,7 @@ import {
   Construct,
   QuiltServiceLambda,
   Database,
-  JsonWebToken,
-  GITHUB_OAUTH_ENVIRONMENT_VARIABLES,
+  Secret,
 } from '../../../global/utilities/infrastructure';
 
 export class AuthApi extends Construct {
@@ -18,7 +17,7 @@ export class AuthApi extends Construct {
 
   constructor(
     parent: Construct,
-    {database, jwt}: {database: Database; jwt: JsonWebToken},
+    {database, jwt, github}: {database: Database; jwt: Secret; github: Secret},
   ) {
     super(parent, 'WatchAuth');
 
@@ -30,8 +29,11 @@ export class AuthApi extends Construct {
       functionName: 'WatchAuthFunction',
       environment: {
         ...database.environmentVariables,
-        ...GITHUB_OAUTH_ENVIRONMENT_VARIABLES,
-        JWT_DEFAULT_SECRET: jwt.secret,
+        JWT_DEFAULT_SECRET: jwt.asEnvironmentVariable({key: 'secret'}),
+        GITHUB_CLIENT_ID: github.asEnvironmentVariable({key: 'clientId'}),
+        GITHUB_CLIENT_SECRET: github.asEnvironmentVariable({
+          key: 'clientSecret',
+        }),
       },
     });
 

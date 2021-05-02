@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - update-dev-server
 
 jobs:
   build:
