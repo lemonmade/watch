@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - better-basic-components
+      - update-dev-server
 
 jobs:
   build:
@@ -38,51 +38,53 @@ jobs:
       - name: Build
         run: yarn type-check && yarn build
 
-      - name: Zip API Lambda
-        run: zip -r ../../api.zip ./*
-        working-directory: ./build/services/api
+      - name: Display build
+        run: ls -R
+        working-directory: ./build
 
-      - name: Zip Auth API Lambda
-        run: zip -r ../../auth.zip ./*
-        working-directory: ./build/services/auth
+      - name: Zip build artifacts
+        run: zip -r ../build.zip ./*
+        working-directory: ./build
 
-      - name: Zip Email Lambda
-        run: zip -r ../../email.zip ./*
-        working-directory: ./build/services/email
-
-      - name: Zip UI Lambda
-        run: zip -r ../../ui.zip ./*
-        working-directory: ./build/app/server
-
-      - name: Save API build artifact
+      - name: Save build artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: api
-          path: build/api.zip
+          name: build
+          path: build.zip
 
-      - name: Save auth API build artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: auth
-          path: build/auth.zip
+  deploy-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        name: Checkout
 
-      - name: Save email build artifact
-        uses: actions/upload-artifact@v1
+      - uses: actions/setup-node@v1
+        name: Setup node.js and yarn
         with:
-          name: email
-          path: build/email.zip
+          node-version: 15.4.0
 
-      - name: Save UI build artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: ui
-          path: build/ui.zip
+      - name: Get yarn cache directory
+        id: yarn-cache-get-dir
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Save asset build artifacts
-        uses: actions/upload-artifact@v1
+      - uses: actions/cache@v1
+        id: yarn-cache
+        name: Restore yarn cache
         with:
-          name: assets
-          path: build/app
+          path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: build
+          path: build
 
       - name: Deploy updated packages
         run: |
@@ -91,7 +93,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  aws-assets:
+  aws:
     needs: build
     runs-on: ubuntu-latest
 
@@ -123,35 +125,7 @@ jobs:
       - name: Restore build artifacts
         uses: actions/download-artifact@v1
         with:
-          name: assets
-          path: build/app
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: ./build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Upload assets to S3
-        run: yarn run:ts ./scripts/asset-upload.ts
-
-  aws-ui:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-        name: Checkout
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: ui
+          name: build
           path: build
 
       - name: Configure AWS Credentials
@@ -161,81 +135,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Update Lambda
-        run: |
-          aws lambda update-function-code --function-name WatchAppFunction --zip-file fileb://build/ui.zip
-
-  aws-api:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-        name: Checkout
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: api
-          path: build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Update Lambda
-        run: |
-          aws lambda update-function-code --function-name WatchGraphQLFunction --zip-file fileb://build/api.zip
-
-  aws-auth:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-        name: Checkout
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: auth
-          path: build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Update Lambda
-        run: |
-          aws lambda update-function-code --function-name WatchAuthFunction --zip-file fileb://build/auth.zip
-
-  aws-email:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v1
-        name: Checkout
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: email
-          path: build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Update Lambda
-        run: |
-          aws lambda update-function-code --function-name WatchEmailFunction --zip-file fileb://build/email.zip
+      - name: Run the CDK
+        run: yarn cdk deploy

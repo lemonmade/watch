@@ -18,6 +18,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
     "@iarna/toml": "^3.0.0",
+    "@types/webpack": "^5.0.0",
     "@quilted/graphql": "^0.3.4",
     "@quilted/polyfills": "^0.0.6",
     "@watching/webpack-hot-worker": "^0.1.1",
@@ -30,7 +31,7 @@
     "graphql-tools": "^6.0.11",
     "terser-webpack-plugin": "^5.1.1",
     "toml": "^3.0.0",
-    "webpack": "^4.0.0",
+    "webpack": "^5.0.0",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-dev-middleware": "^4.1.0",
     "ws": "^7.0.0"
