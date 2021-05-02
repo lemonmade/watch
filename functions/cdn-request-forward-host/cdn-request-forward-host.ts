@@ -1,6 +1,6 @@
 import type {CloudFrontRequestHandler} from 'aws-lambda';
 
-export const prepareAppRequestFromCdn: CloudFrontRequestHandler = (
+export const forwardCdnRequestHost: CloudFrontRequestHandler = (
   event,
   _,
   callback,

@@ -4,8 +4,11 @@
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "build/ts",
-    "paths": {}
+    "paths": {
+      "shared/*": ["../shared/*"]
+    }
   },
   "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
-  "exclude": ["sewing-kit.config.ts", "build"]
+  "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
+  "references": [{"path": "../shared"}]
 }

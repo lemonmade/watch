@@ -103,7 +103,7 @@ function CreateAccountWithGithub({
         });
       }}
     >
-      Sign in with Github
+      Create account with Github
     </Button>
   );
 }

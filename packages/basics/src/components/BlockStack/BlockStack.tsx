@@ -14,7 +14,7 @@ import type {
   SystemProps,
 } from '../../system';
 
-import styles from './BlockStack.css';
+import styles from './BlockStack.module.css';
 
 interface Props extends SystemProps {
   spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;

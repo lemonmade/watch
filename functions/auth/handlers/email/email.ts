@@ -11,11 +11,8 @@ import {
   verifySignedToken,
   addAuthCookies,
 } from 'shared/utilities/auth';
-import {createDatabaseConnection, Table} from 'shared/utilities/database';
 
-import {validateRedirectTo} from '../shared';
-
-const db = createDatabaseConnection();
+import {validateRedirectTo, loadPrisma} from '../shared';
 
 export async function signInFromEmail(request: Request) {
   const token = request.url.searchParams.get(SearchParam.Token);
@@ -53,11 +50,12 @@ export async function signInFromEmail(request: Request) {
       `Signing in user with email: ${email}, redirect to: ${redirectTo}`,
     );
 
-    const [user] = await db
-      .select(['id'])
-      .from(Table.Users)
-      .where({email})
-      .limit(1);
+    const prisma = await loadPrisma();
+    const user = await prisma.user.findFirst({where: {email}});
+
+    if (user == null) {
+      throw new Error(`No user found for email ${email}`);
+    }
 
     return completeAuth(user.id, {
       request,
@@ -87,42 +85,26 @@ export async function createAccountFromEmail(request: Request) {
     }>(token);
 
     if (email == null) {
-      restartCreateAccount({
+      return restartCreateAccount({
         request,
         redirectTo: redirectTo ?? undefined,
       });
     }
 
     if (expired) {
-      restartCreateAccount({
+      return restartCreateAccount({
         request,
         reason: CreateAccountErrorReason.Expired,
         redirectTo: redirectTo ?? undefined,
       });
     }
 
-    const user = await db.transaction(async (trx) => {
-      const [existingUser] = await trx
-        .select(['id'])
-        .from(Table.Users)
-        .where({email})
-        .limit(1);
-
-      if (existingUser) {
-        // eslint-disable-next-line no-console
-        console.log(`Found existing user with email: ${email}`);
-        return existingUser;
-      }
-
-      const [newUser] = await trx
-        .insert({email})
-        .into(Table.Users)
-        .returning(['id']);
-
-      // eslint-disable-next-line no-console
-      console.log(`Created a new user for email: ${email}`);
-
-      return newUser;
+    const prisma = await loadPrisma();
+    const user = await prisma.user.upsert({
+      create: {email},
+      update: {email},
+      where: {email},
+      select: {id: true},
     });
 
     // eslint-disable-next-line no-console

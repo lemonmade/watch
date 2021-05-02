@@ -7,7 +7,7 @@ import {
   useCallback,
 } from 'react';
 import {classes} from '@lemon/css';
-import styles from './Rating.css';
+import styles from './Rating.module.css';
 
 interface Props {
   value?: number;

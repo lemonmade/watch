@@ -6,10 +6,14 @@
     "scripts/**/*.ts",
     "**/sewing-kit.config.ts",
     "**/tests/**/*.ts",
-    "**/tests/**/*.tsx"
+    "**/tests/**/*.tsx",
+    "**/infrastructure/**/*.ts"
   ],
   "compilerOptions": {
-    "outDir": "build/project/ts"
+    "outDir": "build/project/ts",
+    "paths": {
+      "global/*": ["./global/*"]
+    }
   },
   "references": [
     {
@@ -26,6 +30,9 @@
     },
     {
       "path": "./app"
+    },
+    {
+      "path": "./global"
     }
   ]
 }

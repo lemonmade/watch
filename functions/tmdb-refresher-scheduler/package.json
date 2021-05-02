@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "aws-sdk": "^2.839.0",
-    "knex": "^0.21.1"
+    "aws-sdk": "^2.839.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.73"

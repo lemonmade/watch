@@ -13,15 +13,12 @@ import {
 } from 'global/utilities/auth';
 import type {GithubOAuthMessage} from 'global/utilities/auth';
 import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
-import {createDatabaseConnection, Table} from 'shared/utilities/database';
-import type {Database} from 'shared/utilities/database';
 
-import {validateRedirectTo} from '../shared';
+import {validateRedirectTo, loadPrisma} from '../shared';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
 
-const CLIENT_ID = '60c6903025bfd274db53';
 const SCOPES = 'read:user';
 
 const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
@@ -52,7 +49,10 @@ export function startGithubOAuth(request: Request) {
   const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
-  githubOAuthUrl.searchParams.set(GithubSearchParam.ClientId, CLIENT_ID);
+  githubOAuthUrl.searchParams.set(
+    GithubSearchParam.ClientId,
+    process.env.GITHUB_CLIENT_ID!,
+  );
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
 
@@ -140,7 +140,7 @@ export function handleGithubOAuthCreateAccount(request: Request) {
         reason: CreateAccountErrorReason.GithubError,
       });
     },
-    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+    async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
       if (userIdFromExistingAccount) {
         // eslint-disable-next-line no-console
         console.log(
@@ -162,27 +162,24 @@ export function handleGithubOAuthCreateAccount(request: Request) {
       } = githubUser;
 
       try {
+        const prisma = await loadPrisma();
+
         // Don’t try to be clever here and give feedback to the user if
         // this failed because their email already exists. It’s tempting
         // to just log them in or tell them they have an account already,
         // but that feedback could be used to probe for emails.
-        const updatedUserId = await db.transaction(async (trx) => {
-          const [userId] = await trx
-            .insert({email})
-            .into(Table.Users)
-            .returning<string>('id');
-
-          await trx
-            .insert({
-              id: githubUserId,
-              userId,
-              username: login,
-              profileUrl: githubUserUrl,
-              avatarUrl,
-            })
-            .into(Table.GithubAccounts);
-
-          return userId;
+        const {id: updatedUserId} = await prisma.user.create({
+          data: {
+            email,
+            githubAccount: {
+              create: {
+                id: githubUserId,
+                username: login,
+                profileUrl: githubUserUrl,
+                avatarUrl,
+              },
+            },
+          },
         });
 
         // eslint-disable-next-line no-console
@@ -215,7 +212,7 @@ export function handleGithubOAuthConnect(request: Request) {
     onFailure({request, redirectTo}) {
       return restartConnect({redirectTo, request});
     },
-    async onSuccess({db, userIdFromExistingAccount, redirectTo, githubUser}) {
+    async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
       const userIdFromRequest = getUserIdFromRequest(request);
 
       if (userIdFromExistingAccount) {
@@ -252,15 +249,17 @@ export function handleGithubOAuthConnect(request: Request) {
       } = githubUser;
 
       try {
-        await db
-          .insert({
+        const prisma = await loadPrisma();
+
+        await prisma.githubAccount.create({
+          data: {
             id: githubUserId,
             userId: userIdFromRequest,
             username: login,
             profileUrl: githubUserUrl,
             avatarUrl,
-          })
-          .into(Table.GithubAccounts);
+          },
+        });
 
         // eslint-disable-next-line no-console
         console.log(
@@ -296,7 +295,6 @@ function completeConnect(
 }
 
 interface GithubCallbackResult {
-  readonly db: Database;
   readonly githubUser: GithubViewerQueryData.Viewer;
   readonly redirectTo?: string;
   readonly userIdFromExistingAccount?: string;
@@ -312,8 +310,6 @@ interface GithubCallbackFailureResult {
   readonly reason: GithubCallbackFailureReason;
   readonly redirectTo?: string;
 }
-
-const db = createDatabaseConnection();
 
 async function handleGithubOAuthCallback(
   request: Request,
@@ -344,7 +340,7 @@ async function handleGithubOAuthCallback(
   const {access_token: accessToken} = await fetchJson<{access_token: string}>(
     'https://github.com/login/oauth/access_token',
     {
-      client_id: CLIENT_ID,
+      client_id: process.env.GITHUB_CLIENT_ID,
       client_secret: process.env.GITHUB_CLIENT_SECRET,
       code,
       state,
@@ -383,14 +379,13 @@ async function handleGithubOAuthCallback(
     });
   }
 
-  const [account] = await db
-    .select(['userId'])
-    .from(Table.GithubAccounts)
-    .where({id: githubResult.viewer.id})
-    .limit(1);
+  const prisma = await loadPrisma();
+  const account = await prisma.githubAccount.findFirst({
+    where: {id: githubResult.viewer.id},
+    select: {userId: true},
+  });
 
   const response = await onSuccess({
-    db,
     redirectTo,
     githubUser: githubResult.viewer,
     userIdFromExistingAccount: account?.userId,

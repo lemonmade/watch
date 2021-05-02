@@ -1,4 +1,4 @@
-import styles from './DateField.css';
+import styles from './DateField.module.css';
 
 interface Props {
   id?: string;

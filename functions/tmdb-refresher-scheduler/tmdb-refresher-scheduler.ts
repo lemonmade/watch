@@ -1,30 +1,22 @@
 /* eslint-disable no-console */
 
-import knex from 'knex';
 import {SQS} from 'aws-sdk';
 import type {EventBridgeHandler} from 'aws-lambda';
 
-const db = knex({
-  client: 'pg',
-  connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-  },
-});
+import {createPrisma} from 'shared/utilities/database';
 
 const sqs = new SQS({apiVersion: '2012-11-05'});
+const prismaPromise = createPrisma();
 
 export const tmdbRefresherScheduler: EventBridgeHandler<
   string,
   unknown,
   unknown
 > = async () => {
-  const series = await db
-    .select('*')
-    .from('Series')
-    .where({status: 'RETURNING'});
+  const prisma = await prismaPromise;
+  const series = await prisma.series.findMany({
+    where: {status: 'RETURNING'},
+  });
 
   console.log(series);
 
@@ -34,7 +26,7 @@ export const tmdbRefresherScheduler: EventBridgeHandler<
         sqs.sendMessage(
           {
             MessageBody: JSON.stringify({}),
-            QueueUrl: process.env.WATCH_REFRESH_QUEUE_URL!,
+            QueueUrl: process.env.TMDB_REFRESHER_QUEUE_URL!,
             MessageAttributes: {
               id: {
                 DataType: 'String',

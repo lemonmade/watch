@@ -5,5 +5,5 @@ import {lambdaBuild} from '../../config/sewing-kit/plugins';
 
 export default createService((service) => {
   service.entry('./index');
-  service.use(quiltService({devServer: false}), lambdaBuild());
+  service.use(quiltService({devServer: false, build: false}), lambdaBuild());
 });

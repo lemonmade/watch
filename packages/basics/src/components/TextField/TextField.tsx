@@ -8,7 +8,7 @@ import type {SystemProps} from '../../system';
 import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
 
-import styles from './TextField.css';
+import styles from './TextField.module.css';
 
 interface Props extends SystemProps {
   id?: string;

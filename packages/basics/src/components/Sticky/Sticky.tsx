@@ -1,6 +1,6 @@
 import type {PropsWithChildren} from 'react';
 
-import styles from './Sticky.css';
+import styles from './Sticky.module.css';
 
 interface Props {}
 

@@ -3,7 +3,7 @@ import {classes, variation} from '@lemon/css';
 
 import {useUniqueId} from '../../utilities/id';
 
-import styles from './Layout.css';
+import styles from './Layout.module.css';
 
 export type Size = 'auto' | 'fill' | 'hidden' | false | number;
 export type ViewportSize = 'small' | 'medium' | 'large';

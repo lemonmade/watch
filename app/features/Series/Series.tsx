@@ -109,7 +109,11 @@ function SeriesWithData({
               <Button
                 onPress={async () => {
                   const {data} = await startWatchThrough({
-                    variables: {series: series.id, seasons: [id]},
+                    variables: {
+                      series: series.id,
+                      from: {season: number},
+                      to: {season: number},
+                    },
                   });
 
                   const watchThroughId =

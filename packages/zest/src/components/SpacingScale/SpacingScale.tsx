@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {classes, variation} from '@lemon/css';
-import styles from './SpacingScale.css';
+import styles from './SpacingScale.module.css';
 
 interface Props {
   children?: ReactNode;

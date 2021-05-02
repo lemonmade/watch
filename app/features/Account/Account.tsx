@@ -56,7 +56,7 @@ export function Account() {
         </Button>
         <GithubSection
           account={githubAccount ?? undefined}
-          onDisconnectAccount={() => {
+          onConnectionChange={() => {
             setKey((key) => key + 1);
           }}
         />
@@ -80,15 +80,15 @@ export function Account() {
 
 function GithubSection({
   account,
-  onDisconnectAccount,
+  onConnectionChange,
 }: {
   account?: AccountQueryData.Me.GithubAccount;
-  onDisconnectAccount(): void;
+  onConnectionChange(): void;
 }) {
   const disconnectAccount = useMutation(disconnectGithubAccountMutation);
 
   if (account == null) {
-    return <ConnectGithubAccount />;
+    return <ConnectGithubAccount onConnectionChange={onConnectionChange} />;
   }
 
   const {username, profileUrl} = account;
@@ -104,7 +104,7 @@ function GithubSection({
         <Button
           onPress={async () => {
             await disconnectAccount();
-            onDisconnectAccount();
+            onConnectionChange();
           }}
         >
           Disconnect <Text emphasis="strong">{username}</Text>
@@ -114,12 +114,17 @@ function GithubSection({
   );
 }
 
-function ConnectGithubAccount() {
+function ConnectGithubAccount({
+  onConnectionChange,
+}: {
+  onConnectionChange?(): void;
+}) {
   const currentUrl = useCurrentUrl();
   const [error, setError] = useState(false);
 
   const open = useGithubOAuthModal(GithubOAuthFlow.Connect, (event) => {
     setError(!event.success);
+    if (event.success) onConnectionChange?.();
   });
 
   const errorContent = error ? (

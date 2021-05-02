@@ -6,7 +6,7 @@ import type {KeywordValue, SystemProps} from '../../system';
 import {useImplicitAction, ariaForAction} from '../../utilities/actions';
 import type {ImplicitActionType} from '../../utilities/actions';
 
-import styles from './Pressable.css';
+import styles from './Pressable.module.css';
 
 export type Alignment = 'start' | 'center' | 'end';
 

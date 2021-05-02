@@ -2,9 +2,9 @@ import type {IResolvers} from 'graphql-tools';
 import fetch from 'node-fetch';
 
 import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
-import {Table} from 'shared/utilities/database';
 
 import type {
+  CreateClipsInitialVersion,
   ClipsExtensionPointSupportInput,
   ClipsExtensionConfigurationSchemaFieldsInput,
   ClipsExtensionConfigurationStringInput,
@@ -16,8 +16,8 @@ import {ClipsExtensionPointConditionInput} from './schema';
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
 export const Query: Resolver = {
-  me(_, __, {user, userLoader}) {
-    return userLoader.load(user.id);
+  me(_, __, {prisma, user}) {
+    return prisma.user.findFirst({where: {id: user.id}});
   },
   async search(_, {query}: {query?: string}, context) {
     if (!query?.length) {
@@ -30,13 +30,9 @@ export const Query: Resolver = {
     const cappedResults = results.slice(0, 5);
     const existingSeries =
       cappedResults.length > 0
-        ? await context.db
-            .select('*')
-            .from(Table.Series)
-            .whereIn(
-              'tmdbId',
-              cappedResults.map(({id}) => String(id)),
-            )
+        ? await context.prisma.series.findMany({
+            where: {tmdbId: {in: cappedResults.map(({id}) => String(id))}},
+          })
         : [];
 
     const idToResult = new Map(
@@ -56,48 +52,48 @@ export const Query: Resolver = {
     const returnedSeries = cappedResults.map(({id}) =>
       idToResult.get(String(id)),
     );
+
     return {series: returnedSeries};
   },
-  watch(_, {id}: {id: string}, {watchLoader}) {
-    return watchLoader.load(fromGid(id).id);
+  watch(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
-  series(_, {id}: {id: string}, {seriesLoader}) {
-    return seriesLoader.load(fromGid(id).id);
+  series(_, {id}: {id: string}, {prisma}) {
+    return prisma.series.findFirst({where: {id: fromGid(id).id}});
   },
-  subscription(_, {id}: {id: string}, {seriesSubscriptionsLoader}) {
-    return seriesSubscriptionsLoader.load(fromGid(id).id);
+  subscription(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.seriesSubscription.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
-  async subscriptions(_, __, {db, seriesSubscriptionsLoader, user}) {
-    const seriesSubscriptions = await db
-      .select('id')
-      .from(Table.SeriesSubscriptions)
-      .limit(50)
-      .where({userId: user.id});
-
-    return Promise.all(
-      seriesSubscriptions.map(({id}) => seriesSubscriptionsLoader.load(id)),
-    );
+  subscriptions(_, __, {user, prisma}) {
+    return prisma.seriesSubscription.findMany({
+      where: {userId: user.id},
+      orderBy: {createdAt: 'desc'},
+      take: 50,
+    });
   },
-  watchThrough(_, {id}: {id: string}, {watchThroughLoader}) {
-    return watchThroughLoader.load(fromGid(id).id);
+  watchThrough(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.watchThrough.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
   },
-  async watchThroughs(
+  watchThroughs(
     _,
-    {status = 'ONGOING'}: {status?: string},
-    {db, watchThroughLoader, user},
+    {
+      status = 'ONGOING',
+    }: {status?: import('@prisma/client').WatchThroughStatus},
+    {prisma, user},
   ) {
-    const watchThroughs = await db
-      .select('id')
-      .from(Table.WatchThroughs)
-      .where({status, userId: user.id})
-      .limit(50);
-
-    return Promise.all(
-      watchThroughs.map(({id}) => watchThroughLoader.load(id)),
-    );
+    return prisma.watchThrough.findMany({
+      where: {status, userId: user.id},
+      take: 50,
+    });
   },
-  app(_, {id}: {id: string}, {appsLoader}) {
-    return appsLoader.load(fromGid(id).id);
+  app(_, {id}: {id: string}, {prisma}) {
+    return prisma.app.findFirst({where: {id: fromGid(id).id}});
   },
   async clipsInstallations(
     _,
@@ -108,40 +104,24 @@ export const Query: Resolver = {
       extensionPoint: string;
       conditions?: ClipsExtensionPointConditionInput[];
     },
-    {db, clipsExtensionInstallationsLoader, user},
+    {user, prisma},
   ) {
-    const installations = await db
-      .select({
-        id: 'ClipsExtensionInstallations.id',
-        latestVersionId: 'ClipsExtensions.latestVersionId',
-      })
-      .from(Table.ClipsExtensionInstallations)
-      .join(
-        'ClipsExtensions',
-        'ClipsExtensions.id',
-        '=',
-        'ClipsExtensionInstallations.extensionId',
-      )
-      .where({
-        'ClipsExtensionInstallations.extensionPoint': extensionPoint,
-        'ClipsExtensionInstallations.userId': user.id,
-      })
-      .limit(50);
+    const installations = await prisma.clipsExtensionInstallation.findMany({
+      where: {
+        userId: user.id,
+        extensionPoint,
+        extension: {activeVersion: {status: 'PUBLISHED'}},
+      },
+      include: {
+        extension: {
+          select: {activeVersion: {select: {status: true, supports: true}}},
+        },
+      },
+      take: 50,
+    });
 
-    const versions = await db
-      .select(['id', 'supports', 'status'])
-      .from(Table.ClipsExtensionVersions)
-      .whereIn(
-        'id',
-        installations
-          .map((installation) => installation.latestVersionId)
-          .filter(Boolean),
-      );
-
-    const filteredInstallations = installations.filter((installation) => {
-      const version = versions.find(
-        (version) => version.id === installation.latestVersionId,
-      );
+    return installations.filter((installation) => {
+      const version = installation.extension.activeVersion;
 
       if (version == null || version.status !== 'PUBLISHED') {
         return false;
@@ -149,7 +129,7 @@ export const Query: Resolver = {
 
       return conditions.every((condition) => {
         if (condition.seriesId) {
-          return (version.supports ?? []).every((supports: any) => {
+          return ((version.supports as any[]) ?? []).every((supports: any) => {
             return (
               extensionPoint !== supports.extensionPoint ||
               supports.conditions.every(
@@ -164,38 +144,26 @@ export const Query: Resolver = {
         throw new Error();
       });
     });
-
-    return Promise.all(
-      filteredInstallations.map(({id}) =>
-        clipsExtensionInstallationsLoader.load(id),
-      ),
-    );
   },
-  clipsInstallation(
-    _,
-    {id}: {id: string},
-    {clipsExtensionInstallationsLoader},
-  ) {
-    return clipsExtensionInstallationsLoader.load(fromGid(id).id);
+  clipsInstallation(_, {id}: {id: string}, {prisma}) {
+    return prisma.clipsExtensionInstallation.findFirst({
+      where: {id: fromGid(id).id},
+    });
   },
 };
 
 interface Slice {
-  episodeNumber: number;
-  seasonNumber: number;
+  season: number;
+  episode?: number;
 }
 
 export const Mutation: Resolver = {
   async signIn(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
-    {db},
+    {prisma},
   ) {
-    const [user] = await db
-      .select('email')
-      .from(Table.Users)
-      .where({email})
-      .limit(1);
+    const user = await prisma.user.findFirst({where: {email}});
 
     if (user == null) {
       // Need to make this take roughly the same amount of time as
@@ -219,13 +187,12 @@ export const Mutation: Resolver = {
   async createAccount(
     _,
     {email, redirectTo}: {email: string; redirectTo?: string},
-    {db},
+    {prisma},
   ) {
-    const [user] = await db
-      .select('email')
-      .from(Table.Users)
-      .where({email})
-      .limit(1);
+    const user = await prisma.user.findFirst({
+      where: {email},
+      select: {id: true},
+    });
 
     if (user != null) {
       await enqueueSendEmail('signIn', {
@@ -249,19 +216,20 @@ export const Mutation: Resolver = {
 
     return {email};
   },
-  async deleteAccount(_, __, {db, user}) {
-    await db.delete().from(Table.Users).where({id: user.id});
-    return {deletedId: toGid(user.id, 'User')};
+  async deleteAccount(_, __, {prisma, user}) {
+    const deleted = await prisma.user.delete({where: {id: user.id}});
+    return {deletedId: toGid(deleted.id, 'User')};
   },
-  async disconnectGithubAccount(_, __, {db, user}) {
-    const [githubAccount] = await db
-      .delete()
-      .from(Table.GithubAccounts)
-      .where({userId: user.id})
-      .limit(1)
-      .returning('*');
+  async disconnectGithubAccount(_, __, {prisma, user}) {
+    const githubAccount = await prisma.githubAccount.findFirst({
+      where: {userId: user.id},
+    });
 
-    return {githubAccount};
+    if (githubAccount) {
+      await prisma.githubAccount.delete({where: {id: githubAccount.id}});
+    }
+
+    return {deletedAccount: githubAccount};
   },
   async watchEpisode(
     _,
@@ -280,43 +248,44 @@ export const Mutation: Resolver = {
       startedAt?: string;
       finishedAt?: string;
     },
-    {db, user, watchLoader, episodeLoader, watchThroughLoader},
+    {prisma, user},
   ) {
-    const episodeId = episodeGid && fromGid(episodeGid).id;
+    const episodeId = fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
 
-    const [watchId] = await db
-      .insert({
+    const validatedWatchThroughId = watchThroughId
+      ? (
+          await prisma.watchThrough.findFirst({
+            where: {id: watchThroughId, userId: user.id},
+            rejectOnNotFound: true,
+          })
+        ).id
+      : undefined;
+
+    const {episode, ...watch} = await prisma.watch.create({
+      data: {
         episodeId,
-        watchThroughId,
+        watchThroughId: validatedWatchThroughId,
         rating,
         notes,
         startedAt,
         finishedAt,
         userId: user.id,
-      })
-      .into(Table.Watches)
-      .returning<string>('id');
+      },
+      include: {
+        episode: true,
+      },
+    });
 
-    if (watchThroughId && watchId) {
-      await db
-        .update({watchId})
-        .from(Table.WatchThroughEpisodes)
-        .where({watchThroughId, episodeId});
+    let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
-      await updateWatchThrough(watchThroughId, {
-        db,
-        timestamp: startedAt ?? finishedAt,
+    if (validatedWatchThroughId) {
+      watchThrough = await updateWatchThrough(validatedWatchThroughId, {
+        prisma,
+        watch,
+        episode,
       });
     }
-
-    const [watch, episode, watchThrough] = await Promise.all([
-      watchLoader.load(watchId),
-      episodeLoader.load(episodeId),
-      watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : Promise.resolve(null),
-    ]);
 
     return {watch, episode, watchThrough};
   },
@@ -328,56 +297,58 @@ export const Mutation: Resolver = {
       notes,
       at,
     }: {episode: string; watchThrough?: string; notes?: string; at?: string},
-    {db, user, skipLoader, episodeLoader, watchThroughLoader},
+    {prisma, user},
   ) {
-    const episodeId = episodeGid && fromGid(episodeGid).id;
+    const episodeId = fromGid(episodeGid).id;
     const watchThroughId = watchThroughGid && fromGid(watchThroughGid).id;
 
-    const [skipId] = await db
-      .insert({
+    const validatedWatchThroughId = watchThroughId
+      ? (
+          await prisma.watchThrough.findFirst({
+            where: {id: watchThroughId, userId: user.id},
+            rejectOnNotFound: true,
+          })
+        ).id
+      : undefined;
+
+    const {episode, ...skip} = await prisma.skip.create({
+      data: {
         episodeId,
-        watchThroughId,
+        watchThroughId: validatedWatchThroughId,
         notes,
         at,
         userId: user.id,
-      })
-      .into(Table.Skips)
-      .returning<string>('id');
+      },
+      include: {
+        episode: true,
+      },
+    });
 
-    if (watchThroughId && skipId) {
-      await db
-        .update({skipId})
-        .from(Table.WatchThroughEpisodes)
-        .where({watchThroughId, episodeId});
+    let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
-      await updateWatchThrough(watchThroughId, {
-        db,
-        timestamp: at,
+    if (validatedWatchThroughId) {
+      watchThrough = await updateWatchThrough(validatedWatchThroughId, {
+        prisma,
+        skip,
+        episode,
       });
     }
 
-    const [skip, episode, watchThrough] = await Promise.all([
-      skipLoader.load(skipId),
-      episodeLoader.load(episodeId),
-      watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : Promise.resolve(null),
-    ]);
-
     return {skip, episode, watchThrough};
   },
-  async stopWatchThrough(
-    _,
-    {id: gid}: {id: string},
-    {db, watchThroughLoader, user},
-  ) {
+  async stopWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    await db
-      .from(Table.WatchThroughs)
-      .update({status: 'STOPPED'})
-      .where({id, userId: user.id});
-    const watchThrough = await watchThroughLoader.load(id);
+    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    const watchThrough = await prisma.watchThrough.update({
+      data: {status: 'STOPPED', updatedAt: new Date()},
+      where: {id: validatedWatchThrough.id},
+    });
 
     return {watchThrough};
   },
@@ -385,149 +356,123 @@ export const Mutation: Resolver = {
     _,
     {
       series: seriesGid,
-      seasons: seasonGids,
-      episodes: episodeGids,
+      from,
+      to,
       includeSpecials = false,
     }: {
       series: string;
-      seasons?: string[];
-      episodes?: string[];
+      from?: Slice;
+      to?: Slice;
       includeSpecials?: boolean;
     },
-    {db, user, watchThroughLoader},
+    {user, prisma},
   ) {
     const {id: seriesId} = fromGid(seriesGid);
 
-    const watchThroughId = await db.transaction(async (trx) => {
-      const episodes = [
-        ...((episodeGids && episodeGids.map((gid) => fromGid(gid).id)) || []),
-      ];
-
-      if (seasonGids) {
-        episodes.push(
-          ...((await trx
-            .select({id: 'Episodes.id'})
-            .from(Table.Episodes)
-            .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-            .whereIn(
-              'Episodes.seasonId',
-              seasonGids.map((gid) => fromGid(gid).id),
-            )
-            .orderBy(['Seasons.number', 'Episodes.number'])) as {
-            id: string;
-          }[]).map(({id}) => id),
-        );
-      }
-
-      if (seasonGids == null && episodeGids == null) {
-        episodes.push(
-          ...((await trx
-            .select({id: 'Episodes.id'})
-            .from(Table.Episodes)
-            .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-            .where((clause) => {
-              clause.where({'Episodes.seriesId': seriesId});
-
-              if (!includeSpecials) {
-                clause.whereNot({'Seasons.number': 0});
-              }
-            })
-            .orderBy(['Seasons.number', 'Episodes.number'])) as {
-            id: string;
-          }[]).map(({id}) => id),
-        );
-      }
-
-      const [{id: watchThroughId}] = await trx
-        .insert(
-          {
-            startedAt: new Date(),
-            seriesId,
-            userId: user.id,
-          },
-          ['id'],
-        )
-        .into(Table.WatchThroughs);
-
-      await trx
-        .insert(
-          episodes.map((episodeId, index) => ({
-            index,
-            episodeId,
-            watchThroughId,
-          })),
-        )
-        .into(Table.WatchThroughEpisodes);
-
-      return watchThroughId;
+    const series = await prisma.series.findFirst({
+      where: {id: seriesId},
+      include: {seasons: {select: {number: true}}},
+      rejectOnNotFound: true,
     });
 
-    const watchThrough = await watchThroughLoader.load(watchThroughId);
+    const normalizedFrom: Slice =
+      from ??
+      (includeSpecials && series.seasons.some((season) => season.number === 0)
+        ? {season: 0, episode: 1}
+        : {season: 1, episode: 1});
+
+    const normalizedTo: Slice = to ?? {
+      season: Math.max(...series.seasons.map((season) => season.number)),
+    };
+
+    const watchThrough = await prisma.watchThrough.create({
+      data: {
+        seriesId,
+        userId: user.id,
+        from: bufferFromSlice(normalizedFrom),
+        to: bufferFromSlice(normalizedTo),
+        current: bufferFromSlice({episode: 1, ...normalizedFrom}),
+      },
+    });
 
     return {watchThrough};
   },
-  async subscribeToSeries(_, {id: seriesGid}: {id: string}, {db, user}) {
-    const {id: seriesId} = fromGid(seriesGid);
-
-    const [subscription] = await db
-      .insert({seriesId, userId: user.id})
-      .into(Table.SeriesSubscriptions)
-      .returning('*');
+  async subscribeToSeries(_, {id}: {id: string}, {user, prisma}) {
+    const subscription = await prisma.seriesSubscription.create({
+      data: {seriesId: fromGid(id).id, userId: user.id},
+    });
 
     return {subscription};
   },
-  async deleteWatch(
-    _,
-    {id: gid}: {id: string},
-    {db, user, watchThroughLoader},
-  ) {
+  async deleteWatch(_, {id: gid}: {id: string}, {user, prisma}) {
     const {id} = fromGid(gid);
-    const [{watchThroughId}] = await db
-      .select('watchThroughId')
-      .from(Table.Watches)
-      .where({id, userId: User.id});
-    await db.from(Table.Watches).where({id, userId: user.id}).delete();
+
+    const validatedWatch = await prisma.watch.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    // We should be making sure we don’t need to reset the `current`
+    // field...
+    const {watchThrough} = await prisma.watch.delete({
+      where: {id: validatedWatch.id},
+      include: {watchThrough: true},
+    });
 
     return {
-      deletedWatchId: gid,
-      watchThrough: watchThroughId
-        ? watchThroughLoader.load(watchThroughId)
-        : null,
+      deletedWatchId: toGid(validatedWatch.id, 'Watch'),
+      watchThrough,
     };
   },
-  async deleteWatchThrough(_, {id: gid}: {id: string}, {db, user}) {
+  async deleteWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
     const {id} = fromGid(gid);
-    await db.from(Table.WatchThroughs).where({id, userId: user.id}).delete();
-    return {deletedWatchThroughId: gid};
+
+    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+      where: {id, userId: user.id},
+      select: {id: true},
+      rejectOnNotFound: true,
+    });
+
+    await prisma.watchThrough.delete({
+      where: {id: validatedWatchThrough.id},
+    });
+
+    return {
+      deletedWatchThroughId: toGid(validatedWatchThrough.id, 'WatchThrough'),
+    };
   },
+  // Should be gated on permissions, and should update watchthroughs async
   async updateSeason(
     _,
-    {id: gid, status}: {id: string; status: string},
-    {db, seasonLoader},
+    {
+      id: gid,
+      status,
+    }: {id: string; status: import('@prisma/client').SeasonStatus},
+    {prisma},
   ) {
     const {id} = fromGid(gid);
-    await db.from(Table.Seasons).where({id}).update({status});
+    const season = await prisma.season.update({where: {id}, data: {status}});
 
     if (status === 'ENDED') {
-      const watchThroughsToCheck = await db
-        .select({id: 'WatchThroughs.id', updatedAt: 'WatchThroughs.updatedAt'})
-        .from(Table.Seasons)
-        .join(
-          'WatchThroughs',
-          'WatchThroughs.seriesId',
-          '=',
-          'Seasons.seriesId',
-        )
-        .where({'Seasons.id': id, 'WatchThroughs.status': 'ONGOING'});
-
-      await Promise.all(
-        watchThroughsToCheck.map(({id, updatedAt}) =>
-          updateWatchThrough(id, {db, timestamp: updatedAt}),
-        ),
-      );
+      await prisma.watchThrough.updateMany({
+        where: {
+          to: bufferFromSlice({season: season.number}),
+          current: bufferFromSlice({
+            season: season.number,
+            episode: season.episodeCount + 1,
+          }),
+          seriesId: season.seriesId,
+          status: 'ONGOING',
+        },
+        data: {
+          status: 'FINISHED',
+          current: null,
+        },
+      });
     }
 
-    return {season: await seasonLoader.load(id)};
+    return {season};
   },
   async watchEpisodesFromSeries(
     _,
@@ -535,77 +480,74 @@ export const Mutation: Resolver = {
       series: seriesGid,
       slice,
     }: {series: string; slice?: {from?: Slice; to?: Slice}},
-    {db, user, seriesLoader},
+    {user, prisma},
   ) {
-    const {id: seriesId} = fromGid(seriesGid);
+    const {id} = fromGid(seriesGid);
 
-    await db.transaction(async (trx) => {
-      const episodes = (await trx
-        .select({id: 'Episodes.id'})
-        .from(Table.Episodes)
-        .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-        .where((clause) => {
-          clause.where({'Episodes.seriesId': seriesId});
+    const {from, to} = slice ?? {};
 
-          const {from, to} = slice ?? {};
-
-          if (from) {
-            clause.andWhere((clause) => {
-              clause
-                .where('Seasons.number', '>', from.seasonNumber)
-                .orWhere((clause) => {
-                  clause
-                    .where('Seasons.number', '=', from.seasonNumber)
-                    .andWhere('Episodes.number', '>', from.episodeNumber - 1);
-                });
-            });
-          }
-
-          if (to) {
-            clause.andWhere((clause) => {
-              clause
-                .where('Seasons.number', '<', to.seasonNumber)
-                .orWhere((clause) => {
-                  clause
-                    .where('Seasons.number', '=', to.seasonNumber)
-                    .andWhere('Episodes.number', '<', to.episodeNumber + 1);
-                });
-            });
-          }
-        })) as {id: string}[];
-
-      await trx
-        .insert(
-          episodes.map(({id: episodeId}) => ({
-            episodeId,
-            userId: user.id,
-          })),
-        )
-        .into(Table.Watches);
+    const series = await prisma.series.findFirst({
+      where: {id},
+      select: {
+        seasons: {
+          where:
+            from || to
+              ? {
+                  number: {gte: from?.season, lte: to?.season},
+                }
+              : undefined,
+          select: {
+            number: true,
+            episodes: {select: {id: true, number: true}},
+          },
+        },
+      },
+      rejectOnNotFound: true,
     });
 
-    const series = await seriesLoader.load(seriesId);
+    await prisma.watch.createMany({
+      data: series.seasons.reduce<
+        import('@prisma/client').Prisma.WatchCreateManyInput[]
+      >((watches, season) => {
+        let matchingEpisodes = season.episodes;
+
+        if (from?.episode && from.season === season.number) {
+          matchingEpisodes = matchingEpisodes.filter(
+            (episode) => episode.number >= from.episode!,
+          );
+        }
+
+        if (to?.episode && to.season === season.number) {
+          matchingEpisodes = matchingEpisodes.filter(
+            (episode) => episode.number <= to.episode!,
+          );
+        }
+
+        return [
+          ...watches,
+          ...matchingEpisodes.map(
+            (
+              episode,
+            ): import('@prisma/client').Prisma.WatchCreateManyInput => ({
+              userId: user.id,
+              episodeId: episode.id,
+            }),
+          ),
+        ];
+      }, []),
+    });
+
     return {series};
   },
-  async createApp(_, {name}: {name: string}, {db}) {
-    const [app] = await db.insert({name}, '*').into(Table.Apps);
-
-    return {app};
+  createApp(_, {name}: {name: string}, {prisma}) {
+    return prisma.app.create({data: {name}});
   },
-  async deleteApp(_, {id}: {id: string}, {db}) {
-    await db
-      .from(Table.Apps)
-      .where({id: fromGid(id).id})
-      .delete();
+  async deleteApp(_, {id}: {id: string}, {prisma}) {
+    await prisma.app.delete({where: {id: fromGid(id).id}});
     return {deletedId: id};
   },
-  async updateApp(_, {id, name}: {id: string; name?: string}, {db}) {
-    const [app] = await db
-      .update(name == null ? {} : {name}, '*')
-      .where({id: fromGid(id).id})
-      .into(Table.Apps);
-
-    return {app};
+  updateApp(_, {id, name}: {id: string; name?: string}, {prisma}) {
+    return prisma.app.update({where: {id: fromGid(id).id}, data: {name}});
   },
   async createClipsExtension(
     _,
@@ -616,58 +558,60 @@ export const Mutation: Resolver = {
     }: {
       appId: string;
       name: string;
-      initialVersion?: {
-        hash: string;
-        translations?: string;
-        supports?: ClipsExtensionPointSupportInput[];
-        configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
-      };
+      initialVersion?: CreateClipsInitialVersion;
     },
-    {db, appsLoader},
+    {prisma},
   ) {
-    const [extension] = await db
-      .insert({name, appId: fromGid(appId).id}, '*')
-      .into(Table.ClipsExtensions);
-
-    let additionalResults = {};
-
-    if (initialVersion) {
-      additionalResults = await createSignedClipsVersionUpload({
-        db,
+    const {app, ...extension} = await prisma.clipsExtension.create({
+      data: {
+        name,
         appId: fromGid(appId).id,
-        extensionId: extension.id,
-        extensionName: name,
-        ...initialVersion,
-      });
+      },
+      include: {app: true},
+    });
+
+    if (initialVersion == null) {
+      return {app, extension};
     }
 
+    const {
+      version: versionInput,
+      signedScriptUpload,
+    } = await createStagedClipsVersion({
+      appId: fromGid(appId).id,
+      extensionId: extension.id,
+      extensionName: name,
+      ...initialVersion,
+    });
+
+    const version = await prisma.clipsExtensionVersion.create({
+      data: {...versionInput, extensionId: extension.id, status: 'BUILDING'},
+    });
+
     return {
+      app,
       extension,
-      app: await appsLoader.load(fromGid(appId).id),
-      ...additionalResults,
+      version,
+      signedScriptUpload,
     };
   },
-  async deleteClipsExtension(_, {id}: {id: string}, {db, appsLoader}) {
-    const [{appId}] = await db
-      .select('appId')
-      .from(Table.ClipsExtensions)
-      .where({id: fromGid(id).id})
-      .limit(1);
+  async deleteClipsExtension(_, {id}: {id: string}, {prisma}) {
+    const {app} = await prisma.clipsExtension.delete({
+      where: {id: fromGid(id).id},
+      select: {app: true},
+    });
 
-    await db
-      .from(Table.ClipsExtensions)
-      .where({id: fromGid(id).id})
-      .delete();
-
-    return {deletedId: id, app: await appsLoader.load(appId)};
+    return {deletedId: id, app};
   },
-  async updateClipsExtension(_, {id, name}: {id: string; name?: string}, {db}) {
-    const [extension] = await db
-      .update(name == null ? {} : {name}, '*')
-      .where({id: fromGid(id).id})
-      .into(Table.ClipsExtensions);
+  updateClipsExtension(_, {id, name}: {id: string; name?: string}, {prisma}) {
+    if (name == null) {
+      throw new Error();
+    }
 
-    return {extension};
+    return prisma.clipsExtension.update({
+      data: {name},
+      where: {id: fromGid(id).id},
+    });
   },
   async pushClipsExtension(
     _,
@@ -686,91 +630,95 @@ export const Mutation: Resolver = {
       supports?: ClipsExtensionPointSupportInput[];
       configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
     },
-    {db, clipsExtensionsLoader},
+    {prisma},
   ) {
-    const [existingVersion] = await db
-      .select('*')
-      .from(Table.ClipsExtensionVersions)
-      .where({
-        status: 'BUILDING',
-        extensionId: fromGid(extensionId).id,
-      })
-      .limit(1);
+    const id = fromGid(extensionId).id;
 
-    const [details] = await db
-      .select({appId: 'Apps.id', extensionName: 'ClipsExtensions.name'})
-      .from(Table.Apps)
-      .join(Table.ClipsExtensions, 'ClipsExtensions.appId', '=', 'Apps.id')
-      .where({'ClipsExtensions.id': fromGid(extensionId).id})
-      .limit(1);
+    const existingVersion = await prisma.clipsExtensionVersion.findFirst({
+      where: {extensionId: id, status: 'BUILDING'},
+      select: {id: true},
+    });
 
-    const {version, signedScriptUpload} = await createSignedClipsVersionUpload({
-      db,
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id},
+      rejectOnNotFound: true,
+    });
+
+    const {
+      version: versionInput,
+      signedScriptUpload,
+    } = await createStagedClipsVersion({
       hash,
-      versionId: existingVersion?.id,
-      appId: details.appId,
-      extensionId: fromGid(extensionId).id,
-      extensionName: name ?? details.extensionName,
+      appId: extension.appId,
+      extensionId: id,
+      extensionName: name ?? extension.name,
       translations,
       supports,
       configurationSchema,
     });
 
+    if (existingVersion) {
+      const version = await prisma.clipsExtensionVersion.update({
+        where: {id: existingVersion.id},
+        data: {...versionInput},
+      });
+
+      return {
+        version,
+        signedScriptUpload,
+        extension,
+      };
+    }
+
+    const version = await prisma.clipsExtensionVersion.create({
+      data: {...versionInput, extensionId: id, status: 'BUILDING'},
+    });
+
     return {
+      extension,
       version,
       signedScriptUpload,
-      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
     };
   },
   async publishLatestClipsExtensionVersion(
     _,
     {extensionId}: {extensionId: string},
-    {db, clipsExtensionsLoader},
+    {prisma},
   ) {
-    const [version] = await db
-      .select({id: 'ClipsExtensionVersions.id'})
-      .from(Table.ClipsExtensions)
-      .join(
-        Table.ClipsExtensionVersions,
-        'ClipsExtensionVersions.extensionId',
-        '=',
-        'ClipsExtensions.id',
-      )
-      .where({
-        'ClipsExtensions.id': fromGid(extensionId).id,
-        'ClipsExtensionVersions.status': 'BUILDING',
-      })
-      .limit(1);
+    const result = await prisma.clipsExtensionVersion.findFirst({
+      where: {status: 'BUILDING', extensionId: fromGid(extensionId).id},
+      include: {extension: true},
+    });
 
-    if (version == null) {
+    if (result == null) {
       return {};
     }
 
-    await db.transaction(async (trx) => {
-      await Promise.all([
-        trx
-          .update({status: 'PUBLISHED'}, '*')
-          .into(Table.ClipsExtensionVersions)
-          .where({id: version.id}),
+    const {extension, ...version} = result;
 
-        trx
-          .update({latestVersionId: version.id})
-          .into(Table.ClipsExtensions)
-          .where({id: fromGid(extensionId).id}),
-      ]);
-    });
+    await prisma.$transaction([
+      prisma.clipsExtensionVersion.update({
+        where: {id: version.id},
+        data: {status: 'PUBLISHED'},
+      }),
+      prisma.clipsExtension.update({
+        where: {id: extension.id},
+        data: {activeVersionId: version.id},
+      }),
+    ]);
 
     return {
       version,
-      extension: await clipsExtensionsLoader.load(fromGid(extensionId).id),
+      extension,
     };
   },
-  async installApp(_, {id}: {id: string}, {db, user, appsLoader}) {
-    const [installation] = await db
-      .insert({appId: fromGid(id).id, userId: user.id}, '*')
-      .into(Table.AppInstallations);
+  async installApp(_, {id}: {id: string}, {user, prisma}) {
+    const {app, ...installation} = await prisma.appInstallation.create({
+      data: {appId: fromGid(id).id, userId: user.id},
+      include: {app: true},
+    });
 
-    return {app: await appsLoader.load(fromGid(id).id), installation};
+    return {app, installation};
   },
   async installClipsExtension(
     _,
@@ -779,59 +727,66 @@ export const Mutation: Resolver = {
       extensionPoint,
       configuration,
     }: {id: string; extensionPoint: string; configuration?: string},
-    {db, user, clipsExtensionsLoader},
+    {user, prisma},
   ) {
-    const [appInstallation] = await db
-      .select({id: 'AppInstallations.id'})
-      .from(Table.ClipsExtensions)
-      .join(
-        Table.AppInstallations,
-        'AppInstallations.appId',
-        '=',
-        'ClipsExtensions.appId',
-      )
-      .where({'ClipsExtensions.id': fromGid(id).id})
-      .limit(1);
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id: fromGid(id).id},
+      rejectOnNotFound: true,
+    });
+
+    const appInstallation = await prisma.appInstallation.findFirst({
+      where: {userId: user.id, appId: extension.appId},
+    });
 
     if (appInstallation == null) {
       throw new Error(`You must install the app for extension ${id} first`);
     }
 
-    const [installation] = await db
-      .insert(
-        {
-          extensionId: fromGid(id).id,
-          appInstallId: appInstallation.id,
-          extensionPoint,
-          configuration,
-          userId: user.id,
-        },
-        '*',
-      )
-      .into(Table.ClipsExtensionInstallations);
+    const installation = await prisma.clipsExtensionInstallation.create({
+      data: {
+        userId: user.id,
+        extensionId: extension.id,
+        extensionPoint,
+        configuration,
+        appInstallationId: appInstallation.id,
+      },
+    });
 
     return {
-      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      extension,
       installation,
     };
   },
   async updateClipsExtensionInstallation(
     _,
     {id, configuration}: {id: string; configuration?: string},
-    {db, user, clipsExtensionsLoader},
+    {user, prisma},
   ) {
-    const [installation] = await db
-      .update(
-        {
-          configuration,
-        },
-        '*',
-      )
-      .from(Table.ClipsExtensionInstallations)
-      .where({id: fromGid(id).id, userId: user.id});
+    const installationDetails = await prisma.clipsExtensionInstallation.findFirst(
+      {
+        where: {id: fromGid(id).id},
+        select: {id: true, userId: true},
+        rejectOnNotFound: true,
+      },
+    );
+
+    if (installationDetails.userId !== user.id) {
+      throw new Error();
+    }
+
+    const {
+      extension,
+      ...installation
+    } = await prisma.clipsExtensionInstallation.update({
+      where: {id: installationDetails.id},
+      include: {extension: true},
+      data: {
+        configuration,
+      },
+    });
 
     return {
-      extension: await clipsExtensionsLoader.load(fromGid(id).id),
+      extension,
       installation,
     };
   },
@@ -845,10 +800,6 @@ export const Reviewable: Resolver = {
   __resolveType: resolveType,
 };
 
-export const WatchThroughEpisodeAction: Resolver = {
-  __resolveType: resolveType,
-};
-
 export const AppExtension: Resolver = {
   __resolveType: resolveType,
 };
@@ -857,374 +808,259 @@ export const AppExtensionInstallation: Resolver = {
   __resolveType: resolveType,
 };
 
-export const User: Resolver = {
+export const User: Resolver<import('@prisma/client').User> = {
   id: ({id}) => toGid(id, 'User'),
-  githubAccount: async ({id}, _, {db}) => {
-    const [result] = await db
-      .select('*')
-      .from(Table.GithubAccounts)
-      .where({userId: id})
-      .limit(1);
-
-    return result;
+  githubAccount: async ({id}, _, {prisma}) => {
+    const account = await prisma.githubAccount.findFirst({where: {userId: id}});
+    return account;
   },
 };
 
-export const GithubAccount: Resolver = {
+export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
   avatarImage: ({avatarUrl}: {avatarUrl?: string}) => {
     return {source: avatarUrl};
   },
 };
 
-export const Series: Resolver<{
-  id: string;
-  poster?: string;
-}> = {
+export const Series: Resolver<import('@prisma/client').Series> = {
   id: ({id}) => toGid(id, 'Series'),
-  async season({id}, {number}: {number: number}, {db}) {
-    const seasonResults = await db
-      .select('*')
-      .from(Table.Seasons)
-      .where({seriesId: id, number})
-      .limit(1);
-    return seasonResults[0] || null;
+  season({id}, {number}: {number: number}, {prisma}) {
+    return prisma.season.findFirst({where: {seriesId: id, number}});
   },
-  async seasons({id}, _, {db, seasonLoader}) {
-    const seasons = await db
-      .select('id')
-      .from(Table.Seasons)
-      .where({seriesId: id});
-    return Promise.all(seasons.map(({id}) => seasonLoader.load(id)));
+  seasons({id}, _, {prisma}) {
+    return prisma.season.findMany({where: {seriesId: id}});
   },
-  async episode(
+  episode(
     {id},
-    {number, seasonNumber}: {number: number; seasonNumber: string},
-    {db},
+    {number, seasonNumber}: {number: number; seasonNumber: number},
+    {prisma},
   ) {
-    const [seasonResult] = await db
-      .select('id')
-      .from(Table.Seasons)
-      .where({seriesId: id, number: seasonNumber})
-      .limit(1);
-    const episodeResult = seasonResult
-      ? await db
-          .select('*')
-          .from(Table.Episodes)
-          .where({seriesId: id, seasonId: seasonResult.id, number})
-          .limit(1)
-      : null;
-    return episodeResult && episodeResult[0];
+    return prisma.episode.findFirst({
+      where: {number, season: {number: seasonNumber, seriesId: id}},
+    });
   },
-  async episodes({id}, _, {db, episodeLoader}) {
-    const seasons = await db
-      .select('id')
-      .from(Table.Episodes)
-      .where({seriesId: id});
-    return Promise.all(seasons.map(({id}) => episodeLoader.load(id)));
+  episodes({id}, _, {prisma}) {
+    return prisma.episode.findMany({take: 50, where: {season: {seriesId: id}}});
   },
-  poster({poster}) {
-    return poster ? {source: poster} : null;
+  poster({posterUrl}) {
+    return posterUrl ? {source: posterUrl} : null;
   },
 };
 
-export const Season: Resolver = {
+export const Season: Resolver<import('@prisma/client').Season> = {
   id: ({id}) => toGid(id, 'Season'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
-  async episodes({id, seriesId}, _, {db, episodeLoader}) {
-    const episodes = await db
-      .select('id')
-      .from(Table.Episodes)
-      .where({seriesId, seasonId: id});
-    return Promise.all(episodes.map(({id}) => episodeLoader.load(id)));
+  async episodes({id}, _, {prisma}) {
+    const episodes = await prisma.episode.findMany({
+      where: {seasonId: id},
+      orderBy: {number: 'asc'},
+    });
+
+    return episodes;
   },
-  poster({poster}) {
-    return poster ? {source: poster} : null;
+  poster({posterUrl}) {
+    return posterUrl ? {source: posterUrl} : null;
   },
   isSpecials({number}) {
     return number === 0;
   },
 };
 
-export const Episode: Resolver = {
+export const Episode: Resolver<import('@prisma/client').Episode> = {
   id: ({id}) => toGid(id, 'Episode'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
-  },
-  season({seasonId}, _, {seasonLoader}) {
-    return seasonLoader.load(seasonId);
-  },
-  still({still}) {
-    return still ? {source: still} : null;
-  },
-  async watches({id}, _, {db, watchLoader}) {
-    const watches = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({episodeId: id})
-      .limit(50);
-    return Promise.all(watches.map(({id}) => watchLoader.load(id)));
-  },
-  async latestWatch({id}, __, {db, watchLoader}) {
-    const [lastWatch] = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({episodeId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(1);
+  async series({seasonId}, _, {prisma}) {
+    const foundSeason = await prisma.season.findFirst({
+      where: {id: seasonId},
+      select: {series: true},
+    });
 
-    return lastWatch ? watchLoader.load(lastWatch.id) : null;
+    return foundSeason?.series;
+  },
+  season({seasonId}, _, {prisma}) {
+    return prisma.season.findFirst({where: {id: seasonId}});
+  },
+  still({stillUrl}) {
+    return stillUrl ? {source: stillUrl} : null;
+  },
+  watches({id}, _, {prisma, user}) {
+    return prisma.watch.findMany({
+      where: {episodeId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestWatch({id}, __, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {episodeId: id, userId: user.id},
+      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
+    });
   },
 };
 
-export const WatchThroughEpisode: Resolver<{
-  id: string;
-  watchId?: string;
-  skipId?: string;
-  watchThroughId: string;
-  episodeId?: string;
-}> = {
-  id: ({id}) => toGid(id, 'WatchThroughEpisode'),
-  episode({episodeId}, _, {episodeLoader}) {
-    return episodeId ? episodeLoader.load(episodeId) : null;
-  },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughLoader.load(watchThroughId);
-  },
-  finished({watchId, skipId}) {
-    return watchId != null || skipId != null;
-  },
-  action({watchId, skipId}, _, {watchLoader, skipLoader}) {
-    if (watchId != null)
-      return watchLoader.load(watchId).then(addResolvedType('Watch'));
-
-    if (skipId != null)
-      return skipLoader.load(skipId).then(addResolvedType('Skip'));
-
-    return null;
-  },
-};
-
-export const WatchThrough: Resolver<{id: string; seriesId: string}> = {
+export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
-  async watches({id}, _, {db, user, watchLoader}) {
-    const watches = await db
-      .select('id')
-      .from(Table.Watches)
-      .where({watchThroughId: id, userId: user.id})
-      .limit(50);
-    return Promise.all(watches.map(({id}) => watchLoader.load(id)));
+  watches({id}, _, {user, prisma}) {
+    return prisma.watch.findMany({
+      where: {watchThroughId: id, userId: user.id},
+      take: 50,
+    });
   },
-  async episodes(
-    {id},
-    {
-      watched,
-      finished,
-    }: {watched?: 'WATCHED' | 'UNWATCHED'; finished?: boolean},
-    {db},
+  async unfinishedEpisodeCount(
+    {seriesId, current: currentBuffer, to: toBuffer},
+    _,
+    {prisma},
   ) {
-    const episodes = await db
-      .from(Table.WatchThroughEpisodes)
-      .select('*')
-      .where((clause) => {
-        clause.where({watchThroughId: id});
+    if (currentBuffer == null) return 0;
 
-        if (finished) {
-          clause.whereNotNull('watchId').orWhereNotNull('skipId');
-        }
+    const to = sliceFromBuffer(toBuffer);
+    const current = sliceFromBuffer(currentBuffer);
 
-        if (watched === 'WATCHED') {
-          clause.whereNotNull('watchId');
-        } else if (watched === 'UNWATCHED') {
-          clause.whereNull('watchId');
-        }
-      })
-      .orderBy('index', 'asc')
-      .limit(50);
+    // This logic is a bit incorrect right now, because there can be
+    // episodes that are in the future. For now, the client can query
+    // `nextEpisode` to check for that case
+    const {seasons} = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {
+        seasons: {
+          where: {number: {gte: current.season, lte: to.season}},
+          select: {number: true, episodeCount: true},
+        },
+      },
+      rejectOnNotFound: true,
+    });
 
-    return episodes;
+    return seasons.reduce((count, season) => {
+      if (current.season > season.number || to.season < season.number) {
+        return count;
+      }
+
+      return current.season === season.number
+        ? season.episodeCount - current.episode! + 1
+        : season.episodeCount;
+    }, 0);
   },
-  unfinishedEpisodeCount({id: watchThroughId}, _, {db}) {
-    return unfinishedEpisodeCount(watchThroughId, {db});
-  },
-  async nextEpisode({id}, _, {db, episodeLoader}) {
-    const [episodeId] = (await db
-      .from(Table.WatchThroughEpisodes)
-      .pluck('episodeId')
-      .where({watchThroughId: id})
-      .andWhere((clause) => clause.whereNull('skipId').whereNull('watchId'))
-      .orderBy('index', 'asc')
-      .limit(50)) as string[];
+  nextEpisode({current, seriesId}, _, {prisma}) {
+    if (current == null) return null;
 
-    return episodeId ? episodeLoader.load(episodeId) : null;
-  },
-  async lastAction({id}, _, {db, watchLoader, skipLoader}) {
-    const [action] = await db
-      .from(Table.WatchThroughEpisodes)
-      .select(['watchId', 'skipId'])
-      .where((clause) => {
-        clause.whereNotNull('watchId').orWhereNotNull('skipId');
-      })
-      .where({watchThroughId: id})
-      .orderBy('index', 'desc')
-      .limit(1);
+    const slice = sliceFromBuffer(current);
 
-    if (action == null) {
-      return null;
-    }
-
-    const {watchId, skipId} = action;
-
-    if (watchId != null)
-      return watchLoader.load(watchId).then(addResolvedType('Watch'));
-
-    if (skipId != null)
-      return skipLoader.load(skipId).then(addResolvedType('Skip'));
-
-    return null;
-  },
-  async lastEpisode({id}, _, {db}) {
-    const [lastEpisode] = await db
-      .from(Table.WatchThroughEpisodes)
-      .select('*')
-      .where((clause) => {
-        clause.whereNotNull('watchId').orWhereNotNull('skipId');
-      })
-      .where({watchThroughId: id})
-      .orderBy('index', 'desc')
-      .limit(1);
-
-    return lastEpisode || null;
+    return prisma.episode.findFirst({
+      where: {number: slice.episode, season: {number: slice.season, seriesId}},
+    });
   },
 };
 
-export const SeriesSubscription: Resolver<{
-  id: string;
-  seriesId: string;
-  createdAt: string;
-}> = {
+export const SeriesSubscription: Resolver<
+  import('@prisma/client').SeriesSubscription
+> = {
   id: ({id}) => toGid(id, 'SeriesSubscription'),
   subscribedOn: ({createdAt}) => createdAt,
-  series({seriesId}, _, {seriesLoader}) {
-    return seriesLoader.load(seriesId);
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({where: {id: seriesId}});
   },
 };
 
-export const Watch: Resolver<{
-  id: string;
-  episodeId?: string;
-  watchThroughId?: string;
-}> = {
+export const Watch: Resolver<import('@prisma/client').Watch> = {
   id: ({id}) => toGid(id, 'Watch'),
-  media({episodeId}, _, {episodeLoader}) {
-    return episodeId
-      ? episodeLoader.load(episodeId).then(addResolvedType('Episode'))
-      : null;
+  async media({episodeId}, _, {prisma}) {
+    const episode = await prisma.episode.findFirst({
+      where: {id: episodeId},
+      rejectOnNotFound: true,
+    });
+
+    return addResolvedType('Episode')(episode);
   },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
   },
 };
 
-export const Skip: Resolver<{
-  id: string;
-  episodeId?: string;
-  watchThroughId?: string;
-}> = {
+export const Skip: Resolver<import('@prisma/client').Skip> = {
   id: ({id}) => toGid(id, 'Skip'),
-  media({episodeId}, _, {episodeLoader}) {
-    return episodeId
-      ? episodeLoader.load(episodeId).then(addResolvedType('Episode'))
-      : null;
+  async media({episodeId}, _, {prisma}) {
+    const episode = await prisma.episode.findFirst({
+      where: {id: episodeId},
+      rejectOnNotFound: true,
+    });
+
+    return addResolvedType('Episode')(episode);
   },
-  watchThrough({watchThroughId}, _, {watchThroughLoader}) {
-    return watchThroughId ? watchThroughLoader.load(watchThroughId) : null;
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
   },
 };
 
-export const App: Resolver<{id: string}> = {
+export const App: Resolver<import('@prisma/client').App> = {
   id: ({id}) => toGid(id, 'App'),
-  async extensions({id}, _, {db, clipsExtensionsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensions)
-      .select('id')
-      .where({appId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
+  async extensions({id}, _, {prisma}) {
+    const extensions = await prisma.clipsExtension.findMany({
+      where: {appId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
 
-    return Promise.all(
-      versions.map(({id}) =>
-        clipsExtensionsLoader.load(id).then(addResolvedType('ClipsExtension')),
-      ),
-    );
+    return extensions.map(addResolvedType('ClipsExtension'));
   },
 };
 
-export const AppInstallation: Resolver<{
-  id: string;
-  appId: string;
-}> = {
+export const AppInstallation: Resolver<
+  import('@prisma/client').AppInstallation
+> = {
   id: ({id}) => toGid(id, 'AppInstallation'),
-  app: ({appId}, _, {appsLoader}) => appsLoader.load(fromGid(appId).id),
-  async extensions({id}, _, {db, clipsExtensionInstallationsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensionInstallations)
-      .select('id')
-      .where({appInstallId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
+  app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
+  async extensions({id}, _, {prisma}) {
+    const installations = await prisma.clipsExtensionInstallation.findMany({
+      where: {appInstallationId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
 
-    return Promise.all(
-      versions.map(({id}) =>
-        clipsExtensionInstallationsLoader
-          .load(id)
-          .then(addResolvedType('ClipsExtensionInstallation')),
-      ),
-    );
+    return installations.map(addResolvedType('ClipsExtensionInstallation'));
   },
 };
 
-export const ClipsExtension: Resolver<{
-  id: string;
-  appId: string;
-  latestVersionId?: string;
-}> = {
+export const ClipsExtension: Resolver<
+  import('@prisma/client').ClipsExtension
+> = {
   id: ({id}) => toGid(id, 'ClipsExtension'),
-  app: ({appId}, _, {appsLoader}) => appsLoader.load(appId),
-  latestVersion({latestVersionId}, _, {clipsExtensionVersionsLoader}) {
-    return latestVersionId
-      ? clipsExtensionVersionsLoader.load(latestVersionId)
-      : null;
-  },
-  async versions({id}, _, {db, clipsExtensionVersionsLoader}) {
-    const versions = await db
-      .from(Table.ClipsExtensionVersions)
-      .select('id')
-      .where({extensionId: id})
-      .orderBy('createdAt', 'desc')
-      .limit(50);
-
-    return Promise.all(
-      versions.map(({id}) => clipsExtensionVersionsLoader.load(id)),
+  app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
+  latestVersion({activeVersionId}, _, {prisma}) {
+    return (
+      activeVersionId &&
+      prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
     );
+  },
+  async versions({id}, _, {prisma}) {
+    const versions = await prisma.clipsExtensionVersion.findMany({
+      where: {extensionId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
+
+    return versions;
   },
 };
 
-export const ClipsExtensionVersion: Resolver<{
-  id: string;
-  extensionId: string;
-  scriptUrl?: string;
-  supports?: Record<string, unknown>[];
-  translations?: Record<string, unknown>;
-  configurationSchema?: Record<string, unknown>[];
-}> = {
+export const ClipsExtensionVersion: Resolver<
+  import('@prisma/client').ClipsExtensionVersion
+> = {
   id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
-  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
-    clipsExtensionsLoader.load(extensionId),
+  extension: ({extensionId}, _, {prisma}) =>
+    prisma.clipsExtension.findFirst({where: {id: extensionId}}),
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
   translations: ({translations}) =>
     translations && JSON.stringify(translations),
@@ -1277,26 +1113,21 @@ export const ClipsExtensionConfigurationField: Resolver = {
   __resolveType: resolveClipsConfigurationField,
 };
 
-export const ClipsExtensionInstallation: Resolver<{
-  id: string;
-  extensionId: string;
-  appInstallId: string;
-  configuration?: Record<string, unknown>;
-}> = {
+export const ClipsExtensionInstallation: Resolver<
+  import('@prisma/client').ClipsExtensionInstallation
+> = {
   id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
-  extension: ({extensionId}, _, {clipsExtensionsLoader}) =>
-    clipsExtensionsLoader.load(extensionId),
-  appInstallation: ({appInstallId}, _, {appInstallationsLoader}) =>
-    appInstallationsLoader.load(appInstallId),
-  async version(
-    {extensionId},
-    _,
-    {clipsExtensionsLoader, clipsExtensionVersionsLoader},
-  ) {
-    const extension = (await clipsExtensionsLoader.load(extensionId)) as any;
-    return extension?.latestVersionId
-      ? clipsExtensionVersionsLoader.load(extension.latestVersionId)
-      : null;
+  extension: ({extensionId}, _, {prisma}) =>
+    prisma.clipsExtension.findFirst({where: {id: extensionId}}),
+  appInstallation: ({appInstallationId}, _, {prisma}) =>
+    prisma.appInstallation.findFirst({where: {id: appInstallationId}}),
+  async version({extensionId}, _, {prisma}) {
+    const extension = await prisma.clipsExtension.findFirst({
+      where: {id: extensionId},
+      select: {activeVersion: true},
+    });
+
+    return extension?.activeVersion;
   },
   configuration: ({configuration}) =>
     configuration ? JSON.stringify(configuration) : null,
@@ -1392,71 +1223,79 @@ interface TmdbEpisode {
   still_path?: string;
 }
 
+// Assumes you already validated ownership of the watchthrough!
 async function updateWatchThrough(
-  watchThroughId: string,
-  {db, timestamp = 'now()'}: Pick<Context, 'db'> & {timestamp?: string},
+  id: string,
+  {
+    prisma,
+    episode,
+    ...action
+  }: Pick<Context, 'prisma'> & {
+    episode: import('@prisma/client').Episode;
+  } & (
+      | {watch: import('@prisma/client').Watch}
+      | {skip: import('@prisma/client').Skip}
+    ),
 ) {
-  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {db}))
-    ? {status: 'FINISHED', finishedAt: timestamp}
-    : {};
-
-  await db
-    .from(Table.WatchThroughs)
-    .where({id: watchThroughId})
-    .update({...finishedUpdate, updatedAt: timestamp});
-}
-
-async function watchThroughIsFinished(
-  watchThroughId: string,
-  {db}: Pick<Context, 'db'>,
-) {
-  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {
-    db,
+  const watchThrough = await prisma.watchThrough.findFirst({
+    where: {id},
+    rejectOnNotFound: true,
   });
 
-  if (unfinishedEpisodes !== 0) return false;
+  const episodeNumber = episode.number;
 
-  const [watched] = await db
-    .from(Table.WatchThroughEpisodes)
-    .pluck<string>('episodeId')
-    .where({watchThroughId})
-    .andWhere((clause) => clause.whereNotNull('watchId'))
-    .orderBy('index', 'desc')
-    .limit(1);
+  const season = await prisma.season.findFirst({
+    where: {id: episode.seasonId},
+    select: {status: true, number: true, episodeCount: true},
+    rejectOnNotFound: true,
+  });
 
-  const [season] = await db
-    .from(Table.Episodes)
-    .select({id: 'Seasons.id', status: 'Seasons.status'})
-    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-    .whereIn('Episodes.id', [watched]);
+  const to = sliceFromBuffer(watchThrough.to);
 
-  return season?.status === 'ENDED';
+  const nextEpisodeInSeasonNumber =
+    episodeNumber === season.episodeCount ? undefined : episodeNumber + 1;
+
+  const updatedAt =
+    'watch' in action
+      ? action.watch.finishedAt ??
+        action.watch.startedAt ??
+        action.watch.createdAt
+      : action.skip.at ?? action.skip.createdAt;
+
+  if (
+    to.season === season.number &&
+    (to.episode === episodeNumber ||
+      (to.episode == null &&
+        nextEpisodeInSeasonNumber == null &&
+        season.status === 'ENDED'))
+  ) {
+    return prisma.watchThrough.update({
+      where: {id},
+      data: {
+        status: 'FINISHED',
+        current: null,
+        updatedAt,
+        finishedAt: updatedAt,
+      },
+    });
+  }
+
+  return prisma.watchThrough.update({
+    where: {id},
+    data: {
+      current: Buffer.from([
+        nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
+        nextEpisodeInSeasonNumber ?? 1,
+      ]),
+      updatedAt,
+    },
+  });
 }
 
-async function unfinishedEpisodeCount(
-  watchThroughId: string,
-  {db}: Pick<Context, 'db'>,
+async function loadTmdbSeries(
+  tmdbId: string,
+  {prisma}: Pick<Context, 'prisma'>,
 ) {
-  const [{count}] = await db
-    .from(Table.WatchThroughEpisodes)
-    .join('Episodes', 'Episodes.id', '=', 'WatchThroughEpisodes.episodeId')
-    .where((clause) => {
-      clause
-        .where({watchThroughId})
-        .whereNull('WatchThroughEpisodes.watchId')
-        .whereNull('WatchThroughEpisodes.skipId');
-    })
-    .where(
-      'Episodes.firstAired',
-      '<',
-      db.raw(`CURRENT_DATE + interval '1 day'`),
-    )
-    .count({count: 'WatchThroughEpisodes.id'});
-
-  return parseInt(String(count), 10);
-}
-
-async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
   const [seriesResult, seriesIds] = await Promise.all([
     tmdbFetch<TmdbSeries>(`/tv/${tmdbId}`),
     tmdbFetch<TmdbExternalIds>(`/tv/${tmdbId}/external_ids`),
@@ -1470,82 +1309,64 @@ async function loadTmdbSeries(tmdbId: string, {db}: Pick<Context, 'db'>) {
     )
   ).filter(({season_number: seasonNumber}) => seasonNumber != null);
 
-  return db.transaction(async (trx) => {
-    const [series] = await trx
-      .insert(
-        {
-          tmdbId,
-          imdbId: seriesIds.imdb_id,
-          name: seriesResult.name,
-          firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
-          status: tmdbStatusToEnum(seriesResult.status),
-          overview: seriesResult.overview || null,
-          poster: seriesResult.poster_path
-            ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
-            : null,
-        },
-        '*',
-      )
-      .into(Table.Series);
-
-    const {id: seriesId} = series;
-
-    const seasonsToInsert = seasonResults.map((season) => ({
-      seriesId,
-      number: season.season_number,
-      firstAired: tmdbAirDateToDate(season.air_date),
-      overview: season.overview ?? null,
-      status:
-        season.season_number === seriesResult.number_of_seasons &&
-        tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
-          ? 'CONTINUING'
-          : 'ENDED',
-      poster: season.poster_path
-        ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+  const series = await prisma.series.create({
+    data: {
+      tmdbId: String(tmdbId),
+      imdbId: seriesIds.imdb_id,
+      name: seriesResult.name,
+      firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
+      status: tmdbStatusToEnum(seriesResult.status),
+      overview: seriesResult.overview || null,
+      posterUrl: seriesResult.poster_path
+        ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
         : null,
-    }));
-
-    const seasonIds: {id: string; number: number}[] =
-      seasonsToInsert.length > 0
-        ? await trx
-            .insert(seasonsToInsert, ['id', 'number'])
-            .into(Table.Seasons)
-        : [];
-
-    const seasonToId = new Map(seasonIds.map(({id, number}) => [number, id]));
-
-    const episodesToInsert = seasonResults.reduce<any[]>((episodes, season) => {
-      return [
-        ...episodes,
-        ...season.episodes.map((episode) => ({
-          seriesId,
-          seasonId: seasonToId.get(episode.season_number),
-          number: episode.episode_number,
-          title: episode.name,
-          firstAired: tmdbAirDateToDate(episode.air_date),
-          overview: episode.overview || null,
-          still: episode.still_path
-            ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-            : null,
-        })),
-      ];
-    }, []);
-
-    if (episodesToInsert.length > 0) {
-      await trx.insert(episodesToInsert, ['id']).into(Table.Episodes);
-    }
-
-    return series;
+      seasonCount: seasonResults.length,
+      seasons: {
+        create: seasonResults.map(
+          (
+            season,
+          ): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput => ({
+            number: season.season_number,
+            firstAired: tmdbAirDateToDate(season.air_date),
+            overview: season.overview ?? null,
+            status:
+              season.season_number === seriesResult.number_of_seasons &&
+              tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
+                ? 'CONTINUING'
+                : 'ENDED',
+            posterUrl: season.poster_path
+              ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+              : null,
+            episodeCount: season.episodes.length,
+            episodes: {
+              create: season.episodes.map(
+                (
+                  episode,
+                ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({
+                  number: episode.episode_number,
+                  title: episode.name,
+                  firstAired: tmdbAirDateToDate(episode.air_date),
+                  overview: episode.overview || null,
+                  stillUrl: episode.still_path
+                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+                    : null,
+                }),
+              ),
+            },
+          }),
+        ),
+      },
+    },
   });
+
+  return series;
 }
 
-async function createSignedClipsVersionUpload({
+async function createStagedClipsVersion({
   hash,
   appId,
   extensionId,
   extensionName,
-  versionId,
-  db,
   translations,
   supports,
   configurationSchema,
@@ -1554,12 +1375,7 @@ async function createSignedClipsVersionUpload({
   appId: string;
   extensionId: string;
   extensionName: string;
-  versionId?: string;
-  db: Context['db'];
-  translations?: string;
-  supports?: ClipsExtensionPointSupportInput[];
-  configurationSchema?: ClipsExtensionConfigurationSchemaFieldsInput[];
-}) {
+} & CreateClipsInitialVersion) {
   const [
     {S3Client, PutObjectCommand},
     {getSignedUrl},
@@ -1590,97 +1406,77 @@ async function createSignedClipsVersionUpload({
     expiresIn: 3_600,
   });
 
-  const upsert = {
+  const version: Omit<
+    import('@prisma/client').Prisma.ClipsExtensionVersionCreateWithoutExtensionInput,
+    'status'
+  > = {
     scriptUrl: `https://watch.lemon.tools/${path}`,
-    translations,
+    apiVersion: 'UNSTABLE',
+    translations: translations && JSON.parse(translations),
     supports:
       supports &&
-      JSON.stringify(
-        supports.map(({extensionPoint, conditions}) => {
-          return {
-            extensionPoint,
-            conditions: conditions?.map((condition) => {
-              let resolvedCondition;
+      (supports.map(({extensionPoint, conditions}) => {
+        return {
+          extensionPoint,
+          conditions: conditions?.map((condition) => {
+            let resolvedCondition;
 
-              if (condition.seriesId) {
-                resolvedCondition = {type: 'series', id: condition.seriesId};
-              }
+            if (condition.seriesId) {
+              resolvedCondition = {type: 'series', id: condition.seriesId};
+            }
 
-              if (resolvedCondition == null) {
-                throw new Error();
-              }
+            if (resolvedCondition == null) {
+              throw new Error();
+            }
 
-              return resolvedCondition;
-            }),
-          };
-        }),
-      ),
+            return resolvedCondition;
+          }),
+        };
+      }) as any),
     configurationSchema:
       configurationSchema &&
-      JSON.stringify(
-        configurationSchema.map(
-          ({
-            string: stringField,
-            number: numberField,
-            options: optionsField,
-          }) => {
-            if (stringField) {
-              const {key, label, default: defaultValue} = stringField;
+      (configurationSchema.map(
+        ({string: stringField, number: numberField, options: optionsField}) => {
+          if (stringField) {
+            const {key, label, default: defaultValue} = stringField;
 
-              return {
-                type: 'string',
-                key,
-                default: defaultValue,
+            return {
+              type: 'string',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+            };
+          }
+
+          if (numberField) {
+            const {key, label, default: defaultValue} = numberField;
+
+            return {
+              type: 'number',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+            };
+          }
+
+          if (optionsField) {
+            const {key, label, options, default: defaultValue} = optionsField;
+            return {
+              type: 'options',
+              key,
+              default: defaultValue,
+              label: normalizeClipsString(label),
+              options: options.map(({label, value}) => ({
+                value,
                 label: normalizeClipsString(label),
-              };
-            }
-
-            if (numberField) {
-              const {key, label, default: defaultValue} = numberField;
-
-              return {
-                type: 'number',
-                key,
-                default: defaultValue,
-                label: normalizeClipsString(label),
-              };
-            }
-
-            if (optionsField) {
-              const {key, label, options, default: defaultValue} = optionsField;
-              return {
-                type: 'options',
-                key,
-                default: defaultValue,
-                label: normalizeClipsString(label),
-                options: options.map(({label, value}) => ({
-                  value,
-                  label: normalizeClipsString(label),
-                })),
-              };
-            }
-          },
-        ),
-      ),
+              })),
+            };
+          }
+        },
+      ) as any),
   };
 
-  const [version] = versionId
-    ? await db
-        .update(upsert, '*')
-        .into(Table.ClipsExtensionVersions)
-        .where({id: versionId})
-    : await db
-        .insert(
-          {
-            extensionId,
-            status: 'BUILDING',
-            ...upsert,
-          },
-          '*',
-        )
-        .into(Table.ClipsExtensionVersions);
-
-  return {version, signedScriptUpload};
+  return {signedScriptUpload, version};
 }
 
 function normalizeClipsString({
@@ -1711,4 +1507,17 @@ function toGid(id: string, type: string) {
 
 function toParam(name: string) {
   return name.trim().toLocaleLowerCase().replace(/\s+/g, '-');
+}
+
+function bufferFromSlice(slice: Slice) {
+  return slice.episode == null
+    ? Buffer.from([slice.season])
+    : Buffer.from([slice.season, slice.episode]);
+}
+
+function sliceFromBuffer(buffer: Buffer): Slice {
+  const sliceArray = new Uint8Array(buffer);
+  return sliceArray.length === 1
+    ? {season: sliceArray[0]}
+    : {season: sliceArray[0], episode: sliceArray[1]};
 }

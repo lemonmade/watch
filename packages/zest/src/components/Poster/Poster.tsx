@@ -1,4 +1,4 @@
-import styles from './Poster.css';
+import styles from './Poster.module.css';
 
 interface Props {
   source: string;

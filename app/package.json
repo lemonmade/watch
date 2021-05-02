@@ -6,7 +6,7 @@
     "@lemon/basics": "*",
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@quilted/quilt": "^0.4.22",
+    "@quilted/quilt": "^0.4.26",
     "@remote-ui/async-subscription": "^2.0.0",
     "@remote-ui/core": "^2.0.0",
     "@remote-ui/react": "^4.0.0",
@@ -14,7 +14,7 @@
     "@watching/clips": "*",
     "@watching/webpack-hot-worker": "*",
     "preact": "^10.4.4",
-    "preact-render-to-string": "^5.1.9",
+    "preact-render-to-string": "^5.1.19",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

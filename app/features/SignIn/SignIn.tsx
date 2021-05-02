@@ -27,7 +27,7 @@ enum SearchParam {
   RedirectTo = 'redirect',
 }
 
-export function SignIn() {
+export default function SignIn() {
   return useRoutes([
     {match: '/', render: () => <SignInForm />},
     {match: 'check-your-email', render: () => <CheckYourEmail />},
