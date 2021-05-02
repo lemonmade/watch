@@ -10,7 +10,7 @@
     "build": "skn build",
     "packages:version": "lerna version --include-merged-tags --no-private",
     "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
-    "cdk": "babel-node --extensions .ts,.tsx,.mjs,.js,.json ./scripts/cdk.ts",
+    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\"",
     "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
   },
   "workspaces": {
@@ -63,6 +63,10 @@
     "@prisma/client": "^2.21.2",
     "@quilted/aws": "^0.2.19",
     "@quilted/sewing-kit-plugins": "^0.2.16",
+    "@rollup/plugin-alias": "^3.0.0",
+    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-json": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
     "@sewing-kit/cli": "^0.3.4",
     "@sewing-kit/eslint-plugin": "^0.0.16",
     "@types/common-tags": "^1.8.0",
@@ -76,6 +80,7 @@
     "postcss-preset-env": "^6.7.0",
     "prisma": "^2.21.2",
     "raw-loader": "^4.0.1",
+    "rollup-plugin-esbuild": "^4.0.0",
     "sewing-kit-plugin-knex": "^0.1.0",
     "sewing-kit-plugin-webpack-virtual-modules": "^0.1.1",
     "vite": "^2.2.1",

@@ -1,67 +1,98 @@
-import {
-  Task,
-  Service,
-  createProjectPlugin,
-  createComposedProjectPlugin,
-} from '@sewing-kit/plugins';
-import {virtualModules} from 'sewing-kit-plugin-webpack-virtual-modules';
+import {Service, createProjectBuildPlugin} from '@sewing-kit/plugins';
+import {stripIndent} from 'common-tags';
 
 const PLUGIN = 'LambdaBuild';
 
 export function lambdaBuild() {
-  return createComposedProjectPlugin<Service>(PLUGIN, [
-    virtualModules(
-      ({project, api}) => {
-        const entry = project.fs.resolvePath(project.entry ?? 'index');
+  return createProjectBuildPlugin<Service>(
+    PLUGIN,
+    ({api, project, workspace, hooks}) => {
+      hooks.steps.hook((steps) => [
+        ...steps,
+        api.createStep(
+          {
+            id: PLUGIN,
+            label: `Build lambda output for ${project.name}`,
+          },
+          async () => {
+            const [
+              {rollup},
+              {default: json},
+              {default: alias},
+              {default: commonjs},
+              {default: nodeResolve},
+              {default: esbuild},
+            ] = await Promise.all([
+              import('rollup'),
+              import('@rollup/plugin-json'),
+              import('@rollup/plugin-alias'),
+              import('@rollup/plugin-commonjs'),
+              import('@rollup/plugin-node-resolve'),
+              import('rollup-plugin-esbuild'),
+            ]);
 
-        return {
-          [api.tmpPath(`lambda-wrapper/${project.name}.js`)]: `
-            import * as handlerModule from ${JSON.stringify(entry)};
-      
-            const handler = getHandler();
-      
-            export {handler};
-      
-            function getHandler() {
-              if (typeof handlerModule.default === 'function') return handlerModule.default;
-              if (typeof handlerModule.handler === 'function') return handlerModule.handler;
-              if (typeof handlerModule.main === 'function') return handlerModule.main;
-      
-              throw new Error('No handler found in module ' + ${JSON.stringify(
-                entry,
-              )});
-            }
-          `,
-        };
-      },
-      {asEntry: true, include: [Task.Build]},
-    ),
-    createProjectPlugin(
-      `${PLUGIN}.WebpackConfig`,
-      ({workspace, tasks: {build}}) => {
-        build.hook(({hooks}) => {
-          hooks.target.hook(({hooks}) => {
-            hooks.configure.hook((configure) => {
-              configure.webpackExternals?.hook((externals) => [
-                ...externals,
-                'aws-sdk',
-              ]);
-              configure.webpackAliases?.hook((aliases) => ({
-                ...aliases,
-                shared: workspace.fs.resolvePath('functions/shared'),
-              }));
-              configure.webpackOutputFilename?.hook(() => 'index.js');
-              configure.webpackConfig?.hook((config) => ({
-                ...config,
-                output: {
-                  ...config.output,
-                  libraryTarget: 'commonjs2',
+            const entry = project.fs.resolvePath(project.entry!);
+            const magicEntry = 'lambda-build/entry.js';
+
+            const bundle = await rollup({
+              input: magicEntry,
+              plugins: [
+                json(),
+                {
+                  name: 'lambda-build/magic-entry',
+                  resolveId(id) {
+                    if (id === magicEntry) return id;
+                  },
+                  load(id) {
+                    if (id === magicEntry) {
+                      return stripIndent`
+                        export {default as handler} from ${JSON.stringify(
+                          entry,
+                        )};
+                      `;
+                    }
+                  },
                 },
-              }));
+                alias({
+                  entries: {
+                    global: workspace.fs.resolvePath('global'),
+                    shared: workspace.fs.resolvePath('functions/shared'),
+                  },
+                }),
+                nodeResolve({
+                  exportConditions: ['esnext', 'import', 'require', 'default'],
+                  extensions: [
+                    '.tsx',
+                    '.ts',
+                    '.esnext',
+                    '.mjs',
+                    '.js',
+                    '.json',
+                  ],
+                  preferBuiltins: true,
+                }),
+                commonjs(),
+                esbuild({
+                  target: 'node14',
+                  loaders: {
+                    '.esnext': 'js',
+                  },
+                }),
+              ],
+              external: ['aws-sdk', '@prisma/client'],
             });
-          });
-        });
-      },
-    ),
-  ]);
+
+            await bundle.write({
+              dir:
+                workspace.services.length > 1
+                  ? workspace.fs.buildPath('services', project.name)
+                  : workspace.fs.buildPath('service'),
+              format: 'commonjs',
+              entryFileNames: 'index.js',
+            });
+          },
+        ),
+      ]);
+    },
+  );
 }

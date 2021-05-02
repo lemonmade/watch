@@ -9,7 +9,7 @@
     }
   },
   "include": ["**/*", "../config/typescript/globals.d.ts"],
-  "exclude": ["sewing-kit.config.ts", "build"],
+  "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
   "references": [
     {
       "path": "../global"

@@ -14,16 +14,14 @@ import type {} from '@sewing-kit/plugin-webpack';
 
 import type {TransformPluginContext} from 'rollup';
 
-import {CDN_ROOT} from '../config/deploy/constants';
-
 export default createWebApp((app) => {
   app.entry('./index');
   app.use(
     quiltWebApp({
       preact: true,
-      autoServer: false,
+      autoServer: true,
       assetServer: false,
-      cdn: CDN_ROOT,
+      cdn: 'https://watch.lemon.tools/assets/app/',
       features: ['base', 'fetch'],
       browserGroups: ['evergreen', 'latest-chrome'],
     }),

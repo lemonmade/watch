@@ -16,5 +16,15 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
       },
     },
+    {
+      files: ['**/infrastructure/**/*', '**/infrastructure.ts'],
+      rules: {
+        // The CDK uses classes for everything, so this rule is violated
+        // constantly :(
+        'no-new': 'off',
+        // Don’t want to install the CDK all over the place
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
   ],
 };

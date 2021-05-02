@@ -7,7 +7,6 @@ import {
 } from '@sewing-kit/plugin-webpack';
 
 import {
-  knex,
   functionConvenienceAliases,
   httpDev,
 } from '../../config/sewing-kit/plugins';
@@ -21,7 +20,6 @@ export default createService((service) => {
   service.use(
     // quiltService({devServer: {ip: 'localhost', port: 8080}}),
     quiltService({devServer: false, features: ['base', 'fetch']}),
-    knex(),
     webpackAliases({'any-promise': anyPromiseStub}),
     noopModuleWithWebpack(/vue-template-compiler/),
     lambda(),

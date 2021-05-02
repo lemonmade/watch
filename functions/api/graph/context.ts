@@ -2,7 +2,8 @@ import type {Request, Response} from '@quilted/http-handlers';
 
 import {createPrisma} from 'shared/utilities/database';
 
-export type Context = ReturnType<typeof createContext>;
+type ThenType<T> = T extends Promise<infer U> ? U : never;
+export type Context = ThenType<ReturnType<typeof createContext>>;
 
 interface MutableResponse {
   status: Response['status'];

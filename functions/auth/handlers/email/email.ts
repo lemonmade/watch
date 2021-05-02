@@ -11,11 +11,8 @@ import {
   verifySignedToken,
   addAuthCookies,
 } from 'shared/utilities/auth';
-import {Prisma} from 'shared/utilities/database';
 
-import {validateRedirectTo} from '../shared';
-
-const prisma = new Prisma();
+import {validateRedirectTo, loadPrisma} from '../shared';
 
 export async function signInFromEmail(request: Request) {
   const token = request.url.searchParams.get(SearchParam.Token);
@@ -53,6 +50,7 @@ export async function signInFromEmail(request: Request) {
       `Signing in user with email: ${email}, redirect to: ${redirectTo}`,
     );
 
+    const prisma = await loadPrisma();
     const user = await prisma.user.findFirst({where: {email}});
 
     if (user == null) {
@@ -101,6 +99,7 @@ export async function createAccountFromEmail(request: Request) {
       });
     }
 
+    const prisma = await loadPrisma();
     const user = await prisma.user.upsert({
       create: {email},
       update: {email},

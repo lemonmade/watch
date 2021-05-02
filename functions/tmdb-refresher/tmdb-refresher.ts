@@ -1,7 +1,19 @@
 /* eslint-disable no-console */
 
-import knex from 'knex';
 import type {SQSHandler} from 'aws-lambda';
+
+import {createPrisma} from 'shared/utilities/database';
+
+interface TmdbSeries {
+  name: string;
+  overview?: string;
+  status: string;
+  poster_path?: string;
+  number_of_seasons: number;
+  first_air_date?: string;
+  next_episode_to_air?: TmdbEpisode;
+  last_episode_to_air?: TmdbEpisode;
+}
 
 interface TmdbEpisode {
   episode_number: number;
@@ -19,15 +31,7 @@ interface TmdbSeason {
   episodes: TmdbEpisode[];
 }
 
-const db = knex({
-  client: 'pg',
-  connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-  },
-});
+const prismaPromise = createPrisma();
 
 export const tmdbRefresher: SQSHandler = async (event) => {
   console.log(JSON.stringify(event, null, 2));
@@ -80,7 +84,18 @@ async function updateSeries({
 
   log(`Updating series`);
 
-  const seasons = await db.select('*').from('Seasons').where({seriesId});
+  const prisma = await prismaPromise;
+
+  const seasons = await prisma.season.findMany({
+    where: {seriesId},
+    select: {
+      id: true,
+      number: true,
+      status: true,
+      episodes: {select: {id: true, number: true}},
+    },
+  });
+
   const seasonToId = new Map(seasons.map(({id, number}) => [number, id]));
   const seasonNumbers = new Set(seasons.map((season) => season.number));
   const continuingSeasons = seasons
@@ -89,7 +104,7 @@ async function updateSeries({
   const seasonsToUpdate = new Set(continuingSeasons);
 
   log(`Updating continuing seasons: ${[...continuingSeasons].join(', ')}`);
-  const seriesResult = await tmdbFetch(`/tv/${tmdbId}`);
+  const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
   log(JSON.stringify(seriesResult, null, 2));
 
   for (let i = 1; i <= seriesResult.number_of_seasons; i++) {
@@ -109,304 +124,118 @@ async function updateSeries({
 
   console.log(seasonsToUpdate, seasonNumbers, seriesResult.number_of_seasons);
 
-  await db.transaction(async (trx) => {
-    await trx
-      .update({
+  const updateSeasons: import('@prisma/client').Prisma.SeasonUpdateArgs[] = [];
+  const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] = [];
+  const completedWatchthroughs: import('@prisma/client').Prisma.WatchThroughWhereInput[] = [];
+
+  for (const season of seasonResults) {
+    const id = seasonToId.get(season.season_number);
+    const isEnded =
+      season.season_number === seriesResult.number_of_seasons &&
+      (tmdbStatusToEnum(seriesResult.status) !== 'RETURNING' ||
+        (seriesResult.next_episode_to_air == null &&
+          isOlderThanThirtyDays(seriesResult.last_episode_to_air)));
+
+    if (id) {
+      if (isEnded) {
+        completedWatchthroughs.push({
+          current: bufferFromSlice({
+            season: season.season_number,
+            episode: season.episodes.length + 1,
+          }),
+          to: bufferFromSlice({season: season.season_number}),
+        });
+      }
+
+      updateSeasons.push({
+        where: {id},
+        data: {
+          ...tmdbSeasonToSeasonInput(season, seriesResult),
+          episodes: {
+            upsert: season.episodes.map((episode) => {
+              const episodeInput = tmdbEpisodeToCreateInput(episode);
+
+              return {
+                where: {
+                  seasonId_number: {
+                    seasonId: id,
+                    number: episode.episode_number,
+                  },
+                },
+                create: episodeInput,
+                update: episodeInput,
+              };
+            }),
+          },
+        },
+      });
+
+      results.push(
+        `**${name}** (updated existing season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${season.season_number} => \`${id}\``,
+      );
+    } else {
+      createSeasons.push({
+        ...tmdbSeasonToSeasonInput(season, seriesResult),
+      });
+
+      results.push(
+        `**${name}** (add new season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${season.season_number}`,
+      );
+    }
+  }
+
+  const [series] = await prisma.$transaction([
+    prisma.series.update({
+      where: {id: seriesId},
+      include: {
+        seasons: {
+          include: {episodes: true},
+        },
+      },
+      data: {
         name: seriesResult.name,
         firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
         status: tmdbStatusToEnum(seriesResult.status),
         overview: seriesResult.overview || null,
-        poster: seriesResult.poster_path
+        posterUrl: seriesResult.poster_path
           ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
           : null,
-      })
-      .into('Series')
-      .where({id: seriesId});
+        seasons: {
+          create: createSeasons,
+        },
+        // seasons: {
+        //   upsert: [
 
-    for (const season of seasonResults) {
-      const id = seasonToId.get(season.season_number);
-
-      if (id) {
-        const isEnded =
-          season.season_number === seriesResult.number_of_seasons &&
-          (tmdbStatusToEnum(seriesResult.status) !== 'RETURNING' ||
-            (seriesResult.next_episode_to_air == null &&
-              isOlderThanThirtyDays(seriesResult.last_episode_to_air)));
-
-        const [{firstAired}] = await trx
-          .update(
-            {
-              number: season.season_number,
-              firstAired: tmdbAirDateToDate(season.air_date),
-              overview: season.overview ?? null,
-              status: isEnded ? 'ENDED' : 'CONTINUING',
-              poster: season.poster_path
-                ? `https://image.tmdb.org/t/p/original${season.poster_path}`
-                : null,
-            },
-            ['firstAired'],
-          )
-          .into('Seasons')
-          .where({id});
-
-        const episodesFromDb: {number: number}[] = await trx
-          .select('*')
-          .from('Episodes')
-          .where({seasonId: id, seriesId});
-        const episodesByNumber = new Set(
-          episodesFromDb.map((episode) => episode.number),
-        );
-        const createdEpisodes = [];
-
-        for (const episode of season.episodes) {
-          if (episodesByNumber.has(episode.episode_number)) {
-            await trx
-              .update(
-                {
-                  number: episode.episode_number,
-                  title: episode.name,
-                  firstAired: tmdbAirDateToDate(episode.air_date),
-                  overview: episode.overview || null,
-                  still: episode.still_path
-                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-                    : null,
-                },
-                ['id'],
-              )
-              .into('Episodes')
-              .where({seasonId: id, seriesId, number: episode.episode_number});
-          } else {
-            const [{id: episodeId}] = await trx
-              .insert(
-                {
-                  seriesId,
-                  seasonId: id,
-                  number: episode.episode_number,
-                  title: episode.name,
-                  firstAired: tmdbAirDateToDate(episode.air_date),
-                  overview: episode.overview || null,
-                  still: episode.still_path
-                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-                    : null,
-                },
-                ['id'],
-              )
-              .into('Episodes');
-
-            const watchThroughs: {id: string; index: number}[] = await trx
-              .select({
-                id: 'WatchThroughs.id',
-                number: 'Episodes.number',
-                index: 'WatchThroughEpisodes.index',
-              })
-              .from('WatchThroughs')
-              .join(
-                'WatchThroughEpisodes',
-                'WatchThroughEpisodes.watchThroughId',
-                '=',
-                'WatchThroughs.id',
-              )
-              .join(
-                'Episodes',
-                'Episodes.id',
-                '=',
-                'WatchThroughEpisodes.episodeId',
-              )
-              .orderBy('Episodes.number', 'desc')
-              .limit(1)
-              .where({
-                'WatchThroughs.seriesId': seriesId,
-                'Episodes.seasonId': id,
-                'Episodes.number': episode.episode_number - 1,
-              });
-
-            const newWatchThroughEpisodes = watchThroughs.map(
-              (watchThrough) => ({
-                watchThroughId: watchThrough.id,
-                index: watchThrough.index + 1,
-                episodeId,
-              }),
-            );
-
-            await trx
-              .insert(newWatchThroughEpisodes)
-              .into('WatchThroughEpisodes');
-            createdEpisodes.push(episodeId);
-          }
-        }
-
-        results.push(
-          `**${name}** (updated existing season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${
-            season.season_number
-          }${
-            firstAired ? ` (started ${formatDate(firstAired)})` : ''
-          } => \`${id}\`${
-            createdEpisodes.length > 0
-              ? `\n${createdEpisodes
-                  .map((id) => `Episode => ${id}`)
-                  .join('\n')}`
-              : ''
-          }`,
-        );
-      } else {
-        const [{id: seasonId, firstAired}] = await trx
-          .insert(
-            {
+        //   ]
+        // }
+      },
+    }),
+    ...updateSeasons.map((update) => prisma.season.update(update)),
+    ...(completedWatchthroughs.length > 0
+      ? [
+          prisma.watchThrough.updateMany({
+            data: {current: null, status: 'FINISHED'},
+            where: {
               seriesId,
-              number: season.season_number,
-              status:
-                season.season_number === seriesResult.number_of_seasons &&
-                tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
-                  ? 'CONTINUING'
-                  : 'ENDED',
-              firstAired: tmdbAirDateToDate(season.air_date),
-              overview: season.overview || null,
-              poster: season.poster_path
-                ? `https://image.tmdb.org/t/p/original${season.poster_path}`
-                : null,
+              status: 'ONGOING',
+              OR: completedWatchthroughs,
             },
-            ['id', 'number', 'firstAired'],
-          )
-          .into('Seasons');
+          }),
+        ]
+      : []),
+  ]);
 
-        const episodesToInsert = season.episodes.map((episode) => ({
-          seriesId,
-          seasonId,
-          number: episode.episode_number,
-          title: episode.name,
-          firstAired: tmdbAirDateToDate(episode.air_date),
-          overview: episode.overview || null,
-          still: episode.still_path
-            ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-            : null,
-        }));
-
-        const insertedEpisodes = await trx
-          .insert(episodesToInsert, ['id'])
-          .into('Episodes');
-
-        console.log({insertedEpisodes});
-
-        const [{id: watchThroughId}] = await trx
-          .insert(
-            {
-              startedAt: new Date(),
-              seriesId,
-            },
-            ['id'],
-          )
-          .into('WatchThroughs');
-
-        await trx
-          .insert(
-            insertedEpisodes.map(({id: episodeId}, index) => ({
-              index,
-              episodeId,
-              watchThroughId,
-            })),
-          )
-          .into('WatchThroughEpisodes');
-
-        results.push(
-          `**${name}** (add new season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nhttp://localhost:8082/watchthrough/${watchThroughId}\nSeason ${
-            season.season_number
-          }${
-            firstAired ? ` (started ${formatDate(firstAired)})` : ''
-          } => \`${seasonId}\`\n${episodesToInsert
-            .map((episode) => `Episode ${episode.number} => `)
-            .join('\n')}`,
-        );
-      }
-    }
-
-    const watchThroughsToCheck = await db
-      .select({id: 'WatchThroughs.id', updatedAt: 'WatchThroughs.updatedAt'})
-      .from('Seasons')
-      .join('WatchThroughs', 'WatchThroughs.seriesId', '=', 'Seasons.seriesId')
-      .where({'Seasons.id': seriesId, 'WatchThroughs.status': 'ONGOING'});
-
-    await Promise.all(
-      watchThroughsToCheck.map(({id, updatedAt}) =>
-        updateWatchThrough(id, {db: trx, timestamp: updatedAt}),
-      ),
-    );
-  });
+  results.push(JSON.stringify(series, null, 2));
 
   console.log(results.join('\n\n'));
   return results.join('\n\n');
 }
 
-function isOlderThanThirtyDays(episode: {air_date: string}) {
-  if (episode == null) return false;
+function isOlderThanThirtyDays(episode?: {air_date?: string}) {
+  if (episode?.air_date == null) return false;
 
   const airDate = new Date(episode.air_date);
   return Date.now() - airDate.getTime() >= 30 * 24 * 60 * 60 * 1000;
-}
-
-type Database = ReturnType<typeof knex>;
-
-async function updateWatchThrough(
-  watchThroughId: string,
-  {timestamp = 'now()', db}: {timestamp?: string; db: Database},
-) {
-  const finishedUpdate = (await watchThroughIsFinished(watchThroughId, {db}))
-    ? {status: 'FINISHED', finishedAt: timestamp}
-    : {};
-
-  await db
-    .from('WatchThroughs')
-    .where({id: watchThroughId})
-    .update({...finishedUpdate, updatedAt: timestamp});
-}
-
-async function watchThroughIsFinished(
-  watchThroughId: string,
-  {db}: {db: Database},
-) {
-  const unfinishedEpisodes = await unfinishedEpisodeCount(watchThroughId, {db});
-
-  if (unfinishedEpisodes !== 0) return false;
-
-  const watched = await db
-    .from('WatchThroughEpisodes')
-    .select('*')
-    .where({watchThroughId})
-    .andWhere((clause) => clause.whereNotNull('watchId'))
-    .orderBy('index', 'desc')
-    .limit(1);
-
-  if (watched == null) return false;
-
-  const [season] = await db
-    .from('Episodes')
-    .select({id: 'Seasons.id', status: 'Seasons.status'})
-    .join('Seasons', 'Seasons.id', '=', 'Episodes.seasonId')
-    .whereIn('Episodes.id', [watched]);
-
-  return season != null && season.status === 'ENDED';
-}
-
-async function unfinishedEpisodeCount(
-  watchThroughId: string,
-  {db}: {db: Database},
-) {
-  const [{count}] = (await db
-    .from('WatchThroughEpisodes')
-    .join('Episodes', 'Episodes.id', '=', 'WatchThroughEpisodes.episodeId')
-    .where((clause) => {
-      clause
-        .where({watchThroughId})
-        .whereNull('WatchThroughEpisodes.watchId')
-        .whereNull('WatchThroughEpisodes.skipId');
-    })
-    .where(
-      'Episodes.firstAired',
-      '<',
-      db.raw(`CURRENT_DATE + interval '1 day'`),
-    )
-    .count({count: 'WatchThroughEpisodes.id'})) as {count: number}[];
-
-  return parseInt(String(count), 10);
 }
 
 async function tmdbFetch(path: string) {
@@ -441,6 +270,43 @@ function tmdbAirDateToDate(date?: string) {
   );
 }
 
+function tmdbSeasonToSeasonInput(
+  season: TmdbSeason,
+  series: TmdbSeries,
+): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput {
+  const isEnded =
+    season.season_number === series.number_of_seasons &&
+    (tmdbStatusToEnum(series.status) !== 'RETURNING' ||
+      (series.next_episode_to_air == null &&
+        series.last_episode_to_air != null &&
+        isOlderThanThirtyDays(series.last_episode_to_air)));
+
+  return {
+    number: season.season_number,
+    firstAired: tmdbAirDateToDate(season.air_date),
+    overview: season.overview ?? null,
+    status: isEnded ? 'ENDED' : 'CONTINUING',
+    posterUrl: season.poster_path
+      ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+      : null,
+    episodeCount: season.episodes.length,
+  };
+}
+
+function tmdbEpisodeToCreateInput(
+  episode: TmdbEpisode,
+): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput {
+  return {
+    number: episode.episode_number,
+    title: episode.name,
+    firstAired: tmdbAirDateToDate(episode.air_date),
+    overview: episode.overview || null,
+    stillUrl: episode.still_path
+      ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+      : null,
+  };
+}
+
 function tmdbStatusToEnum(status: string) {
   switch (status) {
     case 'Returning Series':
@@ -455,6 +321,13 @@ function tmdbStatusToEnum(status: string) {
   }
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat().format(new Date(date));
+interface Slice {
+  season: number;
+  episode?: number;
+}
+
+function bufferFromSlice(slice: Slice) {
+  return slice.episode == null
+    ? Buffer.from([slice.season])
+    : Buffer.from([slice.season, slice.episode]);
 }

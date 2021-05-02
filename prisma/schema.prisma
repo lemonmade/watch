@@ -87,6 +87,8 @@ model Season {
   seriesId String
 
   episodes Episode[]
+
+  @@unique([seriesId, number])
 }
 
 model Episode {
@@ -102,6 +104,8 @@ model Episode {
 
   skips   Skip[]
   watches Watch[]
+
+  @@unique([seasonId, number])
 }
 
 enum WatchThroughStatus {
