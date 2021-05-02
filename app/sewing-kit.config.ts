@@ -284,6 +284,11 @@ function randomBits() {
             configuration.webpackAliases?.hook((aliases) => ({
               ...aliases,
               global: workspace.fs.resolvePath('global'),
+              // Fixes an issue where preact-render-to-string imports preact,
+              // which brings in a different build of preact in the bundle.
+              'preact-render-to-string$':
+                'preact-render-to-string/dist/index.mjs',
+              preact$: 'preact/dist/preact.module.js',
             }));
           });
         });

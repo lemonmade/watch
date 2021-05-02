@@ -7,6 +7,7 @@ import {
   Stack,
   Construct,
   QuiltServiceLambda,
+  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
 export class TmdbRefresherSchedulerStack extends Stack {
@@ -22,7 +23,7 @@ export class TmdbRefresherSchedulerStack extends Stack {
   ) {
     super(parent, 'WatchTmdbRefresherSchedulerStack', {dependencies: [global]});
 
-    const {primaryDatabase, layers} = global;
+    const {primaryDatabase} = global;
 
     this.queue = new Queue(this, 'WatchTmdbRefresherQueue', {
       queueName: 'WatchTmdbRefresherQueue',
@@ -40,7 +41,15 @@ export class TmdbRefresherSchedulerStack extends Stack {
       {
         name: 'tmdb-refresher-scheduler',
         vpc: primaryDatabase.vpc,
-        layers: [layers.prisma.query],
+        layers: [
+          new PrismaLayer(
+            this,
+            'WatchTmdbRefresherSchedulerFunctionPrismaLayer',
+            {
+              action: 'query',
+            },
+          ),
+        ],
         functionName: 'WatchTmdbRefresherSchedulerFunction',
         environment: {...primaryDatabase.environmentVariables},
       },

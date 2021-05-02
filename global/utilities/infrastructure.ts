@@ -6,7 +6,15 @@ import {
   RemovalPolicy,
   StackProps,
 } from '@aws-cdk/core';
-import {Function, Runtime, FunctionProps, Code} from '@aws-cdk/aws-lambda';
+import {
+  Function,
+  Runtime,
+  FunctionProps,
+  Code,
+  LayerVersion,
+  LayerVersionProps,
+  AssetCode,
+} from '@aws-cdk/aws-lambda';
 import {Secret, ISecret} from '@aws-cdk/aws-secretsmanager';
 import {
   InstanceClass,
@@ -32,6 +40,15 @@ const DEFAULT_ENVIRONMENT = {
 };
 
 const DATABASE_PORT = 5432;
+
+export const TMDB_ENVIRONMENT_VARIABLES = {
+  TMDB_ACCESS_TOKEN: process.env.TMDB_ACCESS_TOKEN!,
+};
+
+export const GITHUB_OAUTH_ENVIRONMENT_VARIABLES = {
+  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID!,
+  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET!,
+};
 
 const root = path.resolve(__dirname, '../..');
 
@@ -99,6 +116,42 @@ export class QuiltServiceLambda extends NodeLambda {
   ) {
     super(scope, id, {
       code: Code.fromAsset(buildPath('services', name)),
+      ...props,
+    });
+  }
+}
+
+export class QuiltLayer extends LayerVersion {
+  constructor(
+    scope: Construct,
+    id: string,
+    {
+      name,
+      ...props
+    }: Omit<LayerVersionProps, 'code'> & {
+      name: string;
+    },
+  ) {
+    super(scope, id, {
+      code: AssetCode.fromAsset(buildPath('layers', name)),
+      ...props,
+    });
+  }
+}
+
+export class PrismaLayer extends QuiltLayer {
+  constructor(
+    scope: Construct,
+    id: string,
+    {
+      action,
+      ...props
+    }: Omit<LayerVersionProps, 'code'> & {
+      action: 'migrate' | 'query';
+    },
+  ) {
+    super(scope, id, {
+      name: `prisma-${action}`,
       ...props,
     });
   }

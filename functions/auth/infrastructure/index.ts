@@ -6,6 +6,8 @@ import {
   Stack,
   Construct,
   QuiltServiceLambda,
+  GITHUB_OAUTH_ENVIRONMENT_VARIABLES,
+  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
 export class AuthApiStack extends Stack {
@@ -21,16 +23,21 @@ export class AuthApiStack extends Stack {
   ) {
     super(parent, 'WatchAuthStack', {dependencies: [global]});
 
-    const {primaryDatabase, layers} = global;
+    const {primaryDatabase} = global;
 
     const authFunction = new QuiltServiceLambda(this, 'WatchAuthFunction', {
-      name: 'api',
+      name: 'auth',
       public: true,
       vpc: primaryDatabase.vpc,
-      layers: [layers.prisma.query],
+      layers: [
+        new PrismaLayer(this, 'WatchAuthFunctionPrismaLayer', {
+          action: 'query',
+        }),
+      ],
       functionName: 'WatchAuthFunction',
       environment: {
         ...primaryDatabase.environmentVariables,
+        ...GITHUB_OAUTH_ENVIRONMENT_VARIABLES,
       },
     });
 

@@ -1,7 +1,4 @@
-/* eslint-disable import/first */
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+import 'dotenv/config';
 
 import {App} from '@aws-cdk/core';
 
@@ -44,7 +41,6 @@ const cdnRequestForwardHostStack = new CdnRequestForwardHostStack(app);
 const cdnResponseHeaderCleanupStack = new CdnResponseHeaderCleanupStack(app);
 
 new CdnStack(app, {
-  global: globalStack,
   app: appStack,
   auth: authStack,
   graphqlApi: graphqlApiStack,

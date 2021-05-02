@@ -5,12 +5,16 @@ import type {GlobalInfrastructureStack} from '../../../global/infrastructure';
 import {
   Stack,
   Construct,
+  PublicBucket,
   QuiltServiceLambda,
+  TMDB_ENVIRONMENT_VARIABLES,
+  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
 import type {EmailStack} from '../../email/infrastructure';
 
 export class GraphQLApiStack extends Stack {
+  readonly clipsBucket: PublicBucket;
   private readonly api: HttpApi;
 
   get endpoint() {
@@ -28,28 +32,42 @@ export class GraphQLApiStack extends Stack {
     },
   ) {
     super(parent, 'WatchGraphQLApiStack', {
-      dependencies: [global, email],
+      dependencies: [],
     });
 
-    const {primaryDatabase, clipsAssetsBucket, layers} = global;
+    const {primaryDatabase} = global;
 
-    const graphqlFunction = new QuiltServiceLambda(this, 'WatchEmailFunction', {
-      name: 'api',
-      public: true,
-      vpc: primaryDatabase.vpc,
-      functionName: 'WatchGraphQLFunction',
-      layers: [layers.prisma.query],
-      environment: {
-        // ...TMDB_ENVIRONMENT_VARIABLES,
-        ...primaryDatabase.environmentVariables,
-        EMAIL_QUEUE_URL: email.queueUrl,
+    this.clipsBucket = new PublicBucket(this, 'WatchClipsAssetsBucket', {
+      bucketName: 'watch-assets-clips',
+    });
+
+    const graphqlFunction = new QuiltServiceLambda(
+      this,
+      'WatchGraphQLFunction',
+      {
+        name: 'api',
+        public: true,
+        vpc: primaryDatabase.vpc,
+        functionName: 'WatchGraphQLFunction',
+        layers: [
+          new PrismaLayer(this, 'WatchGraphQLFunctionPrismaLayer', {
+            action: 'query',
+          }),
+        ],
+        environment: {
+          // ...TMDB_ENVIRONMENT_VARIABLES,
+          ...primaryDatabase.environmentVariables,
+          ...TMDB_ENVIRONMENT_VARIABLES,
+          EMAIL_QUEUE_URL: email.queueUrl,
+        },
       },
-    });
+    );
 
     primaryDatabase.grantAccess(graphqlFunction);
 
     email.grantSend(graphqlFunction);
-    clipsAssetsBucket.grantPut(graphqlFunction);
+
+    this.clipsBucket.grantPut(graphqlFunction);
 
     this.api = new HttpApi(this, 'WatchGraphQLHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({

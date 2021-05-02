@@ -14,7 +14,7 @@
     "@watching/clips": "*",
     "@watching/webpack-hot-worker": "*",
     "preact": "^10.4.4",
-    "preact-render-to-string": "^5.1.9",
+    "preact-render-to-string": "^5.1.19",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

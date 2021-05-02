@@ -27,7 +27,6 @@ import {CloudFrontTarget} from '@aws-cdk/aws-route53-targets';
 
 import {Stack, Construct} from '../../global/utilities/infrastructure';
 
-import type {GlobalInfrastructureStack} from '../../global/infrastructure';
 import type {AppStack} from '../../app/infrastructure';
 import type {GraphQLApiStack} from '../../functions/api/infrastructure';
 import type {AuthApiStack} from '../../functions/auth/infrastructure';
@@ -42,14 +41,12 @@ export class CdnStack extends Stack {
     {
       app,
       auth,
-      global,
       graphqlApi,
       cdnRequestForwardHost,
       cdnResponseHeaderCleanup,
     }: {
       app: AppStack;
       auth: AuthApiStack;
-      global: GlobalInfrastructureStack;
       graphqlApi: GraphQLApiStack;
       cdnRequestForwardHost: CdnRequestForwardHostStack;
       cdnResponseHeaderCleanup: CdnResponseHeaderCleanupStack;
@@ -57,7 +54,6 @@ export class CdnStack extends Stack {
   ) {
     super(construct, 'WatchCdnStack', {
       dependencies: [
-        global,
         app,
         auth,
         graphqlApi,
@@ -125,7 +121,7 @@ export class CdnStack extends Stack {
         },
         additionalBehaviors: {
           '/assets/app*': {
-            origin: new S3Origin(global.appAssetsBucket),
+            origin: new S3Origin(app.assetsBucket),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
             cachePolicy: new CachePolicy(this, 'WatchAppAssetsCachePolicy', {
@@ -153,7 +149,7 @@ export class CdnStack extends Stack {
             ],
           },
           '/assets/clips*': {
-            origin: new S3Origin(global.clipsAssetsBucket),
+            origin: new S3Origin(graphqlApi.clipsBucket),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
             cachePolicy: new CachePolicy(this, 'WatchClipsAssetsCachePolicy', {

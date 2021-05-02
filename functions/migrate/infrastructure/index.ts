@@ -5,12 +5,13 @@ import {
   Stack,
   Construct,
   QuiltServiceLambda,
+  PrismaLayer,
 } from 'global/utilities/infrastructure';
 
 export class MigratePrimaryDatabaseStack extends Stack {
   constructor(
     parent: Construct,
-    {global: {primaryDatabase, layers}}: {global: GlobalInfrastructureStack},
+    {global: {primaryDatabase}}: {global: GlobalInfrastructureStack},
   ) {
     super(parent, 'WatchMigratePrimaryDatabaseStack');
 
@@ -21,7 +22,15 @@ export class MigratePrimaryDatabaseStack extends Stack {
         name: 'email',
         vpc: primaryDatabase.vpc,
         timeout: Duration.minutes(5),
-        layers: [layers.prisma.migrate],
+        layers: [
+          new PrismaLayer(
+            this,
+            'WatchMigratePrimaryDatabaseFunctionPrismaLayer',
+            {
+              action: 'migrate',
+            },
+          ),
+        ],
         functionName: 'WatchMigratePrimaryDatabaseFunction',
       },
     );

@@ -5,15 +5,12 @@ import {LayerVersion, AssetCode} from '@aws-cdk/aws-lambda';
 import {
   Stack,
   Database,
-  PublicBucket,
   Construct,
   buildPath,
 } from '../utilities/infrastructure';
 
 export class GlobalInfrastructureStack extends Stack {
   readonly primaryDatabase: Database;
-  readonly appAssetsBucket: PublicBucket;
-  readonly clipsAssetsBucket: PublicBucket;
   readonly layers: {
     readonly prisma: {
       readonly query: LayerVersion;
@@ -23,14 +20,6 @@ export class GlobalInfrastructureStack extends Stack {
 
   constructor(construct: Construct) {
     super(construct, 'WatchGlobalInfrastructureStack');
-
-    this.appAssetsBucket = new PublicBucket(this, 'WatchAppAssetsBucket', {
-      bucketName: 'watch-assets-app',
-    });
-
-    this.clipsAssetsBucket = new PublicBucket(this, 'WatchClipsAssetsBucket', {
-      bucketName: 'watch-assets-clips',
-    });
 
     this.primaryDatabase = new Database(this, {
       vpc: new Vpc(this, 'WatchVpc'),
