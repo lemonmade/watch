@@ -93,7 +93,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  aws:
+  deploy-aws:
     needs: build
     runs-on: ubuntu-latest
 
