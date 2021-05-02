@@ -1,40 +1,28 @@
 import {Duration} from '@aws-cdk/core';
 
-import type {GlobalInfrastructureStack} from 'global/infrastructure';
 import {
-  Stack,
   Construct,
   QuiltServiceLambda,
-  PrismaLayer,
-} from 'global/utilities/infrastructure';
+  Database,
+} from '../../../global/utilities/infrastructure';
 
-export class MigratePrimaryDatabaseStack extends Stack {
-  constructor(
-    parent: Construct,
-    {global: {primaryDatabase}}: {global: GlobalInfrastructureStack},
-  ) {
-    super(parent, 'WatchMigratePrimaryDatabaseStack');
+export class MigrateDatabase extends Construct {
+  constructor(parent: Construct, {database}: {database: Database}) {
+    super(parent, 'WatchMigratePrimaryDatabase');
 
     const migrateFunction = new QuiltServiceLambda(
       this,
       'WatchMigratePrimaryDatabaseFunction',
       {
-        name: 'email',
-        vpc: primaryDatabase.vpc,
+        name: 'migrate',
+        vpc: database.vpc,
         timeout: Duration.minutes(5),
-        layers: [
-          new PrismaLayer(
-            this,
-            'WatchMigratePrimaryDatabaseFunctionPrismaLayer',
-            {
-              action: 'migrate',
-            },
-          ),
-        ],
+        layers: [database.layers.migrate],
         functionName: 'WatchMigratePrimaryDatabaseFunction',
+        environment: {...database.environmentVariables},
       },
     );
 
-    primaryDatabase.grantAccess(migrateFunction);
+    database.grantAccess(migrateFunction);
   }
 }

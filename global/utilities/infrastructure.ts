@@ -5,6 +5,7 @@ import {
   Duration,
   RemovalPolicy,
   StackProps,
+  SecretValue,
 } from '@aws-cdk/core';
 import {
   Function,
@@ -17,6 +18,7 @@ import {
 } from '@aws-cdk/aws-lambda';
 import {Secret, ISecret} from '@aws-cdk/aws-secretsmanager';
 import {
+  IConnectable,
   InstanceClass,
   InstanceSize,
   InstanceType,
@@ -92,6 +94,7 @@ export class NodeLambda extends Function {
     super(scope, id, {
       runtime: Runtime.NODEJS_14_X,
       handler: 'index.handler',
+      timeout: Duration.seconds(10),
       ...props,
     });
 
@@ -157,7 +160,42 @@ export class PrismaLayer extends QuiltLayer {
   }
 }
 
+export class JsonWebToken extends Construct {
+  private readonly secretFromName: ISecret;
+
+  get secret() {
+    return SecretValue.secretsManager(this.secretFromName.secretArn, {
+      jsonField: 'secret',
+    }).toString();
+  }
+
+  constructor(
+    construct: Construct,
+    {name, secretName}: {name: string; secretName: string},
+  ) {
+    super(construct, `Watch${name}JsonWebToken`);
+
+    this.secretFromName = Secret.fromSecretNameV2(
+      this,
+      `Watch${name}JsonWebTokenSecret`,
+      secretName,
+    );
+  }
+}
+
 export class Database extends Construct {
+  readonly layers: {
+    readonly query: LayerVersion;
+    readonly migrate: LayerVersion;
+  } = {
+    query: new PrismaLayer(this, `${this.node.id}PrismaQueryLayer`, {
+      action: 'query',
+    }),
+    migrate: new PrismaLayer(this, `${this.node.id}PrismaMigrateLayer`, {
+      action: 'migrate',
+    }),
+  };
+
   private readonly instance: DatabaseInstance;
   private readonly credentialsSecret: ISecret;
 
@@ -221,7 +259,8 @@ export class Database extends Construct {
     // );
   }
 
-  grantAccess(grantable: IGrantable) {
+  grantAccess(grantable: IGrantable & IConnectable) {
+    this.instance.connections.allowFrom(grantable, Port.allTraffic());
     this.instance.grantConnect(grantable);
     this.credentialsSecret.grantRead(grantable);
   }

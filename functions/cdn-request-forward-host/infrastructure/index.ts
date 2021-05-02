@@ -1,14 +1,14 @@
+import {Duration} from '@aws-cdk/core';
 import {
-  Stack,
   Construct,
   QuiltServiceLambda,
 } from '../../../global/utilities/infrastructure';
 
-export class CdnRequestForwardHostStack extends Stack {
+export class CdnRequestForwardHost extends Construct {
   readonly function: QuiltServiceLambda;
 
   constructor(parent: Construct) {
-    super(parent, 'WatchCdnRequestForwardHostStack');
+    super(parent, 'WatchCdnRequestForwardHost');
 
     this.function = new QuiltServiceLambda(
       this,
@@ -16,6 +16,7 @@ export class CdnRequestForwardHostStack extends Stack {
       {
         name: 'cdn-request-forward-host',
         functionName: 'WatchCdnRequestForwardHostFunction',
+        timeout: Duration.seconds(1),
       },
     );
   }

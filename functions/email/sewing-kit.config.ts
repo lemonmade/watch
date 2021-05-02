@@ -7,6 +7,6 @@ export default createService((service) => {
   service.entry('./index');
   service.use(
     quiltService({devServer: false, react: true, build: false}),
-    lambdaBuild(),
+    lambdaBuild({react: true}),
   );
 });

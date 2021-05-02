@@ -2,28 +2,21 @@ import {Queue} from '@aws-cdk/aws-sqs';
 import {Rule, Schedule} from '@aws-cdk/aws-events';
 import {LambdaFunction} from '@aws-cdk/aws-events-targets';
 
-import type {GlobalInfrastructureStack} from '../../../global/infrastructure';
 import {
-  Stack,
   Construct,
+  Database,
   QuiltServiceLambda,
-  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
-export class TmdbRefresherSchedulerStack extends Stack {
+export class TmdbRefresherScheduler extends Construct {
   readonly queue: Queue;
 
   get queueUrl() {
     return this.queue.queueUrl;
   }
 
-  constructor(
-    parent: Construct,
-    {global}: {global: GlobalInfrastructureStack},
-  ) {
-    super(parent, 'WatchTmdbRefresherSchedulerStack', {dependencies: [global]});
-
-    const {primaryDatabase} = global;
+  constructor(parent: Construct, {database}: {database: Database}) {
+    super(parent, 'WatchTmdbRefresherScheduler');
 
     this.queue = new Queue(this, 'WatchTmdbRefresherQueue', {
       queueName: 'WatchTmdbRefresherQueue',
@@ -40,22 +33,14 @@ export class TmdbRefresherSchedulerStack extends Stack {
       'WatchTmdbRefresherSchedulerFunction',
       {
         name: 'tmdb-refresher-scheduler',
-        vpc: primaryDatabase.vpc,
-        layers: [
-          new PrismaLayer(
-            this,
-            'WatchTmdbRefresherSchedulerFunctionPrismaLayer',
-            {
-              action: 'query',
-            },
-          ),
-        ],
+        vpc: database.vpc,
+        layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherSchedulerFunction',
-        environment: {...primaryDatabase.environmentVariables},
+        environment: {...database.environmentVariables},
       },
     );
 
-    primaryDatabase.grantAccess(schedulerFunction);
+    database.grantAccess(schedulerFunction);
     this.queue.grantSendMessages(schedulerFunction);
 
     new Rule(this, 'WatchTmdbRefresherRule', {

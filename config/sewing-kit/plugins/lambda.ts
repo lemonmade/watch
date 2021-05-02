@@ -3,7 +3,7 @@ import {stripIndent} from 'common-tags';
 
 const PLUGIN = 'LambdaBuild';
 
-export function lambdaBuild() {
+export function lambdaBuild({react = false} = {}) {
   return createProjectBuildPlugin<Service>(
     PLUGIN,
     ({api, project, workspace, hooks}) => {
@@ -46,6 +46,11 @@ export function lambdaBuild() {
                   load(id) {
                     if (id === magicEntry) {
                       return stripIndent`
+                        ${
+                          react
+                            ? 'import React from "react"; global.React = React;'
+                            : ''
+                        }
                         export {default as handler} from ${JSON.stringify(
                           entry,
                         )};

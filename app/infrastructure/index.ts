@@ -9,15 +9,14 @@ import {
 
 import {
   NodeLambda,
-  Stack,
   Construct,
   buildPath,
   PublicBucket,
 } from '../../global/utilities/infrastructure';
 
-export class AppStack extends Stack {
+export class WebApp extends Construct {
   private readonly api: HttpApi;
-  private readonly assets: AppAssetsStack;
+  private readonly assets: WebAppAssets;
 
   get endpoint() {
     return this.api.url!;
@@ -28,33 +27,33 @@ export class AppStack extends Stack {
   }
 
   constructor(parent: Construct) {
-    super(parent, 'WatchAppStack');
+    super(parent, 'WatchWebApp');
 
-    this.assets = new AppAssetsStack(parent);
+    this.assets = new WebAppAssets(parent);
 
-    const appFunction = new NodeLambda(this, 'WatchAppFunction', {
+    const appFunction = new NodeLambda(this, 'WatchWebAppFunction', {
       public: true,
-      functionName: 'WatchAppFunction',
+      functionName: 'WatchWebAppFunction',
       code: Code.fromAsset(buildPath('app/server')),
     });
 
-    this.api = new HttpApi(this, 'WatchAppHttpApi', {
+    this.api = new HttpApi(this, 'WatchWebAppHttpApi', {
       defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
     });
   }
 }
 
-class AppAssetsStack extends Stack {
+class WebAppAssets extends Construct {
   readonly bucket: PublicBucket;
 
   constructor(parent: Construct) {
-    super(parent, 'WatchAppAssetsStack');
+    super(parent, 'WatchWebAppAssetsStack');
 
-    this.bucket = new PublicBucket(this, 'WatchAppAssetsBucket', {
+    this.bucket = new PublicBucket(this, 'WatchWebAppAssetsBucket', {
       bucketName: 'watch-assets-app',
     });
 
-    new BucketDeployment(this, 'WatchAppAssetsBucketDeployment', {
+    new BucketDeployment(this, 'WatchWebAppAssetsBucketDeployment', {
       sources: [
         Source.asset(buildPath('app/assets'), {exclude: ['*.html', '*.json']}),
       ],

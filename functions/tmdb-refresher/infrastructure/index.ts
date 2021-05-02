@@ -1,54 +1,44 @@
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
 
-import type {GlobalInfrastructureStack} from '../../../global/infrastructure';
 import {
-  Stack,
   Construct,
   QuiltServiceLambda,
+  Database,
   TMDB_ENVIRONMENT_VARIABLES,
-  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
-import type {TmdbRefresherSchedulerStack} from '../../tmdb-refresher-scheduler/infrastructure';
+import type {TmdbRefresherScheduler} from '../../tmdb-refresher-scheduler/infrastructure';
 
-export class TmdbRefresherStack extends Stack {
+export class TmdbRefresher extends Construct {
   constructor(
     parent: Construct,
     {
+      database,
       scheduler,
-      global,
     }: {
-      global: GlobalInfrastructureStack;
-      scheduler: TmdbRefresherSchedulerStack;
+      database: Database;
+      scheduler: TmdbRefresherScheduler;
     },
   ) {
-    super(parent, 'WatchTmdbRefresherStack', {
-      dependencies: [global, scheduler],
-    });
-
-    const {primaryDatabase} = global;
+    super(parent, 'WatchTmdbRefresher');
 
     const refresherFunction = new QuiltServiceLambda(
       this,
       'WatchTmdbRefresherFunction',
       {
         name: 'tmdb-refresher',
-        vpc: primaryDatabase.vpc,
-        layers: [
-          new PrismaLayer(this, 'WatchTmdbRefresherFunctionPrismaLayer', {
-            action: 'query',
-          }),
-        ],
+        vpc: database.vpc,
+        layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherFunction',
         environment: {
-          ...primaryDatabase.environmentVariables,
+          ...database.environmentVariables,
           ...TMDB_ENVIRONMENT_VARIABLES,
           TMDB_REFRESHER_QUEUE_URL: scheduler.queueUrl,
         },
       },
     );
 
-    primaryDatabase.grantAccess(refresherFunction);
+    database.grantAccess(refresherFunction);
     refresherFunction.addEventSource(new SqsEventSource(scheduler.queue));
   }
 }

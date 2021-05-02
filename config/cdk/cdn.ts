@@ -25,42 +25,34 @@ import {
 } from '@aws-cdk/aws-route53';
 import {CloudFrontTarget} from '@aws-cdk/aws-route53-targets';
 
-import {Stack, Construct} from '../../global/utilities/infrastructure';
+import {Construct} from '../../global/utilities/infrastructure';
 
-import type {AppStack} from '../../app/infrastructure';
-import type {GraphQLApiStack} from '../../functions/api/infrastructure';
-import type {AuthApiStack} from '../../functions/auth/infrastructure';
-import type {CdnRequestForwardHostStack} from '../../functions/cdn-request-forward-host/infrastructure';
-import type {CdnResponseHeaderCleanupStack} from '../../functions/cdn-response-header-cleanup/infrastructure';
+import type {WebApp} from '../../app/infrastructure';
+import type {GraphQLApi} from '../../functions/api/infrastructure';
+import type {AuthApi} from '../../functions/auth/infrastructure';
+import type {CdnRequestForwardHost} from '../../functions/cdn-request-forward-host/infrastructure';
+import type {CdnResponseHeaderCleanup} from '../../functions/cdn-response-header-cleanup/infrastructure';
 
 const DOMAIN = 'watch.lemon.tools';
 
-export class CdnStack extends Stack {
+export class Cdn extends Construct {
   constructor(
     construct: Construct,
     {
-      app,
-      auth,
+      webApp,
+      authApi,
       graphqlApi,
       cdnRequestForwardHost,
       cdnResponseHeaderCleanup,
     }: {
-      app: AppStack;
-      auth: AuthApiStack;
-      graphqlApi: GraphQLApiStack;
-      cdnRequestForwardHost: CdnRequestForwardHostStack;
-      cdnResponseHeaderCleanup: CdnResponseHeaderCleanupStack;
+      webApp: WebApp;
+      authApi: AuthApi;
+      graphqlApi: GraphQLApi;
+      cdnRequestForwardHost: CdnRequestForwardHost;
+      cdnResponseHeaderCleanup: CdnResponseHeaderCleanup;
     },
   ) {
-    super(construct, 'WatchCdnStack', {
-      dependencies: [
-        app,
-        auth,
-        graphqlApi,
-        cdnRequestForwardHost,
-        cdnResponseHeaderCleanup,
-      ],
-    });
+    super(construct, 'WatchCdnStack');
 
     const zone = HostedZone.fromLookup(this, 'WatchDomainZone', {
       domainName: 'lemon.tools',
@@ -84,7 +76,7 @@ export class CdnStack extends Stack {
         domainNames: [DOMAIN],
         defaultBehavior: {
           origin: new HttpOrigin(
-            app.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
+            webApp.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
           ),
           compress: true,
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -121,7 +113,7 @@ export class CdnStack extends Stack {
         },
         additionalBehaviors: {
           '/assets/app*': {
-            origin: new S3Origin(app.assetsBucket),
+            origin: new S3Origin(webApp.assetsBucket),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.HTTPS_ONLY,
             cachePolicy: new CachePolicy(this, 'WatchAppAssetsCachePolicy', {
@@ -218,7 +210,7 @@ export class CdnStack extends Stack {
           },
           '/internal/auth*': {
             origin: new HttpOrigin(
-              auth.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
+              authApi.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
             ),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

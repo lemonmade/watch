@@ -2,28 +2,22 @@ import {Queue} from '@aws-cdk/aws-sqs';
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
 import {PolicyStatement, Effect} from '@aws-cdk/aws-iam';
 
-import type {GlobalInfrastructureStack} from '../../../global/infrastructure';
 import {
-  Stack,
   Construct,
+  Database,
   Grantable,
   QuiltServiceLambda,
 } from '../../../global/utilities/infrastructure';
 
-export class EmailStack extends Stack {
+export class Email extends Construct {
   private readonly queue: Queue;
 
   get queueUrl() {
     return this.queue.queueUrl;
   }
 
-  constructor(
-    parent: Construct,
-    {global}: {global: GlobalInfrastructureStack},
-  ) {
-    super(parent, 'WatchEmailStack', {dependencies: [global]});
-
-    const {primaryDatabase} = global;
+  constructor(parent: Construct, {database}: {database: Database}) {
+    super(parent, 'WatchEmail');
 
     this.queue = new Queue(this, 'WatchEmailQueue', {
       queueName: 'WatchEmailQueue',
@@ -37,7 +31,7 @@ export class EmailStack extends Stack {
 
     const emailFunction = new QuiltServiceLambda(this, 'WatchEmailFunction', {
       name: 'email',
-      vpc: primaryDatabase.vpc,
+      vpc: database.vpc,
       functionName: 'WatchEmailFunction',
     });
 

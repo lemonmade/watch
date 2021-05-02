@@ -1,19 +1,18 @@
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
 import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 
-import type {GlobalInfrastructureStack} from '../../../global/infrastructure';
 import {
-  Stack,
   Construct,
+  Database,
+  JsonWebToken,
   PublicBucket,
   QuiltServiceLambda,
   TMDB_ENVIRONMENT_VARIABLES,
-  PrismaLayer,
 } from '../../../global/utilities/infrastructure';
 
-import type {EmailStack} from '../../email/infrastructure';
+import type {Email} from '../../email/infrastructure';
 
-export class GraphQLApiStack extends Stack {
+export class GraphQLApi extends Construct {
   readonly clipsBucket: PublicBucket;
   private readonly api: HttpApi;
 
@@ -24,18 +23,16 @@ export class GraphQLApiStack extends Stack {
   constructor(
     parent: Construct,
     {
+      jwt,
       email,
-      global,
+      database,
     }: {
-      global: GlobalInfrastructureStack;
-      email: EmailStack;
+      jwt: JsonWebToken;
+      email: Email;
+      database: Database;
     },
   ) {
-    super(parent, 'WatchGraphQLApiStack', {
-      dependencies: [],
-    });
-
-    const {primaryDatabase} = global;
+    super(parent, 'WatchGraphQLApi');
 
     this.clipsBucket = new PublicBucket(this, 'WatchClipsAssetsBucket', {
       bucketName: 'watch-assets-clips',
@@ -47,23 +44,20 @@ export class GraphQLApiStack extends Stack {
       {
         name: 'api',
         public: true,
-        vpc: primaryDatabase.vpc,
+        vpc: database.vpc,
         functionName: 'WatchGraphQLFunction',
-        layers: [
-          new PrismaLayer(this, 'WatchGraphQLFunctionPrismaLayer', {
-            action: 'query',
-          }),
-        ],
+        layers: [database.layers.query],
         environment: {
           // ...TMDB_ENVIRONMENT_VARIABLES,
-          ...primaryDatabase.environmentVariables,
+          ...database.environmentVariables,
           ...TMDB_ENVIRONMENT_VARIABLES,
           EMAIL_QUEUE_URL: email.queueUrl,
+          JWT_DEFAULT_SECRET: jwt.secret,
         },
       },
     );
 
-    primaryDatabase.grantAccess(graphqlFunction);
+    database.grantAccess(graphqlFunction);
 
     email.grantSend(graphqlFunction);
 
