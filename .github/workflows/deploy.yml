@@ -132,4 +132,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Run the CDK
-        run: yarn cdk deploy
+        run: yarn cdk deploy --require-approval never
