@@ -1,4 +1,5 @@
 import type {PropsWithChildren} from 'react';
+import {variation} from '@lemon/css';
 
 import {
   Pixels,
@@ -16,8 +17,11 @@ import type {
 
 import styles from './BlockStack.module.css';
 
+export type AlignKeyword = 'start' | 'end' | 'center' | 'stretch';
+
 interface Props extends SystemProps {
   spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;
+  align?: AlignKeyword | KeywordValue<AlignKeyword>;
 }
 
 const SPACING_CLASS_MAP = new Map<string, string | false>([
@@ -28,12 +32,21 @@ const SPACING_CLASS_MAP = new Map<string, string | false>([
 ]);
 
 export function BlockStack({
+  align,
   spacing,
   children,
   ...systemProps
 }: PropsWithChildren<Props>) {
   const dom = useDomProps({...systemProps, display: 'grid'});
   dom.addClassName(styles.BlockStack);
+
+  if (align != null) {
+    dom.addClassName(
+      styles[
+        variation('align', Keyword.test(align) ? Keyword.parse(align) : align)
+      ],
+    );
+  }
 
   if (spacing != null) {
     let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;

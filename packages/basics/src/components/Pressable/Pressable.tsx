@@ -1,5 +1,5 @@
 import type {MouseEventHandler, PropsWithChildren} from 'react';
-import {classes, variation} from '@lemon/css';
+import {variation} from '@lemon/css';
 
 import {useDomProps, Keyword, toProps} from '../../system';
 import type {KeywordValue, SystemProps} from '../../system';
@@ -8,10 +8,10 @@ import type {ImplicitActionType} from '../../utilities/actions';
 
 import styles from './Pressable.module.css';
 
-export type Alignment = 'start' | 'center' | 'end';
+export type AlignKeyword = 'start' | 'center' | 'end';
 
 interface Props extends SystemProps {
-  align?: Alignment | KeywordValue<Alignment>;
+  align?: AlignKeyword | KeywordValue<AlignKeyword>;
   implicitAction?:
     | boolean
     | ImplicitActionType
@@ -28,6 +28,8 @@ export function Pressable({
 }: PropsWithChildren<Props>) {
   const dom = useDomProps(systemProps);
   const implicitActionFromContext = useImplicitAction();
+
+  dom.addClassName(styles.Pressable);
 
   if (align) {
     dom.addClassName(
@@ -75,7 +77,6 @@ export function Pressable({
     <button
       {...toProps(dom)}
       type="button"
-      className={classes(styles.Pressable)}
       onClick={onClick}
       {...ariaForAction(implicitActionFromContext)}
     >

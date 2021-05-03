@@ -7,22 +7,23 @@
 .View {
   --View-padding: 0;
   --View-default-display: block;
+
   display: var(
-    --z-implicit-display-none,
-    var(--z-implicit-display-block, var(--View-default-display))
+    --x-implicit-display-none,
+    var(--x-implicit-display-block, var(--View-default-display))
   );
   padding: var(--View-padding);
 }
 
 :where(.View) > * {
-  --z-implicit-display-none: initial;
-  --z-implicit-display: initial;
-  --z-implicit-display-flex: initial;
-  --z-implicit-display-grid: initial;
-  --z-implicit-align: initial;
-  --z-implicit-connection-inline-start: initial;
-  --z-implicit-connection-inline-end: initial;
-  --z-implicit-container-inline-size: initial;
+  --x-implicit-display-none: initial;
+  --x-implicit-display-block: initial;
+  --x-implicit-display-flex: initial;
+  --x-implicit-display-grid: initial;
+  --x-implicit-align: initial;
+  --x-implicit-connection-inline-start: initial;
+  --x-implicit-connection-inline-end: initial;
+  --x-implicit-container-inline-size: initial;
 }
 
 .paddingSmall {
@@ -39,6 +40,18 @@
 
 .displayGrid {
   --View-default-display: grid;
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-grid, var(--View-default-display))
+  );
+}
+
+.displayFlex {
+  --View-default-display: flex;
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-flex, var(--View-default-display))
+  );
 }
 
 .displayInline {

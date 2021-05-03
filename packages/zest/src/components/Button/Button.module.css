@@ -31,7 +31,7 @@
 }
 
 .blockSizeFill {
-  --z-Pressable-display: var(--z-implicit-display-none, block);
+  --z-Pressable-display: var(--x-implicit-display-none, block);
   inline-size: 100%;
 }
 

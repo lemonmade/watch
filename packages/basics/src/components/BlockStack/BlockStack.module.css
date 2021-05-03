@@ -1,9 +1,10 @@
 .BlockStack {
   --x-BlockStack-spacing: var(--x-spacing-base);
+  --x-BlockStack-align: stretch;
   gap: var(--x-BlockStack-spacing);
   justify-content: stretch;
   align-items: center;
-  align-content: center;
+  justify-items: var(--x-BlockStack-align);
 }
 
 .spacingNone {
@@ -16,4 +17,27 @@
 
 .spacingLarge {
   --x-BlockStack-spacing: var(--x-spacing-large);
+}
+
+.alignStretch {
+  --x-BlockStack-align: stretch;
+}
+
+:where(.alignStretch) > * {
+  --x-implicit-display-block: block;
+  --x-implicit-display-flex: flex;
+  --x-implicit-display-grid: grid;
+  --x-implicit-container-inline-size: 100%;
+}
+
+.alignStart {
+  --x-BlockStack-align: start;
+}
+
+.alignEnd {
+  --x-BlockStack-align: end;
+}
+
+.alignCenter {
+  --x-BlockStack-align: center;
 }

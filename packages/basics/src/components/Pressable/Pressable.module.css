@@ -1,7 +1,7 @@
 .Pressable {
   --x-Pressable-display: var(
     --x-implicit-display-none,
-    var(--x-implicit-display, inline-block)
+    var(--x-implicit-display-block, inline-block)
   );
   --x-Pressable-align: var(--x-implicit-align, center);
   --x-Pressable-padding: 0;
@@ -25,6 +25,14 @@
     var(--x-implicit-connection-inline-start, 0);
   overflow: hidden;
   cursor: pointer;
+}
+
+.alignStart {
+  --x-Pressable-align: var(--x-implicit-align, start);
+}
+
+.alignEnd {
+  --x-Pressable-align: var(--x-implicit-align, end);
 }
 
 .Pressable:focus {
