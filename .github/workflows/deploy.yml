@@ -134,7 +134,7 @@ jobs:
         run: yarn cdk deploy WatchMigrateDatabaseStack --require-approval never
 
       - name: Run database migrations
-        run: aws lambda invoke --function-name WatchMigratePrimaryDatabaseFunction
+        run: aws lambda invoke --function-name WatchMigratePrimaryDatabaseFunction /dev/stdout
 
       - name: Deploy application code to AWS
         run: yarn cdk deploy WatchStack --require-approval never
