@@ -130,8 +130,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy database migration to AWS
+      - name: Deploy database migration infrastructure to AWS
         run: yarn cdk deploy WatchMigrateDatabaseStack --require-approval never
+
+      - name: Run database migrations
+        run: yarn aws lambda invoke --function-name WatchMigratePrimaryDatabaseFunction
 
       - name: Deploy application code to AWS
         run: yarn cdk deploy WatchStack --require-approval never
