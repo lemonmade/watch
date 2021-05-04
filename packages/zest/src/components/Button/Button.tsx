@@ -9,6 +9,8 @@ interface Props {
   primary?: boolean;
   blockSize?: 'fill';
   alignContent?: 'start' | 'end' | 'center';
+  loading?: boolean;
+  disabled?: boolean;
   onPress?(): void;
 }
 

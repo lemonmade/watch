@@ -13,6 +13,9 @@ import {Context} from './context';
 import {enqueueSendEmail} from './utilities/email';
 import {ClipsExtensionPointConditionInput} from './schema';
 
+const PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH = 12;
+const PERSONAL_ACCESS_TOKEN_PREFIX = 'wlp_';
+
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
 export const Query: Resolver = {
@@ -790,6 +793,35 @@ export const Mutation: Resolver = {
       installation,
     };
   },
+  async createPersonalAccessToken(_, __, {user, prisma}) {
+    const {randomBytes} = await import('crypto');
+
+    const token = `${PERSONAL_ACCESS_TOKEN_PREFIX}${randomBytes(
+      PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH,
+    )
+      .toString('hex')
+      .slice(0, PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH)}`;
+
+    const personalAccessToken = await prisma.personalAccessToken.create({
+      data: {
+        token,
+        userId: user.id,
+      },
+    });
+
+    return {personalAccessToken, plaintextToken: token};
+  },
+  async deletePersonalAccessToken(_, {id}: {id: string}, {user, prisma}) {
+    const token = await prisma.personalAccessToken.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
+
+    if (token) {
+      await prisma.personalAccessToken.delete({where: {id: token.id}});
+    }
+
+    return {deletedPersonalAccessTokenId: token?.id};
+  },
 };
 
 export const Watchable: Resolver = {
@@ -814,12 +846,30 @@ export const User: Resolver<import('@prisma/client').User> = {
     const account = await prisma.githubAccount.findFirst({where: {userId: id}});
     return account;
   },
+  accessTokens({id}, _, {user, prisma}) {
+    if (user.id !== id) {
+      throw new Error();
+    }
+
+    return prisma.personalAccessToken.findMany({
+      where: {userId: user.id},
+      take: 50,
+    });
+  },
 };
 
 export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
   avatarImage: ({avatarUrl}: {avatarUrl?: string}) => {
     return {source: avatarUrl};
   },
+};
+
+export const PersonalAccessToken: Resolver<
+  import('@prisma/client').PersonalAccessToken
+> = {
+  id: ({id}) => toGid(id, 'PersonalAccessToken'),
+  length: ({token}) => token.length,
+  lastFourCharacters: ({token}) => token.slice(-4),
 };
 
 export const Series: Resolver<import('@prisma/client').Series> = {

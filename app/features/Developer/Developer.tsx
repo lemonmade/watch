@@ -1,3 +1,16 @@
+import {BlockStack, InlineStack, Link} from '@lemon/zest';
+
+import {Page} from 'components';
+
 export function Developer() {
-  return null;
+  return (
+    <Page heading="Developer">
+      <BlockStack>
+        <InlineStack>
+          <Link to="apps">Apps</Link>
+          <Link to="access-tokens">Access tokens</Link>
+        </InlineStack>
+      </BlockStack>
+    </Page>
+  );
 }

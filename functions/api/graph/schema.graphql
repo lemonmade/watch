@@ -10,6 +10,8 @@ type User {
   id: ID!
   email: Email!
   githubAccount: GithubAccount
+
+  accessTokens: [PersonalAccessToken!]!
 }
 
 type GithubAccount {
@@ -182,18 +184,6 @@ type SeriesSubscriptionPayload {
 type UpdateSeasonPayload {
   season: Season
 }
-
-# type User {
-#   id: ID!
-#   avatar: Image
-# }
-
-# type Business {
-#   id: ID!
-#   icon: Icon
-# }
-
-# union AppAuthor = User | Business
 
 type Image {
   source: Url!
@@ -452,6 +442,30 @@ type SignOutPayload {
 
 union AppExtensionInstallation = ClipsExtensionInstallation
 
+input CreateClipsInitialVersion {
+  hash: String!
+  translations: JSON
+  supports: [ClipsExtensionPointSupportInput!]
+  configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
+}
+
+type PersonalAccessToken {
+  id: ID!
+  length: Int!
+  createdAt: Date!
+  lastUsedAt: Date
+  lastFourCharacters: String!
+}
+
+type CreatePersonalAccessTokenPayload {
+  plaintextToken: String
+  personalAccessToken: PersonalAccessToken
+}
+
+type DeletePersonalAccessTokenPayload {
+  deletedPersonalAccessTokenId: ID
+}
+
 type Query {
   me: User!
   watch(id: ID!): Watch
@@ -468,13 +482,6 @@ type Query {
     extensionPoint: ClipsExtensionPoint
     conditions: [ClipsExtensionPointConditionInput!]
   ): [ClipsExtensionInstallation!]!
-}
-
-input CreateClipsInitialVersion {
-  hash: String!
-  translations: JSON
-  supports: [ClipsExtensionPointSupportInput!]
-  configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
 }
 
 type Mutation {
@@ -545,6 +552,9 @@ type Mutation {
     id: ID!
     configuration: JSON
   ): UpdateClipsExtensionInstallationPayload!
+
+  createPersonalAccessToken: CreatePersonalAccessTokenPayload!
+  deletePersonalAccessToken(id: ID!): DeletePersonalAccessTokenPayload!
 }
 
 schema {
