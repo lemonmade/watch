@@ -1,4 +1,7 @@
-import {Duration} from '@aws-cdk/core';
+import 'dotenv/config';
+
+import {App, Duration} from '@aws-cdk/core';
+import {Vpc} from '@aws-cdk/aws-ec2';
 import {
   PriceClass,
   Distribution,
@@ -25,15 +28,70 @@ import {
 } from '@aws-cdk/aws-route53';
 import {CloudFrontTarget} from '@aws-cdk/aws-route53-targets';
 
-import {Construct} from '../../global/utilities/infrastructure';
+import {
+  Database,
+  Stack,
+  Secret,
+  Construct,
+} from '../../../global/utilities/infrastructure';
 
-import type {WebApp} from '../../app/infrastructure';
-import type {GraphQLApi} from '../../functions/api/infrastructure';
-import type {AuthApi} from '../../functions/auth/infrastructure';
-import type {CdnRequestForwardHost} from '../../functions/cdn-request-forward-host/infrastructure';
-import type {CdnResponseHeaderCleanup} from '../../functions/cdn-response-header-cleanup/infrastructure';
+import {WebApp} from '../../../app/infrastructure';
+import {GraphQLApi} from '../../../functions/api/infrastructure';
+import {AuthApi} from '../../../functions/auth/infrastructure';
+import {Email} from '../../../functions/email/infrastructure';
+import {TmdbRefresherScheduler} from '../../../functions/tmdb-refresher-scheduler/infrastructure';
+import {TmdbRefresher} from '../../../functions/tmdb-refresher/infrastructure';
+import {CdnRequestForwardHost} from '../../../functions/cdn-request-forward-host/infrastructure';
+import {CdnResponseHeaderCleanup} from '../../../functions/cdn-response-header-cleanup/infrastructure';
 
 const DOMAIN = 'watch.lemon.tools';
+
+export class WatchStack extends Stack {
+  constructor(app: App) {
+    super(app, 'WatchStack');
+
+    const database = new Database(this, {
+      vpc: new Vpc(this, 'WatchVpc'),
+      name: 'PrimaryDatabase',
+      databaseName: 'watch',
+    });
+
+    const jwt = new Secret(this, 'WatchDefaultJWTSecret', {
+      secretName: 'Watch/DefaultJWT',
+    });
+
+    const github = new Secret(this, 'WatchGithubOAuthClientSecret', {
+      secretName: 'Watch/Github/OAuthCredentials',
+    });
+
+    const tmdb = new Secret(this, 'WatchTmdbApiCredentialsSecret', {
+      secretName: 'Watch/Tmdb/ApiCredentials',
+    });
+
+    const webApp = new WebApp(this);
+    const email = new Email(this, {database});
+    const graphqlApi = new GraphQLApi(this, {jwt, tmdb, database, email});
+    const authApi = new AuthApi(this, {jwt, github, database});
+
+    const tmdbRefreshScheduler = new TmdbRefresherScheduler(this, {database});
+    new TmdbRefresher(this, {
+      tmdb,
+      database,
+      scheduler: tmdbRefreshScheduler,
+    });
+
+    const cdnRequestForwardHost = new CdnRequestForwardHost(this);
+    const cdnResponseHeaderCleanup = new CdnResponseHeaderCleanup(this);
+
+    new Cdn(this, {
+      webApp,
+      authApi,
+      graphqlApi,
+      cdnRequestForwardHost,
+      cdnResponseHeaderCleanup,
+    });
+  }
+}
 
 export class Cdn extends Construct {
   constructor(
