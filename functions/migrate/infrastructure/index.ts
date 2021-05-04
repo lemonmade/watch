@@ -30,12 +30,10 @@ export class MigrateDatabase extends Construct {
       },
     );
 
-    const databaseCredentialsSecret = new Secret(
+    const databaseCredentialsSecret = Secret.fromSecretCompleteArn(
       this,
       'WatchMigratePrimaryDatabaseCredentialsSecret',
-      {
-        secretName: 'Watch/PrimaryDatabase/Credentials',
-      },
+      'arn:aws:secretsmanager:us-east-1:552916950096:secret:Watch/PrimaryDatabase/Credentials-8F0bzr',
     );
 
     const layer = new PrismaLayer(
