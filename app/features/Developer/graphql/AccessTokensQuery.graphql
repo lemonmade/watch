@@ -1,0 +1,12 @@
+query AccessTokens {
+  me {
+    id
+    accessTokens {
+      id
+      length
+      lastFourCharacters
+      createdAt
+      lastUsedAt
+    }
+  }
+}

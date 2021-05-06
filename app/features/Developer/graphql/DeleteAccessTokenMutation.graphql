@@ -1,0 +1,5 @@
+mutation DeleteAccessToken($id: ID!) {
+  deletePersonalAccessToken(id: $id) {
+    deletedPersonalAccessTokenId
+  }
+}

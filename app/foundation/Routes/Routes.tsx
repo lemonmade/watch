@@ -13,7 +13,7 @@ import {Search} from '../../features/Search';
 import {SignIn} from '../../features/SignIn';
 import {SignedOut} from '../../features/SignedOut';
 import {Account} from '../../features/Account';
-import {Developer} from '../../features/Developer';
+import {Developer, Apps, AccessTokens} from '../../features/Developer';
 
 import {Frame} from '../Frame';
 
@@ -32,7 +32,14 @@ export function Routes() {
           children: [
             {match: '/', render: () => <Watching />},
             {match: 'me', render: () => <Account />},
-            {match: 'developer', render: () => <Developer />},
+            {
+              match: 'developer',
+              children: [
+                {match: '/', render: () => <Developer />},
+                {match: 'apps', render: () => <Apps />},
+                {match: 'access-tokens', render: () => <AccessTokens />},
+              ],
+            },
             {match: 'subscriptions', render: () => <Subscriptions />},
             {match: 'settings', render: () => <Settings />},
             {match: 'search', render: () => <Search />},

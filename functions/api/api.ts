@@ -1,17 +1,23 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
 import {createHttpHandler, json, noContent} from '@quilted/http-handlers';
+import type {Request} from '@quilted/http-handlers';
 import {
   captureException,
   init as sentryInit,
   flush as flushSentry,
 } from '@sentry/node';
 
+import {createPrisma} from 'shared/utilities/database';
+import type {Prisma} from 'shared/utilities/database';
 import {getUserIdFromRequest} from 'shared/utilities/auth';
 
 import typeDefs from './graph/schema';
 
 import {resolvers, createContext} from './graph';
+import type {Authentication} from './graph';
+
+const ACCESS_TOKEN_HEADER = 'X-Watch-Access-Token';
 
 sentryInit({
   dsn: 'https://d6cff1e3f8c34a44a22253995b47ccfb@sentry.io/1849967',
@@ -58,14 +64,15 @@ app.post(async (request) => {
     cookies,
   };
 
-  const userId = getUserIdFromRequest(request);
+  const prisma = await createPrisma();
+  const auth = await authenticate(request, prisma);
 
   try {
     const result = await graphql(
       schema,
       query,
       {},
-      await createContext(userId ? {id: userId} : undefined, request, response),
+      createContext(auth, prisma, request, response),
       variables,
       operationName,
     );
@@ -90,5 +97,37 @@ app.post(async (request) => {
     );
   }
 });
+
+async function authenticate(
+  request: Request,
+  prisma: Prisma,
+): Promise<Authentication> {
+  const cookieAuthUserId = getUserIdFromRequest(request);
+
+  if (cookieAuthUserId) {
+    return {type: 'cookie', userId: cookieAuthUserId};
+  }
+
+  const accessToken = request.headers.get(ACCESS_TOKEN_HEADER);
+
+  if (accessToken == null) {
+    return {type: 'unauthenticated'};
+  }
+
+  const token = await prisma.personalAccessToken.findFirst({
+    where: {token: accessToken},
+  });
+
+  if (token == null) {
+    throw new Error('Invalid token');
+  }
+
+  await prisma.personalAccessToken.update({
+    where: {id: token.id},
+    data: {lastUsedAt: new Date()},
+  });
+
+  return {type: 'accessToken', userId: token.userId};
+}
 
 export default app;

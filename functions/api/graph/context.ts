@@ -1,9 +1,8 @@
 import type {Request, Response} from '@quilted/http-handlers';
 
-import {createPrisma} from 'shared/utilities/database';
+import type {Prisma} from 'shared/utilities/database';
 
-type ThenType<T> = T extends Promise<infer U> ? U : never;
-export type Context = ThenType<ReturnType<typeof createContext>>;
+export type Context = ReturnType<typeof createContext>;
 
 interface MutableResponse {
   status: Response['status'];
@@ -11,22 +10,29 @@ interface MutableResponse {
   readonly cookies: Response['cookies'];
 }
 
-export async function createContext(
-  user: {id: string} | undefined,
+export type Authentication =
+  | {
+      type: 'unauthenticated';
+      userId?: never;
+    }
+  | {type: 'cookie'; userId: string}
+  | {type: 'accessToken'; userId: string};
+
+export function createContext(
+  auth: Authentication,
+  prisma: Prisma,
   request: Request,
   response: MutableResponse,
 ) {
-  const prisma = await createPrisma();
-
   return {
     prisma,
     get user() {
-      if (user == null) {
+      if (auth.userId == null) {
         response.status = 401;
         throw new Error('No user exists for this request!');
       }
 
-      return user;
+      return {id: auth.userId};
     },
     request,
     response,

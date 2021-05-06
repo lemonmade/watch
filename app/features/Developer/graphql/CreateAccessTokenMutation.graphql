@@ -1,0 +1,5 @@
+mutation CreateAccessToken {
+  createPersonalAccessToken {
+    plaintextToken
+  }
+}
