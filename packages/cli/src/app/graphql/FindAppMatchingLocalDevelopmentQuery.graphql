@@ -1,9 +1,11 @@
-query FindAppMatchingLocalDevelopment($id: ID!) {
-  app(id: $id) {
-    extensions {
-      ... on ClipsExtension {
-        id
-        name
+query FindAppMatchingLocalDevelopment($id: ID, $name: String) {
+  me {
+    app(id: $id, name: $name) {
+      extensions {
+        ... on ClipsExtension {
+          id
+          name
+        }
       }
     }
   }

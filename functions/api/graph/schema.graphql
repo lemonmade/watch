@@ -12,6 +12,7 @@ type User {
   githubAccount: GithubAccount
 
   accessTokens: [PersonalAccessToken!]!
+  app(id: ID, name: String): App
 }
 
 type GithubAccount {
@@ -195,6 +196,7 @@ type Icon {
 
 type App {
   id: ID!
+  name: String!
   icon: Icon
   extensions: [AppExtension!]!
 }
@@ -451,6 +453,8 @@ input CreateClipsInitialVersion {
 
 type PersonalAccessToken {
   id: ID!
+  label: String
+  prefix: String!
   length: Int!
   createdAt: Date!
   lastUsedAt: Date
@@ -553,7 +557,7 @@ type Mutation {
     configuration: JSON
   ): UpdateClipsExtensionInstallationPayload!
 
-  createPersonalAccessToken: CreatePersonalAccessTokenPayload!
+  createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
   deletePersonalAccessToken(id: ID!): DeletePersonalAccessTokenPayload!
 }
 

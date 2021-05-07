@@ -5,9 +5,8 @@ import {statSync} from 'fs';
 import {readFile} from 'fs/promises';
 import {createHash} from 'crypto';
 
-import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import type {GraphQL} from '@quilted/graphql';
-
+import {authenticate} from '../authentication';
+import type {GraphQL} from '../authentication';
 import {
   buildDetailsForExtension,
   findMatchingProductionClipsExtension,
@@ -41,13 +40,18 @@ type ExtensionSupportCondition = NonNullable<
 >[keyof ExtensionSupport['conditions']];
 
 export async function push() {
-  const graphql = createGraphQL({
-    fetch: createHttpFetch({uri: 'https://watch.lemon.tools/api/graphql'}),
-  });
-
   const localApp = await loadLocalApp();
 
   verifyLocalBuild(localApp);
+
+  const authenticatedContext = await authenticate();
+
+  if (authenticatedContext == null) {
+    process.exitCode = 1;
+    return;
+  }
+
+  const {graphql} = authenticatedContext;
 
   const productionApp = await loadProductionApp(localApp.configuration.id, {
     graphql,

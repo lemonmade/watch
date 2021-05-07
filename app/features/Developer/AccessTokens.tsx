@@ -29,12 +29,13 @@ export function AccessTokens() {
         <Layout sizes={['fill', 'auto']} key={accessToken.id}>
           <BlockStack spacing="small">
             <Text>
-              wlp_
+              {accessToken.prefix}
               {'*'.repeat(
                 accessToken.length - accessToken.lastFourCharacters.length - 4,
               )}
               {accessToken.lastFourCharacters}
             </Text>
+            {accessToken.label ? <Text>{accessToken.label}</Text> : null}
             <Text emphasis="subdued">
               Created at: {new Date(accessToken.createdAt).toLocaleString()}
             </Text>

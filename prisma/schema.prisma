@@ -25,6 +25,7 @@ model User {
   appInstallations            AppInstallation[]
   clipsExtensionInstallations ClipsExtensionInstallation[]
   personalAccessTokens        PersonalAccessToken[]
+  apps                        App[]
 }
 
 model GithubAccount {
@@ -178,6 +179,9 @@ model App {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
   installations   AppInstallation[]
   clipsExtensions ClipsExtension[]
 }
@@ -257,6 +261,7 @@ model ClipsExtensionInstallation {
 model PersonalAccessToken {
   id         String    @id @default(uuid())
   token      String    @unique
+  label      String?
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
 

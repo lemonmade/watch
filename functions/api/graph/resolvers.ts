@@ -542,8 +542,8 @@ export const Mutation: Resolver = {
 
     return {series};
   },
-  createApp(_, {name}: {name: string}, {prisma}) {
-    return prisma.app.create({data: {name}});
+  createApp(_, {name}: {name: string}, {prisma, user}) {
+    return prisma.app.create({data: {name, userId: user.id}});
   },
   async deleteApp(_, {id}: {id: string}, {prisma}) {
     await prisma.app.delete({where: {id: fromGid(id).id}});
@@ -793,7 +793,11 @@ export const Mutation: Resolver = {
       installation,
     };
   },
-  async createPersonalAccessToken(_, __, {user, prisma}) {
+  async createPersonalAccessToken(
+    _,
+    {label}: {label?: string},
+    {user, prisma},
+  ) {
     const {randomBytes} = await import('crypto');
 
     const token = `${PERSONAL_ACCESS_TOKEN_PREFIX}${randomBytes(
@@ -805,6 +809,7 @@ export const Mutation: Resolver = {
     const personalAccessToken = await prisma.personalAccessToken.create({
       data: {
         token,
+        label,
         userId: user.id,
       },
     });
@@ -856,6 +861,19 @@ export const User: Resolver<import('@prisma/client').User> = {
       take: 50,
     });
   },
+  app({id}, {id: appId, name}: {id?: string; name?: string}, {user, prisma}) {
+    if (user.id !== id) {
+      throw new Error();
+    }
+
+    if (appId) {
+      return prisma.app.findFirst({where: {id: fromGid(appId).id}});
+    } else if (name) {
+      return prisma.app.findFirst({where: {name, userId: user.id}});
+    } else {
+      return null;
+    }
+  },
 };
 
 export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
@@ -868,6 +886,7 @@ export const PersonalAccessToken: Resolver<
   import('@prisma/client').PersonalAccessToken
 > = {
   id: ({id}) => toGid(id, 'PersonalAccessToken'),
+  prefix: () => PERSONAL_ACCESS_TOKEN_PREFIX,
   length: ({token}) => token.length,
   lastFourCharacters: ({token}) => token.slice(-4),
 };

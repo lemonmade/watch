@@ -13,7 +13,12 @@ import {Search} from '../../features/Search';
 import {SignIn} from '../../features/SignIn';
 import {SignedOut} from '../../features/SignedOut';
 import {Account} from '../../features/Account';
-import {Developer, Apps, AccessTokens} from '../../features/Developer';
+import {
+  Developer,
+  Apps,
+  AccessTokens,
+  AuthenticateCli,
+} from '../../features/Developer';
 
 import {Frame} from '../Frame';
 
@@ -38,6 +43,7 @@ export function Routes() {
                 {match: '/', render: () => <Developer />},
                 {match: 'apps', render: () => <Apps />},
                 {match: 'access-tokens', render: () => <AccessTokens />},
+                {match: 'cli/authenticate', render: () => <AuthenticateCli />},
               ],
             },
             {match: 'subscriptions', render: () => <Subscriptions />},

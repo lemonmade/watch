@@ -1,4 +1,5 @@
 import arg from 'arg';
+import {bold, magenta, red, blue, green, yellow} from 'colorette';
 
 const KNOWN_COMMANDS = new Set(['dev', 'build', 'push', 'publish']);
 
@@ -16,6 +17,12 @@ async function run() {
       `You must call the CLI with a command (e.g., \`watchapp deploy\`)`,
     );
   }
+
+  console.log(
+    `${magenta(`watch ${bold(command)}`)} ${magenta('●')}${red('●')}${blue(
+      '●',
+    )}${green('●')}${yellow('●')}`,
+  );
 
   switch (command) {
     case 'dev': {
