@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import stripAnsi from 'strip-ansi';
-import {link} from 'ansi-escapes';
+import ansiEscapes from 'ansi-escapes';
 
 import * as Style from 'colorette';
 
@@ -76,7 +76,7 @@ export function createUi(): Ui {
       const wrappedUrl =
         !Style.options.enabled || process.env.CI || !process.stdout.isTTY
           ? url
-          : link(url, url);
+          : ansiEscapes.link(url, url);
 
       return Style.underline(Style.magenta(wrappedUrl));
     },
