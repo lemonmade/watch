@@ -1,106 +1,112 @@
-import stripAnsi from 'strip-ansi';
-import {magenta, underline, red, bold} from 'colorette';
+import '@quilted/polyfills/fetch.node';
+
+import {homedir} from 'os';
+import * as path from 'path';
+import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 
 import type {GraphQL} from '@quilted/graphql';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 
+import {PrintableError} from '../ui';
+import type {Ui} from '../ui';
+
 import checkAuthFromCliQuery from './graphql/CheckAuthFromCliQuery.graphql';
+import deleteAccessTokenForCliMutation from './graphql/DeleteAccessTokenForCliMutation.graphql';
 
 export type {GraphQL};
 
-export async function authenticate() {
-  let graphql: GraphQL | undefined;
+export interface User {
+  readonly id: string;
+  readonly email: string;
+  readonly accessToken: string;
+  readonly graphql: GraphQL;
+}
 
+const USER_CACHE_DIRECTORY = path.resolve(homedir(), '.watch');
+const CREDENTIALS_FILE = path.resolve(USER_CACHE_DIRECTORY, 'credentials');
+
+export async function authenticate({ui}: {ui: Ui}): Promise<User> {
   if (process.env.WATCH_ACCESS_TOKEN) {
-    graphql = await graphqlIfAuthenticated(process.env.WATCH_ACCESS_TOKEN);
+    const userFromEnvironmentAccessToken = await userFromAccessToken(
+      process.env.WATCH_ACCESS_TOKEN,
+    );
 
-    if (graphql == null) {
-      console.log();
-      console.log(
-        bold(
-          red(
-            `\u2015\u2015\u2015 error! ${'\u2015'.repeat(
-              Math.max(
-                0,
-                (process.stdout.columns ?? 25) - 3 - ' error! '.length - 5,
-              ),
-            )}`,
-          ),
-        ),
-      );
-
-      console.log(
-        prettyFormat(
-          `We tried to use the access token you provided in the ${bold(
+    if (userFromEnvironmentAccessToken == null) {
+      throw new PrintableError(
+        (ui) =>
+          `We tried to use the access token you provided in the ${ui.Code(
             'WATCH_ACCESS_TOKEN',
-          )} environment variable, but it didn’t work. Your access token might have been deleted, or you may have typed it incorrectly. If you need a new access token, you can generate one at ${printWatchUrl(
-            '/app/developer/access-tokens',
+          )} environment variable, but it didn’t work. Your access token might have been deleted, or you may have typed it incorrectly. If you need a new access token, you can generate one at ${ui.Link(
+            watchUrl('/app/developer/access-tokens'),
           )}, or you can remove the environment variable follow the interactive authentication flow.`,
-        ),
       );
-
-      return undefined;
     } else {
-      return {graphql};
+      return userFromEnvironmentAccessToken;
     }
   }
 
-  const accessTokenFromRoot = undefined;
+  const alreadyAuthenticatedUser = await userFromLocalAuthentication();
 
-  if (accessTokenFromRoot) {
-    graphql = await graphqlIfAuthenticated(accessTokenFromRoot);
-    if (graphql) return {graphql};
-  }
+  if (alreadyAuthenticatedUser) return alreadyAuthenticatedUser;
 
-  graphql = await graphqlIfAuthenticated(
-    await getAccessTokenFromWebAuthentication(),
+  const user = await userFromAccessToken(
+    await getAccessTokenFromWebAuthentication({ui}),
   );
 
-  if (graphql == null) {
-    return undefined;
+  if (user == null) {
+    throw new PrintableError(
+      `Something went wrong while trying to authenticate you. Please try this command again, and sorry for the inconvenience!`,
+    );
   }
 
-  return {graphql};
+  const {graphql, ...serializableUser} = user;
+
+  await mkdir(USER_CACHE_DIRECTORY);
+  await writeFile(CREDENTIALS_FILE, JSON.stringify(serializableUser));
+
+  return user;
 }
 
-function prettyFormat(content: string) {
-  const columns = process.stdout.columns ?? 60;
+export async function deleteAuthentication() {
+  const accessToken = await accessTokenFromCacheDirectory();
 
-  return content
-    .split('\n')
-    .map((paragraph) => {
-      let buffer = '';
-      const words = paragraph.split(' ');
-
-      let currentColumn = 0;
-
-      for (const word of words) {
-        const length = stripAnsi(word).length;
-
-        if (buffer === '') {
-          buffer = word;
-          currentColumn = length;
-          continue;
-        }
-
-        const newColumn = currentColumn + 1 + length;
-
-        if (currentColumn >= 0.5 * columns && newColumn > columns) {
-          buffer += `\n${word}`;
-          currentColumn = length;
-        } else {
-          buffer += ` ${word}`;
-          currentColumn = newColumn % columns;
-        }
-      }
-
-      return buffer;
-    })
-    .join('\n');
+  if (accessToken) {
+    await graphqlFromAccessToken(accessToken).mutate(
+      deleteAccessTokenForCliMutation,
+      {
+        variables: {token: accessToken},
+      },
+    );
+  }
 }
 
-async function graphqlIfAuthenticated(accessToken: string) {
-  const graphql = createGraphQL({
+export async function userFromLocalAuthentication() {
+  const accessTokenFromRoot = await accessTokenFromCacheDirectory();
+
+  if (accessTokenFromRoot == null) return;
+
+  const userFromRootAccessToken = await userFromAccessToken(
+    accessTokenFromRoot,
+  );
+
+  if (userFromRootAccessToken == null) {
+    await remove(USER_CACHE_DIRECTORY, {recursive: true, force: true});
+  } else {
+    return userFromRootAccessToken;
+  }
+}
+
+async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
+  try {
+    const content = await readFile(CREDENTIALS_FILE, {encoding: 'utf8'});
+    return (JSON.parse(content) as User).accessToken;
+  } catch {
+    return undefined;
+  }
+}
+
+function graphqlFromAccessToken(accessToken: string) {
+  return createGraphQL({
     cache: false,
     fetch: createHttpFetch({
       uri: watchUrl('/api/graphql'),
@@ -109,13 +115,21 @@ async function graphqlIfAuthenticated(accessToken: string) {
       },
     }),
   });
+}
+
+async function userFromAccessToken(
+  accessToken: string,
+): Promise<User | undefined> {
+  const graphql = graphqlFromAccessToken(accessToken);
 
   const {data} = await graphql.query(checkAuthFromCliQuery);
 
-  return data?.me == null ? undefined : graphql;
+  return data?.my == null
+    ? undefined
+    : {graphql, id: data.my.id, email: data.my.email, accessToken};
 }
 
-async function getAccessTokenFromWebAuthentication() {
+async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   let resolve!: (value: string) => void;
   let reject!: (value?: any) => void;
 
@@ -184,19 +198,17 @@ async function getAccessTokenFromWebAuthentication() {
     server.listen(port, handleListen);
   });
 
-  console.log(
-    `We need to authenticate you in the Watch web app. We’ll open it in a second, or you can manually authenticate by visiting ${printWatchUrl(
-      `/app/developer/cli/authenticate?redirect=http://localhost:${port}`,
-    )}`,
+  ui.TextBlock(
+    `We need to authenticate you in the Watch web app. We’ll try to open it in a second, or you can manually authenticate by visiting ${ui.Link(
+      watchUrl(
+        `/app/developer/cli/authenticate?redirect=http://localhost:${port}`,
+      ),
+    )}.`,
   );
 
   const token = await promise;
 
   return token;
-}
-
-function printWatchUrl(path: string) {
-  return underline(magenta(watchUrl(path)));
 }
 
 // Adapted from https://github.com/gajus/http-terminator/blob/master/src/factories/createInternalHttpTerminator.ts

@@ -1,0 +1,13 @@
+mutation InstallApp($id: ID!) {
+  installApp(id: $id) {
+    app {
+      extensions {
+        ... on ClipsExtension {
+          id
+          name
+          isInstalled
+        }
+      }
+    }
+  }
+}

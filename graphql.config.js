@@ -32,7 +32,7 @@ module.exports = {
       },
     },
     cli: {
-      schema: 'packages/cli/src/dev/schema.graphql',
+      schema: 'packages/cli/src/develop/schema.graphql',
       documents:
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       extensions: {

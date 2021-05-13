@@ -1,0 +1,19 @@
+query Apps {
+  apps {
+    id
+    name
+    isInstalled
+    extensions {
+      ... on ClipsExtension {
+        id
+        name
+        isInstalled
+        latestVersion {
+          supports {
+            extensionPoint
+          }
+        }
+      }
+    }
+  }
+}

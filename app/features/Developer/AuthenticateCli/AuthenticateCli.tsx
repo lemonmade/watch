@@ -71,14 +71,18 @@ export function AuthenticateCli() {
             const plaintextToken =
               data?.createPersonalAccessToken?.plaintextToken;
 
-            const result = await fetch(redirectTo!, {
-              method: 'POST',
-              body: JSON.stringify(
-                plaintextToken ? {token: plaintextToken} : {error: 'generic'},
-              ),
-            });
+            try {
+              const result = await fetch(redirectTo!, {
+                method: 'POST',
+                body: JSON.stringify(
+                  plaintextToken ? {token: plaintextToken} : {error: 'generic'},
+                ),
+              });
 
-            setResult(result.ok ? 'success' : 'error');
+              setResult(result.ok ? 'success' : 'error');
+            } catch (error) {
+              setResult('error');
+            }
           }}
         >
           Authenticate the CLI
