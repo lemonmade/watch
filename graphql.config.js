@@ -7,6 +7,7 @@ module.exports = {
         'packages/cli/src/publish/**/*.graphql',
         'packages/cli/src/push/**/*.graphql',
         'packages/cli/src/app/**/*.graphql',
+        'packages/cli/src/authentication/**/*.graphql',
       ],
       exclude: [
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
@@ -31,7 +32,7 @@ module.exports = {
       },
     },
     cli: {
-      schema: 'packages/cli/src/dev/schema.graphql',
+      schema: 'packages/cli/src/develop/schema.graphql',
       documents:
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       extensions: {

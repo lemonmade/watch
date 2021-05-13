@@ -12,6 +12,8 @@ type User {
   githubAccount: GithubAccount
 
   accessTokens: [PersonalAccessToken!]!
+  app(id: ID, name: String): App
+  apps: [App!]!
 }
 
 type GithubAccount {
@@ -195,8 +197,11 @@ type Icon {
 
 type App {
   id: ID!
+  name: String!
   icon: Icon
   extensions: [AppExtension!]!
+
+  isInstalled: Boolean!
 }
 
 type ClipsExtension {
@@ -205,6 +210,8 @@ type ClipsExtension {
   app: App!
   latestVersion: ClipsExtensionVersion
   versions: [ClipsExtensionVersion!]!
+
+  isInstalled: Boolean!
 }
 
 scalar ClipsExtensionApiVersion
@@ -451,6 +458,8 @@ input CreateClipsInitialVersion {
 
 type PersonalAccessToken {
   id: ID!
+  label: String
+  prefix: String!
   length: Int!
   createdAt: Date!
   lastUsedAt: Date
@@ -468,6 +477,7 @@ type DeletePersonalAccessTokenPayload {
 
 type Query {
   me: User!
+  my: User!
   watch(id: ID!): Watch
   series(id: ID!): Series
   watchThrough(id: ID!): WatchThrough
@@ -476,6 +486,7 @@ type Query {
   subscriptions: [SeriesSubscription!]!
   search(query: String!): SearchResults!
 
+  apps: [App!]!
   app(id: ID!): App
   clipsInstallation(id: ID!): ClipsExtensionInstallation
   clipsInstallations(
@@ -553,8 +564,11 @@ type Mutation {
     configuration: JSON
   ): UpdateClipsExtensionInstallationPayload!
 
-  createPersonalAccessToken: CreatePersonalAccessTokenPayload!
-  deletePersonalAccessToken(id: ID!): DeletePersonalAccessTokenPayload!
+  createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
+  deletePersonalAccessToken(
+    id: ID
+    token: String
+  ): DeletePersonalAccessTokenPayload!
 }
 
 schema {

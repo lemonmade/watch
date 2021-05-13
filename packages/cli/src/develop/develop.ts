@@ -35,7 +35,7 @@ type QueryResolver = {
   >;
 };
 
-export async function dev() {
+export async function develop() {
   const app = await loadLocalApp();
   const devServer = createDevServer(app);
   await devServer.listen(3000, 'localhost');

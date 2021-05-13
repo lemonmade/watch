@@ -1,0 +1,14 @@
+query MyApps {
+  my {
+    apps {
+      id
+      name
+      extensions {
+        ... on ClipsExtension {
+          id
+          name
+        }
+      }
+    }
+  }
+}

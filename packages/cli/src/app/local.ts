@@ -7,7 +7,7 @@ import {parse} from '@iarna/toml';
 import type {ExtensionPoint} from '@watching/clips';
 
 export interface LocalAppConfiguration {
-  readonly id: string;
+  readonly id?: string;
   readonly name: string;
   readonly extensions?: string | readonly string[];
 }

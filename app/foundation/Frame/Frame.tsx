@@ -60,6 +60,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
               <Link to="/app">Watching</Link>
               <Link to="/app/subscriptions">Subscriptions</Link>
               <Link to="/app/search">Search</Link>
+              <Link to="/app/apps">Apps</Link>
               <Link to="/app/settings">Settings</Link>
               <Link to="/app/developer">Developer</Link>
               <Link to="/app/me">Me</Link>
@@ -98,6 +99,7 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
                 <Link to="/app">Watching</Link>
                 <Link to="/app/subscriptions">Subscriptions</Link>
                 <Link to="/app/search">Search</Link>
+                <Link to="/app/apps">Apps</Link>
                 <Link to="/app/settings">Settings</Link>
                 <Link to="/app/developer">Developer</Link>
                 <Link to="/app/me">Me</Link>

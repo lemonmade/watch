@@ -1,0 +1,5 @@
+mutation DeleteAccessTokenForCli($token: String!) {
+  deletePersonalAccessToken(token: $token) {
+    deletedPersonalAccessTokenId
+  }
+}

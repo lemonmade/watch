@@ -3,6 +3,8 @@ query AccessTokens {
     id
     accessTokens {
       id
+      label
+      prefix
       length
       lastFourCharacters
       createdAt

@@ -22,6 +22,9 @@ export const Query: Resolver = {
   me(_, __, {prisma, user}) {
     return prisma.user.findFirst({where: {id: user.id}});
   },
+  my(_, __, {prisma, user}) {
+    return prisma.user.findFirst({where: {id: user.id}});
+  },
   async search(_, {query}: {query?: string}, context) {
     if (!query?.length) {
       return {series: []};
@@ -97,6 +100,9 @@ export const Query: Resolver = {
   },
   app(_, {id}: {id: string}, {prisma}) {
     return prisma.app.findFirst({where: {id: fromGid(id).id}});
+  },
+  apps(_, __, {prisma}) {
+    return prisma.app.findMany({take: 50});
   },
   async clipsInstallations(
     _,
@@ -542,11 +548,27 @@ export const Mutation: Resolver = {
 
     return {series};
   },
-  createApp(_, {name}: {name: string}, {prisma}) {
-    return prisma.app.create({data: {name}});
+  async createApp(_, {name}: {name: string}, {prisma, user}) {
+    const existingAppWithName = await prisma.app.findFirst({
+      where: {name, userId: user.id},
+    });
+
+    if (existingAppWithName) {
+      throw new Error(
+        `Existing app found with name ${JSON.stringify(name)} (id: ${
+          existingAppWithName.id
+        })`,
+      );
+    }
+
+    const app = await prisma.app.create({data: {name, userId: user.id}});
+
+    return {app};
   },
   async deleteApp(_, {id}: {id: string}, {prisma}) {
-    await prisma.app.delete({where: {id: fromGid(id).id}});
+    // await prisma.app.delete({where: {id: fromGid(id).id}});
+    // @see https://github.com/prisma/prisma/issues/2057
+    await prisma.$executeRaw`delete from "App" where id=${fromGid(id).id}`;
     return {deletedId: id};
   },
   updateApp(_, {id, name}: {id: string; name?: string}, {prisma}) {
@@ -729,13 +751,35 @@ export const Mutation: Resolver = {
       id,
       extensionPoint,
       configuration,
-    }: {id: string; extensionPoint: string; configuration?: string},
+    }: {id: string; extensionPoint?: string; configuration?: string},
     {user, prisma},
   ) {
     const extension = await prisma.clipsExtension.findFirst({
       where: {id: fromGid(id).id},
+      select: {
+        id: true,
+        appId: true,
+        activeVersion: {select: {supports: true}},
+      },
       rejectOnNotFound: true,
     });
+
+    let resolvedExtensionPoint = extensionPoint;
+
+    if (resolvedExtensionPoint == null) {
+      const supports = (extension.activeVersion
+        ?.supports as any) as ClipsExtensionPointSupportInput[];
+
+      if (supports?.length === 1) {
+        resolvedExtensionPoint = supports[0].extensionPoint;
+      }
+    }
+
+    if (resolvedExtensionPoint == null) {
+      throw new Error(
+        `Could not determine an extension point, you must explicitly provide an extensionPoint argument`,
+      );
+    }
 
     const appInstallation = await prisma.appInstallation.findFirst({
       where: {userId: user.id, appId: extension.appId},
@@ -749,7 +793,7 @@ export const Mutation: Resolver = {
       data: {
         userId: user.id,
         extensionId: extension.id,
-        extensionPoint,
+        extensionPoint: resolvedExtensionPoint,
         configuration,
         appInstallationId: appInstallation.id,
       },
@@ -793,7 +837,11 @@ export const Mutation: Resolver = {
       installation,
     };
   },
-  async createPersonalAccessToken(_, __, {user, prisma}) {
+  async createPersonalAccessToken(
+    _,
+    {label}: {label?: string},
+    {user, prisma},
+  ) {
     const {randomBytes} = await import('crypto');
 
     const token = `${PERSONAL_ACCESS_TOKEN_PREFIX}${randomBytes(
@@ -805,15 +853,20 @@ export const Mutation: Resolver = {
     const personalAccessToken = await prisma.personalAccessToken.create({
       data: {
         token,
+        label,
         userId: user.id,
       },
     });
 
     return {personalAccessToken, plaintextToken: token};
   },
-  async deletePersonalAccessToken(_, {id}: {id: string}, {user, prisma}) {
+  async deletePersonalAccessToken(
+    _,
+    {id, token: plaintextToken}: {id?: string; token?: string},
+    {user, prisma},
+  ) {
     const token = await prisma.personalAccessToken.findFirst({
-      where: {id: fromGid(id).id, userId: user.id},
+      where: {id: id && fromGid(id).id, token: plaintextToken, userId: user.id},
     });
 
     if (token) {
@@ -856,6 +909,26 @@ export const User: Resolver<import('@prisma/client').User> = {
       take: 50,
     });
   },
+  app({id}, {id: appId, name}: {id?: string; name?: string}, {user, prisma}) {
+    if (user.id !== id) {
+      throw new Error();
+    }
+
+    if (appId) {
+      return prisma.app.findFirst({where: {id: fromGid(appId).id}});
+    } else if (name) {
+      return prisma.app.findFirst({where: {name, userId: user.id}});
+    } else {
+      return null;
+    }
+  },
+  apps({id}, _, {user, prisma}) {
+    if (user.id !== id) {
+      throw new Error();
+    }
+
+    return prisma.app.findMany({where: {userId: user.id}, take: 50});
+  },
 };
 
 export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
@@ -868,6 +941,7 @@ export const PersonalAccessToken: Resolver<
   import('@prisma/client').PersonalAccessToken
 > = {
   id: ({id}) => toGid(id, 'PersonalAccessToken'),
+  prefix: () => PERSONAL_ACCESS_TOKEN_PREFIX,
   length: ({token}) => token.length,
   lastFourCharacters: ({token}) => token.slice(-4),
 };
@@ -1065,6 +1139,13 @@ export const App: Resolver<import('@prisma/client').App> = {
 
     return extensions.map(addResolvedType('ClipsExtension'));
   },
+  async isInstalled({id}, _, {prisma, user}) {
+    const installation = await prisma.appInstallation.findFirst({
+      where: {appId: id, userId: user.id},
+    });
+
+    return installation != null;
+  },
 };
 
 export const AppInstallation: Resolver<
@@ -1102,6 +1183,13 @@ export const ClipsExtension: Resolver<
     });
 
     return versions;
+  },
+  async isInstalled({id}, _, {prisma, user}) {
+    const installation = await prisma.clipsExtensionInstallation.findFirst({
+      where: {extensionId: id, userId: user.id},
+    });
+
+    return installation != null;
   },
 };
 

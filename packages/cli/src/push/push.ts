@@ -5,14 +5,14 @@ import {statSync} from 'fs';
 import {readFile} from 'fs/promises';
 import {createHash} from 'crypto';
 
-import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import type {GraphQL} from '@quilted/graphql';
-
+import {PrintableError, Ui} from '../ui';
+import {authenticate} from '../authentication';
+import type {GraphQL} from '../authentication';
 import {
   buildDetailsForExtension,
   findMatchingProductionClipsExtension,
 } from '../utilities';
-import {loadProductionApp, loadLocalApp} from '../app';
+import {loadProductionApp, loadLocalApp, ProductionApp} from '../app';
 import type {
   LocalApp,
   LocalExtension,
@@ -40,54 +40,141 @@ type ExtensionSupportCondition = NonNullable<
   ExtensionSupport['conditions']
 >[keyof ExtensionSupport['conditions']];
 
-export async function push() {
-  const graphql = createGraphQL({
-    fetch: createHttpFetch({uri: 'https://watch.lemon.tools/api/graphql'}),
-  });
-
+export async function push({ui}: {ui: Ui}) {
   const localApp = await loadLocalApp();
 
-  verifyLocalBuild(localApp);
+  if (localApp.extensions.length === 0) {
+    ui.Heading('heads up!', {style: (content, style) => style.yellow(content)});
+    ui.TextBlock(
+      `Your app doesn’t have any extensions to push yet. Run ${ui.Code(
+        'watchapp create extension',
+      )} to get started!`,
+    );
 
-  const productionApp = await loadProductionApp(localApp.configuration.id, {
+    return;
+  }
+
+  verifyLocalBuild(localApp, ui);
+
+  const authenticatedContext = await authenticate({ui});
+
+  const {graphql} = authenticatedContext;
+
+  const productionApp = await loadProductionApp(localApp, {
+    ui,
     graphql,
   });
 
-  for (const extension of localApp.extensions) {
-    await pushExtension(extension, {
-      app: localApp,
-      graphql,
-      production: findMatchingProductionClipsExtension(
-        extension,
+  const hasOneExtension = localApp.extensions.length === 1;
+
+  ui.TextBlock(
+    `We’re pushing the latest changes for your ${
+      hasOneExtension
+        ? `${ui.Code(localApp.extensions[0].configuration.name)} extension`
+        : `${localApp.extensions.length} extensions`
+    }...`,
+  );
+
+  const results = await Promise.all(
+    localApp.extensions.map((extension) =>
+      pushExtension(extension, {
+        ui,
+        app: localApp,
         productionApp,
-      ),
-    });
+        graphql,
+        production: findMatchingProductionClipsExtension(
+          extension,
+          productionApp,
+        ),
+      }),
+    ),
+  );
+
+  const created: PushResult[] = [];
+  const updated: PushResult[] = [];
+
+  for (const result of results) {
+    if (result.isNew) {
+      created.push(result);
+    } else {
+      updated.push(result);
+    }
+  }
+
+  ui.Heading('success!', {style: (content, style) => style.green(content)});
+
+  if (created.length > 0) {
+    if (created.length === 1) {
+      ui.TextBlock(
+        `Created extension ${ui.Code(
+          created[0].extension.configuration.name,
+        )}!`,
+      );
+    } else {
+      ui.TextBlock(`Created ${created.length} extensions:`);
+      ui.List((List) => {
+        for (const {extension} of created) {
+          List.Item(extension.configuration.name);
+        }
+      });
+    }
+  }
+
+  if (updated.length > 0) {
+    if (updated.length === 1) {
+      ui.TextBlock(
+        `Updated extension ${ui.Code(
+          updated[0].extension.configuration.name,
+        )}!`,
+      );
+    } else {
+      ui.TextBlock(`Updated ${updated.length} extensions:`);
+      ui.List((List) => {
+        for (const {extension} of updated) {
+          List.Item(extension.configuration.name);
+        }
+      });
+    }
   }
 }
 
-function verifyLocalBuild(app: LocalApp) {
+function verifyLocalBuild(app: LocalApp, ui: Ui) {
   for (const extension of app.extensions) {
     const {filename, directory} = buildDetailsForExtension(extension, app);
     if (!statSync(path.join(directory, filename)).isFile()) {
       throw new Error(
-        `Could not find build for extension ${extension.id}. Make sure you have run \`watchapp build\` before running this command.`,
+        `Could not find build for extension ${
+          extension.id
+        }. Make sure you have run ${ui.Code(
+          'watchapp build',
+        )} before running this command.`,
       );
     }
   }
 }
 
+interface PushResult {
+  isNew: boolean;
+  extension: LocalExtension;
+}
+
 async function pushExtension(
   extension: LocalExtension,
   {
+    ui,
     app,
     graphql,
     production,
+    productionApp,
   }: {
+    ui: Ui;
     app: LocalApp;
     graphql: GraphQL;
     production?: ProductionClipsExtension;
+    productionApp: ProductionApp;
   },
-) {
+): Promise<PushResult> {
+  let result: PushResult;
   let assetUploadUrl: string | undefined;
 
   const {directory, filename} = buildDetailsForExtension(extension, app);
@@ -168,15 +255,7 @@ async function pushExtension(
   };
 
   if (production) {
-    /* eslint-disable no-console */
-    console.log(
-      `Updating existing extension ${extension.configuration.name} (id: ${production.id})`,
-    );
-
-    console.log(JSON.stringify(buildOptions, null, 2));
-    /* eslint-enable no-console */
-
-    const {data, error} = await graphql.mutate(pushClipsExtensionMutation, {
+    const {data} = await graphql.mutate(pushClipsExtensionMutation, {
       variables: {
         extensionId: production.id,
         name: extension.configuration.name,
@@ -184,49 +263,49 @@ async function pushExtension(
       },
     });
 
-    if (error) {
-      throw error;
-    }
-
     if (data == null) {
-      throw new Error('No data returned when creating clips version');
+      throw new PrintableError(
+        `We could not create a new version for extension ${ui.Code(
+          extension.configuration.name,
+        )}. This might be because you have an existing extension with the same name, but if that’s not the case, you might need to try running this command again. Sorry about that!`,
+      );
     }
 
+    result = {extension, isNew: false};
     assetUploadUrl = data?.pushClipsExtension.signedScriptUpload ?? undefined;
   } else {
-    // eslint-disable-next-line no-console
-    console.log(`Creating new extension ${extension.configuration.name}`);
-
-    const {data, error} = await graphql.mutate(
+    const {data} = await graphql.mutate(
       createClipsExtensionAndInitialVersionMutation,
       {
         variables: {
-          appId: app.configuration.id,
+          appId: productionApp.id,
           name: extension.configuration.name,
           initialVersion: {...buildOptions},
         },
       },
     );
 
-    if (error) {
-      throw error;
-    }
-
     if (data == null) {
-      throw new Error('No data returned when creating clips version');
+      throw new PrintableError(
+        `We could not create a new extension for ${ui.Code(
+          extension.configuration.name,
+        )}. This might be because you have an existing extension with the same name, but if that’s not the case, you might need to try running this command again. Sorry about that!`,
+      );
     }
 
+    result = {extension, isNew: true};
     assetUploadUrl = data?.createClipsExtension.signedScriptUpload ?? undefined;
   }
 
   if (assetUploadUrl == null) {
-    throw new Error('Nowhere to upload built extension :/');
+    throw new PrintableError(
+      `We could not upload your ${ui.Code(
+        extension.configuration.name,
+      )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
+    );
   }
 
-  // eslint-disable-next-line no-console
-  console.log(`Uploading to ${assetUploadUrl}`);
-
-  const result = await fetch(assetUploadUrl, {
+  const assetUploadResult = await fetch(assetUploadUrl, {
     method: 'PUT',
     body: scriptContents,
     headers: {
@@ -235,9 +314,15 @@ async function pushExtension(
     },
   });
 
-  if (!result.ok) {
-    throw new Error(await result.text());
+  if (!assetUploadResult.ok) {
+    throw new PrintableError(
+      `We could not upload your ${ui.Code(
+        extension.configuration.name,
+      )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
+    );
   }
+
+  return result;
 }
 
 async function loadTranslationsForExtension(extension: LocalExtension) {

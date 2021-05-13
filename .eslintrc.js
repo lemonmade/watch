@@ -3,7 +3,9 @@ module.exports = {
   ignorePatterns: [
     'node_modules/',
     'build/',
+    'cdk.out/',
     'packages/*/*.d.ts',
+    'packages/*/*.js',
     'packages/*/*.mjs',
     'packages/*/*.esnext',
     'packages/*/build/',

@@ -1,0 +1,6 @@
+query CheckAuthFromCli {
+  my {
+    id
+    email
+  }
+}

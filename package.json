@@ -7,7 +7,7 @@
     "test": "skn test",
     "type-check": "skn type-check",
     "dev": "skn dev --reload fast",
-    "build": "yarn run:ts ./scripts/build-prisma-layers.ts && skn build",
+    "build": "skn build",
     "packages:version": "lerna version --include-merged-tags --no-private",
     "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
     "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\"",

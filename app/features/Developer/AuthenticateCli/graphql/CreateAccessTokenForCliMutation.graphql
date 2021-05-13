@@ -1,0 +1,5 @@
+mutation CreateAccessTokenForCli($label: String!) {
+  createPersonalAccessToken(label: $label) {
+    plaintextToken
+  }
+}
