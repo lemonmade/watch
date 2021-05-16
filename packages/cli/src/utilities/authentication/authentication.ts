@@ -191,9 +191,9 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
     )}.`,
   );
 
-  const token = await promise;
-
   await open(url);
+
+  const token = await promise;
 
   return token;
 }

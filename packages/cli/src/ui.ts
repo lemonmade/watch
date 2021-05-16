@@ -16,6 +16,10 @@ export interface Ui {
     content: string,
     props?: {spacing?: boolean; style?: StyleProp},
   ): void;
+  Text(
+    content: string,
+    props?: {style?: StyleProp; emphasized?: boolean},
+  ): void;
   Link(url: string): string;
   Code(content: string): string;
   List(content: (List: {Item(content: string): void}) => void): void;
@@ -92,6 +96,10 @@ export function createUi(): Ui {
     TextBlock(content, {style, spacing = true} = {}) {
       if (spacing) newline();
       console.log(prettyFormat(style ? style(content, Style) : content));
+    },
+    Text(content, {style, emphasized = false} = {}) {
+      const formattedContent = style ? style(content, Style) : content;
+      return emphasized ? Style.bold(formattedContent) : formattedContent;
     },
     Code(content) {
       return Style.bold(content);

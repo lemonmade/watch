@@ -8,7 +8,13 @@ export function rootOutputDirectory(app: LocalApp) {
 
 export async function ensureRootOutputDirectory(app: LocalApp) {
   const directory = rootOutputDirectory(app);
-  await mkdir(directory);
+
+  try {
+    await mkdir(directory);
+  } catch (error) {
+    if (error?.code !== 'EEXIST') throw error;
+  }
+
   await writeFile(path.join(directory, '.gitignore'), '*');
 }
 

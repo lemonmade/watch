@@ -1,10 +1,15 @@
 import {rollup} from 'rollup';
+import brotliSize from 'brotli-size';
+import prettyBytes from 'pretty-bytes';
 
 import type {Ui} from '../../ui';
 
 import {loadLocalApp} from '../../utilities/app';
 import {buildDetailsForExtension, ensureRootOutputDirectory} from '../../utilities/build';
 import {createRollupConfiguration} from '../../utilities/rollup';
+
+const BUNDLE_SIZE_GOOD = 10_000;
+const BUNDLE_SIZE_OKAY = 40_000;
 
 export async function build({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
@@ -33,16 +38,18 @@ export async function build({ui}: {ui: Ui}) {
 
   await ensureRootOutputDirectory(app);
 
-  await Promise.all(
+  const builds = await Promise.all(
     app.extensions.map(async (extension) => {
       const bundle = await rollup(createRollupConfiguration(extension, {mode: 'production'}));
       const {directory, filename} = buildDetailsForExtension(extension, app);
 
-      await bundle.write({
+      const {output: [{code}]} = await bundle.write({
         format: 'iife',
         dir: directory,
         entryFileNames: filename,
       });
+
+      return {extension, size: code.length, minifiedSize: await brotliSize(code)};
     }),
   );
 
@@ -55,8 +62,20 @@ export async function build({ui}: {ui: Ui}) {
   } else {
     ui.TextBlock(`Built ${app.extensions.length} extensions:`);
     ui.List((List) => {
-      for (const extension of app.extensions) {
-        List.Item(extension.configuration.name);
+      for (const {extension, size, minifiedSize} of builds) {
+        const sizeContent = ui.Text(`(${prettyBytes(size)}, ${prettyBytes(minifiedSize)} minifed)`, {
+          style: (content, style) => {
+            if (minifiedSize <= BUNDLE_SIZE_GOOD) {
+              return style.green(content);
+            } else if (minifiedSize <= BUNDLE_SIZE_OKAY) {
+              return style.yellow(content);
+            } else {
+              return style.red(content);
+            }
+          }
+        });
+
+        List.Item(`${extension.configuration.name} ${sizeContent}`);
       }
     });
   }

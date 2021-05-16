@@ -100,7 +100,7 @@ export async function develop({ui}: {ui: Ui}) {
     const result = await devServer.listen();
 
     const localServerOrigin = `http://localhost:${result.port}`;
-    const targetUrl = watchUrl(`/app?dev=${localServerOrigin}/graphql`);
+    const targetUrl = watchUrl(`/app?building=${localServerOrigin}/graphql`);
 
     ui.Heading('success!', {style: (content, style) => style.green(content)});
     ui.TextBlock(

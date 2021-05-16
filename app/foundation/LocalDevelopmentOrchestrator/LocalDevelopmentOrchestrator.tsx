@@ -21,14 +21,14 @@ export function LocalDevelopmentOrchestrator({
   useEffect(() => {
     let valid = true;
 
-    const devParam = url.searchParams.get('dev');
-    if (devParam == null) return;
+    const buildingParam = url.searchParams.get('building');
+    if (buildingParam == null) return;
 
     (async () => {
       try {
-        const devUrl = new URL(devParam);
+        const localDevelopmentQueryUrl = new URL(buildingParam);
         const graphql = createGraphQL({
-          fetch: createHttpFetch({uri: devUrl.href}),
+          fetch: createHttpFetch({uri: localDevelopmentQueryUrl.href}),
         });
 
         const {data, error} = await graphql.query(
