@@ -215,6 +215,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
       if (assetStats.isFile()) {
         return response(await readFile(assetPath, {encoding: 'utf8'}), {
           headers: {
+            'Timing-Allow-Origin': '*',
             'Content-Type': mime.getType(assetPath)!,
           },
         });
