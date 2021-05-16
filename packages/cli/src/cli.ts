@@ -83,6 +83,9 @@ async function run() {
         );
       }
     }
+
+    // eslint-disable-next-line no-console
+    console.log();
   } catch (error) {
     if (error instanceof PrintableError) {
       error.print(ui);

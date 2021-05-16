@@ -249,6 +249,9 @@ export class Cdn extends Construct {
                 cookieBehavior: OriginRequestCookieBehavior.all(),
                 headerBehavior: OriginRequestHeaderBehavior.allowList(
                   'X-Debug',
+                  // For API client bearer authentication
+                  'X-Access-Token',
+                  // To get the original host
                   'X-Forwarded-Host',
                 ),
                 queryStringBehavior: OriginRequestQueryStringBehavior.none(),

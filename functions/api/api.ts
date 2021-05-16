@@ -17,7 +17,7 @@ import typeDefs from './graph/schema';
 import {resolvers, createContext} from './graph';
 import type {Authentication} from './graph';
 
-const ACCESS_TOKEN_HEADER = 'X-Watch-Access-Token';
+const ACCESS_TOKEN_HEADER = 'X-Access-Token';
 
 sentryInit({
   dsn: 'https://d6cff1e3f8c34a44a22253995b47ccfb@sentry.io/1849967',

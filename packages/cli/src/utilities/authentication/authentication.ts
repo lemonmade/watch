@@ -114,7 +114,7 @@ function graphqlFromAccessToken(accessToken: string) {
     fetch: createHttpFetch({
       uri: watchUrl('/api/graphql'),
       headers: {
-        'X-Watch-Access-Token': accessToken,
+        'X-Access-Token': accessToken,
       },
     }),
   });
