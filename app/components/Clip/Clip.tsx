@@ -102,6 +102,7 @@ export function LocalClip<T extends ExtensionPoint>({
   name,
   script,
   version,
+  socketUrl,
   extensionPoint,
 }: LocalExtension & Pick<Props<T>, 'api' | 'extensionPoint'>) {
   return (
@@ -112,6 +113,7 @@ export function LocalClip<T extends ExtensionPoint>({
       name={name}
       version={version}
       script={script}
+      local={socketUrl}
       extensionPoint={extensionPoint}
     />
   );
