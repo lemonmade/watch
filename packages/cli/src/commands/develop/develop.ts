@@ -122,10 +122,7 @@ export async function develop({ui}: {ui: Ui}) {
 
 function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
-  const outputRoot = path.resolve(
-    rootOutputDirectory(app),
-    'develop/extensions',
-  );
+  const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
   const schema = makeExecutableSchema({
     typeDefs: schemaTypeDefinitions,
@@ -135,7 +132,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
           return {
             extensions: app.extensions.map((extension) => {
               const assetUrl = new URL(
-                `/assets/${extension.id}.js`,
+                `/assets/extensions/${extension.id}.js`,
                 request.url,
               );
 
@@ -183,11 +180,25 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
         operationName,
       );
 
-      return json(result, {headers: {'Timing-Allow-Origin': '*'}});
+      return json(result, {
+        headers: {
+          'Timing-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
     } catch (error) {
       return json(
         {errors: [{message: error.message}]},
-        {headers: {'Timing-Allow-Origin': '*'}},
+        {
+          headers: {
+            'Timing-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type',
+          },
+        },
       );
     }
   });
@@ -197,15 +208,20 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
       outputRoot,
       request.url.pathname.replace('/assets/', ''),
     );
-    const assetStats = await stat(assetPath);
 
-    if (assetStats.isFile()) {
-      return response(await readFile(assetPath, {encoding: 'utf8'}), {
-        headers: {
-          'Content-Type': mime.getType(assetPath)!,
-        },
-      });
-    } else {
+    try {
+      const assetStats = await stat(assetPath);
+
+      if (assetStats.isFile()) {
+        return response(await readFile(assetPath, {encoding: 'utf8'}), {
+          headers: {
+            'Content-Type': mime.getType(assetPath)!,
+          },
+        });
+      } else {
+        return notFound();
+      }
+    } catch {
       return notFound();
     }
   });
@@ -226,7 +242,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
       ...baseConfiguration,
       output: {
         format: 'iife',
-        dir: path.resolve(app.root, '.watch/develop'),
+        dir: path.join(outputRoot, 'extensions'),
         entryFileNames: `${extension.id}.js`,
       },
     });
