@@ -1,10 +1,9 @@
-import * as path from 'path';
-
 import {rollup} from 'rollup';
 
 import type {Ui} from '../../ui';
 
 import {loadLocalApp} from '../../utilities/app';
+import {buildDetailsForExtension, ensureRootOutputDirectory} from '../../utilities/build';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
 export async function build({ui}: {ui: Ui}) {
@@ -32,14 +31,17 @@ export async function build({ui}: {ui: Ui}) {
     }...`,
   );
 
+  await ensureRootOutputDirectory(app);
+
   await Promise.all(
     app.extensions.map(async (extension) => {
-      const bundle = await rollup(createRollupConfiguration(extension));
+      const bundle = await rollup(createRollupConfiguration(extension, {mode: 'production'}));
+      const {directory, filename} = buildDetailsForExtension(extension, app);
 
       await bundle.write({
         format: 'iife',
-        dir: path.resolve(app.root, '.watch/develop'),
-        entryFileNames: `${extension.id}.js`,
+        dir: directory,
+        entryFileNames: filename,
       });
     }),
   );

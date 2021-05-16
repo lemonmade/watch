@@ -3,6 +3,7 @@ import '@quilted/polyfills/fetch.node';
 import {homedir} from 'os';
 import * as path from 'path';
 import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
+import open from 'open';
 
 import type {GraphQL} from '@quilted/graphql';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
@@ -10,6 +11,7 @@ import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
 import {findPortAndListen, makeStoppableServer} from '../http';
+import {watchUrl} from '../url';
 
 import checkAuthFromCliQuery from './graphql/CheckAuthFromCliQuery.graphql';
 import deleteAccessTokenForCliMutation from './graphql/DeleteAccessTokenForCliMutation.graphql';
@@ -179,22 +181,19 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
 
   const port = await findPortAndListen(server, 3211);
 
+  const url = watchUrl(
+    `/app/developer/cli/authenticate?redirect=http://localhost:${port}`,
+  );
+
   ui.TextBlock(
     `We need to authenticate you in the Watch web app. We’ll try to open it in a second, or you can manually authenticate by visiting ${ui.Link(
-      watchUrl(
-        `/app/developer/cli/authenticate?redirect=http://localhost:${port}`,
-      ),
+      url,
     )}.`,
   );
 
   const token = await promise;
 
-  return token;
-}
+  await open(url);
 
-function watchUrl(path: string) {
-  return new URL(
-    path,
-    process.env.WATCH_ROOT_URL ?? 'https://watch.lemon.tools',
-  ).href;
+  return token;
 }

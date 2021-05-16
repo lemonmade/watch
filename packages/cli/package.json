@@ -9,9 +9,7 @@
   "bin": {
     "watchapp": "./bin/watchapp"
   },
-  "sideEffects": [
-    "hot-worker.*"
-  ],
+  "sideEffects": false,
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
@@ -32,6 +30,7 @@
     "glob": "^7.0.0",
     "graphql": "^15.0.0",
     "mime": "^2.5.0",
+    "open": "^8.0.0",
     "rollup": "^2.0.0",
     "rollup-plugin-esbuild": "^4.0.0",
     "strip-ansi": "^6.0.0",

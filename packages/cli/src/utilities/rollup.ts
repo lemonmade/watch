@@ -10,6 +10,7 @@ import type {LocalExtension} from './app';
 
 export function createRollupConfiguration(
   extension: LocalExtension,
+  {mode = 'production'}: {mode?: 'development' | 'production'} = {},
 ): RollupOptions {
   return {
     input: path.join(extension.root, 'index'),
@@ -25,8 +26,11 @@ export function createRollupConfiguration(
         exclude: [],
         minify: false,
         loaders: {'.esnext': 'js'},
+        define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
-      esbuildWithJSXRuntime(),
+      esbuildWithJSXRuntime({
+        define: {'process.env.NODE_ENV': JSON.stringify(mode)},
+      }),
       alias({
         entries: {
           'react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
@@ -36,11 +40,48 @@ export function createRollupConfiguration(
           '@remote-ui/react': '@remote-ui/mini-react/compat',
         },
       }),
+      ...(mode === 'production' ? [minifyChunkWithESBuild()] : []),
     ],
   };
 }
 
-function esbuildWithJSXRuntime(): Plugin {
+// @see https://github.com/egoist/rollup-plugin-esbuild/blob/master/src/index.ts#L170-L195
+function minifyChunkWithESBuild(): Plugin {
+  return {
+    name: '@watching/esbuild-minify',
+    async renderChunk(code) {
+      const {transform, formatMessages} = await import('esbuild');
+
+      const result = await transform(code, {
+        loader: 'js',
+        minify: true,
+        // target: '',
+      });
+
+      if (result.warnings.length > 0) {
+        const warnings = await formatMessages(result.warnings, {
+          kind: 'warning',
+          color: true,
+        });
+
+        for (const warning of warnings) {
+          this.warn(warning);
+        }
+      }
+
+      return result.code
+        ? {
+            code: result.code,
+            map: result.map || null,
+          }
+        : null;
+    },
+  };
+}
+
+function esbuildWithJSXRuntime(
+  options: import('esbuild').TransformOptions = {},
+): Plugin {
   return {
     name: '@watching/esbuild-with-jsx-runtime',
     async transform(code, id) {
@@ -79,6 +120,7 @@ function esbuildWithJSXRuntime(): Plugin {
       const {code: finalCode, map} = await transformWithESBuild(
         intermediateCode,
         {
+          ...options,
           target: 'es2017',
           loader,
           minify: false,

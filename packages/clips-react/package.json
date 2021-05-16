@@ -22,12 +22,12 @@
   "dependencies": {
     "@remote-ui/async-subscription": "^2.0.0",
     "@remote-ui/core": "^2.0.0",
-    "@remote-ui/mini-react": "^1.2.0",
+    "@remote-ui/mini-react": "^1.2.3",
     "@types/react": "^17.0.0",
     "@watching/clips": "^0.1.3"
   },
   "peerDependencies": {
-    "@remote-ui/react": "^4.0.0",
+    "@remote-ui/react": "^4.0.3",
     "react": "^17.0.0"
   },
   "peerDependenciesMeta": {

@@ -15,6 +15,7 @@ import {createHttpServer} from '@quilted/http-handlers/node';
 import {Server as WebSocketServer, OPEN} from 'ws';
 import type WebSocket from 'ws';
 import * as mime from 'mime';
+import open from 'open';
 
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
@@ -24,6 +25,12 @@ import {watch as rollupWatch} from 'rollup';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
+
+import {watchUrl} from '../../utilities/url';
+import {
+  rootOutputDirectory,
+  ensureRootOutputDirectory,
+} from '../../utilities/build';
 
 import {loadLocalApp} from '../../utilities/app';
 import type {LocalApp} from '../../utilities/app';
@@ -86,17 +93,25 @@ export async function develop({ui}: {ui: Ui}) {
     return;
   }
 
+  await ensureRootOutputDirectory(app);
   const devServer = createDevServer(app, {ui});
 
   try {
     const result = await devServer.listen();
 
+    const localServerOrigin = `http://localhost:${result.port}`;
+    const targetUrl = watchUrl(`/app?dev=${localServerOrigin}/graphql`);
+
     ui.Heading('success!', {style: (content, style) => style.green(content)});
     ui.TextBlock(
-      `Development server listening on ${ui.Link(
-        `http://localhost:${result.port}`,
-      )}`,
+      `We’ve started a development server at ${ui.Link(
+        localServerOrigin,
+      )}. In a moment, we’ll open ${ui.Link(
+        targetUrl,
+      )}, which will connect your local environment to the Watch app. All of the extensions in your local workspace will be automatically installed in all their supported extension points, so navigate to the page you are extending to see your extensions in action. Have fun building!`,
     );
+
+    await open(targetUrl);
   } catch (error) {
     throw new PrintableError(
       `There was a problem while trying to start your development server...`,
@@ -107,7 +122,10 @@ export async function develop({ui}: {ui: Ui}) {
 
 function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
-  const outputRoot = path.resolve(app.root, '.watch/develop');
+  const outputRoot = path.resolve(
+    rootOutputDirectory(app),
+    'develop/extensions',
+  );
 
   const schema = makeExecutableSchema({
     typeDefs: schemaTypeDefinitions,
@@ -200,11 +218,14 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const buildStateByExtension = new Map<string, BuildState>();
 
   for (const extension of app.extensions) {
-    const baseConfiguration = createRollupConfiguration(extension);
+    const baseConfiguration = createRollupConfiguration(extension, {
+      mode: 'development',
+    });
 
     const watcher = rollupWatch({
       ...baseConfiguration,
       output: {
+        format: 'iife',
         dir: path.resolve(app.root, '.watch/develop'),
         entryFileNames: `${extension.id}.js`,
       },
