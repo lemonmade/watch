@@ -1,6 +1,6 @@
 {
   "name": "@watching/cli",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
