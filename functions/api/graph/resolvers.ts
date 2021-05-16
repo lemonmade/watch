@@ -804,6 +804,25 @@ export const Mutation: Resolver = {
       installation,
     };
   },
+  async uninstallClipsExtension(_, {id}: {id: string}, {user, prisma}) {
+    const installation = await prisma.clipsExtensionInstallation.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+      select: {
+        id: true,
+        extension: true,
+      },
+      rejectOnNotFound: true,
+    });
+
+    await prisma.clipsExtensionInstallation.delete({
+      where: {id: installation.id},
+    });
+
+    return {
+      deletedInstallationId: installation.id,
+      extension: installation.extension,
+    };
+  },
   async updateClipsExtensionInstallation(
     _,
     {id, configuration}: {id: string; configuration?: string},

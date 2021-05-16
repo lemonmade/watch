@@ -422,6 +422,11 @@ type InstallClipsExtensionPayload {
   installation: ClipsExtensionInstallation
 }
 
+type UninstallClipsExtensionPayload {
+  extension: ClipsExtension
+  deletedInstallationId: ID
+}
+
 type UpdateClipsExtensionInstallationPayload {
   extension: ClipsExtension
   installation: ClipsExtensionInstallation
@@ -559,6 +564,7 @@ type Mutation {
     extensionPoint: ClipsExtensionPoint
     configuration: JSON
   ): InstallClipsExtensionPayload!
+  uninstallClipsExtension(id: ID!): UninstallClipsExtensionPayload!
   updateClipsExtensionInstallation(
     id: ID!
     configuration: JSON

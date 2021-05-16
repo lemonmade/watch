@@ -41,6 +41,7 @@ import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurati
 import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';
 import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
 import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
+import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -200,6 +201,10 @@ function InstalledClipFrame<T extends ExtensionPoint>({
   id,
   ...rest
 }: PropsWithChildren<InstalledClipFrameProps<T>>) {
+  const uninstallClipsExtensionFromClip = useMutation(
+    uninstallClipsExtensionFromClipMutation,
+  );
+
   return (
     <ClipFrame
       {...rest}
@@ -215,8 +220,11 @@ function InstalledClipFrame<T extends ExtensionPoint>({
           </Button>
           <Button onPress={() => controller.restart()}>Restart</Button>
           <Button
-            // eslint-disable-next-line no-alert
-            onPress={() => alert('Uninstall not implemented yet!')}
+            onPress={async () => {
+              await uninstallClipsExtensionFromClip({
+                variables: {id},
+              });
+            }}
           >
             Uninstall
           </Button>

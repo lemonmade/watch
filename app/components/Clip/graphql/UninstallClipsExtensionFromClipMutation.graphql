@@ -1,0 +1,5 @@
+mutation UninstallClipsExtensionFromClip($id: ID!) {
+  uninstallClipsExtension(id: $id) {
+    deletedInstallationId
+  }
+}
