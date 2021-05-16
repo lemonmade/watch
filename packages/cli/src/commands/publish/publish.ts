@@ -1,12 +1,18 @@
 import type {GraphQL} from '@quilted/graphql';
 
-import type {Ui} from '../ui';
-import {PrintableError} from '../ui';
+import type {Ui} from '../../ui';
+import {PrintableError} from '../../ui';
 
-import {findMatchingProductionClipsExtension} from '../utilities';
-import {authenticate} from '../authentication';
-import {loadProductionApp, loadLocalApp} from '../app';
-import type {LocalExtension, ProductionClipsExtension} from '../app';
+import {authenticate} from '../../utilities/authentication';
+import {
+  findMatchingProductionClipsExtension,
+  loadProductionApp,
+  loadLocalApp,
+} from '../../utilities/app';
+import type {
+  LocalExtension,
+  ProductionClipsExtension,
+} from '../../utilities/app';
 
 import publishLatestClipsExtensionVersion from './graphql/PublishLatestClipsExtensionVersionMutation.graphql';
 

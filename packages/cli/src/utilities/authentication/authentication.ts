@@ -7,8 +7,9 @@ import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import type {GraphQL} from '@quilted/graphql';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 
-import {PrintableError} from '../ui';
-import type {Ui} from '../ui';
+import {PrintableError} from '../../ui';
+import type {Ui} from '../../ui';
+import {findPortAndListen, makeStoppableServer} from '../http';
 
 import checkAuthFromCliQuery from './graphql/CheckAuthFromCliQuery.graphql';
 import deleteAccessTokenForCliMutation from './graphql/DeleteAccessTokenForCliMutation.graphql';
@@ -176,27 +177,7 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   const server = createHttpServer(handler);
   const stopListening = makeStoppableServer(server);
 
-  const port = await new Promise<number>((resolve, reject) => {
-    let port = 3211;
-
-    function handleError(error: Error & {code?: string}) {
-      if (error.code === 'EADDRINUSE') {
-        port += 1;
-        server.listen(port, handleListen);
-      } else {
-        server.off('error', handleError);
-        reject(error);
-      }
-    }
-
-    function handleListen() {
-      server.off('error', handleError);
-      resolve(port);
-    }
-
-    server.on('error', handleError);
-    server.listen(port, handleListen);
-  });
+  const port = await findPortAndListen(server, 3211);
 
   ui.TextBlock(
     `We need to authenticate you in the Watch web app. We’ll try to open it in a second, or you can manually authenticate by visiting ${ui.Link(
@@ -209,58 +190,6 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   const token = await promise;
 
   return token;
-}
-
-// Adapted from https://github.com/gajus/http-terminator/blob/master/src/factories/createInternalHttpTerminator.ts
-function makeStoppableServer(server: import('net').Server) {
-  let stopping = false;
-
-  const sockets = new Set<import('net').Socket>();
-
-  server.on('connection', (socket) => {
-    if (stopping) {
-      socket.destroy();
-      return;
-    }
-
-    sockets.add(socket);
-    socket.once('destroy', () => sockets.delete(socket));
-  });
-
-  return () => {
-    stopping = true;
-
-    server.on('request', (_, outgoingMessage) => {
-      if (!outgoingMessage.headersSent) {
-        outgoingMessage.setHeader('connection', 'close');
-      }
-    });
-
-    for (const socket of sockets) {
-      // @ts-expect-error
-      const serverResponse = socket._httpMessage;
-
-      if (serverResponse) {
-        if (!serverResponse.headersSent) {
-          serverResponse.setHeader('connection', 'close');
-        }
-
-        continue;
-      }
-
-      socket.destroy();
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      server.close((error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
-  };
 }
 
 function watchUrl(path: string) {

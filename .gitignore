@@ -15,4 +15,5 @@ app/graphql/types*
 **/*.graphql.d.ts
 **/*.graphql.ts
 packages/cli/src/dev/schema-types.d.ts
+!packages/cli/src/commands/build/
 .env

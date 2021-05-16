@@ -41,32 +41,32 @@ async function run() {
 
     switch (command) {
       case 'sign-in': {
-        const {signIn} = await import('./sign-in');
+        const {signIn} = await import('./commands/sign-in');
         await signIn({ui});
         break;
       }
       case 'sign-out': {
-        const {signOut} = await import('./sign-out');
+        const {signOut} = await import('./commands/sign-out');
         await signOut({ui});
         break;
       }
       case 'develop': {
-        const {develop} = await import('./develop');
-        await develop();
+        const {develop} = await import('./commands/develop');
+        await develop({ui});
         break;
       }
       case 'build': {
-        const {build} = await import('./build');
+        const {build} = await import('./commands/build');
         await build({ui});
         break;
       }
       case 'push': {
-        const {push} = await import('./push');
+        const {push} = await import('./commands/push');
         await push({ui});
         break;
       }
       case 'publish': {
-        const {publish} = await import('./publish');
+        const {publish} = await import('./commands/publish');
         await publish({ui});
         break;
       }

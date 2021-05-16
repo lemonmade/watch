@@ -1,14 +1,11 @@
 import * as path from 'path';
 
-import webpack from 'webpack';
-import type {Configuration} from 'webpack';
+import {rollup} from 'rollup';
 
-import type {Ui} from './ui';
+import type {Ui} from '../../ui';
 
-import {buildDetailsForExtension} from './utilities';
-import {loadLocalApp} from './app';
-import type {LocalExtension, LocalApp} from './app';
-import {createWebpackConfiguration as createBaseWebpackConfiguration} from './webpack-config';
+import {loadLocalApp} from '../../utilities/app';
+import {createRollupConfiguration} from '../../utilities/rollup';
 
 export async function build({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
@@ -35,26 +32,17 @@ export async function build({ui}: {ui: Ui}) {
     }...`,
   );
 
-  const build = webpack(
-    app.extensions.map((extension) =>
-      createWebpackConfiguration(extension, app),
-    ),
+  await Promise.all(
+    app.extensions.map(async (extension) => {
+      const bundle = await rollup(createRollupConfiguration(extension));
+
+      await bundle.write({
+        format: 'iife',
+        dir: path.resolve(app.root, '.watch/develop'),
+        entryFileNames: `${extension.id}.js`,
+      });
+    }),
   );
-
-  await new Promise<void>((resolve, reject) => {
-    build.run((error, stats) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      if (stats?.hasErrors()) {
-        reject(stats?.toString());
-      }
-
-      resolve();
-    });
-  });
 
   ui.Heading('success!', {style: (content, style) => style.green(content)});
 
@@ -70,22 +58,4 @@ export async function build({ui}: {ui: Ui}) {
       }
     });
   }
-}
-
-function createWebpackConfiguration(
-  extension: LocalExtension,
-  app: LocalApp,
-): Configuration {
-  const baseConfig = createBaseWebpackConfiguration({mode: 'production'});
-  const {filename, directory} = buildDetailsForExtension(extension, app);
-
-  return {
-    ...baseConfig,
-    entry: path.resolve(extension.root, 'index'),
-    output: {
-      ...baseConfig.output,
-      filename,
-      path: directory,
-    },
-  };
 }

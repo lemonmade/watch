@@ -1,9 +1,9 @@
 import type {GraphQL} from '@quilted/graphql';
 
-import {PrintableError} from '../ui';
-import type {Ui} from '../ui';
+import {PrintableError} from '../../ui';
+import type {Ui} from '../../ui';
 
-import type {LocalApp} from './local';
+import type {LocalApp, LocalExtension} from './local';
 
 import findAppMatchingLocalDevelopmentQuery from './graphql/FindAppMatchingLocalDevelopmentQuery.graphql';
 import type {FindAppMatchingLocalDevelopmentQueryData} from './graphql/FindAppMatchingLocalDevelopmentQuery.graphql';
@@ -71,4 +71,16 @@ export async function loadProductionApp(
   }
 
   return app;
+}
+
+export function findMatchingProductionClipsExtension(
+  extension: LocalExtension,
+  app: ProductionApp,
+) {
+  return app.extensions.find(
+    (productionExtension) =>
+      productionExtension.__typename === 'ClipsExtension' &&
+      (productionExtension.id === extension.configuration.id ||
+        productionExtension.name === extension.configuration.name),
+  ) as ProductionClipsExtension | undefined;
 }

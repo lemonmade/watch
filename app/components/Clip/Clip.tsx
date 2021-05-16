@@ -9,8 +9,6 @@ import type {
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
-import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
-import type {EventMap} from '@watching/webpack-hot-worker/websocket';
 import {
   Popover,
   PopoverSheet,
@@ -403,6 +401,18 @@ interface LocalClipFrameProps<T extends ExtensionPoint>
     'renderPopoverContent' | 'renderPopoverActions'
   > {
   socketUrl: string;
+}
+
+interface EventMap {
+  connect: {};
+}
+
+function createDevServerWebSocket(_arg: any) {
+  return {} as {
+    start(): void;
+    stop(): void;
+    on(event: string, func: (arg: any) => void): () => void;
+  };
 }
 
 type BuildState = EventMap['connect'];
