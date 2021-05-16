@@ -1,3 +1,4 @@
+import {Duration} from '@aws-cdk/core';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
 import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 
@@ -48,6 +49,7 @@ export class GraphQLApi extends Construct {
         vpc: database.vpc,
         functionName: 'WatchGraphQLFunction',
         layers: [database.layers.query],
+        timeout: Duration.seconds(30),
         environment: {
           ...database.environmentVariables,
           TMDB_ACCESS_TOKEN: tmdb.asEnvironmentVariable({key: 'token'}),
