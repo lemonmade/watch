@@ -5,7 +5,10 @@ export type {
   LocalExtension,
   LocalExtensionConfigurationString,
 } from './local';
-export {loadProductionApp} from './production';
+export {
+  loadProductionApp,
+  findMatchingProductionClipsExtension,
+} from './production';
 export type {
   ProductionApp,
   ProductionExtension,

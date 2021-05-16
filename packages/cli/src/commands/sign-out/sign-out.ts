@@ -1,5 +1,5 @@
-import type {Ui} from '../ui';
-import {deleteAuthentication} from '../authentication';
+import type {Ui} from '../../ui';
+import {deleteAuthentication} from '../../utilities/authentication';
 
 export async function signOut({ui}: {ui: Ui}) {
   await deleteAuthentication();

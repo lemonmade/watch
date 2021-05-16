@@ -5,20 +5,22 @@ import {statSync} from 'fs';
 import {readFile} from 'fs/promises';
 import {createHash} from 'crypto';
 
-import {PrintableError, Ui} from '../ui';
-import {authenticate} from '../authentication';
-import type {GraphQL} from '../authentication';
+import {PrintableError, Ui} from '../../ui';
+import {authenticate} from '../../utilities/authentication';
+import type {GraphQL} from '../../utilities/authentication';
+import {buildDetailsForExtension} from '../../utilities/build';
 import {
-  buildDetailsForExtension,
+  loadProductionApp,
+  loadLocalApp,
+  ProductionApp,
   findMatchingProductionClipsExtension,
-} from '../utilities';
-import {loadProductionApp, loadLocalApp, ProductionApp} from '../app';
+} from '../../utilities/app';
 import type {
   LocalApp,
   LocalExtension,
   ProductionClipsExtension,
   LocalExtensionConfigurationString,
-} from '../app';
+} from '../../utilities/app';
 
 import pushClipsExtensionMutation from './graphql/PushClipsExtensionMutation.graphql';
 import type {PushClipsExtensionMutationVariables} from './graphql/PushClipsExtensionMutation.graphql';
@@ -142,7 +144,7 @@ function verifyLocalBuild(app: LocalApp, ui: Ui) {
   for (const extension of app.extensions) {
     const {filename, directory} = buildDetailsForExtension(extension, app);
     if (!statSync(path.join(directory, filename)).isFile()) {
-      throw new Error(
+      throw new PrintableError(
         `Could not find build for extension ${
           extension.id
         }. Make sure you have run ${ui.Code(

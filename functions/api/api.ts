@@ -1,5 +1,5 @@
 import {graphql} from 'graphql';
-import {makeExecutableSchema} from 'graphql-tools';
+import {makeExecutableSchema} from '@graphql-tools/schema';
 import {createHttpHandler, json, noContent} from '@quilted/http-handlers';
 import type {Request} from '@quilted/http-handlers';
 import {

@@ -9,8 +9,6 @@ import type {
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
-import {createDevServerWebSocket} from '@watching/webpack-hot-worker/websocket';
-import type {EventMap} from '@watching/webpack-hot-worker/websocket';
 import {
   Popover,
   PopoverSheet,
@@ -405,7 +403,17 @@ interface LocalClipFrameProps<T extends ExtensionPoint>
   socketUrl: string;
 }
 
-type BuildState = EventMap['connect'];
+type BuildState =
+  | {status: 'success'; startedAt: number; duration: number; errors?: never}
+  | {
+      status: 'error';
+      startedAt: number;
+      duration: number;
+      errors: {message: string; stack?: string}[];
+    }
+  | {status: 'building'; startedAt: number; duration?: never; errors?: never};
+
+type DevServerMessage = {type: 'not-found'} | {type: 'build'; data: BuildState};
 
 function LocalClipFrame<T extends ExtensionPoint>({
   socketUrl,
@@ -421,31 +429,46 @@ function LocalClipFrame<T extends ExtensionPoint>({
   const [forcedHeight, setForcedHeight] = useState<number | undefined>();
 
   useEffect(() => {
-    const webSocket = createDevServerWebSocket({url: socketUrl});
+    const webSocket = new WebSocket(socketUrl);
 
-    const doneWithConnect = webSocket.on('connect', (buildState) => {
-      setBuildState(buildState);
+    webSocket.addEventListener('message', ({data}) => {
+      try {
+        const parsed: DevServerMessage = JSON.parse(data);
+
+        switch (parsed.type) {
+          case 'build': {
+            const buildState = parsed.data;
+
+            setBuildState(buildState);
+
+            switch (buildState.status) {
+              case 'building': {
+                setCompiling(true);
+                setForcedHeight(
+                  containerRef.current?.getBoundingClientRect().height,
+                );
+                break;
+              }
+              case 'success': {
+                setCompiling(false);
+                controller.restart();
+                break;
+              }
+              default: {
+                setCompiling(false);
+              }
+            }
+
+            break;
+          }
+        }
+      } catch {
+        // Intentional noop
+      }
     });
-
-    const doneWithDone = webSocket.on('done', (buildState) => {
-      setCompiling(false);
-      if (buildState.status === 'unchanged') return;
-      setBuildState(buildState);
-      controller.restart();
-    });
-
-    const doneWithCompiling = webSocket.on('compile', () => {
-      setCompiling(true);
-      setForcedHeight(containerRef.current?.getBoundingClientRect().height);
-    });
-
-    webSocket.start();
 
     return () => {
-      doneWithConnect();
-      doneWithDone();
-      doneWithCompiling();
-      webSocket.stop();
+      webSocket.close();
     };
   }, [socketUrl, controller]);
 

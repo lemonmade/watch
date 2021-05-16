@@ -1,5 +1,8 @@
-import type {Ui} from '../ui';
-import {authenticate, userFromLocalAuthentication} from '../authentication';
+import type {Ui} from '../../ui';
+import {
+  authenticate,
+  userFromLocalAuthentication,
+} from '../../utilities/authentication';
 
 export async function signIn({ui}: {ui: Ui}) {
   const existingUser = await userFromLocalAuthentication();

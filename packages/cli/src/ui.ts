@@ -12,7 +12,14 @@ interface StyleProp {
 export interface Ui {
   readonly isInteractive: boolean;
   Heading(content: string, props?: {style?: StyleProp}): void;
-  TextBlock(content: string): void;
+  TextBlock(
+    content: string,
+    props?: {spacing?: boolean; style?: StyleProp},
+  ): void;
+  Text(
+    content: string,
+    props?: {style?: StyleProp; emphasized?: boolean},
+  ): void;
   Link(url: string): string;
   Code(content: string): string;
   List(content: (List: {Item(content: string): void}) => void): void;
@@ -23,7 +30,14 @@ const HEADING_LEADING_SEPARATOR_CHARACTERS = 3;
 const HEADING_TRAILING_SEPARATOR_SPACING = 5;
 
 export class PrintableError {
-  constructor(private readonly printMessage: string | ((ui: Ui) => string)) {}
+  private readonly original?: Pick<Error, 'message' | 'stack'>;
+
+  constructor(
+    private readonly printMessage: string | ((ui: Ui) => string),
+    {original}: {original?: Pick<Error, 'message' | 'stack'>} = {},
+  ) {
+    this.original = original;
+  }
 
   print(ui: Ui) {
     const {printMessage} = this;
@@ -35,6 +49,20 @@ export class PrintableError {
     ui.TextBlock(
       typeof printMessage === 'string' ? printMessage : printMessage(ui),
     );
+
+    if (this.original) {
+      console.log(this.original.message);
+
+      if (this.original.stack) {
+        console.log(
+          Style.dim(
+            this.original.stack
+              .replace(this.original.message, '')
+              .replace(/^\s/, ''),
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -65,9 +93,13 @@ export function createUi(): Ui {
         ),
       );
     },
-    TextBlock(content) {
-      newline();
-      console.log(prettyFormat(content));
+    TextBlock(content, {style, spacing = true} = {}) {
+      if (spacing) newline();
+      console.log(prettyFormat(style ? style(content, Style) : content));
+    },
+    Text(content, {style, emphasized = false} = {}) {
+      const formattedContent = style ? style(content, Style) : content;
+      return emphasized ? Style.bold(formattedContent) : formattedContent;
     },
     Code(content) {
       return Style.bold(content);

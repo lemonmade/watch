@@ -12,7 +12,6 @@
     "@remote-ui/react": "^4.0.0",
     "@remote-ui/web-workers": "^1.4.0",
     "@watching/clips": "*",
-    "@watching/webpack-hot-worker": "*",
     "preact": "^10.4.4",
     "preact-render-to-string": "^5.1.19",
     "react": "^17.0.1",
