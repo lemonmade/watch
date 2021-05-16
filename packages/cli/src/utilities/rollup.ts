@@ -15,6 +15,15 @@ export function createRollupConfiguration(
   return {
     input: path.join(extension.root, 'index'),
     plugins: [
+      alias({
+        entries: {
+          'react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
+          react: '@remote-ui/mini-react/compat',
+          'react-dom': '@remote-ui/mini-react/compat',
+          '@remote-ui/react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
+          '@remote-ui/react': '@remote-ui/mini-react/compat',
+        },
+      }),
       nodeResolve({
         exportConditions: ['esnext', 'import', 'require', 'default'],
         extensions: ['.tsx', '.ts', '.esnext', '.mjs', '.js', '.json'],
@@ -30,15 +39,6 @@ export function createRollupConfiguration(
       }),
       esbuildWithJSXRuntime({
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},
-      }),
-      alias({
-        entries: {
-          'react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
-          react: '@remote-ui/mini-react/compat',
-          'react-dom': '@remote-ui/mini-react/compat',
-          '@remote-ui/react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
-          '@remote-ui/react': '@remote-ui/mini-react/compat',
-        },
       }),
       ...(mode === 'production' ? [minifyChunkWithESBuild()] : []),
     ],

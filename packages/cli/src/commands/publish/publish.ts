@@ -41,7 +41,7 @@ export async function publish({ui}: {ui: Ui}) {
   const hasOneExtension = localApp.extensions.length === 1;
 
   ui.TextBlock(
-    `We’re pushing the latest changes for your ${
+    `We’re publishing the latest version of your ${
       hasOneExtension
         ? `${ui.Code(localApp.extensions[0].configuration.name)} extension`
         : `${localApp.extensions.length} extensions`
