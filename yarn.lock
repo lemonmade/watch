@@ -4092,18 +4092,6 @@
   resolved "https://registry.yarnpkg.com/@quilted/http/-/http-0.1.1.tgz#7158241e980838640ec37871130a6feb4b0b4b67"
   integrity sha512-vJxQL/R9wMzTU57Xwked3JXA1ZjyyZmdbhwf18keZANSglhMxr49sDgl/Ch0WYG7cGjli20Vn8sFRr3mKGLFsA==
 
-"@quilted/polyfills@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.6.tgz#1a2cdd3121cde7932fa9f3b6bbf89641e6cd611b"
-  integrity sha512-Jui2IKM/b6tSILIRQqf5WVMCtPMwLsdNAsWDNbqFN/UBNTjWSb8+GgzVPen4dNCMfMrKZWwHyEeWhUzoXpx7ww==
-  dependencies:
-    "@types/caniuse-api" "^3.0.0"
-    caniuse-api "^3.0.0"
-    core-js "^3.0.0"
-    node-fetch "^2.0.0"
-    regenerator-runtime "^0.13.0"
-    whatwg-fetch "^3.5.0"
-
 "@quilted/polyfills@^0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.0.7.tgz#d5459d8d2e7da629a55018b72bb57724e449afb3"
@@ -4113,6 +4101,20 @@
     "@types/node-fetch" "^2.0.0"
     caniuse-api "^3.0.0"
     core-js "^3.0.0"
+    node-fetch "^2.0.0"
+    regenerator-runtime "^0.13.0"
+    whatwg-fetch "^3.5.0"
+
+"@quilted/polyfills@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@quilted/polyfills/-/polyfills-0.1.1.tgz#9363b4eb09b5cf0d583f8ef27c995986b5f58c8f"
+  integrity sha512-wBTwsOYGbVUKsThw96mWaaYW/KYkNRSvz98euXQXLqyWfKtrX8WqR2PKxx/iV7VndVF1XVQhKWY3y0aXvjYCtg==
+  dependencies:
+    "@types/caniuse-api" "^3.0.0"
+    "@types/node-fetch" "^2.0.0"
+    caniuse-api "^3.0.0"
+    core-js "^3.0.0"
+    magic-string "^0.25.0"
     node-fetch "^2.0.0"
     regenerator-runtime "^0.13.0"
     whatwg-fetch "^3.5.0"
@@ -11863,7 +11865,7 @@ macos-release@^2.2.0:
   resolved "https://registry.yarnpkg.com/macos-release/-/macos-release-2.4.1.tgz#64033d0ec6a5e6375155a74b1a1eba8e509820ac"
   integrity sha512-H/QHeBIN1fIGJX517pvK8IEK53yQOW7YcEI55oYtgjDdoCQQz7eJS94qt5kNrscReEyuD/JcdFCm2XBEcGOITg==
 
-magic-string@^0.25.7:
+magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
   integrity sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==
