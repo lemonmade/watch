@@ -5,7 +5,6 @@ export interface ClipsApi {
     extensionPoint: ExtensionPoint,
     extend: ExtensionPoints[ExtensionPoint],
   ): void;
-  restart(): void;
 }
 
 export interface ClipsGlobal {

@@ -7,7 +7,7 @@
     "@aws-sdk/s3-request-presigner": "^3.10.0",
     "@graphql-tools/schema": "^7.0.0",
     "@quilted/http-handlers": "^0.1.4",
-    "@quilted/polyfills": "^0.0.7",
+    "@quilted/polyfills": "^0.1.0",
     "@sentry/node": "^5.15.5",
     "dataloader": "^2.0.0",
     "graphql": "^15.0.0",

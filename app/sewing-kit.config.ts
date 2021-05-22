@@ -1,34 +1,25 @@
-import {readFile} from 'fs/promises';
-
 import {createWebApp} from '@sewing-kit/config';
-import {
-  Runtime,
-  WebApp,
-  createProjectPlugin,
-  createProjectBuildPlugin,
-} from '@sewing-kit/plugins';
+import {WebApp, createProjectPlugin} from '@sewing-kit/plugins';
 import {quiltWebApp} from '@quilted/sewing-kit-plugins';
 import {lambda} from '@quilted/aws/sewing-kit';
-import type {BuildWebAppTargetOptions} from '@sewing-kit/hooks';
-import type {} from '@sewing-kit/plugin-webpack';
-
-import type {TransformPluginContext} from 'rollup';
 
 export default createWebApp((app) => {
+  console.log(app);
   app.entry('./index');
-  app.use(
-    quiltWebApp({
-      preact: true,
-      autoServer: true,
-      assetServer: false,
-      cdn: 'https://watch.lemon.tools/assets/app/',
-      features: ['base', 'fetch'],
-      browserGroups: ['evergreen', 'latest-chrome'],
-    }),
-    lambda(),
-    randomBits(),
-    bundleAnalyzer(),
-  );
+  try {
+    app.use(
+      quiltWebApp({
+        autoServer: true,
+        cdn: 'https://watch.lemon.tools/assets/app/',
+        browserGroups: ['evergreen', 'latest-chrome'],
+        polyfill: {features: ['base', 'fetch']},
+      }),
+      lambda(),
+      randomBits(),
+    );
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 function randomBits() {
@@ -39,9 +30,24 @@ function randomBits() {
         hooks.steps.hook((steps) => [
           ...steps,
           api.createStep({id: 'Quilt.Vite', label: 'Run vite'}, async () => {
-            const [{createServer}, {default: prefresh}] = await Promise.all([
+            const [
+              {createServer},
+              {default: prefresh},
+              {workers},
+              {graphql},
+              {default: json},
+              {default: commonjs},
+              {default: nodeResolve},
+              {default: esbuild},
+            ] = await Promise.all([
               import('vite'),
               import('@prefresh/vite'),
+              import('@quilted/workers/rollup'),
+              import('@quilted/graphql/rollup'),
+              import('@rollup/plugin-json'),
+              import('@rollup/plugin-commonjs'),
+              import('@rollup/plugin-node-resolve'),
+              import('rollup-plugin-esbuild'),
             ]);
 
             const server = await createServer({
@@ -95,6 +101,44 @@ function randomBits() {
               },
               plugins: [
                 prefresh(),
+                workers({
+                  publicPath: `/@fs${workspace.fs.buildPath(
+                    'vite/workers',
+                    project.name,
+                  )}`,
+                  inputOptions: (options) => ({...options, treeshake: false}),
+                  outputOptions: (options) => ({
+                    ...options,
+                    dir: workspace.fs.buildPath('vite/workers', project.name),
+                  }),
+                  plugins: [
+                    json(),
+                    nodeResolve({
+                      exportConditions: [
+                        'esnext',
+                        'import',
+                        'require',
+                        'default',
+                      ],
+                      extensions: [
+                        '.tsx',
+                        '.ts',
+                        '.esnext',
+                        '.mjs',
+                        '.js',
+                        '.json',
+                      ],
+                      preferBuiltins: true,
+                    }),
+                    commonjs(),
+                    esbuild({
+                      target: 'node14',
+                      loaders: {
+                        '.esnext': 'js',
+                      },
+                    }),
+                  ],
+                }),
                 {
                   name: '@quilted/magic/browser',
                   resolveId(id) {
@@ -135,11 +179,12 @@ function randomBits() {
                 // Preprocesses .tsx files with the JSX transform because ESBuild does not
                 // support it natively:
                 // https://github.com/evanw/esbuild/issues/334
+                // Also adds our worker plugin
                 {
-                  name: '@quilt/transform-jsx-runtime',
+                  name: '@quilt/esbuild-with-pre-babel',
                   enforce: 'pre',
                   async transform(code, id) {
-                    if (!id.endsWith('.tsx')) {
+                    if (!id.endsWith('.tsx') && !id.endsWith('.ts')) {
                       return null;
                     }
 
@@ -149,6 +194,7 @@ function randomBits() {
                       (await transformAsync(code, {
                         filename: id,
                         configFile: false,
+                        babelrc: false,
                         presets: [
                           [
                             '@babel/preset-react',
@@ -161,77 +207,14 @@ function randomBits() {
                         ],
                         plugins: [
                           ['@babel/plugin-syntax-typescript', {isTSX: true}],
+                          '@quilted/workers/babel',
                         ],
                       })) ?? {};
 
                     return {code: transformedCode ?? undefined, map};
                   },
                 },
-                {
-                  name: '@quilted/graphql',
-                  async transform(code, id) {
-                    if (!id.endsWith('.graphql')) return null;
-
-                    const [
-                      {parse},
-                      {cleanDocument, extractImports, toSimpleDocument},
-                    ] = await Promise.all([
-                      import('graphql'),
-                      import('@sewing-kit/graphql'),
-                    ]);
-
-                    const document = toSimpleDocument(
-                      cleanDocument(await loadDocument(code, id, this)),
-                    );
-
-                    return `export default JSON.parse(${JSON.stringify(
-                      JSON.stringify(document),
-                    )})`;
-
-                    async function loadDocument(
-                      code: string,
-                      file: string,
-                      plugin: TransformPluginContext,
-                    ) {
-                      const {imports, source} = extractImports(code);
-                      const document = parse(source);
-
-                      if (imports.length === 0) {
-                        return document;
-                      }
-
-                      const resolvedImports = await Promise.all(
-                        imports.map(async (imported) => {
-                          const resolvedId = await plugin.resolve(
-                            imported,
-                            file,
-                          );
-
-                          if (resolvedId == null) {
-                            throw new Error(
-                              `Could not find ${JSON.stringify(
-                                imported,
-                              )} from ${JSON.stringify(file)}`,
-                            );
-                          }
-
-                          plugin.addWatchFile(resolvedId.id);
-                          const contents = await readFile(resolvedId.id, {
-                            encoding: 'utf8',
-                          });
-
-                          return loadDocument(contents, resolvedId.id, plugin);
-                        }),
-                      );
-
-                      for (const {definitions} of resolvedImports) {
-                        (document.definitions as any[]).push(...definitions);
-                      }
-
-                      return document;
-                    }
-                  },
-                },
+                graphql(),
                 {
                   name: 'quilt',
                   configureServer(server) {
@@ -277,82 +260,6 @@ function randomBits() {
           }),
         ]);
       });
-
-      tasks.build.hook(({hooks}) => {
-        hooks.target.hook(({hooks}) => {
-          hooks.configure.hook((configuration) => {
-            configuration.webpackAliases?.hook((aliases) => ({
-              ...aliases,
-              global: workspace.fs.resolvePath('global'),
-              // Fixes an issue where preact-render-to-string imports preact,
-              // which brings in a different build of preact in the bundle.
-              'preact-render-to-string$':
-                'preact-render-to-string/dist/index.mjs',
-              preact$: 'preact/dist/preact.module.js',
-            }));
-          });
-        });
-      });
     },
-  );
-}
-
-function bundleAnalyzer() {
-  return createProjectBuildPlugin<WebApp>('Watch.BundleAnalyzer', ({hooks}) => {
-    hooks.target.hook(({target, hooks}) => {
-      hooks.configure.hook((configuration) => {
-        if (
-          target.runtime.includes(Runtime.Browser) ||
-          target.runtime.includes(Runtime.WebWorker)
-        ) {
-          configuration.webpackPlugins?.hook(async (plugins) => {
-            const {
-              BundleAnalyzerPlugin,
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-            } = require('webpack-bundle-analyzer');
-
-            return process.env.CI
-              ? plugins
-              : [
-                  ...plugins,
-                  new BundleAnalyzerPlugin({
-                    analyzerMode: 'static',
-                    generateStatsFile: true,
-                    openAnalyzer: false,
-                    reportFilename: `report.${
-                      idFromTargetOptions(target.options) || 'default'
-                    }.html`,
-                  }),
-                ];
-          });
-        }
-      });
-    });
-  });
-}
-
-export function idFromTargetOptions(options: BuildWebAppTargetOptions) {
-  return (
-    Object.keys(options)
-      .sort()
-      .map((key) => {
-        const value = (options as any)[key];
-
-        switch (key as keyof typeof options) {
-          case 'quiltAutoServer':
-            return undefined;
-          case 'browsers':
-            return value;
-          default: {
-            if (typeof value === 'boolean') {
-              return value ? key : `no-${key}`;
-            }
-
-            return value;
-          }
-        }
-      })
-      .filter(Boolean)
-      .join('.') || 'default'
   );
 }

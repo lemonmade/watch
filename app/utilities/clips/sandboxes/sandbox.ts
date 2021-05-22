@@ -1,8 +1,6 @@
 import {createRemoteRoot, retain} from '@remote-ui/core';
 import type {RemoteChannel} from '@remote-ui/core';
-import type {Endpoint} from '@remote-ui/rpc';
 import {makeStatefulSubscribable} from '@remote-ui/async-subscription';
-import {endpoint as untypedEndpoint} from '@remote-ui/web-workers/worker';
 
 import type {
   ClipsApi,
@@ -17,15 +15,9 @@ const registeredExtensions = new Map<
   ExtensionPoints[keyof ExtensionPoints]
 >();
 
-const endpoint: Endpoint<{restart(): void}> = untypedEndpoint as any;
-endpoint.callable('restart');
-
 const clips: ClipsApi = Object.freeze({
   extend(extensionPoint, extend) {
     registeredExtensions.set(extensionPoint, extend);
-  },
-  restart() {
-    endpoint.call.restart();
   },
 });
 
