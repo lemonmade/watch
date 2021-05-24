@@ -4054,17 +4054,15 @@
     cookie "^0.4.0"
 
 "@quilted/graphql@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@quilted/graphql/-/graphql-0.3.4.tgz#4392aeb62c42efa3147011e7765ad2d265b0ef20"
-  integrity sha512-YBQ+UPbbeJP5C+F96A8zr+E6h6kn8yheqiZ+f6dyt0yLAiNJKVynFzLbTOHYQrHGBw3KTWps2BtjmCBAMJgEXg==
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@quilted/graphql/-/graphql-0.3.7.tgz#cc5e952de7877709d560c6fdceea240d5d79620e"
+  integrity sha512-eAifgcvw1cblWoXAt1BTQJNX5X8wq3UZaEaKBujCZPZFcXJmdKw8VCbkPlG4t5zMApDdWa4h27Dq0dLssv/dZg==
   dependencies:
     "@babel/generator" ">=7.0.0"
     "@babel/types" ">=7.0.0"
     "@graphql-tools/merge" "^6.2.5"
-    "@quilted/useful-types" "^0.1.1"
-    "@sewing-kit/graphql" "^0.1.2"
+    "@quilted/useful-types" "^0.1.4"
     "@types/chance" "^1.1.0"
-    "@types/graphql" "^14.0.0"
     arg "^4.1.3"
     chance "^1.1.7"
     chokidar "^3.4.3"
@@ -4073,10 +4071,7 @@
     globby "^11.0.1"
     graphql "^15.4.0"
     graphql-config "^3.2.0"
-    jest-matcher-utils "^26.6.2"
     p-limit "^3.0.2"
-  optionalDependencies:
-    "@sewing-kit/plugins" "^0.1.6"
 
 "@quilted/http-handlers@^0.1.3", "@quilted/http-handlers@^0.1.4":
   version "0.1.4"
@@ -4268,10 +4263,10 @@
   resolved "https://registry.yarnpkg.com/@quilted/use-subscription/-/use-subscription-0.1.2.tgz#8e109eb37e5218348eaa972a70391ba1148b254d"
   integrity sha512-M8ti1Nl6r0RfUd+CPxdyFwiaOvQjK6EiYO7XZgd3O28vYF9enCE97y0ZG8qK84mjMdAflQseMBo3mz9x636Ouw==
 
-"@quilted/useful-types@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@quilted/useful-types/-/useful-types-0.1.1.tgz#87090ce49a92235eb322813cb4c793cb2318a16c"
-  integrity sha512-Ik4iKLcstvaQ2XoU+FggP1N4Th0ABugMuYyTNi/wvX/KsVkj7T1u7x5XEAJ+c1kL0Ce0ELnTyVewzr91cZY8NQ==
+"@quilted/useful-types@^0.1.1", "@quilted/useful-types@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@quilted/useful-types/-/useful-types-0.1.4.tgz#c399a45f242a27892b383480e12703367aa9f2bb"
+  integrity sha512-cKEWU8+I5XBsRJ7y/GJlCMcJUhL5KOa3vyE0JFl+y8PxfmO9e6gqrmqhm+2drwSch8t4s1opnFIazdgJk7PK4w==
 
 "@remote-ui/async-subscription@^2.0.0":
   version "2.0.0"
@@ -4541,7 +4536,7 @@
     eslint-plugin-sort-class-members "^1.7.0"
     prettier "^2.0.4"
 
-"@sewing-kit/graphql@^0.1.2", "@sewing-kit/graphql@^0.1.4":
+"@sewing-kit/graphql@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@sewing-kit/graphql/-/graphql-0.1.4.tgz#64fda9fff45056b61a6c3010e0b05dbd64508dec"
   integrity sha512-shA7iKOZZe0bU35iW7As2AFOajm14/BcTI7I2TrPcRK/u42dm76E/ojwuJDWRwJTzietepEA1+Mf2E3Nsnc4mg==
@@ -4984,13 +4979,6 @@
   integrity sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==
   dependencies:
     "@types/node" "*"
-
-"@types/graphql@^14.0.0":
-  version "14.5.0"
-  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.5.0.tgz#a545fb3bc8013a3547cf2f07f5e13a33642b75d6"
-  integrity sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==
-  dependencies:
-    graphql "*"
 
 "@types/http-assert@*":
   version "1.5.1"
@@ -9709,7 +9697,7 @@ graphql-ws@^4.4.1:
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.5.0.tgz#c71c6eed34850c375156c29b1ed45cea2f9aee6b"
   integrity sha512-J3PuSfOKX2y9ryOtWxOcKlizkFWyhCvPAc3hhMKMVSTcPxtWiv9oNzvAZp1HKfuQng32YQduHeX+lRDy2+F6VQ==
 
-graphql@*, "graphql@>=15.0.0 <16.0.0", graphql@^15.0.0, graphql@^15.4.0:
+"graphql@>=15.0.0 <16.0.0", graphql@^15.0.0, graphql@^15.4.0:
   version "15.5.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.0.tgz#39d19494dbe69d1ea719915b578bf920344a69d5"
   integrity sha512-OmaM7y0kaK31NKG31q4YbD2beNYa6jBBKtMFT6gLYJljHLJr42IqJ8KX08u3Li/0ifzTU5HjmoOOrwa5BRLeDA==
