@@ -74,7 +74,7 @@
     "aws-cdk": "^1.96.0",
     "aws-sdk": "^2.878.0",
     "common-tags": "^1.8.0",
-    "compression-webpack-plugin": "^4.0.0",
+    "compression-webpack-plugin": "^6.1.1",
     "dotenv": "^8.2.0",
     "lerna": "^3.22.1",
     "postcss-preset-env": "^6.7.0",
