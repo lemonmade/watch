@@ -8,7 +8,7 @@
   "dependencies": {
     "@quilted/graphql": "^0.3.4",
     "@quilted/http-handlers": "^0.1.3",
-    "@quilted/polyfills": "^0.0.6",
+    "@quilted/polyfills": "^0.2.5",
     "common-tags": "^1.8.0"
   }
 }
