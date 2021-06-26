@@ -1,7 +1,7 @@
 import {execSync} from 'child_process';
 import {getDatabaseUrl} from 'shared/utilities/database';
 
-export default async function migrate() {
+export async function handler() {
   execSync(
     'node /opt/nodejs/node_modules/prisma/build/index.js migrate deploy',
     {

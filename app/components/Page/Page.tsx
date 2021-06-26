@@ -12,11 +12,10 @@ interface Props {
 export function Page({children, actions, heading}: PropsWithChildren<Props>) {
   const delegate = usePageDelegate();
 
-  useEffect(() => delegate.claim({heading, actions}), [
-    heading,
-    actions,
-    delegate,
-  ]);
+  useEffect(
+    () => delegate.claim({heading, actions}),
+    [heading, actions, delegate],
+  );
 
   return <View padding="base">{children}</View>;
 }

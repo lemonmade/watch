@@ -32,7 +32,6 @@ export function TextField({
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
 
-  // eslint-disable-next-line no-warning-comments
   // TODO: split out the font + padding properties into a separate object,
   // spread over the autogrow wrap and input element
   const dom = useDomProps({

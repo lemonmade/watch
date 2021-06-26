@@ -288,9 +288,8 @@ export class Cdn extends Construct {
               'WatchAuthOriginRequestPolicy',
               {
                 cookieBehavior: OriginRequestCookieBehavior.all(),
-                headerBehavior: OriginRequestHeaderBehavior.allowList(
-                  'X-Forwarded-Host',
-                ),
+                headerBehavior:
+                  OriginRequestHeaderBehavior.allowList('X-Forwarded-Host'),
                 queryStringBehavior: OriginRequestQueryStringBehavior.all(),
               },
             ),

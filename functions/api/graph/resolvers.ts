@@ -599,15 +599,13 @@ export const Mutation: Resolver = {
       return {app, extension};
     }
 
-    const {
-      version: versionInput,
-      signedScriptUpload,
-    } = await createStagedClipsVersion({
-      appId: fromGid(appId).id,
-      extensionId: extension.id,
-      extensionName: name,
-      ...initialVersion,
-    });
+    const {version: versionInput, signedScriptUpload} =
+      await createStagedClipsVersion({
+        appId: fromGid(appId).id,
+        extensionId: extension.id,
+        extensionName: name,
+        ...initialVersion,
+      });
 
     const version = await prisma.clipsExtensionVersion.create({
       data: {...versionInput, extensionId: extension.id, status: 'BUILDING'},
@@ -669,18 +667,16 @@ export const Mutation: Resolver = {
       rejectOnNotFound: true,
     });
 
-    const {
-      version: versionInput,
-      signedScriptUpload,
-    } = await createStagedClipsVersion({
-      hash,
-      appId: extension.appId,
-      extensionId: id,
-      extensionName: name ?? extension.name,
-      translations,
-      supports,
-      configurationSchema,
-    });
+    const {version: versionInput, signedScriptUpload} =
+      await createStagedClipsVersion({
+        hash,
+        appId: extension.appId,
+        extensionId: id,
+        extensionName: name ?? extension.name,
+        translations,
+        supports,
+        configurationSchema,
+      });
 
     if (existingVersion) {
       const version = await prisma.clipsExtensionVersion.update({
@@ -767,8 +763,8 @@ export const Mutation: Resolver = {
     let resolvedExtensionPoint = extensionPoint;
 
     if (resolvedExtensionPoint == null) {
-      const supports = (extension.activeVersion
-        ?.supports as any) as ClipsExtensionPointSupportInput[];
+      const supports = extension.activeVersion
+        ?.supports as any as ClipsExtensionPointSupportInput[];
 
       if (supports?.length === 1) {
         resolvedExtensionPoint = supports[0].extensionPoint;
@@ -828,28 +824,25 @@ export const Mutation: Resolver = {
     {id, configuration}: {id: string; configuration?: string},
     {user, prisma},
   ) {
-    const installationDetails = await prisma.clipsExtensionInstallation.findFirst(
-      {
+    const installationDetails =
+      await prisma.clipsExtensionInstallation.findFirst({
         where: {id: fromGid(id).id},
         select: {id: true, userId: true},
         rejectOnNotFound: true,
-      },
-    );
+      });
 
     if (installationDetails.userId !== user.id) {
       throw new Error();
     }
 
-    const {
-      extension,
-      ...installation
-    } = await prisma.clipsExtensionInstallation.update({
-      where: {id: installationDetails.id},
-      include: {extension: true},
-      data: {
-        configuration,
-      },
-    });
+    const {extension, ...installation} =
+      await prisma.clipsExtensionInstallation.update({
+        where: {id: installationDetails.id},
+        include: {extension: true},
+        data: {
+          configuration,
+        },
+      });
 
     return {
       extension,
@@ -1183,34 +1176,33 @@ export const AppInstallation: Resolver<
   },
 };
 
-export const ClipsExtension: Resolver<
-  import('@prisma/client').ClipsExtension
-> = {
-  id: ({id}) => toGid(id, 'ClipsExtension'),
-  app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
-  latestVersion({activeVersionId}, _, {prisma}) {
-    return (
-      activeVersionId &&
-      prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
-    );
-  },
-  async versions({id}, _, {prisma}) {
-    const versions = await prisma.clipsExtensionVersion.findMany({
-      where: {extensionId: id},
-      take: 50,
-      // orderBy: {createAt, 'desc'},
-    });
+export const ClipsExtension: Resolver<import('@prisma/client').ClipsExtension> =
+  {
+    id: ({id}) => toGid(id, 'ClipsExtension'),
+    app: ({appId}, _, {prisma}) => prisma.app.findFirst({where: {id: appId}}),
+    latestVersion({activeVersionId}, _, {prisma}) {
+      return (
+        activeVersionId &&
+        prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
+      );
+    },
+    async versions({id}, _, {prisma}) {
+      const versions = await prisma.clipsExtensionVersion.findMany({
+        where: {extensionId: id},
+        take: 50,
+        // orderBy: {createAt, 'desc'},
+      });
 
-    return versions;
-  },
-  async isInstalled({id}, _, {prisma, user}) {
-    const installation = await prisma.clipsExtensionInstallation.findFirst({
-      where: {extensionId: id, userId: user.id},
-    });
+      return versions;
+    },
+    async isInstalled({id}, _, {prisma, user}) {
+      const installation = await prisma.clipsExtensionInstallation.findFirst({
+        where: {extensionId: id, userId: user.id},
+      });
 
-    return installation != null;
-  },
-};
+      return installation != null;
+    },
+  };
 
 export const ClipsExtensionVersion: Resolver<
   import('@prisma/client').ClipsExtensionVersion
@@ -1344,6 +1336,7 @@ async function tmdbFetch<T = unknown>(path: string): Promise<T> {
   return fetched.json();
 }
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface TmdbSeries {
   name: string;
   status: string;
@@ -1379,6 +1372,7 @@ interface TmdbEpisode {
   season_number: number;
   still_path?: string;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 // Assumes you already validated ownership of the watchthrough!
 async function updateWatchThrough(
@@ -1533,15 +1527,12 @@ async function createStagedClipsVersion({
   extensionId: string;
   extensionName: string;
 } & CreateClipsInitialVersion) {
-  const [
-    {S3Client, PutObjectCommand},
-    {getSignedUrl},
-    {getType},
-  ] = await Promise.all([
-    import('@aws-sdk/client-s3'),
-    import('@aws-sdk/s3-request-presigner'),
-    import('mime'),
-  ]);
+  const [{S3Client, PutObjectCommand}, {getSignedUrl}, {getType}] =
+    await Promise.all([
+      import('@aws-sdk/client-s3'),
+      import('@aws-sdk/s3-request-presigner'),
+      import('mime'),
+    ]);
 
   const s3Client = new S3Client({region: 'us-east-1'});
 
@@ -1652,9 +1643,8 @@ function normalizeClipsString({
 }
 
 function fromGid(gid: string) {
-  const {type, id} = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/.exec(
-    gid,
-  )!.groups!;
+  const {type, id} = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/.exec(gid)!
+    .groups!;
   return {type, id};
 }
 

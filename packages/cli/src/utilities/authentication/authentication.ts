@@ -136,19 +136,16 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   let resolve!: (value: string) => void;
   let reject!: (value?: any) => void;
 
-  // eslint-disable-next-line promise/param-names
   const promise = new Promise<string>((resolvePromise, rejectPromise) => {
     resolve = resolvePromise;
     reject = rejectPromise;
   });
 
-  const [
-    {createHttpHandler, noContent},
-    {createHttpServer},
-  ] = await Promise.all([
-    import('@quilted/http-handlers'),
-    import('@quilted/http-handlers/node'),
-  ]);
+  const [{createHttpHandler, noContent}, {createHttpServer}] =
+    await Promise.all([
+      import('@quilted/http-handlers'),
+      import('@quilted/http-handlers/node'),
+    ]);
 
   const handler = createHttpHandler();
 

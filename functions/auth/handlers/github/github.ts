@@ -337,10 +337,13 @@ async function handleGithubOAuthCallback(
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const {access_token: accessToken} = await fetchJson<{access_token: string}>(
     'https://github.com/login/oauth/access_token',
     {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: process.env.GITHUB_CLIENT_ID,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: process.env.GITHUB_CLIENT_SECRET,
       code,
       state,

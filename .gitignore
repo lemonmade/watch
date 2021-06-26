@@ -1,13 +1,6 @@
 node_modules
 .DS_STORE
 *.log
-packages/*/build/
-packages/*/bin/
-packages/*/*.d.ts
-packages/*/*.js
-!packages/*/.eslintrc.js
-packages/*/*.mjs
-packages/*/*.esnext
 .sewing-kit
 build
 cdk.out
@@ -17,3 +10,13 @@ app/graphql/types*
 packages/cli/src/dev/schema-types.d.ts
 !packages/cli/src/commands/build/
 .env
+packages/*/bin
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

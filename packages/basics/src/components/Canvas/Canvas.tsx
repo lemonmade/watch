@@ -23,9 +23,8 @@ export function Canvas({children}: PropsWithChildren<Props>) {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 function PortalContainer({children}: PropsWithChildren<{}>) {
-  const [portalContainer, setPortalContainer] = useState<
-    ContextType<typeof PortalContainerContext>
-  >(null);
+  const [portalContainer, setPortalContainer] =
+    useState<ContextType<typeof PortalContainerContext>>(null);
 
   return (
     <PortalContainerContext.Provider value={portalContainer}>

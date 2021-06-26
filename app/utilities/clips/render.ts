@@ -126,13 +126,8 @@ export function useRenderSandbox<T extends ExtensionPoint>({
 
         const currentId = controller.id;
 
-        const [
-          extensionPoint,
-          version,
-          receiver,
-          components,
-          customApi = {},
-        ] = renderArgumentsRef.current;
+        const [extensionPoint, version, receiver, components, customApi = {}] =
+          renderArgumentsRef.current;
 
         if (controller.state === 'loaded') {
           timings = {renderStart: Date.now()};
@@ -153,12 +148,10 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           }
         });
 
-        const [
-          configurationSubscribable,
-          updateConfiguration,
-        ] = createStaticRemoteSubscribable<Record<string, unknown>>(
-          JSON.parse(configuration ?? '{}'),
-        );
+        const [configurationSubscribable, updateConfiguration] =
+          createStaticRemoteSubscribable<Record<string, unknown>>(
+            JSON.parse(configuration ?? '{}'),
+          );
 
         internals = {
           configuration: {update: updateConfiguration},

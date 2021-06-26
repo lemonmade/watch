@@ -1,9 +1,7 @@
-import {createPackage} from '@sewing-kit/config';
-import {quiltPackage} from '@quilted/sewing-kit-plugins';
-import {publicPackage} from '../../config/sewing-kit/plugins';
+import {createPackage, quiltPackage} from '@quilted/craft';
 
 export default createPackage((pkg) => {
-  pkg.binary({name: 'watchapp', root: 'src/cli'});
-  pkg.entry({root: 'src/index'});
-  pkg.use(quiltPackage({react: false}), publicPackage());
+  pkg.binary({name: 'watchapp', source: './src/cli'});
+  pkg.entry({source: './src/index'});
+  pkg.use(quiltPackage({graphql: true}));
 });

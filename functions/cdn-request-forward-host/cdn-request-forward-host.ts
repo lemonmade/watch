@@ -1,10 +1,6 @@
 import type {CloudFrontRequestHandler} from 'aws-lambda';
 
-export const forwardCdnRequestHost: CloudFrontRequestHandler = (
-  event,
-  _,
-  callback,
-) => {
+export const handler: CloudFrontRequestHandler = (event, _, callback) => {
   const {request} = event.Records[0].cf;
 
   // We copy the `host` header to `x-forwarded-host` (and allow that header in

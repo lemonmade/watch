@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
+/* eslint no-console: off */
 
 import type {SQSHandler} from 'aws-lambda';
 
 import {createPrisma} from 'shared/utilities/database';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface TmdbSeries {
   name: string;
   overview?: string;
@@ -30,10 +31,11 @@ interface TmdbSeason {
   poster_path?: string;
   episodes: TmdbEpisode[];
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const prismaPromise = createPrisma();
 
-export const tmdbRefresher: SQSHandler = async (event) => {
+export const handler: SQSHandler = async (event) => {
   console.log(JSON.stringify(event, null, 2));
 
   try {
@@ -125,8 +127,10 @@ async function updateSeries({
   console.log(seasonsToUpdate, seasonNumbers, seriesResult.number_of_seasons);
 
   const updateSeasons: import('@prisma/client').Prisma.SeasonUpdateArgs[] = [];
-  const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] = [];
-  const completedWatchthroughs: import('@prisma/client').Prisma.WatchThroughWhereInput[] = [];
+  const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] =
+    [];
+  const completedWatchthroughs: import('@prisma/client').Prisma.WatchThroughWhereInput[] =
+    [];
 
   for (const season of seasonResults) {
     const id = seasonToId.get(season.season_number);
@@ -157,6 +161,7 @@ async function updateSeries({
 
               return {
                 where: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   seasonId_number: {
                     seasonId: id,
                     number: episode.episode_number,
@@ -231,6 +236,7 @@ async function updateSeries({
   return results.join('\n\n');
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function isOlderThanThirtyDays(episode?: {air_date?: string}) {
   if (episode?.air_date == null) return false;
 

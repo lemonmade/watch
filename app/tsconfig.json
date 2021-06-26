@@ -1,15 +1,22 @@
 {
-  "extends": "../config/typescript/tsconfig.base.json",
+  "extends": "@quilted/typescript/app.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "build/ts",
+    "outDir": "build/typescript",
     "paths": {
+      "components": ["./components"],
+      "graphql/*": ["./graphql/*"],
+      "utilities/*": ["./utilities/*"],
       "global/*": ["../global/*"]
     }
   },
-  "include": ["**/*", "../config/typescript/globals.d.ts"],
-  "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
+  "include": ["**/*"],
+  "exclude": [
+    "sewing-kit.config.ts",
+    "infrastructure",
+    "build",
+    "*.test.ts",
+    "*.test.tsx"
+  ],
   "references": [
     {
       "path": "../global"

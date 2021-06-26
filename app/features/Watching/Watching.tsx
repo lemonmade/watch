@@ -34,7 +34,6 @@ export function Watching(_: Props) {
       available.sort(sortWatchThroughs).map(watchThroughToProps),
       unavailable.sort(sortWatchThroughs).map(watchThroughToProps),
     ] as const;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.watchThroughs]);
 
   return (
@@ -70,7 +69,7 @@ function watchThroughToProps({
                   new Date().getTimezoneOffset() * 60_000,
               ).toISOString()
             : undefined,
-          poster: nextEpisode.season.poster?.source!,
+          poster: nextEpisode.season.poster?.source,
         }
       : undefined,
     series: {

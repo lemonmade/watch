@@ -1,9 +1,12 @@
 {
   "name": "@lemon/basics",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "main": "src/index.ts",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "dependencies": {
     "@lemon/css": "*"
   },
@@ -13,6 +16,15 @@
   "peerDependenciesMeta": {
     "react": {
       "optional": true
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/react",
+      "@quilted/eslint-config/package"
+    ],
+    "rules": {
+      "jsx-a11y/no-onchange": "off"
     }
   }
 }

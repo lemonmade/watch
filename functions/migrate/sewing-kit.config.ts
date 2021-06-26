@@ -1,28 +1,33 @@
-import {createService} from '@sewing-kit/config';
-import {createProjectBuildPlugin} from '@sewing-kit/plugins';
-import {quiltService} from '@quilted/sewing-kit-plugins';
+import {createService, quiltService, createProjectPlugin} from '@quilted/craft';
+import {lambda} from '@quilted/aws/sewing-kit';
 
 export default createService((service) => {
-  service.entry('./index');
+  service.entry('./migrate');
   service.use(
     quiltService({develop: false, httpHandler: false}),
-    createProjectBuildPlugin(
-      'Watch.Migrate.CopyPrisma',
-      ({api, hooks, workspace}) => {
-        hooks.steps.hook((steps) => [
-          ...steps,
-          api.createStep(
-            {id: 'Watch.Migrate.CopyPrisma', label: 'Copy prisma artifacts'},
-            async (step) => {
-              await step.exec('cp', [
+    lambda(),
+    createProjectPlugin({
+      name: 'Watch.Migrate.CopyPrisma',
+      build({project, workspace, run}) {
+        run((step) =>
+          step({
+            name: 'Watch.Migrate.CopyPrisma',
+            label: 'Copy prisma artifacts',
+            async run(runner) {
+              await runner.exec('mkdir', [
+                '-p',
+                workspace.fs.buildPath('services/migrate'),
+              ]);
+
+              await runner.exec('cp', [
                 '-r',
                 workspace.fs.resolvePath('prisma'),
-                workspace.fs.buildPath('services/migrate/prisma'),
+                project.fs.buildPath('prisma'),
               ]);
             },
-          ),
-        ]);
+          }),
+        );
       },
-    ),
+    }),
   );
 });

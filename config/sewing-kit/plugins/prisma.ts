@@ -1,26 +1,23 @@
-import {createProjectPlugin} from '@sewing-kit/plugins';
+import {createProjectPlugin} from '@quilted/sewing-kit';
+import type {} from '@quilted/sewing-kit-rollup';
 
 export const prisma = () =>
-  createProjectPlugin('Watch.Prisma', ({tasks: {build, dev}}) => {
-    build.hook(({hooks}) => {
-      hooks.target.hook(({hooks}) => {
-        hooks.configure.hook(({rollupExternal}) => {
-          rollupExternal?.hook((external) =>
-            Array.isArray(external)
-              ? [...external, '@prisma/client']
-              : [external as any, '@prisma/client'],
-          );
+  createProjectPlugin({
+    name: 'Watch.Prisma',
+    build({configure}) {
+      configure(({rollupExternals}) => {
+        rollupExternals?.((externals) => {
+          externals.push('@prisma/client');
+          return externals;
         });
       });
-    });
-
-    dev.hook(({hooks}) => {
-      hooks.configure.hook(({rollupExternal}) => {
-        rollupExternal?.hook((external) =>
-          Array.isArray(external)
-            ? [...external, '@prisma/client']
-            : [external as any, '@prisma/client'],
-        );
+    },
+    develop({configure}) {
+      configure(({rollupExternals}) => {
+        rollupExternals?.((externals) => {
+          externals.push('@prisma/client');
+          return externals;
+        });
       });
-    });
+    },
   });

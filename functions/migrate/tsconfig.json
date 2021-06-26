@@ -1,14 +1,12 @@
 {
-  "extends": "../../config/typescript/tsconfig.base.json",
+  "extends": "@quilted/typescript/service.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "build/ts",
+    "outDir": "build/typescript",
     "paths": {
       "shared/*": ["../shared/*"]
     }
   },
-  "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
+  "include": ["../../config/typescript/globals.d.ts", "**/*"],
   "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
   "references": [{"path": "../shared"}]
 }

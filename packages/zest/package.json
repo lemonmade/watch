@@ -1,6 +1,7 @@
 {
   "name": "@lemon/zest",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "main": "src/index.ts",
   "sideEffects": [
@@ -17,5 +18,11 @@
     "react": {
       "optional": true
     }
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/react",
+      "@quilted/eslint-config/package"
+    ]
   }
 }

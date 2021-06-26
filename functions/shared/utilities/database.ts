@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {PrismaClient as Prisma} from '@prisma/client';
 
 export type {Prisma};

@@ -1,14 +1,18 @@
 {
   "name": "email",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "engines": {
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "@quilted/quilt": "^0.4.26",
+    "@quilted/quilt": "^0.5.23",
     "aws-sdk": "^2.879.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@quilted/eslint-config/service"
   }
 }

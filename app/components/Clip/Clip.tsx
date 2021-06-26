@@ -131,9 +131,10 @@ export function Clip<T extends ExtensionPoint>({
   api,
   configuration,
 }: Props<T>) {
-  const controller = useMemo(() => createController(COMPONENTS), [
-    extensionPoint,
-  ]);
+  const controller = useMemo(
+    () => createController(COMPONENTS),
+    [extensionPoint],
+  );
 
   const [receiver, sandboxController] = useRenderSandbox({
     api: api(),
@@ -212,10 +213,7 @@ function InstalledClipFrame<T extends ExtensionPoint>({
       renderPopoverContent={() => <InstalledClipConfiguration id={id} />}
       renderPopoverActions={() => (
         <>
-          <Button
-            // eslint-disable-next-line no-alert
-            onPress={() => alert('App page not implemented yet!')}
-          >
+          <Button onPress={() => alert('App page not implemented yet!')}>
             View app
           </Button>
           <Button onPress={() => controller.restart()}>Restart</Button>
@@ -228,10 +226,7 @@ function InstalledClipFrame<T extends ExtensionPoint>({
           >
             Uninstall
           </Button>
-          <Button
-            // eslint-disable-next-line no-alert
-            onPress={() => alert('Reporting not implemented yet!')}
-          >
+          <Button onPress={() => alert('Reporting not implemented yet!')}>
             Report an issue
           </Button>
         </>

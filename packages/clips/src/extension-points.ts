@@ -11,7 +11,11 @@ export interface RenderExtensionResult {}
 
 export interface RenderExtension<
   Api,
-  AllowedComponents extends RemoteComponentType<string, any, any> = AnyComponent
+  AllowedComponents extends RemoteComponentType<
+    string,
+    any,
+    any
+  > = AnyComponent,
 > {
   (root: RemoteRoot<AllowedComponents>, api: Api): RenderExtensionResult | void;
 }
@@ -24,12 +28,10 @@ export interface ExtensionPoints {
 
 export type ExtensionPoint = keyof ExtensionPoints;
 
-export type ApiForExtensionPoint<
-  T extends ExtensionPoint
-> = ExtensionPoints[T] extends RenderExtension<infer Api, any> ? Api : never;
+export type ApiForExtensionPoint<T extends ExtensionPoint> =
+  ExtensionPoints[T] extends RenderExtension<infer Api, any> ? Api : never;
 
-export type AllowedComponentsForExtensionPoint<
-  T extends ExtensionPoint
-> = ExtensionPoints[T] extends RenderExtension<any, infer AllowedComponents>
-  ? AllowedComponents
-  : never;
+export type AllowedComponentsForExtensionPoint<T extends ExtensionPoint> =
+  ExtensionPoints[T] extends RenderExtension<any, infer AllowedComponents>
+    ? AllowedComponents
+    : never;
