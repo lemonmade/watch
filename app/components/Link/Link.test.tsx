@@ -6,8 +6,14 @@
 import '@quilted/quilt/matchers';
 
 import {Link as RouterLink} from '@quilted/quilt';
-import {mount} from '@quilted/quilt/testing';
+import {createMount, TestRouter} from '@quilted/quilt/testing';
 import {Link} from './Link';
+
+const mount = createMount({
+  render(app) {
+    return <TestRouter>{app}</TestRouter>;
+  },
+});
 
 describe('<Link />', () => {
   it('renders a Quilt link', () => {

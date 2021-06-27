@@ -7,7 +7,6 @@
     "@aws-sdk/client-s3": "^3.10.0",
     "@aws-sdk/s3-request-presigner": "^3.10.0",
     "@graphql-tools/schema": "^7.0.0",
-    "@quilted/http-handlers": "^0.2.9",
     "@sentry/node": "^5.15.5",
     "aws-sdk": "^2.935.0",
     "dataloader": "^2.0.0",

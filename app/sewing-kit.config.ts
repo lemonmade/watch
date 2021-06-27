@@ -2,8 +2,8 @@ import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {App} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
 
-import type {} from '@quilted/sewing-kit-jest';
 import type {} from '@quilted/sewing-kit-vite';
+import type {} from '@quilted/sewing-kit-babel';
 
 export default createApp((app) => {
   app.entry('./App');
@@ -26,17 +26,6 @@ export default createApp((app) => {
               protocol: 'ws',
               host: 'localhost',
             });
-            return config;
-          });
-        });
-      },
-      test({workspace, configure}) {
-        configure(({jestConfig}) => {
-          jestConfig?.((config) => {
-            config.resolver = workspace.fs.resolvePath(
-              'config/jest/resolver.cjs',
-            );
-
             return config;
           });
         });
