@@ -10,7 +10,8 @@
   "exports": {
     ".": {
       "sewing-kit:esnext": "./build/esnext/index.esnext",
-      "import": "./build/mjs/index.mjs"
+      "import": "./build/esm/index.mjs",
+      "require": "./build/cjs/index.cjs"
     }
   },
   "typesVersions": {
