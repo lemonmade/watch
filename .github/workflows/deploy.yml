@@ -48,8 +48,10 @@ jobs:
         with:
           name: build
           path: |
-            **/build/
-            !**/node_modules/**/*
+            ./build/
+            ./app/build/
+            ./functions/*/build/
+            ./packages/*/build/
 
   deploy-packages:
     needs: build
