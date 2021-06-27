@@ -1,7 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {PrismaClient as Prisma} from '@prisma/client';
+import prisma from '@prisma/client';
+export type {PrismaClient as Prisma} from '@prisma/client';
 
-export type {Prisma};
+const {PrismaClient} = prisma;
 
 export async function getDatabaseUrl() {
   if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
@@ -32,7 +32,7 @@ export async function getDatabaseUrl() {
 
 const prismaPromise = process.env.DATABASE_CREDENTIALS_SECRET
   ? (async () => {
-      return new Prisma({
+      return new PrismaClient({
         datasources: {
           db: {
             url: await getDatabaseUrl(),
@@ -40,7 +40,7 @@ const prismaPromise = process.env.DATABASE_CREDENTIALS_SECRET
         },
       });
     })()
-  : Promise.resolve(new Prisma());
+  : Promise.resolve(new PrismaClient());
 
 export function createPrisma() {
   return prismaPromise;

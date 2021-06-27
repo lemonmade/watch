@@ -67,7 +67,7 @@ export function Routes() {
               children: [
                 {
                   match: /[\w-]+/,
-                  renderPrefetch: () => <WatchThrough.Prefetch />,
+                  renderPrefetch: () => <WatchThrough.Preload />,
                   render: ({matched}) => (
                     <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
                   ),

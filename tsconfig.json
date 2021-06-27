@@ -1,14 +1,9 @@
 {
-  "compilerOptions": {
-    "paths": {
-      "global/*": ["./global/*"]
-    }
-  },
   "files": [],
   "include": [],
   "references": [
     {
-      "path": "./tsconfig.project.json"
+      "path": "./tsconfig.workspace.json"
     },
     {
       "path": "./global"

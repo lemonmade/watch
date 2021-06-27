@@ -6,11 +6,7 @@ const REMOVE_HEADERS = new Set(['x-cache', 'server', 'via']);
 // And we DEFINITELY remove all the garbage headers AWS adds.
 const REMOVE_HEADER_REGEX = /^(x-amz|apigw-)/i;
 
-export const cleanupHeadersForCdnResponse: CloudFrontResponseHandler = (
-  event,
-  _,
-  callback,
-) => {
+export const handler: CloudFrontResponseHandler = (event, _, callback) => {
   const {response} = event.Records[0].cf;
   const {headers} = response;
 

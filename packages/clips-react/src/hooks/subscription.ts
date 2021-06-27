@@ -50,7 +50,6 @@ export function useSubscription<T>(
       didUnsubscribe = true;
       unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribable]);
 
   return valueToReturn;

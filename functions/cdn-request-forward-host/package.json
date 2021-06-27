@@ -1,8 +1,12 @@
 {
   "name": "cdn-request-prepare-app",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "devDependencies": {
     "@types/aws-lambda": "^8.10.73"
+  },
+  "eslintConfig": {
+    "extends": "@quilted/eslint-config/service"
   }
 }

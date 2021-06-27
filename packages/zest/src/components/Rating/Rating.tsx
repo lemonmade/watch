@@ -86,10 +86,8 @@ export const Rating = memo(function Rating({value, onChange}: Props) {
         return;
       }
 
-      const {
-        left: containerLeft,
-        width: containerWidth,
-      } = starContainer.current.getBoundingClientRect();
+      const {left: containerLeft, width: containerWidth} =
+        starContainer.current.getBoundingClientRect();
 
       const handleEvent = (
         event: Pick<PointerEvent, 'pageX' | 'preventDefault'>,
@@ -166,7 +164,6 @@ function fillForValueInRange(
     inProgressValue >= value ||
     inProgressValue >= end;
   const largerFill =
-    // eslint-disable-next-line no-nested-ternary
     largerValue >= end
       ? StarFill.Full
       : largerValue > start

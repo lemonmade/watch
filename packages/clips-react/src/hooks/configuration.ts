@@ -5,7 +5,7 @@ import {useSubscription} from './subscription';
 import type {StatefulRemoteSubscribable} from './subscription';
 
 export function useConfiguration<
-  Configuration extends Record<string, unknown> = Record<string, unknown>
+  Configuration extends Record<string, unknown> = Record<string, unknown>,
 >() {
   return useSubscription(
     useApi<ExtensionPoint>()

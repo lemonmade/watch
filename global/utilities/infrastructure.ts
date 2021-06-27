@@ -112,7 +112,7 @@ export class QuiltServiceLambda extends NodeLambda {
     },
   ) {
     super(scope, id, {
-      code: Code.fromAsset(buildPath('services', name)),
+      code: Code.fromAsset(path.join(root, 'functions', name, 'build')),
       ...props,
     });
   }

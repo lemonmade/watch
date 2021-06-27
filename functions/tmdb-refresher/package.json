@@ -1,11 +1,15 @@
 {
   "name": "tmdb-refresher",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "aws-sdk": "^2.839.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.73"
+  },
+  "eslintConfig": {
+    "extends": "@quilted/eslint-config/service"
   }
 }

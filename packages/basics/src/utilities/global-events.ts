@@ -91,9 +91,8 @@ export function useGlobalEventListener(
 ) {
   const globalEventContext = useGlobalEvents();
 
-  useEffect(() => globalEventContext.on(event, handler), [
-    event,
-    handler,
-    globalEventContext,
-  ]);
+  useEffect(
+    () => globalEventContext.on(event, handler),
+    [event, handler, globalEventContext],
+  );
 }

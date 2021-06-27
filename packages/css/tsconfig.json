@@ -1,9 +1,8 @@
 {
-  "extends": "../../config/typescript/tsconfig.base.json",
+  "extends": "@quilted/typescript/pkg.json",
   "compilerOptions": {
-    "baseUrl": "src",
     "rootDir": "src",
-    "outDir": "build/ts",
+    "outDir": "build/typescript",
     "paths": {}
   },
   "include": ["src"],

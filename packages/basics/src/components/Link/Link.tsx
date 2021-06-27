@@ -1,5 +1,4 @@
 import type {PropsWithChildren, ComponentProps} from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {Link as RouterLink} from '@quilted/quilt';
 import {classes, variation} from '@lemon/css';
 

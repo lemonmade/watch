@@ -54,10 +54,10 @@ export function Popover({
 }: PropsWithChildren<PopoverProps>) {
   const id = useUniqueId('Popover');
   const globalEvents = useGlobalEvents();
-  const controller = useMemo(() => createPopoverController(id, globalEvents), [
-    id,
-    globalEvents,
-  ]);
+  const controller = useMemo(
+    () => createPopoverController(id, globalEvents),
+    [id, globalEvents],
+  );
   const active = usePopoverActive(controller);
 
   const implicitAction = useMemo<Action>(() => {
@@ -376,7 +376,6 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
           return;
         }
 
-        // eslint-disable-next-line no-warning-comments
         // TODO (CS): Need an "implicit sheet" to be relative to, for modals/ sheets in sheets
         // const windowWidth = window.innerWidth;
 

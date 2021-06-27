@@ -1,8 +1,6 @@
-import {createPackage} from '@sewing-kit/config';
-import {quiltPackage} from '@quilted/sewing-kit-plugins';
-import {publicPackage} from '../../config/sewing-kit/plugins';
+import {createPackage, quiltPackage} from '@quilted/craft';
 
 export default createPackage((pkg) => {
-  pkg.entry({root: './src/index'});
-  pkg.use(quiltPackage({react: false}), publicPackage());
+  pkg.entry({source: './src/index'});
+  pkg.use(quiltPackage());
 });

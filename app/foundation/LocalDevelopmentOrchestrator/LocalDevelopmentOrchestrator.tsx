@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import type {ReactNode, ContextType} from 'react';
 import {createGraphQL, createHttpFetch} from '@quilted/quilt';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {useInitialUrl} from '@quilted/react-router';
 
 import {LocalDevelopmentClipsContext} from 'utilities/clips';

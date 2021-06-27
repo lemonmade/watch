@@ -26,7 +26,7 @@ export function makeStoppableServer(server: Server) {
     });
 
     for (const socket of sockets) {
-      // @ts-expect-error
+      // @ts-expect-error it's here, I promise
       const serverResponse = socket._httpMessage;
 
       if (serverResponse) {

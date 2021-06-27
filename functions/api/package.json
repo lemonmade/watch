@@ -1,26 +1,26 @@
 {
   "name": "api",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.10.0",
     "@aws-sdk/s3-request-presigner": "^3.10.0",
     "@graphql-tools/schema": "^7.0.0",
-    "@quilted/http-handlers": "^0.1.4",
-    "@quilted/polyfills": "^0.0.7",
     "@sentry/node": "^5.15.5",
+    "aws-sdk": "^2.935.0",
     "dataloader": "^2.0.0",
     "graphql": "^15.0.0",
-    "mime": "^2.5.0",
-    "node-fetch": "^2.6.1",
-    "pg": "^8.0.3"
+    "mime": "^2.5.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.73",
-    "@types/knex": "^0.16.1",
-    "@types/mime": "^2.0.0",
-    "@types/node-fetch": "^2.5.7",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.3.0"
+    "@types/mime": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@quilted/eslint-config/service",
+    "ignorePatterns": [
+      "graph/schema-input-types.d.ts",
+      "graph/schema.ts"
+    ]
   }
 }

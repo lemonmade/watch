@@ -1,17 +1,17 @@
 {
   "name": "watch",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
-    "lint": "skn lint",
-    "test": "skn test",
-    "type-check": "skn type-check",
-    "dev": "skn dev --reload fast",
-    "build": "skn build",
+    "lint": "sewing-kit lint",
+    "test": "sewing-kit test",
+    "type-check": "sewing-kit type-check",
+    "develop": "sewing-kit develop",
+    "build": "sewing-kit build",
     "packages:version": "lerna version --include-merged-tags --no-private",
     "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
-    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\"",
-    "run:ts": "babel-node --extensions .ts,.tsx,.mjs,.js,.json"
+    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\""
   },
   "workspaces": {
     "packages": [
@@ -20,26 +20,8 @@
       "packages/*"
     ]
   },
-  "browserslist": {
-    "default": [
-      "last 2 chrome versions",
-      "last 2 firefox versions",
-      "last 2 opera versions",
-      "last 2 edge versions",
-      "safari >= 11",
-      "ios >= 11"
-    ],
-    "evergreen": [
-      "last 1 chrome versions",
-      "last 1 firefox versions",
-      "last 1 opera versions",
-      "last 1 edge versions",
-      "safari >= 13",
-      "ios >= 13"
-    ],
-    "latest-chrome": [
-      "last 1 chrome versions"
-    ]
+  "dependencies": {
+    "@quilted/http-handlers": "^0.2.10"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2": "^1.96.0",
@@ -59,40 +41,35 @@
     "@aws-cdk/aws-s3-deployment": "^1.96.0",
     "@aws-cdk/core": "^1.95.1",
     "@babel/node": "^7.10.3",
-    "@prefresh/vite": "^2.2.1",
     "@prisma/client": "^2.21.2",
-    "@quilted/aws": "^0.2.19",
-    "@quilted/sewing-kit-plugins": "^0.2.16",
-    "@rollup/plugin-alias": "^3.0.0",
-    "@rollup/plugin-commonjs": "^18.0.0",
-    "@rollup/plugin-json": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
-    "@sewing-kit/cli": "^0.3.4",
-    "@sewing-kit/eslint-plugin": "^0.0.16",
+    "@quilted/aws": "^0.3.14",
+    "@quilted/craft": "^0.1.36",
+    "@quilted/sewing-kit": "^0.2.11",
     "@types/common-tags": "^1.8.0",
+    "@types/fs-extra": "^9.0.11",
     "@types/isomorphic-form-data": "^2.0.0",
     "aws-cdk": "^1.96.0",
     "aws-sdk": "^2.878.0",
     "common-tags": "^1.8.0",
-    "compression-webpack-plugin": "^4.0.0",
     "dotenv": "^8.2.0",
+    "enhanced-resolve": "^5.8.0",
     "lerna": "^3.22.1",
-    "postcss-preset-env": "^6.7.0",
     "prisma": "^2.21.2",
-    "raw-loader": "^4.0.1",
-    "rollup-plugin-esbuild": "^4.0.0",
-    "sewing-kit-plugin-knex": "^0.1.0",
-    "sewing-kit-plugin-webpack-virtual-modules": "^0.1.1",
-    "vite": "^2.2.1",
-    "webpack": "^4.0.0",
-    "webpack-bundle-analyzer": "^4.3.0"
+    "typescript": "^4.3.0"
   },
-  "resolutions": {
-    "@types/vfile-message": "1.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.0.0",
-    "@typescript-eslint/experimental-utils": "^4.0.0",
-    "@typescript-eslint/parser": "^4.0.0",
-    "prettier": "2.2.1",
-    "typescript": "^4.2.0"
+  "prettier": "@quilted/prettier",
+  "eslintConfig": {
+    "extends": "@quilted/eslint-config/workspace",
+    "ignorePatterns": [
+      "node_modules/",
+      "build/",
+      "cdk.out/",
+      "app/graphql/types*",
+      "**/*.graphql.d.ts",
+      "**/*.graphql.ts"
+    ],
+    "rules": {
+      "@typescript-eslint/ban-type": "off"
+    }
   }
 }

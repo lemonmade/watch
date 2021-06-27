@@ -1,20 +1,16 @@
-import {createService} from '@sewing-kit/config';
-import {quiltService} from '@quilted/sewing-kit-plugins';
+import {createService, quiltService} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
-import {webpackExternals} from '@sewing-kit/plugin-webpack';
 
-import {
-  httpDev,
-  functionConvenienceAliases,
-} from '../../config/sewing-kit/plugins';
+import {prisma} from '../../config/sewing-kit/plugins';
 
 export default createService((service) => {
-  service.entry('./index');
+  service.entry('./auth');
   service.use(
-    quiltService({devServer: false, features: ['base', 'fetch']}),
+    quiltService({
+      develop: {port: 8911},
+      polyfill: {features: ['fetch']},
+    }),
     lambda(),
-    functionConvenienceAliases(),
-    httpDev({port: 8911}),
-    webpackExternals(['@prisma/client']),
+    prisma(),
   );
 });

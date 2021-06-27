@@ -1,8 +1,9 @@
-/* eslint import/no-extraneous-dependencies: off */
-
 import {resolve, basename} from 'path';
 import {copy, mkdirp, remove} from 'fs-extra';
-import exec from 'execa';
+import {execFile} from 'child_process';
+import {promisify} from 'util';
+
+const exec = promisify(execFile);
 
 const root = resolve(__dirname, '..');
 const queryLayerOutput = resolve(root, 'build/layers/prisma-query');
@@ -17,11 +18,15 @@ async function run() {
   //   )
   //   .digest('hex');
 
-  await exec('node', [require.resolve('@prisma/engines/download/index.js')], {
-    // Generates the lambda migration engine
-    // @see https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_cli_binary_targets
-    env: {...process.env, PRISMA_CLI_BINARY_TARGETS: 'rhel-openssl-1.0.x'},
-  });
+  await exec(
+    'node',
+    [resolve('node_modules/@prisma/engines/download/index.js')],
+    {
+      // Generates the lambda migration engine
+      // @see https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_cli_binary_targets
+      env: {...process.env, PRISMA_CLI_BINARY_TARGETS: 'rhel-openssl-1.0.x'},
+    },
+  );
 
   try {
     await Promise.all([remove(queryLayerOutput), remove(migrateLayerOutput)]);
@@ -81,7 +86,10 @@ async function run() {
   // );
 }
 
-async function copyPrismaModules(output: string) {
+/**
+ * @param {string} output
+ */
+async function copyPrismaModules(output) {
   await mkdirp(output);
 
   await copy(
@@ -114,6 +122,9 @@ async function copyPrismaModules(output: string) {
 
 const PRISMA_BINARY_REGEX = /^(\w+-engine|prisma-fmt)/;
 
-function omitQueryEngines(file: string) {
+/**
+ * @param {string} file
+ */
+function omitQueryEngines(file) {
   return !PRISMA_BINARY_REGEX.test(basename(file));
 }

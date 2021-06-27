@@ -1,5 +1,4 @@
 import type {PropsWithChildren} from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {createPortal} from 'react-dom';
 
 import {useUniqueId} from '../../utilities/id';

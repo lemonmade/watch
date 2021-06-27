@@ -1,4 +1,6 @@
-module.exports = {
+import type {IGraphQLConfig} from 'graphql-config';
+
+const config: IGraphQLConfig = {
   projects: {
     default: {
       schema: 'functions/api/graph/schema.graphql',
@@ -60,3 +62,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

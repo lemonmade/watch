@@ -10,8 +10,10 @@ import type {FindAppMatchingLocalDevelopmentQueryData} from './graphql/FindAppMa
 import createAppFromLocalAppMutation from './graphql/CreateAppFromLocalAppMutation.graphql';
 
 export type ProductionApp = FindAppMatchingLocalDevelopmentQueryData.Me.App;
-export type ProductionExtension = FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions;
-export type ProductionClipsExtension = FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions_ClipsExtension;
+export type ProductionExtension =
+  FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions;
+export type ProductionClipsExtension =
+  FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions_ClipsExtension;
 
 export async function loadProductionApp(
   {configuration: {id, name}}: LocalApp,

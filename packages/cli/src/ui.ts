@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint no-console: off */
 
 import stripAnsi from 'strip-ansi';
 import ansiEscapes from 'ansi-escapes';

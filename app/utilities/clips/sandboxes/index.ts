@@ -1,7 +1,4 @@
-import {createWorkerFactory} from '@quilted/quilt';
+import {createCallableWorker} from '@quilted/quilt';
 
-export const createSandbox = createWorkerFactory(
-  () => import(/* webpackChunkName: 'ClipsSandbox' */ './sandbox'),
-);
-
+export const createSandbox = createCallableWorker(() => import('./sandbox'));
 export type Sandbox = ReturnType<typeof createSandbox>;

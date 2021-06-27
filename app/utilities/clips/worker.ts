@@ -1,6 +1,6 @@
 import {useMemo, useEffect} from 'react';
 import type {Version} from '@watching/clips';
-import {expose, terminate} from '@remote-ui/web-workers';
+import {expose, terminate} from '@quilted/workers';
 
 import {createSandbox} from './sandboxes';
 import type {Sandbox} from './sandboxes';
@@ -123,7 +123,6 @@ export function useExtensionSandbox({script, version}: Options) {
       await loadPromise;
 
       if (currentStartId === startId) {
-        // eslint-disable-next-line require-atomic-updates
         loadPromise = undefined;
         emit('load');
 

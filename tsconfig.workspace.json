@@ -1,5 +1,5 @@
 {
-  "extends": "./config/typescript/tsconfig.base.json",
+  "extends": "@quilted/typescript/workspace.json",
   "include": [
     "node_modules/@sewing-kit/*/*.d.ts",
     "config/**/*.ts",
@@ -10,7 +10,7 @@
     "**/infrastructure/**/*.ts"
   ],
   "compilerOptions": {
-    "outDir": "build/project/ts",
+    "outDir": "build/typescript/workspace",
     "paths": {
       "global/*": ["./global/*"]
     }
