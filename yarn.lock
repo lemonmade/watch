@@ -5442,9 +5442,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/craft@npm:^0.1.36":
-  version: 0.1.36
-  resolution: "@quilted/craft@npm:0.1.36"
+"@quilted/craft@npm:^0.1.37":
+  version: 0.1.37
+  resolution: "@quilted/craft@npm:0.1.37"
   dependencies:
     "@babel/core": ">=7.0.0 <8.0.0"
     "@prefresh/vite": ^2.2.0
@@ -5454,7 +5454,7 @@ __metadata:
     "@quilted/sewing-kit": ^0.2.11
     "@quilted/sewing-kit-babel": ^0.1.6
     "@quilted/sewing-kit-eslint": ^0.1.4
-    "@quilted/sewing-kit-esnext": ^0.1.14
+    "@quilted/sewing-kit-esnext": ^0.1.15
     "@quilted/sewing-kit-jest": ^0.1.7
     "@quilted/sewing-kit-package": ^0.1.8
     "@quilted/sewing-kit-prettier": ^0.1.4
@@ -5502,7 +5502,7 @@ __metadata:
       optional: true
     typescript:
       optional: false
-  checksum: 11e23241f2145985db24461199dae813bff0e61aaaba1b02fc55124ce48c9237b20ad424bd3a464758de2467a87e9c24112e93067fa2214613a3cf91ea5df1e5
+  checksum: b3ddb1d602132bd50b84c801db0960dd1339838c2082b61df412b6494da0d15dc6a3c1ab484091c82400ec03aa9796876da42754da586660f01f15ce1a0e219f
   languageName: node
   linkType: hard
 
@@ -5954,9 +5954,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/sewing-kit-esnext@npm:^0.1.14":
-  version: 0.1.14
-  resolution: "@quilted/sewing-kit-esnext@npm:0.1.14"
+"@quilted/sewing-kit-esnext@npm:^0.1.15":
+  version: 0.1.15
+  resolution: "@quilted/sewing-kit-esnext@npm:0.1.15"
   dependencies:
     "@quilted/sewing-kit-rollup": ^0.1.6
     "@rollup/plugin-babel": ^5.3.0
@@ -5983,7 +5983,7 @@ __metadata:
       optional: true
     "@quilted/sewing-kit-vite":
       optional: true
-  checksum: 820fe32c59028c5ed39f6e6118da98457c3f278023d32783c99209f249425b98ab8c1c02b56685409bb62366ccc6c5623976200cb80ba7bbc58b286b837440a4
+  checksum: db81c58e26c421c32c91f0f3b28a8c4f20e60891eb2b409ba2582e70fd415638b68a486e4058154d8317d9fd5661411ef0a36fa6d2230b2704b346651debf5a4
   languageName: node
   linkType: hard
 
@@ -17919,7 +17919,7 @@ typescript@^4.3.0:
     "@babel/node": ^7.10.3
     "@prisma/client": ^2.21.2
     "@quilted/aws": ^0.3.15
-    "@quilted/craft": ^0.1.36
+    "@quilted/craft": ^0.1.37
     "@quilted/http-handlers": ^0.2.10
     "@quilted/sewing-kit": ^0.2.11
     "@types/common-tags": ^1.8.0
