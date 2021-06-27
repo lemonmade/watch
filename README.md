@@ -24,7 +24,7 @@ Add the following to your `/etc/hosts` file (only needed for https):
 Run the development server:
 
 ```sh
-yarn dev
+yarn develop
 
 # In another terminal, for https
 caddy run --config config/local/Caddyfile

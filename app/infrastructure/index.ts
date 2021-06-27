@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import {Code} from '@aws-cdk/aws-lambda';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
 import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
@@ -10,9 +12,10 @@ import {
 import {
   NodeLambda,
   Construct,
-  buildPath,
   PublicBucket,
 } from '../../global/utilities/infrastructure';
+
+const root = path.resolve(__dirname, '../..');
 
 export class WebApp extends Construct {
   private readonly api: HttpApi;
@@ -34,7 +37,7 @@ export class WebApp extends Construct {
     const appFunction = new NodeLambda(this, 'WatchWebAppFunction', {
       public: true,
       functionName: 'WatchWebAppFunction',
-      code: Code.fromAsset(buildPath('app/server')),
+      code: Code.fromAsset(buildPath('server')),
     });
 
     this.api = new HttpApi(this, 'WatchWebAppHttpApi', {
@@ -55,7 +58,7 @@ class WebAppAssets extends Construct {
 
     new BucketDeployment(this, 'WatchWebAppAssetsBucketDeployment', {
       sources: [
-        Source.asset(buildPath('app/assets'), {exclude: ['*.html', '*.json']}),
+        Source.asset(buildPath('assets'), {exclude: ['*.html', '*.json']}),
       ],
       destinationBucket: this.bucket,
       destinationKeyPrefix: 'assets/app',
@@ -67,4 +70,8 @@ class WebAppAssets extends Construct {
       ],
     });
   }
+}
+
+function buildPath(...parts: string[]) {
+  return path.resolve(root, 'build', ...parts);
 }

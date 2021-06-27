@@ -1,11 +1,14 @@
 import {createService, quiltService, createProjectPlugin} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
 
+import {prisma} from '../../config/sewing-kit/plugins';
+
 export default createService((service) => {
   service.entry('./migrate');
   service.use(
     quiltService({develop: false, httpHandler: false}),
     lambda(),
+    prisma(),
     createProjectPlugin({
       name: 'Watch.Migrate.CopyPrisma',
       build({project, workspace, run}) {
