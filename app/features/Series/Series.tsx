@@ -13,11 +13,11 @@ import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graph
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
 
-interface Props {
+export interface Props {
   id: string;
 }
 
-export function Series({id}: Props) {
+export default function Series({id}: Props) {
   const {data} = useQuery(seriesQuery, {
     variables: {id},
   });

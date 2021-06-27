@@ -1,7 +1,7 @@
 import {createService, quiltService} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
 
-import {prisma} from '../../config/sewing-kit/plugins';
+import {prisma, dotenv} from '../../config/sewing-kit/plugins';
 
 export default createService((service) => {
   service.entry('./auth');
@@ -12,5 +12,6 @@ export default createService((service) => {
     }),
     lambda(),
     prisma(),
+    dotenv(),
   );
 });
