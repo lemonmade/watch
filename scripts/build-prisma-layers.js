@@ -86,7 +86,10 @@ async function run() {
   // );
 }
 
-async function copyPrismaModules(output: string) {
+/**
+ * @param {string} output
+ */
+async function copyPrismaModules(output) {
   await mkdirp(output);
 
   await copy(
@@ -119,6 +122,9 @@ async function copyPrismaModules(output: string) {
 
 const PRISMA_BINARY_REGEX = /^(\w+-engine|prisma-fmt)/;
 
-function omitQueryEngines(file: string) {
+/**
+ * @param {string} file
+ */
+function omitQueryEngines(file) {
   return !PRISMA_BINARY_REGEX.test(basename(file));
 }

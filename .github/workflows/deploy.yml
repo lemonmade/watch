@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Build
 
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +42,7 @@ jobs:
       - name: Build
         run: |
           yarn build
-          yarn run:ts ./scripts/build-prisma-layers.ts
+          node ./scripts/build-prisma-layers.js
 
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
@@ -52,6 +53,7 @@ jobs:
   deploy-packages:
     needs: build
     runs-on: ubuntu-latest
+    name: Deploy updated packages
 
     steps:
       - uses: actions/checkout@v2
@@ -96,6 +98,7 @@ jobs:
   deploy-aws:
     needs: build
     runs-on: ubuntu-latest
+    name: Deploy to AWS
 
     steps:
       - uses: actions/checkout@v2
