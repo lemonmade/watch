@@ -47,7 +47,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build
-          path: '**/build/'
+          path: |
+            **/build/
+            !**/node_modules/**/*
 
   deploy-packages:
     needs: build
