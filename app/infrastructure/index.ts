@@ -15,7 +15,7 @@ import {
   PublicBucket,
 } from '../../global/utilities/infrastructure';
 
-const root = path.resolve(__dirname, '../..');
+const root = path.resolve(__dirname, '..');
 
 export class WebApp extends Construct {
   private readonly api: HttpApi;
