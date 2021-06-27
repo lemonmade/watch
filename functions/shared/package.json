@@ -10,7 +10,7 @@
     "jsonwebtoken": "^8.0.0"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^8.0.0"
+    "@types/jsonwebtoken": "^8.5.2"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service"

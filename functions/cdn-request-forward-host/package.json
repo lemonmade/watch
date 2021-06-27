@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.73"
+    "@types/aws-lambda": "^8.10.77"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service"
