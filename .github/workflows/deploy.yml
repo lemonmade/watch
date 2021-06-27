@@ -10,49 +10,81 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         name: Checkout
 
       - uses: actions/setup-node@v1
         name: Setup node.js and yarn
         with:
-          node-version: 15.4.0
+          node-version: 16.2.0
+          registry-url: https://registry.npmjs.org/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get yarn cache directory
         id: yarn-cache-get-dir
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         id: yarn-cache
         name: Restore yarn cache
         with:
           path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Yarn install
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build
         run: |
-          yarn type-check
           yarn build
           yarn run:ts ./scripts/build-prisma-layers.ts
 
-      - name: Display build
-        run: ls -R
-        working-directory: ./build
-
       - name: Save build artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: build
-          path: build
+          path: '**/build/'
 
-      # It would be nicer to have these in a separate job, but not
-      # sure how best to save the caches, since files are built
-      # into per-package `build` directories...
+  deploy-packages:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout
+
+      - uses: actions/setup-node@v1
+        name: Setup node.js and yarn
+        with:
+          node-version: 16.2.0
+          registry-url: https://registry.npmjs.org/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Get yarn cache directory
+        id: yarn-cache-get-dir
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        name: Restore yarn cache
+        with:
+          path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v1-
+
+      - name: Yarn install
+        run: yarn install --immutable
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
@@ -65,35 +97,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         name: Checkout
 
       - uses: actions/setup-node@v1
         name: Setup node.js and yarn
         with:
-          node-version: 15.4.0
+          node-version: 16.2.0
+          registry-url: https://registry.npmjs.org/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get yarn cache directory
         id: yarn-cache-get-dir
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         id: yarn-cache
         name: Restore yarn cache
         with:
           path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Yarn install
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Restore build artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: build
-          path: build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
