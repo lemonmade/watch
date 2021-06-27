@@ -5400,9 +5400,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/aws@npm:^0.3.14":
-  version: 0.3.14
-  resolution: "@quilted/aws@npm:0.3.14"
+"@quilted/aws@npm:^0.3.15":
+  version: 0.3.15
+  resolution: "@quilted/aws@npm:0.3.15"
   dependencies:
     "@quilted/http-handlers": ^0.2.10
     "@types/aws-lambda": ^8.0.0
@@ -5419,7 +5419,7 @@ __metadata:
       optional: true
     "@quilted/sewing-kit":
       optional: true
-  checksum: 7c73f494f9f560f9c97936c4f7ea2b35013c7a2c59132fe84db1b2e432acfbd6465bf16bfa8465a3f80046dfb239ef6655c7a85d54ed16df151d2ee21c954a2a
+  checksum: 7df14b704a5f9ab1402b56d24d27f9eaac7e6711c94d676809fe4d6c89f8305852add498f6b53696ca5ea0f2c779c7e37daed360c9c74b0e049eaa2a34c65955
   languageName: node
   linkType: hard
 
@@ -17918,7 +17918,7 @@ typescript@^4.3.0:
     "@aws-cdk/core": ^1.95.1
     "@babel/node": ^7.10.3
     "@prisma/client": ^2.21.2
-    "@quilted/aws": ^0.3.14
+    "@quilted/aws": ^0.3.15
     "@quilted/craft": ^0.1.36
     "@quilted/http-handlers": ^0.2.10
     "@quilted/sewing-kit": ^0.2.11
