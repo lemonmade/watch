@@ -10,7 +10,7 @@ export default createApp((app) => {
   app.use(
     quiltApp({
       autoServer: true,
-      assets: {baseUrl: '/assets/app/', minify: false},
+      assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
     }),
     lambda(),
