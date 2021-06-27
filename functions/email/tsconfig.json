@@ -7,7 +7,7 @@
       "global/*": ["../../global/*"]
     }
   },
-  "include": ["../../config/typescript/globals.d.ts", "**/*"],
+  "include": ["**/*"],
   "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
   "references": [{"path": "../shared"}, {"path": "../../global"}]
 }

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "build/typescript"
   },
-  "include": ["../../config/typescript/globals.d.ts", "**/*.ts"],
+  "include": ["**/*"],
   "exclude": ["sewing-kit.config.ts", "infrastructure", "build"]
 }

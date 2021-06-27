@@ -1,3 +1,5 @@
+/// <reference types="@quilted/typescript/definitions/styles" />
+
 export {
   BlockStack,
   Canvas,

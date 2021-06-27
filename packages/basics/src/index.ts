@@ -1,3 +1,5 @@
+/// <reference types="@quilted/typescript/definitions/styles" />
+
 export * from './components';
 export {useUniqueId} from './utilities/id';
 export {useGlobalEventListener} from './utilities/global-events';

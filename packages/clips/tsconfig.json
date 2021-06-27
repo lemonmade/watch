@@ -6,7 +6,7 @@
     "lib": ["WebWorker", "esnext"],
     "types": []
   },
-  "include": ["src", "../../config/typescript/globals.d.ts"],
+  "include": ["src"],
   "exclude": ["sewing-kit.config.ts", "*.test.ts", "*.test.tsx"],
   "references": []
 }
