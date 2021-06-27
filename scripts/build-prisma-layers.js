@@ -1,11 +1,14 @@
-import {resolve, basename} from 'path';
-import {copy, mkdirp, remove} from 'fs-extra';
+import {resolve, basename, dirname} from 'path';
+import {fileURLToPath} from 'url';
+import fsExtra from 'fs-extra';
 import {execFile} from 'child_process';
 import {promisify} from 'util';
 
+const {copy, mkdirp, remove} = fsExtra;
+
 const exec = promisify(execFile);
 
-const root = resolve(__dirname, '..');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const queryLayerOutput = resolve(root, 'build/layers/prisma-query');
 const migrateLayerOutput = resolve(root, 'build/layers/prisma-migrate');
 
