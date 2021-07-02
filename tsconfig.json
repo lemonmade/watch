@@ -1,10 +1,21 @@
 {
-  "files": [],
-  "include": [],
+  "extends": "@quilted/typescript/workspace.json",
+  "include": [
+    "node_modules/@sewing-kit/*/*.d.ts",
+    "config/**/*.ts",
+    "scripts/**/*.ts",
+    "graphql.config.ts",
+    "**/sewing-kit.config.ts",
+    "**/infrastructure/**/*.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "build/typescript/workspace",
+    "module": "commonjs",
+    "paths": {
+      "global/*": ["./global/*"]
+    }
+  },
   "references": [
-    {
-      "path": "./tsconfig.workspace.json"
-    },
     {
       "path": "./global"
     },

@@ -20,7 +20,7 @@
     "@iarna/toml": "^3.0.0",
     "@quilted/graphql": "^0.4.10",
     "@quilted/http-handlers": "^0.2.10",
-    "@quilted/polyfills": "^0.2.10",
+    "@quilted/polyfills": "^0.2.11",
     "@rollup/plugin-alias": "^3.0.0",
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-node-resolve": "^13.0.0",

@@ -6,5 +6,5 @@
     "paths": {}
   },
   "include": ["src"],
-  "exclude": ["**/tests/**/*.ts", "**/tests/**/*.tsx"]
+  "exclude": ["sewing-kit.config.ts", "build"]
 }
