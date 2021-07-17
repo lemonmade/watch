@@ -10,13 +10,7 @@
     }
   },
   "include": ["**/*"],
-  "exclude": [
-    "sewing-kit.config.ts",
-    "infrastructure",
-    "build",
-    "*.test.ts",
-    "*.test.tsx"
-  ],
+  "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
   "references": [
     {
       "path": "../global"

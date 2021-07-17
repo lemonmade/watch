@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import {createGraphQL, createHttpFetch} from '@quilted/graphql';
 import {redirect, html, fetchJson} from '@quilted/http-handlers';
-import type {Request, Response, CookieDefinition} from '@quilted/http-handlers';
+import type {Request, Response, CookieOptions} from '@quilted/http-handlers';
 import {stripIndent} from 'common-tags';
 
 import {
@@ -21,7 +21,7 @@ import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
 
 const SCOPES = 'read:user';
 
-const DEFAULT_COOKIE_OPTIONS: Omit<CookieDefinition, 'value'> = {
+const DEFAULT_COOKIE_OPTIONS: CookieOptions = {
   maxAge: 60 * 5,
   sameSite: 'lax',
   secure: true,

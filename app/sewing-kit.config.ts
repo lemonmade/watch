@@ -9,7 +9,6 @@ export default createApp((app) => {
   app.entry('./App');
   app.use(
     quiltApp({
-      autoServer: true,
       assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
     }),
