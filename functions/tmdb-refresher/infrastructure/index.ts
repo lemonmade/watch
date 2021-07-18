@@ -1,4 +1,5 @@
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources';
+import {Queue} from '@aws-cdk/aws-sqs';
 
 import {
   Construct,
@@ -7,22 +8,34 @@ import {
   Secret,
 } from '../../../global/utilities/infrastructure';
 
-import type {TmdbRefresherScheduler} from '../../tmdb-refresher-scheduler/infrastructure';
-
 export class TmdbRefresher extends Construct {
+  readonly queue: Queue;
+
+  get queueUrl() {
+    return this.queue.queueUrl;
+  }
+
   constructor(
     parent: Construct,
     {
       tmdb,
       database,
-      scheduler,
     }: {
       tmdb: Secret;
       database: Database;
-      scheduler: TmdbRefresherScheduler;
     },
   ) {
     super(parent, 'WatchTmdbRefresher');
+
+    this.queue = new Queue(this, 'WatchTmdbRefresherQueue', {
+      queueName: 'WatchTmdbRefresherQueue',
+      deadLetterQueue: {
+        queue: new Queue(this, 'WatchTmdbRefresherDeadLetterQueue', {
+          queueName: 'WatchTmdbRefresherDeadLetterQueue',
+        }),
+        maxReceiveCount: 5,
+      },
+    });
 
     const refresherFunction = new QuiltServiceLambda(
       this,
@@ -35,12 +48,11 @@ export class TmdbRefresher extends Construct {
         environment: {
           ...database.environmentVariables,
           TMDB_ACCESS_TOKEN: tmdb.asEnvironmentVariable({key: 'token'}),
-          TMDB_REFRESHER_QUEUE_URL: scheduler.queueUrl,
         },
       },
     );
 
     database.grantAccess(refresherFunction);
-    refresherFunction.addEventSource(new SqsEventSource(scheduler.queue));
+    refresherFunction.addEventSource(new SqsEventSource(this.queue));
   }
 }

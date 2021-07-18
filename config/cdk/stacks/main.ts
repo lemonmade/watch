@@ -73,11 +73,13 @@ export class WatchStack extends Stack {
     const graphqlApi = new GraphQLApi(this, {jwt, tmdb, database, email});
     const authApi = new AuthApi(this, {jwt, github, database});
 
-    const tmdbRefreshScheduler = new TmdbRefresherScheduler(this, {database});
-    new TmdbRefresher(this, {
+    const refresher = new TmdbRefresher(this, {
       tmdb,
       database,
-      scheduler: tmdbRefreshScheduler,
+    });
+    new TmdbRefresherScheduler(this, {
+      database,
+      refresher,
     });
 
     const cdnRequestForwardHost = new CdnRequestForwardHost(this);
