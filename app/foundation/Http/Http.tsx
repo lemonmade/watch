@@ -14,7 +14,9 @@ export function Http() {
         styleSources={["'self'", "'unsafe-inline'"]}
         // data: needed for the favicon
         imageSources={["'self'", 'data:', 'https://image.tmdb.org']}
-        // blob: needed for the Quilt worker libraries
+        // blob: needed for the Quilt worker libraries; Safari does not
+        // support worker-src, so we need to set child-src for it.
+        childSources={["'self'", 'blob:']}
         workerSources={["'self'", 'blob:']}
         frameAncestors={false}
         upgradeInsecureRequests
