@@ -27,11 +27,11 @@ export class TmdbRefresher extends Construct {
   ) {
     super(parent, 'WatchTmdbRefresher');
 
-    this.queue = new Queue(this, 'WatchTmdbRefresherQueue', {
-      queueName: 'WatchTmdbRefresherQueue',
+    this.queue = new Queue(this, 'WatchTmdbRefresherFunctionQueue', {
+      queueName: 'WatchTmdbRefresherFunctionQueue',
       deadLetterQueue: {
-        queue: new Queue(this, 'WatchTmdbRefresherDeadLetterQueue', {
-          queueName: 'WatchTmdbRefresherDeadLetterQueue',
+        queue: new Queue(this, 'WatchTmdbRefresherFunctionDeadLetterQueue', {
+          queueName: 'WatchTmdbRefresherFunctionDeadLetterQueue',
         }),
         maxReceiveCount: 5,
       },
