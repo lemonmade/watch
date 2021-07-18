@@ -10,8 +10,12 @@ export function Http() {
       <CacheControl cache={false} />
       <ContentSecurityPolicy
         defaultSources={["'self'"]}
+        // We inject style tags into the page, so we need unsafe-inline
         styleSources={["'self'", "'unsafe-inline'"]}
+        // data: needed for the favicon
         imageSources={["'self'", 'data:', 'https://image.tmdb.org']}
+        // blob: needed for the Quilt worker libraries
+        workerSources={["'self'", 'blob:']}
         frameAncestors={false}
         upgradeInsecureRequests
       />
