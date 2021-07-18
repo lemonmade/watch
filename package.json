@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@quilted/http-handlers": "^0.2.11",
-    "@quilted/quilt": "^0.5.40"
+    "@quilted/quilt": "^0.5.41"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2": "^1.110.0",

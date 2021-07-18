@@ -5681,9 +5681,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/quilt@npm:^0.5.40":
-  version: 0.5.40
-  resolution: "@quilted/quilt@npm:0.5.40"
+"@quilted/quilt@npm:^0.5.41":
+  version: 0.5.41
+  resolution: "@quilted/quilt@npm:0.5.41"
   dependencies:
     "@quilted/async": ^0.3.12
     "@quilted/graphql": ^0.4.10
@@ -5694,9 +5694,9 @@ __metadata:
     "@quilted/react-email": ^0.2.15
     "@quilted/react-graphql": ^0.4.24
     "@quilted/react-html": ^0.3.15
-    "@quilted/react-http": ^0.3.1
+    "@quilted/react-http": ^0.3.2
     "@quilted/react-idle": ^0.3.5
-    "@quilted/react-router": ^0.3.20
+    "@quilted/react-router": ^0.3.21
     "@quilted/react-server-render": ^0.3.5
     "@quilted/react-testing": ^0.4.6
     "@quilted/react-workers": ^0.2.11
@@ -5718,7 +5718,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 87c992e1fb927e774ab1f9c62915edabed2896c8120975de9bec636fb6c8a39f61c16b365e79956267f88ce53dc73026c3e2257b266a709d8d213facec3813a7
+  checksum: 98a72d7604ce922bc08afca704b9db550d67601cbf61a7ef006425bc87502028fc5583a341a91055e83159beb8b2e3254d422d619d29b1d1f7cededdc22e7195
   languageName: node
   linkType: hard
 
@@ -5800,9 +5800,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/react-http@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@quilted/react-http@npm:0.3.1"
+"@quilted/react-http@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@quilted/react-http@npm:0.3.2"
   dependencies:
     "@quilted/http": ^0.2.6
     "@quilted/react-html": ^0.3.15
@@ -5816,7 +5816,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 92aa9ff424c88ec826cefec9077e88331f4c95a9fb3169f892a78800ed5491a701d0ac5d8408cc2a097efd2547b22d504db90efda9513b85dc9abf4af21e6970
+  checksum: 55cd1991c7ec21bbff60e1ba68c4a31abcd29b727bed02da0638fd01f709268f0064d50e3b8dfa6a4e6ffaaba9e687ad7ad601bf3006c7ffa428aa08977a42f2
   languageName: node
   linkType: hard
 
@@ -5835,12 +5835,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/react-router@npm:^0.3.20":
-  version: 0.3.20
-  resolution: "@quilted/react-router@npm:0.3.20"
+"@quilted/react-router@npm:^0.3.21":
+  version: 0.3.21
+  resolution: "@quilted/react-router@npm:0.3.21"
   dependencies:
     "@quilted/react-html": ^0.3.15
-    "@quilted/react-http": ^0.3.1
+    "@quilted/react-http": ^0.3.2
     "@quilted/react-server-render": ^0.3.5
     "@quilted/routing": ^0.2.5
   peerDependencies:
@@ -5851,7 +5851,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 72c844aef086934891f5ac1942458b7e8441dca35abeb4e9f530c93097636262bcb3d4cba52578b85f550834fab3ab5782d9e8875e07de690a564ec28e6b94ec
+  checksum: 181b3427e46c133aa559b95af1f2ece4f8bf05f0eb511e41b5a0e06e11bd69c89ffcd148a0b2e027cf408e2935fc45cc699fd1ff06e4b94040ba440f44ade12c
   languageName: node
   linkType: hard
 
@@ -18007,7 +18007,7 @@ typescript@^4.3.4:
     "@quilted/aws": ^0.3.18
     "@quilted/craft": ^0.1.47
     "@quilted/http-handlers": ^0.2.11
-    "@quilted/quilt": ^0.5.40
+    "@quilted/quilt": ^0.5.41
     "@quilted/sewing-kit": ^0.2.11
     "@types/common-tags": ^1.8.0
     "@types/fs-extra": ^9.0.11
