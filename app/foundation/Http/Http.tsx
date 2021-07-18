@@ -10,6 +10,8 @@ export function Http() {
       <CacheControl cache={false} />
       <ContentSecurityPolicy
         defaultSources={["'self'"]}
+        styleSources={["'self'", "'unsafe-inline'"]}
+        imageSources={["'self'", 'https://image.tmbd.org']}
         frameAncestors={false}
         upgradeInsecureRequests
       />
