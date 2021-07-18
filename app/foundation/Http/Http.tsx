@@ -11,7 +11,7 @@ export function Http() {
       <ContentSecurityPolicy
         defaultSources={["'self'"]}
         styleSources={["'self'", "'unsafe-inline'"]}
-        imageSources={["'self'", 'https://image.tmbd.org']}
+        imageSources={["'self'", 'data:', 'https://image.tmdb.org']}
         frameAncestors={false}
         upgradeInsecureRequests
       />
