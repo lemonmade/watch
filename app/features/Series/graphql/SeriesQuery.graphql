@@ -15,7 +15,7 @@ query Series($id: ID!) {
     }
   }
   clipsInstallations(
-    extensionPoint: "Watch::Series::Details"
+    extensionPoint: "Series.Details.RenderAccessory"
     conditions: [{seriesId: $id}]
   ) {
     id

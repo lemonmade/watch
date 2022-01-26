@@ -1,4 +1,7 @@
-import type {ClipsApi} from './globals';
+import type {ExtensionPoints} from './extension-points';
 
-export const extend: ClipsApi['extend'] = (...args) =>
-  self.clips.extend(...args);
+export function extend<
+  ExtensionPoint extends keyof ExtensionPoints = keyof ExtensionPoints,
+>(extend: ExtensionPoints[ExtensionPoint]) {
+  return extend;
+}

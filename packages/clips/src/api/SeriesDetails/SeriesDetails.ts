@@ -6,6 +6,6 @@ export interface Series {
 }
 
 export interface SeriesDetailsApi
-  extends StandardApi<'Watch::Series::Details'> {
+  extends StandardApi<'Series.Details.RenderAccessory'> {
   readonly series: Series;
 }

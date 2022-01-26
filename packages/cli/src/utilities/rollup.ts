@@ -8,13 +8,43 @@ import esbuild from 'rollup-plugin-esbuild';
 
 import type {LocalExtension} from './app';
 
+const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.tsx';
+
 export function createRollupConfiguration(
   extension: LocalExtension,
   {mode = 'production'}: {mode?: 'development' | 'production'} = {},
 ): RollupOptions {
   return {
-    input: path.join(extension.root, 'index'),
+    input: MAGIC_MODULE_EXTENSION_ENTRY,
     plugins: [
+      {
+        name: '@quilted/magic-module/extension-entry',
+        async resolveId(id) {
+          if (id === MAGIC_MODULE_EXTENSION_ENTRY) return id;
+          return null;
+        },
+        async load(source) {
+          if (source !== MAGIC_MODULE_EXTENSION_ENTRY) return null;
+
+          return `
+            ${extension.configuration.extensionPoints
+              .map((extensionPoint, index) => {
+                return `import extensionPoint${index} from ${JSON.stringify(
+                  path.resolve(extension.root, extensionPoint.module),
+                )}`;
+              })
+              .join('\n')}
+
+              ${extension.configuration.extensionPoints
+                .map((extensionPoint, index) => {
+                  return `clips.extend(${JSON.stringify(
+                    extensionPoint.id,
+                  )}, extensionPoint${index});`;
+                })
+                .join('\n')}
+          `;
+        },
+      },
       alias({
         entries: {
           'react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',

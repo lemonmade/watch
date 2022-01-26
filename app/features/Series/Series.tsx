@@ -46,11 +46,11 @@ function SeriesWithData({
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
 
   const localDevelopmentClips = useLocalDevelopmentClips(
-    'Watch::Series::Details',
+    'Series.Details.RenderAccessory',
   );
 
   const apiForClips = useMemo<
-    ClipProps<'Watch::Series::Details'>['api']
+    ClipProps<'Series.Details.RenderAccessory'>['api']
   >(() => {
     return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
@@ -82,7 +82,7 @@ function SeriesWithData({
             {...localClip}
             key={localClip.id}
             api={apiForClips}
-            extensionPoint="Watch::Series::Details"
+            extensionPoint="Series.Details.RenderAccessory"
           />
         ))}
         {clipsInstallations.map((installedClip) => (
@@ -90,7 +90,7 @@ function SeriesWithData({
             {...installedClip}
             key={installedClip.id}
             api={apiForClips}
-            extensionPoint="Watch::Series::Details"
+            extensionPoint="Series.Details.RenderAccessory"
           />
         ))}
       </BlockStack>
