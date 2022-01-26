@@ -52,6 +52,7 @@ jobs:
             ./app/build/
             ./functions/*/build/
             ./packages/*/build/
+            ./packages/*/bin/
 
   deploy-packages:
     needs: build
