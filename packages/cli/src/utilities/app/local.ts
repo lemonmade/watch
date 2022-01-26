@@ -1,7 +1,7 @@
 import * as path from 'path';
 import {readFile, stat} from 'fs/promises';
 
-import {sync as glob} from 'glob';
+import glob from 'glob';
 import {parse} from '@iarna/toml';
 
 import type {ExtensionPoint} from '@watching/clips';
@@ -71,6 +71,7 @@ type ExtensionPointSupportCondition = ExtensionPointSupportSeriesCondition;
 
 interface ExtensionPointSupport {
   readonly id: ExtensionPoint;
+  readonly module: string;
   readonly conditions?: ExtensionPointSupportCondition[];
 }
 
@@ -198,7 +199,7 @@ function validateExtensionConfig(
 function loadExtensionEntry(pattern: string): LocalExtensionEntry {
   return {
     pattern,
-    directories: glob(
+    directories: glob.sync(
       pattern.endsWith(path.sep) ? pattern : `${pattern}${path.sep}`,
       {absolute: true},
     ),

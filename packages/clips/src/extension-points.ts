@@ -7,8 +7,6 @@ import type {
   WatchThroughDetailsApi,
 } from './api';
 
-export interface RenderExtensionResult {}
-
 export interface RenderExtension<
   Api,
   AllowedComponents extends RemoteComponentType<
@@ -17,13 +15,13 @@ export interface RenderExtension<
     any
   > = AnyComponent,
 > {
-  (root: RemoteRoot<AllowedComponents>, api: Api): RenderExtensionResult | void;
+  (root: RemoteRoot<AllowedComponents>, api: Api): void | Promise<void>;
 }
 
 export interface ExtensionPoints {
-  'Watch::Season::Details': RenderExtension<SeasonDetailsApi>;
-  'Watch::Series::Details': RenderExtension<SeriesDetailsApi>;
-  'Watch::WatchThrough::Details': RenderExtension<WatchThroughDetailsApi>;
+  'Season.Details.RenderAccessory': RenderExtension<SeasonDetailsApi>;
+  'Series.Details.RenderAccessory': RenderExtension<SeriesDetailsApi>;
+  'WatchThrough.Details.RenderAccessory': RenderExtension<WatchThroughDetailsApi>;
 }
 
 export type ExtensionPoint = keyof ExtensionPoints;
