@@ -11,6 +11,11 @@
     "watchapp": "./bin/watchapp.mjs"
   },
   "sideEffects": false,
+  "files": [
+    "build",
+    "src",
+    "bin"
+  ],
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
