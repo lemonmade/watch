@@ -19,7 +19,7 @@ export function Http() {
         childSources={["'self'", 'blob:']}
         workerSources={["'self'", 'blob:']}
         // Allow localhost for connecting to local development servers
-        connectSources={["'self'", 'localhost:*']}
+        connectSources={["'self'", 'http://localhost']}
         frameAncestors={false}
         upgradeInsecureRequests
       />
