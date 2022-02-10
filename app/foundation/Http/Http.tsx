@@ -18,6 +18,8 @@ export function Http() {
         // support worker-src, so we need to set child-src for it.
         childSources={["'self'", 'blob:']}
         workerSources={["'self'", 'blob:']}
+        // Allow localhost for connecting to local development servers
+        connectSources={["'self'", 'localhost:']}
         frameAncestors={false}
         upgradeInsecureRequests
       />
