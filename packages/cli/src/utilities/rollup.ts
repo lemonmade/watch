@@ -55,7 +55,13 @@ export function createRollupConfiguration(
         },
       }),
       nodeResolve({
-        exportConditions: ['esnext', 'import', 'require', 'default'],
+        exportConditions: [
+          'sewing-kit:esnext',
+          'esnext',
+          'import',
+          'require',
+          'default',
+        ],
         extensions: ['.tsx', '.ts', '.esnext', '.mjs', '.js', '.json'],
         preferBuiltins: true,
       }),
@@ -64,6 +70,7 @@ export function createRollupConfiguration(
         include: /\.esnext$/,
         exclude: [],
         minify: false,
+        target: 'es2017',
         loaders: {'.esnext': 'js'},
         // eslint-disable-next-line @typescript-eslint/naming-convention
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},

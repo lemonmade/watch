@@ -12,9 +12,8 @@ import {
 } from '@quilted/http-handlers';
 import type {Request} from '@quilted/http-handlers';
 import {createHttpServer} from '@quilted/http-handlers/node';
-import {Server as WebSocketServer, OPEN} from 'ws';
-import type WebSocket from 'ws';
-import * as mime from 'mime';
+import WebSocket from 'ws';
+import mime from 'mime';
 import open from 'open';
 
 import {graphql} from 'graphql';
@@ -38,8 +37,8 @@ import type {LocalApp} from '../../utilities/app';
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
-import schemaTypeDefinitions from './schema.graphql';
-import type {Query as QueryType} from './schema.graphql';
+import schemaTypeDefinitions from './schema';
+import type {Query as QueryType} from './schema';
 
 type AllowedReturnType<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => infer U
@@ -229,7 +228,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
 
   const httpServer = createHttpServer(handler);
   const stopListening = makeStoppableServer(httpServer);
-  let webSocketServer: WebSocketServer | undefined;
+  let webSocketServer: WebSocket.Server | undefined;
 
   const socketsByExtension = new Map<string, Set<WebSocket>>();
   const buildStateByExtension = new Map<string, BuildState>();
@@ -297,7 +296,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     async listen() {
       const port = await findPortAndListen(httpServer);
 
-      webSocketServer = new WebSocketServer({server: httpServer});
+      webSocketServer = new WebSocket.Server({server: httpServer});
 
       webSocketServer.on('connection', (socket, request) => {
         const extensionId = request.url!.slice(1);
@@ -336,7 +335,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     if (sockets == null) return;
 
     for (const socket of sockets) {
-      if (socket.readyState !== OPEN) continue;
+      if (socket.readyState !== WebSocket.OPEN) continue;
       socket.send(JSON.stringify({type: 'build', data: state}));
     }
   }

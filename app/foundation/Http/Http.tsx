@@ -10,6 +10,8 @@ export function Http() {
       <CacheControl cache={false} />
       <ContentSecurityPolicy
         defaultSources={["'self'"]}
+        // Allow localhost for connecting to local development servers
+        scriptSources={["'self'", 'http://localhost:*']}
         // We inject style tags into the page, so we need unsafe-inline
         styleSources={["'self'", "'unsafe-inline'"]}
         // data: needed for the favicon
@@ -19,7 +21,7 @@ export function Http() {
         childSources={["'self'", 'blob:']}
         workerSources={["'self'", 'blob:']}
         // Allow localhost for connecting to local development servers
-        connectSources={["'self'", 'http://localhost:*']}
+        connectSources={["'self'", 'http://localhost:*', 'ws://localhost:*']}
         frameAncestors={false}
         upgradeInsecureRequests
       />

@@ -16,12 +16,6 @@ const config: IGraphQLConfig = {
       ],
       extensions: {
         quilt: {
-          documents: [
-            {
-              kind: 'value',
-              match: ['packages/**/*.graphql'],
-            },
-          ],
           schema: [
             {kind: 'definitions', outputPath: 'functions/api/graph/schema.ts'},
             {
@@ -40,7 +34,10 @@ const config: IGraphQLConfig = {
       extensions: {
         quilt: {
           schema: [
-            {kind: 'definitions'},
+            {
+              kind: 'definitions',
+              outputPath: 'packages/cli/src/commands/develop/schema.ts',
+            },
             {kind: 'inputTypes', outputPath: 'app/graphql/types/cli.d.ts'},
           ],
         },

@@ -21,8 +21,8 @@
     ]
   },
   "dependencies": {
-    "@quilted/http-handlers": "^0.2.11",
-    "@quilted/quilt": "^0.5.41"
+    "@quilted/http-handlers": "^0.2.16",
+    "@quilted/quilt": "^0.5.50"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2": "^1.110.0",
@@ -44,9 +44,9 @@
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.10.3",
     "@prisma/client": "^2.25.0",
-    "@quilted/aws": "^0.3.18",
-    "@quilted/craft": "^0.1.47",
-    "@quilted/sewing-kit": "^0.2.11",
+    "@quilted/aws": "^0.3.24",
+    "@quilted/craft": "^0.1.50",
+    "@quilted/sewing-kit": "^0.2.13",
     "@types/common-tags": "^1.8.0",
     "@types/fs-extra": "^9.0.11",
     "@types/isomorphic-form-data": "^2.0.0",
