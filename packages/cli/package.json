@@ -1,7 +1,7 @@
 {
   "name": "@watching/cli",
   "description": "A CLI to develop apps for watch.lemon.tools",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "type": "module",
   "publishConfig": {
     "access": "public",
