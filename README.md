@@ -29,3 +29,12 @@ yarn develop
 # In another terminal, for https
 caddy run --config config/local/Caddyfile
 ```
+
+To run postgres (I think, anyways):
+
+```
+brew services restart postgresql
+psql postgres
+> CREATE ROLE dev WITH LOGIN PASSWORD 'password'
+> ALTER ROLE dev CREATEDB
+```

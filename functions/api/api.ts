@@ -50,7 +50,7 @@ app.post(async (request) => {
   console.log(`Document:\n${query}`);
   /* eslint-enable no-console */
 
-  const {cookies, headers} = json(
+  const {headers, cookies} = json(
     {},
     {
       status: 200,
@@ -79,7 +79,6 @@ app.post(async (request) => {
 
     return json(result, {
       status: response.status,
-      cookies: response.cookies,
       headers: response.headers,
     });
   } catch (error) {

@@ -5421,14 +5421,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/aws@npm:^0.3.24":
-  version: 0.3.24
-  resolution: "@quilted/aws@npm:0.3.24"
+"@quilted/aws@npm:^0.3.26":
+  version: 0.3.26
+  resolution: "@quilted/aws@npm:0.3.26"
   dependencies:
-    "@quilted/http-handlers": ^0.2.16
+    "@quilted/http-handlers": ^0.2.18
     "@types/aws-lambda": ^8.0.0
     common-tags: ^1.8.0
-    cookie: ^0.4.0
   peerDependencies:
     "@babel/runtime": ">=7.0.0 <8.0.0"
     "@quilted/craft": ^0.1.9
@@ -5440,7 +5439,7 @@ __metadata:
       optional: true
     "@quilted/sewing-kit":
       optional: true
-  checksum: 44cab3689ce029986afc3a598f66de747b458eecb1c80f0a25658411c7596d48c4cc2f6cb6433b3859229e3e5f5755b81fa88a15dac1770756ba29acd34d35fb
+  checksum: 5c1c42de990415776492583a665df1d373d703a51cc170feb1c38227dfcfa5d34d17f03b116dfc99b43c74c298dd9477ac3d480ab5e633935720472eccdae19f
   languageName: node
   linkType: hard
 
@@ -5463,9 +5462,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/craft@npm:^0.1.50":
-  version: 0.1.50
-  resolution: "@quilted/craft@npm:0.1.50"
+"@quilted/craft@npm:^0.1.51":
+  version: 0.1.51
+  resolution: "@quilted/craft@npm:0.1.51"
   dependencies:
     "@babel/core": ">=7.0.0 <8.0.0"
     "@prefresh/vite": ^2.2.0
@@ -5524,7 +5523,7 @@ __metadata:
       optional: true
     typescript:
       optional: false
-  checksum: 7d2a33be6b547235a881db9bd5677706fd1ce69e3369760278375032d1234fbef58701673ad04f99b961d84cf5dd692518d9a353fe25a0b4f4f0a4c237239d55
+  checksum: bf7bb2b49d35872277c2af13dd68b19c2ac074dd36f87e4aebe69655df5aed87941b9857128bc6cb93b0da8b42721d52c9d5717cde7fca734466e61ccf84498e
   languageName: node
   linkType: hard
 
@@ -5593,11 +5592,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/http-handlers@npm:^0.2.16":
-  version: 0.2.16
-  resolution: "@quilted/http-handlers@npm:0.2.16"
+"@quilted/http-handlers@npm:^0.2.18":
+  version: 0.2.18
+  resolution: "@quilted/http-handlers@npm:0.2.18"
   dependencies:
-    "@quilted/http": ^0.2.9
+    "@quilted/http": ^0.2.11
     "@quilted/routing": ^0.2.7
     cookie: ^0.4.0
     send: ^0.17.0
@@ -5606,13 +5605,13 @@ __metadata:
   peerDependenciesMeta:
     "@babel/runtime":
       optional: true
-  checksum: 0032cc88b52752727825cfbe4f495002363edeb22dc386a3118cdb41d53e7ae7b3d291927a3d5b3c19b3acbf08bac3116ef841c51310093370461529aa1cfc09
+  checksum: 98a67fc45b0b59eff82b6a7394b70fb12aa80681b26620b1b552bff0b9a56cb1d39d1e2897666e4d3f35fcc430e812d0fe6d4fe5b4db2e6398bbd91bbebc4b8d
   languageName: node
   linkType: hard
 
-"@quilted/http@npm:^0.2.9":
-  version: 0.2.9
-  resolution: "@quilted/http@npm:0.2.9"
+"@quilted/http@npm:^0.2.11":
+  version: 0.2.11
+  resolution: "@quilted/http@npm:0.2.11"
   dependencies:
     cookie: ^0.4.0
   peerDependencies:
@@ -5620,7 +5619,7 @@ __metadata:
   peerDependenciesMeta:
     "@babel/runtime":
       optional: true
-  checksum: 1ad2eca6a1b0b64673f3aa7e3e45329cbf4487f9e0492136fd0bc6958d6189464a8cb47e03ad40645e7169f905124ed029bda24baf6ac3e546389c8fb2097128
+  checksum: 3133e660a4afb5d6cb0da46632b3f7d5568f50961961b58a35177ec65e3c1692c64e1e26ae9e765f68f4005941ab62cfee4fc5a732cb86aa9d59cde55ebaaafc
   languageName: node
   linkType: hard
 
@@ -5697,23 +5696,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/quilt@npm:^0.5.50":
-  version: 0.5.50
-  resolution: "@quilted/quilt@npm:0.5.50"
+"@quilted/quilt@npm:^0.5.52":
+  version: 0.5.52
+  resolution: "@quilted/quilt@npm:0.5.52"
   dependencies:
     "@quilted/async": ^0.3.12
     "@quilted/graphql": ^0.4.11
-    "@quilted/http-handlers": ^0.2.16
+    "@quilted/http-handlers": ^0.2.18
     "@quilted/polyfills": ^0.2.12
     "@quilted/preact-mini-compat": ^0.2.7
     "@quilted/react-async": ^0.3.22
     "@quilted/react-email": ^0.2.18
     "@quilted/react-graphql": ^0.4.27
     "@quilted/react-html": ^0.3.18
-    "@quilted/react-http": ^0.3.6
+    "@quilted/react-http": ^0.3.8
     "@quilted/react-idle": ^0.3.6
     "@quilted/react-performance": ^0.1.0
-    "@quilted/react-router": ^0.3.26
+    "@quilted/react-router": ^0.3.28
     "@quilted/react-server-render": ^0.3.7
     "@quilted/react-testing": ^0.5.1
     "@quilted/react-workers": ^0.2.12
@@ -5735,7 +5734,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 0546272463a95e9f02d1cd35b2f71742c72ee460d3b91fe55dfb843bb68358ed972d0e03ca8b0aa9a2c5b02f848d7f11c43dda871f51b7e015b2bcf0d1f47d86
+  checksum: f0b5f1cebfb8ad6598c1c4cbfd940707532f6f8f9ebd2adb06f4a6870c7f8d7cc724bfc2aabf05aece5e9cec541a1d8e05cf2ac41da4e4225dfd9768a1cebb98
   languageName: node
   linkType: hard
 
@@ -5817,14 +5816,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/react-http@npm:^0.3.6":
-  version: 0.3.6
-  resolution: "@quilted/react-http@npm:0.3.6"
+"@quilted/react-http@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "@quilted/react-http@npm:0.3.8"
   dependencies:
-    "@quilted/http": ^0.2.9
+    "@quilted/http": ^0.2.11
     "@quilted/react-html": ^0.3.18
     "@quilted/react-server-render": ^0.3.7
-    js-cookie: ^2.2.0
+    js-cookie: ^3.0.0
   peerDependencies:
     "@babel/runtime": ">=7.0.0 <8.0.0"
     react: ">=17.0.0 <18.0.0"
@@ -5833,7 +5832,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 7cc249b5ed08971e686a0e9da6cdf158403512b797bf5abb456802376588a47f9691f7713f9e37a3d167b36592878817bf5ab8e339b7457a302d9ed4ca95d479
+  checksum: 3dff40acf20a9781df3f5cfbf252046e312cc73769f9168bfca235011d1444a8d4c4a3d376248472d667984946704bd8fc3546c1cb8fbe4df9ca76f17888c729
   languageName: node
   linkType: hard
 
@@ -5872,12 +5871,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/react-router@npm:^0.3.26":
-  version: 0.3.26
-  resolution: "@quilted/react-router@npm:0.3.26"
+"@quilted/react-router@npm:^0.3.28":
+  version: 0.3.28
+  resolution: "@quilted/react-router@npm:0.3.28"
   dependencies:
     "@quilted/react-html": ^0.3.18
-    "@quilted/react-http": ^0.3.6
+    "@quilted/react-http": ^0.3.8
     "@quilted/react-server-render": ^0.3.7
     "@quilted/routing": ^0.2.7
   peerDependencies:
@@ -5888,7 +5887,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: a8f379e8d6223ed472d9785e4483d7850e1430eb4595a646079fd34a7ec7e8fce9b01ad0b73ab647d48ad2f7c1d801e91adc7fb23fb14a3bb780a8be9d6ec69c
+  checksum: 75cad2f3a23e7fa165da959890e4133c30d7ef103fbe833a257c978bc89ac95b2ebd41a382ab5caf670eb4cd2967c5ef50a86be5f3b7a6e35a92791aa51a94e5
   languageName: node
   linkType: hard
 
@@ -7095,7 +7094,7 @@ __metadata:
     "@graphql-tools/schema": ^7.0.0
     "@iarna/toml": ^3.0.0
     "@quilted/graphql": ^0.4.11
-    "@quilted/http-handlers": ^0.2.16
+    "@quilted/http-handlers": ^0.2.18
     "@quilted/polyfills": ^0.2.12
     "@rollup/plugin-alias": ^3.0.0
     "@rollup/plugin-commonjs": ^19.0.0
@@ -12782,10 +12781,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-cookie@npm:^2.2.0":
-  version: 2.2.1
-  resolution: "js-cookie@npm:2.2.1"
-  checksum: c110f78427cb7715f67c69df0b3430f7cf9dafb5ddb13014df171d4fb61ccda0b1caf9767412cde63cab4bad697a5d4ce83b0c2e7ec650ec9929ed70750d20ae
+"js-cookie@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "js-cookie@npm:3.0.1"
+  checksum: 868f96266123525f3e7829c329ec2ed46b31024820958988e6185317cf4ab79d3d666ce2386a5178ed79814323b9364e5f134bfc7e81c2f63befb8bc61f6882b
   languageName: node
   linkType: hard
 
@@ -18134,10 +18133,10 @@ typescript@^4.3.4:
     "@babel/core": ^7.14.6
     "@babel/node": ^7.10.3
     "@prisma/client": ^2.25.0
-    "@quilted/aws": ^0.3.24
-    "@quilted/craft": ^0.1.50
-    "@quilted/http-handlers": ^0.2.16
-    "@quilted/quilt": ^0.5.50
+    "@quilted/aws": ^0.3.26
+    "@quilted/craft": ^0.1.51
+    "@quilted/http-handlers": ^0.2.18
+    "@quilted/quilt": ^0.5.52
     "@quilted/sewing-kit": ^0.2.13
     "@types/common-tags": ^1.8.0
     "@types/fs-extra": ^9.0.11
