@@ -105,9 +105,12 @@ type WatchThrough {
   finishedAt: Date
   status: WatchThroughStatus!
   watches: [Watch!]!
+  actions: [Action!]!
   nextEpisode: Episode
   unfinishedEpisodeCount: Int!
 }
+
+union Action = Watch | Skip
 
 type Watch implements Reviewable {
   id: ID!

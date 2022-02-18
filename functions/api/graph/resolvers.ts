@@ -889,6 +889,10 @@ export const Mutation: Resolver = {
   },
 };
 
+export const Action: Resolver = {
+  __resolveType: resolveType,
+};
+
 export const Watchable: Resolver = {
   __resolveType: resolveType,
 };
@@ -1038,6 +1042,31 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({where: {id: seriesId}});
+  },
+  async actions({id}, _, {user, prisma}) {
+    const [watches, skips] = await Promise.all([
+      prisma.watch.findMany({
+        where: {watchThroughId: id, userId: user.id},
+        include: {
+          episode: {select: {number: true}},
+        },
+        take: 50,
+      }),
+      prisma.skip.findMany({
+        where: {watchThroughId: id, userId: user.id},
+        include: {
+          episode: {select: {number: true}},
+        },
+        take: 50,
+      }),
+    ]);
+
+    return [
+      ...watches.map(addResolvedType('Watch')),
+      ...skips.map(addResolvedType('Skip')),
+    ].sort((actionOne, actionTwo) => {
+      return actionOne.episode.number < actionTwo.episode.number ? 1 : -1;
+    });
   },
   watches({id}, _, {user, prisma}) {
     return prisma.watch.findMany({

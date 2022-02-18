@@ -41,7 +41,7 @@ export default function WatchThrough({id}: Props) {
 
   if (data?.watchThrough == null) return null;
 
-  const {nextEpisode, status, series} = data.watchThrough;
+  const {nextEpisode, status, series, actions} = data.watchThrough;
 
   return (
     <Page
@@ -108,6 +108,42 @@ export default function WatchThrough({id}: Props) {
             onAction={() => setKey((key) => key + 1)}
           />
         )}
+        {actions.map((action) => {
+          if (action.__typename === 'Skip') {
+            return (
+              <BlockStack key={action.id}>
+                <Text>
+                  Skipped episode{' '}
+                  {action.media.__typename === 'Episode'
+                    ? action.media.number
+                    : ''}
+                  {action.at
+                    ? ` (on ${new Date(action.at).toLocaleDateString()})`
+                    : ''}
+                </Text>
+              </BlockStack>
+            );
+          } else if (action.__typename === 'Watch') {
+            return (
+              <BlockStack>
+                <Text>
+                  Watched episode{' '}
+                  {action.media.__typename === 'Episode'
+                    ? action.media.number
+                    : ''}
+                  {action.finishedAt
+                    ? ` (on ${new Date(
+                        action.finishedAt,
+                      ).toLocaleDateString()})`
+                    : ''}
+                </Text>
+                <Text>Rating: {action.rating}</Text>
+              </BlockStack>
+            );
+          } else {
+            return null;
+          }
+        })}
       </BlockStack>
     </Page>
   );
