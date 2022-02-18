@@ -5,6 +5,37 @@ fragment WatchThroughDetails on WatchThrough {
     name
   }
   status
+  actions {
+    ... on Skip {
+      id
+      at
+      media {
+        ... on Episode {
+          id
+          title
+          number
+          season {
+            number
+          }
+        }
+      }
+    }
+    ... on Watch {
+      id
+      rating
+      finishedAt
+      media {
+        ... on Episode {
+          id
+          title
+          number
+          season {
+            number
+          }
+        }
+      }
+    }
+  }
   nextEpisode {
     id
     title
