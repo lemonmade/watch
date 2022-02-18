@@ -21,7 +21,7 @@
 .Input {
   appearance: none;
   display: block;
-  border: none;
+  border: 1px solid var(--zest-color-text-subdued);
   background: none;
   width: 100%;
   resize: vertical;
