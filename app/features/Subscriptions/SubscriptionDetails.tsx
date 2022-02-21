@@ -49,9 +49,12 @@ export function SubscriptionDetails({id}: Props) {
     return <NotFound />;
   }
 
+  const {subscribedOn, series, settings} = subscription;
+  const {watchThroughs} = series;
+
   return (
     <Page
-      heading={subscription.series.name}
+      heading={series.name}
       actions={
         <Menu>
           <Pressable
@@ -60,7 +63,7 @@ export function SubscriptionDetails({id}: Props) {
                 variables: {id},
               });
 
-              navigate('/app/subscriptions');
+              navigate('/app/subscriptions', {replace: true});
             }}
           >
             Unsubscribe
@@ -70,18 +73,37 @@ export function SubscriptionDetails({id}: Props) {
     >
       <BlockStack>
         <TextBlock>
-          Subscribed on{' '}
-          {new Date(subscription.subscribedOn).toLocaleDateString()}
+          Subscribed on {new Date(subscribedOn).toLocaleDateString()}
         </TextBlock>
-        {subscription.series.poster && (
-          <Link to={`/app/series/${parseGid(subscription.series.id).id}`}>
-            View series
-          </Link>
+        <Link to={`/app/series/${parseGid(series.id).id}`}>View series</Link>
+        {watchThroughs.length > 0 && (
+          <Section>
+            <Heading>Watchthroughs</Heading>
+            <BlockStack>
+              {watchThroughs.map((watchThrough) => (
+                <BlockStack key={watchThrough.id}>
+                  <TextBlock>
+                    From <EpisodeSliceText {...watchThrough.from} />, to{' '}
+                    <EpisodeSliceText {...watchThrough.to} />
+                    {watchThrough.status === 'ONGOING'
+                      ? ' (still watching)'
+                      : ''}
+                  </TextBlock>
+                  <Link
+                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+                  >
+                    See watch through
+                  </Link>
+                </BlockStack>
+              ))}
+            </BlockStack>
+          </Section>
         )}
+
         <Section>
           <Heading>Settings</Heading>
           <SpoilerAvoidance
-            value={subscription.settings.spoilerAvoidance}
+            value={settings.spoilerAvoidance}
             onChange={async (spoilerAvoidance) => {
               await updateSubscriptionSettings({
                 variables: {id, spoilerAvoidance},
@@ -93,5 +115,20 @@ export function SubscriptionDetails({id}: Props) {
         </Section>
       </BlockStack>
     </Page>
+  );
+}
+
+function EpisodeSliceText({
+  season,
+  episode,
+}: {
+  season: number;
+  episode?: number | null;
+}) {
+  return (
+    <>
+      season {season}
+      {episode == null ? '' : `, episode ${episode}`}
+    </>
   );
 }

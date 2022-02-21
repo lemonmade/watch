@@ -8,6 +8,18 @@ query SubscriptionDetails($id: ID!) {
       poster {
         source
       }
+      watchThroughs {
+        id
+        status
+        from {
+          season
+          episode
+        }
+        to {
+          season
+          episode
+        }
+      }
     }
     settings {
       spoilerAvoidance

@@ -497,9 +497,25 @@ export const Mutation: Resolver = {
 
     return {watchThrough};
   },
-  async subscribeToSeries(_, {id}: {id: string}, {user, prisma}) {
+  async subscribeToSeries(
+    _,
+    {
+      id,
+      spoilerAvoidance: explicitSpoilerAvoidance,
+    }: {id: string; spoilerAvoidance?: SpoilerAvoidance},
+    {user, prisma},
+  ) {
+    const spoilerAvoidance =
+      explicitSpoilerAvoidance ??
+      (
+        await prisma.user.findFirst({
+          where: {id: user.id},
+          rejectOnNotFound: true,
+        })
+      ).spoilerAvoidance;
+
     const subscription = await prisma.seriesSubscription.create({
-      data: {seriesId: fromGid(id).id, userId: user.id},
+      data: {seriesId: fromGid(id).id, userId: user.id, spoilerAvoidance},
     });
 
     return {subscription};
@@ -1187,7 +1203,7 @@ export const Series: Resolver<import('@prisma/client').Series> = {
   },
   subscription({id}, _, {prisma, user}) {
     return prisma.seriesSubscription.findFirst({
-      where: {id, userId: user.id},
+      where: {seriesId: id, userId: user.id},
     });
   },
   watchThroughs({id}, _, {prisma, user}) {
