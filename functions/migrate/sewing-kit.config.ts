@@ -17,15 +17,10 @@ export default createService((service) => {
             name: 'Watch.Migrate.CopyPrisma',
             label: 'Copy prisma artifacts',
             async run(runner) {
-              await runner.exec('mkdir', [
-                '-p',
-                workspace.fs.buildPath('services/migrate'),
-              ]);
-
               await runner.exec('cp', [
                 '-r',
                 workspace.fs.resolvePath('prisma'),
-                project.fs.buildPath('prisma'),
+                project.fs.buildPath('runtime'),
               ]);
             },
           }),
