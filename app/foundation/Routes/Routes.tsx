@@ -8,7 +8,6 @@ import {Watching, FinishedWatching} from '../../features/Watching';
 import {Series} from '../../features/Series';
 import {Subscriptions} from '../../features/Subscriptions';
 import {WatchThrough} from '../../features/WatchThrough';
-import {Settings} from '../../features/Settings';
 import {Apps} from '../../features/Apps';
 import {Search} from '../../features/Search';
 import {SignIn} from '../../features/SignIn';
@@ -53,7 +52,6 @@ export function Routes() {
               match: 'subscriptions',
               render: () => <Subscriptions />,
             },
-            {match: 'settings', render: () => <Settings />},
             {match: 'search', render: () => <Search />},
             {
               match: 'series',
