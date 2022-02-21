@@ -576,7 +576,7 @@ export const Mutation: Resolver = {
     const subscription = await prisma.seriesSubscription.update({
       data,
       where: {
-        id,
+        id: subscriptionForUser.id,
       },
     });
 
