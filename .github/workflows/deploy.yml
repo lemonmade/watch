@@ -7,41 +7,14 @@ on:
 
 jobs:
   build:
+    name: Build 🏗
     runs-on: ubuntu-latest
-    name: Build
-
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout
+      - uses: quilt-framework/action-prepare@v1
+      - uses: quilt-framework/action-build@v2
 
-      - uses: actions/setup-node@v1
-        name: Setup node.js and yarn
-        with:
-          node-version: 16.2.0
-          registry-url: https://registry.npmjs.org/
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Get yarn cache directory
-        id: yarn-cache-get-dir
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        name: Restore yarn cache
-        with:
-          path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v1-
-
-      - name: Yarn install
-        run: yarn install --immutable
-
-      - name: Build
-        run: |
-          yarn build
-          node ./scripts/build-prisma-layers.js
+      - name: Build Prisma layers
+        run: node ./scripts/build-prisma-layers.js
 
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
@@ -55,37 +28,12 @@ jobs:
             ./packages/*/bin/
 
   deploy-packages:
+    name: Deploy updated packages 📦
     needs: build
     runs-on: ubuntu-latest
-    name: Deploy updated packages
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout
-
-      - uses: actions/setup-node@v1
-        name: Setup node.js and yarn
-        with:
-          node-version: 16.2.0
-          registry-url: https://registry.npmjs.org/
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Get yarn cache directory
-        id: yarn-cache-get-dir
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        name: Restore yarn cache
-        with:
-          path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v1-
-
-      - name: Yarn install
-        run: yarn install --immutable
+      - uses: quilt-framework/action-prepare@v1
 
       - name: Restore build artifacts
         uses: actions/download-artifact@v2
@@ -100,37 +48,12 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy-aws:
+    name: Deploy to AWS 🛰
     needs: build
     runs-on: ubuntu-latest
-    name: Deploy to AWS
 
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout
-
-      - uses: actions/setup-node@v1
-        name: Setup node.js and yarn
-        with:
-          node-version: 16.2.0
-          registry-url: https://registry.npmjs.org/
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Get yarn cache directory
-        id: yarn-cache-get-dir
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        name: Restore yarn cache
-        with:
-          path: ${{ steps.yarn-cache-get-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v1-
-
-      - name: Yarn install
-        run: yarn install --immutable
+      - uses: quilt-framework/action-prepare@v1
 
       - name: Restore build artifacts
         uses: actions/download-artifact@v2
