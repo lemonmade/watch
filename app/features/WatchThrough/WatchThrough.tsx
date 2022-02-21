@@ -15,16 +15,19 @@ import {
   Menu,
   Link,
   Form,
+  Section,
 } from '@lemon/zest';
 
-import {Page} from 'components';
+import {Page, SpoilerAvoidance} from 'components';
 import {parseGid} from 'utilities/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
+import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
 import stopWatchThroughMutation from './graphql/StopWatchThroughMutation.graphql';
 import deleteWatchThroughMutation from './graphql/DeleteWatchThroughMutation.graphql';
+import updateWatchThroughSettingsMutation from './graphql/UpdateWatchThroughSettingsMutation.graphql';
 
 export interface Props {
   id: string;
@@ -38,17 +41,25 @@ export default function WatchThrough({id}: Props) {
   const navigate = useNavigate();
   const stopWatchThrough = useMutation(stopWatchThroughMutation);
   const deleteWatchThrough = useMutation(deleteWatchThroughMutation);
+  const updateWatchThroughSettings = useMutation(
+    updateWatchThroughSettingsMutation,
+  );
 
   if (data?.watchThrough == null) return null;
 
-  const {nextEpisode, status, series, actions} = data.watchThrough;
+  const {nextEpisode, status, series, actions, settings, from, to} =
+    data.watchThrough;
 
   return (
     <Page
       heading={
         <BlockStack spacing="small">
           {nextEpisode && (
-            <Text>Watching season {nextEpisode.season.number}</Text>
+            <Text>
+              {from.season === to.season
+                ? `Watching season ${to.season}`
+                : `Watching seasons ${from.season}–${to.season}`}
+            </Text>
           )}
           <Heading>{series.name}</Heading>
         </BlockStack>
@@ -108,13 +119,45 @@ export default function WatchThrough({id}: Props) {
             onAction={() => setKey((key) => key + 1)}
           />
         )}
+        {actions.length > 0 && <PreviousActionsSection actions={actions} />}
+        <Section>
+          <BlockStack>
+            <Heading>Settings</Heading>
+            <SpoilerAvoidance
+              value={settings.spoilerAvoidance}
+              onChange={async (spoilerAvoidance) => {
+                await updateWatchThroughSettings({
+                  variables: {id, spoilerAvoidance},
+                });
+
+                setKey((key) => key + 1);
+              }}
+            />
+          </BlockStack>
+        </Section>
+      </BlockStack>
+    </Page>
+  );
+}
+
+function PreviousActionsSection({
+  actions,
+}: {
+  actions: readonly WatchThroughQueryData.WatchThrough.Actions[];
+}) {
+  return (
+    <Section>
+      <BlockStack>
+        <Heading>Previous actions</Heading>
         {actions.map((action) => {
           if (action.__typename === 'Skip') {
             return (
               <BlockStack key={action.id}>
                 <Text>
-                  Skipped episode{' '}
-                  {action.media.__typename === 'Episode'
+                  Skipped{' '}
+                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
+                  {action.media.__typename === 'Episode' ||
+                  action.media.__typename === 'Season'
                     ? action.media.number
                     : ''}
                   {action.at
@@ -127,8 +170,10 @@ export default function WatchThrough({id}: Props) {
             return (
               <BlockStack>
                 <Text>
-                  Watched episode{' '}
-                  {action.media.__typename === 'Episode'
+                  Watched{' '}
+                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
+                  {action.media.__typename === 'Episode' ||
+                  action.media.__typename === 'Season'
                     ? action.media.number
                     : ''}
                   {action.finishedAt
@@ -145,7 +190,7 @@ export default function WatchThrough({id}: Props) {
           }
         })}
       </BlockStack>
-    </Page>
+    </Section>
   );
 }
 

@@ -1,0 +1,16 @@
+query SubscriptionDetails($id: ID!) {
+  subscription(id: $id) {
+    id
+    subscribedOn
+    series {
+      id
+      name
+      poster {
+        source
+      }
+    }
+    settings {
+      spoilerAvoidance
+    }
+  }
+}

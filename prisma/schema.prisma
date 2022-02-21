@@ -12,10 +12,17 @@ generator client {
   // output   = "../functions/shared/utilities/prisma"
 }
 
+enum SpoilerAvoidance {
+  NONE
+  UPCOMING
+  EVERYTHING
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id               String           @id @default(uuid())
+  email            String           @unique
+  createdAt        DateTime         @default(now())
+  spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
   githubAccount               GithubAccount?
   skips                       Skip[]
@@ -61,14 +68,17 @@ model Series {
 }
 
 model SeriesSubscription {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
+  id               String           @id @default(uuid())
+  createdAt        DateTime         @default(now())
+  spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
   series   Series @relation(fields: [seriesId], references: [id])
   seriesId String
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+
+  @@unique([seriesId, userId])
 }
 
 enum SeasonStatus {
@@ -89,6 +99,9 @@ model Season {
   seriesId String
 
   episodes Episode[]
+
+  watches Watch[]
+  skips   Skip[]
 
   @@unique([seriesId, number])
 }
@@ -117,14 +130,15 @@ enum WatchThroughStatus {
 }
 
 model WatchThrough {
-  id         String             @id @default(uuid())
-  from       Bytes
-  to         Bytes
-  current    Bytes?
-  status     WatchThroughStatus @default(ONGOING)
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-  finishedAt DateTime?
+  id               String             @id @default(uuid())
+  from             Bytes
+  to               Bytes
+  current          Bytes?
+  status           WatchThroughStatus @default(ONGOING)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  finishedAt       DateTime?
+  spoilerAvoidance SpoilerAvoidance   @default(UPCOMING)
 
   series   Series @relation(fields: [seriesId], references: [id])
   seriesId String
@@ -149,8 +163,11 @@ model Watch {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  episode   Episode @relation(fields: [episodeId], references: [id])
-  episodeId String
+  episode   Episode? @relation(fields: [episodeId], references: [id])
+  episodeId String?
+
+  season   Season? @relation(fields: [seasonId], references: [id])
+  seasonId String?
 
   watchThrough   WatchThrough? @relation(fields: [watchThroughId], references: [id])
   watchThroughId String?
@@ -166,8 +183,11 @@ model Skip {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  episode   Episode @relation(fields: [episodeId], references: [id])
-  episodeId String
+  episode   Episode? @relation(fields: [episodeId], references: [id])
+  episodeId String?
+
+  season   Season? @relation(fields: [seasonId], references: [id])
+  seasonId String?
 
   watchThrough   WatchThrough? @relation(fields: [watchThroughId], references: [id])
   watchThroughId String?

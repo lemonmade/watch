@@ -1,5 +1,6 @@
 export {Banner} from './Banner';
 export {Button} from './Button';
+export {Choice, ChoiceList} from './ChoiceList';
 export {CollapseGroup} from './CollapseGroup';
 export {DateField} from './DateField';
 export {MediaGrid} from './MediaGrid';

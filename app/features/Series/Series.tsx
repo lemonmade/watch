@@ -1,6 +1,16 @@
 import {useMemo} from 'react';
 import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
-import {View, Button, BlockStack, InlineStack, Text, Menu} from '@lemon/zest';
+import {
+  View,
+  Button,
+  BlockStack,
+  InlineStack,
+  Text,
+  Menu,
+  Section,
+  Heading,
+  TextBlock,
+} from '@lemon/zest';
 
 import {Link, LocalClip, InstalledClip, Page} from 'components';
 import type {ClipProps} from 'components';
@@ -55,20 +65,28 @@ function SeriesWithData({
     return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
 
+  const {watchThroughs, subscription} = series;
+
   return (
     <Page
       heading={series.name}
       actions={
         <Menu>
-          <Button
-            onPress={async () => {
-              await subscribeToSeries({
-                variables: {id: series.id},
-              });
-            }}
-          >
-            Subscribe
-          </Button>
+          {subscription ? (
+            <Link to={`/app/subscriptions/${parseGid(subscription.id).id}`}>
+              Subscribed!
+            </Link>
+          ) : (
+            <Button
+              onPress={async () => {
+                await subscribeToSeries({
+                  variables: {id: series.id},
+                });
+              }}
+            >
+              Subscribe
+            </Button>
+          )}
         </Menu>
       }
     >
@@ -138,22 +156,60 @@ function SeriesWithData({
             </InlineStack>
           </View>
         ))}
-      </BlockStack>
-      <View>
-        <Button
-          onPress={async () => {
-            const {data} = await startWatchThrough({
-              variables: {series: series.id},
-            });
+        <View>
+          <Button
+            onPress={async () => {
+              const {data} = await startWatchThrough({
+                variables: {series: series.id},
+              });
 
-            const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
-            if (watchThroughId)
-              navigate(`/app/watchthrough/${watchThroughId.split('/').pop()}`);
-          }}
-        >
-          Start watch through
-        </Button>
-      </View>
+              const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
+              if (watchThroughId)
+                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+            }}
+          >
+            Start watch through
+          </Button>
+        </View>
+        {watchThroughs.length > 0 && (
+          <Section>
+            <Heading>Watchthroughs</Heading>
+            <BlockStack>
+              {watchThroughs.map((watchThrough) => (
+                <BlockStack key={watchThrough.id}>
+                  <TextBlock>
+                    From <EpisodeSliceText {...watchThrough.from} />, to{' '}
+                    <EpisodeSliceText {...watchThrough.to} />
+                    {watchThrough.status === 'ONGOING'
+                      ? ' (still watching)'
+                      : ''}
+                  </TextBlock>
+                  <Link
+                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+                  >
+                    See watch through
+                  </Link>
+                </BlockStack>
+              ))}
+            </BlockStack>
+          </Section>
+        )}
+      </BlockStack>
     </Page>
+  );
+}
+
+function EpisodeSliceText({
+  season,
+  episode,
+}: {
+  season: number;
+  episode?: number | null;
+}) {
+  return (
+    <>
+      season {season}
+      {episode == null ? '' : `, episode ${episode}`}
+    </>
   );
 }

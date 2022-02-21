@@ -1,0 +1,12 @@
+#import "./WatchThroughDetailsFragment.graphql"
+
+mutation UpdateWatchThroughSettings(
+  $id: ID!
+  $spoilerAvoidance: SpoilerAvoidance!
+) {
+  updateWatchThroughSettings(id: $id, spoilerAvoidance: $spoilerAvoidance) {
+    watchThrough {
+      ...WatchThroughDetails
+    }
+  }
+}

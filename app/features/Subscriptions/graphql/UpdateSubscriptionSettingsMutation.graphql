@@ -1,0 +1,16 @@
+mutation UpdateSubscriptionSettings(
+  $id: ID!
+  $spoilerAvoidance: SpoilerAvoidance!
+) {
+  updateSeriesSubscriptionSettings(
+    id: $id
+    spoilerAvoidance: $spoilerAvoidance
+  ) {
+    subscription {
+      id
+      settings {
+        spoilerAvoidance
+      }
+    }
+  }
+}

@@ -6,6 +6,10 @@ scalar GithubID
 scalar JSON
 scalar TranslationKey
 
+type UserSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
 type User {
   id: ID!
   email: Email!
@@ -14,6 +18,8 @@ type User {
   accessTokens: [PersonalAccessToken!]!
   app(id: ID, name: String): App
   apps: [App!]!
+
+  settings: UserSettings!
 }
 
 type GithubAccount {
@@ -29,25 +35,35 @@ interface Watchable {
   latestWatch: Watch
 }
 
+interface Skippable {
+  id: ID!
+  skips: [Skip!]!
+  latestSkip: Skip
+}
+
 interface Reviewable {
   rating: Int
   notes: Notes
 }
 
-type Episode implements Watchable {
+type Episode implements Watchable & Skippable {
   id: ID!
   title: String!
   series: Series!
   season: Season!
   number: Int!
   firstAired: Date
-  watches: [Watch!]!
-  latestWatch: Watch
   still: Image
   overview: String
+
+  watches: [Watch!]!
+  latestWatch: Watch
+
+  skips: [Skip!]!
+  latestSkip: Skip
 }
 
-type Season {
+type Season implements Watchable & Skippable {
   id: ID!
   series: Series!
   number: Int!
@@ -57,6 +73,12 @@ type Season {
   overview: String
   isSpecials: Boolean!
   status: SeasonStatus!
+
+  watches: [Watch!]!
+  latestWatch: Watch
+
+  skips: [Skip!]!
+  latestSkip: Skip
 }
 
 type Series {
@@ -72,6 +94,15 @@ type Series {
   season(number: Int!): Season
   episodes: [Episode!]!
   episode(number: Int!, seasonNumber: Int!): Episode
+
+  subscription: SeriesSubscription
+  watchThroughs: [WatchThrough!]!
+}
+
+enum SpoilerAvoidance {
+  NONE
+  UPCOMING
+  EVERYTHING
 }
 
 enum WatchThroughStatus {
@@ -96,9 +127,15 @@ enum SeasonStatus {
   ENDED
 }
 
+type WatchThroughSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
 type WatchThrough {
   id: ID!
   series: Series!
+  from: EpisodeSlice!
+  to: EpisodeSlice!
   startedAt: Date
   createdAt: Date!
   updatedAt: Date!
@@ -108,6 +145,7 @@ type WatchThrough {
   actions: [Action!]!
   nextEpisode: Episode
   unfinishedEpisodeCount: Int!
+  settings: WatchThroughSettings!
 }
 
 union Action = Watch | Skip
@@ -129,7 +167,7 @@ type Skip {
   at: Date
   createdAt: Date!
   updatedAt: Date!
-  media: Watchable!
+  media: Skippable!
   notes: Notes
   watchThrough: WatchThrough
 }
@@ -143,6 +181,10 @@ type WatchEpisodePayload {
 type SkipEpisodePayload {
   skip: Skip
   episode: Episode
+  watchThrough: WatchThrough
+}
+
+type UpdateWatchThroughSettingsPayload {
   watchThrough: WatchThrough
 }
 
@@ -167,7 +209,12 @@ type SearchResults {
   series: [Series!]!
 }
 
-input EpisodeSlice {
+input EpisodeSliceInput {
+  season: Int!
+  episode: Int
+}
+
+type EpisodeSlice {
   season: Int!
   episode: Int
 }
@@ -176,13 +223,26 @@ type WatchEpisodesFromSeriesPayload {
   series: Series
 }
 
+type SeriesSubscriptionSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
 type SeriesSubscription {
   id: ID!
   series: Series!
   subscribedOn: Date!
+  settings: SeriesSubscriptionSettings!
 }
 
-type SeriesSubscriptionPayload {
+type SubscribeToSeriesPayload {
+  subscription: SeriesSubscription
+}
+
+type UnsubscribeFromSeriesPayload {
+  deletedSubscriptionId: ID!
+}
+
+type UpdateSeriesSubscriptionSettingsPayload {
   subscription: SeriesSubscription
 }
 
@@ -483,6 +543,10 @@ type DeletePersonalAccessTokenPayload {
   deletedPersonalAccessTokenId: ID
 }
 
+type UpdateUserSettingsPayload {
+  user: User!
+}
+
 type Query {
   me: User!
   my: User!
@@ -504,11 +568,6 @@ type Query {
 }
 
 type Mutation {
-  createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
-  deleteAccount: DeleteAccountPayload!
-  signIn(email: Email!, redirectTo: Url): SignInPayload!
-  signOut: SignOutPayload!
-  disconnectGithubAccount: DisconnectGithubAccountPayload!
   skipEpisode(
     episode: ID!
     watchThrough: ID
@@ -525,20 +584,34 @@ type Mutation {
   ): WatchEpisodePayload!
   watchEpisodesFromSeries(
     series: ID!
-    from: EpisodeSlice
-    to: EpisodeSlice
+    from: EpisodeSliceInput
+    to: EpisodeSliceInput
   ): WatchEpisodesFromSeriesPayload!
   startWatchThrough(
     series: ID!
-    from: EpisodeSlice
-    to: EpisodeSlice
+    from: EpisodeSliceInput
+    to: EpisodeSliceInput
     includeSpecials: Boolean
+    spoilerAvoidance: SpoilerAvoidance
   ): StartWatchThroughPayload!
   stopWatchThrough(id: ID!): StopWatchThroughPayload!
-  subscribeToSeries(id: ID!): SeriesSubscriptionPayload!
   deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
+  updateWatchThroughSettings(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance
+  ): UpdateWatchThroughSettingsPayload!
+
+  subscribeToSeries(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance
+  ): SubscribeToSeriesPayload!
+  unsubscribeFromSeries(id: ID!): UnsubscribeFromSeriesPayload!
+  updateSeriesSubscriptionSettings(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance!
+  ): UpdateSeriesSubscriptionSettingsPayload!
 
   createApp(name: String!): CreateAppPayload!
   deleteApp(id: ID!): DeleteAppPayload!
@@ -573,11 +646,19 @@ type Mutation {
     configuration: JSON
   ): UpdateClipsExtensionInstallationPayload!
 
+  createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
+  deleteAccount: DeleteAccountPayload!
+  signIn(email: Email!, redirectTo: Url): SignInPayload!
+  signOut: SignOutPayload!
+  disconnectGithubAccount: DisconnectGithubAccountPayload!
   createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
   deletePersonalAccessToken(
     id: ID
     token: String
   ): DeletePersonalAccessTokenPayload!
+  updateUserSettings(
+    spoilerAvoidance: SpoilerAvoidance
+  ): UpdateUserSettingsPayload!
 }
 
 schema {

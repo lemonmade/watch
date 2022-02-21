@@ -1,7 +1,7 @@
 import {useMemo, ComponentProps} from 'react';
 import {useQuery} from '@quilted/quilt';
 
-import {MediaGrid} from '@lemon/zest';
+import {MediaGrid, Link, BlockStack} from '@lemon/zest';
 
 import {Page} from 'components';
 import {parseGid} from 'utilities/graphql';
@@ -38,11 +38,14 @@ export function Watching(_: Props) {
 
   return (
     <Page heading="Watching">
-      <MediaGrid>
-        {availableWatchThroughs.map(({id, ...props}) => (
-          <WatchThroughItem key={id} {...props} />
-        ))}
-      </MediaGrid>
+      <BlockStack>
+        <MediaGrid>
+          {availableWatchThroughs.map(({id, ...props}) => (
+            <WatchThroughItem key={id} {...props} />
+          ))}
+        </MediaGrid>
+        <Link to="/app/finished">Finished watching...</Link>
+      </BlockStack>
     </Page>
   );
 }

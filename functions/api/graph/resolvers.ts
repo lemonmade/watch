@@ -11,7 +11,7 @@ import type {
 } from './schema-input-types';
 import {Context} from './context';
 import {enqueueSendEmail} from './utilities/email';
-import {ClipsExtensionPointConditionInput} from './schema';
+import {ClipsExtensionPointConditionInput, SpoilerAvoidance} from './schema';
 
 const PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH = 12;
 const PERSONAL_ACCESS_TOKEN_PREFIX = 'wlp_';
@@ -240,6 +240,26 @@ export const Mutation: Resolver = {
 
     return {deletedAccount: githubAccount};
   },
+  async updateUserSettings(
+    _,
+    {spoilerAvoidance}: {spoilerAvoidance?: SpoilerAvoidance},
+    {user: {id}, prisma},
+  ) {
+    const data: Parameters<typeof prisma['user']['update']>[0]['data'] = {};
+
+    if (spoilerAvoidance != null) {
+      data.spoilerAvoidance = spoilerAvoidance;
+    }
+
+    const user = await prisma.user.update({
+      data,
+      where: {
+        id,
+      },
+    });
+
+    return {user};
+  },
   async watchEpisode(
     _,
     {
@@ -292,7 +312,7 @@ export const Mutation: Resolver = {
       watchThrough = await updateWatchThrough(validatedWatchThroughId, {
         prisma,
         watch,
-        episode,
+        episode: episode!,
       });
     }
 
@@ -339,7 +359,7 @@ export const Mutation: Resolver = {
       watchThrough = await updateWatchThrough(validatedWatchThroughId, {
         prisma,
         skip,
-        episode,
+        episode: episode!,
       });
     }
 
@@ -368,11 +388,13 @@ export const Mutation: Resolver = {
       from,
       to,
       includeSpecials = false,
+      spoilerAvoidance: explicitSpoilerAvoidance,
     }: {
       series: string;
       from?: Slice;
       to?: Slice;
       includeSpecials?: boolean;
+      spoilerAvoidance?: SpoilerAvoidance;
     },
     {user, prisma},
   ) {
@@ -380,7 +402,9 @@ export const Mutation: Resolver = {
 
     const series = await prisma.series.findFirst({
       where: {id: seriesId},
-      include: {seasons: {select: {number: true}}},
+      include: {
+        seasons: {select: {id: true, number: true, episodeCount: true}},
+      },
       rejectOnNotFound: true,
     });
 
@@ -394,6 +418,34 @@ export const Mutation: Resolver = {
       season: Math.max(...series.seasons.map((season) => season.number)),
     };
 
+    const toSeason = series.seasons.find(
+      (season) => season.number === normalizedTo.season,
+    )!;
+
+    let spoilerAvoidance = explicitSpoilerAvoidance;
+
+    if (spoilerAvoidance == null) {
+      const [{spoilerAvoidance: userSpoilerAvoidance}, lastSeasonWatch] =
+        await Promise.all([
+          prisma.user.findFirst({
+            where: {id: user.id},
+            rejectOnNotFound: true,
+          }),
+          prisma.watch.findFirst({
+            where: {userId: user.id, seasonId: toSeason.id},
+            rejectOnNotFound: false,
+          }),
+        ]);
+
+      // If we have watched this season in the past, we won’t worry about showing
+      // spoilers
+      if (lastSeasonWatch) {
+        spoilerAvoidance = 'NONE';
+      } else {
+        spoilerAvoidance = userSpoilerAvoidance;
+      }
+    }
+
     const watchThrough = await prisma.watchThrough.create({
       data: {
         seriesId,
@@ -401,6 +453,45 @@ export const Mutation: Resolver = {
         from: bufferFromSlice(normalizedFrom),
         to: bufferFromSlice(normalizedTo),
         current: bufferFromSlice({episode: 1, ...normalizedFrom}),
+        spoilerAvoidance,
+      },
+    });
+
+    return {watchThrough};
+  },
+  async updateWatchThroughSettings(
+    _,
+    {
+      id: gid,
+      spoilerAvoidance,
+    }: {id: string; spoilerAvoidance?: SpoilerAvoidance},
+    {user, prisma},
+  ) {
+    const {id} = fromGid(gid);
+
+    const watchThroughForUser = await prisma.watchThrough.findFirst({
+      select: {id: true},
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
+
+    if (watchThroughForUser == null) {
+      return {watchThrough: null};
+    }
+
+    const data: Parameters<typeof prisma['watchThrough']['update']>[0]['data'] =
+      {};
+
+    if (spoilerAvoidance != null) {
+      data.spoilerAvoidance = spoilerAvoidance;
+    }
+
+    const watchThrough = await prisma.watchThrough.update({
+      data,
+      where: {
+        id,
       },
     });
 
@@ -409,6 +500,57 @@ export const Mutation: Resolver = {
   async subscribeToSeries(_, {id}: {id: string}, {user, prisma}) {
     const subscription = await prisma.seriesSubscription.create({
       data: {seriesId: fromGid(id).id, userId: user.id},
+    });
+
+    return {subscription};
+  },
+  async unsubscribeFromSeries(_, {id}: {id: string}, {user, prisma}) {
+    const {id: validatedId} = await prisma.seriesSubscription.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+      rejectOnNotFound: true,
+    });
+
+    await prisma.seriesSubscription.delete({
+      where: {id: validatedId},
+    });
+
+    return {deletedSubscriptionId: validatedId};
+  },
+  async updateSeriesSubscriptionSettings(
+    _,
+    {
+      id: gid,
+      spoilerAvoidance,
+    }: {id: string; spoilerAvoidance?: SpoilerAvoidance},
+    {user, prisma},
+  ) {
+    const {id} = fromGid(gid);
+
+    const subscriptionForUser = await prisma.seriesSubscription.findFirst({
+      select: {id: true},
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
+
+    if (subscriptionForUser == null) {
+      return {subscription: null};
+    }
+
+    const data: Parameters<
+      typeof prisma['seriesSubscription']['update']
+    >[0]['data'] = {};
+
+    if (spoilerAvoidance != null) {
+      data.spoilerAvoidance = spoilerAvoidance;
+    }
+
+    const subscription = await prisma.seriesSubscription.update({
+      data,
+      where: {
+        id,
+      },
     });
 
     return {subscription};
@@ -464,6 +606,42 @@ export const Mutation: Resolver = {
     const season = await prisma.season.update({where: {id}, data: {status}});
 
     if (status === 'ENDED') {
+      const watchThroughs = await prisma.watchThrough.findMany({
+        where: {
+          to: bufferFromSlice({season: season.number}),
+          current: bufferFromSlice({
+            season: season.number,
+            episode: season.episodeCount + 1,
+          }),
+          seriesId: season.seriesId,
+          status: 'ONGOING',
+        },
+        include: {user: {select: {id: true}}},
+      });
+
+      await Promise.all([
+        prisma.watchThrough.updateMany({
+          where: {
+            id: {in: watchThroughs.map(({id}) => id)},
+          },
+          data: {
+            status: 'FINISHED',
+            current: null,
+          },
+        }),
+        prisma.watch.createMany({
+          data: watchThroughs.map<
+            import('@prisma/client').Prisma.WatchCreateManyInput
+          >(({id, userId}) => {
+            return {
+              userId,
+              seasonId: season.id,
+              watchThroughId: id,
+            };
+          }),
+        }),
+      ]);
+
       await prisma.watchThrough.updateMany({
         where: {
           to: bufferFromSlice({season: season.number}),
@@ -506,8 +684,13 @@ export const Mutation: Resolver = {
                 }
               : undefined,
           select: {
+            id: true,
             number: true,
-            episodes: {select: {id: true, number: true}},
+            status: true,
+            episodes: {
+              select: {id: true, number: true},
+              orderBy: {number: 'asc'},
+            },
           },
         },
       },
@@ -515,9 +698,9 @@ export const Mutation: Resolver = {
     });
 
     await prisma.watch.createMany({
-      data: series.seasons.reduce<
-        import('@prisma/client').Prisma.WatchCreateManyInput[]
-      >((watches, season) => {
+      data: series.seasons.flatMap<
+        import('@prisma/client').Prisma.WatchCreateManyInput
+      >((season) => {
         let matchingEpisodes = season.episodes;
 
         if (from?.episode && from.season === season.number) {
@@ -532,8 +715,12 @@ export const Mutation: Resolver = {
           );
         }
 
+        const finishedSeason =
+          season.status === 'ENDED' &&
+          matchingEpisodes[matchingEpisodes.length - 1]?.id ===
+            season.episodes[season.episodes.length - 1]?.id;
+
         return [
-          ...watches,
           ...matchingEpisodes.map(
             (
               episode,
@@ -542,8 +729,9 @@ export const Mutation: Resolver = {
               episodeId: episode.id,
             }),
           ),
+          ...(finishedSeason ? [{userId: user.id, seasonId: season.id}] : []),
         ];
-      }, []),
+      }),
     });
 
     return {series};
@@ -897,6 +1085,10 @@ export const Watchable: Resolver = {
   __resolveType: resolveType,
 };
 
+export const Skippable: Resolver = {
+  __resolveType: resolveType,
+};
+
 export const Reviewable: Resolver = {
   __resolveType: resolveType,
 };
@@ -945,6 +1137,11 @@ export const User: Resolver<import('@prisma/client').User> = {
 
     return prisma.app.findMany({where: {userId: user.id}, take: 50});
   },
+  settings({spoilerAvoidance}) {
+    return {
+      spoilerAvoidance,
+    };
+  },
 };
 
 export const GithubAccount: Resolver<import('@prisma/client').GithubAccount> = {
@@ -980,10 +1177,24 @@ export const Series: Resolver<import('@prisma/client').Series> = {
     });
   },
   episodes({id}, _, {prisma}) {
-    return prisma.episode.findMany({take: 50, where: {season: {seriesId: id}}});
+    return prisma.episode.findMany({
+      take: 50,
+      where: {season: {seriesId: id}},
+    });
   },
   poster({posterUrl}) {
     return posterUrl ? {source: posterUrl} : null;
+  },
+  subscription({id}, _, {prisma, user}) {
+    return prisma.seriesSubscription.findFirst({
+      where: {id, userId: user.id},
+    });
+  },
+  watchThroughs({id}, _, {prisma, user}) {
+    return prisma.watchThrough.findMany({
+      take: 50,
+      where: {seriesId: id, userId: user.id},
+    });
   },
 };
 
@@ -1005,6 +1216,30 @@ export const Season: Resolver<import('@prisma/client').Season> = {
   },
   isSpecials({number}) {
     return number === 0;
+  },
+  watches({id}, _, {prisma, user}) {
+    return prisma.watch.findMany({
+      where: {seasonId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestWatch({id}, __, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {seasonId: id, userId: user.id},
+      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
+    });
+  },
+  skips({id}, _, {prisma, user}) {
+    return prisma.skip.findMany({
+      where: {seasonId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestSkip({id}, __, {prisma, user}) {
+    return prisma.skip.findFirst({
+      where: {seasonId: id, userId: user.id},
+      orderBy: {at: 'desc', createdAt: 'desc'},
+    });
   },
 };
 
@@ -1036,6 +1271,18 @@ export const Episode: Resolver<import('@prisma/client').Episode> = {
       orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
     });
   },
+  skips({id}, _, {prisma, user}) {
+    return prisma.skip.findMany({
+      where: {episodeId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestSkip({id}, __, {prisma, user}) {
+    return prisma.skip.findFirst({
+      where: {episodeId: id, userId: user.id},
+      orderBy: {at: 'desc', createdAt: 'desc'},
+    });
+  },
 };
 
 export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
@@ -1043,19 +1290,27 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({where: {id: seriesId}});
   },
+  from({from}) {
+    return sliceFromBuffer(from);
+  },
+  to({to}) {
+    return sliceFromBuffer(to);
+  },
   async actions({id}, _, {user, prisma}) {
     const [watches, skips] = await Promise.all([
       prisma.watch.findMany({
         where: {watchThroughId: id, userId: user.id},
         include: {
-          episode: {select: {number: true}},
+          episode: {select: {number: true, season: {select: {number: true}}}},
+          season: {select: {number: true}},
         },
         take: 50,
       }),
       prisma.skip.findMany({
         where: {watchThroughId: id, userId: user.id},
         include: {
-          episode: {select: {number: true}},
+          episode: {select: {number: true, season: {select: {number: true}}}},
+          season: {select: {number: true}},
         },
         take: 50,
       }),
@@ -1065,7 +1320,21 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
       ...watches.map(addResolvedType('Watch')),
       ...skips.map(addResolvedType('Skip')),
     ].sort((actionOne, actionTwo) => {
-      return actionOne.episode.number < actionTwo.episode.number ? 1 : -1;
+      if (actionOne.season != null) {
+        return actionTwo.season == null
+          ? actionOne.season.number < actionTwo.episode!.season.number
+            ? 1
+            : -1
+          : actionOne.season.number < actionTwo.season.number
+          ? 1
+          : -1;
+      } else if (actionTwo.season != null) {
+        return actionTwo.season.number < actionOne.episode!.season.number
+          ? 1
+          : -1;
+      }
+
+      return actionOne.episode!.number < actionTwo.episode!.number ? 1 : -1;
     });
   },
   watches({id}, _, {user, prisma}) {
@@ -1103,9 +1372,12 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
         return count;
       }
 
-      return current.season === season.number
-        ? season.episodeCount - current.episode! + 1
-        : season.episodeCount;
+      return (
+        count +
+        (current.season === season.number
+          ? season.episodeCount - current.episode! + 1
+          : season.episodeCount)
+      );
     }, 0);
   },
   nextEpisode({current, seriesId}, _, {prisma}) {
@@ -1117,6 +1389,11 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
       where: {number: slice.episode, season: {number: slice.season, seriesId}},
     });
   },
+  settings({spoilerAvoidance}) {
+    return {
+      spoilerAvoidance,
+    };
+  },
 };
 
 export const SeriesSubscription: Resolver<
@@ -1127,17 +1404,37 @@ export const SeriesSubscription: Resolver<
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({where: {id: seriesId}});
   },
+  settings({spoilerAvoidance}) {
+    return {
+      spoilerAvoidance,
+    };
+  },
 };
 
 export const Watch: Resolver<import('@prisma/client').Watch> = {
   id: ({id}) => toGid(id, 'Watch'),
-  async media({episodeId}, _, {prisma}) {
-    const episode = await prisma.episode.findFirst({
-      where: {id: episodeId},
-      rejectOnNotFound: true,
-    });
+  async media({id, episodeId, seasonId}, _, {prisma}) {
+    const [episode, season] = await Promise.all([
+      episodeId
+        ? prisma.episode.findFirst({
+            where: {id: episodeId},
+          })
+        : Promise.resolve(null),
+      seasonId
+        ? prisma.season.findFirst({
+            where: {id: seasonId},
+            rejectOnNotFound: true,
+          })
+        : Promise.resolve(null),
+    ]);
 
-    return addResolvedType('Episode')(episode);
+    if (episode) {
+      return addResolvedType('Episode')(episode);
+    } else if (season) {
+      return addResolvedType('Season')(season);
+    } else {
+      throw new Error(`Could not parse the media for watch ${id}`);
+    }
   },
   watchThrough({watchThroughId}, _, {prisma, user}) {
     return watchThroughId
@@ -1151,13 +1448,28 @@ export const Watch: Resolver<import('@prisma/client').Watch> = {
 
 export const Skip: Resolver<import('@prisma/client').Skip> = {
   id: ({id}) => toGid(id, 'Skip'),
-  async media({episodeId}, _, {prisma}) {
-    const episode = await prisma.episode.findFirst({
-      where: {id: episodeId},
-      rejectOnNotFound: true,
-    });
+  async media({id, episodeId, seasonId}, _, {prisma}) {
+    const [episode, season] = await Promise.all([
+      episodeId
+        ? prisma.episode.findFirst({
+            where: {id: episodeId},
+          })
+        : Promise.resolve(null),
+      seasonId
+        ? prisma.season.findFirst({
+            where: {id: seasonId},
+            rejectOnNotFound: true,
+          })
+        : Promise.resolve(null),
+    ]);
 
-    return addResolvedType('Episode')(episode);
+    if (episode) {
+      return addResolvedType('Episode')(episode);
+    } else if (season) {
+      return addResolvedType('Season')(season);
+    } else {
+      throw new Error(`Could not parse the media for watch ${id}`);
+    }
   },
   watchThrough({watchThroughId}, _, {prisma, user}) {
     return watchThroughId
@@ -1312,7 +1624,7 @@ export const ClipsExtensionInstallation: Resolver<
 };
 
 function addResolvedType(type: string) {
-  return (rest: any) => ({...rest, __resolvedType: type});
+  return <T>(rest: T): T => ({...rest, __resolvedType: type});
 }
 
 function resolveType(obj: {__resolvedType?: string; id: string}) {
@@ -1449,15 +1761,28 @@ async function updateWatchThrough(
         nextEpisodeInSeasonNumber == null &&
         season.status === 'ENDED'))
   ) {
-    return prisma.watchThrough.update({
-      where: {id},
-      data: {
-        status: 'FINISHED',
-        current: null,
-        updatedAt,
-        finishedAt: updatedAt,
-      },
-    });
+    const [updatedWatchThrough] = await Promise.all([
+      prisma.watchThrough.update({
+        where: {id},
+        data: {
+          status: 'FINISHED',
+          current: null,
+          updatedAt,
+          finishedAt: updatedAt,
+        },
+      }),
+      prisma.watch.create({
+        data: {
+          userId: watchThrough.userId,
+          seasonId: episode.seasonId,
+          watchThroughId: watchThrough.id,
+          finishedAt:
+            'watch' in action ? action.watch.finishedAt : action.skip.at,
+        },
+      }),
+    ]);
+
+    return updatedWatchThrough;
   }
 
   return prisma.watchThrough.update({
