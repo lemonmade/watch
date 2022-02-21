@@ -1,0 +1,14 @@
+query FinishedWatching {
+  watchThroughs(status: FINISHED) {
+    id
+    updatedAt
+    series {
+      id
+      name
+      firstAired
+      poster {
+        source
+      }
+    }
+  }
+}

@@ -1,9 +1,25 @@
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
-import {View, Button, BlockStack, InlineStack, Text, Menu} from '@lemon/zest';
+import {
+  View,
+  Button,
+  BlockStack,
+  InlineStack,
+  Text,
+  Section,
+  Heading,
+  TextBlock,
+} from '@lemon/zest';
 
-import {Link, LocalClip, InstalledClip, Page} from 'components';
+import {
+  Link,
+  LocalClip,
+  InstalledClip,
+  Page,
+  SpoilerAvoidance,
+} from 'components';
 import type {ClipProps} from 'components';
+
 import {parseGid} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
 
@@ -12,14 +28,21 @@ import type {SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
+import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutation.graphql';
+import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
 
 export interface Props {
   id: string;
 }
 
 export default function Series({id}: Props) {
+  const [key, setKey] = useState(0);
   const {data} = useQuery(seriesQuery, {
-    variables: {id},
+    variables: {
+      id,
+      // @ts-expect-error temporary
+      key,
+    },
   });
 
   if (data?.series == null) {
@@ -29,21 +52,31 @@ export default function Series({id}: Props) {
   const {series, clipsInstallations} = data;
 
   return (
-    <SeriesWithData series={series} clipsInstallations={clipsInstallations} />
+    <SeriesWithData
+      series={series}
+      clipsInstallations={clipsInstallations}
+      onUpdate={() => setKey((key) => key + 1)}
+    />
   );
 }
 
 function SeriesWithData({
   series,
   clipsInstallations,
+  onUpdate,
 }: {
   series: NonNullable<SeriesQueryData['series']>;
   clipsInstallations: SeriesQueryData['clipsInstallations'];
+  onUpdate(): void;
 }) {
   const navigate = useNavigate();
   const startWatchThrough = useMutation(startWatchThroughMutation);
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
+  const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
+  const updateSubscriptionSettings = useMutation(
+    updateSubscriptionSettingsMutation,
+  );
 
   const localDevelopmentClips = useLocalDevelopmentClips(
     'Series.Details.RenderAccessory',
@@ -55,23 +88,10 @@ function SeriesWithData({
     return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
 
+  const {watchThroughs, subscription} = series;
+
   return (
-    <Page
-      heading={series.name}
-      actions={
-        <Menu>
-          <Button
-            onPress={async () => {
-              await subscribeToSeries({
-                variables: {id: series.id},
-              });
-            }}
-          >
-            Subscribe
-          </Button>
-        </Menu>
-      }
-    >
+    <Page heading={series.name}>
       {series.overview && <Text>{series.overview}</Text>}
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
@@ -128,8 +148,9 @@ function SeriesWithData({
               </Button>
               {status === 'CONTINUING' && (
                 <Button
-                  onPress={() => {
-                    markSeasonAsFinished({variables: {id}});
+                  onPress={async () => {
+                    await markSeasonAsFinished({variables: {id}});
+                    onUpdate();
                   }}
                 >
                   Mark finished
@@ -138,22 +159,99 @@ function SeriesWithData({
             </InlineStack>
           </View>
         ))}
-      </BlockStack>
-      <View>
-        <Button
-          onPress={async () => {
-            const {data} = await startWatchThrough({
-              variables: {series: series.id},
-            });
+        <View>
+          <Button
+            onPress={async () => {
+              const {data} = await startWatchThrough({
+                variables: {series: series.id},
+              });
 
-            const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
-            if (watchThroughId)
-              navigate(`/app/watchthrough/${watchThroughId.split('/').pop()}`);
-          }}
-        >
-          Start watch through
-        </Button>
-      </View>
+              const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
+              if (watchThroughId)
+                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+            }}
+          >
+            Start watch through
+          </Button>
+        </View>
+        {watchThroughs.length > 0 && (
+          <Section>
+            <Heading>Watchthroughs</Heading>
+            <BlockStack>
+              {watchThroughs.map((watchThrough) => (
+                <BlockStack key={watchThrough.id}>
+                  <TextBlock>
+                    From <EpisodeSliceText {...watchThrough.from} />, to{' '}
+                    <EpisodeSliceText {...watchThrough.to} />
+                    {watchThrough.status === 'ONGOING'
+                      ? ' (still watching)'
+                      : ''}
+                  </TextBlock>
+                  <Link
+                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+                  >
+                    See watch through
+                  </Link>
+                </BlockStack>
+              ))}
+            </BlockStack>
+          </Section>
+        )}
+        <Section>
+          <BlockStack>
+            <Heading>Subscription</Heading>
+            {subscription ? (
+              <Button
+                onPress={async () => {
+                  await unsubscribeFromSeries({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Unsubscribe
+              </Button>
+            ) : (
+              <Button
+                onPress={async () => {
+                  await subscribeToSeries({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Subscribe
+              </Button>
+            )}
+            {subscription && (
+              <SpoilerAvoidance
+                value={subscription.settings.spoilerAvoidance}
+                onChange={async (spoilerAvoidance) => {
+                  await updateSubscriptionSettings({
+                    variables: {id: series.id, spoilerAvoidance},
+                  });
+                  onUpdate();
+                }}
+              />
+            )}
+          </BlockStack>
+        </Section>
+      </BlockStack>
     </Page>
+  );
+}
+
+function EpisodeSliceText({
+  season,
+  episode,
+}: {
+  season: number;
+  episode?: number | null;
+}) {
+  return (
+    <>
+      season {season}
+      {episode == null ? '' : `, episode ${episode}`}
+    </>
   );
 }

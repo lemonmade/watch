@@ -18,7 +18,7 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page} from 'components';
+import {Page, SpoilerAvoidance} from 'components';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 
 import accountQuery from './graphql/AccountQuery.graphql';
@@ -26,6 +26,7 @@ import type {AccountQueryData} from './graphql/AccountQuery.graphql';
 import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
+import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
 
 export function Account() {
   const [key, setKey] = useState(1);
@@ -37,10 +38,13 @@ export function Account() {
   });
   const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
+  const updateAccountSpoilerAvoidance = useMutation(
+    updateAccountSpoilerAvoidanceMutation,
+  );
 
   if (data == null) return <NotFound />;
 
-  const {email, githubAccount} = data.me;
+  const {email, githubAccount, settings} = data.me;
 
   return (
     <Page heading="Account">
@@ -54,6 +58,21 @@ export function Account() {
         >
           Sign out
         </Button>
+        <Section>
+          <BlockStack>
+            <Heading>Settings</Heading>
+            <SpoilerAvoidance
+              value={settings.spoilerAvoidance}
+              onChange={async (spoilerAvoidance) => {
+                await updateAccountSpoilerAvoidance({
+                  variables: {spoilerAvoidance},
+                });
+
+                setKey((key) => key + 1);
+              }}
+            />
+          </BlockStack>
+        </Section>
         <GithubSection
           account={githubAccount ?? undefined}
           onConnectionChange={() => {

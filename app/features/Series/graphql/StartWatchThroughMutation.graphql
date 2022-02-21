@@ -1,7 +1,7 @@
 mutation SeriesStartWatchThrough(
   $series: ID!
-  $from: EpisodeSlice
-  $to: EpisodeSlice
+  $from: EpisodeSliceInput
+  $to: EpisodeSliceInput
 ) {
   startWatchThrough(series: $series, from: $from, to: $to) {
     watchThrough {

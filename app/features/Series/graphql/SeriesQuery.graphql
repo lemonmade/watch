@@ -13,6 +13,25 @@ query Series($id: ID!) {
       status
       overview
     }
+    subscription {
+      id
+      subscribedOn
+      settings {
+        spoilerAvoidance
+      }
+    }
+    watchThroughs {
+      id
+      status
+      from {
+        season
+        episode
+      }
+      to {
+        season
+        episode
+      }
+    }
   }
   clipsInstallations(
     extensionPoint: "Series.Details.RenderAccessory"

@@ -4,7 +4,7 @@ import {useRoutes} from '@quilted/quilt';
 import {Start} from '../../features/Start';
 import {CreateAccount} from '../../features/CreateAccount';
 import {Goodbye} from '../../features/Goodbye';
-import {Watching} from '../../features/Watching';
+import {Watching, FinishedWatching} from '../../features/Watching';
 import {Series} from '../../features/Series';
 import {Subscriptions} from '../../features/Subscriptions';
 import {WatchThrough} from '../../features/WatchThrough';
@@ -37,6 +37,7 @@ export function Routes() {
           render: ({children}) => <Frame>{children}</Frame>,
           children: [
             {match: '/', render: () => <Watching />},
+            {match: 'finished', render: () => <FinishedWatching />},
             {match: 'me', render: () => <Account />},
             {
               match: 'developer',
@@ -48,7 +49,10 @@ export function Routes() {
               ],
             },
             {match: 'apps', render: () => <Apps />},
-            {match: 'subscriptions', render: () => <Subscriptions />},
+            {
+              match: 'subscriptions',
+              render: () => <Subscriptions />,
+            },
             {match: 'settings', render: () => <Settings />},
             {match: 'search', render: () => <Search />},
             {

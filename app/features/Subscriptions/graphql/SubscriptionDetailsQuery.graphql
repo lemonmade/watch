@@ -1,0 +1,28 @@
+query SubscriptionDetails($id: ID!) {
+  subscription(id: $id) {
+    id
+    subscribedOn
+    series {
+      id
+      name
+      poster {
+        source
+      }
+      watchThroughs {
+        id
+        status
+        from {
+          season
+          episode
+        }
+        to {
+          season
+          episode
+        }
+      }
+    }
+    settings {
+      spoilerAvoidance
+    }
+  }
+}

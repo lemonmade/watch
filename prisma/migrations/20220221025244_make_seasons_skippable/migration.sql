@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Skip" ADD COLUMN     "seasonId" TEXT,
+ALTER COLUMN "episodeId" DROP NOT NULL;
+
+-- AddForeignKey
+ALTER TABLE "Skip" ADD FOREIGN KEY ("seasonId") REFERENCES "Season"("id") ON DELETE SET NULL ON UPDATE CASCADE;

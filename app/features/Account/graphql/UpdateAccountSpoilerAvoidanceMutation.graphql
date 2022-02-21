@@ -1,0 +1,10 @@
+mutation UpdateAccountSpoilerAvoidance($spoilerAvoidance: SpoilerAvoidance!) {
+  updateUserSettings(spoilerAvoidance: $spoilerAvoidance) {
+    user {
+      id
+      settings {
+        spoilerAvoidance
+      }
+    }
+  }
+}
