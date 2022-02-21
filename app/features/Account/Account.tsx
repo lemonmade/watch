@@ -63,10 +63,9 @@ export function Account() {
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
-              onChange={async (value) => {
+              onChange={async (spoilerAvoidance) => {
                 await updateAccountSpoilerAvoidance({
-                  // @ts-expect-error We know this will be a safe string value
-                  variables: {spoilerAvoidance: value.toUpperCase()},
+                  variables: {spoilerAvoidance},
                 });
 
                 setKey((key) => key + 1);
