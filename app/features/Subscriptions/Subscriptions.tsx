@@ -17,7 +17,7 @@ export function Subscriptions() {
     <Page heading="Subscriptions">
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
-          <Link key={id} to={`/app/subscriptions/${parseGid(id).id}`}>
+          <Link key={id} to={`/app/series/${parseGid(series.id).id}`}>
             {series.poster?.source && (
               <Poster
                 source={

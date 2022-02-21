@@ -6,7 +6,7 @@ import {CreateAccount} from '../../features/CreateAccount';
 import {Goodbye} from '../../features/Goodbye';
 import {Watching, FinishedWatching} from '../../features/Watching';
 import {Series} from '../../features/Series';
-import {Subscriptions, SubscriptionDetails} from '../../features/Subscriptions';
+import {Subscriptions} from '../../features/Subscriptions';
 import {WatchThrough} from '../../features/WatchThrough';
 import {Settings} from '../../features/Settings';
 import {Apps} from '../../features/Apps';
@@ -51,17 +51,7 @@ export function Routes() {
             {match: 'apps', render: () => <Apps />},
             {
               match: 'subscriptions',
-              children: [
-                {match: '/', render: () => <Subscriptions />},
-                {
-                  match: /[\w-]+/,
-                  render: ({matched}) => (
-                    <SubscriptionDetails
-                      id={`gid://watch/SeriesSubscription/${matched}`}
-                    />
-                  ),
-                },
-              ],
+              render: () => <Subscriptions />,
             },
             {match: 'settings', render: () => <Settings />},
             {match: 'search', render: () => <Search />},

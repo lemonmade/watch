@@ -520,9 +520,17 @@ export const Mutation: Resolver = {
 
     return {subscription};
   },
-  async unsubscribeFromSeries(_, {id}: {id: string}, {user, prisma}) {
+  async unsubscribeFromSeries(_, {id: gid}: {id: string}, {user, prisma}) {
+    const {id, type} = fromGid(gid);
+
     const {id: validatedId} = await prisma.seriesSubscription.findFirst({
-      where: {id: fromGid(id).id, userId: user.id},
+      where:
+        type === 'Series'
+          ? {seriesId: id, userId: user.id}
+          : {
+              id,
+              userId: user.id,
+            },
       rejectOnNotFound: true,
     });
 
@@ -540,14 +548,17 @@ export const Mutation: Resolver = {
     }: {id: string; spoilerAvoidance?: SpoilerAvoidance},
     {user, prisma},
   ) {
-    const {id} = fromGid(gid);
+    const {id, type} = fromGid(gid);
 
     const subscriptionForUser = await prisma.seriesSubscription.findFirst({
       select: {id: true},
-      where: {
-        id,
-        userId: user.id,
-      },
+      where:
+        type === 'Series'
+          ? {seriesId: id, userId: user.id}
+          : {
+              id,
+              userId: user.id,
+            },
     });
 
     if (subscriptionForUser == null) {
