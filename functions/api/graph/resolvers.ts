@@ -1611,6 +1611,10 @@ export const Season: Resolver<import('@prisma/client').Season> = {
       orderBy: {at: 'desc', createdAt: 'desc'},
     });
   },
+  lists() {
+    // Can only list series for now
+    return [];
+  },
 };
 
 export const Episode: Resolver<import('@prisma/client').Episode> = {
@@ -1652,6 +1656,10 @@ export const Episode: Resolver<import('@prisma/client').Episode> = {
       where: {episodeId: id, userId: user.id},
       orderBy: {at: 'desc', createdAt: 'desc'},
     });
+  },
+  lists() {
+    // Can only list series for now
+    return [];
   },
 };
 

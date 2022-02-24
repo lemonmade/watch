@@ -62,6 +62,8 @@ type Episode implements Watchable & Skippable & Listable {
 
   skips: [Skip!]!
   latestSkip: Skip
+
+  lists: [List!]!
 }
 
 type Season implements Watchable & Skippable & Listable {
@@ -80,6 +82,8 @@ type Season implements Watchable & Skippable & Listable {
 
   skips: [Skip!]!
   latestSkip: Skip
+
+  lists: [List!]!
 }
 
 type Series implements Listable {
