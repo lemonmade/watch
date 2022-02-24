@@ -9,8 +9,6 @@ import {
   Section,
   Heading,
   TextBlock,
-  Pressable,
-  Menu,
 } from '@lemon/zest';
 
 import {
@@ -99,23 +97,7 @@ function SeriesWithData({
   const {watchThroughs, subscription} = series;
 
   return (
-    <Page
-      heading={series.name}
-      actions={
-        <Menu>
-          <Pressable
-            onPress={async () => {
-              await watchSeriesLater({
-                variables: {id: series.id},
-              });
-              onUpdate();
-            }}
-          >
-            Watch later
-          </Pressable>
-        </Menu>
-      }
-    >
+    <Page heading={series.name}>
       {series.overview && <Text>{series.overview}</Text>}
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
