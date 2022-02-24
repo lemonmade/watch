@@ -562,7 +562,10 @@ export const Mutation: Resolver = {
       });
     }
 
-    return {watchThrough, watchLater};
+    return {
+      watchThrough,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async updateWatchThroughSettings(
     _,
@@ -896,7 +899,10 @@ export const Mutation: Resolver = {
       });
     }
 
-    return {series, watchLater};
+    return {
+      series,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async createApp(_, {name}: {name: string}, {prisma, user}) {
     const existingAppWithName = await prisma.app.findFirst({

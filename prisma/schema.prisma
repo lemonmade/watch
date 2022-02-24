@@ -96,7 +96,7 @@ model Series {
   seasons       Season[]
   subscriptions SeriesSubscription[]
   watchThroughs WatchThrough[]
-  ListItem      ListItem[]
+  listItems     ListItem[]
 }
 
 model SeriesSubscription {
@@ -135,7 +135,7 @@ model Season {
   watches Watch[]
   skips   Skip[]
 
-  ListItem ListItem[]
+  listItems ListItem[]
   @@unique([seriesId, number])
 }
 
@@ -153,7 +153,7 @@ model Episode {
   skips   Skip[]
   watches Watch[]
 
-  ListItem ListItem[]
+  listItems ListItem[]
   @@unique([seasonId, number])
 }
 
