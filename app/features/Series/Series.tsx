@@ -9,6 +9,8 @@ import {
   Section,
   Heading,
   TextBlock,
+  Pressable,
+  Menu,
 } from '@lemon/zest';
 
 import {
@@ -30,6 +32,8 @@ import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graph
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
 import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutation.graphql';
 import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
+import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
+import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 
 export interface Props {
   id: string;
@@ -77,6 +81,10 @@ function SeriesWithData({
   const updateSubscriptionSettings = useMutation(
     updateSubscriptionSettingsMutation,
   );
+  const watchSeriesLater = useMutation(watchSeriesLaterMutation);
+  const removeSeriesFromWatchLater = useMutation(
+    removeSeriesFromWatchLaterMutation,
+  );
 
   const localDevelopmentClips = useLocalDevelopmentClips(
     'Series.Details.RenderAccessory',
@@ -91,7 +99,23 @@ function SeriesWithData({
   const {watchThroughs, subscription} = series;
 
   return (
-    <Page heading={series.name}>
+    <Page
+      heading={series.name}
+      actions={
+        <Menu>
+          <Pressable
+            onPress={async () => {
+              await watchSeriesLater({
+                variables: {id: series.id},
+              });
+              onUpdate();
+            }}
+          >
+            Watch later
+          </Pressable>
+        </Menu>
+      }
+    >
       {series.overview && <Text>{series.overview}</Text>}
       {series.imdbId && (
         <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
@@ -233,6 +257,34 @@ function SeriesWithData({
                   onUpdate();
                 }}
               />
+            )}
+          </BlockStack>
+        </Section>
+        <Section>
+          <BlockStack>
+            <Heading>Watch later</Heading>
+            {series.inWatchLater ? (
+              <Button
+                onPress={async () => {
+                  await removeSeriesFromWatchLater({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Remove from watch later
+              </Button>
+            ) : (
+              <Button
+                onPress={async () => {
+                  await watchSeriesLater({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Watch later
+              </Button>
             )}
           </BlockStack>
         </Section>

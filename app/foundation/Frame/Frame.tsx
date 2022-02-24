@@ -58,6 +58,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
           <Sticky>
             <Menu>
               <Link to="/app">Watching</Link>
+              <Link to="/app/watch-later">Watch later</Link>
               <Link to="/app/subscriptions">Subscriptions</Link>
               <Link to="/app/search">Search</Link>
               <Link to="/app/apps">Apps</Link>
@@ -96,6 +97,7 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
             <PopoverSheet>
               <Menu>
                 <Link to="/app">Watching</Link>
+                <Link to="/app/watch-later">Watch later</Link>
                 <Link to="/app/subscriptions">Subscriptions</Link>
                 <Link to="/app/search">Search</Link>
                 <Link to="/app/apps">Apps</Link>

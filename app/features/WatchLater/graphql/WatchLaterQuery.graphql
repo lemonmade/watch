@@ -1,0 +1,18 @@
+query WatchLater {
+  watchLater {
+    id
+    items {
+      id
+      position
+      media {
+        ... on Series {
+          id
+          name
+          poster {
+            source
+          }
+        }
+      }
+    }
+  }
+}
