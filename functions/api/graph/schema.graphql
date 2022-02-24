@@ -14,6 +14,7 @@ type User {
   id: ID!
   email: Email!
   githubAccount: GithubAccount
+  watchLater: List!
 
   accessTokens: [PersonalAccessToken!]!
   app(id: ID, name: String): App
@@ -46,7 +47,7 @@ interface Reviewable {
   notes: Notes
 }
 
-type Episode implements Watchable & Skippable {
+type Episode implements Watchable & Skippable & Listable {
   id: ID!
   title: String!
   series: Series!
@@ -63,7 +64,7 @@ type Episode implements Watchable & Skippable {
   latestSkip: Skip
 }
 
-type Season implements Watchable & Skippable {
+type Season implements Watchable & Skippable & Listable {
   id: ID!
   series: Series!
   number: Int!
@@ -81,7 +82,7 @@ type Season implements Watchable & Skippable {
   latestSkip: Skip
 }
 
-type Series {
+type Series implements Listable {
   id: ID!
   tmdbId: ID!
   imdbId: ID!
@@ -97,6 +98,9 @@ type Series {
 
   subscription: SeriesSubscription
   watchThroughs: [WatchThrough!]!
+
+  lists: [List!]!
+  inWatchLater: Boolean!
 }
 
 enum SpoilerAvoidance {
@@ -172,16 +176,34 @@ type Skip {
   watchThrough: WatchThrough
 }
 
+type List {
+  id: ID!
+  items: [ListItem!]!
+}
+
+type ListItem {
+  id: ID!
+  position: Int!
+  media: Listable!
+}
+
+interface Listable {
+  id: ID!
+  lists: [List!]!
+}
+
 type WatchEpisodePayload {
   watch: Watch
   episode: Episode
   watchThrough: WatchThrough
+  watchLater: List!
 }
 
 type SkipEpisodePayload {
   skip: Skip
   episode: Episode
   watchThrough: WatchThrough
+  watchLater: List!
 }
 
 type UpdateWatchThroughSettingsPayload {
@@ -190,14 +212,17 @@ type UpdateWatchThroughSettingsPayload {
 
 type StartWatchThroughPayload {
   watchThrough: WatchThrough
+  watchLater: List!
 }
 
 type StopWatchThroughPayload {
   watchThrough: WatchThrough
+  watchLater: List!
 }
 
 type DeleteWatchThroughPayload {
   deletedWatchThroughId: ID!
+  watchLater: List!
 }
 
 type DeleteWatchPayload {
@@ -221,6 +246,7 @@ type EpisodeSlice {
 
 type WatchEpisodesFromSeriesPayload {
   series: Series
+  watchLater: List!
 }
 
 type SeriesSubscriptionSettings {
@@ -547,6 +573,30 @@ type UpdateUserSettingsPayload {
   user: User!
 }
 
+type WatchLaterPayload {
+  list: List!
+  item: ListItem
+  series: Series
+}
+
+type RemoveFromWatchLaterPayload {
+  list: List!
+  series: Series
+  removedListItemId: ID
+}
+
+type AddToListPayload {
+  list: List
+  item: ListItem
+  series: Series
+}
+
+type RemoveFromListPayload {
+  list: List
+  series: Series
+  removedListItemId: ID
+}
+
 type Query {
   me: User!
   my: User!
@@ -557,6 +607,10 @@ type Query {
   subscription(id: ID!): SeriesSubscription
   subscriptions: [SeriesSubscription!]!
   search(query: String!): SearchResults!
+
+  lists: [List!]!
+  list(id: ID!): List
+  watchLater: List!
 
   apps: [App!]!
   app(id: ID!): App
@@ -573,6 +627,7 @@ type Mutation {
     watchThrough: ID
     notes: Notes
     at: Date
+    updateWatchLater: Boolean
   ): SkipEpisodePayload!
   watchEpisode(
     episode: ID!
@@ -581,11 +636,13 @@ type Mutation {
     notes: Notes
     startedAt: Date
     finishedAt: Date
+    updateWatchLater: Boolean
   ): WatchEpisodePayload!
   watchEpisodesFromSeries(
     series: ID!
     from: EpisodeSliceInput
     to: EpisodeSliceInput
+    updateWatchLater: Boolean
   ): WatchEpisodesFromSeriesPayload!
   startWatchThrough(
     series: ID!
@@ -593,9 +650,10 @@ type Mutation {
     to: EpisodeSliceInput
     includeSpecials: Boolean
     spoilerAvoidance: SpoilerAvoidance
+    updateWatchLater: Boolean
   ): StartWatchThroughPayload!
-  stopWatchThrough(id: ID!): StopWatchThroughPayload!
-  deleteWatchThrough(id: ID!): DeleteWatchThroughPayload!
+  stopWatchThrough(id: ID!, watchLater: Boolean): StopWatchThroughPayload!
+  deleteWatchThrough(id: ID!, watchLater: Boolean): DeleteWatchThroughPayload!
   deleteWatch(id: ID!): DeleteWatchPayload!
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
   updateWatchThroughSettings(
@@ -659,6 +717,11 @@ type Mutation {
   updateUserSettings(
     spoilerAvoidance: SpoilerAvoidance
   ): UpdateUserSettingsPayload!
+
+  watchLater(seriesId: ID): WatchLaterPayload!
+  removeFromWatchLater(seriesId: ID): RemoveFromWatchLaterPayload!
+  addToList(id: ID!, seriesId: ID): AddToListPayload!
+  removeFromList(id: ID!, itemId: ID!): RemoveFromListPayload!
 }
 
 schema {

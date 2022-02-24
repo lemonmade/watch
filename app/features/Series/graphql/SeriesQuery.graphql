@@ -4,6 +4,7 @@ query Series($id: ID!) {
     name
     overview
     imdbId
+    inWatchLater
     poster {
       source
     }

@@ -13,6 +13,7 @@ import {Search} from '../../features/Search';
 import {SignIn} from '../../features/SignIn';
 import {SignedOut} from '../../features/SignedOut';
 import {Account} from '../../features/Account';
+import {WatchLater} from '../../features/WatchLater';
 import {
   Developer,
   Apps as DevelopedApps,
@@ -37,6 +38,7 @@ export function Routes() {
           children: [
             {match: '/', render: () => <Watching />},
             {match: 'finished', render: () => <FinishedWatching />},
+            {match: 'watch-later', render: () => <WatchLater />},
             {match: 'me', render: () => <Account />},
             {
               match: 'developer',

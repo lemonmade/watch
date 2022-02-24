@@ -1,0 +1,8 @@
+mutation RemoveSeriesFromWatchLater($id: ID!) {
+  removeFromWatchLater(seriesId: $id) {
+    series {
+      id
+      inWatchLater
+    }
+  }
+}

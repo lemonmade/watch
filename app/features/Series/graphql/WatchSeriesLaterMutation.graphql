@@ -1,0 +1,7 @@
+mutation WatchSeriesLater($id: ID!) {
+  watchLater(seriesId: $id) {
+    list {
+      id
+    }
+  }
+}

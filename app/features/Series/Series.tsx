@@ -30,6 +30,8 @@ import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graph
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
 import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutation.graphql';
 import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
+import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
+import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 
 export interface Props {
   id: string;
@@ -76,6 +78,10 @@ function SeriesWithData({
   const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
   const updateSubscriptionSettings = useMutation(
     updateSubscriptionSettingsMutation,
+  );
+  const watchSeriesLater = useMutation(watchSeriesLaterMutation);
+  const removeSeriesFromWatchLater = useMutation(
+    removeSeriesFromWatchLaterMutation,
   );
 
   const localDevelopmentClips = useLocalDevelopmentClips(
@@ -233,6 +239,34 @@ function SeriesWithData({
                   onUpdate();
                 }}
               />
+            )}
+          </BlockStack>
+        </Section>
+        <Section>
+          <BlockStack>
+            <Heading>Watch later</Heading>
+            {series.inWatchLater ? (
+              <Button
+                onPress={async () => {
+                  await removeSeriesFromWatchLater({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Remove from watch later
+              </Button>
+            ) : (
+              <Button
+                onPress={async () => {
+                  await watchSeriesLater({
+                    variables: {id: series.id},
+                  });
+                  onUpdate();
+                }}
+              >
+                Watch later
+              </Button>
             )}
           </BlockStack>
         </Section>

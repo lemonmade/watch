@@ -13,6 +13,7 @@ mutation WatchThroughWatchNextEpisode(
     rating: $rating
     notes: $notes
     finishedAt: $finishedAt
+    updateWatchLater: false
   ) {
     watchThrough {
       ...WatchThroughDetails

@@ -11,6 +11,7 @@ mutation WatchThroughSkipNextEpisode(
     watchThrough: $watchThrough
     notes: $notes
     at: $at
+    updateWatchLater: false
   ) {
     watchThrough {
       ...WatchThroughDetails

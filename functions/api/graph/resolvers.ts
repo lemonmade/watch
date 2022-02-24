@@ -18,6 +18,10 @@ const PERSONAL_ACCESS_TOKEN_PREFIX = 'wlp_';
 
 type Resolver<Source = never> = IResolvers<Source, Context>;
 
+const VIRTUAL_WATCH_LATER_LIST = {
+  __imaginaryWatchLater: true,
+};
+
 export const Query: Resolver = {
   me(_, __, {prisma, user}) {
     return prisma.user.findFirst({where: {id: user.id}});
@@ -80,6 +84,33 @@ export const Query: Resolver = {
       orderBy: {createdAt: 'desc'},
       take: 50,
     });
+  },
+  list(_, {id}: {id: string}, {prisma, user}) {
+    return prisma.list.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+    });
+  },
+  async lists(_, __, {user, prisma}) {
+    const {watchLaterId} = await prisma.user.findFirst({
+      where: {id: user.id},
+      rejectOnNotFound: true,
+    });
+
+    return prisma.list.findMany({
+      where: {
+        userId: user.id,
+        id: watchLaterId ? {not: watchLaterId} : undefined,
+      },
+      orderBy: {createdAt: 'desc'},
+      take: 50,
+    });
+  },
+  async watchLater(_, __, {user, prisma}) {
+    const list = await prisma.list.findFirst({
+      where: {watchLaterUser: {id: user.id}},
+    });
+
+    return list ?? VIRTUAL_WATCH_LATER_LIST;
   },
   watchThrough(_, {id}: {id: string}, {prisma, user}) {
     return prisma.watchThrough.findFirst({
@@ -269,6 +300,7 @@ export const Mutation: Resolver = {
       notes,
       startedAt,
       finishedAt,
+      updateWatchLater = true,
     }: {
       episode: string;
       watchThrough?: string;
@@ -276,6 +308,7 @@ export const Mutation: Resolver = {
       notes?: string;
       startedAt?: string;
       finishedAt?: string;
+      updateWatchLater?: boolean;
     },
     {prisma, user},
   ) {
@@ -302,9 +335,21 @@ export const Mutation: Resolver = {
         userId: user.id,
       },
       include: {
-        episode: true,
+        episode: {
+          include: {season: {select: {seriesId: true}}},
+        },
       },
     });
+
+    const watchLater = await prisma.list.findFirst({
+      where: {watchLaterUser: {id: user.id}},
+    });
+
+    if (updateWatchLater && watchLater) {
+      await prisma.listItem.deleteMany({
+        where: {listId: watchLater.id, seriesId: episode!.season.seriesId},
+      });
+    }
 
     let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
@@ -316,7 +361,12 @@ export const Mutation: Resolver = {
       });
     }
 
-    return {watch, episode, watchThrough};
+    return {
+      watch,
+      episode,
+      watchThrough,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async skipEpisode(
     _,
@@ -325,7 +375,14 @@ export const Mutation: Resolver = {
       watchThrough: watchThroughGid,
       notes,
       at,
-    }: {episode: string; watchThrough?: string; notes?: string; at?: string},
+      updateWatchLater = true,
+    }: {
+      episode: string;
+      watchThrough?: string;
+      notes?: string;
+      at?: string;
+      updateWatchLater?: boolean;
+    },
     {prisma, user},
   ) {
     const episodeId = fromGid(episodeGid).id;
@@ -349,9 +406,23 @@ export const Mutation: Resolver = {
         userId: user.id,
       },
       include: {
-        episode: true,
+        episode: {
+          include: {
+            season: {select: {seriesId: true}},
+          },
+        },
       },
     });
+
+    const watchLater = await prisma.list.findFirst({
+      where: {watchLaterUser: {id: user.id}},
+    });
+
+    if (updateWatchLater && watchLater) {
+      await prisma.listItem.deleteMany({
+        where: {listId: watchLater.id, seriesId: episode!.season.seriesId},
+      });
+    }
 
     let watchThrough: import('@prisma/client').WatchThrough | undefined;
 
@@ -363,14 +434,23 @@ export const Mutation: Resolver = {
       });
     }
 
-    return {skip, episode, watchThrough};
+    return {
+      skip,
+      episode,
+      watchThrough,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
-  async stopWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
+  async stopWatchThrough(
+    _,
+    {id: gid, watchLater = false}: {id: string; watchLater?: boolean},
+    {prisma, user},
+  ) {
     const {id} = fromGid(gid);
 
     const validatedWatchThrough = await prisma.watchThrough.findFirst({
       where: {id, userId: user.id},
-      select: {id: true},
+      select: {id: true, series: {select: {id: true}}},
       rejectOnNotFound: true,
     });
 
@@ -379,7 +459,20 @@ export const Mutation: Resolver = {
       where: {id: validatedWatchThrough.id},
     });
 
-    return {watchThrough};
+    if (watchLater) {
+      await addSeriesToWatchThrough(validatedWatchThrough.series.id, {
+        user,
+        prisma,
+      });
+    }
+
+    return {
+      watchThrough,
+      watchLater:
+        (await prisma.list.findFirst({
+          where: {watchLaterUser: {id: user.id}},
+        })) ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async startWatchThrough(
     _,
@@ -389,12 +482,14 @@ export const Mutation: Resolver = {
       to,
       includeSpecials = false,
       spoilerAvoidance: explicitSpoilerAvoidance,
+      updateWatchLater = true,
     }: {
       series: string;
       from?: Slice;
       to?: Slice;
       includeSpecials?: boolean;
       spoilerAvoidance?: SpoilerAvoidance;
+      updateWatchLater?: boolean;
     },
     {user, prisma},
   ) {
@@ -457,7 +552,20 @@ export const Mutation: Resolver = {
       },
     });
 
-    return {watchThrough};
+    const watchLater = await prisma.list.findFirst({
+      where: {watchLaterUser: {id: user.id}},
+    });
+
+    if (updateWatchLater && watchLater) {
+      await prisma.listItem.deleteMany({
+        where: {listId: watchLater.id, seriesId: series.id},
+      });
+    }
+
+    return {
+      watchThrough,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async updateWatchThroughSettings(
     _,
@@ -603,12 +711,16 @@ export const Mutation: Resolver = {
       watchThrough,
     };
   },
-  async deleteWatchThrough(_, {id: gid}: {id: string}, {prisma, user}) {
+  async deleteWatchThrough(
+    _,
+    {id: gid, watchLater = false}: {id: string; watchLater?: boolean},
+    {prisma, user},
+  ) {
     const {id} = fromGid(gid);
 
     const validatedWatchThrough = await prisma.watchThrough.findFirst({
       where: {id, userId: user.id},
-      select: {id: true},
+      select: {id: true, series: {select: {id: true}}},
       rejectOnNotFound: true,
     });
 
@@ -616,8 +728,19 @@ export const Mutation: Resolver = {
       where: {id: validatedWatchThrough.id},
     });
 
+    if (watchLater) {
+      await addSeriesToWatchThrough(validatedWatchThrough.series.id, {
+        user,
+        prisma,
+      });
+    }
+
     return {
       deletedWatchThroughId: toGid(validatedWatchThrough.id, 'WatchThrough'),
+      watchLater:
+        (await prisma.list.findFirst({
+          where: {watchLaterUser: {id: user.id}},
+        })) ?? VIRTUAL_WATCH_LATER_LIST,
     };
   },
   // Should be gated on permissions, and should update watchthroughs async
@@ -693,7 +816,12 @@ export const Mutation: Resolver = {
     {
       series: seriesGid,
       slice,
-    }: {series: string; slice?: {from?: Slice; to?: Slice}},
+      updateWatchLater = true,
+    }: {
+      series: string;
+      slice?: {from?: Slice; to?: Slice};
+      updateWatchLater?: boolean;
+    },
     {user, prisma},
   ) {
     const {id} = fromGid(seriesGid);
@@ -702,7 +830,7 @@ export const Mutation: Resolver = {
 
     const series = await prisma.series.findFirst({
       where: {id},
-      select: {
+      include: {
         seasons: {
           where:
             from || to
@@ -761,7 +889,20 @@ export const Mutation: Resolver = {
       }),
     });
 
-    return {series};
+    const watchLater = await prisma.list.findFirst({
+      where: {watchLaterUser: {id: user.id}},
+    });
+
+    if (updateWatchLater && watchLater) {
+      await prisma.listItem.deleteMany({
+        where: {listId: watchLater.id, seriesId: series.id},
+      });
+    }
+
+    return {
+      series,
+      watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
+    };
   },
   async createApp(_, {name}: {name: string}, {prisma, user}) {
     const existingAppWithName = await prisma.app.findFirst({
@@ -1102,6 +1243,173 @@ export const Mutation: Resolver = {
 
     return {deletedPersonalAccessTokenId: token?.id};
   },
+  async watchLater(_, {seriesId}: {seriesId?: string}, {user, prisma}) {
+    if (seriesId == null) {
+      // We will eventually implement storing episodes/ seasons for watching later
+      throw new Error(`You must provide a seriesId`);
+    }
+
+    const {series, list, item} = await addSeriesToWatchThrough(
+      fromGid(seriesId).id,
+      {
+        user,
+        prisma,
+      },
+    );
+
+    return {series, list, item};
+  },
+  async removeFromWatchLater(
+    _,
+    {seriesId}: {seriesId?: string},
+    {user, prisma},
+  ) {
+    if (seriesId == null) {
+      // We will eventually implement storing episodes/ seasons for watching later
+      throw new Error(`You must provide a seriesId`);
+    }
+
+    const series = await prisma.series.findFirst({
+      where: {id: fromGid(seriesId).id},
+      rejectOnNotFound: true,
+    });
+
+    const list =
+      (await prisma.list.findFirst({
+        where: {
+          watchLaterUser: {id: user.id},
+        },
+        include: {
+          items: {
+            select: {position: true},
+            orderBy: {position: 'desc'},
+            take: 1,
+          },
+        },
+      })) ??
+      (await prisma.list.create({
+        data: {
+          userId: user.id,
+          watchLaterUser: {connect: {id: user.id}},
+        },
+        include: {
+          items: {
+            select: {position: true},
+            orderBy: {position: 'desc'},
+            take: 1,
+          },
+        },
+      }));
+
+    const item = await prisma.listItem.findFirst({
+      where: {listId: list.id, seriesId: series.id},
+      rejectOnNotFound: true,
+    });
+
+    const itemsToShiftInList = await prisma.listItem.findMany({
+      where: {listId: list.id, position: {gt: item.position}},
+      take: 250,
+    });
+
+    await prisma.$transaction([
+      prisma.listItem.delete({
+        where: {id: item.id},
+      }),
+      ...itemsToShiftInList.map((itemToShift) =>
+        prisma.listItem.update({
+          data: {position: itemToShift.position - 1},
+          where: {id: itemToShift.id},
+        }),
+      ),
+    ]);
+
+    return {series, list, removedListItemId: toGid(item.id, 'ListItem')};
+  },
+  async addToList(
+    _,
+    {id, seriesId}: {id: string; seriesId?: string},
+    {user, prisma},
+  ) {
+    if (seriesId == null) {
+      // We will eventually implement storing episodes/ seasons for watching later
+      throw new Error(`You must provide a seriesId`);
+    }
+
+    const series = await prisma.series.findFirst({
+      where: {id: fromGid(seriesId).id},
+      rejectOnNotFound: true,
+    });
+
+    const list = await prisma.list.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+      include: {
+        items: {
+          select: {position: true},
+          orderBy: {position: 'desc'},
+          take: 1,
+        },
+      },
+    });
+
+    if (list == null) {
+      throw new Error(`Could not find list with id ${id}`);
+    }
+
+    const lastIndex = list.items[list.items.length - 1]?.position ?? -1;
+
+    const item = await prisma.listItem.create({
+      data: {position: lastIndex + 1, listId: list.id, seriesId: series.id},
+    });
+
+    return {series, list, item};
+  },
+  async removeFromList(
+    _,
+    {id, itemId}: {id: string; itemId: string},
+    {user, prisma},
+  ) {
+    const list = await prisma.list.findFirst({
+      where: {id: fromGid(id).id, userId: user.id},
+      rejectOnNotFound: true,
+    });
+
+    const item = await prisma.listItem.findFirst({
+      where: {id: fromGid(itemId).id},
+      rejectOnNotFound: true,
+    });
+
+    if (item.listId !== list.id) {
+      throw new Error(
+        `Item with ID ${itemId} is not part of list with ID ${id}`,
+      );
+    }
+    const itemsToShiftInList = await prisma.listItem.findMany({
+      where: {listId: list.id, position: {gt: item.position}},
+      take: 250,
+    });
+
+    const series =
+      item.seriesId == null
+        ? null
+        : await prisma.series.findFirst({
+            where: {id: item.seriesId},
+            rejectOnNotFound: true,
+          });
+
+    await prisma.$transaction([
+      prisma.listItem.delete({
+        where: {id: item.id},
+      }),
+      ...itemsToShiftInList.map((itemToShift) =>
+        prisma.listItem.update({
+          data: {position: itemToShift.position - 1},
+          where: {id: itemToShift.id},
+        }),
+      ),
+    ]);
+
+    return {series, list, removedListItemId: toGid(item.id, 'ListItem')};
+  },
 };
 
 export const Action: Resolver = {
@@ -1117,6 +1425,10 @@ export const Skippable: Resolver = {
 };
 
 export const Reviewable: Resolver = {
+  __resolveType: resolveType,
+};
+
+export const Listable: Resolver = {
   __resolveType: resolveType,
 };
 
@@ -1222,6 +1534,37 @@ export const Series: Resolver<import('@prisma/client').Series> = {
       take: 50,
       where: {seriesId: id, userId: user.id},
     });
+  },
+  async lists({id}, _, {prisma, user}) {
+    const items = await prisma.listItem.findMany({
+      where: {
+        seriesId: id,
+        list: {userId: user.id},
+      },
+
+      include: {list: true},
+    });
+
+    const seenLists = new Set<string>();
+    const lists: import('@prisma/client').List[] = [];
+
+    for (const {list} of items) {
+      if (seenLists.has(list.id)) continue;
+      seenLists.add(list.id);
+      lists.push(list);
+    }
+
+    return lists;
+  },
+  async inWatchLater({id}, _, {prisma, user}) {
+    const item = await prisma.listItem.findFirst({
+      where: {
+        seriesId: id,
+        list: {watchLaterUser: {id: user.id}},
+      },
+    });
+
+    return item != null;
   },
 };
 
@@ -1420,6 +1763,42 @@ export const WatchThrough: Resolver<import('@prisma/client').WatchThrough> = {
     return {
       spoilerAvoidance,
     };
+  },
+};
+
+export const List: Resolver<
+  import('@prisma/client').List | {__imaginaryWatchLater: true}
+> = {
+  id: (list) =>
+    '__imaginaryWatchLater' in list
+      ? toGid('watch-later', 'List')
+      : toGid(list.id, 'List'),
+  items(list, _, {prisma}) {
+    if ('__imaginaryWatchLater' in list) return [];
+
+    return prisma.listItem.findMany({
+      where: {listId: list.id},
+      orderBy: {position: 'asc'},
+      take: 50,
+    });
+  },
+};
+
+export const ListItem: Resolver<import('@prisma/client').ListItem> = {
+  id: ({id}) => toGid(id, 'ListItem'),
+  async media({id, seriesId}, _, {prisma}) {
+    const series =
+      seriesId == null
+        ? null
+        : await prisma.series.findFirst({
+            where: {id: seriesId},
+          });
+
+    if (series == null) {
+      throw new Error(`Could not find media for list item ${id}`);
+    }
+
+    return addResolvedType('Series')(series);
   },
 };
 
@@ -1822,6 +2201,57 @@ async function updateWatchThrough(
       updatedAt,
     },
   });
+}
+
+async function addSeriesToWatchThrough(
+  id: string,
+  {prisma, user}: Pick<Context, 'prisma' | 'user'>,
+) {
+  const series = await prisma.series.findFirst({
+    where: {id},
+    rejectOnNotFound: true,
+  });
+
+  const list =
+    (await prisma.list.findFirst({
+      where: {
+        watchLaterUser: {id: user.id},
+      },
+      include: {
+        items: {
+          select: {position: true},
+          orderBy: {position: 'desc'},
+          take: 1,
+        },
+      },
+    })) ??
+    (await prisma.list.create({
+      data: {
+        userId: user.id,
+        watchLaterUser: {connect: {id: user.id}},
+      },
+      include: {
+        items: {
+          select: {position: true},
+          orderBy: {position: 'desc'},
+          take: 1,
+        },
+      },
+    }));
+
+  let item = await prisma.listItem.findFirst({
+    where: {listId: list.id, seriesId: series.id},
+  });
+
+  if (item == null) {
+    const lastIndex = list.items[list.items.length - 1]?.position ?? -1;
+
+    item = await prisma.listItem.create({
+      data: {position: lastIndex + 1, listId: list.id, seriesId: series.id},
+    });
+  }
+
+  return {series, list, item};
 }
 
 async function loadTmdbSeries(

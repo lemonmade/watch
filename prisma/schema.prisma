@@ -33,6 +33,10 @@ model User {
   clipsExtensionInstallations ClipsExtensionInstallation[]
   personalAccessTokens        PersonalAccessToken[]
   apps                        App[]
+
+  lists        List[]  @relation(name: "user")
+  watchLater   List?   @relation(name: "watchLater", fields: [watchLaterId], references: [id])
+  watchLaterId String? @unique
 }
 
 model GithubAccount {
@@ -43,6 +47,33 @@ model GithubAccount {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
+}
+
+model List {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  items     ListItem[]
+
+  user           User   @relation(name: "user", fields: [userId], references: [id])
+  userId         String
+  watchLaterUser User?  @relation(name: "watchLater")
+}
+
+model ListItem {
+  id       String @id @default(uuid())
+  position Int
+
+  list   List   @relation(fields: [listId], references: [id])
+  listId String
+
+  series   Series? @relation(fields: [seriesId], references: [id])
+  seriesId String?
+
+  season   Season? @relation(fields: [seasonId], references: [id])
+  seasonId String?
+
+  episode   Episode? @relation(fields: [episodeId], references: [id])
+  episodeId String?
 }
 
 enum SeriesStatus {
@@ -65,6 +96,7 @@ model Series {
   seasons       Season[]
   subscriptions SeriesSubscription[]
   watchThroughs WatchThrough[]
+  listItems     ListItem[]
 }
 
 model SeriesSubscription {
@@ -103,6 +135,7 @@ model Season {
   watches Watch[]
   skips   Skip[]
 
+  listItems ListItem[]
   @@unique([seriesId, number])
 }
 
@@ -120,6 +153,7 @@ model Episode {
   skips   Skip[]
   watches Watch[]
 
+  listItems ListItem[]
   @@unique([seasonId, number])
 }
 
