@@ -15,3 +15,9 @@ export function createInterfaceResolver(): InterfaceResolver {
     __resolveType: resolveType,
   };
 }
+
+export function createUnionResolver(): InterfaceResolver {
+  return {
+    __resolveType: resolveType,
+  };
+}

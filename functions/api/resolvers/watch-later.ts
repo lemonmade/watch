@@ -123,7 +123,7 @@ export const Mutation: Pick<
   },
 };
 
-async function addSeriesToWatchLater(
+export async function addSeriesToWatchLater(
   id: string,
   {prisma, user}: Pick<Context, 'prisma' | 'user'>,
 ) {

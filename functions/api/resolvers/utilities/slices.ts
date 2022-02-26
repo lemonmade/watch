@@ -1,6 +1,6 @@
 export interface Slice {
   season: number;
-  episode?: number;
+  episode?: number | null;
 }
 
 export function bufferFromSlice(slice: Slice) {

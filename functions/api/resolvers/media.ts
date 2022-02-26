@@ -8,13 +8,13 @@ import type {
   Series as GraphQLSeries,
   Season as GraphQLSeason,
   Episode as GraphQLEpisode,
-  EpisodeSlice,
   UpdateSeasonPayload,
 } from '../graph/schema';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {bufferFromSlice} from './utilities/slices';
+import type {Slice} from './utilities/slices';
 
 import {
   Series as SeriesLists,
@@ -23,13 +23,18 @@ import {
 } from './lists';
 import {Series as SeriesSubscription} from './subscriptions';
 import {Series as SeriesWatchLater} from './watch-later';
+import {
+  Series as SeriesWatches,
+  Season as SeasonWatches,
+  Episode as EpisodeWatches,
+} from './watches';
 
 declare module './types' {
   export interface GraphQLTypeMap {
     Series: DatabaseSeries;
     Season: DatabaseSeason;
     Episode: DatabaseEpisode;
-    EpisodeSlice: LiteralGraphQLObjectType<EpisodeSlice>;
+    EpisodeSlice: Slice;
     UpdateSeasonPayload: LiteralGraphQLObjectType<UpdateSeasonPayload>;
   }
 }
@@ -62,13 +67,8 @@ export const Series: Resolver<'Series', GraphQLSeries> = {
   poster({posterUrl}) {
     return posterUrl ? {source: posterUrl} : null;
   },
-  watchThroughs({id}, _, {prisma, user}) {
-    return prisma.watchThrough.findMany({
-      take: 50,
-      where: {seriesId: id, userId: user.id},
-    });
-  },
   ...SeriesLists,
+  ...SeriesWatches,
   ...SeriesWatchLater,
   ...SeriesSubscription,
 };
@@ -95,31 +95,8 @@ export const Season: Resolver<'Season', GraphQLSeason> = {
   isSpecials({number}) {
     return number === 0;
   },
-  watches({id}, _, {prisma, user}) {
-    return prisma.watch.findMany({
-      where: {seasonId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestWatch({id}, __, {prisma, user}) {
-    return prisma.watch.findFirst({
-      where: {seasonId: id, userId: user.id},
-      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
-    });
-  },
-  skips({id}, _, {prisma, user}) {
-    return prisma.skip.findMany({
-      where: {seasonId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestSkip({id}, __, {prisma, user}) {
-    return prisma.skip.findFirst({
-      where: {seasonId: id, userId: user.id},
-      orderBy: {at: 'desc', createdAt: 'desc'},
-    });
-  },
   ...SeasonLists,
+  ...SeasonWatches,
 };
 
 export const Episode: Resolver<'Episode', GraphQLEpisode> = {
@@ -142,30 +119,7 @@ export const Episode: Resolver<'Episode', GraphQLEpisode> = {
   still({stillUrl}) {
     return stillUrl ? {source: stillUrl} : null;
   },
-  watches({id}, _, {prisma, user}) {
-    return prisma.watch.findMany({
-      where: {episodeId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestWatch({id}, _, {prisma, user}) {
-    return prisma.watch.findFirst({
-      where: {episodeId: id, userId: user.id},
-      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
-    });
-  },
-  skips({id}, _, {prisma, user}) {
-    return prisma.skip.findMany({
-      where: {episodeId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestSkip({id}, _, {prisma, user}) {
-    return prisma.skip.findFirst({
-      where: {episodeId: id, userId: user.id},
-      orderBy: {at: 'desc', createdAt: 'desc'},
-    });
-  },
+  ...EpisodeWatches,
   ...EpisodeLists,
 };
 
