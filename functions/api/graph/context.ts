@@ -2,7 +2,12 @@ import type {Request, Response} from '@quilted/http-handlers';
 
 import type {Prisma} from 'shared/utilities/database';
 
-export type Context = ReturnType<typeof createContext>;
+export interface Context {
+  readonly user: {id: string};
+  readonly prisma: Prisma;
+  readonly request: Request;
+  readonly response: MutableResponse;
+}
 
 interface MutableResponse {
   status: Response['status'];
@@ -23,7 +28,7 @@ export function createContext(
   prisma: Prisma,
   request: Request,
   response: MutableResponse,
-) {
+): Context {
   return {
     prisma,
     get user() {

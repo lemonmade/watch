@@ -1,0 +1,181 @@
+#import "./shared.schema.graphql"
+#import "./media.schema.graphql"
+#import "./watch-later.schema.graphql"
+
+extend type Query {
+  watch(id: ID!): Watch
+  watchThrough(id: ID!): WatchThrough
+  watchThroughs(status: WatchThroughStatus): [WatchThrough!]!
+}
+
+extend type Episode implements Watchable & Skippable {
+  watches: [Watch!]!
+  skips: [Skip!]!
+  latestWatch: Watch
+  latestSkip: Skip
+}
+
+extend type Season implements Watchable & Skippable {
+  watches: [Watch!]!
+  skips: [Skip!]!
+  latestWatch: Watch
+  latestSkip: Skip
+}
+
+extend type Series {
+  watchThroughs: [WatchThrough!]!
+}
+
+extend type Mutation {
+  skipEpisode(
+    episode: ID!
+    watchThrough: ID
+    notes: Notes
+    at: Date
+    updateWatchLater: Boolean
+  ): SkipEpisodePayload!
+  watchEpisode(
+    episode: ID!
+    watchThrough: ID
+    rating: Int
+    notes: Notes
+    startedAt: Date
+    finishedAt: Date
+    updateWatchLater: Boolean
+  ): WatchEpisodePayload!
+  watchEpisodesFromSeries(
+    series: ID!
+    from: EpisodeSliceInput
+    to: EpisodeSliceInput
+    updateWatchLater: Boolean
+  ): WatchEpisodesFromSeriesPayload!
+  startWatchThrough(
+    series: ID!
+    from: EpisodeSliceInput
+    to: EpisodeSliceInput
+    includeSpecials: Boolean
+    spoilerAvoidance: SpoilerAvoidance
+    updateWatchLater: Boolean
+  ): StartWatchThroughPayload!
+  stopWatchThrough(id: ID!, watchLater: Boolean): StopWatchThroughPayload!
+  deleteWatchThrough(id: ID!, watchLater: Boolean): DeleteWatchThroughPayload!
+  updateWatchThroughSettings(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance
+  ): UpdateWatchThroughSettingsPayload!
+  deleteWatch(id: ID!): DeleteWatchPayload!
+}
+
+# Watches
+
+interface Watchable {
+  id: ID!
+  watches: [Watch!]!
+  latestWatch: Watch
+}
+
+type Watch {
+  id: ID!
+  media: Watchable!
+  startedAt: Date
+  finishedAt: Date
+  createdAt: Date!
+  updatedAt: Date!
+  rating: Int
+  notes: Notes
+  watchThrough: WatchThrough
+}
+
+# Skips
+
+interface Skippable {
+  id: ID!
+  skips: [Skip!]!
+  latestSkip: Skip
+}
+
+type Skip {
+  id: ID!
+  at: Date
+  createdAt: Date!
+  updatedAt: Date!
+  media: Skippable!
+  notes: Notes
+  watchThrough: WatchThrough
+}
+
+union Action = Watch | Skip
+
+# Watch throughs
+
+enum WatchThroughStatus {
+  ONGOING
+  STOPPED
+  FINISHED
+}
+
+type WatchThrough {
+  id: ID!
+  series: Series!
+  from: EpisodeSlice!
+  to: EpisodeSlice!
+  startedAt: Date
+  createdAt: Date!
+  updatedAt: Date!
+  finishedAt: Date
+  status: WatchThroughStatus!
+  watches: [Watch!]!
+  actions: [Action!]!
+  nextEpisode: Episode
+  unfinishedEpisodeCount: Int!
+  settings: WatchThroughSettings!
+}
+
+type WatchThroughSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
+# Mutations
+
+type WatchEpisodePayload {
+  watch: Watch
+  episode: Episode
+  watchThrough: WatchThrough
+  watchLater: List!
+}
+
+type SkipEpisodePayload {
+  skip: Skip
+  episode: Episode
+  watchThrough: WatchThrough
+  watchLater: List!
+}
+
+type UpdateWatchThroughSettingsPayload {
+  watchThrough: WatchThrough
+}
+
+type StartWatchThroughPayload {
+  watchThrough: WatchThrough
+  watchLater: List!
+}
+
+type StopWatchThroughPayload {
+  watchThrough: WatchThrough
+  watchLater: List!
+}
+
+type DeleteWatchThroughPayload {
+  deletedWatchThroughId: ID!
+  watchLater: List!
+}
+
+type DeleteWatchPayload {
+  deletedWatchId: ID!
+  watchThrough: WatchThrough
+}
+
+type WatchEpisodesFromSeriesPayload {
+  series: Series
+  watchLater: List!
+}

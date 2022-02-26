@@ -21,8 +21,8 @@
     ]
   },
   "dependencies": {
-    "@quilted/http-handlers": "^0.2.19",
-    "@quilted/quilt": "^0.5.53"
+    "@quilted/http-handlers": "^0.2.20",
+    "@quilted/quilt": "^0.5.55"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2": "^1.110.0",
@@ -44,7 +44,7 @@
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.10.3",
     "@prisma/client": "^2.25.0",
-    "@quilted/aws": "^0.3.27",
+    "@quilted/aws": "^0.3.28",
     "@quilted/craft": "^0.1.51",
     "@quilted/sewing-kit": "^0.2.13",
     "@types/common-tags": "^1.8.0",

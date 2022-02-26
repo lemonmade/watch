@@ -1,0 +1,53 @@
+#import "./media.schema.graphql"
+
+extend type Query {
+  lists: [List!]!
+  list(id: ID!): List
+}
+
+extend type Episode implements Listable {
+  lists: [List!]!
+}
+
+extend type Season implements Listable {
+  lists: [List!]!
+}
+
+extend type Series implements Listable {
+  lists: [List!]!
+}
+
+extend type Mutation {
+  addToList(id: ID!, seriesId: ID): AddToListPayload!
+  removeFromList(id: ID!, itemId: ID!): RemoveFromListPayload!
+}
+
+interface Listable {
+  id: ID!
+  lists: [List!]!
+}
+
+type List {
+  id: ID!
+  items: [ListItem!]!
+}
+
+type ListItem {
+  id: ID!
+  position: Int!
+  media: Listable!
+}
+
+# Mutations
+
+type AddToListPayload {
+  list: List
+  item: ListItem
+  series: Series
+}
+
+type RemoveFromListPayload {
+  list: List
+  series: Series
+  removedListItemId: ID
+}

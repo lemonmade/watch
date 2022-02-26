@@ -1,0 +1,16 @@
+scalar Url
+scalar JSON
+scalar Date
+scalar Notes
+scalar Email
+scalar ApiVersion
+
+enum SpoilerAvoidance {
+  NONE
+  UPCOMING
+  EVERYTHING
+}
+
+type Image {
+  source: Url!
+}

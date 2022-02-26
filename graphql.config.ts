@@ -3,7 +3,7 @@ import type {IGraphQLConfig} from 'graphql-config';
 const config: IGraphQLConfig = {
   projects: {
     default: {
-      schema: 'functions/api/graph/schema.graphql',
+      schema: 'graphql/main/*schema.graphql',
       documents: [
         'app/**/*.graphql',
         'packages/cli/src/commands/publish/**/*.graphql',
