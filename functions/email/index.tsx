@@ -12,7 +12,7 @@ const DEFAULT_SENDER: Sender = {
   email: 'no-reply@lemon.tools',
 };
 
-const sendEmail: SQSHandler = async (event) => {
+export const handler: SQSHandler = async (event) => {
   // eslint-disable-next-line no-console
   console.log(event);
   const {
@@ -70,5 +70,3 @@ const sendEmail: SQSHandler = async (event) => {
 
   await ses.sendEmail(sesEmail).promise();
 };
-
-export default sendEmail;

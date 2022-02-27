@@ -7,7 +7,7 @@ export default createService((service) => {
     quiltService({
       react: true,
       develop: false,
-      httpHandler: true,
+      httpHandler: false,
     }),
     lambda(),
   );
