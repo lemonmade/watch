@@ -8,5 +8,5 @@
   },
   "include": ["src"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../clips"}, {"path": "../../packages/graphql"}]
+  "references": [{"path": "../clips"}, {"path": "../graphql"}]
 }
