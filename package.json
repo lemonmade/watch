@@ -43,7 +43,7 @@
     "@aws-cdk/core": "^1.110.0",
     "@babel/core": "^7.14.6",
     "@babel/node": "^7.10.3",
-    "@prisma/client": "^2.25.0",
+    "@prisma/client": "^3.10.0",
     "@quilted/aws": "^0.3.28",
     "@quilted/craft": "^0.1.51",
     "@quilted/sewing-kit": "^0.2.13",
