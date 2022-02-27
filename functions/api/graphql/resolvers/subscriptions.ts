@@ -6,7 +6,7 @@ import {toGid, fromGid} from './utilities/id';
 import type {SeriesResolver} from './media';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     SeriesSubscription: DatabaseSeriesSubscription;
   }
 }

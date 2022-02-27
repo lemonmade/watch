@@ -20,7 +20,7 @@ import {VIRTUAL_WATCH_LATER_LIST} from './lists';
 import {addSeriesToWatchLater} from './watch-later';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     Watch: DatabaseWatch;
     Skip: DatabaseSkip;
     WatchThrough: DatabaseWatchThrough;

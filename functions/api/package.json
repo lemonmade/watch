@@ -8,6 +8,7 @@
     "@aws-sdk/s3-request-presigner": "^3.19.0",
     "@graphql-tools/schema": "^7.0.0",
     "@sentry/node": "^6.7.2",
+    "@watching/graphql": "^0.0.0",
     "aws-sdk": "^2.935.0",
     "dataloader": "^2.0.0",
     "graphql": "^15.0.0",

@@ -7101,6 +7101,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^13.0.0
     "@types/node": ^14.0.0
     "@types/ws": ^7.0.0
+    "@watching/graphql": ^0.0.0
     ansi-escapes: ^4.0.0
     arg: ^5.0.0
     brotli-size: ^4.0.0
@@ -7148,7 +7149,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@watching/graphql@workspace:packages/graphql":
+"@watching/graphql@^0.0.0, @watching/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@watching/graphql@workspace:packages/graphql"
   languageName: unknown
@@ -7427,6 +7428,7 @@ __metadata:
     "@graphql-tools/schema": ^7.0.0
     "@sentry/node": ^6.7.2
     "@types/mime": ^2.0.0
+    "@watching/graphql": ^0.0.0
     aws-sdk: ^2.935.0
     dataloader: ^2.0.0
     graphql: ^15.0.0

@@ -10,7 +10,7 @@ import {addResolvedType, createInterfaceResolver} from './utilities/interfaces';
 import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     List: DatabaseList | typeof VIRTUAL_WATCH_LATER_LIST;
     ListItem: DatabaseListItem;
   }

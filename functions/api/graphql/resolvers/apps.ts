@@ -22,7 +22,7 @@ import {toGid, fromGid} from './utilities/id';
 import {createUnionResolver, addResolvedType} from './utilities/interfaces';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     App: DatabaseApp;
     AppInstallation: DatabaseAppInstallation;
     ClipsExtension: DatabaseClipsExtension;

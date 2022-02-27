@@ -11,7 +11,7 @@ import {toGid, fromGid} from './utilities/id';
 import {enqueueSendEmail} from './utilities/email';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     User: DatabaseUser;
     GithubAccount: DatabaseGithubAccount;
     PersonalAccessToken: DatabasePersonalAccessToken;

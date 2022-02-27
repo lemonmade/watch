@@ -23,7 +23,7 @@ import {
 } from './watches';
 
 declare module './types' {
-  export interface GraphQLTypeMap {
+  export interface ValueMap {
     Series: DatabaseSeries;
     Season: DatabaseSeason;
     Episode: DatabaseEpisode;

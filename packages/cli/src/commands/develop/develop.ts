@@ -12,13 +12,17 @@ import {
 } from '@quilted/http-handlers';
 import type {Request} from '@quilted/http-handlers';
 import {createHttpServer} from '@quilted/http-handlers/node';
+import {
+  GraphQLResolver,
+  GraphQLResolverOptions,
+  GraphQLBaseResolverValueMap,
+} from '@watching/graphql/server';
 import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
 
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
-import type {IFieldResolver as FieldResolver} from '@graphql-tools/utils';
 
 import {watch as rollupWatch} from 'rollup';
 
@@ -38,26 +42,19 @@ import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
 import schemaTypeDefinitions from './schema';
-import type {Query as QueryType} from './schema';
-
-type AllowedReturnType<T> = {
-  [K in keyof T]?: T[K] extends (...args: any[]) => infer U
-    ? AllowedReturnType<U>
-    : AllowedReturnType<T[K]>;
-};
+import type {Schema} from './schema';
 
 interface Context {
   readonly request: Request;
 }
 
-type QueryResolver = {
-  [K in Exclude<keyof QueryType, '__typename'>]: FieldResolver<
-    never,
-    Context,
-    Parameters<QueryType[K]>[0],
-    AllowedReturnType<ReturnType<QueryType[K]>>
-  >;
-};
+type ResolverOptions = GraphQLResolverOptions<
+  Schema,
+  GraphQLBaseResolverValueMap,
+  Context
+>;
+
+type QueryResolver = GraphQLResolver<'Query', ResolverOptions>;
 
 export type BuildState =
   | {status: 'success'; startedAt: number; duration: number; errors?: never}
