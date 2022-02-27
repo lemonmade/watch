@@ -20,6 +20,7 @@ import {
 import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
+import createTunnel from 'localtunnel';
 
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
@@ -73,6 +74,12 @@ export interface WebSocketEventMap {
   'not-found': never;
 }
 
+const CONNECT_ENDPOINT_ALLOW_HEADERS = [
+  'Content-Type',
+  // @see https://github.com/localtunnel/localtunnel/issues/366
+  'Bypass-Tunnel-Reminder',
+];
+
 export async function develop({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
 
@@ -94,20 +101,28 @@ export async function develop({ui}: {ui: Ui}) {
 
   try {
     const result = await devServer.listen();
+    const tunnel = await createTunnel(result.port, {
+      host: 'https://dev-proxy.me',
+    });
 
-    const localServerOrigin = `http://localhost:${result.port}`;
-    const targetUrl = watchUrl(`/app?building=${localServerOrigin}/graphql`);
+    const connectUrl = new URL('/connect', tunnel.url);
+
+    // TODO: open the best page for their set of extensions
+    const openUrl = watchUrl('/app');
+    openUrl.searchParams.set('developing', connectUrl.href);
 
     ui.Heading('success!', {style: (content, style) => style.green(content)});
     ui.TextBlock(
       `We’ve started a development server at ${ui.Link(
-        localServerOrigin,
+        `http://localhost:${result.port}`,
+      )}, and we’ve created a publicly-accessible tunnel to this server at ${ui.Link(
+        tunnel.url,
       )}. In a moment, we’ll open ${ui.Link(
-        targetUrl,
+        openUrl.href,
       )}, which will connect your local environment to the Watch app. All of the extensions in your local workspace will be automatically installed in all their supported extension points, so navigate to the page you are extending to see your extensions in action. Have fun building!`,
     );
 
-    await open(targetUrl);
+    await open(openUrl.href);
   } catch (error) {
     throw new PrintableError(
       `There was a problem while trying to start your development server...`,
@@ -129,12 +144,14 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
             extensions: app.extensions.map((extension) => {
               const assetUrl = new URL(
                 `/assets/extensions/${extension.id}.js`,
-                request.url,
+                request.url.href,
               );
 
               const socketUrl = new URL(
                 extension.id,
-                `ws://${request.url.host}`,
+                `${request.url.protocol.replace('http', 'ws')}//${
+                  request.url.host
+                }`,
               );
 
               return {
@@ -151,17 +168,18 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     },
   });
 
-  handler.options('/graphql', () =>
+  handler.options('/connect', () =>
     noContent({
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Headers':
+          CONNECT_ENDPOINT_ALLOW_HEADERS.join(','),
       },
     }),
   );
 
-  handler.post('/graphql', async (request) => {
+  handler.post('/connect', async (request) => {
     try {
       const {operationName, query, variables} = JSON.parse(
         request.body ?? '{}',
@@ -181,7 +199,8 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
           'Timing-Allow-Origin': '*',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Headers':
+            CONNECT_ENDPOINT_ALLOW_HEADERS.join(','),
         },
       });
     } catch (error) {
@@ -192,7 +211,8 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
             'Timing-Allow-Origin': '*',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST',
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers':
+              CONNECT_ENDPOINT_ALLOW_HEADERS.join(','),
           },
         },
       );

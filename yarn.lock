@@ -6385,14 +6385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remote-ui/rpc@npm:^1.2.0":
-  version: 1.2.3
-  resolution: "@remote-ui/rpc@npm:1.2.3"
-  checksum: d46cd1322243de5db579d10194e296965f33fe752de81423ec6be5091359efbfc0f32f22329f7d270c514c1ba595d5dd9b1b34457573b4d53cdf7709814a09df
-  languageName: node
-  linkType: hard
-
-"@remote-ui/rpc@npm:^1.2.6":
+"@remote-ui/rpc@npm:^1.2.0, @remote-ui/rpc@npm:^1.2.6":
   version: 1.2.6
   resolution: "@remote-ui/rpc@npm:1.2.6"
   checksum: 7437f64b483e05012247a61be694f65c6b158d084589c5a3f93edce8b0bd89d531fe60d7b74426a2103e64400361a37033ce03625ac0033ed7f2e576becd09f9
@@ -6793,6 +6786,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/localtunnel@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "@types/localtunnel@npm:2.0.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 56620512bb0c0eec4088f8db4651e60baae0808fe07dcfa0ebe1efe830d3e6be00a4934d9b65e7eb7b9ee85c0068c090a046f22f0ea3c2123d8b49ef2fef8ed0
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:^2.0.0":
   version: 2.0.3
   resolution: "@types/mime@npm:2.0.3"
@@ -7099,6 +7101,7 @@ __metadata:
     "@rollup/plugin-alias": ^3.0.0
     "@rollup/plugin-commonjs": ^19.0.0
     "@rollup/plugin-node-resolve": ^13.0.0
+    "@types/localtunnel": ^2.0.0
     "@types/node": ^14.0.0
     "@types/ws": ^7.0.0
     "@watching/graphql": ^0.0.0
@@ -7109,6 +7112,7 @@ __metadata:
     esbuild: ^0.12.1
     glob: ^7.0.0
     graphql: ^15.0.0
+    localtunnel: ^2.0.0
     mime: ^2.5.0
     open: ^8.0.0
     pretty-bytes: ^5.6.0
@@ -7828,6 +7832,15 @@ __metadata:
   version: 4.2.3
   resolution: "axe-core@npm:4.2.3"
   checksum: 678a9fac7ad26f7ada1fb9b7241a56d8cc20bea7cfc5b238c8861d7e8ebaeec28ea811591d843f1c292e9d0b6fb62fb86216445907b9795744b29a8e07d0383c
+  languageName: node
+  linkType: hard
+
+"axios@npm:0.21.4":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
+  dependencies:
+    follow-redirects: ^1.14.0
+  checksum: e6d42b269b599d36eb13be0671c237781f32e6ae72be824297c55a3e1ce63b22ba4f46bad5ab28da7d3bae50a72637d55c792cf803be1cf9de6a8bcd6d0dcc1a
   languageName: node
   linkType: hard
 
@@ -9279,15 +9292,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "debug@npm:4.3.1"
+"debug@npm:4, debug@npm:4.3.2, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1":
+  version: 4.3.2
+  resolution: "debug@npm:4.3.2"
   dependencies:
     ms: 2.1.2
   peerDependenciesMeta:
     supports-color:
       optional: true
-  checksum: 0d41ba5177510e8b388dfd7df143ab0f9312e4abdaba312595461511dac88e9ef8101939d33b4e6d37e10341af6a5301082e4d7d6f3deb4d57bc05fc7d296fad
+  checksum: 5543570879e2274f6725d4285a034d6e0822d35faefc6f55965933fb440e8c21eb3a0bef934e66f4b6b491f898ee2de37cab980e9d4fd61372136c19d3ce4527
   languageName: node
   linkType: hard
 
@@ -10608,6 +10621,16 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: b8fa1fbfadd5c4b6df3cf2c34b3c408fe508a2899c536bafa339f679de545689997e907bd4ff61dd292942f8044fb2f293a5956dd8b601f6a5601617842d0dda
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.14.0":
+  version: 1.14.9
+  resolution: "follow-redirects@npm:1.14.9"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 1b602c548b4194c66d8d530d2c8f76b4116b6c498434acfa561f583f45b571fd9fc042fba778748cd863044051656cf4788ba11c8ff35407223ed0d38ffff0d4
   languageName: node
   linkType: hard
 
@@ -13246,6 +13269,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"localtunnel@npm:^2.0.0":
+  version: 2.0.2
+  resolution: "localtunnel@npm:2.0.2"
+  dependencies:
+    axios: 0.21.4
+    debug: 4.3.2
+    openurl: 1.1.1
+    yargs: 17.1.1
+  bin:
+    lt: bin/lt.js
+  checksum: 580f378a742388dc4bf00f857ec5069b4698fe1cd58b4b69ef1569e5830d789660d3065c65f5e947894b5fe44b2175d636f2b0447caf77a1cf0753fec2cdbb2d
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^2.0.0":
   version: 2.0.0
   resolution: "locate-path@npm:2.0.0"
@@ -14060,14 +14097,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.2, ms@npm:^2.0.0, ms@npm:^2.1.1":
+"ms@npm:2.1.2":
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: 9b65fb709bc30c0c07289dcbdb61ca032acbb9ea5698b55fa62e2cebb04c5953f1876a1f3f7f4bc2e91d4bf4d86003f3e207c3bc6ee2f716f99827e62389cd0e
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.3":
+"ms@npm:2.1.3, ms@npm:^2.0.0, ms@npm:^2.1.1":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: 6e721e648a544154d5de4c114b32f573d8027ca8ec505cf6c1105e505986d6ac46934a1256735aa0eece8eb2f5b2a1230503b2dddd3b100f9f016fd8a4f15f33
@@ -14615,6 +14652,13 @@ __metadata:
     is-docker: ^2.1.1
     is-wsl: ^2.2.0
   checksum: 21593d6ba7393a50f957618944de5dd61cccf24a995b0447e09dfc26fcd2ef1cd37f694815e5f91590d9841585d77dec210cee1d7544f215efdfa769709e1e70
+  languageName: node
+  linkType: hard
+
+"openurl@npm:1.1.1":
+  version: 1.1.1
+  resolution: "openurl@npm:1.1.1"
+  checksum: cbe2e03594b9ceee8b1cfccb505d6bcea852417061952ef46a5dfe53c0aac9ce870f89d5142a9882bdf11e8fdb457655c7cdb2e7c2f5560d98322755eaacca06
   languageName: node
   linkType: hard
 
@@ -18545,6 +18589,21 @@ typescript@^4.3.4:
   version: 20.2.7
   resolution: "yargs-parser@npm:20.2.7"
   checksum: 124e7f1c24c9609d5d1c343f14b83289634e19bb43770708ebb6a19852647aaa0f89edcbf0e5b18a21bee77f54513ab5051518b2950cda69eb607a7c6251aa4f
+  languageName: node
+  linkType: hard
+
+"yargs@npm:17.1.1":
+  version: 17.1.1
+  resolution: "yargs@npm:17.1.1"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.0
+    y18n: ^5.0.5
+    yargs-parser: ^20.2.2
+  checksum: c2a16b61eb0db8882becd0aa382a5c59b87afcd17b35dd7077b3c9d83f77a3ad3de1526e4f1cf940f9481d7ce537e883af7c16879c33258724a09bc43a04e8ea
   languageName: node
   linkType: hard
 

@@ -20,14 +20,20 @@ export function LocalDevelopmentOrchestrator({
   useEffect(() => {
     let valid = true;
 
-    const buildingParam = url.searchParams.get('building');
-    if (buildingParam == null) return;
+    const developingParam = url.searchParams.get('developing');
+    if (developingParam == null) return;
 
     (async () => {
       try {
-        const localDevelopmentQueryUrl = new URL(buildingParam);
+        const localDevelopmentQueryUrl = new URL(developingParam);
         const graphql = createGraphQL({
-          fetch: createHttpFetch({uri: localDevelopmentQueryUrl.href}),
+          fetch: createHttpFetch({
+            uri: localDevelopmentQueryUrl.href,
+            headers: {
+              // @see https://github.com/localtunnel/localtunnel/issues/366
+              'Bypass-Tunnel-Reminder': '1',
+            },
+          }),
         });
 
         const {data, error} = await graphql.query(

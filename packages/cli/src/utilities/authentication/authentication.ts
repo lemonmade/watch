@@ -40,7 +40,7 @@ export async function authenticate({ui}: {ui: Ui}): Promise<User> {
           `We tried to use the access token you provided in the ${ui.Code(
             'WATCH_ACCESS_TOKEN',
           )} environment variable, but it didn’t work. Your access token might have been deleted, or you may have typed it incorrectly. If you need a new access token, you can generate one at ${ui.Link(
-            watchUrl('/app/developer/access-tokens'),
+            watchUrl('/app/developer/access-tokens').href,
           )}, or you can remove the environment variable follow the interactive authentication flow.`,
       );
     } else {
@@ -112,7 +112,7 @@ function graphqlFromAccessToken(accessToken: string) {
   return createGraphQL({
     cache: false,
     fetch: createHttpFetch({
-      uri: watchUrl('/api/graphql'),
+      uri: watchUrl('/api/graphql').href,
       headers: {
         'X-Access-Token': accessToken,
       },
@@ -184,11 +184,11 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
 
   ui.TextBlock(
     `We need to authenticate you in the Watch web app. We’ll try to open it in a second, or you can manually authenticate by visiting ${ui.Link(
-      url,
+      url.href,
     )}.`,
   );
 
-  await open(url);
+  await open(url.href);
 
   const token = await promise;
 

@@ -434,47 +434,51 @@ function LocalClipFrame<T extends ExtensionPoint>({
   const [forcedHeight, setForcedHeight] = useState<number | undefined>();
 
   useEffect(() => {
-    const webSocket = new WebSocket(socketUrl);
+    try {
+      const webSocket = new WebSocket(socketUrl);
 
-    webSocket.addEventListener('message', ({data}) => {
-      try {
-        const parsed: DevServerMessage = JSON.parse(data);
+      webSocket.addEventListener('message', ({data}) => {
+        try {
+          const parsed: DevServerMessage = JSON.parse(data);
 
-        switch (parsed.type) {
-          case 'build': {
-            const buildState = parsed.data;
+          switch (parsed.type) {
+            case 'build': {
+              const buildState = parsed.data;
 
-            setBuildState(buildState);
+              setBuildState(buildState);
 
-            switch (buildState.status) {
-              case 'building': {
-                setCompiling(true);
-                setForcedHeight(
-                  containerRef.current?.getBoundingClientRect().height,
-                );
-                break;
+              switch (buildState.status) {
+                case 'building': {
+                  setCompiling(true);
+                  setForcedHeight(
+                    containerRef.current?.getBoundingClientRect().height,
+                  );
+                  break;
+                }
+                case 'success': {
+                  setCompiling(false);
+                  controller.restart();
+                  break;
+                }
+                default: {
+                  setCompiling(false);
+                }
               }
-              case 'success': {
-                setCompiling(false);
-                controller.restart();
-                break;
-              }
-              default: {
-                setCompiling(false);
-              }
+
+              break;
             }
-
-            break;
           }
+        } catch {
+          // Intentional noop
         }
-      } catch {
-        // Intentional noop
-      }
-    });
+      });
 
-    return () => {
-      webSocket.close();
-    };
+      return () => {
+        webSocket.close();
+      };
+    } catch {
+      // Ignore failed websocket connections
+    }
   }, [socketUrl, controller]);
 
   useEffect(() => {
