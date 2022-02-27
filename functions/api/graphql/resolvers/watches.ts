@@ -12,7 +12,7 @@ import type {
   Series as GraphQLSeries,
   Season as GraphQLSeason,
   Episode as GraphQLEpisode,
-} from '../graph/schema';
+} from '../schema';
 
 import type {QueryResolver, MutationResolver, Resolver, Context} from './types';
 import {toGid, fromGid} from './utilities/id';

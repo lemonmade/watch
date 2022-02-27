@@ -11,7 +11,7 @@ import type {
   Episode as GraphQLEpisode,
   AddToListPayload,
   RemoveFromListPayload,
-} from '../graph/schema';
+} from '../schema';
 
 import type {QueryResolver, MutationResolver, Resolver} from './types';
 import {toGid, fromGid} from './utilities/id';

@@ -1,4 +1,4 @@
-import type {Context} from '../types';
+import type {Context} from '../../context';
 
 export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
   const fetched = await fetch(`https://api.themoviedb.org/3${path}`, {

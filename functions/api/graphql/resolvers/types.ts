@@ -1,21 +1,7 @@
-import type {Request, Response} from '@quilted/http-handlers';
+import type {Context} from '../context';
+import type {Query, Mutation} from '../schema';
 
-import type {Prisma} from 'shared/utilities/database';
-
-import type {Query, Mutation} from '../graph/schema';
-
-export interface Context {
-  readonly user: {id: string};
-  readonly prisma: Prisma;
-  readonly request: Request;
-  readonly response: MutableResponse;
-}
-
-interface MutableResponse {
-  status: Response['status'];
-  readonly headers: Response['headers'];
-  readonly cookies: Response['cookies'];
-}
+export type {Context};
 
 export interface GraphQLTypeMap {
   Query: Record<string, never>;
@@ -60,6 +46,10 @@ export type QueryResolver = Resolver<'Query', Query>;
 export type MutationResolver = Resolver<'Query', Mutation>;
 
 export interface InterfaceResolver {
+  __resolveType(value: unknown): string;
+}
+
+export interface UnionResolver {
   __resolveType(value: unknown): string;
 }
 

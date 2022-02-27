@@ -19,8 +19,7 @@
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service",
     "ignorePatterns": [
-      "graph/schema-input-types.d.ts",
-      "graph/schema.ts"
+      "graphql/schema.ts"
     ]
   }
 }

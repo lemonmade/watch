@@ -17,10 +17,9 @@ const config: IGraphQLConfig = {
       extensions: {
         quilt: {
           schema: [
-            {kind: 'definitions', outputPath: 'functions/api/graph/schema.ts'},
             {
-              kind: 'inputTypes',
-              outputPath: 'functions/api/graph/schema-input-types.d.ts',
+              kind: 'definitions',
+              outputPath: 'functions/api/graphql/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],

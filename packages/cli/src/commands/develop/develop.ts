@@ -41,7 +41,7 @@ import schemaTypeDefinitions from './schema';
 import type {Query as QueryType} from './schema';
 
 type AllowedReturnType<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => infer U
+  [K in keyof T]?: T[K] extends (...args: any[]) => infer U
     ? AllowedReturnType<U>
     : AllowedReturnType<T[K]>;
 };
@@ -51,7 +51,7 @@ interface Context {
 }
 
 type QueryResolver = {
-  [K in keyof QueryType]: FieldResolver<
+  [K in Exclude<keyof QueryType, '__typename'>]: FieldResolver<
     never,
     Context,
     Parameters<QueryType[K]>[0],

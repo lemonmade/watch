@@ -2,7 +2,7 @@ import type {
   Series as GraphQLSeries,
   WatchLaterPayload,
   RemoveFromWatchLaterPayload,
-} from '../graph/schema';
+} from '../schema';
 
 import type {Context, QueryResolver, MutationResolver, Resolver} from './types';
 import {toGid, fromGid} from './utilities/id';

@@ -1,4 +1,18 @@
 import {
+  App,
+  AppInstallation,
+  ClipsExtension,
+  ClipsExtensionInstallation,
+  ClipsExtensionVersion,
+  ClipsExtensionConfigurationField,
+  ClipsExtensionConfigurationString,
+  ClipsExtensionPointCondition,
+  AppExtension,
+  AppExtensionInstallation,
+  Query as AppsQuery,
+  Mutation as AppsMutation,
+} from './apps';
+import {
   Series,
   Season,
   Episode,
@@ -41,26 +55,38 @@ import {
 } from './users';
 
 export const Query = {
+  ...AppsQuery,
   ...ListsQuery,
   ...MediaQuery,
   ...SearchQuery,
   ...SubscriptionsQuery,
+  ...UsersQuery,
   ...WatchesQuery,
   ...WatchLaterQuery,
-  ...UsersQuery,
 };
 
 export const Mutation = {
+  ...AppsMutation,
   ...ListsMutation,
   ...MediaMutation,
   ...SubscriptionsMutation,
+  ...UsersMutation,
   ...WatchesMutation,
   ...WatchLaterMutation,
-  ...UsersMutation,
 };
 
 export {
   Action,
+  App,
+  AppExtension,
+  AppExtensionInstallation,
+  AppInstallation,
+  ClipsExtension,
+  ClipsExtensionInstallation,
+  ClipsExtensionVersion,
+  ClipsExtensionConfigurationField,
+  ClipsExtensionConfigurationString,
+  ClipsExtensionPointCondition,
   Episode,
   GithubAccount,
   List,

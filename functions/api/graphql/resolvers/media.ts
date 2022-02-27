@@ -9,7 +9,7 @@ import type {
   Season as GraphQLSeason,
   Episode as GraphQLEpisode,
   UpdateSeasonPayload,
-} from '../graph/schema';
+} from '../schema';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';

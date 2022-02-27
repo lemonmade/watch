@@ -1,5 +1,5 @@
 import type {SQS} from 'aws-sdk';
-import type {EmailType, PropsForEmail} from '../../../email';
+import type {EmailType, PropsForEmail} from '../../../../email';
 
 export async function enqueueSendEmail<T extends EmailType>(
   type: T,
