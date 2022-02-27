@@ -3,30 +3,16 @@ import type {
   ListItem as DatabaseListItem,
 } from '@prisma/client';
 
-import type {
-  List as GraphQLList,
-  ListItem as GraphQLListItem,
-  Series as GraphQLSeries,
-  Season as GraphQLSeason,
-  Episode as GraphQLEpisode,
-  AddToListPayload,
-  RemoveFromListPayload,
-} from '../schema';
-
 import type {QueryResolver, MutationResolver, Resolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {addResolvedType, createInterfaceResolver} from './utilities/interfaces';
+
+import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
 
 declare module './types' {
   export interface GraphQLTypeMap {
     List: DatabaseList | typeof VIRTUAL_WATCH_LATER_LIST;
     ListItem: DatabaseListItem;
-    Listable:
-      | GraphQLTypeMap['Series']
-      | GraphQLTypeMap['Season']
-      | GraphQLTypeMap['Episode'];
-    AddToListPayload: LiteralGraphQLObjectType<AddToListPayload>;
-    RemoveFromListPayload: LiteralGraphQLObjectType<RemoveFromListPayload>;
   }
 }
 
@@ -57,7 +43,7 @@ export const Query: Pick<QueryResolver, 'list' | 'lists'> = {
   },
 };
 
-export const List: Resolver<'List', GraphQLList> = {
+export const List: Resolver<'List'> = {
   id: (list) =>
     '__imaginaryWatchLater' in list
       ? toGid('watch-later', 'List')
@@ -73,7 +59,7 @@ export const List: Resolver<'List', GraphQLList> = {
   },
 };
 
-export const ListItem: Resolver<'ListItem', GraphQLListItem> = {
+export const ListItem: Resolver<'ListItem'> = {
   id: ({id}) => toGid(id, 'ListItem'),
   async media({id, seriesId}, _, {prisma}) {
     const series =
@@ -93,7 +79,7 @@ export const ListItem: Resolver<'ListItem', GraphQLListItem> = {
 
 export const Listable = createInterfaceResolver();
 
-export const Series: Pick<Resolver<'Series', GraphQLSeries>, 'lists'> = {
+export const Series: Pick<SeriesResolver, 'lists'> = {
   async lists({id}, _, {prisma, user}) {
     const items = await prisma.listItem.findMany({
       where: {
@@ -104,7 +90,7 @@ export const Series: Pick<Resolver<'Series', GraphQLSeries>, 'lists'> = {
     });
 
     const seenLists = new Set<string>();
-    const lists: import('@prisma/client').List[] = [];
+    const lists: DatabaseList[] = [];
 
     for (const {list} of items) {
       if (seenLists.has(list.id)) continue;
@@ -116,13 +102,13 @@ export const Series: Pick<Resolver<'Series', GraphQLSeries>, 'lists'> = {
   },
 };
 
-export const Season: Pick<Resolver<'Season', GraphQLSeason>, 'lists'> = {
+export const Season: Pick<SeasonResolver, 'lists'> = {
   lists() {
     return [];
   },
 };
 
-export const Episode: Pick<Resolver<'Episode', GraphQLEpisode>, 'lists'> = {
+export const Episode: Pick<EpisodeResolver, 'lists'> = {
   lists() {
     return [];
   },

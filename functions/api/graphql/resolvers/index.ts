@@ -54,7 +54,10 @@ import {
   Mutation as UsersMutation,
 } from './users';
 
-export const Query = {
+import type {QueryResolver, MutationResolver} from './types';
+
+export const Query: QueryResolver = {
+  version: () => 'unstable',
   ...AppsQuery,
   ...ListsQuery,
   ...MediaQuery,
@@ -65,7 +68,8 @@ export const Query = {
   ...WatchLaterQuery,
 };
 
-export const Mutation = {
+export const Mutation: MutationResolver = {
+  ping: () => true,
   ...AppsMutation,
   ...ListsMutation,
   ...MediaMutation,

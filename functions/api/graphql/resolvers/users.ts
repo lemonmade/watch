@@ -6,21 +6,6 @@ import type {
 
 import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
 
-import type {
-  User as GraphQLUser,
-  UserSettings,
-  PersonalAccessToken as GraphQLPersonalAccessToken,
-  GithubAccount as GraphQLGithubAccount,
-  CreateAccountPayload,
-  DeleteAccountPayload,
-  SignInPayload,
-  SignOutPayload,
-  UpdateUserSettingsPayload,
-  DisconnectGithubAccountPayload,
-  CreatePersonalAccessTokenPayload,
-  DeletePersonalAccessTokenPayload,
-} from '../schema';
-
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {enqueueSendEmail} from './utilities/email';
@@ -30,15 +15,6 @@ declare module './types' {
     User: DatabaseUser;
     GithubAccount: DatabaseGithubAccount;
     PersonalAccessToken: DatabasePersonalAccessToken;
-    UserSettings: LiteralGraphQLObjectType<UserSettings>;
-    CreateAccountPayload: LiteralGraphQLObjectType<CreateAccountPayload>;
-    DeleteAccountPayload: LiteralGraphQLObjectType<DeleteAccountPayload>;
-    SignInPayload: LiteralGraphQLObjectType<SignInPayload>;
-    SignOutPayload: LiteralGraphQLObjectType<SignOutPayload>;
-    UpdateUserSettingsPayload: LiteralGraphQLObjectType<UpdateUserSettingsPayload>;
-    DisconnectGithubAccountPayload: LiteralGraphQLObjectType<DisconnectGithubAccountPayload>;
-    CreatePersonalAccessTokenPayload: LiteralGraphQLObjectType<CreatePersonalAccessTokenPayload>;
-    DeletePersonalAccessTokenPayload: LiteralGraphQLObjectType<DeletePersonalAccessTokenPayload>;
   }
 }
 
@@ -57,7 +33,7 @@ export const Query: Pick<QueryResolver, 'me' | 'my'> = {
   },
 };
 
-export const User: Resolver<'User', GraphQLUser> = {
+export const User: Resolver<'User'> = {
   id: ({id}) => toGid(id, 'User'),
   githubAccount({id}, _, {prisma}) {
     return prisma.githubAccount.findFirst({
@@ -82,17 +58,14 @@ export const User: Resolver<'User', GraphQLUser> = {
   },
 };
 
-export const PersonalAccessToken: Resolver<
-  'PersonalAccessToken',
-  GraphQLPersonalAccessToken
-> = {
+export const PersonalAccessToken: Resolver<'PersonalAccessToken'> = {
   id: ({id}) => toGid(id, 'PersonalAccessToken'),
   prefix: () => PERSONAL_ACCESS_TOKEN_PREFIX,
   length: ({token}) => token.length,
   lastFourCharacters: ({token}) => token.slice(-4),
 };
 
-export const GithubAccount: Resolver<'GithubAccount', GraphQLGithubAccount> = {
+export const GithubAccount: Resolver<'GithubAccount'> = {
   avatarImage: ({avatarUrl}) => {
     return avatarUrl ? {source: avatarUrl} : null;
   },

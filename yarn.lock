@@ -5546,9 +5546,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/graphql@npm:^0.4.12":
-  version: 0.4.12
-  resolution: "@quilted/graphql@npm:0.4.12"
+"@quilted/graphql@npm:^0.4.14":
+  version: 0.4.14
+  resolution: "@quilted/graphql@npm:0.4.14"
   dependencies:
     "@babel/generator": ">=7.0.0"
     "@babel/types": ">=7.0.0"
@@ -5588,7 +5588,7 @@ __metadata:
       optional: true
   bin:
     quilt-graphql-typescript: bin/quilt-graphql-typescript.mjs
-  checksum: 5286eac63e990982a6f987b7d7cdf14a847e62fed7804effbb0f20d380b3ac0336ddae38e27d61d72b19b1db12a70a749fa23355fa13f1e6a66f7833ccb28ae1
+  checksum: 28b1cf128947980adf99c22e7c355bb879450c1e5e839f6aa1b2f0a64ef0994c7054ed4b6a588140ebfcc6b5b24ba9469e8bdc52e1f30eb50d44cc638f5cefb9
   languageName: node
   linkType: hard
 
@@ -5696,18 +5696,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/quilt@npm:^0.5.55":
-  version: 0.5.55
-  resolution: "@quilted/quilt@npm:0.5.55"
+"@quilted/quilt@npm:^0.5.57":
+  version: 0.5.57
+  resolution: "@quilted/quilt@npm:0.5.57"
   dependencies:
     "@quilted/async": ^0.3.12
-    "@quilted/graphql": ^0.4.12
+    "@quilted/graphql": ^0.4.14
     "@quilted/http-handlers": ^0.2.20
     "@quilted/polyfills": ^0.2.12
     "@quilted/preact-mini-compat": ^0.2.7
     "@quilted/react-async": ^0.3.22
     "@quilted/react-email": ^0.2.18
-    "@quilted/react-graphql": ^0.4.28
+    "@quilted/react-graphql": ^0.4.30
     "@quilted/react-html": ^0.3.18
     "@quilted/react-http": ^0.3.8
     "@quilted/react-idle": ^0.3.6
@@ -5734,7 +5734,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 9079c1f969e45698e2f905e6fbae5bdaf743cf44b11493ee1f095de058635aea87052d7d0f9ac4c95a144bc466a9d5d64314b1d41b44194c59335475dcc5fb76
+  checksum: 9210fac08860863262a6cf2ee34d2aaed356c01dbc87ef17fd025cade4662cefcf7dfe33d5a54ecad346256f7a02cb9a5c5852b4cd2a6f53b9767c702c0e263f
   languageName: node
   linkType: hard
 
@@ -5776,11 +5776,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quilted/react-graphql@npm:^0.4.28":
-  version: 0.4.28
-  resolution: "@quilted/react-graphql@npm:0.4.28"
+"@quilted/react-graphql@npm:^0.4.30":
+  version: 0.4.30
+  resolution: "@quilted/react-graphql@npm:0.4.30"
   dependencies:
-    "@quilted/graphql": ^0.4.12
+    "@quilted/graphql": ^0.4.14
     "@quilted/react-async": ^0.3.22
     "@quilted/useful-types": ^0.2.5
   peerDependencies:
@@ -5791,7 +5791,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: fa98474ae2d2e83721c6b44f73867510ae7aa247a03292044eb81bf956e7128ae3dfbaad8a4e17ba0b31fd965a10f19ecdff4afad9b569f72acdf37e94fd0c85
+  checksum: d79282c9d4a167e9d9aeb8b45b3d51cd1e30c26bd8e4ab0f2f77616d67eb6fcb1bd223dcd93782422aead6c7efc838f0012e977f410f20696942351d1ff1abc5
   languageName: node
   linkType: hard
 
@@ -7093,7 +7093,7 @@ __metadata:
     "@babel/preset-typescript": ^7.0.0
     "@graphql-tools/schema": ^7.0.0
     "@iarna/toml": ^3.0.0
-    "@quilted/graphql": ^0.4.12
+    "@quilted/graphql": ^0.4.14
     "@quilted/http-handlers": ^0.2.20
     "@quilted/polyfills": ^0.2.12
     "@rollup/plugin-alias": ^3.0.0
@@ -7145,6 +7145,12 @@ __metadata:
   dependencies:
     "@remote-ui/async-subscription": ^2.1.8
     "@remote-ui/core": ^2.1.7
+  languageName: unknown
+  linkType: soft
+
+"@watching/graphql@workspace:packages/graphql":
+  version: 0.0.0-use.local
+  resolution: "@watching/graphql@workspace:packages/graphql"
   languageName: unknown
   linkType: soft
 
@@ -18136,7 +18142,7 @@ typescript@^4.3.4:
     "@quilted/aws": ^0.3.28
     "@quilted/craft": ^0.1.51
     "@quilted/http-handlers": ^0.2.20
-    "@quilted/quilt": ^0.5.55
+    "@quilted/quilt": ^0.5.57
     "@quilted/sewing-kit": ^0.2.13
     "@types/common-tags": ^1.8.0
     "@types/fs-extra": ^9.0.11

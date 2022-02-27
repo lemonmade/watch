@@ -7,11 +7,6 @@ import type {
 } from '@prisma/client';
 
 import type {
-  App as GraphQLApp,
-  AppInstallation as GraphQLAppInstallation,
-  ClipsExtension as GraphQLClipsExtension,
-  ClipsExtensionVersion as GraphQLClipsExtensionVersion,
-  ClipsExtensionInstallation as GraphQLClipsExtensionInstallation,
   ClipsExtensionPointSupportInput,
   CreateClipsInitialVersion,
   ClipsExtensionConfigurationStringInput,
@@ -33,8 +28,6 @@ declare module './types' {
     ClipsExtension: DatabaseClipsExtension;
     ClipsExtensionVersion: DatabaseClipsExtensionVersion;
     ClipsExtensionInstallation: DatabaseClipsExtensionInstallation;
-    AppExtension: GraphQLTypeMap['ClipsExtension'];
-    AppExtensionInstallation: GraphQLTypeMap['ClipsExtensionInstallation'];
   }
 }
 
@@ -394,7 +387,7 @@ export const AppExtension = createUnionResolver();
 
 export const AppExtensionInstallation = createUnionResolver();
 
-export const App: Resolver<'App', GraphQLApp> = {
+export const App: Resolver<'App'> = {
   id: ({id}) => toGid(id, 'App'),
   async extensions({id}, _, {prisma}) {
     const extensions = await prisma.clipsExtension.findMany({
@@ -414,10 +407,7 @@ export const App: Resolver<'App', GraphQLApp> = {
   },
 };
 
-export const AppInstallation: Resolver<
-  'AppInstallation',
-  GraphQLAppInstallation
-> = {
+export const AppInstallation: Resolver<'AppInstallation'> = {
   id: ({id}) => toGid(id, 'AppInstallation'),
   app: ({appId}, _, {prisma}) =>
     prisma.app.findFirst({where: {id: appId}, rejectOnNotFound: true}),
@@ -432,38 +422,34 @@ export const AppInstallation: Resolver<
   },
 };
 
-export const ClipsExtension: Resolver<'ClipsExtension', GraphQLClipsExtension> =
-  {
-    id: ({id}) => toGid(id, 'ClipsExtension'),
-    app: ({appId}, _, {prisma}) =>
-      prisma.app.findFirst({where: {id: appId}, rejectOnNotFound: true}),
-    latestVersion({activeVersionId}, _, {prisma}) {
-      return activeVersionId
-        ? prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
-        : null;
-    },
-    async versions({id}, _, {prisma}) {
-      const versions = await prisma.clipsExtensionVersion.findMany({
-        where: {extensionId: id},
-        take: 50,
-        // orderBy: {createAt, 'desc'},
-      });
+export const ClipsExtension: Resolver<'ClipsExtension'> = {
+  id: ({id}) => toGid(id, 'ClipsExtension'),
+  app: ({appId}, _, {prisma}) =>
+    prisma.app.findFirst({where: {id: appId}, rejectOnNotFound: true}),
+  latestVersion({activeVersionId}, _, {prisma}) {
+    return activeVersionId
+      ? prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
+      : null;
+  },
+  async versions({id}, _, {prisma}) {
+    const versions = await prisma.clipsExtensionVersion.findMany({
+      where: {extensionId: id},
+      take: 50,
+      // orderBy: {createAt, 'desc'},
+    });
 
-      return versions;
-    },
-    async isInstalled({id}, _, {prisma, user}) {
-      const installation = await prisma.clipsExtensionInstallation.findFirst({
-        where: {extensionId: id, userId: user.id},
-      });
+    return versions;
+  },
+  async isInstalled({id}, _, {prisma, user}) {
+    const installation = await prisma.clipsExtensionInstallation.findFirst({
+      where: {extensionId: id, userId: user.id},
+    });
 
-      return installation != null;
-    },
-  };
+    return installation != null;
+  },
+};
 
-export const ClipsExtensionVersion: Resolver<
-  'ClipsExtensionVersion',
-  GraphQLClipsExtensionVersion
-> = {
+export const ClipsExtensionVersion: Resolver<'ClipsExtensionVersion'> = {
   id: ({id}) => toGid(id, 'ClipsExtensionVersion'),
   extension: ({extensionId}, _, {prisma}) =>
     prisma.clipsExtension.findFirst({
@@ -517,33 +503,31 @@ export const ClipsExtensionConfigurationField: UnionResolver = {
   },
 };
 
-export const ClipsExtensionInstallation: Resolver<
-  'ClipsExtensionInstallation',
-  GraphQLClipsExtensionInstallation
-> = {
-  id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
-  extension: ({extensionId}, _, {prisma}) =>
-    prisma.clipsExtension.findFirst({
-      where: {id: extensionId},
-      rejectOnNotFound: true,
-    }),
-  appInstallation: ({appInstallationId}, _, {prisma}) =>
-    prisma.appInstallation.findFirst({
-      where: {id: appInstallationId},
-      rejectOnNotFound: true,
-    }),
-  async version({extensionId}, _, {prisma}) {
-    const extension = await prisma.clipsExtension.findFirst({
-      where: {id: extensionId},
-      select: {activeVersion: true},
-      rejectOnNotFound: true,
-    });
+export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> =
+  {
+    id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
+    extension: ({extensionId}, _, {prisma}) =>
+      prisma.clipsExtension.findFirst({
+        where: {id: extensionId},
+        rejectOnNotFound: true,
+      }),
+    appInstallation: ({appInstallationId}, _, {prisma}) =>
+      prisma.appInstallation.findFirst({
+        where: {id: appInstallationId},
+        rejectOnNotFound: true,
+      }),
+    async version({extensionId}, _, {prisma}) {
+      const extension = await prisma.clipsExtension.findFirst({
+        where: {id: extensionId},
+        select: {activeVersion: true},
+        rejectOnNotFound: true,
+      });
 
-    return extension.activeVersion!;
-  },
-  configuration: ({configuration}) =>
-    configuration ? JSON.stringify(configuration) : null,
-};
+      return extension.activeVersion!;
+    },
+    configuration: ({configuration}) =>
+      configuration ? JSON.stringify(configuration) : null,
+  };
 
 async function createStagedClipsVersion({
   hash,

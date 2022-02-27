@@ -4,13 +4,6 @@ import type {
   Episode as DatabaseEpisode,
 } from '@prisma/client';
 
-import type {
-  Series as GraphQLSeries,
-  Season as GraphQLSeason,
-  Episode as GraphQLEpisode,
-  UpdateSeasonPayload,
-} from '../schema';
-
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {bufferFromSlice} from './utilities/slices';
@@ -35,9 +28,12 @@ declare module './types' {
     Season: DatabaseSeason;
     Episode: DatabaseEpisode;
     EpisodeSlice: Slice;
-    UpdateSeasonPayload: LiteralGraphQLObjectType<UpdateSeasonPayload>;
   }
 }
+
+export type SeriesResolver = Resolver<'Series'>;
+export type SeasonResolver = Resolver<'Season'>;
+export type EpisodeResolver = Resolver<'Episode'>;
 
 export const Query: Pick<QueryResolver, 'series'> = {
   series(_, {id}, {prisma}) {
@@ -45,7 +41,7 @@ export const Query: Pick<QueryResolver, 'series'> = {
   },
 };
 
-export const Series: Resolver<'Series', GraphQLSeries> = {
+export const Series: SeriesResolver = {
   id: ({id}) => toGid(id, 'Series'),
   season({id}, {number}, {prisma}) {
     return prisma.season.findFirst({where: {seriesId: id, number}});
@@ -73,7 +69,7 @@ export const Series: Resolver<'Series', GraphQLSeries> = {
   ...SeriesSubscription,
 };
 
-export const Season: Resolver<'Season', GraphQLSeason> = {
+export const Season: SeasonResolver = {
   id: ({id}) => toGid(id, 'Season'),
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
@@ -99,7 +95,7 @@ export const Season: Resolver<'Season', GraphQLSeason> = {
   ...SeasonWatches,
 };
 
-export const Episode: Resolver<'Episode', GraphQLEpisode> = {
+export const Episode: EpisodeResolver = {
   id: ({id}) => toGid(id, 'Episode'),
   async series({seasonId}, _, {prisma}) {
     const foundSeason = await prisma.season.findFirst({

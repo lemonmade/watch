@@ -1,11 +1,17 @@
 import type {Context} from '../context';
-import type {Query, Mutation} from '../schema';
+import type {Schema} from '../schema';
 
 export type {Context};
 
 export interface GraphQLTypeMap {
   Query: Record<string, never>;
   Mutation: Record<string, never>;
+}
+
+interface GraphQLServerOptions {
+  readonly types: Schema;
+  readonly baseValues: GraphQLTypeMap;
+  readonly context: Context;
 }
 
 export type GraphQLReturnResult<T> = T extends null
@@ -18,6 +24,8 @@ export type GraphQLReturnResult<T> = T extends null
   ? boolean
   : T extends (infer U)[]
   ? GraphQLReturnResult<U>[]
+  : T extends {__possibleTypes: any}
+  ? GraphQLReturnResult<T['__possibleTypes']>
   : T extends {__typename: any}
   ? T['__typename'] extends keyof GraphQLTypeMap
     ? GraphQLTypeMap[T['__typename']]
@@ -25,25 +33,30 @@ export type GraphQLReturnResult<T> = T extends null
   : never;
 
 export type ResolverField<
-  Type extends keyof GraphQLTypeMap,
+  Type extends keyof GraphQLServerOptions['types'],
   Variables,
   ReturnType,
 > = (
-  value: GraphQLTypeMap[Type],
+  value: BaseValue<Type>,
   variables: Variables,
   context: Context,
 ) => GraphQLReturnResult<ReturnType> | Promise<GraphQLReturnResult<ReturnType>>;
 
-export type Resolver<Type extends keyof GraphQLTypeMap, GraphQLType> = {
-  [Field in keyof GraphQLType]?: GraphQLType[Field] extends (
+export type BaseValue<Type extends keyof GraphQLServerOptions['types']> =
+  Type extends keyof GraphQLServerOptions['baseValues']
+    ? GraphQLServerOptions['baseValues'][Type]
+    : LiteralGraphQLObjectType<GraphQLServerOptions['types'][Type]>;
+
+export type Resolver<Type extends keyof GraphQLServerOptions['types']> = {
+  [Field in keyof GraphQLServerOptions['types'][Type]]?: GraphQLServerOptions['types'][Type][Field] extends (
     variables: infer Variables,
   ) => infer ReturnValue
     ? ResolverField<Type, Variables, ReturnValue>
     : never;
 };
 
-export type QueryResolver = Resolver<'Query', Query>;
-export type MutationResolver = Resolver<'Query', Mutation>;
+export type QueryResolver = Resolver<'Query'>;
+export type MutationResolver = Resolver<'Mutation'>;
 
 export interface InterfaceResolver {
   __resolveType(value: unknown): string;

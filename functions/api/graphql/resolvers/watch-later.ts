@@ -1,20 +1,8 @@
-import type {
-  Series as GraphQLSeries,
-  WatchLaterPayload,
-  RemoveFromWatchLaterPayload,
-} from '../schema';
-
-import type {Context, QueryResolver, MutationResolver, Resolver} from './types';
+import type {Context, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 
+import type {SeriesResolver} from './media';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists';
-
-declare module './types' {
-  export interface GraphQLTypeMap {
-    WatchLaterPayload: LiteralGraphQLObjectType<WatchLaterPayload>;
-    RemoveFromWatchLaterPayload: LiteralGraphQLObjectType<RemoveFromWatchLaterPayload>;
-  }
-}
 
 export const Query: Pick<QueryResolver, 'watchLater'> = {
   async watchLater(_, __, {user, prisma}) {
@@ -26,7 +14,7 @@ export const Query: Pick<QueryResolver, 'watchLater'> = {
   },
 };
 
-export const Series: Pick<Resolver<'Series', GraphQLSeries>, 'inWatchLater'> = {
+export const Series: Pick<SeriesResolver, 'inWatchLater'> = {
   async inWatchLater({id}, _, {prisma, user}) {
     const item = await prisma.listItem.findFirst({
       where: {

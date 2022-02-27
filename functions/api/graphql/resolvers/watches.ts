@@ -5,15 +5,6 @@ import type {
   Episode as DatabaseEpisode,
 } from '@prisma/client';
 
-import type {
-  Watch as GraphQLWatch,
-  Skip as GraphQLSkip,
-  WatchThrough as GraphQLWatchThrough,
-  Series as GraphQLSeries,
-  Season as GraphQLSeason,
-  Episode as GraphQLEpisode,
-} from '../schema';
-
 import type {QueryResolver, MutationResolver, Resolver, Context} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {
@@ -24,6 +15,7 @@ import {
 import {bufferFromSlice, sliceFromBuffer} from './utilities/slices';
 import type {Slice} from './utilities/slices';
 
+import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists';
 import {addSeriesToWatchLater} from './watch-later';
 
@@ -31,10 +23,7 @@ declare module './types' {
   export interface GraphQLTypeMap {
     Watch: DatabaseWatch;
     Skip: DatabaseSkip;
-    Action: GraphQLTypeMap['Watch'] | GraphQLTypeMap['Skip'];
     WatchThrough: DatabaseWatchThrough;
-    Watchable: GraphQLTypeMap['Episode'] | GraphQLTypeMap['Season'];
-    Skippable: GraphQLTypeMap['Episode'] | GraphQLTypeMap['Season'];
   }
 }
 
@@ -60,7 +49,7 @@ export const Query: Pick<
   },
 };
 
-export const WatchThrough: Resolver<'WatchThrough', GraphQLWatchThrough> = {
+export const WatchThrough: Resolver<'WatchThrough'> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
@@ -177,7 +166,7 @@ export const WatchThrough: Resolver<'WatchThrough', GraphQLWatchThrough> = {
   },
 };
 
-export const Watch: Resolver<'Watch', GraphQLWatch> = {
+export const Watch: Resolver<'Watch'> = {
   id: ({id}) => toGid(id, 'Watch'),
   async media({id, episodeId, seasonId}, _, {prisma}) {
     const [episode, season] = await Promise.all([
@@ -212,7 +201,7 @@ export const Watch: Resolver<'Watch', GraphQLWatch> = {
   },
 };
 
-export const Skip: Resolver<'Skip', GraphQLSkip> = {
+export const Skip: Resolver<'Skip'> = {
   id: ({id}) => toGid(id, 'Skip'),
   async media({id, episodeId, seasonId}, _, {prisma}) {
     const [episode, season] = await Promise.all([
@@ -253,10 +242,7 @@ export const Watchable = createInterfaceResolver();
 
 export const Skippable = createInterfaceResolver();
 
-export const Series: Pick<
-  Resolver<'Series', GraphQLSeries>,
-  'watchThroughs'
-> = {
+export const Series: Pick<SeriesResolver, 'watchThroughs'> = {
   watchThroughs({id}, _, {prisma, user}) {
     return prisma.watchThrough.findMany({
       take: 50,
@@ -266,7 +252,7 @@ export const Series: Pick<
 };
 
 export const Season: Pick<
-  Resolver<'Season', GraphQLSeason>,
+  SeasonResolver,
   'watches' | 'latestWatch' | 'skips' | 'latestSkip'
 > = {
   watches({id}, _, {prisma, user}) {
@@ -296,7 +282,7 @@ export const Season: Pick<
 };
 
 export const Episode: Pick<
-  Resolver<'Episode', GraphQLEpisode>,
+  EpisodeResolver,
   'watches' | 'latestWatch' | 'skips' | 'latestSkip'
 > = {
   watches({id}, _, {prisma, user}) {

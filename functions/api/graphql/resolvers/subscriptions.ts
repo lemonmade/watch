@@ -1,22 +1,13 @@
 import type {SeriesSubscription as DatabaseSeriesSubscription} from '@prisma/client';
 
-import type {
-  Series as GraphQLSeries,
-  SeriesSubscription as GraphQLSeriesSubscription,
-  SeriesSubscriptionSettings,
-  SubscribeToSeriesPayload,
-  UpdateSeriesSubscriptionSettingsPayload,
-} from '../schema';
-
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
+
+import type {SeriesResolver} from './media';
 
 declare module './types' {
   export interface GraphQLTypeMap {
     SeriesSubscription: DatabaseSeriesSubscription;
-    SeriesSubscriptionSettings: LiteralGraphQLObjectType<SeriesSubscriptionSettings>;
-    SubscribeToSeriesPayload: LiteralGraphQLObjectType<SubscribeToSeriesPayload>;
-    UpdateSeriesSubscriptionSettingsPayload: LiteralGraphQLObjectType<UpdateSeriesSubscriptionSettingsPayload>;
   }
 }
 
@@ -35,10 +26,7 @@ export const Query: Pick<QueryResolver, 'subscription' | 'subscriptions'> = {
   },
 };
 
-export const SeriesSubscription: Resolver<
-  'SeriesSubscription',
-  GraphQLSeriesSubscription
-> = {
+export const SeriesSubscription: Resolver<'SeriesSubscription'> = {
   id: ({id}) => toGid(id, 'SeriesSubscription'),
   subscribedOn: ({createdAt}) => createdAt.toISOString(),
   series({seriesId}, _, {prisma}) {
@@ -54,7 +42,7 @@ export const SeriesSubscription: Resolver<
   },
 };
 
-export const Series: Pick<Resolver<'Series', GraphQLSeries>, 'subscription'> = {
+export const Series: Pick<SeriesResolver, 'subscription'> = {
   subscription({id}, _, {prisma, user}) {
     return prisma.seriesSubscription.findFirst({
       where: {seriesId: id, userId: user.id},
