@@ -1,0 +1,48 @@
+#import "./shared.schema.graphql"
+#import "./media.schema.graphql"
+
+extend type Query {
+  subscription(id: ID!): SeriesSubscription
+  subscriptions: [SeriesSubscription!]!
+}
+
+extend type Series {
+  subscription: SeriesSubscription
+}
+
+extend type Mutation {
+  subscribeToSeries(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance
+  ): SubscribeToSeriesPayload!
+  unsubscribeFromSeries(id: ID!): UnsubscribeFromSeriesPayload!
+  updateSeriesSubscriptionSettings(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance!
+  ): UpdateSeriesSubscriptionSettingsPayload!
+}
+
+type SeriesSubscriptionSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
+type SeriesSubscription {
+  id: ID!
+  series: Series!
+  subscribedOn: Date!
+  settings: SeriesSubscriptionSettings!
+}
+
+# Mutations
+
+type SubscribeToSeriesPayload {
+  subscription: SeriesSubscription
+}
+
+type UnsubscribeFromSeriesPayload {
+  deletedSubscriptionId: ID!
+}
+
+type UpdateSeriesSubscriptionSettingsPayload {
+  subscription: SeriesSubscription
+}

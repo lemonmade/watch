@@ -1,0 +1,74 @@
+#import "./shared.schema.graphql"
+
+extend type Query {
+  series(id: ID!): Series
+}
+
+extend type Mutation {
+  updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
+}
+
+type Episode {
+  id: ID!
+  title: String!
+  series: Series!
+  season: Season!
+  number: Int!
+  firstAired: Date
+  still: Image
+  overview: String
+}
+
+input EpisodeSliceInput {
+  season: Int!
+  episode: Int
+}
+
+type EpisodeSlice {
+  season: Int!
+  episode: Int
+}
+
+enum SeasonStatus {
+  CONTINUING
+  ENDED
+}
+
+type Season {
+  id: ID!
+  series: Series!
+  number: Int!
+  episodes: [Episode!]!
+  firstAired: Date
+  poster: Image
+  overview: String
+  isSpecials: Boolean!
+  status: SeasonStatus!
+}
+
+enum SeriesStatus {
+  RETURNING
+  ENDED
+  CANCELLED
+}
+
+type Series {
+  id: ID!
+  tmdbId: ID!
+  imdbId: ID!
+  name: String!
+  poster: Image
+  overview: String
+  firstAired: Date
+  status: SeriesStatus!
+  seasons: [Season!]!
+  season(number: Int!): Season
+  episodes: [Episode!]!
+  episode(number: Int!, seasonNumber: Int!): Episode
+}
+
+# Mutations
+
+type UpdateSeasonPayload {
+  season: Season
+}

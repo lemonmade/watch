@@ -1,0 +1,9 @@
+#import "./media.schema.graphql"
+
+extend type Query {
+  search(query: String!): SearchResults!
+}
+
+type SearchResults {
+  series: [Series!]!
+}

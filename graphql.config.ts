@@ -3,7 +3,7 @@ import type {IGraphQLConfig} from 'graphql-config';
 const config: IGraphQLConfig = {
   projects: {
     default: {
-      schema: 'functions/api/graph/schema.graphql',
+      schema: 'graphql/main/*schema.graphql',
       documents: [
         'app/**/*.graphql',
         'packages/cli/src/commands/publish/**/*.graphql',
@@ -17,10 +17,9 @@ const config: IGraphQLConfig = {
       extensions: {
         quilt: {
           schema: [
-            {kind: 'definitions', outputPath: 'functions/api/graph/schema.ts'},
             {
-              kind: 'inputTypes',
-              outputPath: 'functions/api/graph/schema-input-types.d.ts',
+              kind: 'definitions',
+              outputPath: 'functions/api/graphql/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],

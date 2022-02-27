@@ -1,4 +1,5 @@
-import type {EmailType, PropsForEmail} from '../../../email';
+import type {SQS} from 'aws-sdk';
+import type {EmailType, PropsForEmail} from '../../../../email';
 
 export async function enqueueSendEmail<T extends EmailType>(
   type: T,
@@ -8,7 +9,7 @@ export async function enqueueSendEmail<T extends EmailType>(
 
   const sqs = new SQS();
 
-  const message: import('aws-sdk').SQS.Types.SendMessageRequest = {
+  const message: SQS.Types.SendMessageRequest = {
     QueueUrl: process.env.EMAIL_QUEUE_URL!,
     MessageBody: JSON.stringify(props),
     MessageAttributes: {

@@ -12,10 +12,8 @@ import {createPrisma} from 'shared/utilities/database';
 import type {Prisma} from 'shared/utilities/database';
 import {getUserIdFromRequest} from 'shared/utilities/auth';
 
-import typeDefs from './graph/schema';
-
-import {resolvers, createContext} from './graph';
-import type {Authentication} from './graph';
+import {resolvers, createContext, schemaSource} from './graphql';
+import type {Authentication} from './graphql';
 
 const ACCESS_TOKEN_HEADER = 'X-Access-Token';
 
@@ -25,8 +23,8 @@ sentryInit({
 });
 
 const schema = makeExecutableSchema({
-  typeDefs,
   resolvers,
+  typeDefs: schemaSource,
 });
 
 const app = createHttpHandler();

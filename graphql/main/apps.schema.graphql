@@ -1,0 +1,301 @@
+#import "./shared.schema.graphql"
+#import "./users.schema.graphql"
+
+extend type Query {
+  apps: [App!]!
+  app(id: ID!): App
+  clipsInstallation(id: ID!): ClipsExtensionInstallation
+  clipsInstallations(
+    extensionPoint: ClipsExtensionPoint
+    conditions: [ClipsExtensionPointConditionInput!]
+  ): [ClipsExtensionInstallation!]!
+}
+
+extend type Mutation {
+  createApp(name: String!): CreateAppPayload!
+  deleteApp(id: ID!): DeleteAppPayload!
+  updateApp(id: ID!, name: String): UpdateAppPayload!
+  createClipsExtension(
+    name: String!
+    appId: ID!
+    initialVersion: CreateClipsInitialVersion
+  ): CreateClipsExtensionPayload!
+  deleteClipsExtension(id: ID!): DeleteClipsExtensionPayload!
+  updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
+  pushClipsExtension(
+    extensionId: ID!
+    hash: String!
+    name: String
+    translations: JSON
+    supports: [ClipsExtensionPointSupportInput!]
+    configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
+  ): PushClipsExtensionPayload!
+  publishLatestClipsExtensionVersion(
+    extensionId: ID!
+  ): PublishClipsExtensionVersionPayload!
+  installApp(id: ID!): InstallAppPayload!
+  installClipsExtension(
+    id: ID!
+    extensionPoint: ClipsExtensionPoint
+    configuration: JSON
+  ): InstallClipsExtensionPayload!
+  uninstallClipsExtension(id: ID!): UninstallClipsExtensionPayload!
+  updateClipsExtensionInstallation(
+    id: ID!
+    configuration: JSON
+  ): UpdateClipsExtensionInstallationPayload!
+}
+
+extend type User {
+  apps: [App!]!
+  app(id: ID!): App
+}
+
+scalar TranslationKey
+scalar ClipsExtensionPoint
+scalar ClipsExtensionApiVersion
+
+type Icon {
+  source: Url!
+}
+
+type Asset {
+  source: Url!
+}
+
+type App {
+  id: ID!
+  name: String!
+  icon: Icon
+  extensions: [AppExtension!]!
+
+  isInstalled: Boolean!
+}
+
+type ClipsExtension {
+  id: ID!
+  name: String!
+  app: App!
+  latestVersion: ClipsExtensionVersion
+  versions: [ClipsExtensionVersion!]!
+
+  isInstalled: Boolean!
+}
+
+union AppExtension = ClipsExtension
+
+enum ClipsExtensionVersionStatus {
+  PUBLISHED
+  BUILDING
+}
+
+type ClipsExtensionVersion {
+  id: ID!
+  status: ClipsExtensionVersionStatus!
+  assets: [Asset!]!
+  apiVersion: ClipsExtensionApiVersion!
+  extension: ClipsExtension!
+  supports: [ClipsExtensionPointSupport!]!
+  configurationSchema: [ClipsExtensionConfigurationField!]!
+  translations: JSON
+}
+
+# Extension point conditions
+
+type ClipsExtensionPointSeriesCondition {
+  id: ID!
+}
+
+union ClipsExtensionPointCondition = ClipsExtensionPointSeriesCondition
+
+type ClipsExtensionPointSupport {
+  extensionPoint: ClipsExtensionPoint!
+  conditions: [ClipsExtensionPointCondition!]!
+}
+
+input ClipsExtensionPointConditionInput {
+  seriesId: ID
+}
+
+input ClipsExtensionPointSupportInput {
+  extensionPoint: ClipsExtensionPoint!
+  conditions: [ClipsExtensionPointConditionInput!]
+}
+
+# Extension point configuration
+
+type ClipsExtensionConfigurationSchema {
+  fields: [ClipsExtensionConfigurationField!]!
+}
+
+type ClipsExtensionConfigurationStringTranslation {
+  key: TranslationKey!
+}
+
+type ClipsExtensionConfigurationStringStatic {
+  value: String!
+}
+
+union ClipsExtensionConfigurationString =
+    ClipsExtensionConfigurationStringTranslation
+  | ClipsExtensionConfigurationStringStatic
+
+interface ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+}
+
+type ClipsExtensionStringConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: String
+}
+
+type ClipsExtensionNumberConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: Float
+}
+
+type ClipsExtensionOptionConfigurationFieldOption {
+  value: String!
+  label: ClipsExtensionConfigurationString!
+}
+
+type ClipsExtensionOptionsConfigurationField implements ClipsExtensionTypedConfigurationField {
+  key: String!
+  label: ClipsExtensionConfigurationString!
+  default: String
+  options: [ClipsExtensionOptionConfigurationFieldOption!]!
+}
+
+union ClipsExtensionConfigurationField =
+    ClipsExtensionStringConfigurationField
+  | ClipsExtensionNumberConfigurationField
+  | ClipsExtensionOptionsConfigurationField
+
+input ClipsExtensionConfigurationSchemaFieldsInput {
+  string: ClipsExtensionConfigurationSchemaStringFieldInput
+  number: ClipsExtensionConfigurationSchemaNumberFieldInput
+  options: ClipsExtensionConfigurationSchemaOptionsFieldInput
+}
+
+input ClipsExtensionConfigurationStringInput {
+  static: String
+  translation: TranslationKey
+}
+
+input ClipsExtensionConfigurationSchemaStringFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: String
+}
+
+input ClipsExtensionConfigurationSchemaNumberFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: Float
+}
+
+input ClipsExtensionConfigurationSchemaOptionsFieldInput {
+  key: String!
+  label: ClipsExtensionConfigurationStringInput!
+  default: String
+  options: [ClipsExtensionOptionConfigurationFieldOptionInput!]!
+}
+
+input ClipsExtensionOptionConfigurationFieldOptionInput {
+  value: String!
+  label: ClipsExtensionConfigurationStringInput!
+}
+
+enum ClipsExtensionVersionStatus {
+  PUBLISHED
+  BUILDING
+}
+
+type AppInstallation {
+  id: ID!
+  app: App!
+  extensions: [AppExtensionInstallation!]!
+}
+
+type ClipsExtensionInstallation {
+  id: ID!
+  extension: ClipsExtension!
+  version: ClipsExtensionVersion!
+  extensionPoint: ClipsExtensionPoint!
+  appInstallation: AppInstallation!
+  configuration: JSON
+}
+
+union AppExtensionInstallation = ClipsExtensionInstallation
+
+# Mutations
+
+input CreateClipsInitialVersion {
+  hash: String!
+  translations: JSON
+  supports: [ClipsExtensionPointSupportInput!]
+  configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
+}
+
+type CreateAppPayload {
+  app: App
+}
+
+type DeleteAppPayload {
+  deletedId: ID
+}
+
+type UpdateAppPayload {
+  app: App
+}
+
+type CreateClipsExtensionPayload {
+  app: App
+  extension: ClipsExtension
+  version: ClipsExtensionVersion
+  signedScriptUpload: Url
+}
+
+type DeleteClipsExtensionPayload {
+  app: App
+  deletedId: ID
+}
+
+type UpdateClipsExtensionPayload {
+  app: App
+  extension: ClipsExtension
+}
+
+type PushClipsExtensionPayload {
+  extension: ClipsExtension
+  version: ClipsExtensionVersion
+  signedScriptUpload: Url
+}
+
+type PublishClipsExtensionVersionPayload {
+  extension: ClipsExtension
+  version: ClipsExtensionVersion
+}
+
+type InstallAppPayload {
+  app: App
+  installation: AppInstallation
+}
+
+type InstallClipsExtensionPayload {
+  extension: ClipsExtension
+  installation: ClipsExtensionInstallation
+}
+
+type UninstallClipsExtensionPayload {
+  extension: ClipsExtension
+  deletedInstallationId: ID
+}
+
+type UpdateClipsExtensionInstallationPayload {
+  extension: ClipsExtension
+  installation: ClipsExtensionInstallation
+}

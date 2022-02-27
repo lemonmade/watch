@@ -1,0 +1,88 @@
+#import "./shared.schema.graphql"
+
+extend type Query {
+  me: User!
+  my: User!
+}
+
+extend type Mutation {
+  createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
+  deleteAccount: DeleteAccountPayload!
+  signIn(email: Email!, redirectTo: Url): SignInPayload!
+  signOut: SignOutPayload!
+  disconnectGithubAccount: DisconnectGithubAccountPayload!
+  createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
+  deletePersonalAccessToken(
+    id: ID
+    token: String
+  ): DeletePersonalAccessTokenPayload!
+  updateUserSettings(
+    spoilerAvoidance: SpoilerAvoidance
+  ): UpdateUserSettingsPayload!
+}
+
+scalar GithubID
+
+type UserSettings {
+  spoilerAvoidance: SpoilerAvoidance!
+}
+
+type User {
+  id: ID!
+  email: Email!
+  githubAccount: GithubAccount
+  accessTokens: [PersonalAccessToken!]!
+  settings: UserSettings!
+}
+
+type GithubAccount {
+  id: GithubID!
+  username: String!
+  profileUrl: Url!
+  avatarImage: Image
+}
+
+type PersonalAccessToken {
+  id: ID!
+  label: String
+  prefix: String!
+  length: Int!
+  createdAt: Date!
+  lastUsedAt: Date
+  lastFourCharacters: String!
+}
+
+# Mutation
+
+type CreateAccountPayload {
+  email: Email!
+}
+
+type DeleteAccountPayload {
+  deletedId: ID!
+}
+
+type SignInPayload {
+  email: Email!
+}
+
+type SignOutPayload {
+  userId: ID!
+}
+
+type DisconnectGithubAccountPayload {
+  deletedAccount: GithubAccount
+}
+
+type CreatePersonalAccessTokenPayload {
+  plaintextToken: String
+  personalAccessToken: PersonalAccessToken
+}
+
+type DeletePersonalAccessTokenPayload {
+  deletedPersonalAccessTokenId: ID
+}
+
+type UpdateUserSettingsPayload {
+  user: User!
+}

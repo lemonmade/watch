@@ -2,11 +2,9 @@
   "extends": "@quilted/typescript/pkg.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build/typescript",
-    "lib": ["WebWorker", "esnext"],
-    "types": ["node"]
+    "outDir": "build/typescript"
   },
   "include": ["src"],
   "exclude": ["sewing-kit.config.ts", "build"],
-  "references": [{"path": "../clips"}, {"path": "../graphql"}]
+  "references": []
 }

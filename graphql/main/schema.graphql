@@ -1,0 +1,11 @@
+type Query {
+  version: ApiVersion
+}
+
+type Mutation {
+  ping: Boolean!
+}
+
+schema {
+  query: Query
+}
