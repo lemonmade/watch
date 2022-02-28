@@ -30,7 +30,7 @@ extend type Mutation {
   skipEpisode(
     episode: ID!
     watchThrough: ID
-    notes: Notes
+    notes: NotesInput
     at: Date
     updateWatchLater: Boolean
   ): SkipEpisodePayload!
@@ -38,7 +38,7 @@ extend type Mutation {
     episode: ID!
     watchThrough: ID
     rating: Int
-    notes: Notes
+    notes: NotesInput
     startedAt: Date
     finishedAt: Date
     updateWatchLater: Boolean
@@ -72,6 +72,11 @@ interface Watchable {
   id: ID!
   watches: [Watch!]!
   latestWatch: Watch
+}
+
+type Notes {
+  content: FormattedText!
+  containsSpoilers: Boolean!
 }
 
 type Watch {
@@ -136,6 +141,11 @@ type WatchThroughSettings {
 }
 
 # Mutations
+
+input NotesInput {
+  content: FormattedText!
+  containsSpoilers: Boolean!
+}
 
 type WatchEpisodePayload {
   watch: Watch

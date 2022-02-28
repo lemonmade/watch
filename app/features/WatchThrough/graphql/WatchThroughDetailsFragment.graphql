@@ -17,6 +17,10 @@ fragment WatchThroughDetails on WatchThrough {
     ... on Skip {
       id
       at
+      notes {
+        content
+        containsSpoilers
+      }
       media {
         ... on Episode {
           id
@@ -36,6 +40,10 @@ fragment WatchThroughDetails on WatchThrough {
       id
       rating
       finishedAt
+      notes {
+        content
+        containsSpoilers
+      }
       media {
         ... on Episode {
           id

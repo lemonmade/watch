@@ -1,9 +1,9 @@
 scalar Url
 scalar JSON
 scalar Date
-scalar Notes
 scalar Email
 scalar ApiVersion
+scalar FormattedText
 
 enum SpoilerAvoidance {
   NONE

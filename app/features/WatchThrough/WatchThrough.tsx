@@ -5,6 +5,7 @@ import {
   BlockStack,
   InlineStack,
   Button,
+  Checkbox,
   Heading,
   TextBlock,
   TextField,
@@ -24,7 +25,9 @@ import {parseGid} from 'utilities/graphql';
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
+import type {WatchThroughWatchNextEpisodeMutationVariables} from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
+import type {WatchThroughSkipNextEpisodeMutationVariables} from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
 import stopWatchThroughMutation from './graphql/StopWatchThroughMutation.graphql';
 import deleteWatchThroughMutation from './graphql/DeleteWatchThroughMutation.graphql';
 import updateWatchThroughSettingsMutation from './graphql/UpdateWatchThroughSettingsMutation.graphql';
@@ -183,6 +186,15 @@ function PreviousActionsSection({
                     : ''}
                 </Text>
                 <Text>Rating: {action.rating}</Text>
+                {action.notes ? (
+                  <Text>
+                    Notes
+                    {action.notes.containsSpoilers
+                      ? ' (contains spoilers)'
+                      : ''}
+                    : {action.notes.content}
+                  </Text>
+                ) : null}
               </BlockStack>
             );
           } else {
@@ -217,16 +229,20 @@ function NextEpisode({
 }) {
   const [rating, setRating] = useState<null | number>(null);
   const [notes, setNotes] = useState<null | string>(null);
+  const [containsSpoilers, setContainsSpoilers] = useState(false);
   const watchNextEpisode = useMutation(watchNextEpisodeMutation);
   const skipNextEpisode = useMutation(skipNextEpisodeMutation);
   const [at, setAt] = useState<Date | null>(() => new Date());
 
   const markEpisodeAsWatched = async () => {
-    const optionalArguments: {[key: string]: any} = {
-      finishedAt: at,
+    const optionalArguments: Omit<
+      WatchThroughWatchNextEpisodeMutationVariables,
+      'episode' | 'watchThrough'
+    > = {
+      finishedAt: at?.toISOString(),
     };
 
-    if (notes) optionalArguments.notes = notes;
+    if (notes) optionalArguments.notes = {content: notes, containsSpoilers};
     if (rating) optionalArguments.rating = rating;
 
     try {
@@ -263,6 +279,9 @@ function NextEpisode({
           <Heading>{title}</Heading>
           {overview && <TextBlock>{overview}</TextBlock>}
           <TextField multiline value={notes ?? ''} onChange={setNotes} />
+          <Checkbox checked={containsSpoilers} onChange={setContainsSpoilers}>
+            These notes contain spoilers
+          </Checkbox>
         </BlockStack>
         <InlineStack>
           <Rating
@@ -279,9 +298,14 @@ function NextEpisode({
           </Button>
           <Button
             onPress={async () => {
-              const optionalArguments: {[key: string]: any} = {at};
+              const optionalArguments: Omit<
+                WatchThroughSkipNextEpisodeMutationVariables,
+                'episode' | 'watchThrough'
+              > = {at: at?.toISOString()};
 
-              if (notes) optionalArguments.notes = notes;
+              if (notes) {
+                optionalArguments.notes = {content: notes, containsSpoilers};
+              }
 
               try {
                 await skipNextEpisode({

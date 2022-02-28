@@ -3,7 +3,7 @@
 mutation WatchThroughSkipNextEpisode(
   $episode: ID!
   $watchThrough: ID!
-  $notes: Notes
+  $notes: NotesInput
   $at: Date
 ) {
   skipEpisode(

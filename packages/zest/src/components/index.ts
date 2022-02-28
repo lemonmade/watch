@@ -1,5 +1,6 @@
 export {Banner} from './Banner';
 export {Button} from './Button';
+export {Checkbox} from './Checkbox';
 export {Choice, ChoiceList} from './ChoiceList';
 export {CollapseGroup} from './CollapseGroup';
 export {DateField} from './DateField';
