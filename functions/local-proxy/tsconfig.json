@@ -1,0 +1,9 @@
+{
+  "extends": "@quilted/typescript/service.json",
+  "compilerOptions": {
+    "outDir": "build/typescript"
+  },
+  "include": ["**/*"],
+  "exclude": ["sewing-kit.config.ts", "infrastructure", "build"],
+  "references": []
+}

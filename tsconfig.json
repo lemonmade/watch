@@ -29,10 +29,13 @@
       "path": "./functions/api"
     },
     {
-      "path": "./functions/migrate"
+      "path": "./functions/email"
     },
     {
-      "path": "./functions/email"
+      "path": "./functions/local-proxy"
+    },
+    {
+      "path": "./functions/migrate"
     },
     {
       "path": "./functions/cdn-request-forward-host"
