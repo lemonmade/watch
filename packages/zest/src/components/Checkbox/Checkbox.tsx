@@ -13,7 +13,7 @@ export function Checkbox({
   children,
   onChange,
 }: PropsWithChildren<Props>) {
-  const id = useUniqueId('ChoiceListOption', explicitId);
+  const id = useUniqueId('Checkbox', explicitId);
 
   return (
     <div>
