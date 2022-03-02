@@ -167,6 +167,15 @@ function PreviousActionsSection({
                     ? ` (on ${new Date(action.at).toLocaleDateString()})`
                     : ''}
                 </Text>
+                {action.notes ? (
+                  <Text>
+                    Notes
+                    {action.notes.containsSpoilers
+                      ? ' (contains spoilers)'
+                      : ''}
+                    : {action.notes.content}
+                  </Text>
+                ) : null}
               </BlockStack>
             );
           } else if (action.__typename === 'Watch') {
