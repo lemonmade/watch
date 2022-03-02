@@ -185,14 +185,15 @@ model WatchThrough {
 }
 
 model Watch {
-  id         String    @id @default(uuid())
-  notes      String?
-  liked      Boolean?
-  rating     Int?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  startedAt  DateTime?
-  finishedAt DateTime?
+  id               String    @id @default(uuid())
+  notes            String?
+  containsSpoilers Boolean   @default(false)
+  liked            Boolean?
+  rating           Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  startedAt        DateTime?
+  finishedAt       DateTime?
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -208,11 +209,12 @@ model Watch {
 }
 
 model Skip {
-  id        String    @id @default(uuid())
-  notes     String?
-  at        DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  notes            String?
+  containsSpoilers Boolean   @default(false)
+  at               DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

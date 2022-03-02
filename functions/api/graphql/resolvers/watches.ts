@@ -199,6 +199,9 @@ export const Watch: Resolver<'Watch'> = {
         })
       : null;
   },
+  notes({containsSpoilers, notes}) {
+    return notes == null ? null : {content: notes, containsSpoilers};
+  },
 };
 
 export const Skip: Resolver<'Skip'> = {
@@ -233,6 +236,9 @@ export const Skip: Resolver<'Skip'> = {
           rejectOnNotFound: true,
         })
       : null;
+  },
+  notes({containsSpoilers, notes}) {
+    return notes == null ? null : {content: notes, containsSpoilers};
   },
 };
 
@@ -352,7 +358,8 @@ export const Mutation: Pick<
         episodeId,
         watchThroughId: validatedWatchThroughId,
         rating,
-        notes,
+        notes: notes?.content,
+        containsSpoilers: notes?.containsSpoilers,
         startedAt,
         finishedAt,
         userId: user.id,
@@ -522,7 +529,8 @@ export const Mutation: Pick<
       data: {
         episodeId,
         watchThroughId: validatedWatchThroughId,
-        notes,
+        notes: notes?.content,
+        containsSpoilers: notes?.containsSpoilers,
         at,
         userId: user.id,
       },
