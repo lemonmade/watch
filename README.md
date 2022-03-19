@@ -12,7 +12,7 @@ mkcert -install
 mkcert -cert-file config/local/tls/watch.lemon.dev.pem -key-file config/local/tls/watch.lemon.dev-key.pem "watch.lemon.dev"
 
 nvm install
-yarn install
+pnpm install
 ```
 
 Add the following to your `/etc/hosts` file (only needed for https):
@@ -24,10 +24,7 @@ Add the following to your `/etc/hosts` file (only needed for https):
 Run the development server:
 
 ```sh
-yarn develop
-
-# In another terminal, for https
-caddy run --config config/local/Caddyfile
+pnpm develop
 ```
 
 To run postgres (I think, anyways):

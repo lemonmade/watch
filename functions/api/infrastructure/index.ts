@@ -1,8 +1,8 @@
-import {Duration} from '@aws-cdk/core';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
 import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 
 import {
+  Duration,
   Construct,
   Database,
   Secret,

@@ -1,7 +1,7 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
-import {createHttpHandler, json, noContent} from '@quilted/http-handlers';
-import type {Request} from '@quilted/http-handlers';
+import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
+import type {Request} from '@quilted/quilt/http-handlers';
 import {
   captureException,
   init as sentryInit,
@@ -86,9 +86,9 @@ app.post(async (request) => {
     await flushSentry(2000);
 
     return json(
-      {message: error.message},
+      {message: (error as any).message},
       {
-        status: error.statusCode ?? 500,
+        status: (error as any).statusCode ?? 500,
         headers: {'Access-Control-Allow-Origin': '*'},
       },
     );

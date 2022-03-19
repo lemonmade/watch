@@ -11,52 +11,21 @@
     "build": "sewing-kit build",
     "packages:version": "lerna version --include-merged-tags --no-private",
     "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
-    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\""
-  },
-  "workspaces": {
-    "packages": [
-      "app",
-      "functions/*",
-      "packages/*"
-    ]
+    "cdk": "pnpm --filter infrastructure run cdk"
   },
   "dependencies": {
-    "@quilted/http-handlers": "^0.2.20",
-    "@quilted/quilt": "^0.5.57"
+    "@quilted/quilt": "^0.5.68"
   },
   "devDependencies": {
-    "@aws-cdk/aws-apigatewayv2": "^1.110.0",
-    "@aws-cdk/aws-apigatewayv2-integrations": "^1.110.0",
-    "@aws-cdk/aws-cloudfront": "^1.110.0",
-    "@aws-cdk/aws-cloudfront-origins": "^1.110.0",
-    "@aws-cdk/aws-ec2": "^1.110.0",
-    "@aws-cdk/aws-events": "^1.110.0",
-    "@aws-cdk/aws-events-targets": "^1.110.0",
-    "@aws-cdk/aws-iam": "^1.110.0",
-    "@aws-cdk/aws-lambda": "^1.110.0",
-    "@aws-cdk/aws-lambda-event-sources": "^1.110.0",
-    "@aws-cdk/aws-rds": "^1.110.0",
-    "@aws-cdk/aws-route53": "^1.110.0",
-    "@aws-cdk/aws-route53-targets": "^1.110.0",
-    "@aws-cdk/aws-s3": "^1.110.0",
-    "@aws-cdk/aws-s3-deployment": "^1.110.0",
-    "@aws-cdk/core": "^1.110.0",
-    "@babel/core": "^7.14.6",
-    "@babel/node": "^7.10.3",
     "@prisma/client": "^2.25.0",
-    "@quilted/aws": "^0.3.28",
-    "@quilted/craft": "^0.1.51",
-    "@quilted/sewing-kit": "^0.2.13",
-    "@types/common-tags": "^1.8.0",
+    "@quilted/aws": "^0.3.30",
+    "@quilted/craft": "^0.1.70",
+    "@quilted/sewing-kit": "^0.2.18",
+    "@quilted/typescript": "^0.2.5",
     "@types/fs-extra": "^9.0.11",
-    "@types/isomorphic-form-data": "^2.0.0",
-    "aws-cdk": "^1.110.0",
-    "aws-sdk": "^2.935.0",
-    "common-tags": "^1.8.0",
-    "dotenv": "^8.2.0",
     "lerna": "^3.22.1",
     "prisma": "^2.25.0",
-    "typescript": "^4.3.4"
+    "typescript": "^4.6.0"
   },
   "prettier": "@quilted/prettier",
   "eslintConfig": {

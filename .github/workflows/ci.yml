@@ -1,32 +1,38 @@
 name: CI
 
-on: [push]
+on:
+  pull_request:
+  workflow_call:
 
 jobs:
   lint:
     name: Lint 💅
     runs-on: ubuntu-latest
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-lint@v2
 
   type-check:
     name: Type check 🧮
     runs-on: ubuntu-latest
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-type-check@v2
 
   unit-tests:
     name: Unit tests 🧪
     runs-on: ubuntu-latest
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-test@v2
 
   build:
     name: Build 🏗
     runs-on: ubuntu-latest
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2

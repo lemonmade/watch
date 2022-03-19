@@ -1,10 +1,9 @@
-import {Duration} from '@aws-cdk/core';
-
 import {Secret} from '@aws-cdk/aws-secretsmanager';
 import {Vpc} from '@aws-cdk/aws-ec2';
 import {DatabaseInstance} from '@aws-cdk/aws-rds';
 
 import {
+  Duration,
   Construct,
   QuiltServiceLambda,
   PrismaLayer,

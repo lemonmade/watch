@@ -111,7 +111,7 @@ export async function develop({ui}: {ui: Ui}) {
   } catch (error) {
     throw new PrintableError(
       `There was a problem while trying to start your development server...`,
-      {original: error},
+      {original: error as any},
     );
   }
 }
@@ -186,7 +186,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
       });
     } catch (error) {
       return json(
-        {errors: [{message: error.message}]},
+        {errors: [{message: (error as any).message}]},
         {
           headers: {
             'Timing-Allow-Origin': '*',

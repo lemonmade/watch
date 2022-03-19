@@ -99,7 +99,7 @@ async function run() {
 
       /* eslint-disable no-console */
       console.log();
-      console.log(dim(error.stack));
+      console.log(dim((error as any).stack));
       /* eslint-enable no-console */
     }
 

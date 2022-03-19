@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
-import type {Request, Response} from '@quilted/http-handlers';
+import type {Request, Response} from '@quilted/quilt/http-handlers';
 
 export enum Cookie {
   Auth = 'Auth',

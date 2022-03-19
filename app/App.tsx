@@ -47,7 +47,7 @@ function GraphQL({children}: PropsWithChildren<{}>) {
             return result;
           } catch (error) {
             // There should be a much easier way to do this...
-            if (error.status === 401) {
+            if ((error as any).status === 401) {
               navigate((currentUrl) => {
                 const signInUrl = new URL('/sign-in', currentUrl);
                 signInUrl.searchParams.set(

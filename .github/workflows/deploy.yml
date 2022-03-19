@@ -10,7 +10,8 @@ jobs:
     name: Build 🏗
     runs-on: ubuntu-latest
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2
 
       - name: Build Prisma layers
@@ -33,7 +34,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
 
       - name: Restore build artifacts
         uses: actions/download-artifact@v2
@@ -43,7 +45,7 @@ jobs:
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-          yarn packages:publish
+          pnpm packages:publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -53,7 +55,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: quilt-framework/action-prepare@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
 
       - name: Restore build artifacts
         uses: actions/download-artifact@v2
@@ -68,10 +71,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy database migration infrastructure to AWS
-        run: yarn cdk deploy WatchMigrateDatabaseStack --require-approval never
+        run: pnpm --filter infrastructure run cdk deploy WatchMigrateDatabaseStack --require-approval never
 
       - name: Run database migrations
         run: aws lambda invoke --function-name WatchMigratePrimaryDatabaseFunction /dev/stdout
 
       - name: Deploy application code to AWS
-        run: yarn cdk deploy WatchStack --require-approval never
+        run: pnpm --filter infrastructure run cdk deploy WatchStack --require-approval never

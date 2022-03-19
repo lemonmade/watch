@@ -1,5 +1,5 @@
-import {Duration} from '@aws-cdk/core';
 import {
+  Duration,
   Construct,
   QuiltServiceLambda,
 } from '../../../global/utilities/infrastructure';

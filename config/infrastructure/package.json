@@ -1,0 +1,13 @@
+{
+  "name": "infrastructure",
+  "type": "commonjs",
+  "scripts": {
+    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\""
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/node": "^7.16.0",
+    "aws-cdk": "^2.17.0",
+    "dotenv": "^16.0.0"
+  }
+}

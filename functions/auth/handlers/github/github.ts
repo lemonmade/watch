@@ -1,7 +1,11 @@
 import crypto from 'crypto';
-import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {redirect, html, fetchJson} from '@quilted/http-handlers';
-import type {Request, Response, CookieOptions} from '@quilted/http-handlers';
+import {createGraphQL, createHttpFetch} from '@quilted/quilt';
+import {redirect, html, fetchJson} from '@quilted/quilt/http-handlers';
+import type {
+  Request,
+  Response,
+  CookieOptions,
+} from '@quilted/quilt/http-handlers';
 import {stripIndent} from 'common-tags';
 
 import {

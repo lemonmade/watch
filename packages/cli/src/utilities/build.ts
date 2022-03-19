@@ -12,7 +12,7 @@ export async function ensureRootOutputDirectory(app: LocalApp) {
   try {
     await mkdir(directory);
   } catch (error) {
-    if (error?.code !== 'EEXIST') throw error;
+    if ((error as any)?.code !== 'EEXIST') throw error;
   }
 
   await writeFile(path.join(directory, '.gitignore'), '*');
