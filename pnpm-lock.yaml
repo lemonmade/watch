@@ -7,6 +7,8 @@ importers:
       '@prisma/client': ^2.25.0
       '@quilted/aws': ^0.3.32
       '@quilted/craft': ^0.1.73
+      '@quilted/eslint-config': ^0.1.5
+      '@quilted/prettier': ^0.2.4
       '@quilted/quilt': ^0.5.71
       '@quilted/sewing-kit': ^0.2.21
       '@quilted/typescript': ^0.2.5
@@ -24,6 +26,8 @@ importers:
       '@prisma/client': 2.30.3_prisma@2.30.3
       '@quilted/aws': 0.3.32_853e5a28920a97541673bf757ed73ca6
       '@quilted/craft': 0.1.73_732d6e6d41080b973bf0e40336193b93
+      '@quilted/eslint-config': 0.1.6_typescript@4.6.2
+      '@quilted/prettier': 0.2.5
       '@quilted/sewing-kit': 0.2.21
       '@quilted/typescript': 0.2.5
       '@types/fs-extra': 9.0.13
@@ -58,11 +62,25 @@ importers:
 
   config/infrastructure:
     specifiers:
+      '@aws-cdk/aws-certificatemanager': ^1.149.0
+      '@aws-cdk/aws-cloudfront': ^1.149.0
+      '@aws-cdk/aws-cloudfront-origins': ^1.149.0
+      '@aws-cdk/aws-ec2': ^1.149.0
+      '@aws-cdk/aws-route53': ^1.149.0
+      '@aws-cdk/aws-route53-targets': ^1.149.0
+      '@aws-cdk/core': ^1.149.0
       '@babel/core': ^7.17.0
       '@babel/node': ^7.16.0
       aws-cdk: ^2.17.0
       dotenv: ^16.0.0
     devDependencies:
+      '@aws-cdk/aws-certificatemanager': 1.149.0
+      '@aws-cdk/aws-cloudfront': 1.149.0
+      '@aws-cdk/aws-cloudfront-origins': 1.149.0
+      '@aws-cdk/aws-ec2': 1.149.0
+      '@aws-cdk/aws-route53': 1.149.0
+      '@aws-cdk/aws-route53-targets': 1.149.0
+      '@aws-cdk/core': 1.149.0
       '@babel/core': 7.17.8
       '@babel/node': 7.16.8_@babel+core@7.17.8
       aws-cdk: 2.17.0
@@ -489,6 +507,18 @@ packages:
       '@aws-cdk/cx-api': 1.149.0
       constructs: 3.3.246
 
+  /@aws-cdk/aws-cloudfront-origins/1.149.0:
+    resolution: {integrity: sha512-UjTCknwYhuHjBxyuX5ANvSGW5uLZ3vjlDyhpCMaAGSEH8LJ/cLr+Zqq/p6+o37o82RzKd7Te537308a8mh65Rg==}
+    engines: {node: '>= 10.13.0 <13 || >=13.7.0'}
+    dependencies:
+      '@aws-cdk/aws-cloudfront': 1.149.0
+      '@aws-cdk/aws-elasticloadbalancingv2': 1.149.0
+      '@aws-cdk/aws-iam': 1.149.0
+      '@aws-cdk/aws-s3': 1.149.0
+      '@aws-cdk/core': 1.149.0
+      constructs: 3.3.246
+    dev: true
+
   /@aws-cdk/aws-cloudfront/1.149.0:
     resolution: {integrity: sha512-6jy/pjPheV3DVVBT83ivEVyyDI0Yqrre72Bxof6AWv3kBeuG6As0JC50R8aRZXRstart30bWBLS5DEuLIF/8gA==}
     engines: {node: '>= 10.13.0 <13 || >=13.7.0'}
@@ -504,7 +534,6 @@ packages:
       '@aws-cdk/core': 1.149.0
       '@aws-cdk/cx-api': 1.149.0
       constructs: 3.3.246
-    dev: false
 
   /@aws-cdk/aws-cloudwatch/1.149.0:
     resolution: {integrity: sha512-oWLWk+7UIyqDAyRVQqMwS6aDi8Tnusj4zBQz9dirwJeDPhjounSTczgeAIhsBvfou4KIAVpwidi9/FcGWWnyHQ==}
@@ -699,7 +728,6 @@ packages:
       '@aws-cdk/aws-ec2': 1.149.0
       '@aws-cdk/core': 1.149.0
       constructs: 3.3.246
-    dev: false
 
   /@aws-cdk/aws-elasticloadbalancingv2/1.149.0:
     resolution: {integrity: sha512-OJAi8URdRL6fg7jrolOKiRJ5zcd/UIZoy9f2xOlUbT7z3HqnVYQWz7DPUjO9G+mUB/Wlf5ieNSus2cSPAZE1OQ==}
@@ -759,7 +787,6 @@ packages:
       '@aws-cdk/core': 1.149.0
       '@aws-cdk/custom-resources': 1.149.0
       constructs: 3.3.246
-    dev: false
 
   /@aws-cdk/aws-iam/1.149.0:
     resolution: {integrity: sha512-jAMEHvPlVJvhohhS6wqaxaOoce5GqvQ9SM+4cKdmitUKL5hc9q2/qweM1wOdUe/qrXC6hNQLuTVqQlDP7n6dDw==}
@@ -897,7 +924,6 @@ packages:
       '@aws-cdk/core': 1.149.0
       '@aws-cdk/region-info': 1.149.0
       constructs: 3.3.246
-    dev: false
 
   /@aws-cdk/aws-route53/1.149.0:
     resolution: {integrity: sha512-p0ZFUuvaYYT8QMEYsQpa/04KLSiDPcO3DozHReNB6aY/bFWZFOyr8fS7QWuHBKpazBfFaDt7n6KBzmn9QmTHXQ==}

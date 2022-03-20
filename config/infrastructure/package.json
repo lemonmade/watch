@@ -5,6 +5,13 @@
     "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\""
   },
   "devDependencies": {
+    "@aws-cdk/aws-certificatemanager": "^1.149.0",
+    "@aws-cdk/aws-cloudfront": "^1.149.0",
+    "@aws-cdk/aws-cloudfront-origins": "^1.149.0",
+    "@aws-cdk/aws-ec2": "^1.149.0",
+    "@aws-cdk/core": "^1.149.0",
+    "@aws-cdk/aws-route53": "^1.149.0",
+    "@aws-cdk/aws-route53-targets": "^1.149.0",
     "@babel/core": "^7.17.0",
     "@babel/node": "^7.16.0",
     "aws-cdk": "^2.17.0",

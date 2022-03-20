@@ -23,6 +23,8 @@
     "@prisma/client": "^2.25.0",
     "@quilted/aws": "^0.3.32",
     "@quilted/craft": "^0.1.73",
+    "@quilted/eslint-config": "^0.1.5",
+    "@quilted/prettier": "^0.2.4",
     "@quilted/sewing-kit": "^0.2.21",
     "@quilted/typescript": "^0.2.5",
     "@types/fs-extra": "^9.0.11",

@@ -1,5 +1,6 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
+import Env from '@quilted/quilt/env';
 import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
 import type {Request} from '@quilted/quilt/http-handlers';
 import {
@@ -15,11 +16,17 @@ import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {resolvers, createContext, schemaSource} from './graphql';
 import type {Authentication} from './graphql';
 
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    NODE_ENV: string;
+  }
+}
+
 const ACCESS_TOKEN_HEADER = 'X-Access-Token';
 
 sentryInit({
   dsn: 'https://d6cff1e3f8c34a44a22253995b47ccfb@sentry.io/1849967',
-  enabled: process.env.NODE_ENV !== 'development',
+  enabled: Env.NODE_ENV !== 'development',
 });
 
 const schema = makeExecutableSchema({

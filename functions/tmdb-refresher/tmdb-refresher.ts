@@ -1,8 +1,15 @@
 /* eslint no-console: off */
 
 import type {SQSHandler} from 'aws-lambda';
+import Env from '@quilted/quilt/env';
 
 import {createPrisma} from 'shared/utilities/database';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    TMDB_ACCESS_TOKEN: string;
+  }
+}
 
 /* eslint-disable @typescript-eslint/naming-convention */
 interface TmdbSeries {
@@ -248,7 +255,7 @@ async function tmdbFetch(path: string) {
   const fetched = await fetch(`https://api.themoviedb.org/3${path}`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${Env.TMDB_ACCESS_TOKEN}`,
     },
   });
 

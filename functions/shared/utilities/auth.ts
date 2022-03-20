@@ -1,6 +1,13 @@
 import * as jwt from 'jsonwebtoken';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
+import Env from '@quilted/quilt/env';
 import type {Request, Response} from '@quilted/quilt/http-handlers';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    JWT_DEFAULT_SECRET: string;
+  }
+}
 
 export enum Cookie {
   Auth = 'Auth',
@@ -9,7 +16,7 @@ export enum Cookie {
 export function createSignedToken(
   data: Record<string, any>,
   {
-    secret = process.env.JWT_DEFAULT_SECRET!,
+    secret = Env.JWT_DEFAULT_SECRET,
     ...options
   }: SignOptions & {secret?: string} = {},
 ) {
@@ -26,7 +33,7 @@ interface SignedTokenResult<T> {
 export function verifySignedToken<T = Record<string, unknown>>(
   token: string,
   {
-    secret = process.env.JWT_DEFAULT_SECRET!,
+    secret = Env.JWT_DEFAULT_SECRET!,
     ...options
   }: VerifyOptions & {secret?: string} = {},
 ): SignedTokenResult<T> {

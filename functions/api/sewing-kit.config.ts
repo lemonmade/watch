@@ -1,7 +1,7 @@
 import {createProjectPlugin, createService, quiltService} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
 
-import {prisma, dotenv} from '../../config/sewing-kit/plugins';
+import {prisma} from '../../config/sewing-kit/plugins';
 
 export default createService((service) => {
   service.entry('./api');
@@ -9,10 +9,17 @@ export default createService((service) => {
     quiltService({
       develop: {port: 8910},
       polyfill: {features: ['fetch']},
+      env: {
+        inline: [
+          'EMAIL_QUEUE_URL',
+          'DATABASE_URL',
+          'JWT_DEFAULT_SECRET',
+          'TMDB_ACCESS_TOKEN',
+        ],
+      },
     }),
     lambda(),
     prisma(),
-    dotenv(),
     createProjectPlugin({
       name: 'Watch.Api.Fixes',
       build({configure}) {

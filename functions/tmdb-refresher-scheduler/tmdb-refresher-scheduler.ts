@@ -2,8 +2,15 @@
 
 import {SQS} from 'aws-sdk';
 import type {EventBridgeHandler} from 'aws-lambda';
+import Env from '@quilted/quilt/env';
 
 import {createPrisma} from 'shared/utilities/database';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    TMDB_REFRESHER_QUEUE_URL: string;
+  }
+}
 
 const sqs = new SQS({apiVersion: '2012-11-05'});
 const prismaPromise = createPrisma();
@@ -26,7 +33,7 @@ export const handler: EventBridgeHandler<
         sqs.sendMessage(
           {
             MessageBody: JSON.stringify({}),
-            QueueUrl: process.env.TMDB_REFRESHER_QUEUE_URL!,
+            QueueUrl: Env.TMDB_REFRESHER_QUEUE_URL,
             MessageAttributes: {
               id: {
                 DataType: 'String',
