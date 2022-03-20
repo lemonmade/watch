@@ -1,5 +1,5 @@
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
-import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
+import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 
 import {
   Construct,
@@ -40,9 +40,10 @@ export class AuthApi extends Construct {
     database.grantAccess(authFunction);
 
     this.api = new HttpApi(this, 'WatchAuthHttpApi', {
-      defaultIntegration: new LambdaProxyIntegration({
-        handler: authFunction,
-      }),
+      defaultIntegration: new HttpLambdaIntegration(
+        'WatchAuthLambdaIntegration',
+        authFunction,
+      ),
     });
   }
 }
