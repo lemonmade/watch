@@ -15,6 +15,7 @@
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
+    "@quilted/graphql": "^0.4.22",
     "@quilted/quilt": "^0.5.71",
     "react": "npm:@quilted/react@^0.1.2",
     "react-dom": "npm:@quilted/react@^0.1.2"
