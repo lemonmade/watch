@@ -27,7 +27,7 @@ export default createApp((app) => {
             '^react/jsx-dev-runtime$': '@quilted/quilt/react/jsx-runtime',
             '^@quilted/react-testing$': '@quilted/react-testing/preact',
           }));
-        })
+        });
       },
       develop({configure}) {
         configure(({viteConfig}) => {
