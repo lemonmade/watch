@@ -15,13 +15,13 @@
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
-    "@quilted/quilt": "^0.5.68"
+    "@quilted/quilt": "^0.5.70"
   },
   "devDependencies": {
     "@prisma/client": "^2.25.0",
-    "@quilted/aws": "^0.3.30",
-    "@quilted/craft": "^0.1.70",
-    "@quilted/sewing-kit": "^0.2.18",
+    "@quilted/aws": "^0.3.32",
+    "@quilted/craft": "^0.1.72",
+    "@quilted/sewing-kit": "^0.2.20",
     "@quilted/typescript": "^0.2.5",
     "@types/fs-extra": "^9.0.11",
     "lerna": "^3.22.1",
