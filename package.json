@@ -15,8 +15,9 @@
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
-    "@quilted/quilt": "^0.5.70",
-    "react": "npm:@quilted/react@^0.1.0"
+    "@quilted/quilt": "^0.5.71",
+    "react": "npm:@quilted/react@^0.1.2",
+    "react-dom": "npm:@quilted/react@^0.1.2"
   },
   "devDependencies": {
     "@prisma/client": "^2.25.0",
