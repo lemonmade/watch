@@ -13,6 +13,7 @@
     "packages:publish": "lerna publish from-package --yes --no-verify-access --no-private",
     "cdk": "pnpm --filter infrastructure run cdk"
   },
+  "packageManager": "pnpm@6.32.2",
   "dependencies": {
     "@quilted/quilt": "^0.5.68"
   },
