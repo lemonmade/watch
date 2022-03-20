@@ -4,3 +4,4 @@ node_modules/
 packages/*/bin/
 cdk.context.json
 cdk.out/
+pnpm-lock.yaml
