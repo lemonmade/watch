@@ -115,6 +115,7 @@ importers:
       aws-sdk: ^2.935.0
       dataloader: ^2.0.0
       graphql: ^15.0.0
+      jsonwebtoken: ^8.0.0
       mime: ^2.5.0
     dependencies:
       '@aws-sdk/client-s3': 3.54.1
@@ -125,6 +126,7 @@ importers:
       aws-sdk: 2.1096.0
       dataloader: 2.0.0
       graphql: 15.8.0
+      jsonwebtoken: 8.5.1
       mime: 2.6.0
     devDependencies:
       '@types/mime': 2.0.3
@@ -278,9 +280,9 @@ importers:
       '@babel/preset-typescript': ^7.0.0
       '@graphql-tools/schema': ^7.0.0
       '@iarna/toml': ^3.0.0
-      '@quilted/graphql': ^0.4.14
-      '@quilted/http-handlers': ^0.2.20
-      '@quilted/polyfills': ^0.2.12
+      '@quilted/graphql': ^0.4.24
+      '@quilted/http-handlers': ^0.2.30
+      '@quilted/polyfills': ^0.2.20
       '@rollup/plugin-alias': ^3.0.0
       '@rollup/plugin-commonjs': ^19.0.0
       '@rollup/plugin-node-resolve': ^13.0.0
@@ -311,9 +313,9 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@iarna/toml': 3.0.0
-      '@quilted/graphql': 0.4.19_17dbb75dbb99131cb099dbf523544b94
-      '@quilted/http-handlers': 0.2.26
-      '@quilted/polyfills': 0.2.16_bd5e9ebb85cca35f62f51e65641f7fd0
+      '@quilted/graphql': 0.4.24_17dbb75dbb99131cb099dbf523544b94
+      '@quilted/http-handlers': 0.2.30
+      '@quilted/polyfills': 0.2.20_bd5e9ebb85cca35f62f51e65641f7fd0
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
       '@rollup/plugin-commonjs': 19.0.2_rollup@2.70.1
       '@rollup/plugin-node-resolve': 13.1.3_rollup@2.70.1
@@ -5073,16 +5075,16 @@ packages:
       - typescript
     dev: true
 
-  /@quilted/graphql/0.4.19_17dbb75dbb99131cb099dbf523544b94:
-    resolution: {integrity: sha512-LGWg2CZ6FNH47MLfka7VDQ1RKbe8LdDbqYDBEV3zzDlS3qGTl0dFGJOUgmzf1f2Y1EBTL4drxqVgwz4QsYONpQ==}
+  /@quilted/graphql/0.4.24_17dbb75dbb99131cb099dbf523544b94:
+    resolution: {integrity: sha512-+/Dk4whCmIOotlr5+obP+72ycNpLuwu5nIRkr/J2lD3IPpz45GIrQBUn5v5MNy3V+XmFEAgXHdxlUlFfnCGCBw==}
     hasBin: true
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       '@jest/globals': ^27.0.0
-      '@quilted/sewing-kit': ^0.2.18
-      '@quilted/sewing-kit-jest': ^0.1.11
-      '@quilted/sewing-kit-rollup': ^0.1.10
-      '@quilted/sewing-kit-vite': ^0.1.7
+      '@quilted/sewing-kit': ^0.2.23
+      '@quilted/sewing-kit-jest': ^0.1.15
+      '@quilted/sewing-kit-rollup': ^0.1.14
+      '@quilted/sewing-kit-vite': ^0.1.11
       jest-matcher-utils: ^27.0.0
     peerDependenciesMeta:
       '@babel/runtime':
@@ -5106,7 +5108,7 @@ packages:
       '@quilted/sewing-kit': 0.2.23
       '@quilted/sewing-kit-rollup': 0.1.14_@quilted+sewing-kit@0.2.23
       '@quilted/sewing-kit-vite': 0.1.11_97e329c01bf0b0f6d0665712902c5dda
-      '@quilted/useful-types': 0.2.7
+      '@quilted/useful-types': 0.2.11
       '@types/chance': 1.1.3
       arg: 4.1.3
       chance: 1.1.8
@@ -5227,19 +5229,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@quilted/http-handlers/0.2.26:
-    resolution: {integrity: sha512-aHlnt/LZPtC3tUQgkN7NRFhrYBzmxFrVoFmqEK3Vqiu468iEj9HnSQaPwyJeCEaCEFfdEYdxXZGjwyIF739zNw==}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-    dependencies:
-      '@quilted/http': 0.2.17
-      '@quilted/routing': 0.2.10
-      send: 0.17.2
-    dev: false
-
   /@quilted/http-handlers/0.2.30:
     resolution: {integrity: sha512-rX4gGPHhAmZdduLJ1cghZoLzRik57B3Sb+viDaIUyQP5XPJRTC7NkMFf+emSQNUwDJDHmVomHHAFHqmzNkEZlw==}
     peerDependencies:
@@ -5251,7 +5240,6 @@ packages:
       '@quilted/http': 0.2.21
       '@quilted/routing': 0.2.14
       send: 0.17.2
-    dev: true
 
   /@quilted/http-handlers/0.2.30_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-rX4gGPHhAmZdduLJ1cghZoLzRik57B3Sb+viDaIUyQP5XPJRTC7NkMFf+emSQNUwDJDHmVomHHAFHqmzNkEZlw==}
@@ -5267,15 +5255,6 @@ packages:
       send: 0.17.2
     dev: false
 
-  /@quilted/http/0.2.17:
-    resolution: {integrity: sha512-q4aqtKIk0hT5OBC6OiGowMJvh3WQTmZn8uO2SqBhQrpIRS8NbDtsTJT6BJ7t1veD2eYNYft1FZtFUN1nQN9umQ==}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-    dev: false
-
   /@quilted/http/0.2.21:
     resolution: {integrity: sha512-itVxocyqPUOnYECpvZtEpykxfzjcgMAnROBv/1bCeftGHdOCNvjOXsC5lCSUSV4g3njcVhQc2r1e9gKqPAOPnw==}
     peerDependencies:
@@ -5283,7 +5262,6 @@ packages:
     peerDependenciesMeta:
       '@babel/runtime':
         optional: true
-    dev: true
 
   /@quilted/http/0.2.21_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-itVxocyqPUOnYECpvZtEpykxfzjcgMAnROBv/1bCeftGHdOCNvjOXsC5lCSUSV4g3njcVhQc2r1e9gKqPAOPnw==}
@@ -5309,45 +5287,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.8
       react: /@quilted/react/0.1.4
-    dev: false
-
-  /@quilted/polyfills/0.2.16_bd5e9ebb85cca35f62f51e65641f7fd0:
-    resolution: {integrity: sha512-KQaZHahNqplUzRvvkx6biVoR/LWlK/RsVW4B0JBygyGSLRQl+o07ZMxjsX0vE+plbnbKb/oislUGP6ZJmShnCA==}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-      '@quilted/sewing-kit': ^0.2.18
-      '@quilted/sewing-kit-jest': ^0.1.11
-      '@quilted/sewing-kit-rollup': ^0.1.10
-      '@quilted/sewing-kit-targets': ^0.1.10
-      rollup: ^2.0.0
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-      '@quilted/sewing-kit':
-        optional: true
-      '@quilted/sewing-kit-jest':
-        optional: true
-      '@quilted/sewing-kit-rollup':
-        optional: true
-      '@quilted/sewing-kit-targets':
-        optional: true
-      rollup:
-        optional: true
-    dependencies:
-      '@peculiar/webcrypto': 1.3.2
-      '@quilted/sewing-kit': 0.2.23
-      '@quilted/sewing-kit-rollup': 0.1.14_@quilted+sewing-kit@0.2.23
-      '@types/caniuse-api': 3.0.2
-      '@types/node-fetch': 2.6.1
-      caniuse-api: 3.0.0
-      core-js: 3.21.1
-      magic-string: 0.25.9
-      node-fetch: 2.6.7
-      regenerator-runtime: 0.13.9
-      rollup: 2.70.1
-      whatwg-fetch: 3.6.2
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /@quilted/polyfills/0.2.20_89937c9a5f90748a02463fe73f51fe96:
@@ -5384,6 +5323,45 @@ packages:
       magic-string: 0.25.9
       node-fetch: 2.6.7
       regenerator-runtime: 0.13.9
+      whatwg-fetch: 3.6.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@quilted/polyfills/0.2.20_bd5e9ebb85cca35f62f51e65641f7fd0:
+    resolution: {integrity: sha512-1qzKfSis9sS6SAv6l9CDUsvY8au0YxmXzc2v+rvFePfunr01w+Ka7//MSt8/rQfpzZ58DxgYvEhM0g9yEOHw0A==}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+      '@quilted/sewing-kit': ^0.2.23
+      '@quilted/sewing-kit-jest': ^0.1.15
+      '@quilted/sewing-kit-rollup': ^0.1.14
+      '@quilted/sewing-kit-targets': ^0.1.14
+      rollup: ^2.0.0
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+      '@quilted/sewing-kit':
+        optional: true
+      '@quilted/sewing-kit-jest':
+        optional: true
+      '@quilted/sewing-kit-rollup':
+        optional: true
+      '@quilted/sewing-kit-targets':
+        optional: true
+      rollup:
+        optional: true
+    dependencies:
+      '@peculiar/webcrypto': 1.3.2
+      '@quilted/sewing-kit': 0.2.23
+      '@quilted/sewing-kit-rollup': 0.1.14_@quilted+sewing-kit@0.2.23
+      '@types/caniuse-api': 3.0.2
+      '@types/node-fetch': 2.6.1
+      caniuse-api: 3.0.0
+      core-js: 3.21.1
+      magic-string: 0.25.9
+      node-fetch: 2.6.7
+      regenerator-runtime: 0.13.9
+      rollup: 2.70.1
       whatwg-fetch: 3.6.2
     transitivePeerDependencies:
       - encoding
@@ -5809,15 +5787,6 @@ packages:
       rollup: 2.70.1
     dev: true
 
-  /@quilted/routing/0.2.10:
-    resolution: {integrity: sha512-xpYf40VhGrdyMr8e0q+Z3GbI/sEhMWu7kWs5w9iLoRaaZy7opMJKk6WhHUpzjQWKBPZ037cQCdju84MU8Ih8jg==}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-    dev: false
-
   /@quilted/routing/0.2.14:
     resolution: {integrity: sha512-DJDtNiVlFWhjbuYo96g/sHrDEk1yGRs9k4XlKVrydnQEe7RGdfhiKu75OBw4y4UaGagRhovGr9KiBXk1eOmVBA==}
     peerDependencies:
@@ -5825,7 +5794,6 @@ packages:
     peerDependenciesMeta:
       '@babel/runtime':
         optional: true
-    dev: true
 
   /@quilted/routing/0.2.14_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-DJDtNiVlFWhjbuYo96g/sHrDEk1yGRs9k4XlKVrydnQEe7RGdfhiKu75OBw4y4UaGagRhovGr9KiBXk1eOmVBA==}
@@ -6245,10 +6213,6 @@ packages:
 
   /@quilted/useful-types/0.2.11:
     resolution: {integrity: sha512-YRG4OL9GRVApr5WPcb3fTIEph48vxDdU16hKXCp6ktJ26rcdRH+naPqwBBJGCYWQgWcnXUPoNTQLkxixyADlSw==}
-    dev: false
-
-  /@quilted/useful-types/0.2.7:
-    resolution: {integrity: sha512-rszg+6FT0W+NtvahI4gHpjvu4tQEZM9Zqe0Teab3ZfFNYbGDUzL+a+HNr9gMGn/347PMSfL/jvN5RZydz1qI8Q==}
     dev: false
 
   /@quilted/workers/0.2.14_a26d2bb9af4853574626f6d935977e6f:
