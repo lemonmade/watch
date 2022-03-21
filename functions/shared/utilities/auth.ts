@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 import Env from '@quilted/quilt/env';
 import type {Request, Response} from '@quilted/quilt/http-handlers';
