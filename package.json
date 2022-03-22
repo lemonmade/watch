@@ -15,19 +15,19 @@
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
-    "@quilted/graphql": "^0.4.24",
-    "@quilted/quilt": "^0.5.73",
+    "@quilted/quilt": "^0.5.74",
     "react": "npm:@quilted/react@^0.1.2",
     "react-dom": "npm:@quilted/react@^0.1.2"
   },
   "devDependencies": {
     "@prisma/client": "^2.25.0",
-    "@quilted/aws": "^0.3.34",
-    "@quilted/craft": "^0.1.77",
+    "@quilted/aws": "^0.3.35",
+    "@quilted/browserslist-config": "^0.1.5",
+    "@quilted/craft": "^0.1.78",
     "@quilted/eslint-config": "^0.1.8",
     "@quilted/prettier": "^0.2.7",
     "@quilted/sewing-kit": "^0.2.23",
-    "@quilted/sewing-kit-rollup": "^0.1.14",
+    "@quilted/sewing-kit-rollup": "^0.1.15",
     "@quilted/sewing-kit-vite": "^0.1.11",
     "@quilted/typescript": "^0.2.9",
     "@types/fs-extra": "^9.0.11",
@@ -50,5 +50,8 @@
     "rules": {
       "@typescript-eslint/ban-type": "off"
     }
-  }
+  },
+  "browserslist": [
+    "extends @quilted/browserslist-config/defaults"
+  ]
 }
