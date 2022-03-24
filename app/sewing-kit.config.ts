@@ -3,7 +3,6 @@ import type {App} from '@quilted/craft';
 import {lambda} from '@quilted/aws/sewing-kit';
 
 import type {} from '@quilted/sewing-kit-vite';
-import type {} from '@quilted/sewing-kit-babel';
 
 export default createApp((app) => {
   app.entry('./App');

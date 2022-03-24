@@ -1,4 +1,4 @@
-import {createHttpHandler, redirect} from '@quilted/http-handlers';
+import {createHttpHandler, redirect} from '@quilted/quilt/http-handlers';
 
 import {SearchParam} from 'global/utilities/auth';
 

@@ -1,4 +1,4 @@
-import type {Request, Response} from '@quilted/http-handlers';
+import type {Request, Response} from '@quilted/quilt/http-handlers';
 
 import type {Prisma} from 'shared/utilities/database';
 

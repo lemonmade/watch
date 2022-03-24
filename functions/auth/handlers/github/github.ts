@@ -1,7 +1,12 @@
 import crypto from 'crypto';
-import {createGraphQL, createHttpFetch} from '@quilted/graphql';
-import {redirect, html, fetchJson} from '@quilted/http-handlers';
-import type {Request, Response, CookieOptions} from '@quilted/http-handlers';
+import {createGraphQL, createHttpFetch} from '@quilted/quilt';
+import Env from '@quilted/quilt/env';
+import {redirect, html, fetchJson} from '@quilted/quilt/http-handlers';
+import type {
+  Request,
+  Response,
+  CookieOptions,
+} from '@quilted/quilt/http-handlers';
 import {stripIndent} from 'common-tags';
 
 import {
@@ -18,6 +23,13 @@ import {validateRedirectTo, loadPrisma} from '../shared';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    GITHUB_CLIENT_ID: string;
+    GITHUB_CLIENT_SECRET: string;
+  }
+}
 
 const SCOPES = 'read:user';
 
@@ -51,7 +63,7 @@ export function startGithubOAuth(request: Request) {
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubOAuthUrl.searchParams.set(
     GithubSearchParam.ClientId,
-    process.env.GITHUB_CLIENT_ID!,
+    Env.GITHUB_CLIENT_ID,
   );
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
@@ -342,9 +354,9 @@ async function handleGithubOAuthCallback(
     'https://github.com/login/oauth/access_token',
     {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: process.env.GITHUB_CLIENT_ID,
+      client_id: Env.GITHUB_CLIENT_ID,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret: process.env.GITHUB_CLIENT_SECRET,
+      client_secret: Env.GITHUB_CLIENT_SECRET,
       code,
       state,
     },

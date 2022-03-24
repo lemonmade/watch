@@ -1,8 +1,8 @@
-import {Duration} from '@aws-cdk/core';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
-import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
+import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 
 import {
+  Duration,
   Construct,
   Database,
   Secret,
@@ -66,9 +66,10 @@ export class GraphQLApi extends Construct {
     this.clipsBucket.grantPut(graphqlFunction);
 
     this.api = new HttpApi(this, 'WatchGraphQLHttpApi', {
-      defaultIntegration: new LambdaProxyIntegration({
-        handler: graphqlFunction,
-      }),
+      defaultIntegration: new HttpLambdaIntegration(
+        'WatchGraphQLLambdaIntegration',
+        graphqlFunction,
+      ),
     });
   }
 }

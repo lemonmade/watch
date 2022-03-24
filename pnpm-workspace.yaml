@@ -1,0 +1,9 @@
+packages:
+  - 'app'
+  - 'functions/*'
+  - 'packages/*'
+  # Infrastructure
+  - 'config/infrastructure'
+  - 'global/utilities/infrastructure'
+  - 'app/infrastructure'
+  - 'functions/*/infrastructure'

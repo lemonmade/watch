@@ -1,6 +1,6 @@
-import type {IGraphQLConfig} from 'graphql-config';
+import type {Configuration} from '@quilted/craft/graphql';
 
-const config: IGraphQLConfig = {
+const config: Configuration = {
   projects: {
     default: {
       schema: 'graphql/main/*schema.graphql',

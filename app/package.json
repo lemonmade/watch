@@ -7,17 +7,23 @@
     "@lemon/basics": "*",
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@quilted/workers": "^0.2.12",
     "@remote-ui/async-subscription": "^2.1.8",
     "@remote-ui/core": "^2.1.7",
     "@remote-ui/react": "^4.4.2",
     "@watching/clips": "*"
   },
-  "devDependencies": {
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0"
-  },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/app"
+  },
+  "browserslist": {
+    "defaults": [
+      "extends @quilted/browserslist-config/defaults"
+    ],
+    "modules": [
+      "extends @quilted/browserslist-config/modules"
+    ],
+    "evergreen": [
+      "extends @quilted/browserslist-config/evergreen"
+    ]
   }
 }

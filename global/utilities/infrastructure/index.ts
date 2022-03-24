@@ -37,6 +37,8 @@ import {
 import {Bucket, BucketProps} from '@aws-cdk/aws-s3';
 import {AnyPrincipal, IGrantable} from '@aws-cdk/aws-iam';
 
+export {Duration};
+
 const DEFAULT_REGION = 'us-east-1';
 
 const DEFAULT_ENVIRONMENT = {
@@ -46,7 +48,7 @@ const DEFAULT_ENVIRONMENT = {
 
 const DATABASE_PORT = 5432;
 
-const root = path.resolve(__dirname, '../..');
+const root = path.resolve(__dirname, '../../..');
 
 export {Construct};
 

@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import type {ReactNode, ContextType} from 'react';
-import {createGraphQL, createHttpFetch} from '@quilted/quilt';
-import {useInitialUrl} from '@quilted/react-router';
+import {createGraphQL, createHttpFetch, useInitialUrl} from '@quilted/quilt';
 
 import {LocalDevelopmentClipsContext} from 'utilities/clips';
 

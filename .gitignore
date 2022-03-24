@@ -11,12 +11,3 @@ packages/cli/src/commands/develop/schema.ts
 !packages/cli/src/commands/build/
 .env
 packages/*/bin
-
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*

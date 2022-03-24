@@ -2,6 +2,6 @@ build/
 node_modules/
 .sewing-kit/
 packages/*/bin/
-.yarn/
 cdk.context.json
 cdk.out/
+pnpm-lock.yaml

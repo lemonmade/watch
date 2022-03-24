@@ -12,6 +12,7 @@
     "aws-sdk": "^2.935.0",
     "dataloader": "^2.0.0",
     "graphql": "^15.0.0",
+    "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0"
   },
   "devDependencies": {

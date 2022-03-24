@@ -35,8 +35,8 @@ export function useGithubOAuthModal<Flow extends GithubOAuthFlow>(
       const options = {
         height: HEIGHT,
         width: WIDTH,
-        top: window.top.outerHeight / 2 + window.top.screenY - HEIGHT / 2,
-        left: window.top.outerWidth / 2 + window.top.screenX - WIDTH / 2,
+        top: window.top!.outerHeight / 2 + window.top!.screenY - HEIGHT / 2,
+        left: window.top!.outerWidth / 2 + window.top!.screenX - WIDTH / 2,
       };
 
       const {url: oauthUrl} = router.resolve(

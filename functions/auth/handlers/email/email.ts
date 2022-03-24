@@ -1,5 +1,5 @@
-import {redirect} from '@quilted/http-handlers';
-import type {Request} from '@quilted/http-handlers';
+import {redirect} from '@quilted/quilt/http-handlers';
+import type {Request} from '@quilted/quilt/http-handlers';
 
 import {
   SearchParam,

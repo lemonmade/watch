@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import {Code} from '@aws-cdk/aws-lambda';
 import {HttpApi} from '@aws-cdk/aws-apigatewayv2';
-import {LambdaProxyIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
+import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations';
 import {
   BucketDeployment,
   CacheControl,
@@ -41,7 +41,10 @@ export class WebApp extends Construct {
     });
 
     this.api = new HttpApi(this, 'WatchWebAppHttpApi', {
-      defaultIntegration: new LambdaProxyIntegration({handler: appFunction}),
+      defaultIntegration: new HttpLambdaIntegration(
+        'WatchWebAppLambdaIntegration',
+        appFunction,
+      ),
     });
   }
 }

@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import {App, Duration} from '@aws-cdk/core';
 import {Vpc} from '@aws-cdk/aws-ec2';
 import {

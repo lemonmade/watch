@@ -56,7 +56,7 @@ export function createRollupConfiguration(
       }),
       nodeResolve({
         exportConditions: [
-          'sewing-kit:esnext',
+          'quilt:esnext',
           'esnext',
           'import',
           'require',

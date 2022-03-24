@@ -1,6 +1,6 @@
 import {useMemo, useEffect} from 'react';
 import type {Version} from '@watching/clips';
-import {expose, terminate} from '@quilted/workers';
+import {expose, terminate} from '@quilted/quilt/workers';
 
 import {createSandbox} from './sandboxes';
 import type {Sandbox} from './sandboxes';
