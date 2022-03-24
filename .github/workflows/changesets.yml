@@ -26,4 +26,4 @@ jobs:
           version: pnpm packages:version
           publish: pnpm changeset tag
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}

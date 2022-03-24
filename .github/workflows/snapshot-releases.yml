@@ -22,7 +22,7 @@ jobs:
       - name: Version
         run: pnpm packages:snapshot -- ${{ steps.branch-name.outputs.current_branch }}
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
       - name: Deploy
         run: pnpm packages:deploy -- --tag ${{ steps.branch-name.outputs.current_branch }} --no-git-checks
         env:
