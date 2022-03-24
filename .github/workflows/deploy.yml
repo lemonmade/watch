@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - uses: quilt-fxramework/action-build@v2
+      - uses: quilt-framework/action-build@v2
 
       - name: Build Prisma layers
         run: node ./scripts/build-prisma-layers.js
@@ -34,7 +34,7 @@ jobs:
 
   deploy-packages:
     name: Deploy updated packages 📦
-    needs: build
+    needs: [ci, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +55,7 @@ jobs:
 
   deploy-aws:
     name: Deploy to AWS 🛰
-    needs: build
+    needs: [ci, build]
     runs-on: ubuntu-latest
 
     steps:
