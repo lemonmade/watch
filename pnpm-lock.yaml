@@ -262,8 +262,10 @@ importers:
   packages/basics:
     specifiers:
       '@lemon/css': '*'
+      '@types/react': ^17.0.0
     dependencies:
       '@lemon/css': link:../css
+      '@types/react': 17.0.42
 
   packages/cli:
     specifiers:
