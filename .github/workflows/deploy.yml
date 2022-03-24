@@ -6,13 +6,17 @@ on:
       - main
 
 jobs:
+  ci:
+    name: CI 🧪
+    uses: ./.github/workflows/ci.yml
+
   build:
     name: Build 🏗
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - uses: quilt-framework/action-build@v2
+      - uses: quilt-fxramework/action-build@v2
 
       - name: Build Prisma layers
         run: node ./scripts/build-prisma-layers.js
@@ -45,7 +49,7 @@ jobs:
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-          pnpm packages:publish
+          pnpm packages:deploy
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
