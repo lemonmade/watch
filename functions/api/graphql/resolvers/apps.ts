@@ -322,7 +322,8 @@ export const Mutation: Pick<
         userId: user.id,
         extensionId: extension.id,
         extensionPoint: resolvedExtensionPoint,
-        configuration,
+        configuration:
+          configuration == null ? undefined : JSON.parse(configuration),
         appInstallationId: appInstallation.id,
       },
     });
@@ -371,9 +372,12 @@ export const Mutation: Pick<
       await prisma.clipsExtensionInstallation.update({
         where: {id: installationDetails.id},
         include: {extension: true},
-        data: {
-          configuration,
-        },
+        data:
+          configuration == null
+            ? {}
+            : {
+                configuration: JSON.parse(configuration),
+              },
       });
 
     return {
