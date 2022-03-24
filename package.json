@@ -36,7 +36,6 @@
     "@quilted/sewing-kit-rollup": "^0.1.17",
     "@quilted/sewing-kit-vite": "^0.1.11",
     "@quilted/typescript": "^0.2.9",
-    "@types/fs-extra": "^9.0.11",
     "prisma": "^2.25.0",
     "typescript": "^4.6.0"
   },

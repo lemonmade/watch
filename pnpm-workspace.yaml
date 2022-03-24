@@ -2,6 +2,8 @@ packages:
   - 'app'
   - 'functions/*'
   - 'packages/*'
+  # Internal tools
+  - 'scripts/*'
   # Infrastructure
   - 'config/infrastructure'
   - 'global/utilities/infrastructure'

@@ -19,7 +19,7 @@ jobs:
       - uses: quilt-framework/action-build@v2
 
       - name: Build Prisma layers
-        run: node ./scripts/build-prisma-layers.js
+        run: node ./scripts/build-prisma-layers/build-prisma-layers.js
 
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
