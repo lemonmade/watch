@@ -26,7 +26,8 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.3",
     "@changesets/cli": "^2.21.1",
-    "@prisma/client": "^2.25.0",
+    "@prisma/client": "^3.11.0",
+    "@prisma/engines": "^3.11.0-0",
     "@quilted/aws": "^0.3.35",
     "@quilted/browserslist-config": "^0.1.5",
     "@quilted/craft": "^0.1.81",
@@ -36,7 +37,7 @@
     "@quilted/sewing-kit-rollup": "^0.1.17",
     "@quilted/sewing-kit-vite": "^0.1.11",
     "@quilted/typescript": "^0.2.9",
-    "prisma": "^2.25.0",
+    "prisma": "^3.11.0",
     "typescript": "^4.6.0"
   },
   "prettier": "@quilted/prettier",

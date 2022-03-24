@@ -6,7 +6,8 @@ importers:
     specifiers:
       '@changesets/changelog-github': ^0.4.3
       '@changesets/cli': ^2.21.1
-      '@prisma/client': ^2.25.0
+      '@prisma/client': ^3.11.0
+      '@prisma/engines': ^3.11.0-0
       '@quilted/aws': ^0.3.35
       '@quilted/browserslist-config': ^0.1.5
       '@quilted/craft': ^0.1.81
@@ -17,7 +18,7 @@ importers:
       '@quilted/sewing-kit-rollup': ^0.1.17
       '@quilted/sewing-kit-vite': ^0.1.11
       '@quilted/typescript': ^0.2.9
-      prisma: ^2.25.0
+      prisma: ^3.11.0
       react: npm:@quilted/react@^0.1.2
       react-dom: npm:@quilted/react@^0.1.2
       typescript: ^4.6.0
@@ -28,7 +29,8 @@ importers:
     devDependencies:
       '@changesets/changelog-github': 0.4.3
       '@changesets/cli': 2.21.1
-      '@prisma/client': 2.30.3_prisma@2.30.3
+      '@prisma/client': 3.11.1_prisma@3.11.1
+      '@prisma/engines': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
       '@quilted/aws': 0.3.35_8c58665dca79dfe1c681b09cbf038743
       '@quilted/browserslist-config': 0.1.5
       '@quilted/craft': 0.1.81_911f5e4f6b76d15c58955341859e4789
@@ -38,7 +40,7 @@ importers:
       '@quilted/sewing-kit-rollup': 0.1.17_@quilted+sewing-kit@0.2.23
       '@quilted/sewing-kit-vite': 0.1.11_b4451ac06769b3354087ee443f600c1e
       '@quilted/typescript': 0.2.9
-      prisma: 2.30.3
+      prisma: 3.11.1
       typescript: 4.6.2
 
   app:
@@ -4223,9 +4225,9 @@ packages:
       - supports-color
     dev: true
 
-  /@prisma/client/2.30.3_prisma@2.30.3:
-    resolution: {integrity: sha512-Ey2miZ+Hne12We3rA8XrlPoAF0iuKEhw5IK2nropaelSt0Ju3b2qSz9Qt50a/1Mx3+7yRSu/iSXt8y9TUMl/Yw==}
-    engines: {node: '>=12.2'}
+  /@prisma/client/3.11.1_prisma@3.11.1:
+    resolution: {integrity: sha512-B3C7zQG4HbjJzUr2Zg9UVkBJutbqq9/uqkl1S138+keZCubJrwizx3RuIvGwI+s+pm3qbsyNqXiZgL3Ir0fSng==}
+    engines: {node: '>=12.6'}
     requiresBuild: true
     peerDependencies:
       prisma: '*'
@@ -4233,16 +4235,21 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 2.30.1-2.b8c35d44de987a9691890b3ddf3e2e7effb9bf20
-      prisma: 2.30.3
+      '@prisma/engines-version': 3.11.1-1.1a2506facaf1a4727b7c26850735e88ec779dee9
+      prisma: 3.11.1
     dev: true
 
-  /@prisma/engines-version/2.30.1-2.b8c35d44de987a9691890b3ddf3e2e7effb9bf20:
-    resolution: {integrity: sha512-/iDRgaoSQC77WN2oDsOM8dn61fykm6tnZUAClY+6p+XJbOEgZ9gy4CKuKTBgrjSGDVjtQ/S2KGcYd3Ring8xaw==}
+  /@prisma/engines-version/3.11.1-1.1a2506facaf1a4727b7c26850735e88ec779dee9:
+    resolution: {integrity: sha512-HkcsDniA4iNb/gi0iuyOJNAM7nD/LwQ0uJm15v360O5dee3TM4lWdSQiTYBMK6FF68ACUItmzSur7oYuUZ2zkQ==}
     dev: true
 
-  /@prisma/engines/2.30.1-2.b8c35d44de987a9691890b3ddf3e2e7effb9bf20:
-    resolution: {integrity: sha512-WPnA/IUrxDihrRhdP6+8KAVSwsc0zsh8ioPYsLJjOhzVhwpRbuFH2tJDRIAbc+qFh+BbTIZbeyBYt8fpNXaYQQ==}
+  /@prisma/engines/3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b:
+    resolution: {integrity: sha512-m9iZd5F5vP6A2IvKWfHpOO/qK8OOO9nbsV/pdyEkF/1WNe0E8SIWFBKb+HcMLkG9OFbDDBy8QItXmp/mIULuwQ==}
+    requiresBuild: true
+    dev: true
+
+  /@prisma/engines/3.11.1-1.1a2506facaf1a4727b7c26850735e88ec779dee9:
+    resolution: {integrity: sha512-MILbsGnvmnhCbFGa2/iSnsyGyazU3afzD7ldjCIeLIGKkNBMSZgA2IvpYsAXl+6qFHKGrS3B2otKfV31dwMSQw==}
     requiresBuild: true
     dev: true
 
@@ -10162,13 +10169,13 @@ packages:
     resolution: {integrity: sha1-v77VbV6ad2ZF9LH/eqGjrE+jw4U=}
     dev: false
 
-  /prisma/2.30.3:
-    resolution: {integrity: sha512-48qYba2BIyUmXuosBZs0g3kYGrxKvo4VkSHYOuLlDdDirmKyvoY2hCYMUYHSx3f++8ovfgs+MX5KmNlP+iAZrQ==}
-    engines: {node: '>=12.2'}
+  /prisma/3.11.1:
+    resolution: {integrity: sha512-aYn8bQwt1xwR2oSsVNHT4PXU7EhsThIwmpNB/MNUaaMx5OPLTro6VdNJe/sJssXFLxhamfWeMjwmpXjljo6xkg==}
+    engines: {node: '>=12.6'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 2.30.1-2.b8c35d44de987a9691890b3ddf3e2e7effb9bf20
+      '@prisma/engines': 3.11.1-1.1a2506facaf1a4727b7c26850735e88ec779dee9
     dev: true
 
   /progress/2.0.3:
