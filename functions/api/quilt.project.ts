@@ -1,7 +1,7 @@
 import {createProjectPlugin, createService, quiltService} from '@quilted/craft';
-import {lambda} from '@quilted/aws/sewing-kit';
+import {lambda} from '@quilted/aws/craft';
 
-import {prisma} from '../../config/sewing-kit/plugins';
+import {prisma} from '../../config/craft/plugins';
 
 export default createService((service) => {
   service.entry('./api');

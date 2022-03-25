@@ -1,5 +1,5 @@
-import {createProjectPlugin} from '@quilted/sewing-kit';
-import type {} from '@quilted/sewing-kit-rollup';
+import {createProjectPlugin} from '@quilted/craft';
+import type {} from '@quilted/craft/rollup';
 
 export const prisma = () =>
   createProjectPlugin({

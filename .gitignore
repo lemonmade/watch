@@ -1,7 +1,7 @@
 node_modules
 .DS_STORE
 *.log
-.sewing-kit
+.quilt
 build
 cdk.out
 app/graphql/types*
