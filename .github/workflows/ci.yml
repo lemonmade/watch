@@ -6,6 +6,11 @@ on:
       - '**'
       - '!main'
   workflow_call:
+    inputs:
+      build:
+        type: boolean
+        default: true
+        description: 'Whether to run a build as part of testing'
 
 jobs:
   lint:
@@ -35,6 +40,7 @@ jobs:
   build:
     name: Build 🏗
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_call' || inputs.build }}
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
