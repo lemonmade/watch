@@ -12,6 +12,10 @@ const exec = promisify(execFile);
 const require = createRequire(import.meta.url);
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const prismaClientRoot = resolve(
+  dirname(require.resolve('@prisma/client')),
+  '..',
+);
 const prismaEnginesRoot = resolve(
   dirname(require.resolve('@prisma/engines')),
   '..',
@@ -127,16 +131,16 @@ async function copyPrismaModules(output) {
     },
   );
 
-  // await copy(
-  //   resolve(root, 'node_modules/.prisma'),
-  //   resolve(output, 'nodejs/node_modules/.prisma'),
-  //   {
-  //     recursive: true,
-  //     overwrite: true,
-  //     dereference: true,
-  //     filter: omitQueryEngines,
-  //   },
-  // );
+  await copy(
+    resolve(prismaClientRoot, '../.prisma'),
+    resolve(output, 'nodejs/node_modules/.prisma'),
+    {
+      recursive: true,
+      overwrite: true,
+      dereference: true,
+      filter: omitQueryEngines,
+    },
+  );
 }
 
 const PRISMA_BINARY_REGEX = /^(\w+-engine|prisma-fmt)/;
