@@ -54,7 +54,7 @@ jobs:
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-          pnpm packages:deploy --no-git-checks
+          pnpm packages:deploy -- --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -80,10 +80,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy database migration infrastructure to AWS
-        run: pnpm cdk deploy WatchMigrateDatabaseStack --require-approval never
+        run: pnpm cdk deploy WatchMigrateDatabaseStack -- --require-approval never
 
       - name: Run database migrations
         run: aws lambda invoke --function-name WatchMigratePrimaryDatabaseFunction /dev/stdout
 
       - name: Deploy application code to AWS
-        run: pnpm cdk deploy WatchStack --require-approval never
+        run: pnpm cdk deploy WatchStack -- --require-approval never
