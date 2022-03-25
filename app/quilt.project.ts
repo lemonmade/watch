@@ -1,8 +1,8 @@
 import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {App} from '@quilted/craft';
-import {lambda} from '@quilted/aws/sewing-kit';
+import type {} from '@quilted/craft/vite';
 
-import type {} from '@quilted/sewing-kit-vite';
+import {lambda} from '@quilted/aws/craft';
 
 export default createApp((app) => {
   app.entry('./App');

@@ -1,11 +1,11 @@
 {
   "extends": "@quilted/typescript/workspace.json",
   "include": [
-    "node_modules/@sewing-kit/*/*.d.ts",
     "config/**/*.ts",
     "scripts/**/*.ts",
     "graphql.config.ts",
-    "**/sewing-kit.config.ts",
+    "quilt.workspace.ts",
+    "**/quilt.project.ts",
     "**/infrastructure/**/*.ts"
   ],
   "compilerOptions": {

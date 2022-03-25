@@ -6,5 +6,5 @@
     "paths": {}
   },
   "include": ["src"],
-  "exclude": ["sewing-kit.config.ts", "build"]
+  "exclude": ["quilt.project.ts", "build"]
 }

@@ -5,7 +5,7 @@
     "outDir": "build/typescript"
   },
   "include": ["src"],
-  "exclude": ["sewing-kit.config.ts", "base"],
+  "exclude": ["quilt.project.ts", "base"],
   "references": [
     {
       "path": "../basics"
