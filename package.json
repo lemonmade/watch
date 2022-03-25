@@ -15,7 +15,7 @@
     "cdk": "pnpm --filter infrastructure run cdk"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=14.18.0"
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
