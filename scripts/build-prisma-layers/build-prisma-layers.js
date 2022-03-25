@@ -62,7 +62,7 @@ async function run() {
       resolve(prismaEnginesRoot, 'query-engine-rhel-openssl-1.0.x'),
       resolve(
         queryLayerOutput,
-        'nodejs/node_modules/@prisma/client/runtime/query-engine-rhel-openssl-1.0.x',
+        'nodejs/node_modules/@prisma/client/query-engine-rhel-openssl-1.0.x',
       ),
       {
         dereference: true,
