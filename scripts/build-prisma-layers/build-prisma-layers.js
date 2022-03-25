@@ -127,16 +127,16 @@ async function copyPrismaModules(output) {
     },
   );
 
-  await copy(
-    resolve(root, 'node_modules/.prisma'),
-    resolve(output, 'nodejs/node_modules/.prisma'),
-    {
-      recursive: true,
-      overwrite: true,
-      dereference: true,
-      filter: omitQueryEngines,
-    },
-  );
+  // await copy(
+  //   resolve(root, 'node_modules/.prisma'),
+  //   resolve(output, 'nodejs/node_modules/.prisma'),
+  //   {
+  //     recursive: true,
+  //     overwrite: true,
+  //     dereference: true,
+  //     filter: omitQueryEngines,
+  //   },
+  // );
 }
 
 const PRISMA_BINARY_REGEX = /^(\w+-engine|prisma-fmt)/;
