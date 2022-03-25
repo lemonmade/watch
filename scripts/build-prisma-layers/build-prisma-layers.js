@@ -58,21 +58,31 @@ async function run() {
   });
 
   await Promise.all([
+    // copy(
+    //   resolve(prismaEnginesRoot, 'query-engine-rhel-openssl-1.0.x'),
+    //   resolve(
+    //     queryLayerOutput,
+    //     'nodejs/node_modules/@prisma/client/query-engine-rhel-openssl-1.0.x',
+    //   ),
+    //   {
+    //     dereference: true,
+    //   },
+    // ),
     copy(
-      resolve(prismaEnginesRoot, 'query-engine-rhel-openssl-1.0.x'),
+      resolve(prismaEnginesRoot, 'libquery_engine-rhel-openssl-1.0.x.so.node'),
       resolve(
         queryLayerOutput,
-        'nodejs/node_modules/@prisma/client/query-engine-rhel-openssl-1.0.x',
+        'nodejs/node_modules/prisma/libquery_engine-rhel-openssl-1.0.x.so.node',
       ),
       {
         dereference: true,
       },
     ),
     copy(
-      resolve(prismaEnginesRoot, 'query-engine-rhel-openssl-1.0.x'),
+      resolve(prismaEnginesRoot, 'libquery_engine-rhel-openssl-1.0.x.so.node'),
       resolve(
         migrateLayerOutput,
-        'nodejs/node_modules/prisma/query-engine-rhel-openssl-1.0.x',
+        'nodejs/node_modules/prisma/libquery_engine-rhel-openssl-1.0.x.so.node',
       ),
       {
         dereference: true,
