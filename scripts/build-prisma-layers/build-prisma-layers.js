@@ -143,7 +143,7 @@ async function copyPrismaModules(output) {
   );
 }
 
-const PRISMA_BINARY_REGEX = /^(\w+-engine|prisma-fmt)/;
+const PRISMA_BINARY_REGEX = /^(\w+[-_]engine|prisma-fmt)/;
 
 /**
  * @param {string} file
