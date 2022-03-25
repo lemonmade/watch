@@ -38,7 +38,6 @@ async function run() {
     // @see https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_cli_binary_targets
     env: {
       ...process.env,
-      PRISMA_CLI_QUERY_ENGINE_TYPE: 'binary',
       PRISMA_CLI_BINARY_TARGETS: 'rhel-openssl-1.0.x',
     },
   });
@@ -72,7 +71,7 @@ async function run() {
       resolve(prismaEnginesRoot, 'libquery_engine-rhel-openssl-1.0.x.so.node'),
       resolve(
         queryLayerOutput,
-        'nodejs/node_modules/prisma/libquery_engine-rhel-openssl-1.0.x.so.node',
+        'nodejs/node_modules/@prisma/client/runtime/libquery_engine-rhel-openssl-1.0.x.so.node',
       ),
       {
         dereference: true,
