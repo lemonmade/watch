@@ -18,7 +18,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2
 
-      - uses: Generate Prisma artifacts
+      - name: Generate Prisma artifacts
         run: pnpm prisma generate
 
       - name: Build Prisma layers
