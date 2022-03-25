@@ -54,6 +54,7 @@ jobs:
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+          git status
           pnpm packages:deploy
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
