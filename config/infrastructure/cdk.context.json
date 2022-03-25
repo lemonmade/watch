@@ -1,45 +1,4 @@
 {
-  "hosted-zone:account=552916950096:domainName=lemon.tools:region=us-east-1": {
-    "Id": "/hostedzone/Z19SQWUN9UHUCZ",
-    "Name": "lemon.tools."
-  },
-  "vpc-provider:account=552916950096:filter.vpc-id=vpc-0e09f839483ce344c:region=us-east-1:returnAsymmetricSubnets=true": {
-    "vpcId": "vpc-0e09f839483ce344c",
-    "vpcCidrBlock": "10.0.0.0/16",
-    "availabilityZones": [],
-    "subnetGroups": [
-      {
-        "name": "Public",
-        "type": "Public",
-        "subnets": [
-          {
-            "subnetId": "subnet-097b71d8a680d79eb",
-            "cidr": "10.0.0.0/24",
-            "availabilityZone": "us-east-1f",
-            "routeTableId": "rtb-02b61ff2e09f6eeed"
-          }
-        ]
-      },
-      {
-        "name": "Private",
-        "type": "Private",
-        "subnets": [
-          {
-            "subnetId": "subnet-086de8c546ce940ec",
-            "cidr": "10.0.2.0/24",
-            "availabilityZone": "us-east-1e",
-            "routeTableId": "rtb-09c04aa54ac1ac664"
-          },
-          {
-            "subnetId": "subnet-09080851904bb4937",
-            "cidr": "10.0.1.0/24",
-            "availabilityZone": "us-east-1f",
-            "routeTableId": "rtb-09c04aa54ac1ac664"
-          }
-        ]
-      }
-    ]
-  },
   "availability-zones:account=552916950096:region=us-east-1": [
     "us-east-1a",
     "us-east-1b",
@@ -48,6 +7,10 @@
     "us-east-1e",
     "us-east-1f"
   ],
+  "hosted-zone:account=552916950096:domainName=lemon.tools:region=us-east-1": {
+    "Id": "/hostedzone/Z19SQWUN9UHUCZ",
+    "Name": "lemon.tools."
+  },
   "vpc-provider:account=552916950096:filter.vpc-id=vpc-0f143b48e2f39fa56:region=us-east-1:returnAsymmetricSubnets=true": {
     "vpcId": "vpc-0f143b48e2f39fa56",
     "vpcCidrBlock": "10.0.0.0/16",

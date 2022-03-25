@@ -2,7 +2,7 @@
   "name": "infrastructure",
   "type": "commonjs",
   "scripts": {
-    "cdk": "cdk --app \"babel-node --presets=@babel/preset-typescript,@babel/preset-env --extensions .ts,.tsx,.mjs,.js,.json ./config/cdk/index.ts\""
+    "cdk": "cdk --app \"node -r esbuild-register ./index.ts\""
   },
   "devDependencies": {
     "@aws-cdk/aws-certificatemanager": "^1.149.0",
