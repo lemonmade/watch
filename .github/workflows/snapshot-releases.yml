@@ -17,8 +17,8 @@ jobs:
         uses: tj-actions/branch-names@v5.1
       - uses: quilt-framework/action-build@v2
         with:
-          command: pnpm build
-          arguments: -- --only-project package:*
+          arguments: --only-project package:*
+          cache-key: v2
       - name: Version
         run: pnpm packages:snapshot -- ${{ steps.branch-name.outputs.current_branch }}
         env:
