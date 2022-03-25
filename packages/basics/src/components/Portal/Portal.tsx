@@ -6,7 +6,9 @@ import {usePortalContainer} from '../../utilities/portals';
 
 interface Props {}
 
-export function Portal({children}: PropsWithChildren<Props>): ReactElement | null {
+export function Portal({
+  children,
+}: PropsWithChildren<Props>): ReactElement | null {
   const id = useUniqueId('Portal');
   const container = usePortalContainer();
   return container

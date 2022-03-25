@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-type-check@v2
+        with:
+          cache-key: v2
 
   unit-tests:
     name: Unit tests 🧪
