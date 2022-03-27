@@ -46,6 +46,9 @@ export const Series: SeriesResolver = {
   imdbUrl({imdbId}) {
     return `https://www.imdb.com/title/${imdbId}`;
   },
+  tmdbUrl({tmdbId}) {
+    return `https://www.themoviedb.org/tv/${tmdbId}`;
+  },
   season({id}, {number}, {prisma}) {
     return prisma.season.findFirst({where: {seriesId: id, number}});
   },
@@ -80,9 +83,19 @@ export const Season: SeasonResolver = {
       rejectOnNotFound: true,
     });
   },
+  async tmdbUrl({seriesId, number}, _, {prisma}) {
+    const series = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {tmdbId: true},
+      rejectOnNotFound: true,
+    });
+
+    return `https://www.themoviedb.org/tv/${series.tmdbId}/season/${number}`;
+  },
   async imdbUrl({seriesId, number}, _, {prisma}) {
     const series = await prisma.series.findFirst({
       where: {id: seriesId},
+      select: {imdbId: true},
       rejectOnNotFound: true,
     });
 

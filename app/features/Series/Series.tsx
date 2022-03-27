@@ -98,9 +98,12 @@ function SeriesWithData({
 
   return (
     <Page heading={series.name}>
-      {series.overview && <Text>{series.overview}</Text>}
-      <Link to={series.imdbUrl}>IMDB</Link>
       <BlockStack spacing="large">
+        {series.overview && <Text>{series.overview}</Text>}
+        <InlineStack>
+          <Link to={series.tmdbUrl}>TMDB</Link>
+          <Link to={series.imdbUrl}>IMDB</Link>
+        </InlineStack>
         {localDevelopmentClips.map((localClip) => (
           <LocalClip
             {...localClip}
@@ -117,12 +120,11 @@ function SeriesWithData({
             extensionPoint="Series.Details.RenderAccessory"
           />
         ))}
-      </BlockStack>
-      <BlockStack>
-        {series.seasons.map(({id, number, status, imdbUrl}) => (
+        {series.seasons.map(({id, number, status, imdbUrl, tmdbUrl}) => (
           <View key={id}>
-            <Text>Season number {number}</Text>
+            <Text>Season {number}</Text>
             <InlineStack>
+              <Link to={tmdbUrl}>TMDB</Link>
               <Link to={imdbUrl}>IMDB</Link>
               <Button
                 onPress={async () => {
