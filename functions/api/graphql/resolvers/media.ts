@@ -43,6 +43,12 @@ export const Query: Pick<QueryResolver, 'series'> = {
 
 export const Series: SeriesResolver = {
   id: ({id}) => toGid(id, 'Series'),
+  imdbUrl({imdbId}) {
+    return `https://www.imdb.com/title/${imdbId}`;
+  },
+  tmdbUrl({tmdbId}) {
+    return `https://www.themoviedb.org/tv/${tmdbId}`;
+  },
   season({id}, {number}, {prisma}) {
     return prisma.season.findFirst({where: {seriesId: id, number}});
   },
@@ -76,6 +82,24 @@ export const Season: SeasonResolver = {
       where: {id: seriesId},
       rejectOnNotFound: true,
     });
+  },
+  async tmdbUrl({seriesId, number}, _, {prisma}) {
+    const series = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {tmdbId: true},
+      rejectOnNotFound: true,
+    });
+
+    return `https://www.themoviedb.org/tv/${series.tmdbId}/season/${number}`;
+  },
+  async imdbUrl({seriesId, number}, _, {prisma}) {
+    const series = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {imdbId: true},
+      rejectOnNotFound: true,
+    });
+
+    return `https://www.imdb.com/title/${series.imdbId}/episodes?season=${number}`;
   },
   async episodes({id}, _, {prisma}) {
     const episodes = await prisma.episode.findMany({

@@ -3,7 +3,8 @@ query Series($id: ID!) {
     id
     name
     overview
-    imdbId
+    imdbUrl
+    tmdbUrl
     inWatchLater
     poster {
       source
@@ -13,6 +14,8 @@ query Series($id: ID!) {
       number
       status
       overview
+      imdbUrl
+      tmdbUrl
     }
     subscription {
       id
