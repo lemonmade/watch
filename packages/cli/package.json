@@ -24,7 +24,7 @@
     "@babel/preset-typescript": "^7.0.0",
     "@graphql-tools/schema": "^7.0.0",
     "@iarna/toml": "^3.0.0",
-    "@quilted/graphql": "^0.4.27",
+    "@quilted/graphql": "^0.4.28",
     "@quilted/http-handlers": "^0.2.31",
     "@quilted/polyfills": "^0.2.23",
     "@rollup/plugin-alias": "^3.0.0",

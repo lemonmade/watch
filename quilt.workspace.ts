@@ -11,7 +11,7 @@ export default createWorkspace((workspace) => {
 function runCaddy() {
   return createWorkspacePlugin({
     name: 'Watch.Caddy',
-    develop({run}) {
+    develop({run, options}) {
       run((step) =>
         step({
           label: 'Run Caddy',
@@ -19,13 +19,16 @@ function runCaddy() {
           stage: 'post',
           run({exec}) {
             const result = exec('caddy', [
-              'run',
+              'start',
               '--config',
               'config/local/Caddyfile',
             ]);
 
             result.child.stdout?.pipe(process.stdout);
-            result.child.stderr?.pipe(process.stderr);
+
+            if (options.debug) {
+              result.child.stderr?.pipe(process.stderr);
+            }
           },
         }),
       );

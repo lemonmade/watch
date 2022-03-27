@@ -30,7 +30,7 @@
     "@prisma/engines": "^3.11.0-0",
     "@quilted/aws": "^0.3.36",
     "@quilted/browserslist-config": "^0.1.6",
-    "@quilted/craft": "^0.1.85",
+    "@quilted/craft": "^0.1.87",
     "@quilted/eslint-config": "^0.1.9",
     "@quilted/prettier": "^0.2.8",
     "@quilted/typescript": "^0.2.10",
