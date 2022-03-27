@@ -36,6 +36,7 @@ enum SeasonStatus {
 
 type Season {
   id: ID!
+  imdbUrl: Url!
   series: Series!
   number: Int!
   episodes: [Episode!]!
@@ -56,6 +57,7 @@ type Series {
   id: ID!
   tmdbId: ID!
   imdbId: ID!
+  imdbUrl: Url!
   name: String!
   poster: Image
   overview: String

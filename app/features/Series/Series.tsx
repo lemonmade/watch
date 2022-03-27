@@ -99,9 +99,7 @@ function SeriesWithData({
   return (
     <Page heading={series.name}>
       {series.overview && <Text>{series.overview}</Text>}
-      {series.imdbId && (
-        <Link to={`https://www.imdb.com/title/${series.imdbId}`}>IMDB</Link>
-      )}
+      <Link to={series.imdbUrl}>IMDB</Link>
       <BlockStack spacing="large">
         {localDevelopmentClips.map((localClip) => (
           <LocalClip
@@ -121,17 +119,11 @@ function SeriesWithData({
         ))}
       </BlockStack>
       <BlockStack>
-        {series.seasons.map(({id, number, status}: any) => (
+        {series.seasons.map(({id, number, status, imdbUrl}) => (
           <View key={id}>
             <Text>Season number {number}</Text>
             <InlineStack>
-              {series.imdbId && (
-                <Link
-                  to={`https://www.imdb.com/title/${series.imdbId}/episodes?season=${number}`}
-                >
-                  IMDB
-                </Link>
-              )}
+              <Link to={imdbUrl}>IMDB</Link>
               <Button
                 onPress={async () => {
                   const {data} = await startWatchThrough({
