@@ -20,7 +20,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2
         with:
-          cache-key: v2
+          cache-key: v3
 
       - name: Generate Prisma artifacts
         run: pnpm prisma generate
