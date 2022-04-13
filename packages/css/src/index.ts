@@ -30,5 +30,6 @@ export function classes(...args: ClassArgument[]) {
 }
 
 export function variation(name: string, value: string) {
-  return `${name}${value[0].toUpperCase()}${value.substr(1)}`;
+  if (value === '') return name;
+  return `${name}${value[0]!.toUpperCase()}${value.substring(1)}`;
 }

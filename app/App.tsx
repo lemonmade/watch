@@ -4,7 +4,7 @@ import type {PropsWithChildren} from 'react';
 import {
   useNavigate,
   createGraphQL,
-  createHttpFetch,
+  createGraphQLHttpFetch,
   App as QuiltApp,
   GraphQLContext,
 } from '@quilted/quilt';
@@ -14,7 +14,7 @@ import {SearchParam} from 'global/utilities/auth';
 
 import {Head, Http, LocalDevelopmentOrchestrator, Routes} from './foundation';
 
-const fetch = createHttpFetch({
+const fetch = createGraphQLHttpFetch({
   credentials: 'include',
   uri: '/api/graphql',
 });

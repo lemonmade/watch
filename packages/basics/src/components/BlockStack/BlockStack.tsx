@@ -29,7 +29,7 @@ const SPACING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('small'), styles.spacingSmall],
   [Keyword<SpacingKeyword>('base'), false],
   [Keyword<SpacingKeyword>('large'), styles.spacingLarge],
-]);
+] as [string, string | false][]);
 
 export function BlockStack({
   align,

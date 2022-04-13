@@ -39,7 +39,7 @@ const PADDING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('small'), systemStyles.paddingSmall],
   [Keyword<SpacingKeyword>('base'), systemStyles.paddingBase],
   [Keyword<SpacingKeyword>('large'), systemStyles.paddingLarge],
-]);
+] as [string, string | false][]);
 
 interface SystemDomProps {
   readonly styles: CSSProperties | undefined;
@@ -62,7 +62,7 @@ export function useDomProps({
   visibility,
   accessibilityVisibility,
 }: SystemProps & {display?: 'block' | 'grid' | 'inline'} = {}): SystemDomProps {
-  let className = systemStyles.View;
+  let className = systemStyles.View!;
   let styles: SystemDomProps['styles'];
   let attributes: SystemDomProps['attributes'];
 

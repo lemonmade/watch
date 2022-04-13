@@ -10,7 +10,7 @@ const REMOVE_HEADER_REGEX = /^(x-amz|apigw-)/i;
 // performance timing details on all requests across origins, and removes
 // some headers we don’t care for.
 export const handler: CloudFrontResponseHandler = (event, _, callback) => {
-  const {response} = event.Records[0].cf;
+  const {response} = event.Records[0]!.cf;
   const {headers} = response;
 
   const newHeaders: typeof headers = {

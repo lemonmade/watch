@@ -15,16 +15,8 @@ const DEFAULT_SENDER: Sender = {
 export const handler: SQSHandler = async (event) => {
   // eslint-disable-next-line no-console
   console.log(event);
-  const {
-    Records: [
-      {
-        body: propsJson,
-        messageAttributes: {
-          type: {stringValue: type},
-        },
-      },
-    ],
-  } = event;
+  const {body: propsJson, messageAttributes} = event.Records[0]!;
+  const type = messageAttributes.type!.stringValue;
 
   const props = JSON.parse(propsJson);
 

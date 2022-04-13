@@ -299,7 +299,7 @@ export const Mutation: Pick<
         ?.supports as any as ClipsExtensionPointSupportInput[];
 
       if (supports?.length === 1) {
-        resolvedExtensionPoint = supports[0].extensionPoint;
+        resolvedExtensionPoint = supports[0]!.extensionPoint;
       }
     }
 

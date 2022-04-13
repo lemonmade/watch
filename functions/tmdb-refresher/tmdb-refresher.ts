@@ -48,13 +48,11 @@ export const handler: SQSHandler = async (event) => {
   try {
     await Promise.all(
       event.Records.map(async (record) => {
-        const {
-          messageAttributes: {
-            tmdbId: {stringValue: tmdbId},
-            name: {stringValue: name},
-            id: {stringValue: id},
-          },
-        } = record;
+        const {messageAttributes} = record;
+
+        const id = messageAttributes.id!.stringValue;
+        const name = messageAttributes.name!.stringValue;
+        const tmdbId = messageAttributes.tmdbId!.stringValue;
 
         const result = await updateSeries({
           id: id!,
@@ -277,9 +275,9 @@ function tmdbAirDateToDate(date?: string) {
 
   const {year, month, day} = match.groups!;
   return new Date(
-    parseInt(year, 10),
-    parseInt(month, 10) - 1,
-    parseInt(day, 10),
+    parseInt(year!, 10),
+    parseInt(month!, 10) - 1,
+    parseInt(day!, 10),
   );
 }
 

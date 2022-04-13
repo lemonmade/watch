@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import {createGraphQL, createHttpFetch} from '@quilted/quilt';
+import {createGraphQL, createGraphQLHttpFetch} from '@quilted/quilt';
 import Env from '@quilted/quilt/env';
 import {redirect, html, fetchJson} from '@quilted/quilt/http-handlers';
 import type {
@@ -364,7 +364,7 @@ async function handleGithubOAuthCallback(
 
   const githubClient = createGraphQL({
     cache: false,
-    fetch: createHttpFetch({
+    fetch: createGraphQLHttpFetch({
       uri: 'https://api.github.com/graphql',
       headers: {
         Authorization: `Bearer ${accessToken}`,

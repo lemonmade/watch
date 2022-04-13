@@ -134,7 +134,7 @@ export class Cdn extends Construct {
         domainNames: [DOMAIN],
         defaultBehavior: {
           origin: new HttpOrigin(
-            webApp.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
+            webApp.endpoint.replace(/^https:[/][/]/, '').split('/')[0]!,
           ),
           compress: true,
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -228,7 +228,7 @@ export class Cdn extends Construct {
           },
           '/api/graphql*': {
             origin: new HttpOrigin(
-              graphqlApi.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
+              graphqlApi.endpoint.replace(/^https:[/][/]/, '').split('/')[0]!,
             ),
             compress: true,
             allowedMethods: AllowedMethods.ALLOW_ALL,
@@ -271,7 +271,7 @@ export class Cdn extends Construct {
           },
           '/internal/auth*': {
             origin: new HttpOrigin(
-              authApi.endpoint.replace(/^https:[/][/]/, '').split('/')[0],
+              authApi.endpoint.replace(/^https:[/][/]/, '').split('/')[0]!,
             ),
             compress: true,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

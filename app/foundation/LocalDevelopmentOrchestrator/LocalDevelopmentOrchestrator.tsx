@@ -1,6 +1,10 @@
 import {useEffect, useState} from 'react';
 import type {ReactNode, ContextType} from 'react';
-import {createGraphQL, createHttpFetch, useInitialUrl} from '@quilted/quilt';
+import {
+  useInitialUrl,
+  createGraphQL,
+  createGraphQLHttpFetch,
+} from '@quilted/quilt';
 
 import {LocalDevelopmentClipsContext} from 'utilities/clips';
 
@@ -26,7 +30,7 @@ export function LocalDevelopmentOrchestrator({
       try {
         const localDevelopmentQueryUrl = new URL(buildingParam);
         const graphql = createGraphQL({
-          fetch: createHttpFetch({uri: localDevelopmentQueryUrl.href}),
+          fetch: createGraphQLHttpFetch({uri: localDevelopmentQueryUrl.href}),
         });
 
         const {data, error} = await graphql.query(
@@ -48,7 +52,7 @@ export function LocalDevelopmentOrchestrator({
               id: extension.id,
               name: extension.name,
               version: 'unstable',
-              script: extension.assets[0].source,
+              script: extension.assets[0]!.source,
               socketUrl: extension.socketUrl ?? undefined,
             };
           }),

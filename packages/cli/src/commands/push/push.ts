@@ -72,7 +72,7 @@ export async function push({ui}: {ui: Ui}) {
   ui.TextBlock(
     `We’re pushing the latest changes for your ${
       hasOneExtension
-        ? `${ui.Code(localApp.extensions[0].configuration.name)} extension`
+        ? `${ui.Code(localApp.extensions[0]!.configuration.name)} extension`
         : `${localApp.extensions.length} extensions`
     }...`,
   );
@@ -109,7 +109,7 @@ export async function push({ui}: {ui: Ui}) {
     if (created.length === 1) {
       ui.TextBlock(
         `Created extension ${ui.Code(
-          created[0].extension.configuration.name,
+          created[0]!.extension.configuration.name,
         )}!`,
       );
     } else {
@@ -126,7 +126,7 @@ export async function push({ui}: {ui: Ui}) {
     if (updated.length === 1) {
       ui.TextBlock(
         `Updated extension ${ui.Code(
-          updated[0].extension.configuration.name,
+          updated[0]!.extension.configuration.name,
         )}!`,
       );
     } else {
