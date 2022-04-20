@@ -6,7 +6,7 @@ import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import open from 'open';
 
 import type {GraphQL} from '@quilted/graphql';
-import {createGraphQL, createHttpFetch} from '@quilted/graphql';
+import {createGraphQL, createGraphQLHttpFetch} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -111,7 +111,7 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
 function graphqlFromAccessToken(accessToken: string) {
   return createGraphQL({
     cache: false,
-    fetch: createHttpFetch({
+    fetch: createGraphQLHttpFetch({
       uri: watchUrl('/api/graphql'),
       headers: {
         'X-Access-Token': accessToken,

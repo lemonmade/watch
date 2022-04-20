@@ -24,9 +24,9 @@ export function DateField({id, label, value, onChange}: Props) {
 
           onChange(
             new Date(
-              parseInt(year, 10),
-              parseInt(month, 10) - 1,
-              parseInt(day, 10),
+              parseInt(year!, 10),
+              parseInt(month!, 10) - 1,
+              parseInt(day!, 10),
             ),
           );
         }}

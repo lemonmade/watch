@@ -141,9 +141,9 @@ function tmdbAirDateToDate(date?: string) {
 
   const {year, month, day} = match.groups!;
   return new Date(
-    parseInt(year, 10),
-    parseInt(month, 10) - 1,
-    parseInt(day, 10),
+    parseInt(year!, 10),
+    parseInt(month!, 10) - 1,
+    parseInt(day!, 10),
   );
 }
 

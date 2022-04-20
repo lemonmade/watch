@@ -36,7 +36,7 @@ export async function build({ui}: {ui: Ui}) {
   ui.TextBlock(
     `We’re building the latest changes for your ${
       hasOneExtension
-        ? `${ui.Code(app.extensions[0].configuration.name)} extension`
+        ? `${ui.Code(app.extensions[0]!.configuration.name)} extension`
         : `${app.extensions.length} extensions`
     }...`,
   );
@@ -62,7 +62,7 @@ export async function build({ui}: {ui: Ui}) {
 
   if (app.extensions.length === 1) {
     ui.TextBlock(
-      `Built extension ${ui.Code(app.extensions[0].configuration.name)}!`,
+      `Built extension ${ui.Code(app.extensions[0]!.configuration.name)}!`,
     );
   } else {
     ui.TextBlock(`Built ${app.extensions.length} extensions:`);

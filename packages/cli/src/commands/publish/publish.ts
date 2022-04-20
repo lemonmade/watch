@@ -43,7 +43,7 @@ export async function publish({ui}: {ui: Ui}) {
   ui.TextBlock(
     `We’re publishing the latest version of your ${
       hasOneExtension
-        ? `${ui.Code(localApp.extensions[0].configuration.name)} extension`
+        ? `${ui.Code(localApp.extensions[0]!.configuration.name)} extension`
         : `${localApp.extensions.length} extensions`
     }...`,
   );
@@ -66,7 +66,7 @@ export async function publish({ui}: {ui: Ui}) {
   if (localApp.extensions.length === 1) {
     ui.TextBlock(
       `Published extension ${ui.Code(
-        localApp.extensions[0].configuration.name,
+        localApp.extensions[0]!.configuration.name,
       )}!`,
     );
   } else {

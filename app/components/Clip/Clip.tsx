@@ -90,7 +90,7 @@ export function InstalledClip<T extends ExtensionPoint>({
       api={api}
       name={extension.name}
       version={version.apiVersion}
-      script={version.assets[0].source}
+      script={version.assets[0]!.source}
       configuration={configuration ?? undefined}
       extensionPoint={extensionPoint}
     />

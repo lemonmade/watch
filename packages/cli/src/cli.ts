@@ -22,7 +22,7 @@ async function run() {
 
   // eslint-disable-next-line no-console
   console.log(
-    `${magenta(`watch ${bold(command)}`)} ${magenta('●')}${red('●')}${blue(
+    `${magenta(`watch ${bold(command!)}`)} ${magenta('●')}${red('●')}${blue(
       '●',
     )}`,
   );
