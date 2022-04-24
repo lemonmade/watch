@@ -23,7 +23,7 @@ export function LocalDevelopmentOrchestrator({
   useEffect(() => {
     let valid = true;
 
-    const buildingParam = url.searchParams.get('building');
+    const buildingParam = url!.searchParams.get('building');
     if (buildingParam == null) return;
 
     (async () => {

@@ -5,7 +5,8 @@ import {
   useNavigate,
   createGraphQL,
   createGraphQLHttpFetch,
-  App as QuiltApp,
+  Router,
+  AppContext,
   GraphQLContext,
 } from '@quilted/quilt';
 import {Canvas} from '@lemon/zest';
@@ -21,17 +22,19 @@ const fetch = createGraphQLHttpFetch({
 
 export default function App() {
   return (
-    <QuiltApp urlIsExternal={urlIsExternal}>
-      <GraphQL>
-        <Canvas>
-          <Http />
-          <Head />
-          <LocalDevelopmentOrchestrator>
-            <Routes />
-          </LocalDevelopmentOrchestrator>
-        </Canvas>
-      </GraphQL>
-    </QuiltApp>
+    <AppContext>
+      <Router isExternal={urlIsExternal}>
+        <GraphQL>
+          <Canvas>
+            <Http />
+            <Head />
+            <LocalDevelopmentOrchestrator>
+              <Routes />
+            </LocalDevelopmentOrchestrator>
+          </Canvas>
+        </GraphQL>
+      </Router>
+    </AppContext>
   );
 }
 
@@ -65,11 +68,7 @@ function GraphQL({children}: PropsWithChildren<{}>) {
     [navigate],
   );
 
-  return (
-    <GraphQLContext.Provider value={graphql}>
-      {children}
-    </GraphQLContext.Provider>
-  );
+  return <GraphQLContext client={graphql}>{children}</GraphQLContext>;
 }
 
 function urlIsExternal(url: URL, currentUrl: URL) {

@@ -19,7 +19,7 @@
   },
   "packageManager": "pnpm@6.32.2",
   "dependencies": {
-    "@quilted/quilt": "^0.5.79",
+    "@quilted/quilt": "^0.5.88",
     "react": "npm:@quilted/react@^0.1.2",
     "react-dom": "npm:@quilted/react@^0.1.2"
   },
@@ -30,7 +30,7 @@
     "@prisma/engines": "^3.11.0-0",
     "@quilted/aws": "^0.3.36",
     "@quilted/browserslist-config": "^0.1.6",
-    "@quilted/craft": "^0.1.100",
+    "@quilted/craft": "^0.1.101",
     "@quilted/eslint-config": "^0.1.9",
     "@quilted/prettier": "^0.2.8",
     "@quilted/typescript": "^0.2.11",
