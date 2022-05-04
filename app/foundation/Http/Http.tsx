@@ -1,3 +1,4 @@
+import Env from '@quilted/quilt/env';
 import {
   CacheControl,
   ResponseHeader,
@@ -5,10 +6,13 @@ import {
 } from '@quilted/quilt/http';
 
 export function Http() {
+  const isDevelopment = Env.MODE === 'development';
+
   return (
     <>
       <CacheControl cache={false} />
       <ContentSecurityPolicy
+        reportOnly={isDevelopment}
         defaultSources={["'self'"]}
         // Allow localhost for connecting to local development servers
         scriptSources={["'self'", 'http://localhost:*']}
@@ -23,7 +27,7 @@ export function Http() {
         // Allow localhost for connecting to local development servers
         connectSources={["'self'", 'http://localhost:*', 'ws://localhost:*']}
         frameAncestors={false}
-        upgradeInsecureRequests
+        upgradeInsecureRequests={!isDevelopment}
       />
       {/**
        * Disables Google’s Federated Learning of Cohorts (“FLoC”)
