@@ -199,29 +199,33 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     }
   });
 
-  handler.get(/^[/]assets/, async (request) => {
-    const assetPath = path.join(
-      outputRoot,
-      request.url.pathname.replace('/assets/', ''),
-    );
+  handler.get(
+    '/assets',
+    async (request) => {
+      const assetPath = path.join(
+        outputRoot,
+        request.url.pathname.replace('/assets/', ''),
+      );
 
-    try {
-      const assetStats = await stat(assetPath);
+      try {
+        const assetStats = await stat(assetPath);
 
-      if (assetStats.isFile()) {
-        return response(await readFile(assetPath, {encoding: 'utf8'}), {
-          headers: {
-            'Timing-Allow-Origin': '*',
-            'Content-Type': mime.getType(assetPath)!,
-          },
-        });
-      } else {
+        if (assetStats.isFile()) {
+          return response(await readFile(assetPath, {encoding: 'utf8'}), {
+            headers: {
+              'Timing-Allow-Origin': '*',
+              'Content-Type': mime.getType(assetPath)!,
+            },
+          });
+        } else {
+          return notFound();
+        }
+      } catch {
         return notFound();
       }
-    } catch {
-      return notFound();
-    }
-  });
+    },
+    {exact: false},
+  );
 
   const httpServer = createHttpServer(handler);
   const stopListening = makeStoppableServer(httpServer);
