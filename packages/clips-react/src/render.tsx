@@ -13,15 +13,15 @@ import type {
 import {ApiContext} from './context';
 
 export function render<T extends ExtensionPoint>(
-  renderUi: (api: ApiForExtensionPoint<T>) => ReactNode,
+  renderUi: (api: ApiForExtensionPoint<T>) => ReactNode | Promise<ReactNode>,
 ) {
   return extend<T>(async (root: RemoteRoot<any>, api: AnyApi) => {
+    const rendered = await renderUi(api as any);
+
     await new Promise<void>((resolve, reject) => {
       try {
         renderRemoteUi(
-          <ApiContext.Provider value={api}>
-            {renderUi(api as any)}
-          </ApiContext.Provider>,
+          <ApiContext.Provider value={api}>{rendered}</ApiContext.Provider>,
           root,
           () => {
             resolve();

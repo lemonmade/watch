@@ -1,5 +1,6 @@
 export {extend} from '@watching/clips';
 export type {
+  Version,
   ExtensionPoint,
   ExtensionPoints,
   ApiForExtensionPoint,
@@ -10,6 +11,9 @@ export type {
   SeriesDetailsApi,
   WatchThroughDetailsApi,
   ClipsApi,
+  ClipsGlobal,
+  AnyComponent,
+  RenderExtension,
 } from '@watching/clips';
 
 export {render} from './render';
