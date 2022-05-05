@@ -13,7 +13,7 @@ importers:
       '@prisma/engines': ^3.11.0-0
       '@quilted/aws': ^0.3.36
       '@quilted/browserslist-config': ^0.1.6
-      '@quilted/craft': ^0.1.106
+      '@quilted/craft': ^0.1.107
       '@quilted/eslint-config': ^0.1.9
       '@quilted/prettier': ^0.2.8
       '@quilted/quilt': ^0.5.92
@@ -33,9 +33,9 @@ importers:
       '@changesets/cli': 2.21.1
       '@prisma/client': 3.11.1_prisma@3.11.1
       '@prisma/engines': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
-      '@quilted/aws': 0.3.36_28395c09619709756e30044bf3b473ac
+      '@quilted/aws': 0.3.36_435eb162ed2df07b681f462e3d3af58a
       '@quilted/browserslist-config': 0.1.6
-      '@quilted/craft': 0.1.106_aa249fcee2ac14e800e949129b876cbc
+      '@quilted/craft': 0.1.107_aa249fcee2ac14e800e949129b876cbc
       '@quilted/eslint-config': 0.1.9_typescript@4.6.2
       '@quilted/prettier': 0.2.8
       '@quilted/typescript': 0.2.11_typescript@4.6.2
@@ -4085,7 +4085,7 @@ packages:
       magic-string: 0.25.9
     dev: false
 
-  /@quilted/aws/0.3.36_28395c09619709756e30044bf3b473ac:
+  /@quilted/aws/0.3.36_435eb162ed2df07b681f462e3d3af58a:
     resolution: {integrity: sha512-2xWKoVWUbDj56puXymwBAcZLaphlKGK6HlBOiebIOOehdnkWDGTx4DxFwbc3hKxlzxBUArZf1Ln88qE82ITH7w==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4099,7 +4099,7 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.106_aa249fcee2ac14e800e949129b876cbc
+      '@quilted/craft': 0.1.107_aa249fcee2ac14e800e949129b876cbc
       '@quilted/quilt': 0.5.92_1025b565437a15d93c0565903eeb25c4
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
@@ -4109,8 +4109,8 @@ packages:
     resolution: {integrity: sha512-w9IJYbzxOzqMCUQiCwBanlVkYpmez4WA+Zs6WL6l0S0MEuunBPGtPhL3cBcEN2GIIPPJA+hRkrm7MrspKYEuBA==}
     dev: true
 
-  /@quilted/craft/0.1.106_aa249fcee2ac14e800e949129b876cbc:
-    resolution: {integrity: sha512-BhTifJx+CqjlYXsYNT/5g0jKUAj6b8aDTJh5CX0WFVu4tP48/wt3NvzsiNEFXsPApnrpyLQJpdHF3xdtGYJ8fg==}
+  /@quilted/craft/0.1.107_aa249fcee2ac14e800e949129b876cbc:
+    resolution: {integrity: sha512-sBDmkHzubWwbbqix7qCcU8DOdRlNC0/ExYfxJBPilimxI8I5IYHSZIAhKSnD/m5hc/H0xbfnqOKdKthJ3KF6YA==}
     hasBin: true
     peerDependencies:
       '@quilted/quilt': ^0.5.92
