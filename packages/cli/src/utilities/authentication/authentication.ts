@@ -1,4 +1,4 @@
-import '@quilted/polyfills/fetch.node';
+import '@quilted/polyfills/fetch';
 
 import {homedir} from 'os';
 import * as path from 'path';

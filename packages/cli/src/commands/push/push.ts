@@ -1,4 +1,4 @@
-import '@quilted/polyfills/fetch.node';
+import '@quilted/polyfills/fetch';
 
 import * as path from 'path';
 import {statSync} from 'fs';
