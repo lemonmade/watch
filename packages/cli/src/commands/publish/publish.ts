@@ -43,7 +43,7 @@ export async function publish({ui}: {ui: Ui}) {
   ui.TextBlock(
     `We’re publishing the latest version of your ${
       hasOneExtension
-        ? `${ui.Code(localApp.extensions[0]!.configuration.name)} extension`
+        ? `${ui.Code(localApp.extensions[0]!.name)} extension`
         : `${localApp.extensions.length} extensions`
     }...`,
   );
@@ -65,15 +65,13 @@ export async function publish({ui}: {ui: Ui}) {
 
   if (localApp.extensions.length === 1) {
     ui.TextBlock(
-      `Published extension ${ui.Code(
-        localApp.extensions[0]!.configuration.name,
-      )}!`,
+      `Published extension ${ui.Code(localApp.extensions[0]!.name)}!`,
     );
   } else {
     ui.TextBlock(`Published ${localApp.extensions.length} extensions:`);
     ui.List((List) => {
       for (const extension of localApp.extensions) {
-        List.Item(extension.configuration.name);
+        List.Item(extension.name);
       }
     });
   }
@@ -94,7 +92,7 @@ async function publishExtension(
   if (production == null) {
     throw new PrintableError(
       `No production extension found matching local extension ${ui.Code(
-        extension.configuration.name,
+        extension.name,
       )}. Try running ${ui.Code(
         'watchapp push',
       )} first to stage your changes before running this command again.`,
@@ -108,7 +106,7 @@ async function publishExtension(
   if (data == null) {
     throw new PrintableError(
       `We were not able to create a production extension for ${ui.Code(
-        extension.configuration.name,
+        extension.name,
       )}. This shouldn’t have happened... Maybe try running this command again in a moment?`,
     );
   }

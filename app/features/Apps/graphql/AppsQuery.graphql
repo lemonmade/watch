@@ -10,7 +10,7 @@ query Apps {
         isInstalled
         latestVersion {
           supports {
-            extensionPoint
+            name
           }
         }
       }

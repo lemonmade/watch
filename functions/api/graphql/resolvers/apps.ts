@@ -18,6 +18,7 @@ import type {
   MutationResolver,
   UnionResolver,
 } from './types';
+import {toHandle} from './utilities/handle';
 import {toGid, fromGid} from './utilities/id';
 import {createUnionResolver, addResolvedType} from './utilities/interfaces';
 
@@ -56,6 +57,27 @@ export const Query: Pick<
       take: 50,
     });
 
+    const resolvedConditions = await Promise.all(
+      conditions?.map(async (condition) => {
+        if (condition.series == null) {
+          throw new Error(`Unknown condition: ${condition}`);
+        }
+
+        if (condition.series.id == null) {
+          throw new Error(
+            `You can’t supply a series condition without an id (${condition})`,
+          );
+        }
+
+        const series = await prisma.series.findFirst({
+          where: {id: fromGid(condition.series.id).id},
+          rejectOnNotFound: true,
+        });
+
+        return {condition, series};
+      }) ?? [],
+    );
+
     return installations.filter((installation) => {
       const version = installation.extension.activeVersion;
 
@@ -63,27 +85,19 @@ export const Query: Pick<
         return false;
       }
 
-      return (
-        conditions == null ||
-        conditions.every((condition) => {
-          if (condition.seriesId) {
-            return ((version.supports as any[]) ?? []).every(
-              (supports: any) => {
-                return (
-                  extensionPoint !== supports.extensionPoint ||
-                  supports.conditions.every(
-                    (supportCondition: any) =>
-                      supportCondition.type !== 'series' ||
-                      supportCondition.id === condition.seriesId,
-                  )
-                );
-              },
-            );
-          }
-
-          throw new Error();
-        })
-      );
+      return resolvedConditions.every(({series}) => {
+        return ((version.supports as any[]) ?? []).every((supports: any) => {
+          return (
+            extensionPoint !== supports.extensionPoint ||
+            supports.conditions.every(
+              (supportCondition: any) =>
+                supportCondition.series == null ||
+                supportCondition.series.handle ===
+                  (series.handle ?? toHandle(series.name)),
+            )
+          );
+        });
+      });
     });
   },
   clipsInstallation(_, {id}: {id: string}, {prisma}) {
@@ -299,7 +313,7 @@ export const Mutation: Pick<
         ?.supports as any as ClipsExtensionPointSupportInput[];
 
       if (supports?.length === 1) {
-        resolvedExtensionPoint = supports[0]!.extensionPoint;
+        resolvedExtensionPoint = supports[0]!.name;
       }
     }
 
@@ -583,21 +597,15 @@ async function createStagedClipsVersion({
     translations: translations && JSON.parse(translations),
     supports:
       supports &&
-      (supports.map(({extensionPoint, conditions}) => {
+      (supports.map(({name, conditions}) => {
         return {
-          extensionPoint,
+          name,
           conditions: conditions?.map((condition) => {
-            let resolvedCondition;
-
-            if (condition.seriesId) {
-              resolvedCondition = {type: 'series', id: condition.seriesId};
+            if (condition?.series?.handle == null) {
+              throw new Error(`Unknown condition: ${condition}`);
             }
 
-            if (resolvedCondition == null) {
-              throw new Error();
-            }
-
-            return resolvedCondition;
+            return condition;
           }),
         };
       }) as any),

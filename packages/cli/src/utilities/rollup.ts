@@ -27,7 +27,7 @@ export function createRollupConfiguration(
           if (source !== MAGIC_MODULE_EXTENSION_ENTRY) return null;
 
           return `
-            ${extension.configuration.extensionPoints
+            ${extension.extensionPoints
               .map((extensionPoint, index) => {
                 return `import extensionPoint${index} from ${JSON.stringify(
                   path.resolve(extension.root, extensionPoint.module),
@@ -35,7 +35,7 @@ export function createRollupConfiguration(
               })
               .join('\n')}
 
-              ${extension.configuration.extensionPoints
+              ${extension.extensionPoints
                 .map((extensionPoint, index) => {
                   return `clips.extend(${JSON.stringify(
                     extensionPoint.id,
