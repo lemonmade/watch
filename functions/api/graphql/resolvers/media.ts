@@ -43,6 +43,13 @@ export const Query: Pick<QueryResolver, 'series'> = {
 
 export const Series: SeriesResolver = {
   id: ({id}) => toGid(id, 'Series'),
+  handle: ({name, handle}) =>
+    handle ??
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/-+$/, '')
+      .replace(/^-+/, ''),
   imdbUrl({imdbId}) {
     return `https://www.imdb.com/title/${imdbId}`;
   },

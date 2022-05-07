@@ -78,6 +78,11 @@ export async function loadTmdbSeries(
       tmdbId: String(tmdbId),
       imdbId: seriesIds.imdb_id,
       name: seriesResult.name,
+      handle: seriesResult.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/-$/, '')
+        .replace(/^-/, ''),
       firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
       status: tmdbStatusToEnum(seriesResult.status),
       overview: seriesResult.overview || null,

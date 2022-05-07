@@ -87,6 +87,7 @@ model Series {
   tmdbId      String
   imdbId      String?
   name        String
+  handle      String?
   firstAired  DateTime?
   status      SeriesStatus
   overview    String?
