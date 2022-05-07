@@ -10,19 +10,13 @@ import {
   notFound,
   response,
 } from '@quilted/http-handlers';
-import type {Request} from '@quilted/http-handlers';
 import {createHttpServer} from '@quilted/http-handlers/node';
-import {
-  GraphQLResolver,
-  GraphQLResolverOptions,
-  GraphQLBaseResolverValueMap,
-} from '@watching/graphql/server';
+
 import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
 
 import {graphql} from 'graphql';
-import {makeExecutableSchema} from '@graphql-tools/schema';
 
 import {watch as rollupWatch} from 'rollup';
 
@@ -41,20 +35,7 @@ import type {LocalApp} from '../../utilities/app';
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
-import schemaTypeDefinitions from './schema';
-import type {Schema} from './schema';
-
-interface Context {
-  readonly request: Request;
-}
-
-type ResolverOptions = GraphQLResolverOptions<
-  Schema,
-  GraphQLBaseResolverValueMap,
-  Context
->;
-
-type QueryResolver = GraphQLResolver<'Query', ResolverOptions>;
+import {createSchema} from './graphql';
 
 export type BuildState =
   | {status: 'success'; startedAt: number; duration: number; errors?: never}
@@ -120,36 +101,16 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
-  const schema = makeExecutableSchema({
-    typeDefs: schemaTypeDefinitions,
-    resolvers: {
-      Query: {
-        app: (_, __, {request}) => {
-          return {
-            extensions: app.extensions.map((extension) => {
-              const assetUrl = new URL(
-                `/assets/extensions/${extension.id}.js`,
-                request.url,
-              );
+  const schema = createSchema(app);
 
-              const socketUrl = new URL(
-                extension.id,
-                `ws://${request.url.host}`,
-              );
-
-              return {
-                id: `gid://ClipsLocalDevelopment/Extension/${extension.id}`,
-                name: extension.configuration.name,
-                socketUrl: socketUrl.href,
-                assets: [{source: assetUrl.href}],
-              };
-            }),
-          };
-        },
-        version: () => 'unstable',
-      } as QueryResolver,
-    },
-  });
+  handler.get('/', () =>
+    json(app, {
+      headers: {
+        'Cache-Control': 'no-store',
+        'Content-Type': 'application/json',
+      },
+    }),
+  );
 
   handler.options('/graphql', () =>
     noContent({

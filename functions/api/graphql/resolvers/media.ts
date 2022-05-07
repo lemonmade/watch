@@ -8,6 +8,7 @@ import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {bufferFromSlice} from './utilities/slices';
 import type {Slice} from './utilities/slices';
+import {toHandle} from './utilities/handle';
 
 import {
   Series as SeriesLists,
@@ -43,13 +44,7 @@ export const Query: Pick<QueryResolver, 'series'> = {
 
 export const Series: SeriesResolver = {
   id: ({id}) => toGid(id, 'Series'),
-  handle: ({name, handle}) =>
-    handle ??
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/-+$/, '')
-      .replace(/^-+/, ''),
+  handle: ({name, handle}) => handle ?? toHandle(name),
   imdbUrl({imdbId}) {
     return `https://www.imdb.com/title/${imdbId}`;
   },

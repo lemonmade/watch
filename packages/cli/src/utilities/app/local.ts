@@ -6,6 +6,11 @@ import {parse} from '@iarna/toml';
 
 import type {ExtensionPoint} from '@watching/clips';
 
+export interface LocalConfigurationFile<T> {
+  readonly path: string;
+  readonly value: T;
+}
+
 export interface LocalAppConfiguration {
   readonly id?: string;
   readonly name: string;
@@ -14,9 +19,10 @@ export interface LocalAppConfiguration {
 
 export interface LocalApp {
   readonly id: string;
+  readonly name: string;
   readonly root: string;
   readonly extensions: readonly LocalExtension[];
-  readonly configuration: LocalAppConfiguration;
+  readonly configurationFile: LocalConfigurationFile<LocalAppConfiguration>;
 }
 
 interface LocalExtensionConfigurationTranslatedString {
@@ -29,14 +35,14 @@ export type LocalExtensionConfigurationString =
 
 interface LocalExtensionUserConfigurationSchemaStringField {
   type: 'string';
-  key: string;
+  id: string;
   label: LocalExtensionConfigurationString;
   default?: string;
 }
 
 interface LocalExtensionUserConfigurationSchemaNumberField {
   type: 'number';
-  key: string;
+  id: string;
   label: LocalExtensionConfigurationString;
   default?: number;
 }
@@ -48,7 +54,7 @@ interface LocalExtensionUserConfigurationSchemaOptionsFieldOption {
 
 interface LocalExtensionUserConfigurationSchemaOptionsField {
   type: 'options';
-  key: string;
+  id: string;
   label: LocalExtensionConfigurationString;
   default?: string;
   options: readonly LocalExtensionUserConfigurationSchemaOptionsFieldOption[];
@@ -60,32 +66,37 @@ type LocalExtensionUserConfigurationSchemaField =
   | LocalExtensionUserConfigurationSchemaOptionsField;
 
 interface LocalExtensionUserConfiguration {
-  readonly schema?: readonly LocalExtensionUserConfigurationSchemaField[];
+  readonly schema: readonly LocalExtensionUserConfigurationSchemaField[];
 }
 
-interface ExtensionPointSupportSeriesCondition {
-  readonly series: string;
+interface LocalExtensionPointSupportSeriesCondition {
+  readonly handle?: string;
 }
 
-type ExtensionPointSupportCondition = ExtensionPointSupportSeriesCondition;
+interface LocalExtensionPointSupportCondition {
+  readonly series?: LocalExtensionPointSupportSeriesCondition;
+}
 
-interface ExtensionPointSupport {
+interface LocalExtensionPointSupport {
   readonly id: ExtensionPoint;
   readonly module: string;
-  readonly conditions?: ExtensionPointSupportCondition[];
+  readonly conditions?: LocalExtensionPointSupportCondition[];
 }
 
 interface LocalExtensionConfiguration {
   readonly id?: string;
   readonly name: string;
-  readonly extensionPoints: readonly ExtensionPointSupport[];
-  readonly userConfiguration?: LocalExtensionUserConfiguration;
+  readonly extensionPoints: readonly LocalExtensionPointSupport[];
+  readonly configuration?: Partial<LocalExtensionUserConfiguration>;
 }
 
 export interface LocalExtension {
   readonly id: string;
+  readonly name: string;
   readonly root: string;
-  readonly configuration: LocalExtensionConfiguration;
+  readonly extensionPoints: readonly LocalExtensionPointSupport[];
+  readonly configuration: LocalExtensionUserConfiguration;
+  readonly configurationFile: LocalConfigurationFile<LocalExtensionConfiguration>;
 }
 
 interface LocalExtensionEntry {
@@ -94,17 +105,26 @@ interface LocalExtensionEntry {
 }
 
 export async function loadLocalApp(): Promise<LocalApp> {
+  const configurationPath = path.resolve('app.toml');
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
-    path.resolve('app.toml'),
+    configurationPath,
   );
 
   validateAppConfig(configuration);
 
   return {
-    id: configuration.name.toLocaleLowerCase().replace(/\s+/g, '-'),
+    id:
+      configuration.id ??
+      `gid://watch/LocalApp/${configuration.name
+        .toLocaleLowerCase()
+        .replace(/\s+/g, '-')}`,
+    name: configuration.name,
     root: path.resolve(),
-    configuration,
     extensions: await resolveExtensions(configuration.extensions),
+    configurationFile: {
+      path: configurationPath,
+      value: configuration,
+    },
   };
 }
 
@@ -173,16 +193,27 @@ async function resolveExtensions(
 async function loadExtensionFromDirectory(
   directory: string,
 ): Promise<LocalExtension> {
+  const configurationPath = path.resolve(directory, 'extension.toml');
   const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
-    path.resolve(directory, 'extension.toml'),
+    configurationPath,
   );
 
   validateExtensionConfig(configuration);
 
   return {
-    id: configuration.name.toLocaleLowerCase().replace(/\s+/g, '-'),
+    id:
+      configuration.id ??
+      `gid://watch/LocalClipsExtension/${configuration.name
+        .toLocaleLowerCase()
+        .replace(/\s+/g, '-')}`,
+    name: configuration.name,
     root: directory,
-    configuration,
+    extensionPoints: configuration.extensionPoints,
+    configuration: {schema: [], ...configuration.configuration},
+    configurationFile: {
+      path: configurationPath,
+      value: configuration,
+    },
   };
 }
 

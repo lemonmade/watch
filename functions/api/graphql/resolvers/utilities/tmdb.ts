@@ -60,10 +60,10 @@ export async function loadTmdbSeries(
   tmdbId: string,
   {prisma}: Pick<Context, 'prisma'>,
 ) {
-  const [seriesResult, seriesIds] = await Promise.all([
-    tmdbFetch<TmdbSeries>(`/tv/${tmdbId}`),
-    tmdbFetch<TmdbExternalIds>(`/tv/${tmdbId}/external_ids`),
-  ] as const);
+  const {external_ids: seriesIds, ...seriesResult} = await tmdbFetch<
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    TmdbSeries & {external_ids: TmdbExternalIds}
+  >(`/tv/${tmdbId}?append_to_response=external_ids`);
 
   const seasonResults = (
     await Promise.all(

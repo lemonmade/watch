@@ -39,7 +39,7 @@ query Series($id: ID!) {
   }
   clipsInstallations(
     extensionPoint: "Series.Details.RenderAccessory"
-    conditions: [{seriesId: $id}]
+    conditions: [{series: {id: $id}}]
   ) {
     id
     extensionPoint

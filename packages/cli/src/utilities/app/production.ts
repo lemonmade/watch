@@ -16,7 +16,7 @@ export type ProductionClipsExtension =
   FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions_ClipsExtension;
 
 export async function loadProductionApp(
-  {configuration: {id, name}}: LocalApp,
+  {id, name}: LocalApp,
   {ui, graphql}: {ui: Ui; graphql: GraphQL},
 ): Promise<ProductionApp> {
   const {data} = await graphql.query(findAppMatchingLocalDevelopmentQuery, {
@@ -82,7 +82,7 @@ export function findMatchingProductionClipsExtension(
   return app.extensions.find(
     (productionExtension) =>
       productionExtension.__typename === 'ClipsExtension' &&
-      (productionExtension.id === extension.configuration.id ||
-        productionExtension.name === extension.configuration.name),
+      (productionExtension.id === extension.id ||
+        productionExtension.name === extension.name),
   ) as ProductionClipsExtension | undefined;
 }

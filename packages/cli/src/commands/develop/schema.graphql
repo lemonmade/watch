@@ -24,3 +24,78 @@ type Query {
 schema {
   query: Query
 }
+
+# scalar Url
+# scalar Date
+# scalar Version
+
+# type Asset {
+#   source: Url!
+# }
+
+# type BuildError {
+#   message: String!
+#   stack: String
+# }
+
+# type ExtensionBuildInProgress {
+#   id: ID!
+#   startedAt: Date!
+# }
+
+# type ExtensionBuildSuccess {
+#   id: ID!
+#   finishedAt: Date!
+#   startedAt: Date!
+#   assets: [Asset!]!
+# }
+
+# type ExtensionBuildError {
+#   id: ID!
+#   error: BuildError!
+#   finishedAt: Date!
+#   startedAt: Date!
+# }
+
+# union ExtensionBuild =
+#     ExtensionBuildInProgress
+#   | ExtensionBuildSuccess
+#   | ExtensionBuildError
+
+# scalar ClipsExtensionPoint
+
+# type ClipsExtensionPointSeriesCondition {
+#   handle: String
+# }
+
+# type ClipsExtensionPointCondition {
+#   series: ClipsExtensionPointSeriesCondition
+# }
+
+# type ClipsExtensionPointSupport {
+#   name: ClipsExtensionPoint!
+#   module: String!
+#   conditions: [ClipsExtensionPointCondition!]!
+# }
+
+# type ClipsExtension {
+#   id: ID!
+#   name: String!
+#   build: ExtensionBuild!
+#   supports: [ClipsExtensionPointSupport!]!
+# }
+
+# union Extension = ClipsExtension
+
+# type App {
+#   extensions: [Extension!]!
+# }
+
+# type Query {
+#   version: Version!
+#   app: App!
+# }
+
+# schema {
+#   query: Query
+# }

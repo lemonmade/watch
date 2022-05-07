@@ -7,7 +7,7 @@ extend type Query {
   clipsInstallation(id: ID!): ClipsExtensionInstallation
   clipsInstallations(
     extensionPoint: ClipsExtensionPoint
-    conditions: [ClipsExtensionPointConditionInput!]
+    conditions: [ClipsExtensionPointConditionMatchInput!]
   ): [ClipsExtensionInstallation!]!
 }
 
@@ -103,22 +103,37 @@ type ClipsExtensionVersion {
 # Extension point conditions
 
 type ClipsExtensionPointSeriesCondition {
-  id: ID!
+  handle: String
 }
 
-union ClipsExtensionPointCondition = ClipsExtensionPointSeriesCondition
+type ClipsExtensionPointCondition {
+  series: ClipsExtensionPointSeriesCondition
+}
 
 type ClipsExtensionPointSupport {
-  extensionPoint: ClipsExtensionPoint!
+  name: ClipsExtensionPoint!
   conditions: [ClipsExtensionPointCondition!]!
 }
 
+input ClipsExtensionPointSeriesConditionInput {
+  handle: String
+}
+
 input ClipsExtensionPointConditionInput {
-  seriesId: ID
+  series: ClipsExtensionPointSeriesConditionInput
+}
+
+input ClipsExtensionPointSeriesConditionMatchInput {
+  id: ID
+  handle: String
+}
+
+input ClipsExtensionPointConditionMatchInput {
+  series: ClipsExtensionPointSeriesConditionMatchInput
 }
 
 input ClipsExtensionPointSupportInput {
-  extensionPoint: ClipsExtensionPoint!
+  name: ClipsExtensionPoint!
   conditions: [ClipsExtensionPointConditionInput!]
 }
 

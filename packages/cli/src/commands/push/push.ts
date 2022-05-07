@@ -34,14 +34,6 @@ type ConfigurationField = NonNullable<
   ConfigurationFieldInput[keyof ConfigurationFieldInput]
 >;
 
-type ExtensionSupport = NonNullable<
-  PushClipsExtensionMutationVariables['supports']
->[number];
-
-type ExtensionSupportCondition = NonNullable<
-  ExtensionSupport['conditions']
->[keyof ExtensionSupport['conditions']];
-
 export async function push({ui}: {ui: Ui}) {
   const localApp = await loadLocalApp();
 
@@ -72,7 +64,7 @@ export async function push({ui}: {ui: Ui}) {
   ui.TextBlock(
     `We’re pushing the latest changes for your ${
       hasOneExtension
-        ? `${ui.Code(localApp.extensions[0]!.configuration.name)} extension`
+        ? `${ui.Code(localApp.extensions[0]!.name)} extension`
         : `${localApp.extensions.length} extensions`
     }...`,
   );
@@ -107,16 +99,12 @@ export async function push({ui}: {ui: Ui}) {
 
   if (created.length > 0) {
     if (created.length === 1) {
-      ui.TextBlock(
-        `Created extension ${ui.Code(
-          created[0]!.extension.configuration.name,
-        )}!`,
-      );
+      ui.TextBlock(`Created extension ${ui.Code(created[0]!.extension.name)}!`);
     } else {
       ui.TextBlock(`Created ${created.length} extensions:`);
       ui.List((List) => {
         for (const {extension} of created) {
-          List.Item(extension.configuration.name);
+          List.Item(extension.name);
         }
       });
     }
@@ -124,16 +112,12 @@ export async function push({ui}: {ui: Ui}) {
 
   if (updated.length > 0) {
     if (updated.length === 1) {
-      ui.TextBlock(
-        `Updated extension ${ui.Code(
-          updated[0]!.extension.configuration.name,
-        )}!`,
-      );
+      ui.TextBlock(`Updated extension ${ui.Code(updated[0]!.extension.name)}!`);
     } else {
       ui.TextBlock(`Updated ${updated.length} extensions:`);
       ui.List((List) => {
         for (const {extension} of updated) {
-          List.Item(extension.configuration.name);
+          List.Item(extension.name);
         }
       });
     }
@@ -197,21 +181,13 @@ async function pushExtension(
     hash,
     translations:
       translations && JSON.stringify(flattenTranslations(translations)),
-    supports: extension.configuration.extensionPoints.map((supported) => {
+    supports: extension.extensionPoints.map((supported) => {
       return {
-        extensionPoint: supported.id,
-        conditions: supported.conditions?.map(
-          (condition): ExtensionSupportCondition => {
-            if (condition.series) {
-              return {seriesId: condition.series};
-            }
-
-            throw new Error();
-          },
-        ),
+        name: supported.id,
+        conditions: supported.conditions,
       };
     }),
-    configurationSchema: extension.configuration.userConfiguration?.schema?.map(
+    configurationSchema: extension.configuration.schema.map(
       (
         field,
       ): NonNullable<
@@ -221,7 +197,7 @@ async function pushExtension(
           case 'string': {
             return {
               string: {
-                key: field.key,
+                key: field.id,
                 label: configurationStringToGraphQLInput(field.label),
                 default: field.default,
               },
@@ -230,7 +206,7 @@ async function pushExtension(
           case 'number': {
             return {
               number: {
-                key: field.key,
+                key: field.id,
                 label: configurationStringToGraphQLInput(field.label),
                 default: field.default,
               },
@@ -239,7 +215,7 @@ async function pushExtension(
           case 'options': {
             return {
               options: {
-                key: field.key,
+                key: field.id,
                 label: configurationStringToGraphQLInput(field.label),
                 default: field.default,
                 options: field.options.map((option) => {
@@ -260,7 +236,7 @@ async function pushExtension(
     const {data} = await graphql.mutate(pushClipsExtensionMutation, {
       variables: {
         extensionId: production.id,
-        name: extension.configuration.name,
+        name: extension.name,
         ...buildOptions,
       },
     });
@@ -268,7 +244,7 @@ async function pushExtension(
     if (data == null) {
       throw new PrintableError(
         `We could not create a new version for extension ${ui.Code(
-          extension.configuration.name,
+          extension.name,
         )}. This might be because you have an existing extension with the same name, but if that’s not the case, you might need to try running this command again. Sorry about that!`,
       );
     }
@@ -281,7 +257,7 @@ async function pushExtension(
       {
         variables: {
           appId: productionApp.id,
-          name: extension.configuration.name,
+          name: extension.name,
           initialVersion: {...buildOptions},
         },
       },
@@ -290,7 +266,7 @@ async function pushExtension(
     if (data == null) {
       throw new PrintableError(
         `We could not create a new extension for ${ui.Code(
-          extension.configuration.name,
+          extension.name,
         )}. This might be because you have an existing extension with the same name, but if that’s not the case, you might need to try running this command again. Sorry about that!`,
       );
     }
@@ -302,7 +278,7 @@ async function pushExtension(
   if (assetUploadUrl == null) {
     throw new PrintableError(
       `We could not upload your ${ui.Code(
-        extension.configuration.name,
+        extension.name,
       )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
     );
   }
@@ -319,7 +295,7 @@ async function pushExtension(
   if (!assetUploadResult.ok) {
     throw new PrintableError(
       `We could not upload your ${ui.Code(
-        extension.configuration.name,
+        extension.name,
       )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
     );
   }
