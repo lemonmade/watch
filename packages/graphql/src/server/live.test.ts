@@ -12,7 +12,12 @@ interface Person {
   __typename: 'Person';
   name(variables: {}): string;
   pets(variables: {}): Pet[];
-  partner(variables: {}): Person | null;
+  school(variables: {}): School | null;
+}
+
+interface School {
+  __typename: 'School';
+  grade(variables: {}): number;
 }
 
 interface Cat {
@@ -39,6 +44,7 @@ interface Schema {
     me(variables: {}): Person;
   };
   Person: Person;
+  School: School;
   Cat: Cat;
   Dog: Dog;
   Pet: Pet;
@@ -60,37 +66,37 @@ describe('execute()', () => {
   });
 
   it('returns nullish field values', async () => {
-    const query = parse(`query { me { partner } }`);
+    const query = parse(`query { me { school { grade } } }`);
 
     const resolver = createQueryResolver(({object}) => ({
       me: object('Person', {
         name: 'Chris',
         pets: [],
+        school: undefined,
       }),
     }));
 
     const result = await execute(query, resolver).untilDone();
 
-    expect(result).toStrictEqual({me: {partner: null}});
+    expect(result).toStrictEqual({me: {school: null}});
   });
 
   it('returns nested field selections', async () => {
-    const query = parse(`query { me { partner { name } } }`);
+    const query = parse(`query { me { school { grade } } }`);
 
     const resolver = createQueryResolver(({object}) => ({
       me: object('Person', {
         name: 'Chris',
         pets: [],
-        partner: object('Person', {
-          name: () => Promise.resolve('Mik'),
-          pets: [],
+        school: object('School', {
+          grade: () => Promise.resolve(12),
         }),
       }),
     }));
 
     const result = await execute(query, resolver).untilDone();
 
-    expect(result).toStrictEqual({me: {partner: {name: 'Mik'}}});
+    expect(result).toStrictEqual({me: {school: {grade: 12}}});
   });
 
   it('returns field selections on lists', async () => {
