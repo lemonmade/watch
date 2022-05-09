@@ -7,9 +7,13 @@ import type {
   OperationDefinitionNode,
   FragmentDefinitionNode,
 } from 'graphql';
-import type {GraphQLLiveResolverObject} from '.';
 
-export function createObjectType<
+import type {
+  GraphQLLiveResolverObject,
+  GraphQLLiveResolverCreateHelper,
+} from './types';
+
+export function createObjectResolver<
   Types,
   Context = Record<string, never>,
   Type extends keyof Types = keyof Types,
@@ -20,29 +24,16 @@ export function createObjectType<
   return {__typename: type, ...resolver} as any;
 }
 
-export interface GraphQLLiveQueryResolverCreateHelper<
-  Types,
-  Context = Record<string, never>,
-> {
-  object<Type extends keyof Types>(
-    type: Type,
-    resolver: Omit<
-      GraphQLLiveResolverObject<Types[Type], Context>,
-      '__typename'
-    >,
-  ): GraphQLLiveResolverObject<Types[Type], Context>;
-}
-
 export function createQueryResolver<
   Types extends {Query: {__typename: 'Query'}},
   Context = Record<string, never>,
 >(
   createResolvers: (
-    helpers: GraphQLLiveQueryResolverCreateHelper<Types, Context>,
+    helpers: GraphQLLiveResolverCreateHelper<Types, Context>,
   ) => Omit<GraphQLLiveResolverObject<Types['Query'], Context>, '__typename'>,
 ): GraphQLLiveResolverObject<Types['Query'], Context> {
   const resolvers = createResolvers({
-    object: createObjectType as any,
+    object: createObjectResolver as any,
   });
 
   return {__typename: 'Query', ...resolvers} as any;

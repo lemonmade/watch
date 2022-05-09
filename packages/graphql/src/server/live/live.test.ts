@@ -6,8 +6,10 @@ import {
   execute,
   createQueryResolver as createQueryResolverForSchema,
 } from './live';
-import type {GraphQLLiveQueryResolverCreateHelper} from './live';
-import type {GraphQLLiveResolverObject} from '.';
+import type {
+  GraphQLLiveResolverObject,
+  GraphQLLiveResolverCreateHelper,
+} from './types';
 
 /* eslint-disable @typescript-eslint/ban-types */
 interface Person {
@@ -376,7 +378,7 @@ describe('execute()', () => {
 
 function createQueryResolver(
   fields?: (
-    helpers: GraphQLLiveQueryResolverCreateHelper<Schema>,
+    helpers: GraphQLLiveResolverCreateHelper<Schema>,
   ) => Partial<Omit<GraphQLLiveResolverObject<Schema['Query']>, '__typename'>>,
 ) {
   return createQueryResolverForSchema<Schema>((helpers) => ({
