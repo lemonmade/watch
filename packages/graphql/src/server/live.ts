@@ -99,6 +99,7 @@ export function execute<
   const liveFields = new Map<string, GraphQLLiveField>();
 
   const abort = new AbortController();
+  const rootSignal = abort.signal;
   const rawResults: Record<string, any> = {};
 
   let initialPromise: Promise<void>;
@@ -120,18 +121,19 @@ export function execute<
         query!.selectionSet.selections,
         resolvers,
         rawResults,
-        abort.signal,
+        rootSignal,
       );
 
       await initialPromise;
 
       yield rawResults as any;
 
-      if (liveFields.size === 0) return;
+      if (liveFields.size === 0 || rootSignal.aborted) return;
 
-      for await (const _ of on(emitter, 'update', {signal: abort.signal})) {
+      for await (const _ of on(emitter, 'update', {signal: rootSignal})) {
+        if (rootSignal.aborted) return;
         yield rawResults as any;
-        if (liveFields.size === 0) break;
+        if (liveFields.size === 0) return;
       }
     },
   };
@@ -216,7 +218,7 @@ export function execute<
             }
 
             // TODO
-            const resolverResult = valueOrResolver({}, context);
+            const resolverResult = valueOrResolver({}, context, {signal});
 
             if (resolverResult == null || typeof resolverResult !== 'object') {
               return handleValueForField(

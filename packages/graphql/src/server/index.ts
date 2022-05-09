@@ -97,6 +97,10 @@ export type GraphQLLiveReturnResult<
   ? GraphQLLiveResolverObject<Type, Context>
   : never;
 
+export interface GraphQLLiveResolverFieldOptions {
+  readonly signal: AbortSignal;
+}
+
 export type GraphQLLiveResolverField<
   Variables,
   ReturnType,
@@ -106,6 +110,7 @@ export type GraphQLLiveResolverField<
   | ((
       variables: Variables,
       context: Context,
+      options: GraphQLLiveResolverFieldOptions,
     ) =>
       | GraphQLLiveReturnResult<ReturnType, Context>
       | Promise<GraphQLLiveReturnResult<ReturnType, Context>>

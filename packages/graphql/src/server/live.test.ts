@@ -55,6 +55,10 @@ interface Schema {
 
 /* eslint-enable @typescript-eslint/ban-types */
 
+// TODO
+// - Variables
+// - Arguments
+
 describe('execute()', () => {
   it('returns static field values', async () => {
     const query = parse(`query { version }`);
@@ -293,11 +297,13 @@ describe('execute()', () => {
       const highSchool = {
         name: 'Gloucester High School',
         currentAge: createAsyncIterator(20),
+        ageAbortSpy: jest.fn(),
       };
 
       const university = {
         name: 'Carleton University',
         currentAge: createAsyncIterator(10),
+        ageAbortSpy: jest.fn(),
       };
 
       const currentSchool = createAsyncIterator(highSchool);
@@ -310,7 +316,9 @@ describe('execute()', () => {
             for await (const school of currentSchool.iterate()) {
               yield object('School', {
                 name: school.name,
-                async *age() {
+                async *age(_, __, {signal}) {
+                  signal.addEventListener('abort', school.ageAbortSpy);
+
                   for await (const age of school.currentAge.iterate()) {
                     yield age;
                   }
@@ -330,6 +338,8 @@ describe('execute()', () => {
         },
       });
 
+      expect(highSchool.ageAbortSpy).not.toHaveBeenCalled();
+
       await currentSchool.yield(university);
 
       expect(await iterator.next()).toStrictEqual({
@@ -338,6 +348,8 @@ describe('execute()', () => {
           me: {school: {name: university.name, age: 10}},
         },
       });
+
+      expect(highSchool.ageAbortSpy).toHaveBeenCalled();
 
       await highSchool.currentAge.yield(21);
 
