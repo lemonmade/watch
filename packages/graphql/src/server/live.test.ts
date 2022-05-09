@@ -144,6 +144,38 @@ describe('execute()', () => {
     });
   });
 
+  describe('fragment spreads', () => {
+    it('returns fragment spreads on concrete types', async () => {
+      const query = parse(`
+        query { me { pets { __typename ...DogFragment } } }
+        fragment DogFragment on Dog { breed }
+      `);
+
+      const resolver = createQueryResolver(({object}) => ({
+        me: object('Person', {
+          name: 'Chris',
+          pets: [
+            object('Dog', {name: 'Molly'}),
+            object('Dog', {name: 'Winston', breed: 'Black Lab'}),
+            object('Cat', {name: 'Luna'}),
+          ],
+        }),
+      }));
+
+      const result = await execute(query, resolver).untilDone();
+
+      expect(result).toStrictEqual({
+        me: {
+          pets: [
+            {__typename: 'Dog', breed: null},
+            {__typename: 'Dog', breed: 'Black Lab'},
+            {__typename: 'Cat'},
+          ],
+        },
+      });
+    });
+  });
+
   describe('promises', () => {
     it('returns field values that return promises', async () => {
       const query = parse(`query { version }`);

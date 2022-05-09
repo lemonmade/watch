@@ -2,8 +2,9 @@ import type {GraphQLLiveResolverObject} from '.';
 import type {
   DocumentNode,
   SelectionNode,
-  OperationDefinitionNode,
   FieldNode,
+  OperationDefinitionNode,
+  FragmentDefinitionNode,
 } from 'graphql';
 import {EventEmitter, on} from 'events';
 
@@ -64,11 +65,23 @@ export function execute<
     context?: Context;
   } = {},
 ) {
-  const query = document.definitions.find(
-    (definition): definition is OperationDefinitionNode =>
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'query',
-  );
+  let query: OperationDefinitionNode | undefined = undefined;
+
+  const fragmentDefinitions = new Map<string, FragmentDefinitionNode>();
+
+  for (const definition of document.definitions) {
+    switch (definition.kind) {
+      case 'OperationDefinition': {
+        if (query != null || definition.operation !== 'query') continue;
+        query = definition;
+        break;
+      }
+      case 'FragmentDefinition': {
+        fragmentDefinitions.set(definition.name.value, definition);
+        break;
+      }
+    }
+  }
 
   if (query == null) {
     throw new Error('No query found');
@@ -104,7 +117,7 @@ export function execute<
     },
     async *[Symbol.asyncIterator](): AsyncGenerator<Data, void, void> {
       initialPromise ??= handleSelection(
-        query.selectionSet.selections,
+        query!.selectionSet.selections,
         resolvers,
         rawResults,
       );
@@ -176,91 +189,129 @@ export function execute<
   ) {
     await Promise.all(
       selections.map(async (selection) => {
-        if (selection.kind === 'InlineFragment') {
-          if (
-            selection.typeCondition != null &&
-            selection.typeCondition.name.value !==
-              (resolvers as any)['__typename']
-          ) {
-            return;
-          }
+        switch (selection.kind) {
+          case 'Field': {
+            const name = selection.name.value;
+            const valueOrResolver = (resolvers as any)[name];
 
-          await handleSelection(
-            selection.selectionSet.selections,
-            resolvers,
-            result,
-          );
-        }
+            if (typeof valueOrResolver !== 'function') {
+              return handleValueForField(
+                valueOrResolver,
+                name,
+                result,
+                selection,
+              );
+            }
 
-        if (selection.kind !== 'Field') return;
+            // TODO
+            const resolverResult = valueOrResolver({}, context);
 
-        const name = selection.name.value;
-        const valueOrResolver = (resolvers as any)[name];
+            if (resolverResult == null || typeof resolverResult !== 'object') {
+              return handleValueForField(
+                resolverResult,
+                name,
+                result,
+                selection,
+              );
+            }
 
-        if (typeof valueOrResolver !== 'function') {
-          return handleValueForField(valueOrResolver, name, result, selection);
-        }
+            if (typeof (resolverResult as any).then === 'function') {
+              return (async () => {
+                const value = await resolverResult;
+                await handleValueForField(value, name, result, selection);
+              })();
+            }
 
-        // TODO
-        const resolverResult = valueOrResolver({}, context);
+            if (typeof (resolverResult as any).next === 'function') {
+              const iterator = resolverResult as AsyncIterableIterator<any>;
 
-        if (resolverResult == null || typeof resolverResult !== 'object') {
-          return handleValueForField(resolverResult, name, result, selection);
-        }
+              liveFields.set(name, {
+                value: null,
+                iterator,
+                abort: new AbortController().signal,
+              });
 
-        if (typeof (resolverResult as any).then === 'function') {
-          return (async () => {
-            const value = await resolverResult;
-            await handleValueForField(value, name, result, selection);
-          })();
-        }
+              const listenForUpdates =
+                async function listenForUpdates(): Promise<void> {
+                  try {
+                    const {value, done = false} = await iterator.next();
 
-        if (typeof (resolverResult as any).next === 'function') {
-          const iterator = resolverResult as AsyncIterableIterator<any>;
+                    if (done) {
+                      liveFields.delete(name);
+                      return;
+                    }
 
-          liveFields.set(name, {
-            value: null,
-            iterator,
-            abort: new AbortController().signal,
-          });
+                    // TODO don’t want fields within here to emit in this phase...
+                    await handleValueForField(value, name, result, selection);
 
-          const listenForUpdates =
-            async function listenForUpdates(): Promise<void> {
-              try {
-                const {value, done = false} = await iterator.next();
+                    emitter.emit('update');
+
+                    await listenForUpdates();
+                  } catch {
+                    // TODO: what do I do here...
+                  }
+                };
+
+              const iteratorResult = iterator.next();
+
+              return (async () => {
+                const {value, done = false} = await iteratorResult;
 
                 if (done) {
                   liveFields.delete(name);
-                  return;
+                } else {
+                  listenForUpdates();
                 }
 
-                // TODO don’t want fields within here to emit in this phase...
                 await handleValueForField(value, name, result, selection);
-
-                emitter.emit('update');
-
-                await listenForUpdates();
-              } catch {
-                // TODO: what do I do here...
-              }
-            };
-
-          const iteratorResult = iterator.next();
-
-          return (async () => {
-            const {value, done = false} = await iteratorResult;
-
-            if (done) {
-              liveFields.delete(name);
-            } else {
-              listenForUpdates();
+              })();
             }
 
-            await handleValueForField(value, name, result, selection);
-          })();
-        }
+            await handleValueForField(resolverResult, name, result, selection);
 
-        return handleValueForField(resolverResult, name, result, selection);
+            break;
+          }
+          case 'InlineFragment': {
+            if (
+              selection.typeCondition != null &&
+              selection.typeCondition.name.value !==
+                (resolvers as any)['__typename']
+            ) {
+              break;
+            }
+
+            await handleSelection(
+              selection.selectionSet.selections,
+              resolvers,
+              result,
+            );
+
+            break;
+          }
+          case 'FragmentSpread': {
+            const name = selection.name.value;
+            const fragment = fragmentDefinitions.get(name);
+
+            if (fragment == null) {
+              throw new Error(`Missing fragment: ${name}`);
+            }
+
+            if (
+              fragment.typeCondition.name.value !==
+              (resolvers as any)['__typename']
+            ) {
+              break;
+            }
+
+            await handleSelection(
+              fragment.selectionSet.selections,
+              resolvers,
+              result,
+            );
+
+            break;
+          }
+        }
       }),
     );
   }
