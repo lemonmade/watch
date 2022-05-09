@@ -369,7 +369,10 @@ importers:
     specifiers: {}
 
   packages/graphql:
-    specifiers: {}
+    specifiers:
+      graphql: ^16.4.0
+    dependencies:
+      graphql: 16.4.0
 
   packages/zest:
     specifiers:
