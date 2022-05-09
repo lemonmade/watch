@@ -1,4 +1,5 @@
-import type {GraphQLLiveResolverObject} from '.';
+import {EventEmitter, on} from 'events';
+
 import type {
   DocumentNode,
   SelectionNode,
@@ -6,7 +7,7 @@ import type {
   OperationDefinitionNode,
   FragmentDefinitionNode,
 } from 'graphql';
-import {EventEmitter, on} from 'events';
+import type {GraphQLLiveResolverObject} from '.';
 
 export function createObjectType<
   Types,
@@ -45,6 +46,12 @@ export function createQueryResolver<
   });
 
   return {__typename: 'Query', ...resolvers} as any;
+}
+
+interface GraphQLLiveField {
+  value: any;
+  abort: AbortController;
+  iterator: AsyncIterableIterator<any>;
 }
 
 export function execute<
@@ -89,14 +96,7 @@ export function execute<
 
   const emitter = new EventEmitter();
 
-  const liveFields = new Map<
-    string,
-    {
-      value: any;
-      abort: AbortSignal;
-      iterator: AsyncIterableIterator<any>;
-    }
-  >();
+  const liveFields = new Map<string, GraphQLLiveField>();
 
   const abort = new AbortController();
   const rawResults: Record<string, any> = {};
@@ -120,6 +120,7 @@ export function execute<
         query!.selectionSet.selections,
         resolvers,
         rawResults,
+        abort.signal,
       );
 
       await initialPromise;
@@ -142,6 +143,7 @@ export function execute<
     name: string,
     result: any,
     field: FieldNode,
+    signal: AbortSignal,
   ) {
     if (value == null) {
       result[name] = null;
@@ -163,7 +165,12 @@ export function execute<
 
         return Promise.all(
           value.map((arrayValue, index) =>
-            handleSelection(selections, arrayValue, nestedResults[index]!),
+            handleSelection(
+              selections,
+              arrayValue,
+              nestedResults[index]!,
+              signal,
+            ),
           ),
         );
       }
@@ -175,6 +182,7 @@ export function execute<
         field.selectionSet.selections,
         value,
         nestedResult,
+        signal,
       );
     }
 
@@ -186,6 +194,7 @@ export function execute<
     selections: readonly SelectionNode[],
     resolvers: GraphQLLiveResolverObject<any, Context>,
     result: Record<string, any>,
+    signal: AbortSignal,
   ) {
     await Promise.all(
       selections.map(async (selection) => {
@@ -200,6 +209,7 @@ export function execute<
                 name,
                 result,
                 selection,
+                signal,
               );
             }
 
@@ -212,37 +222,62 @@ export function execute<
                 name,
                 result,
                 selection,
+                signal,
               );
             }
 
             if (typeof (resolverResult as any).then === 'function') {
               return (async () => {
                 const value = await resolverResult;
-                await handleValueForField(value, name, result, selection);
+
+                if (signal.aborted) return;
+
+                await handleValueForField(
+                  value,
+                  name,
+                  result,
+                  selection,
+                  signal,
+                );
               })();
             }
 
             if (typeof (resolverResult as any).next === 'function') {
               const iterator = resolverResult as AsyncIterableIterator<any>;
 
-              liveFields.set(name, {
+              let abort = new NestedAbortController(signal);
+              const liveField: GraphQLLiveField = {
                 value: null,
                 iterator,
-                abort: new AbortController().signal,
-              });
+                abort,
+              };
+
+              liveFields.set(name, liveField);
 
               const listenForUpdates =
                 async function listenForUpdates(): Promise<void> {
                   try {
                     const {value, done = false} = await iterator.next();
 
+                    if (abort.signal.aborted) return;
+
                     if (done) {
                       liveFields.delete(name);
                       return;
                     }
 
+                    abort.abort();
+                    abort = new NestedAbortController(signal);
+                    liveField.abort = abort;
+
                     // TODO don’t want fields within here to emit in this phase...
-                    await handleValueForField(value, name, result, selection);
+                    await handleValueForField(
+                      value,
+                      name,
+                      result,
+                      selection,
+                      abort.signal,
+                    );
 
                     emitter.emit('update');
 
@@ -256,6 +291,7 @@ export function execute<
 
               return (async () => {
                 const {value, done = false} = await iteratorResult;
+                if (signal.aborted) return;
 
                 if (done) {
                   liveFields.delete(name);
@@ -263,11 +299,23 @@ export function execute<
                   listenForUpdates();
                 }
 
-                await handleValueForField(value, name, result, selection);
+                await handleValueForField(
+                  value,
+                  name,
+                  result,
+                  selection,
+                  abort.signal,
+                );
               })();
             }
 
-            await handleValueForField(resolverResult, name, result, selection);
+            await handleValueForField(
+              resolverResult,
+              name,
+              result,
+              selection,
+              signal,
+            );
 
             break;
           }
@@ -284,6 +332,7 @@ export function execute<
               selection.selectionSet.selections,
               resolvers,
               result,
+              signal,
             );
 
             break;
@@ -307,6 +356,7 @@ export function execute<
               fragment.selectionSet.selections,
               resolvers,
               result,
+              signal,
             );
 
             break;
@@ -314,5 +364,15 @@ export function execute<
         }
       }),
     );
+  }
+}
+
+class NestedAbortController extends AbortController {
+  constructor(parent: AbortSignal) {
+    super();
+
+    parent.addEventListener('abort', () => {
+      this.abort();
+    });
   }
 }

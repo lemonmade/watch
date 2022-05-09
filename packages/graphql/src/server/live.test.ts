@@ -1,3 +1,5 @@
+import {EventEmitter, on} from 'events';
+
 import {parse} from 'graphql';
 
 import {
@@ -17,7 +19,8 @@ interface Person {
 
 interface School {
   __typename: 'School';
-  grade(variables: {}): number;
+  name(variables: {}): string;
+  age(variables: {}): number;
 }
 
 interface Cat {
@@ -82,21 +85,22 @@ describe('execute()', () => {
   });
 
   it('returns nested field selections', async () => {
-    const query = parse(`query { me { school { grade } } }`);
+    const query = parse(`query { me { school { age } } }`);
 
     const resolver = createQueryResolver(({object}) => ({
       me: object('Person', {
         name: 'Chris',
         pets: [],
         school: object('School', {
-          grade: () => Promise.resolve(12),
+          name: 'Gloucester High School',
+          age: () => Promise.resolve(10),
         }),
       }),
     }));
 
     const result = await execute(query, resolver).untilDone();
 
-    expect(result).toStrictEqual({me: {school: {grade: 12}}});
+    expect(result).toStrictEqual({me: {school: {age: 10}}});
   });
 
   it('returns field selections on lists', async () => {
@@ -267,6 +271,79 @@ describe('execute()', () => {
         },
       });
     });
+
+    it('cancels yielding for iterators when ancestor iterators change', async () => {
+      const query = parse(`query { me { school { name age } } }`);
+
+      const highSchool = {
+        name: 'Gloucester High School',
+        currentAge: createAsyncIterator(20),
+      };
+
+      const university = {
+        name: 'Carleton University',
+        currentAge: createAsyncIterator(10),
+      };
+
+      const currentSchool = createAsyncIterator(highSchool);
+
+      const resolver = createQueryResolver(({object}) => ({
+        me: object('Person', {
+          name: 'Chris',
+          pets: [],
+          async *school() {
+            for await (const school of currentSchool.iterate()) {
+              yield object('School', {
+                name: school.name,
+                async *age() {
+                  for await (const age of school.currentAge.iterate()) {
+                    yield age;
+                  }
+                },
+              });
+            }
+          },
+        }),
+      }));
+
+      const iterator = execute(query, resolver)[Symbol.asyncIterator]();
+
+      expect(await iterator.next()).toStrictEqual({
+        done: false,
+        value: {
+          me: {school: {name: highSchool.name, age: 20}},
+        },
+      });
+
+      await currentSchool.yield(university);
+
+      expect(await iterator.next()).toStrictEqual({
+        done: false,
+        value: {
+          me: {school: {name: university.name, age: 10}},
+        },
+      });
+
+      await highSchool.currentAge.yield(21);
+
+      const nextPromiseSpy = jest.fn((value) => value);
+      const nextPromise = iterator.next().then(nextPromiseSpy);
+
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(nextPromiseSpy).not.toHaveBeenCalled();
+
+      await university.currentAge.yield(11);
+
+      expect(await nextPromise).toStrictEqual({
+        done: false,
+        value: {
+          me: {school: {name: university.name, age: 11}},
+        },
+      });
+    });
   });
 });
 
@@ -294,4 +371,31 @@ async function* iterate<T>(values: Iterable<T>) {
 
 function sleep(duration: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, duration));
+}
+
+function createAsyncIterator<T>(initialValue: T) {
+  let currentValue = initialValue;
+
+  const emitter = new EventEmitter();
+
+  emitter.on('yield', (value) => {
+    currentValue = value;
+  });
+
+  return {
+    async yield(value: T) {
+      emitter.emit('yield', value);
+    },
+    async *iterate({
+      signal,
+    }: {
+      signal?: AbortSignal;
+    } = {}): AsyncGenerator<T, void, void> {
+      yield currentValue;
+
+      for await (const [value] of on(emitter, 'yield', {signal})) {
+        yield value;
+      }
+    },
+  };
 }
