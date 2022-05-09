@@ -201,12 +201,14 @@ export function execute<
         switch (selection.kind) {
           case 'Field': {
             const name = selection.name.value;
+            const alias = selection.alias?.value;
+            const fieldName = alias ?? name;
             const valueOrResolver = (resolvers as any)[name];
 
             if (typeof valueOrResolver !== 'function') {
               return handleValueForField(
                 valueOrResolver,
-                name,
+                fieldName,
                 result,
                 selection,
                 signal,
@@ -219,7 +221,7 @@ export function execute<
             if (resolverResult == null || typeof resolverResult !== 'object') {
               return handleValueForField(
                 resolverResult,
-                name,
+                fieldName,
                 result,
                 selection,
                 signal,
@@ -234,7 +236,7 @@ export function execute<
 
                 await handleValueForField(
                   value,
-                  name,
+                  fieldName,
                   result,
                   selection,
                   signal,
@@ -273,7 +275,7 @@ export function execute<
                     // TODO don’t want fields within here to emit in this phase...
                     await handleValueForField(
                       value,
-                      name,
+                      fieldName,
                       result,
                       selection,
                       abort.signal,
@@ -301,7 +303,7 @@ export function execute<
 
                 await handleValueForField(
                   value,
-                  name,
+                  fieldName,
                   result,
                   selection,
                   abort.signal,
@@ -311,7 +313,7 @@ export function execute<
 
             await handleValueForField(
               resolverResult,
-              name,
+              fieldName,
               result,
               selection,
               signal,

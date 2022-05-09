@@ -68,6 +68,21 @@ describe('execute()', () => {
     expect(result).toStrictEqual({version: 'v1'});
   });
 
+  it('returns field values with aliases', async () => {
+    const query = parse(`query { my: me { name } }`);
+
+    const resolver = createQueryResolver(({object}) => ({
+      me: object('Person', {
+        name: 'Chris',
+        pets: [],
+      }),
+    }));
+
+    const result = await execute(query, resolver).untilDone();
+
+    expect(result).toStrictEqual({my: {name: 'Chris'}});
+  });
+
   it('returns nullish field values', async () => {
     const query = parse(`query { me { school { grade } } }`);
 
