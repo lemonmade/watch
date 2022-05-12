@@ -1,5 +1,9 @@
 import * as path from 'path';
 import {readFile, stat} from 'fs/promises';
+import {watch} from 'chokidar';
+import type {FSWatcher} from 'chokidar';
+import {createEmitter} from '@lemonmade/events';
+import type {Emitter} from '@lemonmade/events';
 
 import glob from 'glob';
 import {parse} from '@iarna/toml';
@@ -23,6 +27,7 @@ export interface LocalApp {
   readonly root: string;
   readonly extensions: readonly LocalExtension[];
   readonly configurationFile: LocalConfigurationFile<LocalAppConfiguration>;
+  readonly on: Emitter<{change: Omit<LocalApp, 'on'>}>['on'];
 }
 
 interface LocalExtensionConfigurationTranslatedString {
@@ -106,6 +111,76 @@ interface LocalExtensionEntry {
 }
 
 export async function loadLocalApp(): Promise<LocalApp> {
+  const configurationPath = path.resolve('app.toml');
+  const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
+    configurationPath,
+  );
+
+  validateAppConfig(configuration);
+
+  let currentApp: Omit<LocalApp, 'on'> = {
+    id:
+      configuration.id ??
+      `gid://watch/LocalApp/${configuration.name
+        .toLocaleLowerCase()
+        .replace(/\s+/g, '-')}`,
+    name: configuration.name,
+    root: path.resolve(),
+    extensions: await resolveExtensions(configuration.extensions),
+    configurationFile: {
+      path: configurationPath,
+      value: configuration,
+    },
+  };
+
+  let watcher: FSWatcher;
+  const emitter = createEmitter<{change: Omit<LocalApp, 'on'>}>();
+
+  return {
+    get id() {
+      return currentApp.id;
+    },
+    get name() {
+      return currentApp.name;
+    },
+    get root() {
+      return currentApp.root;
+    },
+    get extensions() {
+      return currentApp.extensions;
+    },
+    get configurationFile() {
+      return currentApp.configurationFile;
+    },
+    on(...args: any[]) {
+      watcher =
+        watcher ??
+        (() => {
+          const fsWatcher = watch(
+            [
+              configurationPath,
+              ...currentApp.extensions.map(
+                (extension) => extension.configurationFile.path,
+              ),
+            ],
+            {ignoreInitial: true},
+          );
+
+          fsWatcher.on('change', async () => {
+            const newApp = await loadAppFromFileSystem();
+            currentApp = newApp;
+            emitter.emit('change', newApp);
+          });
+
+          return fsWatcher;
+        })();
+
+      return (emitter as any).on(...args);
+    },
+  };
+}
+
+async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
   const configurationPath = path.resolve('app.toml');
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     configurationPath,

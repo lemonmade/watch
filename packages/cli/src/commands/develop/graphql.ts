@@ -14,28 +14,34 @@ export interface Context {
 export {execute, parse};
 
 export function createQueryResolver(app: LocalApp) {
-  return createQueryResolverForSchema<Schema, Context>(({object}) => ({
-    version: 'unstable',
-    async *app(_, {rootUrl}, {signal}) {
-      while (!signal.aborted) {
-        yield object('App', {
-          name: app.name,
-          extensions: app.extensions.map((extension) => {
-            const assetUrl = new URL(
-              `/assets/extensions/${extension.handle}.js`,
-              rootUrl,
-            );
+  return createQueryResolverForSchema<Schema, Context>(({object}) => {
+    return {
+      version: 'unstable',
+      async *app(_, context, {signal}) {
+        yield createGraphQLApp(app, context);
 
-            return object('Extension', {
-              id: extension.id,
-              name: extension.name,
-              assets: [object('Asset', {source: assetUrl.href})],
-            });
-          }),
-        });
+        for await (const currentApp of app.on('change', {signal})) {
+          yield createGraphQLApp(currentApp, context);
+        }
+      },
+    };
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    },
-  }));
+    function createGraphQLApp(app: Omit<LocalApp, 'on'>, {rootUrl}: Context) {
+      return object('App', {
+        name: app.name,
+        extensions: app.extensions.map((extension) => {
+          const assetUrl = new URL(
+            `/assets/extensions/${extension.handle}.js`,
+            rootUrl,
+          );
+
+          return object('Extension', {
+            id: extension.id,
+            name: extension.name,
+            assets: [object('Asset', {source: assetUrl.href})],
+          });
+        }),
+      });
+    }
+  });
 }
