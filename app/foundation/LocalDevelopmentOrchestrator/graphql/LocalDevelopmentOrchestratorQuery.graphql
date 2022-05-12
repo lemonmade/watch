@@ -3,7 +3,6 @@ query LocalDevelopmentOrchestrator {
     extensions {
       id
       name
-      socketUrl
       assets {
         source
       }

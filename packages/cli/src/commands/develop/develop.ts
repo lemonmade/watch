@@ -2,6 +2,8 @@ import '@quilted/polyfills/fetch';
 
 import * as path from 'path';
 import {stat, readFile} from 'fs/promises';
+import {on} from '@lemonmade/events';
+import {createThread} from '@lemonmade/threads';
 
 import {
   createHttpHandler,
@@ -16,7 +18,7 @@ import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
 
-import {graphql} from 'graphql';
+import {parse} from 'graphql';
 
 import {watch as rollupWatch} from 'rollup';
 
@@ -35,7 +37,7 @@ import type {LocalApp} from '../../utilities/app';
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
-import {createSchema} from './graphql';
+import {execute, createQueryResolver} from './graphql';
 
 export type BuildState =
   | {status: 'success'; startedAt: number; duration: number; errors?: never}
@@ -76,19 +78,25 @@ export async function develop({ui}: {ui: Ui}) {
   try {
     const result = await devServer.listen();
 
-    const localServerOrigin = `http://localhost:${result.port}`;
-    const targetUrl = watchUrl(`/app?building=${localServerOrigin}/graphql`);
+    const localUrl = new URL(`http://localhost:${result.port}`);
+    const localSocketUrl = new URL(`ws://localhost:${result.port}`);
+
+    const targetUrl = watchUrl(`/app`);
+    targetUrl.searchParams.set(
+      'connect',
+      new URL('/connect', localSocketUrl).href,
+    );
 
     ui.Heading('success!', {style: (content, style) => style.green(content)});
     ui.TextBlock(
       `We’ve started a development server at ${ui.Link(
-        localServerOrigin,
+        localUrl,
       )}. In a moment, we’ll open ${ui.Link(
         targetUrl,
       )}, which will connect your local environment to the Watch app. All of the extensions in your local workspace will be automatically installed in all their supported extension points, so navigate to the page you are extending to see your extensions in action. Have fun building!`,
     );
 
-    await open(targetUrl);
+    await open(targetUrl.href);
   } catch (error) {
     throw new PrintableError(
       `There was a problem while trying to start your development server...`,
@@ -101,7 +109,7 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
-  const schema = createSchema(app);
+  const resolver = createQueryResolver(app);
 
   handler.get('/', () =>
     json(app, {
@@ -124,18 +132,12 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
 
   handler.post('/graphql', async (request) => {
     try {
-      const {operationName, query, variables} = JSON.parse(
-        request.body ?? '{}',
-      );
+      const {query, variables} = JSON.parse(request.body ?? '{}');
 
-      const result = await graphql(
-        schema,
-        query,
-        {},
-        {request},
+      const result = await execute(query, resolver, {
         variables,
-        operationName,
-      );
+        context: {rootUrl: new URL('/', request.url)},
+      }).untilResolved();
 
       return json(result, {
         headers: {
@@ -258,27 +260,54 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     async listen() {
       const port = await findPortAndListen(httpServer);
 
-      webSocketServer = new WebSocket.Server({server: httpServer});
+      webSocketServer = new WebSocket.Server({
+        server: httpServer,
+        path: '/connect',
+      });
 
-      webSocketServer.on('connection', (socket, request) => {
-        const extensionId = request.url!.slice(1);
-        const buildState = buildStateByExtension.get(extensionId);
+      webSocketServer.on('connection', async (socket) => {
+        const abort = new AbortController();
+        const {signal} = abort;
 
-        if (buildState == null) {
-          socket.send(JSON.stringify({type: 'not-found'}));
-          socket.close();
-          return;
-        }
+        const expose = {
+          async *query(query: string) {
+            yield* execute(parse(query) as any, resolver, {
+              signal,
+              // TODO: get thr right port, handle proxies, etc
+              context: {rootUrl: new URL('http://localhost:3000')},
+            });
+          },
+        };
 
-        const sockets = socketsByExtension.get(extensionId) ?? new Set();
-        sockets.add(socket);
-        socketsByExtension.set(extensionId, sockets);
+        const thread = createThread<typeof expose>(
+          {
+            send(message) {
+              socket.send(JSON.stringify(message));
+            },
+            async *listen({signal}) {
+              const messages = on<{message: {data: WebSocket.Data}}>(
+                socket,
+                'message',
+                {signal},
+              );
 
-        socket.on('close', () => {
-          sockets.delete(socket);
-        });
+              for await (const {data} of messages) {
+                yield JSON.parse(data.toString());
+              }
+            },
+          },
+          {expose},
+        );
 
-        socket.send(JSON.stringify({type: 'build', data: buildState}));
+        signal.addEventListener(
+          'abort',
+          () => {
+            thread.terminate();
+          },
+          {once: true},
+        );
+
+        socket.once('close', () => abort.abort());
       });
 
       return {port};

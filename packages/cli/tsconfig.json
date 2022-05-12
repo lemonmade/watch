@@ -7,6 +7,6 @@
     "types": ["node"]
   },
   "include": ["src"],
-  "exclude": ["quilt.project.ts", "build"],
+  "exclude": ["quilt.project.ts", "build", "**/*.test.ts"],
   "references": [{"path": "../clips"}, {"path": "../graphql"}]
 }

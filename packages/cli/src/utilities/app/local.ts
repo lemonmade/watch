@@ -94,6 +94,7 @@ export interface LocalExtension {
   readonly id: string;
   readonly name: string;
   readonly root: string;
+  readonly handle: string;
   readonly extensionPoints: readonly LocalExtensionPointSupport[];
   readonly configuration: LocalExtensionUserConfiguration;
   readonly configurationFile: LocalConfigurationFile<LocalExtensionConfiguration>;
@@ -200,13 +201,12 @@ async function loadExtensionFromDirectory(
 
   validateExtensionConfig(configuration);
 
+  const handle = configuration.name.toLocaleLowerCase().replace(/\s+/g, '-');
+
   return {
-    id:
-      configuration.id ??
-      `gid://watch/LocalClipsExtension/${configuration.name
-        .toLocaleLowerCase()
-        .replace(/\s+/g, '-')}`,
+    id: configuration.id ?? `gid://watch/LocalClipsExtension/${handle}`,
     name: configuration.name,
+    handle,
     root: directory,
     extensionPoints: configuration.extensionPoints,
     configuration: {schema: [], ...configuration.configuration},

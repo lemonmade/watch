@@ -9,10 +9,10 @@ type Extension {
   id: ID!
   name: String!
   assets: [Asset!]!
-  socketUrl: Url
 }
 
 type App {
+  name: String!
   extensions: [Extension!]!
 }
 

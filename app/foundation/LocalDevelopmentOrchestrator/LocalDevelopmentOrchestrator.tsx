@@ -1,10 +1,7 @@
 import {useEffect, useState} from 'react';
 import type {ReactNode, ContextType} from 'react';
-import {
-  useInitialUrl,
-  createGraphQL,
-  createGraphQLHttpFetch,
-} from '@quilted/quilt';
+import {useInitialUrl} from '@quilted/quilt';
+import {createThread, targetFromBrowserWebSocket} from '@lemonmade/threads';
 
 import {LocalDevelopmentClipsContext} from 'utilities/clips';
 
@@ -15,55 +12,44 @@ export function LocalDevelopmentOrchestrator({
 }: {
   children?: ReactNode;
 }) {
-  const [extensions, setExtensions] = useState<
+  const [extensions, _setExtensions] = useState<
     ContextType<typeof LocalDevelopmentClipsContext>
   >([]);
   const url = useInitialUrl();
 
   useEffect(() => {
-    let valid = true;
+    const abort = new AbortController();
+    const {signal} = abort;
 
-    const buildingParam = url!.searchParams.get('building');
-    if (buildingParam == null) return;
+    const connectParam = url!.searchParams.get('connect');
+    if (connectParam == null) return;
+
+    // TODO handle errors in parsing/ connecting
+    const localDevelopmentConnectUrl = new URL(connectParam);
+
+    if (localDevelopmentConnectUrl.protocol !== 'ws:') return;
+
+    const socket = new WebSocket(localDevelopmentConnectUrl.href);
+    const target = targetFromBrowserWebSocket(socket);
+    const thread = createThread<
+      Record<string, never>,
+      {
+        query(query: string): AsyncGenerator<Record<string, any>, void, void>;
+      }
+    >(target);
+
+    const results = thread.call.query(localDevelopmentOrchestratorQuery.source);
 
     (async () => {
-      try {
-        const localDevelopmentQueryUrl = new URL(buildingParam);
-        const graphql = createGraphQL({
-          fetch: createGraphQLHttpFetch({uri: localDevelopmentQueryUrl.href}),
-        });
-
-        const {data, error} = await graphql.query(
-          localDevelopmentOrchestratorQuery,
-        );
-
-        if (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
-
-        if (!valid || data == null) return;
-
-        const {app} = data;
-
-        setExtensions(
-          app.extensions.map((extension) => {
-            return {
-              id: extension.id,
-              name: extension.name,
-              version: 'unstable',
-              script: extension.assets[0]!.source,
-              socketUrl: extension.socketUrl ?? undefined,
-            };
-          }),
-        );
-      } catch {
-        // intentional noop
+      for await (const result of results) {
+        // TODO: abort the GraphQL query too
+        if (signal.aborted) return;
+        console.log(result);
       }
     })();
 
     return () => {
-      valid = false;
+      abort.abort();
     };
   }, [url]);
 

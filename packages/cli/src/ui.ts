@@ -20,7 +20,7 @@ export interface Ui {
     content: string,
     props?: {style?: StyleProp; emphasized?: boolean},
   ): void;
-  Link(url: string): string;
+  Link(url: string | URL): string;
   Code(content: string): string;
   List(content: (List: {Item(content: string): void}) => void): void;
 }
@@ -105,10 +105,11 @@ export function createUi(): Ui {
       return Style.bold(content);
     },
     Link(url) {
+      const href = url.toString();
       const wrappedUrl =
         !Style.options.enabled || process.env.CI || !process.stdout.isTTY
-          ? url
-          : ansiEscapes.link(url, url);
+          ? href
+          : ansiEscapes.link(href, href);
 
       return Style.underline(Style.magenta(wrappedUrl));
     },

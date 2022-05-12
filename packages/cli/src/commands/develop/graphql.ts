@@ -1,58 +1,41 @@
-import type {
-  GraphQLResolver,
-  GraphQLResolverOptions,
-  GraphQLBaseResolverValueMap,
-} from '@watching/graphql/server';
-import type {Request} from '@quilted/http-handlers';
+import {parse} from 'graphql';
 
-import {makeExecutableSchema} from '@graphql-tools/schema';
-
-import schemaTypeDefinitions from './schema';
+import {
+  execute,
+  createQueryResolver as createQueryResolverForSchema,
+} from '@lemonmade/graphql-live';
 import type {Schema} from './schema';
 import type {LocalApp} from '../../utilities/app';
 
-interface Context {
-  readonly request: Request;
+export interface Context {
+  readonly rootUrl: URL;
 }
 
-type ResolverOptions = GraphQLResolverOptions<
-  Schema,
-  GraphQLBaseResolverValueMap,
-  Context
->;
+export {execute, parse};
 
-type QueryResolver = GraphQLResolver<'Query', ResolverOptions>;
+export function createQueryResolver(app: LocalApp) {
+  return createQueryResolverForSchema<Schema, Context>(({object}) => ({
+    version: 'unstable',
+    async *app(_, {rootUrl}, {signal}) {
+      while (!signal.aborted) {
+        yield object('App', {
+          name: app.name,
+          extensions: app.extensions.map((extension) => {
+            const assetUrl = new URL(
+              `/assets/extensions/${extension.handle}.js`,
+              rootUrl,
+            );
 
-export function createSchema(app: LocalApp) {
-  return makeExecutableSchema({
-    typeDefs: schemaTypeDefinitions,
-    resolvers: {
-      Query: {
-        app: (_, __, {request}) => {
-          return {
-            name: app.name,
-            extensions: app.extensions.map((extension) => {
-              const assetUrl = new URL(
-                `/assets/extensions/${extension.id}.js`,
-                request.url,
-              );
+            return object('Extension', {
+              id: extension.id,
+              name: extension.name,
+              assets: [object('Asset', {source: assetUrl.href})],
+            });
+          }),
+        });
 
-              const socketUrl = new URL(
-                extension.id,
-                `ws://${request.url.host}`,
-              );
-
-              return {
-                id: `gid://watch-local/ClipsExtension/${extension.id}`,
-                name: extension.name,
-                socketUrl: socketUrl.href,
-                assets: [{source: assetUrl.href}],
-              };
-            }),
-          };
-        },
-        version: () => 'unstable',
-      } as QueryResolver,
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     },
-  });
+  }));
 }
