@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 0.4.5
+
+### Patch Changes
+
+- [#128](https://github.com/lemonmade/watch/pull/128) [`30faaa9`](https://github.com/lemonmade/watch/commit/30faaa94ac9197b7db36a6abf0659cbaedeaeae4) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve app and extension APIs
+
+* [`3aa472b`](https://github.com/lemonmade/watch/commit/3aa472b5cf0218d2c147489acc1f6f0aa68b5f55) Thanks [@lemonmade](https://github.com/lemonmade)! - Improved local development server
+
 ## 0.4.4
 
 ### Patch Changes
