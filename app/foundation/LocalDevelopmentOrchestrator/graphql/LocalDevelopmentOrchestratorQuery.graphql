@@ -1,11 +1,19 @@
 query LocalDevelopmentOrchestrator {
   app {
+    name
     extensions {
-      id
-      name
-      socketUrl
-      assets {
-        source
+      ... on ClipsExtension {
+        id
+        name
+        supports {
+          name
+          module
+          conditions {
+            series {
+              handle
+            }
+          }
+        }
       }
     }
   }

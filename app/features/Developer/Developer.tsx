@@ -9,6 +9,7 @@ export function Developer() {
         <InlineStack>
           <Link to="apps">Apps</Link>
           <Link to="access-tokens">Access tokens</Link>
+          <Link to="console">Console</Link>
         </InlineStack>
       </BlockStack>
     </Page>

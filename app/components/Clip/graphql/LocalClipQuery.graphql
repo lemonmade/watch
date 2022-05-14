@@ -1,0 +1,34 @@
+query LocalClip($id: ID!) {
+  app {
+    name
+    clipsExtension(id: $id) {
+      id
+      name
+      build {
+        ... on ExtensionBuildSuccess {
+          id
+          startedAt
+          finishedAt
+          duration
+          assets {
+            source
+          }
+        }
+        ... on ExtensionBuildError {
+          id
+          startedAt
+          finishedAt
+          duration
+          error {
+            message
+            stack
+          }
+        }
+        ... on ExtensionBuildInProgress {
+          id
+          startedAt
+        }
+      }
+    }
+  }
+}

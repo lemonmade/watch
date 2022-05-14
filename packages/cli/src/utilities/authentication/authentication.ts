@@ -112,7 +112,7 @@ function graphqlFromAccessToken(accessToken: string) {
   return createGraphQL({
     cache: false,
     fetch: createGraphQLHttpFetch({
-      uri: watchUrl('/api/graphql'),
+      uri: watchUrl('/api/graphql').href,
       headers: {
         'X-Access-Token': accessToken,
       },
@@ -188,7 +188,7 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
     )}.`,
   );
 
-  await open(url);
+  await open(url.href);
 
   const token = await promise;
 

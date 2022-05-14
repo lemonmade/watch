@@ -26,6 +26,8 @@ export function createRollupConfiguration(
         async load(source) {
           if (source !== MAGIC_MODULE_EXTENSION_ENTRY) return null;
 
+          this.addWatchFile(extension.configurationFile.path);
+
           return `
             ${extension.extensionPoints
               .map((extensionPoint, index) => {

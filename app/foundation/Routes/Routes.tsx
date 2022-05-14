@@ -19,6 +19,7 @@ import {
   Apps as DevelopedApps,
   AccessTokens,
   AuthenticateCli,
+  Console,
 } from '../../features/Developer';
 
 import {Frame} from '../Frame';
@@ -47,6 +48,7 @@ export function Routes() {
                 {match: 'apps', render: () => <DevelopedApps />},
                 {match: 'access-tokens', render: () => <AccessTokens />},
                 {match: 'cli/authenticate', render: () => <AuthenticateCli />},
+                {match: 'console', render: () => <Console />},
               ],
             },
             {match: 'apps', render: () => <Apps />},

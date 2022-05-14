@@ -1,58 +1,123 @@
-import type {
-  GraphQLResolver,
-  GraphQLResolverOptions,
-  GraphQLBaseResolverValueMap,
-} from '@watching/graphql/server';
-import type {Request} from '@quilted/http-handlers';
+import {parse} from 'graphql';
 
-import {makeExecutableSchema} from '@graphql-tools/schema';
+import {
+  run,
+  createQueryResolver as createQueryResolverForSchema,
+} from '@lemonmade/graphql-live';
 
-import schemaTypeDefinitions from './schema';
+import type {LocalApp, LocalExtension} from '../../utilities/app';
+
 import type {Schema} from './schema';
-import type {LocalApp} from '../../utilities/app';
+import type {Builder} from './types';
 
-interface Context {
-  readonly request: Request;
+export interface Context {
+  readonly rootUrl: URL;
 }
 
-type ResolverOptions = GraphQLResolverOptions<
-  Schema,
-  GraphQLBaseResolverValueMap,
-  Context
->;
+export {run, parse};
 
-type QueryResolver = GraphQLResolver<'Query', ResolverOptions>;
+export function createQueryResolver(
+  app: LocalApp,
+  {builder}: {builder: Builder},
+) {
+  return createQueryResolverForSchema<Schema, Context>(({object}) => {
+    return {
+      version: 'unstable',
+      async *app(_, context, {signal}) {
+        yield createGraphQLApp(app, context);
 
-export function createSchema(app: LocalApp) {
-  return makeExecutableSchema({
-    typeDefs: schemaTypeDefinitions,
-    resolvers: {
-      Query: {
-        app: (_, __, {request}) => {
-          return {
-            name: app.name,
-            extensions: app.extensions.map((extension) => {
-              const assetUrl = new URL(
-                `/assets/extensions/${extension.id}.js`,
-                request.url,
-              );
+        for await (const currentApp of app.on('change', {signal})) {
+          yield createGraphQLApp(currentApp, context);
+        }
+      },
+    };
 
-              const socketUrl = new URL(
-                extension.id,
-                `ws://${request.url.host}`,
-              );
-
-              return {
-                id: `gid://watch-local/ClipsExtension/${extension.id}`,
-                name: extension.name,
-                socketUrl: socketUrl.href,
-                assets: [{source: assetUrl.href}],
-              };
-            }),
-          };
+    function createGraphQLApp(app: Omit<LocalApp, 'on'>, context: Context) {
+      return object('App', {
+        name: app.name,
+        extensions: app.extensions.map((extension) =>
+          createGraphQLCLipsExtension(extension, context),
+        ),
+        extension({id}) {
+          const found = app.extensions.find((extension) => extension.id === id);
+          return found && createGraphQLCLipsExtension(found, context);
         },
-        version: () => 'unstable',
-      } as QueryResolver,
-    },
+        clipsExtension({id}) {
+          const found = app.extensions.find((extension) => extension.id === id);
+          return found && createGraphQLCLipsExtension(found, context);
+        },
+      });
+    }
+
+    function createGraphQLCLipsExtension(
+      extension: LocalExtension,
+      {rootUrl}: Context,
+    ) {
+      const assetUrl = new URL(
+        `/assets/extensions/${extension.id.split('/').pop()}.js`,
+        rootUrl,
+      );
+
+      return object('ClipsExtension', {
+        id: extension.id,
+        name: extension.name,
+        supports: extension.extensionPoints.map((extensionPoint) =>
+          object('ClipsExtensionPointSupport', {
+            name: extensionPoint.id,
+            module: extensionPoint.module,
+            conditions:
+              extensionPoint.conditions?.map((condition) =>
+                object('ClipsExtensionPointCondition', {
+                  series: condition.series
+                    ? object('ClipsExtensionPointSeriesCondition', {
+                        handle: condition.series.handle,
+                      })
+                    : null,
+                }),
+              ) ?? [],
+          }),
+        ),
+        async *build(_, __, {signal}) {
+          for await (const state of builder.watch(extension, {signal})) {
+            switch (state.status) {
+              case 'success': {
+                yield object('ExtensionBuildSuccess', {
+                  id: `gid://watch/ExtensionBuildSuccess/${extension.handle}/${state.id}`,
+                  assets: [object('Asset', {source: assetUrl.href})],
+                  startedAt: new Date(state.startedAt).toISOString(),
+                  finishedAt: new Date(
+                    state.startedAt + state.duration,
+                  ).toISOString(),
+                  duration: state.duration,
+                });
+                break;
+              }
+              case 'error': {
+                yield object('ExtensionBuildError', {
+                  id: `gid://watch/ExtensionBuildError/${extension.handle}/${state.id}`,
+                  startedAt: new Date(state.startedAt).toISOString(),
+                  finishedAt: new Date(
+                    state.startedAt + state.duration,
+                  ).toISOString(),
+                  duration: state.duration,
+                  error: object('BuildError', {
+                    message: state.errors[0]!.message,
+                    stack: state.errors[0]!.stack,
+                  }),
+                });
+                break;
+              }
+              case 'building': {
+                yield object('ExtensionBuildInProgress', {
+                  id: `gid://watch/ExtensionBuildInProgress/${extension.handle}/${state.id}`,
+                  startedAt: new Date(state.startedAt).toISOString(),
+                });
+                break;
+              }
+            }
+          }
+        },
+      });
+    }
   });
 }

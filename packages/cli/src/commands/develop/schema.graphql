@@ -1,19 +1,74 @@
 scalar Url
+scalar Date
 scalar Version
+scalar ExtensionPoint
+scalar ExtensionApiVersion
 
 type Asset {
   source: Url!
 }
 
-type Extension {
-  id: ID!
-  name: String!
-  assets: [Asset!]!
-  socketUrl: Url
+type BuildError {
+  message: String!
+  stack: String
 }
 
+type ExtensionBuildInProgress {
+  id: ID!
+  startedAt: Date!
+}
+
+type ExtensionBuildSuccess {
+  id: ID!
+  finishedAt: Date!
+  startedAt: Date!
+  duration: Int!
+  assets: [Asset!]!
+}
+
+type ExtensionBuildError {
+  id: ID!
+  error: BuildError!
+  finishedAt: Date!
+  duration: Int!
+  startedAt: Date!
+}
+
+union ExtensionBuild =
+    ExtensionBuildInProgress
+  | ExtensionBuildSuccess
+  | ExtensionBuildError
+
+scalar ClipsExtensionPoint
+
+type ClipsExtensionPointSeriesCondition {
+  handle: String
+}
+
+type ClipsExtensionPointCondition {
+  series: ClipsExtensionPointSeriesCondition
+}
+
+type ClipsExtensionPointSupport {
+  name: ClipsExtensionPoint!
+  module: String!
+  conditions: [ClipsExtensionPointCondition!]!
+}
+
+type ClipsExtension {
+  id: ID!
+  name: String!
+  build: ExtensionBuild!
+  supports: [ClipsExtensionPointSupport!]!
+}
+
+union Extension = ClipsExtension
+
 type App {
+  name: String!
   extensions: [Extension!]!
+  extension(id: ID!): Extension
+  clipsExtension(id: ID!): ClipsExtension
 }
 
 type Query {
@@ -24,78 +79,3 @@ type Query {
 schema {
   query: Query
 }
-
-# scalar Url
-# scalar Date
-# scalar Version
-
-# type Asset {
-#   source: Url!
-# }
-
-# type BuildError {
-#   message: String!
-#   stack: String
-# }
-
-# type ExtensionBuildInProgress {
-#   id: ID!
-#   startedAt: Date!
-# }
-
-# type ExtensionBuildSuccess {
-#   id: ID!
-#   finishedAt: Date!
-#   startedAt: Date!
-#   assets: [Asset!]!
-# }
-
-# type ExtensionBuildError {
-#   id: ID!
-#   error: BuildError!
-#   finishedAt: Date!
-#   startedAt: Date!
-# }
-
-# union ExtensionBuild =
-#     ExtensionBuildInProgress
-#   | ExtensionBuildSuccess
-#   | ExtensionBuildError
-
-# scalar ClipsExtensionPoint
-
-# type ClipsExtensionPointSeriesCondition {
-#   handle: String
-# }
-
-# type ClipsExtensionPointCondition {
-#   series: ClipsExtensionPointSeriesCondition
-# }
-
-# type ClipsExtensionPointSupport {
-#   name: ClipsExtensionPoint!
-#   module: String!
-#   conditions: [ClipsExtensionPointCondition!]!
-# }
-
-# type ClipsExtension {
-#   id: ID!
-#   name: String!
-#   build: ExtensionBuild!
-#   supports: [ClipsExtensionPointSupport!]!
-# }
-
-# union Extension = ClipsExtension
-
-# type App {
-#   extensions: [Extension!]!
-# }
-
-# type Query {
-#   version: Version!
-#   app: App!
-# }
-
-# schema {
-#   query: Query
-# }

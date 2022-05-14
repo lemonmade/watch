@@ -1,75 +1,110 @@
+import {ReactNode, useMemo} from 'react';
 import {useEffect, useState} from 'react';
-import type {ReactNode, ContextType} from 'react';
-import {
-  useInitialUrl,
-  createGraphQL,
-  createGraphQLHttpFetch,
-} from '@quilted/quilt';
 
-import {LocalDevelopmentClipsContext} from 'utilities/clips';
+import {useInitialUrl} from '@quilted/quilt';
+import {
+  createThread,
+  createThreadAbortSignal,
+  targetFromBrowserWebSocket,
+} from '@lemonmade/threads';
+import type {ThreadAbortSignal} from '@lemonmade/threads';
+
+import {LocalDevelopmentServerContext} from 'utilities/clips';
+import type {LocalDevelopmentServer} from 'utilities/clips';
 
 import localDevelopmentOrchestratorQuery from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
+import type {LocalDevelopmentOrchestratorQueryData} from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
 
 export function LocalDevelopmentOrchestrator({
   children,
 }: {
   children?: ReactNode;
 }) {
+  const [partialServer, setPartialServer] = useState<Omit<
+    LocalDevelopmentServer,
+    'extensions'
+  > | null>(null);
+
   const [extensions, setExtensions] = useState<
-    ContextType<typeof LocalDevelopmentClipsContext>
+    LocalDevelopmentServer['extensions']
   >([]);
+
   const url = useInitialUrl();
 
   useEffect(() => {
-    let valid = true;
+    const abort = new AbortController();
+    const {signal} = abort;
 
-    const buildingParam = url!.searchParams.get('building');
-    if (buildingParam == null) return;
+    const connectParam = url!.searchParams.get('connect');
+    if (connectParam == null) return;
+
+    // TODO handle errors in parsing/ connecting
+    const localDevelopmentConnectUrl = new URL(connectParam);
+
+    if (localDevelopmentConnectUrl.protocol !== 'ws:') return;
+
+    const socket = new WebSocket(localDevelopmentConnectUrl.href);
+    const target = targetFromBrowserWebSocket(socket);
+    const thread = createThread<
+      Record<string, never>,
+      {
+        query<Data, Variables>(
+          query: string,
+          options?: {variables?: Variables; signal?: ThreadAbortSignal},
+        ): AsyncGenerator<{data?: Data}, void, void>;
+      }
+    >(target);
+
+    const query: LocalDevelopmentServer['query'] = async function* query(
+      query,
+      {signal, variables} = {},
+    ) {
+      const results = thread.call.query(query.source, {
+        variables,
+        signal: signal && createThreadAbortSignal(signal),
+      }) as AsyncGenerator<any>;
+
+      for await (const result of results) {
+        yield result;
+      }
+    };
+
+    setPartialServer({query, url: localDevelopmentConnectUrl});
+
+    const results = query(localDevelopmentOrchestratorQuery, {
+      signal,
+    });
 
     (async () => {
-      try {
-        const localDevelopmentQueryUrl = new URL(buildingParam);
-        const graphql = createGraphQL({
-          fetch: createGraphQLHttpFetch({uri: localDevelopmentQueryUrl.href}),
-        });
-
-        const {data, error} = await graphql.query(
-          localDevelopmentOrchestratorQuery,
-        );
-
-        if (error) {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
-
-        if (!valid || data == null) return;
-
-        const {app} = data;
-
+      for await (const result of results) {
         setExtensions(
-          app.extensions.map((extension) => {
+          (
+            (result as any).data as LocalDevelopmentOrchestratorQueryData
+          ).app.extensions.flatMap((extension) => {
+            if (extension.__typename !== 'ClipsExtension') return [];
+
             return {
               id: extension.id,
               name: extension.name,
-              version: 'unstable',
-              script: extension.assets[0]!.source,
-              socketUrl: extension.socketUrl ?? undefined,
             };
           }),
         );
-      } catch {
-        // intentional noop
       }
     })();
 
     return () => {
-      valid = false;
+      abort.abort();
     };
   }, [url]);
 
+  const developmentServer = useMemo<LocalDevelopmentServer | null>(
+    () => partialServer && {...partialServer, extensions},
+    [partialServer, extensions],
+  );
+
   return (
-    <LocalDevelopmentClipsContext.Provider value={extensions}>
+    <LocalDevelopmentServerContext.Provider value={developmentServer}>
       {children}
-    </LocalDevelopmentClipsContext.Provider>
+    </LocalDevelopmentServerContext.Provider>
   );
 }

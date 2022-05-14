@@ -32,5 +32,8 @@
   "sideEffects": false,
   "eslintConfig": {
     "extends": "@quilted/eslint-config/package"
+  },
+  "dependencies": {
+    "graphql": "^16.4.0"
   }
 }
