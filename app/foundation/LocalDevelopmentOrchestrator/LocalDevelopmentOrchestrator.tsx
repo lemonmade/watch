@@ -1,9 +1,16 @@
+import {ReactNode, useMemo} from 'react';
 import {useEffect, useState} from 'react';
-import type {ReactNode, ContextType} from 'react';
-import {useInitialUrl} from '@quilted/quilt';
-import {createThread, targetFromBrowserWebSocket} from '@lemonmade/threads';
 
-import {LocalDevelopmentClipsContext} from 'utilities/clips';
+import {useInitialUrl} from '@quilted/quilt';
+import {
+  createThread,
+  createThreadAbortSignal,
+  targetFromBrowserWebSocket,
+} from '@lemonmade/threads';
+import type {ThreadAbortSignal} from '@lemonmade/threads';
+
+import {LocalDevelopmentServerContext} from 'utilities/clips';
+import type {LocalDevelopmentServer} from 'utilities/clips';
 
 import localDevelopmentOrchestratorQuery from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
 import type {LocalDevelopmentOrchestratorQueryData} from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
@@ -13,9 +20,15 @@ export function LocalDevelopmentOrchestrator({
 }: {
   children?: ReactNode;
 }) {
+  const [partialServer, setPartialServer] = useState<Omit<
+    LocalDevelopmentServer,
+    'extensions'
+  > | null>(null);
+
   const [extensions, setExtensions] = useState<
-    ContextType<typeof LocalDevelopmentClipsContext>
+    LocalDevelopmentServer['extensions']
   >([]);
+
   const url = useInitialUrl();
 
   useEffect(() => {
@@ -35,19 +48,35 @@ export function LocalDevelopmentOrchestrator({
     const thread = createThread<
       Record<string, never>,
       {
-        query<Data = Record<string, unknown>>(
+        query<Data, Variables>(
           query: string,
-        ): AsyncGenerator<Data, void, void>;
+          options?: {variables?: Variables; signal?: ThreadAbortSignal},
+        ): AsyncGenerator<{data?: Data}, void, void>;
       }
     >(target);
 
-    const results = thread.call.query(localDevelopmentOrchestratorQuery.source);
+    const query: LocalDevelopmentServer['query'] = async function* query(
+      query,
+      {signal, variables} = {},
+    ) {
+      const results = thread.call.query(query.source, {
+        variables,
+        signal: signal && createThreadAbortSignal(signal),
+      }) as AsyncGenerator<any>;
+
+      for await (const result of results) {
+        yield result;
+      }
+    };
+
+    setPartialServer({query, url: localDevelopmentConnectUrl});
+
+    const results = query(localDevelopmentOrchestratorQuery, {
+      signal,
+    });
 
     (async () => {
       for await (const result of results) {
-        // TODO: abort the GraphQL query too
-        if (signal.aborted) return;
-
         setExtensions(
           (
             (result as any).data as LocalDevelopmentOrchestratorQueryData
@@ -57,12 +86,6 @@ export function LocalDevelopmentOrchestrator({
             return {
               id: extension.id,
               name: extension.name,
-              version: 'unstable',
-              script:
-                // TODO
-                extension.build.__typename === 'ExtensionBuildSuccess'
-                  ? extension.build.assets[0]!.source
-                  : '',
             };
           }),
         );
@@ -74,9 +97,14 @@ export function LocalDevelopmentOrchestrator({
     };
   }, [url]);
 
+  const developmentServer = useMemo<LocalDevelopmentServer | null>(
+    () => partialServer && {...partialServer, extensions},
+    [partialServer, extensions],
+  );
+
   return (
-    <LocalDevelopmentClipsContext.Provider value={extensions}>
+    <LocalDevelopmentServerContext.Provider value={developmentServer}>
       {children}
-    </LocalDevelopmentClipsContext.Provider>
+    </LocalDevelopmentServerContext.Provider>
   );
 }

@@ -29,7 +29,7 @@ import type {
   ClipsExtensionApiVersion,
   JSON as GraphQlJSON,
 } from 'graphql/types';
-import {useRenderSandbox} from 'utilities/clips';
+import {useRenderSandbox, useLocalDevelopmentServer} from 'utilities/clips';
 import type {
   RenderController,
   ExtensionSandbox,
@@ -42,6 +42,8 @@ import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionC
 import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
 import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
+import localClipQuery from './graphql/LocalClipQuery.graphql';
+import type {LocalClipQueryData} from './graphql/LocalClipQuery.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -63,7 +65,7 @@ export interface Props<T extends ExtensionPoint> {
       'extensionPoint' | 'version' | 'configuration'
     >
   >;
-  local?: string;
+  build?: LocalClipQueryData.App.ClipsExtension.Build;
   configuration?: GraphQlJSON;
 }
 
@@ -101,20 +103,53 @@ export function LocalClip<T extends ExtensionPoint>({
   id,
   api,
   name,
-  script,
-  version,
-  socketUrl,
   extensionPoint,
 }: LocalExtension & Pick<Props<T>, 'api' | 'extensionPoint'>) {
+  const {query} = useLocalDevelopmentServer();
+  const [buildState, setBuildState] =
+    useState<LocalClipQueryData.App.ClipsExtension.Build>({
+      __typename: 'ExtensionBuildInProgress',
+      id: '0',
+      startedAt: new Date().toISOString(),
+    });
+
+  useEffect(() => {
+    const abort = new AbortController();
+
+    (async () => {
+      for await (const result of query(localClipQuery, {
+        signal: abort.signal,
+        variables: {id},
+      })) {
+        const extension = result.data?.app?.clipsExtension;
+        if (extension == null) continue;
+        setBuildState(extension.build);
+      }
+    })();
+
+    return () => abort.abort();
+  }, [query, id]);
+
+  const assetRef = useRef<string>();
+
+  if (
+    assetRef.current == null &&
+    buildState.__typename === 'ExtensionBuildSuccess'
+  ) {
+    assetRef.current = buildState.assets[0]?.source;
+  }
+
+  if (!assetRef.current) return null;
+
   return (
     <Clip
       id={id}
       key={id}
       api={api}
       name={name}
-      version={version}
-      script={script}
-      local={socketUrl}
+      version="unstable"
+      script={assetRef.current}
+      build={buildState}
       extensionPoint={extensionPoint}
     />
   );
@@ -127,7 +162,7 @@ export function Clip<T extends ExtensionPoint>({
   extensionPoint,
   version,
   script,
-  local,
+  build,
   api,
   configuration,
 }: Props<T>) {
@@ -151,10 +186,10 @@ export function Clip<T extends ExtensionPoint>({
     );
   });
 
-  return local ? (
+  return build ? (
     <LocalClipFrame
       name={name}
-      socketUrl={local}
+      build={build}
       controller={sandboxController}
       script={script}
     >
@@ -405,77 +440,38 @@ interface LocalClipFrameProps<T extends ExtensionPoint>
     ClipFrameProps<T>,
     'renderPopoverContent' | 'renderPopoverActions'
   > {
-  socketUrl: string;
+  build: LocalClipQueryData.App.ClipsExtension.Build;
 }
 
-type BuildState =
-  | {status: 'success'; startedAt: number; duration: number; errors?: never}
-  | {
-      status: 'error';
-      startedAt: number;
-      duration: number;
-      errors: {message: string; stack?: string}[];
-    }
-  | {status: 'building'; startedAt: number; duration?: never; errors?: never};
-
-type DevServerMessage = {type: 'not-found'} | {type: 'build'; data: BuildState};
-
 function LocalClipFrame<T extends ExtensionPoint>({
-  socketUrl,
   children,
   controller,
+  build,
   ...rest
 }: PropsWithChildren<LocalClipFrameProps<T>>) {
-  const [compiling, setCompiling] = useState(false);
-  const [buildState, setBuildState] = useState<BuildState | undefined>(
-    undefined,
-  );
+  const lastBuild = useRef(build);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [forcedHeight, setForcedHeight] = useState<number | undefined>();
 
   useEffect(() => {
-    const webSocket = new WebSocket(socketUrl);
+    const last = lastBuild.current;
+    lastBuild.current = build;
 
-    webSocket.addEventListener('message', ({data}) => {
-      try {
-        const parsed: DevServerMessage = JSON.parse(data);
+    if (last.__typename === build.__typename) {
+      return;
+    }
 
-        switch (parsed.type) {
-          case 'build': {
-            const buildState = parsed.data;
-
-            setBuildState(buildState);
-
-            switch (buildState.status) {
-              case 'building': {
-                setCompiling(true);
-                setForcedHeight(
-                  containerRef.current?.getBoundingClientRect().height,
-                );
-                break;
-              }
-              case 'success': {
-                setCompiling(false);
-                controller.restart();
-                break;
-              }
-              default: {
-                setCompiling(false);
-              }
-            }
-
-            break;
-          }
-        }
-      } catch {
-        // Intentional noop
+    switch (build.__typename) {
+      case 'ExtensionBuildInProgress': {
+        setForcedHeight(containerRef.current?.getBoundingClientRect().height);
+        break;
       }
-    });
-
-    return () => {
-      webSocket.close();
-    };
-  }, [socketUrl, controller]);
+      case 'ExtensionBuildSuccess': {
+        controller.restart();
+        break;
+      }
+    }
+  }, [build, controller]);
 
   useEffect(() => {
     return controller.on('render', () => {
@@ -487,12 +483,7 @@ function LocalClipFrame<T extends ExtensionPoint>({
     <ClipFrame<T>
       controller={controller}
       {...rest}
-      renderPopoverContent={() => (
-        <LocalDevelopmentOverview
-          compiling={compiling}
-          buildState={buildState}
-        />
-      )}
+      renderPopoverContent={() => <LocalDevelopmentOverview build={build} />}
       renderPopoverActions={() => (
         <Button onPress={() => controller.restart()}>Restart</Button>
       )}
@@ -508,21 +499,11 @@ function LocalClipFrame<T extends ExtensionPoint>({
 }
 
 interface LocalDevelopmentOverviewProps {
-  compiling: boolean;
-  buildState?: BuildState;
+  build: LocalClipQueryData.App.ClipsExtension.Build;
 }
 
-function LocalDevelopmentOverview({
-  compiling,
-  buildState,
-}: LocalDevelopmentOverviewProps) {
-  if (buildState == null) {
-    return <Text>Connecting to local development server...</Text>;
-  } else if (compiling) {
-    return <Text>Compiling...</Text>;
-  }
-
-  return <Text>{JSON.stringify(buildState)}</Text>;
+function LocalDevelopmentOverview({build}: LocalDevelopmentOverviewProps) {
+  return <Text>{JSON.stringify(build)}</Text>;
 }
 
 interface ClipFrameProps<T extends ExtensionPoint> {

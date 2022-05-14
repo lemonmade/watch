@@ -1,27 +1,22 @@
 import {useEffect, useState} from 'react';
 // import type {ReactNode} from 'react';
 
-import {GraphQLOperation, useCurrentUrl} from '@quilted/quilt';
+import {useCurrentUrl} from '@quilted/quilt';
 import {BlockStack, TextField, Button, Form, TextBlock} from '@lemon/zest';
-import {
-  createThread,
-  createThreadAbortSignal,
-  targetFromBrowserWebSocket,
-} from '@lemonmade/threads';
-import type {ThreadAbortSignal} from '@lemonmade/threads';
 
 import {Page} from 'components';
+import {useLocalDevelopmentServer} from 'utilities/clips';
+import type {LocalDevelopmentServer} from 'utilities/clips';
 
 import developerConsoleQuery from './graphql/DeveloperConsoleQuery.graphql';
 
 export function Console() {
-  const currentUrl = useCurrentUrl();
-  const connectParam = currentUrl.searchParams.get('connect');
+  const developmentServer = useLocalDevelopmentServer({required: false});
 
   return (
     <Page heading="Console">
-      {connectParam ? (
-        <ConnectedConsole connect={connectParam} />
+      {developmentServer ? (
+        <ConnectedConsole server={developmentServer} />
       ) : (
         <ConnectToConsole />
       )}
@@ -29,50 +24,14 @@ export function Console() {
   );
 }
 
-function ConnectedConsole({connect}: {connect: string}) {
+function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
   const [data, setData] = useState<any>();
 
   useEffect(() => {
     const abort = new AbortController();
 
-    const socket = new WebSocket(connect);
-    const target = targetFromBrowserWebSocket(socket);
-    const thread = createThread<
-      Record<string, never>,
-      {
-        query<Data = Record<string, unknown>>(
-          query: string,
-          options?: {signal?: ThreadAbortSignal},
-        ): AsyncGenerator<Data, void, void>;
-      }
-    >(target);
-
-    abort.signal.addEventListener(
-      'abort',
-      () => {
-        thread.terminate();
-        socket.close();
-      },
-      {once: true},
-    );
-
-    async function* query<Data>(
-      query: GraphQLOperation<Data, any>,
-      {signal}: {signal?: AbortSignal} = {},
-    ) {
-      const results = thread.call.query(query.source, {
-        signal: signal && createThreadAbortSignal(signal),
-      }) as AsyncGenerator<{
-        data?: Data;
-      }>;
-
-      for await (const result of results) {
-        yield result;
-      }
-    }
-
     (async () => {
-      for await (const result of query(developerConsoleQuery, {
+      for await (const result of server.query(developerConsoleQuery, {
         signal: abort.signal,
       })) {
         setData(result);
@@ -82,11 +41,11 @@ function ConnectedConsole({connect}: {connect: string}) {
     return () => {
       abort.abort();
     };
-  }, [connect]);
+  }, [server]);
 
   return (
     <BlockStack>
-      <TextBlock>Connected to: {connect}</TextBlock>
+      <TextBlock>Connected to: {server.url.href}</TextBlock>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </BlockStack>
   );

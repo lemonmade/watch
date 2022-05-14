@@ -67,6 +67,8 @@ union Extension = ClipsExtension
 type App {
   name: String!
   extensions: [Extension!]!
+  extension(id: ID!): Extension
+  clipsExtension(id: ID!): ClipsExtension
 }
 
 type Query {

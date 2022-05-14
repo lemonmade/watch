@@ -12,7 +12,7 @@ export type {
 } from './render';
 export {
   useLocalDevelopmentClips,
-  LocalDevelopmentClipsContext,
+  useLocalDevelopmentServer,
+  LocalDevelopmentServerContext,
 } from './local-development';
-
-export type {Extension as LocalExtension} from './local-development';
+export type {LocalExtension, LocalDevelopmentServer} from './local-development';

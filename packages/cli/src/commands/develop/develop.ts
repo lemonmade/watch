@@ -210,7 +210,13 @@ function createWebSocketServer(
     const expose = {
       query(
         query: string,
-        {signal: threadSignal}: {signal?: ThreadAbortSignal} = {},
+        {
+          variables,
+          signal: threadSignal,
+        }: {
+          signal?: ThreadAbortSignal;
+          variables?: Record<string, unknown>;
+        } = {},
       ) {
         const resolvedSignal = threadSignal
           ? acceptThreadAbortSignal(threadSignal)
@@ -218,6 +224,7 @@ function createWebSocketServer(
 
         return (async function* () {
           yield* run(parse(query) as any, resolver, {
+            variables,
             signal: resolvedSignal,
             // TODO: get thr right port, handle proxies, etc
             context: {rootUrl: new URL('http://localhost:3000')},

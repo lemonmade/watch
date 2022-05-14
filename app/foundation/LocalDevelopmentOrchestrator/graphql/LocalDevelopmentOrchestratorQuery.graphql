@@ -5,17 +5,6 @@ query LocalDevelopmentOrchestrator {
       ... on ClipsExtension {
         id
         name
-
-        build {
-          ... on ExtensionBuildSuccess {
-            id
-            startedAt
-            finishedAt
-            assets {
-              source
-            }
-          }
-        }
         supports {
           name
           module
