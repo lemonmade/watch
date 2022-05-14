@@ -2,10 +2,29 @@ query LocalDevelopmentOrchestrator {
   app {
     name
     extensions {
-      id
-      name
-      assets {
-        source
+      ... on ClipsExtension {
+        id
+        name
+
+        build {
+          ... on ExtensionBuildSuccess {
+            id
+            startedAt
+            finishedAt
+            assets {
+              source
+            }
+          }
+        }
+        supports {
+          name
+          module
+          conditions {
+            series {
+              handle
+            }
+          }
+        }
       }
     }
   }

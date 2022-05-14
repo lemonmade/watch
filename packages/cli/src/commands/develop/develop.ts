@@ -1,9 +1,11 @@
 import '@quilted/polyfills/fetch';
 
 import * as path from 'path';
+import type {Server} from 'http';
 import {stat, readFile} from 'fs/promises';
-import {on} from '@lemonmade/events';
-import {createThread} from '@lemonmade/threads';
+import {on, createEmitter, NestedAbortController} from '@lemonmade/events';
+import {createThread, acceptThreadAbortSignal} from '@lemonmade/threads';
+import type {ThreadAbortSignal} from '@lemonmade/threads';
 
 import {
   createHttpHandler,
@@ -31,30 +33,14 @@ import {
   ensureRootOutputDirectory,
 } from '../../utilities/build';
 
-import {loadLocalApp} from '../../utilities/app';
+import {loadLocalApp, LocalExtension} from '../../utilities/app';
 import type {LocalApp} from '../../utilities/app';
 
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
 import {createRollupConfiguration} from '../../utilities/rollup';
 
-import {execute, createQueryResolver} from './graphql';
-
-export type BuildState =
-  | {status: 'success'; startedAt: number; duration: number; errors?: never}
-  | {
-      status: 'error';
-      startedAt: number;
-      duration: number;
-      errors: {message: string; stack?: string}[];
-    }
-  | {status: 'building'; startedAt: number; duration?: never; errors?: never};
-
-export interface WebSocketEventMap {
-  connect: BuildState;
-  start: never;
-  close: never;
-  'not-found': never;
-}
+import {run, createQueryResolver} from './graphql';
+import type {Builder, BuildState} from './types';
 
 export async function develop({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
@@ -109,7 +95,8 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
-  const resolver = createQueryResolver(app);
+  const builder = createBuilder(app, {ui, outputRoot});
+  const resolver = createQueryResolver(app, {builder});
 
   handler.get('/', () =>
     json(app, {
@@ -134,10 +121,10 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     try {
       const {query, variables} = JSON.parse(request.body ?? '{}');
 
-      const result = await execute(query, resolver, {
+      const result = await run(query, resolver, {
         variables,
         context: {rootUrl: new URL('/', request.url)},
-      }).untilResolved();
+      }).untilAvailable();
 
       return json(result, {
         headers: {
@@ -194,8 +181,98 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const stopListening = makeStoppableServer(httpServer);
   let webSocketServer: WebSocket.Server | undefined;
 
-  const socketsByExtension = new Map<string, Set<WebSocket>>();
+  return {
+    async listen() {
+      const port = await findPortAndListen(httpServer);
+      webSocketServer = createWebSocketServer(httpServer, {resolver});
+      return {port};
+    },
+    async close() {
+      webSocketServer?.close();
+      await stopListening();
+    },
+  };
+}
+
+function createWebSocketServer(
+  httpServer: Server,
+  {resolver}: {resolver: ReturnType<typeof createQueryResolver>},
+) {
+  const webSocketServer = new WebSocket.Server({
+    server: httpServer,
+    path: '/connect',
+  });
+
+  webSocketServer.on('connection', async (socket) => {
+    const abort = new AbortController();
+    const {signal} = abort;
+
+    const expose = {
+      query(
+        query: string,
+        {signal: threadSignal}: {signal?: ThreadAbortSignal} = {},
+      ) {
+        const resolvedSignal = threadSignal
+          ? acceptThreadAbortSignal(threadSignal)
+          : new NestedAbortController(signal).signal;
+
+        return (async function* () {
+          yield* run(parse(query) as any, resolver, {
+            signal: resolvedSignal,
+            // TODO: get thr right port, handle proxies, etc
+            context: {rootUrl: new URL('http://localhost:3000')},
+          });
+        })();
+      },
+    };
+
+    const thread = createThread<{
+      query(
+        query: string,
+        options?: {signal?: ThreadAbortSignal},
+      ): AsyncGenerator<Record<string, unknown>>;
+    }>(
+      {
+        send(message) {
+          socket.send(JSON.stringify(message));
+        },
+        async *listen({signal}) {
+          const messages = on<{message: {data: WebSocket.Data}}>(
+            socket,
+            'message',
+            {signal},
+          );
+
+          for await (const {data} of messages) {
+            yield JSON.parse(data.toString());
+          }
+        },
+      },
+      {expose},
+    );
+
+    signal.addEventListener(
+      'abort',
+      () => {
+        thread.terminate();
+      },
+      {once: true},
+    );
+
+    socket.once('close', () => abort.abort());
+  });
+
+  return webSocketServer;
+}
+
+function createBuilder(
+  app: LocalApp,
+  {ui, outputRoot}: {ui: Ui; outputRoot: string},
+): Builder {
   const buildStateByExtension = new Map<string, BuildState>();
+  const emitter = createEmitter<{
+    update: {readonly extension: LocalExtension; readonly state: BuildState};
+  }>();
 
   for (const extension of app.extensions) {
     const baseConfiguration = createRollupConfiguration(extension, {
@@ -207,14 +284,17 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
       output: {
         format: 'iife',
         dir: path.join(outputRoot, 'extensions'),
-        entryFileNames: `${extension.id}.js`,
+        entryFileNames: `${extension.id.split('/').pop()}.js`,
       },
     });
 
     watcher.on('event', (event) => {
+      const existingState = buildStateByExtension.get(extension.id);
+
       switch (event.code) {
         case 'BUNDLE_START': {
-          updateBuildState(extension.id, {
+          updateBuildState(extension, {
+            id: (existingState?.id ?? 0) + 1,
             status: 'building',
             startedAt: Date.now(),
           });
@@ -222,10 +302,10 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
           break;
         }
         case 'BUNDLE_END': {
-          const existingState = buildStateByExtension.get(extension.id);
           const {duration} = event;
 
-          updateBuildState(extension.id, {
+          updateBuildState(extension, {
+            id: existingState?.id ?? 1,
             status: 'success',
             duration,
             startedAt: existingState?.startedAt ?? Date.now() - duration,
@@ -234,11 +314,11 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
           break;
         }
         case 'ERROR': {
-          const existingState = buildStateByExtension.get(extension.id);
           const startedAt = existingState?.startedAt ?? Date.now();
           const {error} = event;
 
-          updateBuildState(extension.id, {
+          updateBuildState(extension, {
+            id: existingState?.id ?? 1,
             status: 'error',
             duration: Date.now() - startedAt,
             startedAt,
@@ -257,77 +337,20 @@ function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   }
 
   return {
-    async listen() {
-      const port = await findPortAndListen(httpServer);
+    async *watch({id}, {signal} = {}) {
+      const initialState = buildStateByExtension.get(id);
+      if (initialState) yield initialState;
 
-      webSocketServer = new WebSocket.Server({
-        server: httpServer,
-        path: '/connect',
-      });
+      if (signal?.aborted) return;
 
-      webSocketServer.on('connection', async (socket) => {
-        const abort = new AbortController();
-        const {signal} = abort;
-
-        const expose = {
-          async *query(query: string) {
-            yield* execute(parse(query) as any, resolver, {
-              signal,
-              // TODO: get thr right port, handle proxies, etc
-              context: {rootUrl: new URL('http://localhost:3000')},
-            });
-          },
-        };
-
-        const thread = createThread<typeof expose>(
-          {
-            send(message) {
-              socket.send(JSON.stringify(message));
-            },
-            async *listen({signal}) {
-              const messages = on<{message: {data: WebSocket.Data}}>(
-                socket,
-                'message',
-                {signal},
-              );
-
-              for await (const {data} of messages) {
-                yield JSON.parse(data.toString());
-              }
-            },
-          },
-          {expose},
-        );
-
-        signal.addEventListener(
-          'abort',
-          () => {
-            thread.terminate();
-          },
-          {once: true},
-        );
-
-        socket.once('close', () => abort.abort());
-      });
-
-      return {port};
-    },
-    async close() {
-      webSocketServer?.close();
-      await stopListening();
+      for await (const {extension, state} of emitter.on('update', {signal})) {
+        if (extension.id === id) yield state;
+      }
     },
   };
 
-  function updateBuildState(id: string, state: BuildState) {
-    buildStateByExtension.set(id, state);
-
-    const sockets = socketsByExtension.get(id);
-
-    if (sockets == null) return;
-
-    for (const socket of sockets) {
-      if (socket.readyState !== WebSocket.OPEN) continue;
-      socket.send(JSON.stringify({type: 'build', data: state}));
-    }
+  function updateBuildState(extension: LocalExtension, state: BuildState) {
+    buildStateByExtension.set(extension.id, state);
+    emitter.emit('update', {extension, state});
   }
 }

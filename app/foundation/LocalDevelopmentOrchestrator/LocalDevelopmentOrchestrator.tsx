@@ -6,13 +6,14 @@ import {createThread, targetFromBrowserWebSocket} from '@lemonmade/threads';
 import {LocalDevelopmentClipsContext} from 'utilities/clips';
 
 import localDevelopmentOrchestratorQuery from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
+import type {LocalDevelopmentOrchestratorQueryData} from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
 
 export function LocalDevelopmentOrchestrator({
   children,
 }: {
   children?: ReactNode;
 }) {
-  const [extensions, _setExtensions] = useState<
+  const [extensions, setExtensions] = useState<
     ContextType<typeof LocalDevelopmentClipsContext>
   >([]);
   const url = useInitialUrl();
@@ -34,7 +35,9 @@ export function LocalDevelopmentOrchestrator({
     const thread = createThread<
       Record<string, never>,
       {
-        query(query: string): AsyncGenerator<Record<string, any>, void, void>;
+        query<Data = Record<string, unknown>>(
+          query: string,
+        ): AsyncGenerator<Data, void, void>;
       }
     >(target);
 
@@ -44,7 +47,25 @@ export function LocalDevelopmentOrchestrator({
       for await (const result of results) {
         // TODO: abort the GraphQL query too
         if (signal.aborted) return;
-        console.log(result);
+
+        setExtensions(
+          (
+            (result as any).data as LocalDevelopmentOrchestratorQueryData
+          ).app.extensions.flatMap((extension) => {
+            if (extension.__typename !== 'ClipsExtension') return [];
+
+            return {
+              id: extension.id,
+              name: extension.name,
+              version: 'unstable',
+              script:
+                // TODO
+                extension.build.__typename === 'ExtensionBuildSuccess'
+                  ? extension.build.assets[0]!.source
+                  : '',
+            };
+          }),
+        );
       }
     })();
 

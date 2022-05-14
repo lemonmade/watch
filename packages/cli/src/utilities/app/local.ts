@@ -189,11 +189,7 @@ async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
   validateAppConfig(configuration);
 
   return {
-    id:
-      configuration.id ??
-      `gid://watch/LocalApp/${configuration.name
-        .toLocaleLowerCase()
-        .replace(/\s+/g, '-')}`,
+    id: configuration.id ?? `gid://watch/LocalApp/1`,
     name: configuration.name,
     root: path.resolve(),
     extensions: await resolveExtensions(configuration.extensions),
@@ -276,12 +272,12 @@ async function loadExtensionFromDirectory(
 
   validateExtensionConfig(configuration);
 
-  const handle = configuration.name.toLocaleLowerCase().replace(/\s+/g, '-');
-
   return {
-    id: configuration.id ?? `gid://watch/LocalClipsExtension/${handle}`,
+    id:
+      configuration.id ??
+      `gid://watch/LocalClipsExtension/${handleize(path.basename(directory))}`,
     name: configuration.name,
-    handle,
+    handle: handleize(configuration.name),
     root: directory,
     extensionPoints: configuration.extensionPoints,
     configuration: {schema: [], ...configuration.configuration},
@@ -310,4 +306,8 @@ function loadExtensionEntry(pattern: string): LocalExtensionEntry {
       {absolute: true},
     ),
   };
+}
+
+function handleize(value: string) {
+  return value.toLocaleLowerCase().replace(/[\s.-]+/g, '-');
 }

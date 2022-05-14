@@ -1,0 +1,45 @@
+query DeveloperConsole {
+  app {
+    name
+    extensions {
+      ... on ClipsExtension {
+        id
+        name
+        build {
+          ... on ExtensionBuildSuccess {
+            id
+            startedAt
+            finishedAt
+            duration
+            assets {
+              source
+            }
+          }
+          ... on ExtensionBuildError {
+            id
+            startedAt
+            finishedAt
+            duration
+            error {
+              message
+              stack
+            }
+          }
+          ... on ExtensionBuildInProgress {
+            id
+            startedAt
+          }
+        }
+        # supports {
+        #   name
+        #   module
+        #   conditions {
+        #     series {
+        #       handle
+        #     }
+        #   }
+        # }
+      }
+    }
+  }
+}

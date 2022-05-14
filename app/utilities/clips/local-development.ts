@@ -6,7 +6,6 @@ export interface Extension {
   readonly name: string;
   readonly version: Version;
   readonly script: string;
-  readonly socketUrl?: string;
 }
 
 export const LocalDevelopmentClipsContext = createContext<readonly Extension[]>(
