@@ -1,9 +1,10 @@
 import {useState, useRef, useEffect} from 'react';
-import {Link, useQuery} from '@quilted/quilt';
+import {Link} from '@quilted/quilt';
 
 import {BlockStack, TextField} from '@lemon/zest';
 
 import {Page} from 'components';
+import {useQuery} from 'utilities/graphql';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 
@@ -13,7 +14,7 @@ export function Search() {
   const searchTimeout = useRef<null | number>(null);
 
   const {data} = useQuery(searchQuery, {
-    skip: committedSearch.length === 0,
+    enabled: committedSearch.length > 0,
     variables: {query: committedSearch},
   });
 

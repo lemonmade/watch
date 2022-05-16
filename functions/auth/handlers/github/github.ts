@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import {createGraphQL, createGraphQLHttpFetch} from '@quilted/quilt';
+import {createGraphQLHttpFetch} from '@quilted/quilt';
 import Env from '@quilted/quilt/env';
 import {redirect, html, fetchJson} from '@quilted/quilt/http-handlers';
 import type {
@@ -362,26 +362,23 @@ async function handleGithubOAuthCallback(
     },
   );
 
-  const githubClient = createGraphQL({
-    cache: false,
-    fetch: createGraphQLHttpFetch({
-      uri: 'https://api.github.com/graphql',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    }),
+  const queryGithub = createGraphQLHttpFetch({
+    uri: 'https://api.github.com/graphql',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
   });
 
-  const {data: githubResult, error: githubError} = await githubClient.query(
+  const {data: githubResult, errors: githubErrors} = await queryGithub(
     viewerQuery,
   );
 
-  if (githubError != null) {
+  if (githubErrors != null) {
     // eslint-disable-next-line no-console
     console.error('Github error');
     // eslint-disable-next-line no-console
-    console.error(githubError);
+    console.error(githubErrors);
   }
 
   if (githubResult == null) {

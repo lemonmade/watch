@@ -1,10 +1,9 @@
 import {useMemo, ComponentProps} from 'react';
-import {useQuery} from '@quilted/quilt';
 
 import {MediaGrid, Link, BlockStack} from '@lemon/zest';
 
 import {Page} from 'components';
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery} from 'utilities/graphql';
 
 import watchingQuery, {
   WatchingQueryData,

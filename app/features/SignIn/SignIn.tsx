@@ -1,10 +1,5 @@
 import {useState} from 'react';
-import {
-  useMutation,
-  useRoutes,
-  useNavigate,
-  useCurrentUrl,
-} from '@quilted/quilt';
+import {useRoutes, useNavigate, useCurrentUrl} from '@quilted/quilt';
 import {
   Link,
   View,
@@ -19,6 +14,7 @@ import {
 
 import {SignInErrorReason} from 'global/utilities/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
+import {useMutation} from 'utilities/graphql';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 
@@ -64,14 +60,18 @@ function SignInWithEmail() {
 
   return (
     <Form
-      onSubmit={async () => {
-        await signInWithEmail({
-          variables: {
+      onSubmit={() => {
+        signInWithEmail.mutate(
+          {
             email,
             redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
           },
-        });
-        navigate('check-your-email');
+          {
+            onSuccess() {
+              navigate('check-your-email');
+            },
+          },
+        );
       }}
     >
       <TextField label="Email" onChange={(value) => setEmail(value)} />

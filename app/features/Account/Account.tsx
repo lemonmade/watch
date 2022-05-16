@@ -1,10 +1,5 @@
 import {useState} from 'react';
-import {
-  useQuery,
-  useMutation,
-  useNavigate,
-  useCurrentUrl,
-} from '@quilted/quilt';
+import {useNavigate, useCurrentUrl} from '@quilted/quilt';
 import {NotFound} from '@quilted/quilt/http';
 
 import {
@@ -20,6 +15,7 @@ import {
 
 import {Page, SpoilerAvoidance} from 'components';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
+import {useQuery, useMutation} from 'utilities/graphql';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';
@@ -29,17 +25,15 @@ import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMu
 import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
 
 export function Account() {
-  const [key, setKey] = useState(1);
-
   const navigate = useNavigate();
-  const {data} = useQuery(accountQuery, {
-    variables: {key} as any,
-    cache: false,
-  });
+  const {data, refetch} = useQuery(accountQuery);
   const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
   const updateAccountSpoilerAvoidance = useMutation(
     updateAccountSpoilerAvoidanceMutation,
+    {
+      onSettled: () => refetch(),
+    },
   );
 
   if (data == null) return <NotFound />;
@@ -51,9 +45,13 @@ export function Account() {
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
         <Button
-          onPress={async () => {
-            await signOut();
-            navigate('/signed-out');
+          onPress={() => {
+            signOut.mutate(
+              {},
+              {
+                onSettled: () => navigate('/signed-out'),
+              },
+            );
           }}
         >
           Sign out
@@ -63,12 +61,8 @@ export function Account() {
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
-              onChange={async (spoilerAvoidance) => {
-                await updateAccountSpoilerAvoidance({
-                  variables: {spoilerAvoidance},
-                });
-
-                setKey((key) => key + 1);
+              onChange={(spoilerAvoidance) => {
+                updateAccountSpoilerAvoidance.mutate({spoilerAvoidance});
               }}
             />
           </BlockStack>
@@ -76,7 +70,7 @@ export function Account() {
         <GithubSection
           account={githubAccount ?? undefined}
           onConnectionChange={() => {
-            setKey((key) => key + 1);
+            refetch();
           }}
         />
         <Section>
@@ -84,8 +78,12 @@ export function Account() {
             <Heading>Danger zone</Heading>
             <Button
               onPress={async () => {
-                await deleteAccount();
-                navigate('/goodbye');
+                deleteAccount.mutate(
+                  {},
+                  {
+                    onSuccess: () => navigate('/goodbye'),
+                  },
+                );
               }}
             >
               Delete account
@@ -121,9 +119,13 @@ function GithubSection({
           Visit profile
         </Link>
         <Button
-          onPress={async () => {
-            await disconnectAccount();
-            onConnectionChange();
+          onPress={() => {
+            disconnectAccount.mutate(
+              {},
+              {
+                onSettled: () => onConnectionChange(),
+              },
+            );
           }}
         >
           Disconnect <Text emphasis="strong">{username}</Text>

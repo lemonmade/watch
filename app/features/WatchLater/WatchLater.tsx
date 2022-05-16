@@ -1,8 +1,8 @@
-import {useQuery, Link} from '@quilted/quilt';
+import {Link} from '@quilted/quilt';
 import {MediaGrid, Poster} from '@lemon/zest';
 
 import {Page} from 'components';
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery} from 'utilities/graphql';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 

@@ -23,12 +23,12 @@ import {
   Select,
   Button,
 } from '@lemon/zest';
-import {useQuery, useMutation} from '@quilted/quilt';
 
 import type {
   ClipsExtensionApiVersion,
   JSON as GraphQlJSON,
 } from 'graphql/types';
+import {useQuery, useMutation} from 'utilities/graphql';
 import {useRenderSandbox, useLocalDevelopmentServer} from 'utilities/clips';
 import type {
   RenderController,
@@ -253,10 +253,8 @@ function InstalledClipFrame<T extends ExtensionPoint>({
           </Button>
           <Button onPress={() => controller.restart()}>Restart</Button>
           <Button
-            onPress={async () => {
-              await uninstallClipsExtensionFromClip({
-                variables: {id},
-              });
+            onPress={() => {
+              uninstallClipsExtensionFromClip.mutate({id});
             }}
           >
             Uninstall
@@ -271,14 +269,14 @@ function InstalledClipFrame<T extends ExtensionPoint>({
 }
 
 function InstalledClipConfiguration({id}: {id: string}) {
-  const {data, loading} = useQuery(clipsExtensionConfigurationQuery, {
+  const {data, isFetching} = useQuery(clipsExtensionConfigurationQuery, {
     variables: {id},
   });
 
   if (data?.clipsInstallation == null) {
     return (
       <Text>
-        {loading ? 'Loading configuration...' : 'Something went wrong!'}
+        {isFetching ? 'Loading configuration...' : 'Something went wrong!'}
       </Text>
     );
   }
@@ -375,8 +373,9 @@ function InstalledClipLoadedConfiguration({
   }, [translations]);
 
   const handleSubmit = () => {
-    updateClipsExtensionConfiguration({
-      variables: {id, configuration: JSON.stringify(values)},
+    updateClipsExtensionConfiguration.mutate({
+      id,
+      configuration: JSON.stringify(values),
     });
   };
 

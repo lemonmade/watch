@@ -1,8 +1,7 @@
-import {useQuery} from '@quilted/quilt';
 import {MediaGrid} from '@lemon/zest';
 
 import {Page} from 'components';
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery} from 'utilities/graphql';
 
 import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 

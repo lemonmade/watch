@@ -3,4 +3,4 @@ export {
   deleteAuthentication,
   userFromLocalAuthentication,
 } from './authentication';
-export type {GraphQL} from './authentication';
+export type {GraphQLFetch} from './authentication';

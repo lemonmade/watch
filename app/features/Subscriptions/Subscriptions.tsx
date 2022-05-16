@@ -1,8 +1,7 @@
-import {useQuery} from '@quilted/quilt';
 import {MediaGrid, Poster} from '@lemon/zest';
 
 import {Link, Page} from 'components';
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery} from 'utilities/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 

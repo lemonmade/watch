@@ -1,18 +1,20 @@
-import {useState} from 'react';
-import {useQuery, useMutation} from '@quilted/quilt';
 import {BlockStack, View, TextBlock, Button, InlineStack} from '@lemon/zest';
 
 import {Page} from 'components';
+import {useQuery, useMutation} from 'utilities/graphql';
 
 import appsQuery from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
 
 export function Apps() {
-  const [key, setKey] = useState(0);
-  const {data} = useQuery(appsQuery, {variables: {key} as any});
-  const installApp = useMutation(installAppMutation);
-  const installExtension = useMutation(installClipsExtensionMutation);
+  const {data, refetch} = useQuery(appsQuery);
+  const installApp = useMutation(installAppMutation, {
+    onSettled: () => refetch(),
+  });
+  const installExtension = useMutation(installClipsExtensionMutation, {
+    onSettled: () => refetch(),
+  });
 
   return (
     <Page heading="Apps">
@@ -23,9 +25,8 @@ export function Apps() {
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
                 <Button
-                  onPress={async () => {
-                    await installApp({variables: {id: app.id}});
-                    setKey((key) => key + 1);
+                  onPress={() => {
+                    installApp.mutate({id: app.id});
                   }}
                 >
                   Install
@@ -45,16 +46,13 @@ export function Apps() {
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
                             <Button
-                              onPress={async () => {
-                                await installExtension({
-                                  variables: {
-                                    id: extension.id,
-                                    extensionPoint:
-                                      extension.latestVersion?.supports[0]
-                                        ?.extensionPoint,
-                                  },
+                              onPress={() => {
+                                installExtension.mutate({
+                                  id: extension.id,
+                                  extensionPoint:
+                                    extension.latestVersion?.supports[0]
+                                      ?.extensionPoint,
                                 });
-                                setKey((key) => key + 1);
                               }}
                             >
                               Install

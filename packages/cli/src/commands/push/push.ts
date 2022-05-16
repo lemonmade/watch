@@ -7,7 +7,7 @@ import {createHash} from 'crypto';
 
 import {PrintableError, Ui} from '../../ui';
 import {authenticate} from '../../utilities/authentication';
-import type {GraphQL} from '../../utilities/authentication';
+import type {GraphQLFetch} from '../../utilities/authentication';
 import {buildDetailsForExtension} from '../../utilities/build';
 import {
   loadProductionApp,
@@ -155,7 +155,7 @@ async function pushExtension(
   }: {
     ui: Ui;
     app: LocalApp;
-    graphql: GraphQL;
+    graphql: GraphQLFetch;
     production?: ProductionClipsExtension;
     productionApp: ProductionApp;
   },
@@ -233,7 +233,7 @@ async function pushExtension(
   };
 
   if (production) {
-    const {data} = await graphql.mutate(pushClipsExtensionMutation, {
+    const {data} = await graphql(pushClipsExtensionMutation, {
       variables: {
         extensionId: production.id,
         name: extension.name,
@@ -252,7 +252,7 @@ async function pushExtension(
     result = {extension, isNew: false};
     assetUploadUrl = data?.pushClipsExtension.signedScriptUpload ?? undefined;
   } else {
-    const {data} = await graphql.mutate(
+    const {data} = await graphql(
       createClipsExtensionAndInitialVersionMutation,
       {
         variables: {

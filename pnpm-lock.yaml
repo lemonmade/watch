@@ -13,10 +13,10 @@ importers:
       '@prisma/engines': ^3.11.0-0
       '@quilted/aws': ^0.3.36
       '@quilted/browserslist-config': ^0.1.6
-      '@quilted/craft': ^0.1.107
+      '@quilted/craft': ^0.1.111
       '@quilted/eslint-config': ^0.1.9
       '@quilted/prettier': ^0.2.8
-      '@quilted/quilt': ^0.5.92
+      '@quilted/quilt': ^0.5.93
       '@quilted/typescript': ^0.2.11
       '@types/node': ^16.11.0
       esbuild: ^0.14.0
@@ -26,7 +26,7 @@ importers:
       react-dom: npm:@quilted/react@^0.1.2
       typescript: ^4.6.0
     dependencies:
-      '@quilted/quilt': 0.5.92_1025b565437a15d93c0565903eeb25c4
+      '@quilted/quilt': 0.5.93_1025b565437a15d93c0565903eeb25c4
       react: /@quilted/react/0.1.7
       react-dom: /@quilted/react/0.1.7
     devDependencies:
@@ -34,9 +34,9 @@ importers:
       '@changesets/cli': 2.21.1
       '@prisma/client': 3.11.1_prisma@3.11.1
       '@prisma/engines': 3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b
-      '@quilted/aws': 0.3.36_435eb162ed2df07b681f462e3d3af58a
+      '@quilted/aws': 0.3.36_3d1530e488edb1e4e77dcb68d4a7a265
       '@quilted/browserslist-config': 0.1.6
-      '@quilted/craft': 0.1.107_aa249fcee2ac14e800e949129b876cbc
+      '@quilted/craft': 0.1.111_303543761b3c23ec450bb8ca87fbda90
       '@quilted/eslint-config': 0.1.9_typescript@4.6.2
       '@quilted/prettier': 0.2.8
       '@quilted/typescript': 0.2.11_typescript@4.6.2
@@ -51,22 +51,26 @@ importers:
       '@lemon/basics': '*'
       '@lemon/css': '*'
       '@lemon/zest': '*'
-      '@lemonmade/events': ^0.1.4
-      '@lemonmade/threads': ^0.1.3
+      '@lemonmade/events': ^0.1.5
+      '@lemonmade/threads': ^0.1.4
+      '@quilted/react-query': ^0.1.6
       '@remote-ui/async-subscription': ^2.1.8
       '@remote-ui/core': ^2.1.7
       '@remote-ui/react': ^4.4.2
       '@watching/clips': '*'
+      react-query: ^3.39.0
     dependencies:
       '@lemon/basics': link:../packages/basics
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
-      '@lemonmade/events': 0.1.4
-      '@lemonmade/threads': 0.1.3
+      '@lemonmade/events': 0.1.5
+      '@lemonmade/threads': 0.1.4
+      '@quilted/react-query': 0.1.6_1d413d6ba467700b8604940d5ae91f08
       '@remote-ui/async-subscription': 2.1.9
       '@remote-ui/core': 2.1.8
       '@remote-ui/react': 4.4.4_@quilted+react@0.1.7
       '@watching/clips': link:../packages/clips
+      react-query: 3.39.0_1025b565437a15d93c0565903eeb25c4
 
   app/infrastructure:
     specifiers:
@@ -284,10 +288,10 @@ importers:
       '@babel/preset-typescript': ^7.0.0
       '@graphql-tools/schema': ^7.0.0
       '@iarna/toml': ^3.0.0
-      '@lemonmade/events': ^0.1.4
+      '@lemonmade/events': ^0.1.5
       '@lemonmade/graphql-live': ^0.1.9
-      '@lemonmade/threads': ^0.1.3
-      '@quilted/graphql': ^0.4.33
+      '@lemonmade/threads': ^0.1.4
+      '@quilted/graphql': ^0.4.36
       '@quilted/http-handlers': ^0.2.32
       '@quilted/polyfills': ^0.2.23
       '@rollup/plugin-alias': ^3.0.0
@@ -321,10 +325,10 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@iarna/toml': 3.0.0
-      '@lemonmade/events': 0.1.4
+      '@lemonmade/events': 0.1.5
       '@lemonmade/graphql-live': 0.1.9
-      '@lemonmade/threads': 0.1.3
-      '@quilted/graphql': 0.4.33
+      '@lemonmade/threads': 0.1.4
+      '@quilted/graphql': 0.4.36
       '@quilted/http-handlers': 0.2.32
       '@quilted/polyfills': 0.2.23_rollup@2.70.1
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
@@ -3928,8 +3932,8 @@ packages:
       '@jridgewell/resolve-uri': 3.0.5
       '@jridgewell/sourcemap-codec': 1.4.11
 
-  /@lemonmade/events/0.1.4:
-    resolution: {integrity: sha512-c5tReLGqirKe2ezRP2GIAqMJv44bkGBCqXRQ4z6yWzFnQdv4mhz3OncXTptJi2ZuwonAZituvjSzqqd2eHl3cg==}
+  /@lemonmade/events/0.1.5:
+    resolution: {integrity: sha512-pdQsEUht2IMx6v99PBKTmEpiTQPdX5VmOrRrIPctoKldjxpKBwep0N/YLR+W97TIxxuxB58BcCmpksnlMpHjRw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -3947,16 +3951,16 @@ packages:
       '@babel/runtime':
         optional: true
     dependencies:
-      '@lemonmade/events': 0.1.4
-      '@quilted/graphql': 0.4.33
+      '@lemonmade/events': 0.1.5
+      '@quilted/graphql': 0.4.36
       graphql: 16.4.0
     transitivePeerDependencies:
       - '@jest/globals'
       - jest-matcher-utils
     dev: false
 
-  /@lemonmade/threads/0.1.3:
-    resolution: {integrity: sha512-rSY6q3FQSk+pQkFTh3WzNDJg/I5PCF1p0P5uiH7FtCA6SxvaUuP1oTSkcgSn2jWnb0XVLQPqKgpZawtqUVIYkg==}
+  /@lemonmade/threads/0.1.4:
+    resolution: {integrity: sha512-15v0h76+xYSRBRYUzpOBc/WfhrVUem/GsmNXeQnyqfHIeOqCBlefETXKP2Do1Ke5wA0042W8Tbs1C21R1UKMYQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -3964,7 +3968,7 @@ packages:
       '@babel/runtime':
         optional: true
     dependencies:
-      '@lemonmade/events': 0.1.4
+      '@lemonmade/events': 0.1.5
     dev: false
 
   /@manypkg/find-root/1.1.0:
@@ -4139,7 +4143,7 @@ packages:
       magic-string: 0.25.9
     dev: false
 
-  /@quilted/aws/0.3.36_435eb162ed2df07b681f462e3d3af58a:
+  /@quilted/aws/0.3.36_3d1530e488edb1e4e77dcb68d4a7a265:
     resolution: {integrity: sha512-2xWKoVWUbDj56puXymwBAcZLaphlKGK6HlBOiebIOOehdnkWDGTx4DxFwbc3hKxlzxBUArZf1Ln88qE82ITH7w==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4153,8 +4157,8 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.107_aa249fcee2ac14e800e949129b876cbc
-      '@quilted/quilt': 0.5.92_1025b565437a15d93c0565903eeb25c4
+      '@quilted/craft': 0.1.111_303543761b3c23ec450bb8ca87fbda90
+      '@quilted/quilt': 0.5.93_1025b565437a15d93c0565903eeb25c4
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
     dev: true
@@ -4163,11 +4167,11 @@ packages:
     resolution: {integrity: sha512-w9IJYbzxOzqMCUQiCwBanlVkYpmez4WA+Zs6WL6l0S0MEuunBPGtPhL3cBcEN2GIIPPJA+hRkrm7MrspKYEuBA==}
     dev: true
 
-  /@quilted/craft/0.1.107_aa249fcee2ac14e800e949129b876cbc:
-    resolution: {integrity: sha512-sBDmkHzubWwbbqix7qCcU8DOdRlNC0/ExYfxJBPilimxI8I5IYHSZIAhKSnD/m5hc/H0xbfnqOKdKthJ3KF6YA==}
+  /@quilted/craft/0.1.111_303543761b3c23ec450bb8ca87fbda90:
+    resolution: {integrity: sha512-fof3E4mpR51O9cpsWvxiLC33hJlQWa1ZdHUX/envrV5uZ9cB2szyOOJ2zGs6dkcCVD5ZixWJdJ/rNC41VjVoPQ==}
     hasBin: true
     peerDependencies:
-      '@quilted/quilt': ^0.5.92
+      '@quilted/quilt': ^0.5.93
       react: ^17.0.0
       typescript: '>=4.0.0 <5.0.0'
     peerDependenciesMeta:
@@ -4186,10 +4190,10 @@ packages:
       '@quilted/async': 0.3.23_62a3af55a5cf1065428d56f0e3d96aae
       '@quilted/browserslist-config': 0.1.6
       '@quilted/eslint-config': 0.1.9_typescript@4.6.2
-      '@quilted/graphql': 0.4.33_@babel+runtime@7.17.8
+      '@quilted/graphql': 0.4.36_@babel+runtime@7.17.8
       '@quilted/polyfills': 0.2.23_44d02731d92bd059cac324e34054d936
       '@quilted/prettier': 0.2.8
-      '@quilted/quilt': 0.5.92_1025b565437a15d93c0565903eeb25c4
+      '@quilted/quilt': 0.5.93_1025b565437a15d93c0565903eeb25c4
       '@quilted/react-testing': 0.5.11_39d46531a932738e3848505d32bf27da
       '@quilted/rollup-plugin-fix-commonjs-preserve-modules': 0.1.8_rollup@2.70.1
       '@quilted/sewing-kit': 0.2.27_@babel+runtime@7.17.8
@@ -4275,8 +4279,8 @@ packages:
       - typescript
     dev: true
 
-  /@quilted/graphql/0.4.33:
-    resolution: {integrity: sha512-E/5vDzspyVyiDsbx/eyf8XHInAGA/CIXk/957ToCwhqG7aa8NG9+En3+/XFSxzEm74+gUOWG/y97tDRjMbqRgg==}
+  /@quilted/graphql/0.4.36:
+    resolution: {integrity: sha512-Le0ygC165FrSknrEf6m5Vysvud/3pP94uZwyw/6Mz/NlDHkbTCCrtbEz6P2tAGQzb5Ytw9O5ziZCFqkptVuWew==}
     hasBin: true
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4311,8 +4315,8 @@ packages:
       p-limit: 4.0.0
     dev: false
 
-  /@quilted/graphql/0.4.33_@babel+runtime@7.17.8:
-    resolution: {integrity: sha512-E/5vDzspyVyiDsbx/eyf8XHInAGA/CIXk/957ToCwhqG7aa8NG9+En3+/XFSxzEm74+gUOWG/y97tDRjMbqRgg==}
+  /@quilted/graphql/0.4.36_@babel+runtime@7.17.8:
+    resolution: {integrity: sha512-Le0ygC165FrSknrEf6m5Vysvud/3pP94uZwyw/6Mz/NlDHkbTCCrtbEz6P2tAGQzb5Ytw9O5ziZCFqkptVuWew==}
     hasBin: true
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4526,8 +4530,8 @@ packages:
     resolution: {integrity: sha512-5E3Zl8yzOSPfXfltOKOC4wlBuhe3w+WiPSiGbGXvawgyAhWON1jx/kT7JTIoQ/XoxlprJoou3w6rBTAdKjrDKQ==}
     dev: true
 
-  /@quilted/quilt/0.5.92_1025b565437a15d93c0565903eeb25c4:
-    resolution: {integrity: sha512-v63+N3CDVZ2XdNesTN4GmwbVTrkuRbBQicajG9nw5/9v7vVnqSvtKkeAFlWFmh0Y0DDFWeidJUdryUoLM3b5tA==}
+  /@quilted/quilt/0.5.93_1025b565437a15d93c0565903eeb25c4:
+    resolution: {integrity: sha512-Y8Yzkio1qdaSpHtMkkedRVMqPOB2pVWxcOISIf6uz0X9IomEdDRkibrA0xjLurBor6C3CM/CkATadxTBzXpitg==}
     peerDependencies:
       prettier: ^2.0.0
       react: '>=17.0.0 <18.0.0'
@@ -4544,13 +4548,13 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.8
       '@quilted/async': 0.3.23_@babel+runtime@7.17.8
-      '@quilted/graphql': 0.4.33_@babel+runtime@7.17.8
+      '@quilted/graphql': 0.4.36_@babel+runtime@7.17.8
       '@quilted/http-handlers': 0.2.32_@babel+runtime@7.17.8
       '@quilted/polyfills': 0.2.23_@babel+runtime@7.17.8
       '@quilted/react': 0.1.7_@babel+runtime@7.17.8
       '@quilted/react-async': 0.3.31_6b62c19aff84d2c24ac7c3c546ac5334
       '@quilted/react-email': 0.2.25_6b62c19aff84d2c24ac7c3c546ac5334
-      '@quilted/react-graphql': 0.4.42_6b62c19aff84d2c24ac7c3c546ac5334
+      '@quilted/react-graphql': 0.4.43_6b62c19aff84d2c24ac7c3c546ac5334
       '@quilted/react-html': 0.3.30_6b62c19aff84d2c24ac7c3c546ac5334
       '@quilted/react-http': 0.3.19_6b62c19aff84d2c24ac7c3c546ac5334
       '@quilted/react-idle': 0.3.13_4c9f1b76d4e86879399e238c6f63de3b
@@ -4617,8 +4621,8 @@ packages:
       - react-dom
     dev: false
 
-  /@quilted/react-graphql/0.4.42_6b62c19aff84d2c24ac7c3c546ac5334:
-    resolution: {integrity: sha512-+7Mkv7Ci4k4SBnfz+rfacHaoEvoppxPB55apW5jNbSMli3nbCNb+DUTLBdVwMMQ5UmVO5AAqH2QN6D5agmyGXw==}
+  /@quilted/react-graphql/0.4.43_6b62c19aff84d2c24ac7c3c546ac5334:
+    resolution: {integrity: sha512-30AlPJtPyMv9tWrkZxTUZbPvDJC8eXcUKz5W3ImQ5j4sj/QX3W644TqArhIjnBI/ii3SQPqjfTCnthaxtQLhDQ==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       react: '>=17.0.0 <18.0.0'
@@ -4630,7 +4634,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.8
       '@quilted/async': 0.3.23_@babel+runtime@7.17.8
-      '@quilted/graphql': 0.4.33_@babel+runtime@7.17.8
+      '@quilted/graphql': 0.4.36_@babel+runtime@7.17.8
       '@quilted/react-async': 0.3.31_6b62c19aff84d2c24ac7c3c546ac5334
       '@quilted/react-utilities': 0.1.0_4c9f1b76d4e86879399e238c6f63de3b
       '@quilted/useful-types': 0.2.13
@@ -4748,6 +4752,31 @@ packages:
       '@quilted/performance': 0.1.7_4c9f1b76d4e86879399e238c6f63de3b
       '@quilted/react-router': 0.3.41_6b62c19aff84d2c24ac7c3c546ac5334
       react: /@quilted/react/0.1.7
+    dev: false
+
+  /@quilted/react-query/0.1.6_1d413d6ba467700b8604940d5ae91f08:
+    resolution: {integrity: sha512-N7T0aO9eI5EoG0w4i+UpCUZ2a255dmbf1+vv6d6Fu0zH0N5Gvof4Zhb6vqVbGlL7X1g14ys9E8qoQ1FT+VTLhw==}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+      '@quilted/craft': ^0.1.110
+      '@quilted/quilt': ^0.5.93
+      react: '>=17.0.0 <18.0.0'
+      react-query: ^3.0.0
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+      '@quilted/craft':
+        optional: true
+      '@quilted/quilt':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@quilted/craft': 0.1.111_303543761b3c23ec450bb8ca87fbda90
+      '@quilted/quilt': 0.5.93_1025b565437a15d93c0565903eeb25c4
+      '@quilted/useful-types': 0.2.13
+      react: /@quilted/react/0.1.7
+      react-query: 3.39.0_1025b565437a15d93c0565903eeb25c4
     dev: false
 
   /@quilted/react-router/0.3.41_6b62c19aff84d2c24ac7c3c546ac5334:
@@ -5481,7 +5510,7 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
-      csstype: 3.0.11
+      csstype: 3.1.0
 
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
@@ -5993,6 +6022,11 @@ packages:
       is-windows: 1.0.2
     dev: true
 
+  /big-integer/1.6.51:
+    resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
+    engines: {node: '>=0.6'}
+    dev: false
+
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
@@ -6034,6 +6068,19 @@ packages:
     dependencies:
       wcwidth: 1.0.1
     dev: true
+
+  /broadcast-channel/3.7.0:
+    resolution: {integrity: sha512-cIAKJXAxGJceNZGTZSBzMxzyOn72cVgPnKx4dc6LRjQgbaJUQqhy5rzL3zbMxkMWsGKkv2hSFkPRMEXfoMZ2Mg==}
+    dependencies:
+      '@babel/runtime': 7.17.8
+      detect-node: 2.1.0
+      js-sha3: 0.8.0
+      microseconds: 0.2.0
+      nano-time: 1.0.0
+      oblivious-set: 1.0.0
+      rimraf: 3.0.2
+      unload: 2.2.0
+    dev: false
 
   /brotli-size/4.0.0:
     resolution: {integrity: sha512-uA9fOtlTRC0iqKfzff1W34DXUA3GyVqbUaeo3Rw3d4gd1eavKVCETXrn3NzO74W+UVkG3UHu8WxUi+XvKI/huA==}
@@ -6445,6 +6492,10 @@ packages:
 
   /csstype/3.0.11:
     resolution: {integrity: sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==}
+    dev: false
+
+  /csstype/3.1.0:
+    resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
 
   /csv-generate/3.4.3:
     resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
@@ -6574,6 +6625,10 @@ packages:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
     dev: true
+
+  /detect-node/2.1.0:
+    resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
+    dev: false
 
   /diff-sequences/27.5.1:
     resolution: {integrity: sha512-k1gCAXAsNgLwEL+Y8Wvl+M6oEFj5bgazfZULpS5CneoPPXRaCCW7dm+q21Ky2VEE5X+VeRDBVg1Pcvvsr4TtNQ==}
@@ -8507,6 +8562,10 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
+  /js-sha3/0.8.0:
+    resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
+    dev: false
+
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -8869,6 +8928,13 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /match-sorter/6.3.1:
+    resolution: {integrity: sha512-mxybbo3pPNuA+ZuCUhm5bwNkXrJTbsk5VWbR5wiwz/GC6LIiegBGn2w3O08UG/jdbYLinw51fSQ5xNU1U3MgBw==}
+    dependencies:
+      '@babel/runtime': 7.17.8
+      remove-accents: 0.4.2
+    dev: false
+
   /media-typer/0.3.0:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
@@ -8922,6 +8988,10 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
     dev: true
+
+  /microseconds/0.2.0:
+    resolution: {integrity: sha512-n7DHHMjR1avBbSpsTBj6fmMGh2AGrifVV4e+WYc3Q9lO+xnSZ3NyhcBND3vzzatt05LFhoKFRxrIyklmLlUtyA==}
+    dev: false
 
   /mime-db/1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
@@ -8984,6 +9054,12 @@ packages:
 
   /ms/2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  /nano-time/1.0.0:
+    resolution: {integrity: sha1-sFVPaa2J4i0JB/ehKwmTpdlhN+8=}
+    dependencies:
+      big-integer: 1.6.51
+    dev: false
 
   /nanoid/3.3.1:
     resolution: {integrity: sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==}
@@ -9143,6 +9219,10 @@ packages:
       define-properties: 1.1.3
       es-abstract: 1.19.1
     dev: true
+
+  /oblivious-set/1.0.0:
+    resolution: {integrity: sha512-z+pI07qxo4c2CulUHCDf9lcqDlMSo72N/4rLUpRXf6fu+q8vjt8y0xS+Tlf8NTJDdTXHbdeO1n3MlbctwEoXZw==}
+    dev: false
 
   /on-finished/2.3.0:
     resolution: {integrity: sha1-IPEzZIGwg811M3mSoWlxqi2QaUc=}
@@ -9989,6 +10069,25 @@ packages:
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
+  /react-query/3.39.0_1025b565437a15d93c0565903eeb25c4:
+    resolution: {integrity: sha512-Od0IkSuS79WJOhzWBx/ys0x13+7wFqgnn64vBqqAAnZ9whocVhl/y1padD5uuZ6EIkXbFbInax0qvY7zGM0thA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.17.8
+      broadcast-channel: 3.7.0
+      match-sorter: 6.3.1
+      react: /@quilted/react/0.1.7
+      react-dom: /@quilted/react/0.1.7
+    dev: false
+
   /react-reconciler/0.26.2_@quilted+react@0.1.7:
     resolution: {integrity: sha512-nK6kgY28HwrMNwDnMui3dvm3rCFjZrcGiuwLc5COUipBK5hWHLOxMJhSnSomirqWwjPBJKV1QcbkI0VJr7Gl1Q==}
     engines: {node: '>=0.10.0'}
@@ -10121,6 +10220,10 @@ packages:
     dependencies:
       jsesc: 0.5.0
 
+  /remove-accents/0.4.2:
+    resolution: {integrity: sha1-CkPTqq4egNuRngeuJUsoXZ4ce7U=}
+    dev: false
+
   /remove-trailing-separator/1.1.0:
     resolution: {integrity: sha1-wkvOKig62tW8P1jg1IJJuSN52O8=}
 
@@ -10182,7 +10285,6 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.0
-    dev: true
 
   /rollup-plugin-esbuild/4.8.2_esbuild@0.12.29+rollup@2.70.1:
     resolution: {integrity: sha512-wsaYNOjzTb6dN1qCIZsMZ7Q0LWiPJklYs2TDI8vJA2LUbvtPUY+17TC8C0vSat3jPMInfR9XWKdA7ttuwkjsGQ==}
@@ -10869,6 +10971,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       normalize-path: 2.1.1
+
+  /unload/2.2.0:
+    resolution: {integrity: sha512-B60uB5TNBLtN6/LsgAf3udH9saB5p7gqJwcFfbOEZ8BcBHnGwCf6G/TGiEqkRAxX7zAFIUtzdrXQSdL3Q/wqNA==}
+    dependencies:
+      '@babel/runtime': 7.17.8
+      detect-node: 2.1.0
+    dev: false
 
   /unpipe/1.0.0:
     resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}

@@ -1,5 +1,5 @@
 import {useMemo, useState} from 'react';
-import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
+import {useNavigate} from '@quilted/quilt';
 import {
   View,
   Button,
@@ -20,7 +20,7 @@ import {
 } from 'components';
 import type {ClipProps} from 'components';
 
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery, useMutation} from 'utilities/graphql';
 import {useLocalDevelopmentClips} from 'utilities/clips';
 
 import seriesQuery from './graphql/SeriesQuery.graphql';
@@ -127,30 +127,34 @@ function SeriesWithData({
               <Link to={tmdbUrl}>TMDB</Link>
               <Link to={imdbUrl}>IMDB</Link>
               <Button
-                onPress={async () => {
-                  const {data} = await startWatchThrough({
-                    variables: {
+                onPress={() => {
+                  startWatchThrough.mutate(
+                    {
                       series: series.id,
                       from: {season: number},
                       to: {season: number},
                     },
-                  });
+                    {
+                      onSuccess({startWatchThrough}) {
+                        const watchThroughId =
+                          startWatchThrough?.watchThrough?.id;
 
-                  const watchThroughId =
-                    data?.startWatchThrough?.watchThrough?.id;
-                  if (watchThroughId)
-                    navigate(
-                      `/app/watchthrough/${parseGid(watchThroughId).id}`,
-                    );
+                        if (watchThroughId) {
+                          navigate(
+                            `/app/watchthrough/${parseGid(watchThroughId).id}`,
+                          );
+                        }
+                      },
+                    },
+                  );
                 }}
               >
                 Start season watch through
               </Button>
               {status === 'CONTINUING' && (
                 <Button
-                  onPress={async () => {
-                    await markSeasonAsFinished({variables: {id}});
-                    onUpdate();
+                  onPress={() => {
+                    markSeasonAsFinished.mutate({id}, {onSuccess: onUpdate});
                   }}
                 >
                   Mark finished
@@ -161,14 +165,21 @@ function SeriesWithData({
         ))}
         <View>
           <Button
-            onPress={async () => {
-              const {data} = await startWatchThrough({
-                variables: {series: series.id},
-              });
+            onPress={() => {
+              startWatchThrough.mutate(
+                {series: series.id},
+                {
+                  onSuccess({startWatchThrough}) {
+                    const watchThroughId = startWatchThrough?.watchThrough?.id;
 
-              const watchThroughId = data?.startWatchThrough?.watchThrough?.id;
-              if (watchThroughId)
-                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+                    if (watchThroughId) {
+                      navigate(
+                        `/app/watchthrough/${parseGid(watchThroughId).id}`,
+                      );
+                    }
+                  },
+                },
+              );
             }}
           >
             Start watch through
@@ -202,22 +213,22 @@ function SeriesWithData({
             <Heading>Subscription</Heading>
             {subscription ? (
               <Button
-                onPress={async () => {
-                  await unsubscribeFromSeries({
-                    variables: {id: series.id},
-                  });
-                  onUpdate();
+                onPress={() => {
+                  unsubscribeFromSeries.mutate(
+                    {id: series.id},
+                    {onSuccess: onUpdate},
+                  );
                 }}
               >
                 Unsubscribe
               </Button>
             ) : (
               <Button
-                onPress={async () => {
-                  await subscribeToSeries({
-                    variables: {id: series.id},
-                  });
-                  onUpdate();
+                onPress={() => {
+                  subscribeToSeries.mutate(
+                    {id: series.id},
+                    {onSuccess: onUpdate},
+                  );
                 }}
               >
                 Subscribe
@@ -226,11 +237,14 @@ function SeriesWithData({
             {subscription && (
               <SpoilerAvoidance
                 value={subscription.settings.spoilerAvoidance}
-                onChange={async (spoilerAvoidance) => {
-                  await updateSubscriptionSettings({
-                    variables: {id: series.id, spoilerAvoidance},
-                  });
-                  onUpdate();
+                onChange={(spoilerAvoidance) => {
+                  updateSubscriptionSettings.mutate(
+                    {
+                      id: series.id,
+                      spoilerAvoidance,
+                    },
+                    {onSuccess: onUpdate},
+                  );
                 }}
               />
             )}
@@ -241,22 +255,22 @@ function SeriesWithData({
             <Heading>Watch later</Heading>
             {series.inWatchLater ? (
               <Button
-                onPress={async () => {
-                  await removeSeriesFromWatchLater({
-                    variables: {id: series.id},
-                  });
-                  onUpdate();
+                onPress={() => {
+                  removeSeriesFromWatchLater.mutate(
+                    {id: series.id},
+                    {onSuccess: onUpdate},
+                  );
                 }}
               >
                 Remove from watch later
               </Button>
             ) : (
               <Button
-                onPress={async () => {
-                  await watchSeriesLater({
-                    variables: {id: series.id},
-                  });
-                  onUpdate();
+                onPress={() => {
+                  watchSeriesLater.mutate(
+                    {id: series.id},
+                    {onSuccess: onUpdate},
+                  );
                 }}
               >
                 Watch later

@@ -1,4 +1,4 @@
-import type {GraphQL} from '@quilted/graphql';
+import type {GraphQLFetch} from '@quilted/graphql';
 
 import type {Ui} from '../../ui';
 import {PrintableError} from '../../ui';
@@ -85,7 +85,7 @@ async function publishExtension(
     production,
   }: {
     ui: Ui;
-    graphql: GraphQL;
+    graphql: GraphQLFetch;
     production?: ProductionClipsExtension;
   },
 ) {
@@ -99,7 +99,7 @@ async function publishExtension(
     );
   }
 
-  const {data} = await graphql.mutate(publishLatestClipsExtensionVersion, {
+  const {data} = await graphql(publishLatestClipsExtensionVersion, {
     variables: {extensionId: production.id},
   });
 
