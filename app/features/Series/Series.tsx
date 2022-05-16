@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useMemo} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {
   View,
@@ -38,13 +38,8 @@ export interface Props {
 }
 
 export default function Series({id}: Props) {
-  const [key, setKey] = useState(0);
-  const {data} = useQuery(seriesQuery, {
-    variables: {
-      id,
-      // @ts-expect-error temporary
-      key,
-    },
+  const {data, refetch} = useQuery(seriesQuery, {
+    variables: {id},
   });
 
   if (data?.series == null) {
@@ -57,7 +52,7 @@ export default function Series({id}: Props) {
     <SeriesWithData
       series={series}
       clipsInstallations={clipsInstallations}
-      onUpdate={() => setKey((key) => key + 1)}
+      onUpdate={() => refetch()}
     />
   );
 }
