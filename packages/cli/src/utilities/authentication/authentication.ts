@@ -5,8 +5,8 @@ import * as path from 'path';
 import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import open from 'open';
 
-import type {GraphQL} from '@quilted/graphql';
-import {createGraphQL, createGraphQLHttpFetch} from '@quilted/graphql';
+import type {GraphQLFetch} from '@quilted/graphql';
+import {createGraphQLHttpFetch} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -16,13 +16,13 @@ import {watchUrl} from '../url';
 import checkAuthFromCliQuery from './graphql/CheckAuthFromCliQuery.graphql';
 import deleteAccessTokenForCliMutation from './graphql/DeleteAccessTokenForCliMutation.graphql';
 
-export type {GraphQL};
+export type {GraphQLFetch};
 
 export interface User {
   readonly id: string;
   readonly email: string;
   readonly accessToken: string;
-  readonly graphql: GraphQL;
+  readonly graphql: GraphQLFetch;
 }
 
 const USER_CACHE_DIRECTORY = path.resolve(homedir(), '.watch');
@@ -74,12 +74,10 @@ export async function deleteAuthentication() {
   const accessToken = await accessTokenFromCacheDirectory();
 
   if (accessToken) {
-    await graphqlFromAccessToken(accessToken).mutate(
-      deleteAccessTokenForCliMutation,
-      {
-        variables: {token: accessToken},
-      },
-    );
+    const mutate = graphqlFromAccessToken(accessToken);
+    await mutate(deleteAccessTokenForCliMutation, {
+      variables: {token: accessToken},
+    });
   }
 }
 
@@ -109,14 +107,11 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
 }
 
 function graphqlFromAccessToken(accessToken: string) {
-  return createGraphQL({
-    cache: false,
-    fetch: createGraphQLHttpFetch({
-      uri: watchUrl('/api/graphql').href,
-      headers: {
-        'X-Access-Token': accessToken,
-      },
-    }),
+  return createGraphQLHttpFetch({
+    uri: watchUrl('/api/graphql').href,
+    headers: {
+      'X-Access-Token': accessToken,
+    },
   });
 }
 
@@ -125,7 +120,7 @@ async function userFromAccessToken(
 ): Promise<User | undefined> {
   const graphql = graphqlFromAccessToken(accessToken);
 
-  const {data} = await graphql.query(checkAuthFromCliQuery);
+  const {data} = await graphql(checkAuthFromCliQuery);
 
   return data?.my == null
     ? undefined

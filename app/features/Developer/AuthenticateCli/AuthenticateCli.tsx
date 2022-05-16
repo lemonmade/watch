@@ -1,10 +1,11 @@
-import {useState} from 'react';
 import type {ReactNode} from 'react';
+import {useMutation as useBasicMutation} from 'react-query';
 
-import {useCurrentUrl, Redirect, useMutation} from '@quilted/quilt';
+import {useCurrentUrl, Redirect} from '@quilted/quilt';
 import {BlockStack, TextBlock, Text, Link, Button} from '@lemon/zest';
 
 import {Page} from 'components';
+import {useMutation} from 'utilities/graphql';
 
 import createAccessTokenForCliMutation from './graphql/CreateAccessTokenForCliMutation.graphql';
 
@@ -13,10 +14,22 @@ enum SearchParams {
 }
 
 export function AuthenticateCli() {
-  const [result, setResult] = useState<'success' | 'error'>();
   const currentUrl = useCurrentUrl();
   const redirectTo = currentUrl.searchParams.get(SearchParams.RedirectTo);
+
   const createAccessTokenForCli = useMutation(createAccessTokenForCliMutation);
+  const pingCliWithToken = useBasicMutation(
+    async ({token}: {token?: string}) => {
+      const result = await fetch(redirectTo!, {
+        method: 'POST',
+        body: JSON.stringify(token ? {token} : {error: 'generic'}),
+      });
+
+      if (!result.ok) throw new Error();
+
+      return true;
+    },
+  );
 
   if (!redirectIsValid(redirectTo)) {
     return <Redirect to="/app" />;
@@ -24,7 +37,7 @@ export function AuthenticateCli() {
 
   let content: ReactNode;
 
-  if (result === 'success') {
+  if (pingCliWithToken.isSuccess) {
     content = (
       <BlockStack>
         <TextBlock>
@@ -35,7 +48,7 @@ export function AuthenticateCli() {
         <ClosePageCallToAction />
       </BlockStack>
     );
-  } else if (result === 'error') {
+  } else if (pingCliWithToken.isError) {
     content = (
       <BlockStack>
         <TextBlock>
@@ -62,27 +75,19 @@ export function AuthenticateCli() {
         </TextBlock>
         <Button
           onPress={async () => {
-            const {data} = await createAccessTokenForCli({
-              variables: {
+            createAccessTokenForCli.mutate(
+              {
                 label: 'Watch CLI Authentication',
               },
-            });
-
-            const plaintextToken =
-              data?.createPersonalAccessToken?.plaintextToken;
-
-            try {
-              const result = await fetch(redirectTo!, {
-                method: 'POST',
-                body: JSON.stringify(
-                  plaintextToken ? {token: plaintextToken} : {error: 'generic'},
-                ),
-              });
-
-              setResult(result.ok ? 'success' : 'error');
-            } catch (error) {
-              setResult('error');
-            }
+              {
+                async onSuccess({createPersonalAccessToken}) {
+                  pingCliWithToken.mutate({
+                    token:
+                      createPersonalAccessToken?.plaintextToken ?? undefined,
+                  });
+                },
+              },
+            );
           }}
         >
           Authenticate the CLI

@@ -7,12 +7,14 @@
     "@lemon/basics": "*",
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@lemonmade/events": "^0.1.4",
-    "@lemonmade/threads": "^0.1.3",
+    "@lemonmade/events": "^0.1.5",
+    "@lemonmade/threads": "^0.1.4",
+    "@quilted/react-query": "^0.1.6",
     "@remote-ui/async-subscription": "^2.1.8",
     "@remote-ui/core": "^2.1.7",
     "@remote-ui/react": "^4.4.2",
-    "@watching/clips": "*"
+    "@watching/clips": "*",
+    "react-query": "^3.39.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/app"

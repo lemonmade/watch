@@ -59,7 +59,7 @@ export function LocalDevelopmentOrchestrator({
       query,
       {signal, variables} = {},
     ) {
-      const results = thread.call.query(query.source, {
+      const results = thread.query(query.source, {
         variables,
         signal: signal && createThreadAbortSignal(signal),
       }) as AsyncGenerator<any>;

@@ -1,25 +1,24 @@
 import type {ReactNode} from 'react';
-import {useState} from 'react';
 
-import {useQuery, useMutation} from '@quilted/quilt';
 import {Text, InlineStack, View, Button, TextBlock} from '@lemon/zest';
 
 import {Page} from 'components';
+import {useQuery, useMutation} from 'utilities/graphql';
 
 import myAppsQuery from './graphql/MyAppsQuery.graphql';
 import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';
 
 export function Apps() {
-  const [key, setKey] = useState(0);
-
-  const {data, loading} = useQuery(myAppsQuery, {variables: {key} as any});
+  const {data, isLoading, refetch} = useQuery(myAppsQuery);
   const apps = data?.my.apps ?? [];
 
-  const deleteApp = useMutation(deleteMyAppMutation);
+  const deleteApp = useMutation(deleteMyAppMutation, {
+    onSettled: () => refetch(),
+  });
 
   let content: ReactNode = null;
 
-  if (loading) {
+  if (isLoading) {
     content = <Text>Loading...</Text>;
   }
 
@@ -35,9 +34,8 @@ export function Apps() {
         <TextBlock>extensions: {app.extensions.length}</TextBlock>
       </View>
       <Button
-        onPress={async () => {
-          await deleteApp({variables: {id: app.id}});
-          setKey((key) => key + 1);
+        onPress={() => {
+          deleteApp.mutate({id: app.id});
         }}
       >
         Delete

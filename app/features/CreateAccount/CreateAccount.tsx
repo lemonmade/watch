@@ -1,10 +1,5 @@
 import {useState} from 'react';
-import {
-  useMutation,
-  useRoutes,
-  useNavigate,
-  useCurrentUrl,
-} from '@quilted/quilt';
+import {useRoutes, useNavigate, useCurrentUrl} from '@quilted/quilt';
 import {
   Button,
   View,
@@ -18,6 +13,7 @@ import {
 
 import {CreateAccountErrorReason} from 'global/utilities/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
+import {useMutation} from 'utilities/graphql';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 
@@ -63,14 +59,18 @@ function CreateAccountWithEmail() {
 
   return (
     <Form
-      onSubmit={async () => {
-        await createAccountWithEmail({
-          variables: {
+      onSubmit={() => {
+        createAccountWithEmail.mutate(
+          {
             email,
             redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
           },
-        });
-        navigate('check-your-email');
+          {
+            onSuccess() {
+              navigate('check-your-email');
+            },
+          },
+        );
       }}
     >
       <TextField label="Email" onChange={(value) => setEmail(value)} />

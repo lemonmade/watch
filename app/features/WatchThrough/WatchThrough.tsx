@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useQuery, useMutation, useNavigate} from '@quilted/quilt';
+import {useNavigate} from '@quilted/quilt';
 
 import {
   BlockStack,
@@ -20,7 +20,7 @@ import {
 } from '@lemon/zest';
 
 import {Page, SpoilerAvoidance} from 'components';
-import {parseGid} from 'utilities/graphql';
+import {parseGid, useQuery, useMutation} from 'utilities/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
@@ -37,9 +37,8 @@ export interface Props {
 }
 
 export default function WatchThrough({id}: Props) {
-  const [key, setKey] = useState(1);
-  const {data} = useQuery(watchThroughQuery, {
-    variables: {id, key} as any,
+  const {data, refetch} = useQuery(watchThroughQuery, {
+    variables: {id},
   });
   const navigate = useNavigate();
   const stopWatchThrough = useMutation(stopWatchThroughMutation);
@@ -74,28 +73,34 @@ export default function WatchThrough({id}: Props) {
           </Link>
           {status === 'ONGOING' && (
             <Button
-              onPress={async () => {
-                const {data} = await stopWatchThrough({
-                  variables: {id},
-                });
-
-                if (data?.stopWatchThrough.watchThrough?.id) {
-                  navigate('/app');
-                }
+              onPress={() => {
+                stopWatchThrough.mutate(
+                  {id},
+                  {
+                    onSuccess({stopWatchThrough}) {
+                      if (stopWatchThrough.watchThrough?.id) {
+                        navigate('/app');
+                      }
+                    },
+                  },
+                );
               }}
             >
               Stop watching
             </Button>
           )}
           <Button
-            onPress={async () => {
-              const {data} = await deleteWatchThrough({
-                variables: {id},
-              });
-
-              if (data?.deleteWatchThrough) {
-                navigate('/app');
-              }
+            onPress={() => {
+              deleteWatchThrough.mutate(
+                {id},
+                {
+                  onSuccess({deleteWatchThrough}) {
+                    if (deleteWatchThrough) {
+                      navigate('/app');
+                    }
+                  },
+                },
+              );
             }}
           >
             Delete
@@ -119,7 +124,7 @@ export default function WatchThrough({id}: Props) {
             watchThroughId={id}
             image={nextEpisode.still?.source ?? undefined}
             overview={nextEpisode.overview ?? undefined}
-            onAction={() => setKey((key) => key + 1)}
+            onAction={() => refetch()}
           />
         )}
         {actions.length > 0 && <PreviousActionsSection actions={actions} />}
@@ -128,12 +133,13 @@ export default function WatchThrough({id}: Props) {
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
-              onChange={async (spoilerAvoidance) => {
-                await updateWatchThroughSettings({
-                  variables: {id, spoilerAvoidance},
-                });
-
-                setKey((key) => key + 1);
+              onChange={(spoilerAvoidance) => {
+                updateWatchThroughSettings.mutate(
+                  {id, spoilerAvoidance},
+                  {
+                    onSuccess: () => refetch(),
+                  },
+                );
               }}
             />
           </BlockStack>
@@ -243,7 +249,7 @@ function NextEpisode({
   const skipNextEpisode = useMutation(skipNextEpisodeMutation);
   const [at, setAt] = useState<Date | null>(() => new Date());
 
-  const markEpisodeAsWatched = async () => {
+  const markEpisodeAsWatched = () => {
     const optionalArguments: Omit<
       WatchThroughWatchNextEpisodeMutationVariables,
       'episode' | 'watchThrough'
@@ -254,17 +260,16 @@ function NextEpisode({
     if (notes) optionalArguments.notes = {content: notes, containsSpoilers};
     if (rating) optionalArguments.rating = rating;
 
-    try {
-      await watchNextEpisode({
-        variables: {
-          ...optionalArguments,
-          episode: id,
-          watchThrough: watchThroughId,
-        },
-      });
-    } finally {
-      onAction?.();
-    }
+    watchNextEpisode.mutate(
+      {
+        ...optionalArguments,
+        episode: id,
+        watchThrough: watchThroughId,
+      },
+      {
+        onSettled: onAction,
+      },
+    );
   };
 
   return (
@@ -306,7 +311,7 @@ function NextEpisode({
             Watch
           </Button>
           <Button
-            onPress={async () => {
+            onPress={() => {
               const optionalArguments: Omit<
                 WatchThroughSkipNextEpisodeMutationVariables,
                 'episode' | 'watchThrough'
@@ -316,17 +321,16 @@ function NextEpisode({
                 optionalArguments.notes = {content: notes, containsSpoilers};
               }
 
-              try {
-                await skipNextEpisode({
-                  variables: {
-                    ...optionalArguments,
-                    episode: id,
-                    watchThrough: watchThroughId,
-                  },
-                });
-              } finally {
-                onAction?.();
-              }
+              skipNextEpisode.mutate(
+                {
+                  ...optionalArguments,
+                  episode: id,
+                  watchThrough: watchThroughId,
+                },
+                {
+                  onSettled: onAction,
+                },
+              );
             }}
           >
             Skip

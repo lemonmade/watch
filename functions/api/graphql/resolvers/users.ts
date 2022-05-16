@@ -38,7 +38,6 @@ export const User: Resolver<'User'> = {
   githubAccount({id}, _, {prisma}) {
     return prisma.githubAccount.findFirst({
       where: {userId: id},
-      rejectOnNotFound: true,
     });
   },
   accessTokens({id}, _, {user, prisma}) {

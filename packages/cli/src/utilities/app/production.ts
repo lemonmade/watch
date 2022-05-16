@@ -1,4 +1,4 @@
-import type {GraphQL} from '@quilted/graphql';
+import type {GraphQLFetch} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -17,10 +17,9 @@ export type ProductionClipsExtension =
 
 export async function loadProductionApp(
   {id, name}: LocalApp,
-  {ui, graphql}: {ui: Ui; graphql: GraphQL},
+  {ui, graphql}: {ui: Ui; graphql: GraphQLFetch},
 ): Promise<ProductionApp> {
-  const {data} = await graphql.query(findAppMatchingLocalDevelopmentQuery, {
-    cache: false,
+  const {data} = await graphql(findAppMatchingLocalDevelopmentQuery, {
     variables: {id, name},
   });
 
@@ -53,7 +52,7 @@ export async function loadProductionApp(
       )}, so we’re creating it now...`,
     );
 
-    const {data} = await graphql.mutate(createAppFromLocalAppMutation, {
+    const {data} = await graphql(createAppFromLocalAppMutation, {
       variables: {name},
     });
 

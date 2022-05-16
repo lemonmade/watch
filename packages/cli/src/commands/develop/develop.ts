@@ -5,7 +5,7 @@ import type {Server} from 'http';
 import {stat, readFile} from 'fs/promises';
 import {on, createEmitter, NestedAbortController} from '@lemonmade/events';
 import {createThread, acceptThreadAbortSignal} from '@lemonmade/threads';
-import type {ThreadAbortSignal} from '@lemonmade/threads';
+import type {ThreadTarget, ThreadAbortSignal} from '@lemonmade/threads';
 
 import {
   createHttpHandler,
@@ -233,38 +233,10 @@ function createWebSocketServer(
       },
     };
 
-    const thread = createThread<{
-      query(
-        query: string,
-        options?: {signal?: ThreadAbortSignal},
-      ): AsyncGenerator<Record<string, unknown>>;
-    }>(
-      {
-        send(message) {
-          socket.send(JSON.stringify(message));
-        },
-        async *listen({signal}) {
-          const messages = on<{message: {data: WebSocket.Data}}>(
-            socket,
-            'message',
-            {signal},
-          );
-
-          for await (const {data} of messages) {
-            yield JSON.parse(data.toString());
-          }
-        },
-      },
-      {expose},
-    );
-
-    signal.addEventListener(
-      'abort',
-      () => {
-        thread.terminate();
-      },
-      {once: true},
-    );
+    createThread<typeof expose>(threadTargetFromWebSocket(socket), {
+      expose,
+      signal,
+    });
 
     socket.once('close', () => abort.abort());
   });
@@ -360,4 +332,23 @@ function createBuilder(
     buildStateByExtension.set(extension.id, state);
     emitter.emit('update', {extension, state});
   }
+}
+
+function threadTargetFromWebSocket(socket: WebSocket): ThreadTarget {
+  return {
+    send(message) {
+      socket.send(JSON.stringify(message));
+    },
+    async *listen({signal}) {
+      const messages = on<{message: {data: WebSocket.Data}}>(
+        socket,
+        'message',
+        {signal},
+      );
+
+      for await (const {data} of messages) {
+        yield JSON.parse(data.toString());
+      }
+    },
+  };
 }
