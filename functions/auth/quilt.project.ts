@@ -8,7 +8,7 @@ export default createService((service) => {
   service.use(
     quiltService({
       develop: {port: 8911},
-      polyfill: {features: ['fetch']},
+      polyfill: {features: ['fetch', 'abort-controller']},
       env: {
         inline: [
           'DATABASE_URL',

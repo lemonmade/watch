@@ -9,7 +9,7 @@ export default createService((service) => {
     quiltService({
       develop: false,
       httpHandler: false,
-      polyfill: {features: ['fetch']},
+      polyfill: {features: ['fetch', 'abort-controller']},
     }),
     lambda(),
     prisma(),
