@@ -5,9 +5,14 @@ import {
   KIND_FRAGMENT,
   KIND_ROOT,
   isRemoteFragment,
-  createRemoteChannel,
+  ACTION_MOUNT,
+  ACTION_INSERT_CHILD,
+  ACTION_REMOVE_CHILD,
+  ACTION_UPDATE_PROPS,
+  ACTION_UPDATE_TEXT,
 } from '@remote-ui/core';
 import type {
+  RemoteChannel,
   RemoteReceiver,
   RemoteTextSerialization,
   RemoteComponentSerialization,
@@ -19,6 +24,7 @@ import type {
   RemoteReceiverAttachableText,
   RemoteReceiverAttachableChild,
   RemoteReceiverAttachableFragment,
+  ActionArgumentMap,
 } from '@remote-ui/core';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
 import {createRemoteSubscribable} from '@remote-ui/async-subscription';
@@ -520,6 +526,32 @@ function createRemoteReceiver(): RemoteReceiver {
       }
     }
   }
+}
+
+interface RemoteChannelRunner {
+  mount(...args: ActionArgumentMap[typeof ACTION_MOUNT]): void;
+  insertChild(...args: ActionArgumentMap[typeof ACTION_INSERT_CHILD]): void;
+  removeChild(...args: ActionArgumentMap[typeof ACTION_INSERT_CHILD]): void;
+  updateProps(...args: ActionArgumentMap[typeof ACTION_UPDATE_PROPS]): void;
+  updateText(...args: ActionArgumentMap[typeof ACTION_UPDATE_TEXT]): void;
+}
+
+function createRemoteChannel({
+  mount,
+  insertChild,
+  removeChild,
+  updateProps,
+  updateText,
+}: RemoteChannelRunner): RemoteChannel {
+  const messageMap = new Map<keyof ActionArgumentMap, (...args: any[]) => any>([
+    [ACTION_MOUNT, mount],
+    [ACTION_REMOVE_CHILD, removeChild],
+    [ACTION_INSERT_CHILD, insertChild],
+    [ACTION_UPDATE_PROPS, updateProps],
+    [ACTION_UPDATE_TEXT, updateText],
+  ]);
+
+  return (type, ...args) => messageMap.get(type)!(...args);
 }
 
 function addVersion<T>(
