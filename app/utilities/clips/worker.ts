@@ -1,6 +1,7 @@
 import {useMemo, useEffect} from 'react';
 import type {Version} from '@watching/clips';
-import {expose, terminate} from '@quilted/quilt/workers';
+import {createEmitter} from '@quilted/quilt';
+import type {Emitter} from '@quilted/quilt';
 
 import {createSandbox} from './sandboxes';
 import type {Sandbox} from './sandboxes';
@@ -23,7 +24,7 @@ export interface SandboxController {
   start(): Promise<void>;
   stop(): void;
   restart(): Promise<void>;
-  on(event: 'start' | 'stop' | 'load', handler: () => void): () => void;
+  on: Emitter<{start: void; stop: void; load: void}>['on'];
 }
 
 export type ExtensionSandbox = Omit<Sandbox, 'load'>;
@@ -36,7 +37,8 @@ export function useExtensionSandbox({script, version}: Options) {
     let loadPromise: Promise<void> | undefined;
     let sandbox: ReturnType<typeof createSandbox> | undefined;
     let timings: Writable<SandboxControllerTiming> | undefined;
-    const listeners = new Map<'start' | 'stop' | 'load', Set<() => void>>();
+    const abort = new AbortController();
+    const emitter = createEmitter<{start: void; stop: void; load: void}>();
 
     start();
 
@@ -73,20 +75,7 @@ export function useExtensionSandbox({script, version}: Options) {
       start,
       stop,
       restart,
-      on: (event, handler) => {
-        let listenersForEvent = listeners.get(event);
-
-        if (listenersForEvent == null) {
-          listenersForEvent = new Set();
-          listeners.set(event, listenersForEvent);
-        }
-
-        listenersForEvent.add(handler);
-
-        return () => {
-          listenersForEvent!.delete(handler);
-        };
-      },
+      on: emitter.on,
     };
 
     return [sandboxProxy, sandboxController] as const;
@@ -113,18 +102,19 @@ export function useExtensionSandbox({script, version}: Options) {
       const currentStartId = startId;
 
       timings = {start: Date.now()};
-      sandbox = createSandbox();
-      expose(sandbox, {restart});
+      sandbox = createSandbox({
+        signal: abort.signal,
+      });
 
       timings!.loadStart = Date.now();
       loadPromise = sandbox.load(script, version as Version);
-      emit('start');
+      emitter.emit('start');
 
       await loadPromise;
 
       if (currentStartId === startId) {
         loadPromise = undefined;
-        emit('load');
+        emitter.emit('load');
 
         if (timings) {
           timings.loadEnd = Date.now();
@@ -133,26 +123,17 @@ export function useExtensionSandbox({script, version}: Options) {
     }
 
     function stop() {
-      terminate(sandbox);
+      abort.abort();
       sandbox = undefined;
       loadPromise = undefined;
       timings = undefined;
       startId += 1;
-      emit('stop');
+      emitter.emit('stop');
     }
 
     function restart() {
       stop();
       return start();
-    }
-
-    function emit(event: 'start' | 'stop' | 'load') {
-      const listenersForEvent = listeners.get(event);
-      if (listenersForEvent == null) return;
-
-      for (const listener of listenersForEvent) {
-        listener();
-      }
     }
   }, [script, version]);
 

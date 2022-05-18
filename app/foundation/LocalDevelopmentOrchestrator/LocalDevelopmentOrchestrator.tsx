@@ -6,8 +6,8 @@ import {
   createThread,
   createThreadAbortSignal,
   targetFromBrowserWebSocket,
-} from '@lemonmade/threads';
-import type {ThreadAbortSignal} from '@lemonmade/threads';
+} from '@quilted/quilt/threads';
+import type {ThreadAbortSignal} from '@quilted/quilt/threads';
 
 import {LocalDevelopmentServerContext} from 'utilities/clips';
 import type {LocalDevelopmentServer} from 'utilities/clips';

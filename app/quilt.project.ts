@@ -11,31 +11,6 @@ export default createApp((app) => {
       assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
     }),
-    createProjectPlugin({
-      name: 'fix-rpc',
-      build({configure}) {
-        configure(({rollupOutputs}, options) => {
-          if (!(options as any).quiltAppBrowser) return;
-
-          rollupOutputs?.((outputs) => {
-            return outputs.map(({manualChunks, ...output}) => {
-              return {
-                ...output,
-                manualChunks(id, options) {
-                  if (id.includes('node_modules/@remote-ui/')) {
-                    return 'framework';
-                  }
-
-                  return typeof manualChunks === 'function'
-                    ? manualChunks(id, options)
-                    : manualChunks?.[id]?.[0];
-                },
-              };
-            });
-          });
-        });
-      },
-    }),
     lambda(),
     createProjectPlugin<App>({
       name: 'Watch.RandomBits',

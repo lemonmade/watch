@@ -1,4 +1,5 @@
-import {createRemoteRoot, retain} from '@remote-ui/core';
+import {retain} from '@quilted/quilt/threads';
+import {createRemoteRoot} from '@remote-ui/core';
 import type {RemoteChannel} from '@remote-ui/core';
 import {makeStatefulSubscribable} from '@remote-ui/async-subscription';
 

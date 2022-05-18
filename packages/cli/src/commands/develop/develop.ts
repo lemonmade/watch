@@ -3,9 +3,9 @@ import '@quilted/polyfills/fetch';
 import * as path from 'path';
 import type {Server} from 'http';
 import {stat, readFile} from 'fs/promises';
-import {on, createEmitter, NestedAbortController} from '@lemonmade/events';
-import {createThread, acceptThreadAbortSignal} from '@lemonmade/threads';
-import type {ThreadTarget, ThreadAbortSignal} from '@lemonmade/threads';
+import {on, createEmitter, NestedAbortController} from '@quilted/events';
+import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
+import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
 
 import {
   createHttpHandler,

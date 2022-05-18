@@ -1,9 +1,24 @@
 import {useEffect, useMemo, useState, useRef} from 'react';
 
-import {createRemoteReceiver} from '@remote-ui/core';
+import {
+  KIND_COMPONENT,
+  KIND_FRAGMENT,
+  KIND_ROOT,
+  isRemoteFragment,
+  createRemoteChannel,
+} from '@remote-ui/core';
 import type {
   RemoteReceiver,
+  RemoteTextSerialization,
+  RemoteComponentSerialization,
+  RemoteFragmentSerialization,
   IdentifierForRemoteComponent,
+  RemoteReceiverAttachable,
+  RemoteReceiverAttachableRoot,
+  RemoteReceiverAttachableComponent,
+  RemoteReceiverAttachableText,
+  RemoteReceiverAttachableChild,
+  RemoteReceiverAttachableFragment,
 } from '@remote-ui/core';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
 import {createRemoteSubscribable} from '@remote-ui/async-subscription';
@@ -14,6 +29,9 @@ import type {
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
+import {retain, release} from '@quilted/quilt/threads';
+import {createEmitter} from '@quilted/quilt';
+import type {Emitter} from '@quilted/quilt';
 
 import {useExtensionSandbox} from './worker';
 import type {
@@ -32,7 +50,6 @@ export interface Options<T extends ExtensionPoint> extends BaseOptions {
   extensionPoint: T;
   configuration?: string;
 }
-
 export type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
     AllowedComponentsForExtensionPoint<T>
@@ -50,16 +67,20 @@ interface RenderControllerInternals<_T extends ExtensionPoint> {
   configuration: {update(value: Record<string, unknown>): void};
 }
 
+export interface RenderControllerEventMap {
+  start: void;
+  stop: void;
+  load: void;
+  render: void;
+}
+
 export interface RenderController<T extends ExtensionPoint> {
   readonly id: string;
   readonly timings: RenderControllerTiming;
   readonly sandbox: ExtensionSandbox;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
   readonly internals: RenderControllerInternals<T>;
-  on(
-    event: 'start' | 'stop' | 'load' | 'render',
-    handler: () => void,
-  ): () => void;
+  readonly on: Emitter<RenderControllerEventMap>['on'];
   render(receiver?: RemoteReceiver): void;
   restart(): Promise<void>;
 }
@@ -87,7 +108,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
     let api: ApiForExtensionPoint<T>;
     let internals: RenderControllerInternals<T>;
     let timings: {renderStart?: number; renderEnd?: number} | undefined;
-    const listeners = new Map<'render', Set<() => void>>();
+    const emitter = createEmitter<RenderControllerEventMap>();
 
     const renderController: RenderController<ExtensionPoint> = {
       sandbox,
@@ -132,11 +153,14 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         if (controller.state === 'loaded') {
           timings = {renderStart: Date.now()};
         } else {
-          const unlisten = controller.on('load', () => {
-            unlisten();
-            if (controller.id !== currentId) return;
-            timings = {renderStart: Date.now()};
-          });
+          controller.on(
+            'load',
+            () => {
+              if (controller.id !== currentId) return;
+              timings = {renderStart: Date.now()};
+            },
+            {once: true},
+          );
         }
 
         const finalReceiver: RemoteReceiver = explicitReceiver ?? receiver;
@@ -144,7 +168,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         finalReceiver.on('mount', () => {
           if (timings && controller.id === currentId) {
             timings.renderEnd = Date.now();
-            emit('render');
+            emitter.emit('render');
           }
         });
 
@@ -175,39 +199,10 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         timings = undefined;
         return controller.restart();
       },
-      on(event, handler) {
-        switch (event) {
-          case 'render': {
-            let listenersForEvent = listeners.get(event);
-
-            if (listenersForEvent == null) {
-              listenersForEvent = new Set();
-              listeners.set(event, listenersForEvent);
-            }
-
-            listenersForEvent.add(handler);
-
-            return () => {
-              listenersForEvent!.delete(handler);
-            };
-          }
-          default: {
-            return controller.on(event, handler);
-          }
-        }
-      },
+      on: emitter.on,
     };
 
     return renderController;
-
-    function emit(event: 'render') {
-      const listenersForEvent = listeners.get(event);
-      if (listenersForEvent == null) return;
-
-      for (const listener of listenersForEvent) {
-        listener();
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sandbox, controller, extensionPoint]);
 
@@ -254,4 +249,323 @@ function createStaticRemoteSubscribable<T>(
   });
 
   return [subscribable, update];
+}
+
+const ROOT_ID = Symbol.for('RemoteUi.Root') as any;
+
+function createRemoteReceiver(): RemoteReceiver {
+  const queuedUpdates = new Set<RemoteReceiverAttachable>();
+  const listeners = new Map<
+    Parameters<RemoteReceiver['on']>[0],
+    Set<Parameters<RemoteReceiver['on']>[1]>
+  >();
+
+  const attachmentSubscribers = new Map<
+    string | typeof ROOT_ID,
+    Set<(value: RemoteReceiverAttachable) => void>
+  >();
+
+  let timeout: Promise<void> | null = null;
+  let state: RemoteReceiver['state'] = 'unmounted';
+
+  const root: RemoteReceiverAttachableRoot = {
+    id: ROOT_ID,
+    kind: KIND_ROOT,
+    children: [],
+    version: 0,
+  };
+
+  const attachedNodes = new Map<
+    string | typeof ROOT_ID,
+    RemoteReceiverAttachable
+  >([[ROOT_ID, root]]);
+
+  const receive = createRemoteChannel({
+    mount: (children) => {
+      const root = attachedNodes.get(ROOT_ID) as RemoteReceiverAttachableRoot;
+
+      const normalizedChildren = children.map((child) =>
+        normalizeNode(child, addVersion),
+      );
+
+      root.version += 1;
+      root.children = normalizedChildren;
+
+      state = 'mounted';
+
+      for (const child of normalizedChildren) {
+        retain(child);
+        attach(child);
+      }
+
+      enqueueUpdate(root).then(() => {
+        emit('mount');
+      });
+    },
+    insertChild: (id, index, child) => {
+      const attached = attachedNodes.get(
+        id ?? ROOT_ID,
+      ) as RemoteReceiverAttachableRoot;
+
+      const normalizedChild = normalizeNode(child, addVersion);
+      retain(normalizedChild);
+      attach(normalizedChild);
+
+      const {children} = attached;
+
+      if (index === children.length) {
+        children.push(normalizedChild);
+      } else {
+        children.splice(index, 0, normalizedChild);
+      }
+
+      attached.version += 1;
+
+      enqueueUpdate(attached);
+    },
+    removeChild: (id, index) => {
+      const attached = attachedNodes.get(
+        id ?? ROOT_ID,
+      ) as RemoteReceiverAttachableRoot;
+
+      const {children} = attached;
+
+      const [removed] = children.splice(index, 1);
+      attached.version += 1;
+
+      detach(removed!);
+
+      enqueueUpdate(attached).then(() => {
+        release(removed);
+      });
+    },
+    updateProps: (id, newProps) => {
+      const component = attachedNodes.get(
+        id,
+      ) as RemoteReceiverAttachableComponent;
+
+      const oldProps = {...(component.props as any)};
+
+      retain(newProps);
+
+      Object.keys(newProps).forEach((key) => {
+        const newProp = (newProps as any)[key];
+        const oldProp = (oldProps as any)[key];
+        if (isRemoteReceiverAttachableFragment(oldProp)) {
+          detach(oldProp);
+        }
+        if (isRemoteFragmentSerialization(newProp)) {
+          const attachableNewProp = addVersion(newProp);
+          attach(attachableNewProp);
+        }
+      });
+
+      Object.assign(component.props, newProps);
+      component.version += 1;
+
+      enqueueUpdate(component).then(() => {
+        for (const key of Object.keys(newProps)) {
+          release((oldProps as any)[key]);
+        }
+      });
+    },
+    updateText: (id, newText) => {
+      const text = attachedNodes.get(id) as RemoteReceiverAttachableText;
+
+      text.text = newText;
+      text.version += 1;
+      enqueueUpdate(text);
+    },
+  });
+
+  return {
+    get state() {
+      return state;
+    },
+    receive,
+    attached: {
+      root,
+      get({id}) {
+        return (attachedNodes.get(id) as any) ?? null;
+      },
+      subscribe({id}, subscriber) {
+        let subscribers = attachmentSubscribers.get(id);
+
+        if (subscribers == null) {
+          subscribers = new Set();
+          attachmentSubscribers.set(id, subscribers);
+        }
+
+        subscribers.add(subscriber as any);
+
+        return () => {
+          const subscribers = attachmentSubscribers.get(id);
+
+          if (subscribers) {
+            subscribers.delete(subscriber as any);
+
+            if (subscribers.size === 0) {
+              attachmentSubscribers.delete(id);
+            }
+          }
+        };
+      },
+    },
+    flush,
+    on(event, listener) {
+      let listenersForEvent = listeners.get(event);
+
+      if (listenersForEvent == null) {
+        listenersForEvent = new Set();
+        listeners.set(event, listenersForEvent);
+      }
+
+      listenersForEvent.add(listener);
+
+      return () => {
+        const listenersForEvent = listeners.get(event);
+
+        if (listenersForEvent) {
+          listenersForEvent.delete(listener);
+
+          if (listenersForEvent.size === 0) {
+            listeners.delete(event);
+          }
+        }
+      };
+    },
+  };
+
+  function flush() {
+    return timeout ?? Promise.resolve();
+  }
+
+  function emit(event: 'mount') {
+    const listenersForEvent = listeners.get(event);
+
+    if (listenersForEvent) {
+      for (const listener of listenersForEvent) {
+        listener();
+      }
+    }
+  }
+
+  function enqueueUpdate(attached: RemoteReceiverAttachable) {
+    timeout =
+      timeout ??
+      new Promise((resolve) => {
+        setTimeout(() => {
+          const attachedToUpdate = [...queuedUpdates];
+
+          timeout = null;
+          queuedUpdates.clear();
+
+          for (const attached of attachedToUpdate) {
+            const subscribers = attachmentSubscribers.get(attached.id);
+
+            if (subscribers) {
+              for (const subscriber of subscribers) {
+                subscriber(attached);
+              }
+            }
+          }
+
+          resolve();
+        }, 0);
+      });
+
+    queuedUpdates.add(attached);
+
+    return timeout;
+  }
+
+  function attach(
+    child: RemoteReceiverAttachableChild | RemoteReceiverAttachableFragment,
+  ) {
+    attachedNodes.set(child.id, child);
+
+    if (child.kind === KIND_COMPONENT && 'props' in child) {
+      const {props = {}} = child as any;
+      Object.keys(props).forEach((key) => {
+        const prop = props[key];
+        if (!isRemoteReceiverAttachableFragment(prop)) return;
+        attach(prop);
+      });
+    }
+
+    if ('children' in child) {
+      for (const grandChild of child.children) {
+        attach(grandChild);
+      }
+    }
+  }
+
+  function detach(
+    child: RemoteReceiverAttachableChild | RemoteReceiverAttachableFragment,
+  ) {
+    attachedNodes.delete(child.id);
+
+    if (child.kind === KIND_COMPONENT && 'props' in child) {
+      const {props = {}} = child as any;
+      Object.keys(props).forEach((key) => {
+        const prop = props[key];
+        if (!isRemoteReceiverAttachableFragment(prop)) return;
+        detach(prop);
+      });
+    }
+
+    if ('children' in child) {
+      for (const grandChild of child.children) {
+        detach(grandChild);
+      }
+    }
+  }
+}
+
+function addVersion<T>(
+  value: T,
+): T extends RemoteTextSerialization
+  ? RemoteReceiverAttachableText
+  : T extends RemoteComponentSerialization
+  ? RemoteReceiverAttachableChild
+  : T extends RemoteFragmentSerialization
+  ? RemoteReceiverAttachableFragment
+  : never {
+  (value as any).version = 0;
+  return value as any;
+}
+
+function normalizeNode<
+  T extends
+    | RemoteTextSerialization
+    | RemoteComponentSerialization
+    | RemoteFragmentSerialization,
+  R,
+>(node: T, normalizer: (node: T) => R) {
+  if (node.kind === KIND_FRAGMENT || node.kind === KIND_COMPONENT) {
+    (node as any).children.forEach((child: T) =>
+      normalizeNode(child, normalizer),
+    );
+  }
+  if (node.kind === KIND_COMPONENT && 'props' in node) {
+    const {props} = node as any;
+    for (const key of Object.keys(props)) {
+      const prop = props[key];
+      if (!isRemoteFragmentSerialization(prop)) continue;
+      props[key] = normalizeNode(prop as any, normalizer);
+    }
+  }
+  return normalizer(node);
+}
+
+export function isRemoteFragmentSerialization(
+  object: unknown,
+): object is RemoteFragmentSerialization {
+  return isRemoteFragment(object) && 'id' in object && 'children' in object;
+}
+
+export function isRemoteReceiverAttachableFragment(
+  object: unknown,
+): object is RemoteReceiverAttachableFragment {
+  return isRemoteFragmentSerialization(object) && 'version' in object;
 }

@@ -623,23 +623,31 @@ function useSandboxScripts(controller: RenderController<any>) {
   const [scripts, setScripts] = useState<Script[]>([]);
 
   useEffect(() => {
+    const abort = new AbortController();
     let activeIndex = 0;
 
-    const doneWithRestart = controller.on('start', () => {
-      activeIndex += 1;
-    });
+    controller.on(
+      'start',
+      () => {
+        activeIndex += 1;
+      },
+      {signal: abort.signal},
+    );
 
-    const doneWithRender = controller.on('render', () => {
-      loadScripts();
-    });
+    controller.on(
+      'render',
+      () => {
+        loadScripts();
+      },
+      {signal: abort.signal},
+    );
 
     if (controller.state === 'rendered') {
       loadScripts();
     }
 
     return () => {
-      doneWithRestart();
-      doneWithRender();
+      abort.abort();
       activeIndex += 1;
     };
 

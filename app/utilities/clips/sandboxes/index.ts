@@ -1,4 +1,4 @@
-import {createCallableWorker} from '@quilted/quilt';
+import {createThreadWorker} from '@quilted/quilt/threads';
 
-export const createSandbox = createCallableWorker(() => import('./sandbox'));
+export const createSandbox = createThreadWorker(() => import('./sandbox'));
 export type Sandbox = ReturnType<typeof createSandbox>;
