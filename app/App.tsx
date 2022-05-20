@@ -59,26 +59,19 @@ function GraphQL({children}: PropsWithChildren) {
   const fetchGraphQL = useMemo<GraphQLFetch>(
     () =>
       async function fetchWithAuth(...args) {
-        try {
-          // TODO why doesn’t this type-check...
-          // @ts-expect-error "excessively deep"...
-          const result = await fetch(...args);
-          return result;
-        } catch (error) {
-          // There should be a much easier way to do this...
-          if ((error as any).status === 401) {
-            navigate((currentUrl) => {
-              const signInUrl = new URL('/sign-in', currentUrl);
-              signInUrl.searchParams.set(
-                SearchParam.RedirectTo,
-                currentUrl.href,
-              );
-              return signInUrl;
-            });
-          }
+        // TODO why doesn’t this type-check...
+        // @ts-expect-error "excessively deep"...
+        const result = await fetch(...args);
 
-          throw error;
+        if (result.errors?.some((error) => (error as any).status === 401)) {
+          navigate((currentUrl) => {
+            const signInUrl = new URL('/sign-in', currentUrl);
+            signInUrl.searchParams.set(SearchParam.RedirectTo, currentUrl.href);
+            return signInUrl;
+          });
         }
+
+        return result;
       },
     [navigate],
   );
