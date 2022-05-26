@@ -64,7 +64,7 @@ class WebAppAssets extends Construct {
         Source.asset(buildPath('assets'), {exclude: ['*.html', '*.json']}),
       ],
       destinationBucket: this.bucket,
-      destinationKeyPrefix: 'assets/app',
+      destinationKeyPrefix: 'assets',
       prune: false,
       cacheControl: [
         CacheControl.fromString(
