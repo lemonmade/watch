@@ -1,13 +1,13 @@
 import {createService, quiltService} from '@quilted/craft';
-import {lambda} from '@quilted/aws/craft';
+import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
 export default createService((service) => {
-  service.entry('./cdn-request-forward-host');
+  service.entry('./router');
   service.use(
     quiltService({
       develop: false,
       httpHandler: false,
     }),
-    lambda(),
+    cloudflareWorkers(),
   );
 });

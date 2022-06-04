@@ -2,14 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
-  // output   = "../functions/shared/utilities/prisma"
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  previewFeatures = ["referentialIntegrity"]
 }
 
 enum SpoilerAvoidance {
@@ -54,7 +55,7 @@ model List {
   createdAt DateTime   @default(now())
   items     ListItem[]
 
-  user           User   @relation(name: "user", fields: [userId], references: [id])
+  user           User   @relation(name: "user", fields: [userId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   userId         String
   watchLaterUser User?  @relation(name: "watchLater")
 }
@@ -292,7 +293,7 @@ model ClipsExtensionVersion {
   createdAt           DateTime                    @default(now())
   updatedAt           DateTime                    @updatedAt
 
-  extension   ClipsExtension @relation(fields: [extensionId], references: [id])
+  extension   ClipsExtension @relation(fields: [extensionId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   extensionId String
 
   activeForExtension ClipsExtension[] @relation("activeVersion")

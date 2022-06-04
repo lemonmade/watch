@@ -2,8 +2,6 @@ import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {App} from '@quilted/craft';
 import type {} from '@quilted/craft/vite';
 
-import {lambda} from '@quilted/aws/craft';
-
 export default createApp((app) => {
   app.entry('./App');
   app.use(
@@ -11,7 +9,6 @@ export default createApp((app) => {
       assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
     }),
-    lambda(),
     createProjectPlugin<App>({
       name: 'Watch.RandomBits',
       develop({configure}) {

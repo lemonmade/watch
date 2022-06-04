@@ -1,10 +1,11 @@
 {
-  "name": "cdn-response-header-cleanup",
+  "name": "router",
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "dependencies": {},
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.77"
+    "@cloudflare/workers-types": "^3.11.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service"
