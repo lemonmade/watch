@@ -7,7 +7,7 @@
     "@lemon/basics": "*",
     "@lemon/css": "*",
     "@lemon/zest": "*",
-    "@quilted/react-query": "^0.1.6",
+    "@quilted/react-query": "^0.1.8",
     "@remote-ui/async-subscription": "^2.1.9",
     "@remote-ui/core": "^2.1.9",
     "@remote-ui/react": "^4.5.1",
