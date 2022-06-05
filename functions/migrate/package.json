@@ -1,9 +1,0 @@
-{
-  "name": "migrate",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/service"
-  }
-}

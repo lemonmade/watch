@@ -30,9 +30,6 @@
       "path": "./functions/api"
     },
     {
-      "path": "./functions/migrate"
-    },
-    {
       "path": "./functions/email"
     },
     {

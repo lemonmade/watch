@@ -1,13 +1,7 @@
 import {graphql} from 'graphql';
 import {makeExecutableSchema} from '@graphql-tools/schema';
-import Env from '@quilted/quilt/env';
 import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
 import type {Request} from '@quilted/quilt/http-handlers';
-import {
-  captureException,
-  init as sentryInit,
-  flush as flushSentry,
-} from '@sentry/node';
 
 import {createPrisma} from 'shared/utilities/database';
 import type {Prisma} from 'shared/utilities/database';
@@ -16,18 +10,7 @@ import {getUserIdFromRequest} from 'shared/utilities/auth';
 import {resolvers, createContext, schemaSource} from './graphql';
 import type {Authentication} from './graphql';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    NODE_ENV: string;
-  }
-}
-
 const ACCESS_TOKEN_HEADER = 'X-Access-Token';
-
-sentryInit({
-  dsn: 'https://d6cff1e3f8c34a44a22253995b47ccfb@sentry.io/1849967',
-  enabled: Env.NODE_ENV !== 'development',
-});
 
 const schema = makeExecutableSchema({
   resolvers,
@@ -89,8 +72,6 @@ app.post(async (request) => {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
-    captureException(error);
-    await flushSentry(2000);
 
     return json(
       {message: (error as any).message},

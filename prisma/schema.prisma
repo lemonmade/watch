@@ -9,7 +9,9 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  // @see https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+  // debian is for the docker build
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
   previewFeatures = ["referentialIntegrity"]
 }
 
@@ -91,7 +93,7 @@ model Series {
   handle      String?
   firstAired  DateTime?
   status      SeriesStatus
-  overview    String?
+  overview    String?      @db.VarChar(500)
   posterUrl   String?
   seasonCount Int
 
@@ -125,7 +127,7 @@ model Season {
   number       Int
   status       SeasonStatus @default(CONTINUING)
   firstAired   DateTime?
-  overview     String?
+  overview     String?      @db.VarChar(500)
   posterUrl    String?
   episodeCount Int
 
@@ -146,7 +148,7 @@ model Episode {
   number     Int
   title      String
   firstAired DateTime?
-  overview   String?
+  overview   String?   @db.VarChar(500)
   stillUrl   String?
 
   season   Season @relation(fields: [seasonId], references: [id])
@@ -188,7 +190,7 @@ model WatchThrough {
 
 model Watch {
   id               String    @id @default(uuid())
-  notes            String?
+  notes            String?   @db.MediumText()
   containsSpoilers Boolean   @default(false)
   liked            Boolean?
   rating           Int?
@@ -212,7 +214,7 @@ model Watch {
 
 model Skip {
   id               String    @id @default(uuid())
-  notes            String?
+  notes            String?   @db.MediumText()
   containsSpoilers Boolean   @default(false)
   at               DateTime?
   createdAt        DateTime  @default(now())

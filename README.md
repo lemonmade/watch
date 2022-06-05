@@ -3,8 +3,9 @@
 Important links:
 
 - [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/watch-cloudflare-test.com/workers) ([router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-test-worker/production))
-- [Fly.io dashboard](https://fly.io/apps/watch-test-app)
+- [Fly.io dashboard](https://fly.io/apps/watch-test-app) ([App server](https://fly.io/apps/watch-test-app), [GraphQL API](https://fly.io/apps/watch-graphql-api), [Auth API](https://fly.io/apps/watch-internal-auth))
 - [PlanetScale dashboard](https://app.planetscale.com/chris-sauve/watch-test-db)
+- GitHub ([OAuth app](https://github.com/settings/applications/1515174), [Dev OAuth app](https://github.com/settings/applications/1609696))
 
 ## Local development
 
