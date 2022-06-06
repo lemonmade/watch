@@ -22,7 +22,7 @@ const config: Configuration = {
           schema: [
             {
               kind: 'definitions',
-              outputPath: 'app/server/api/graphql/schema.ts',
+              outputPath: 'app/server/graphql/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],
@@ -50,13 +50,13 @@ const config: Configuration = {
     },
     github: {
       schema: 'graphql/github/schema.graphql',
-      documents: 'app/server/auth/handlers/github/**/*.graphql',
+      documents: 'app/server/auth/github/**/*.graphql',
       extensions: {
         quilt: {
           schema: [
             {
               kind: 'inputTypes',
-              outputPath: 'app/server/auth/handlers/github/graphql/schema.d.ts',
+              outputPath: 'app/server/auth/github/graphql/schema.d.ts',
             },
           ],
         },
