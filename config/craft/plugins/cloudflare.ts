@@ -23,8 +23,8 @@ export function proxiedByCloudflare() {
             const host = process.env.HOST;
           
             createHttpServer(httpHandler, {
-              transformRequest(request) {
-                const base = transformRequest(request);
+              async transformRequest(request) {
+                const base = await transformRequest(request);
                 return {...base, url: new URL(request.url, 'https://' + request.headers['cf-worker'])};
               }
             }).listen(port, host);
