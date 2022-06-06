@@ -1,6 +1,6 @@
 import type {Request, Response} from '@quilted/quilt/http-handlers';
 
-import type {Prisma} from 'shared/utilities/database';
+import type {Prisma} from '../../shared/database';
 
 export interface Context {
   readonly user: {id: string};

@@ -5,7 +5,7 @@ import {
   Construct,
   Database,
   QuiltServiceLambda,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 import type {TmdbRefresher} from '../../tmdb-refresher/infrastructure';
 

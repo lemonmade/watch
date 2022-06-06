@@ -11,7 +11,7 @@ import {
   Heading,
 } from '@lemon/zest';
 
-import {CreateAccountErrorReason} from 'global/utilities/auth';
+import {CreateAccountErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 import {useMutation} from 'utilities/graphql';
 

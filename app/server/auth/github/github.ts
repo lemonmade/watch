@@ -15,11 +15,11 @@ import {
   CreateAccountErrorReason,
   GITHUB_OAUTH_MESSAGE_TOPIC,
   GithubOAuthFlow,
-} from 'global/utilities/auth';
-import type {GithubOAuthMessage} from 'global/utilities/auth';
-import {getUserIdFromRequest, addAuthCookies} from 'shared/utilities/auth';
+} from '~/global/auth';
+import type {GithubOAuthMessage} from '~/global/auth';
 
-import {validateRedirectTo, loadPrisma} from '../shared';
+import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth';
+import {validateRedirectTo, createPrisma} from '../shared';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
@@ -174,7 +174,7 @@ export function handleGithubOAuthCreateAccount(request: Request) {
       } = githubUser;
 
       try {
-        const prisma = await loadPrisma();
+        const prisma = await createPrisma();
 
         // Don’t try to be clever here and give feedback to the user if
         // this failed because their email already exists. It’s tempting
@@ -225,7 +225,7 @@ export function handleGithubOAuthConnect(request: Request) {
       return restartConnect({redirectTo, request});
     },
     async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
-      const userIdFromRequest = getUserIdFromRequest(request);
+      const userIdFromRequest = await getUserIdFromRequest(request);
 
       if (userIdFromExistingAccount) {
         if (userIdFromRequest === userIdFromExistingAccount) {
@@ -261,7 +261,7 @@ export function handleGithubOAuthConnect(request: Request) {
       } = githubUser;
 
       try {
-        const prisma = await loadPrisma();
+        const prisma = await createPrisma();
 
         await prisma.githubAccount.create({
           data: {
@@ -391,7 +391,7 @@ async function handleGithubOAuthCallback(
     });
   }
 
-  const prisma = await loadPrisma();
+  const prisma = await createPrisma();
   const account = await prisma.githubAccount.findFirst({
     where: {id: githubResult.viewer.id},
     select: {userId: true},

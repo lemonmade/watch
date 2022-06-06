@@ -5,14 +5,14 @@ import {
   SearchParam,
   SignInErrorReason,
   CreateAccountErrorReason,
-} from 'global/utilities/auth';
+} from '~/global/auth';
+
 import {
   // addAuthCookies,
   verifySignedToken,
   addAuthCookies,
-} from 'shared/utilities/auth';
-
-import {validateRedirectTo, loadPrisma} from '../shared';
+} from '../shared/auth';
+import {validateRedirectTo, createPrisma} from './shared';
 
 export async function signInFromEmail(request: Request) {
   const token = request.url.searchParams.get(SearchParam.Token);
@@ -26,7 +26,7 @@ export async function signInFromEmail(request: Request) {
       subject: email,
       data: {redirectTo},
       expired,
-    } = verifySignedToken<{
+    } = await verifySignedToken<{
       redirectTo?: string | null;
     }>(token);
 
@@ -50,7 +50,7 @@ export async function signInFromEmail(request: Request) {
       `Signing in user with email: ${email}, redirect to: ${redirectTo}`,
     );
 
-    const prisma = await loadPrisma();
+    const prisma = await createPrisma();
     const user = await prisma.user.findFirst({where: {email}});
 
     if (user == null) {
@@ -80,7 +80,7 @@ export async function createAccountFromEmail(request: Request) {
       subject: email,
       data: {redirectTo},
       expired,
-    } = verifySignedToken<{
+    } = await verifySignedToken<{
       redirectTo?: string | null;
     }>(token);
 
@@ -99,7 +99,7 @@ export async function createAccountFromEmail(request: Request) {
       });
     }
 
-    const prisma = await loadPrisma();
+    const prisma = await createPrisma();
     const user = await prisma.user.upsert({
       create: {email},
       update: {email},

@@ -6,7 +6,7 @@ import {
   Source,
 } from '@aws-cdk/aws-s3-deployment';
 
-import {Construct, PublicBucket} from '../../global/utilities/infrastructure';
+import {Construct, PublicBucket} from '../../global/infrastructure';
 
 const root = path.resolve(__dirname, '..');
 

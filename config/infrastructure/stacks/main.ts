@@ -1,11 +1,7 @@
 import {App} from '@aws-cdk/core';
 import {Vpc} from '@aws-cdk/aws-ec2';
 
-import {
-  Database,
-  Stack,
-  Secret,
-} from '../../../global/utilities/infrastructure';
+import {Database, Stack, Secret} from '../../../global/infrastructure';
 
 import {WebApp} from '../../../app/infrastructure';
 import {Email} from '../../../functions/email/infrastructure';

@@ -12,7 +12,7 @@ import {
   Button,
 } from '@lemon/zest';
 
-import {SignInErrorReason} from 'global/utilities/auth';
+import {SignInErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
 import {useMutation} from 'utilities/graphql';
 

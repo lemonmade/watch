@@ -7,7 +7,7 @@ import {
   Database,
   Grantable,
   QuiltServiceLambda,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 export class Email extends Construct {
   private readonly queue: Queue;

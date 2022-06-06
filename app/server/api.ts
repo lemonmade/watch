@@ -1,21 +1,13 @@
-import {graphql} from 'graphql';
-import {makeExecutableSchema} from '@graphql-tools/schema';
 import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
 import type {Request} from '@quilted/quilt/http-handlers';
 
-import {createPrisma} from 'shared/utilities/database';
-import type {Prisma} from 'shared/utilities/database';
-import {getUserIdFromRequest} from 'shared/utilities/auth';
+import {getUserIdFromRequest} from './shared/auth';
+import {createPrisma} from './shared/database';
+import type {Prisma} from './shared/database';
 
-import {resolvers, createContext, schemaSource} from './graphql';
-import type {Authentication} from './graphql';
+import type {Authentication} from './api/graphql/context';
 
 const ACCESS_TOKEN_HEADER = 'X-Access-Token';
-
-const schema = makeExecutableSchema({
-  resolvers,
-  typeDefs: schemaSource,
-});
 
 const app = createHttpHandler();
 
@@ -55,6 +47,12 @@ app.post(async (request) => {
   const prisma = await createPrisma();
   const auth = await authenticate(request, prisma);
 
+  const [schema, {graphql}, {createContext}] = await Promise.all([
+    loadSchema(),
+    import('graphql'),
+    import('./api/graphql/context'),
+  ]);
+
   try {
     const result = await graphql(
       schema,
@@ -83,11 +81,33 @@ app.post(async (request) => {
   }
 });
 
+let schemaPromise: Promise<any>;
+
+function loadSchema() {
+  schemaPromise ??= (async () => {
+    const [{makeExecutableSchema}, resolvers, {default: schemaSource}] =
+      await Promise.all([
+        import('@graphql-tools/schema'),
+        import('./api/graphql/resolvers'),
+        import('./api/graphql/schema'),
+      ]);
+
+    const schema = makeExecutableSchema({
+      resolvers,
+      typeDefs: schemaSource,
+    });
+
+    return schema;
+  })();
+
+  return schemaPromise;
+}
+
 async function authenticate(
   request: Request,
   prisma: Prisma,
 ): Promise<Authentication> {
-  const cookieAuthUserId = getUserIdFromRequest(request);
+  const cookieAuthUserId = await getUserIdFromRequest(request);
 
   if (cookieAuthUserId) {
     return {type: 'cookie', userId: cookieAuthUserId};

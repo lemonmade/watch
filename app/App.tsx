@@ -11,7 +11,7 @@ import {
 import type {GraphQLFetch, PropsWithChildren} from '@quilted/quilt';
 import {Canvas} from '@lemon/zest';
 
-import {SearchParam} from 'global/utilities/auth';
+import {SearchParam} from '~/global/auth';
 
 import {Head, Http, LocalDevelopmentOrchestrator, Routes} from './foundation';
 

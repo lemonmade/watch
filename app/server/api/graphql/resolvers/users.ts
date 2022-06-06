@@ -4,7 +4,7 @@ import type {
   PersonalAccessToken as DatabasePersonalAccessToken,
 } from '@prisma/client';
 
-import {createSignedToken, removeAuthCookies} from 'shared/utilities/auth';
+import {createSignedToken, removeAuthCookies} from '../../../shared/auth';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
@@ -94,7 +94,7 @@ export const Mutation: Pick<
     }
 
     await enqueueSendEmail('signIn', {
-      token: createSignedToken(
+      token: await createSignedToken(
         {redirectTo},
         {subject: email, expiresIn: '15 minutes'},
       ),
@@ -115,7 +115,7 @@ export const Mutation: Pick<
 
     if (user != null) {
       await enqueueSendEmail('signIn', {
-        token: createSignedToken(
+        token: await createSignedToken(
           {redirectTo},
           {subject: email, expiresIn: '15 minutes'},
         ),
@@ -126,7 +126,7 @@ export const Mutation: Pick<
     }
 
     await enqueueSendEmail('welcome', {
-      token: createSignedToken(
+      token: await createSignedToken(
         {redirectTo},
         {subject: email, expiresIn: '15 minutes'},
       ),

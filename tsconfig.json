@@ -27,9 +27,6 @@
       "path": "./functions/shared"
     },
     {
-      "path": "./functions/api"
-    },
-    {
       "path": "./functions/email"
     },
     {
@@ -37,9 +34,6 @@
     },
     {
       "path": "./functions/tmdb-refresher-scheduler"
-    },
-    {
-      "path": "./functions/auth"
     },
     {
       "path": "./functions/router"

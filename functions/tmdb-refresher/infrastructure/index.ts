@@ -6,7 +6,7 @@ import {
   QuiltServiceLambda,
   Database,
   Secret,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 export class TmdbRefresher extends Construct {
   readonly queue: Queue;

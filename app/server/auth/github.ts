@@ -3,4 +3,4 @@ export {
   handleGithubOAuthSignIn,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
-} from './github';
+} from './github/github';

@@ -1,6 +1,4 @@
 watch.lemon.dev {
-  reverse_proxy /api/graphql* localhost:8910
-  reverse_proxy /internal/auth* localhost:8911
   reverse_proxy localhost:8912
 
   tls config/local/tls/watch.lemon.dev.pem config/local/tls/watch.lemon.dev-key.pem

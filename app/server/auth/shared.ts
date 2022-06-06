@@ -1,8 +1,7 @@
 import type {Request} from '@quilted/quilt/http-handlers';
 
-import {createPrisma} from 'shared/utilities/database';
-
-export type {Prisma} from 'shared/utilities/database';
+export {createPrisma} from '../shared/database';
+export type {Prisma} from '../shared/database';
 
 export function validateRedirectTo(
   redirectTo: string | undefined,
@@ -14,10 +13,4 @@ export function validateRedirectTo(
   return normalizedRedirectTo && normalizedRedirectTo.origin === url.origin
     ? redirectTo
     : undefined;
-}
-
-const prismaPromise = createPrisma();
-
-export function loadPrisma() {
-  return prismaPromise;
 }

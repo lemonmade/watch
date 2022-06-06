@@ -7,7 +7,7 @@
       "components": ["./components"],
       "graphql/*": ["./graphql/*"],
       "utilities/*": ["./utilities/*"],
-      "global/*": ["../global/*"]
+      "~/global/*": ["../global/*"]
     }
   },
   "include": ["**/*"],
@@ -27,6 +27,9 @@
     },
     {
       "path": "../packages/zest"
+    },
+    {
+      "path": "../functions/email"
     }
   ]
 }
