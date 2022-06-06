@@ -4,7 +4,7 @@ import type {
   PersonalAccessToken as DatabasePersonalAccessToken,
 } from '@prisma/client';
 
-import {createSignedToken, removeAuthCookies} from '../../../shared/auth';
+import {createSignedToken, removeAuthCookies} from '../../shared/auth';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';

@@ -5,13 +5,13 @@ import {getUserIdFromRequest} from './shared/auth';
 import {createPrisma} from './shared/database';
 import type {Prisma} from './shared/database';
 
-import type {Authentication} from './api/graphql/context';
+import type {Authentication} from './graphql/context';
 
 const ACCESS_TOKEN_HEADER = 'X-Access-Token';
 
-const app = createHttpHandler();
+const handler = createHttpHandler();
 
-app.options(() =>
+handler.options(() =>
   noContent({
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -21,7 +21,7 @@ app.options(() =>
   }),
 );
 
-app.post(async (request) => {
+handler.post(async (request) => {
   const {operationName, query, variables} = JSON.parse(String(request.body!));
 
   /* eslint-disable no-console */
@@ -50,7 +50,7 @@ app.post(async (request) => {
   const [schema, {graphql}, {createContext}] = await Promise.all([
     loadSchema(),
     import('graphql'),
-    import('./api/graphql/context'),
+    import('./graphql/context'),
   ]);
 
   try {
@@ -81,6 +81,8 @@ app.post(async (request) => {
   }
 });
 
+export default handler;
+
 let schemaPromise: Promise<any>;
 
 function loadSchema() {
@@ -88,8 +90,8 @@ function loadSchema() {
     const [{makeExecutableSchema}, resolvers, {default: schemaSource}] =
       await Promise.all([
         import('@graphql-tools/schema'),
-        import('./api/graphql/resolvers'),
-        import('./api/graphql/schema'),
+        import('./graphql/resolvers'),
+        import('./graphql/schema'),
       ]);
 
     const schema = makeExecutableSchema({
@@ -134,5 +136,3 @@ async function authenticate(
 
   return {type: 'accessToken', userId: token.userId};
 }
-
-export default app;

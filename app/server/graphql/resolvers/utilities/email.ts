@@ -1,6 +1,6 @@
 import type {SQS} from 'aws-sdk';
 import Env from '@quilted/quilt/env';
-import type {EmailType, PropsForEmail} from '../../../../../../functions/email';
+import type {EmailType, PropsForEmail} from '../../../../../functions/email';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
