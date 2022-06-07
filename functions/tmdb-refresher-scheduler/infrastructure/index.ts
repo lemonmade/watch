@@ -21,7 +21,6 @@ export class TmdbRefresherScheduler extends Construct {
       'WatchTmdbRefresherSchedulerFunction',
       {
         name: 'tmdb-refresher-scheduler',
-        vpc: database.vpc,
         layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherSchedulerFunction',
         environment: {

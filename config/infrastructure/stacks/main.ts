@@ -1,5 +1,4 @@
 import {App} from '@aws-cdk/core';
-import {Vpc} from '@aws-cdk/aws-ec2';
 
 import {Database, Stack, Secret} from '../../../global/infrastructure';
 
@@ -13,9 +12,7 @@ export class WatchStack extends Stack {
     super(app, 'WatchStack');
 
     const database = new Database(this, {
-      vpc: new Vpc(this, 'WatchVpc'),
       name: 'PrimaryDatabase',
-      databaseName: 'watch',
     });
 
     const tmdb = new Secret(this, 'WatchTmdbApiCredentialsSecret', {
@@ -23,7 +20,7 @@ export class WatchStack extends Stack {
     });
 
     new WebApp(this);
-    new Email(this, {database});
+    new Email(this);
 
     const refresher = new TmdbRefresher(this, {
       tmdb,

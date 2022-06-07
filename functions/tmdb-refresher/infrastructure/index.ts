@@ -42,7 +42,6 @@ export class TmdbRefresher extends Construct {
       'WatchTmdbRefresherFunction',
       {
         name: 'tmdb-refresher',
-        vpc: database.vpc,
         layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherFunction',
         environment: {

@@ -20,20 +20,7 @@ import {
   ISecret,
   Secret as SecretManagerSecret,
 } from '@aws-cdk/aws-secretsmanager';
-import {
-  IConnectable,
-  InstanceClass,
-  InstanceSize,
-  InstanceType,
-  Port,
-  Vpc,
-} from '@aws-cdk/aws-ec2';
-import {
-  Credentials,
-  DatabaseInstance,
-  DatabaseInstanceEngine,
-  PostgresEngineVersion,
-} from '@aws-cdk/aws-rds';
+import {IConnectable, Port} from '@aws-cdk/aws-ec2';
 import {Bucket, BucketProps} from '@aws-cdk/aws-s3';
 import {AnyPrincipal, IGrantable} from '@aws-cdk/aws-iam';
 
@@ -45,8 +32,6 @@ const DEFAULT_ENVIRONMENT = {
   account: '552916950096',
   region: DEFAULT_REGION,
 };
-
-const DATABASE_PORT = 5432;
 
 const root = path.resolve(__dirname, '../../..');
 
@@ -191,81 +176,31 @@ export class Secret extends Construct {
 export class Database extends Construct {
   readonly layers: {
     readonly query: LayerVersion;
-    readonly migrate: LayerVersion;
   } = {
     query: new PrismaLayer(this, `${this.node.id}PrismaQueryLayer`, {
       action: 'query',
     }),
-    migrate: new PrismaLayer(this, `${this.node.id}PrismaMigrateLayer`, {
-      action: 'migrate',
-    }),
   };
 
-  private readonly instance: DatabaseInstance;
-  private readonly credentialsSecret: Secret;
-
-  get vpc() {
-    return this.instance.vpc;
-  }
+  private readonly secret: Secret;
 
   get environmentVariables() {
     return {
-      DATABASE_PORT: String(DATABASE_PORT),
-      DATABASE_HOST: this.instance.dbInstanceEndpointAddress,
-      DATABASE_CREDENTIALS_SECRET: this.credentialsSecret.secretName,
+      DATABASE_URL: this.secret.asEnvironmentVariable({key: 'url'}),
     };
   }
 
-  constructor(
-    construct: Construct,
-    {
-      vpc,
-      name,
-      databaseName,
-    }: {name: `${string}Database`; databaseName: string; vpc: Vpc},
-  ) {
+  constructor(construct: Construct, {name}: {name: `${string}Database`}) {
     super(construct, `Watch${name}`);
 
-    this.credentialsSecret = new Secret(this, `Watch${name}CredentialsSecret`, {
-      secretName: `Watch/${name}/Credentials`,
+    this.secret = new Secret(this, `Watch${name}Secret`, {
+      secretName: `Watch/${name}`,
     });
-
-    this.instance = new DatabaseInstance(this, `Watch${name}Instance`, {
-      databaseName,
-      engine: DatabaseInstanceEngine.postgres({
-        version: PostgresEngineVersion.VER_13,
-      }),
-      instanceType: InstanceType.of(
-        InstanceClass.BURSTABLE3,
-        InstanceSize.SMALL,
-      ),
-      credentials: Credentials.fromSecret(this.credentialsSecret.secret),
-      vpc,
-      port: DATABASE_PORT,
-      publiclyAccessible: false,
-      autoMinorVersionUpgrade: true,
-      backupRetention: Duration.days(3),
-    });
-
-    // Per https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy.html#rds-proxy.limits,
-    // only RDS >11.5 <12 supports the proxy.
-    // Per https://www.prisma.io/docs/guides/deployment/deployment-guides/caveats-when-deploying-to-aws-platforms#aws-lambda-upload-limit,
-    // the way prisma queries makes the proxy ineffective anyways :(
-    //
-    // const primaryDatabaseProxy = this.instance.addProxy(
-    //   'WatchDatabaseProxy',
-    //   {
-    //     vpc,
-    //     dbProxyName: `${databaseName}Proxy`,
-    //     secrets: [this.credentialsSecret],
-    //   },
-    // );
   }
 
   grantAccess(grantable: IGrantable & IConnectable) {
-    this.instance.connections.allowFrom(grantable, Port.allTraffic());
-    this.instance.grantConnect(grantable);
-    this.credentialsSecret.grantRead(grantable);
+    grantable.connections.allowToAnyIpv4(Port.allTraffic());
+    this.secret.grantRead(grantable);
   }
 }
 

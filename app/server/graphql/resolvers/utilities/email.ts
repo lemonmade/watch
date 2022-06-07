@@ -13,7 +13,7 @@ export async function enqueueSendEmail<T extends EmailType>(
   type: T,
   props: PropsForEmail<T>,
 ) {
-  const {SQS} = await import('aws-sdk');
+  const {default: SQS} = await import('aws-sdk/clients/sqs');
 
   const sqs = new SQS();
 
