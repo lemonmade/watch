@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {useNavigate, useCurrentUrl} from '@quilted/quilt';
-import {NotFound} from '@quilted/quilt/http';
 
 import {
   Heading,
@@ -36,7 +35,7 @@ export function Account() {
     },
   );
 
-  if (data == null) return <NotFound />;
+  if (data == null) return null;
 
   const {email, githubAccount, settings} = data.me;
 
