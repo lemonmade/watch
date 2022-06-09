@@ -14,7 +14,6 @@ import {
   Code,
   LayerVersion,
   LayerVersionProps,
-  AssetCode,
 } from '@aws-cdk/aws-lambda';
 import {
   ISecret,
@@ -117,7 +116,7 @@ export class QuiltLayer extends LayerVersion {
     },
   ) {
     super(scope, id, {
-      code: AssetCode.fromAsset(buildPath('layers', name)),
+      code: Code.fromAsset(buildPath('layers', name)),
       ...props,
     });
   }

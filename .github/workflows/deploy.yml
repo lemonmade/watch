@@ -78,7 +78,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy application code to Fly.io
-        run: flyctl deploy --config app/fly.toml --dockerfile app/Dockerfile
+        run: flyctl deploy --remote-only --config app/fly.toml --dockerfile app/Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
