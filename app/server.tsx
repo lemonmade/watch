@@ -15,13 +15,15 @@ httpHandler.any('/internal/auth', authHandler);
 
 // For all GET requests, render our React application.
 httpHandler.get(
-  createServerRenderingRequestHandler(async () => {
-    const {default: App} = await import('./App');
-    return <App />;
-  }, {
-    assets: createAssetManifest(),
-  }),
+  createServerRenderingRequestHandler(
+    async () => {
+      const {default: App} = await import('./App');
+      return <App />;
+    },
+    {
+      assets: createAssetManifest(),
+    },
+  ),
 );
 
 export default httpHandler;
-
