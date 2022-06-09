@@ -14,6 +14,9 @@
   "exclude": ["quilt.project.ts", "infrastructure", "build"],
   "references": [
     {
+      "path": "../functions/email"
+    },
+    {
       "path": "../global"
     },
     {
@@ -26,10 +29,10 @@
       "path": "../packages/css"
     },
     {
-      "path": "../packages/zest"
+      "path": "../packages/graphql"
     },
     {
-      "path": "../functions/email"
+      "path": "../packages/zest"
     }
   ]
 }
