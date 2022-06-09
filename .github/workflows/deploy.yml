@@ -78,7 +78,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy application code to Fly.io
-        run: fly deploy --config app/fly.toml --dockerfile app/Dockerfile
+        run: flyctl deploy --config app/fly.toml --dockerfile app/Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -104,7 +104,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy application code to AWS
-        run: pnpm exec cdk deploy WatchStack -- -- --require-approval never
+        run: pnpm run deploy:cdk deploy WatchStack -- -- --require-approval never
 
   deploy-cloudflare:
     name: Deploy to Cloudflare ☁️
@@ -121,6 +121,6 @@ jobs:
           name: build
 
       - name: Deploy application code to Cloudflare
-        run: pnpm exec wrangler publish --config functions/router/wrangler.toml
+        run: pnpm run deploy:wrangler publish -- --config functions/router/wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

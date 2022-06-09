@@ -57,6 +57,7 @@
     "packages:version": "changeset version && pnpm install --no-frozen-lockfile",
     "packages:snapshot": "changeset version --snapshot",
     "packages:deploy": "pnpm -r publish",
-    "cdk": "pnpm --filter infrastructure run cdk"
+    "deploy:cdk": "pnpm --filter infrastructure run cdk",
+    "deploy:wrangler": "wrangler"
   }
 }
