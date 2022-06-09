@@ -60,6 +60,28 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  deploy-fly:
+    name: Deploy to Fly.io 🦋
+    needs: [ci, build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
+      # @see https://github.com/superfly/flyctl-actions
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy application code to Fly.io
+        run: fly deploy --config app/fly.toml --dockerfile app/Dockerfile
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
   deploy-aws:
     name: Deploy to AWS 🛰
     needs: [ci, build]
@@ -82,4 +104,23 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy application code to AWS
-        run: pnpm cdk deploy WatchStack -- -- --require-approval never
+        run: pnpm exec cdk deploy WatchStack -- -- --require-approval never
+
+  deploy-cloudflare:
+    name: Deploy to Cloudflare ☁️
+    needs: [deploy-fly, deploy-aws]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
+      - name: Deploy application code to Cloudflare
+        run: pnpm exec wrangler publish --config functions/router/wrangler.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
