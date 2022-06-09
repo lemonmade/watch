@@ -7,12 +7,15 @@
       "components": ["./components"],
       "graphql/*": ["./graphql/*"],
       "utilities/*": ["./utilities/*"],
-      "global/*": ["../global/*"]
+      "~/global/*": ["../global/*"]
     }
   },
   "include": ["**/*"],
   "exclude": ["quilt.project.ts", "infrastructure", "build"],
   "references": [
+    {
+      "path": "../functions/email"
+    },
     {
       "path": "../global"
     },
@@ -24,6 +27,9 @@
     },
     {
       "path": "../packages/css"
+    },
+    {
+      "path": "../packages/graphql"
     },
     {
       "path": "../packages/zest"

@@ -4,14 +4,26 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@lemon/basics": "*",
-    "@lemon/css": "*",
-    "@lemon/zest": "*",
+    "@aws-sdk/client-s3": "^3.19.0",
+    "@aws-sdk/s3-request-presigner": "^3.19.0",
+    "aws-sdk": "^2.935.0"
+  },
+  "devDependencies": {
+    "@graphql-tools/schema": "^7.0.0",
+    "@lemon/basics": "workspace:*",
+    "@lemon/css": "workspace:*",
+    "@lemon/zest": "workspace:*",
     "@quilted/react-query": "^0.1.8",
     "@remote-ui/async-subscription": "^2.1.9",
     "@remote-ui/core": "^2.1.9",
     "@remote-ui/react": "^4.5.1",
-    "@watching/clips": "*",
+    "@types/common-tags": "^1.8.0",
+    "@watching/clips": "workspace:*",
+    "@watching/graphql": "workspace:*",
+    "common-tags": "^1.8.0",
+    "graphql": "^15.0.0",
+    "jsonwebtoken": "^8.0.0",
+    "mime": "^2.5.0",
     "react-query": "^3.39.0"
   },
   "eslintConfig": {

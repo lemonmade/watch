@@ -15,13 +15,14 @@ const config: Configuration = {
         'app/components/Clip/graphql/LocalClipQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
+        'app/server/**/*.graphql',
       ],
       extensions: {
         quilt: {
           schema: [
             {
               kind: 'definitions',
-              outputPath: 'functions/api/graphql/schema.ts',
+              outputPath: 'app/server/graphql/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
           ],
@@ -49,13 +50,13 @@ const config: Configuration = {
     },
     github: {
       schema: 'graphql/github/schema.graphql',
-      documents: 'functions/auth/handlers/github/**/*.graphql',
+      documents: 'app/server/auth/github/**/*.graphql',
       extensions: {
         quilt: {
           schema: [
             {
               kind: 'inputTypes',
-              outputPath: 'functions/auth/handlers/github/graphql/schema.d.ts',
+              outputPath: 'app/server/auth/github/graphql/schema.d.ts',
             },
           ],
         },

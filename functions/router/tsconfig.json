@@ -1,0 +1,10 @@
+{
+  "extends": "@quilted/typescript/service.json",
+  "compilerOptions": {
+    "outDir": "build/typescript",
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["**/*"],
+  "exclude": ["build"],
+  "references": []
+}

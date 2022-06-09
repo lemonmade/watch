@@ -6,7 +6,7 @@ import {
   QuiltServiceLambda,
   Database,
   Secret,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 export class TmdbRefresher extends Construct {
   readonly queue: Queue;
@@ -42,7 +42,6 @@ export class TmdbRefresher extends Construct {
       'WatchTmdbRefresherFunction',
       {
         name: 'tmdb-refresher',
-        vpc: database.vpc,
         layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherFunction',
         environment: {

@@ -2,16 +2,28 @@ import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {App} from '@quilted/craft';
 import type {} from '@quilted/craft/vite';
 
-import {lambda} from '@quilted/aws/craft';
+import {prisma, proxiedByCloudflare} from '../config/craft/plugins';
 
 export default createApp((app) => {
-  app.entry('./App');
+  app.entry('./App.tsx');
   app.use(
     quiltApp({
       assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
+      server: {
+        entry: './server.tsx',
+        env: {
+          inline: [
+            'EMAIL_QUEUE_URL',
+            'DATABASE_URL',
+            'JWT_DEFAULT_SECRET',
+            'TMDB_ACCESS_TOKEN',
+          ],
+        },
+      },
     }),
-    lambda(),
+    prisma(),
+    proxiedByCloudflare(),
     createProjectPlugin<App>({
       name: 'Watch.RandomBits',
       develop({configure}) {

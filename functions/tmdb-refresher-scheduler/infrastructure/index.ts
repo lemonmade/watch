@@ -5,7 +5,7 @@ import {
   Construct,
   Database,
   QuiltServiceLambda,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 import type {TmdbRefresher} from '../../tmdb-refresher/infrastructure';
 
@@ -21,7 +21,6 @@ export class TmdbRefresherScheduler extends Construct {
       'WatchTmdbRefresherSchedulerFunction',
       {
         name: 'tmdb-refresher-scheduler',
-        vpc: database.vpc,
         layers: [database.layers.query],
         functionName: 'WatchTmdbRefresherSchedulerFunction',
         environment: {

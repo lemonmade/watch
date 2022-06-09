@@ -2,14 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
-  // output   = "../functions/shared/utilities/prisma"
+  provider        = "prisma-client-js"
+  // @see https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+  // debian is for the docker build
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+  previewFeatures = ["referentialIntegrity"]
 }
 
 enum SpoilerAvoidance {
@@ -54,7 +57,7 @@ model List {
   createdAt DateTime   @default(now())
   items     ListItem[]
 
-  user           User   @relation(name: "user", fields: [userId], references: [id])
+  user           User   @relation(name: "user", fields: [userId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   userId         String
   watchLaterUser User?  @relation(name: "watchLater")
 }
@@ -90,7 +93,7 @@ model Series {
   handle      String?
   firstAired  DateTime?
   status      SeriesStatus
-  overview    String?
+  overview    String?      @db.VarChar(500)
   posterUrl   String?
   seasonCount Int
 
@@ -124,7 +127,7 @@ model Season {
   number       Int
   status       SeasonStatus @default(CONTINUING)
   firstAired   DateTime?
-  overview     String?
+  overview     String?      @db.VarChar(500)
   posterUrl    String?
   episodeCount Int
 
@@ -145,7 +148,7 @@ model Episode {
   number     Int
   title      String
   firstAired DateTime?
-  overview   String?
+  overview   String?   @db.VarChar(500)
   stillUrl   String?
 
   season   Season @relation(fields: [seasonId], references: [id])
@@ -187,7 +190,7 @@ model WatchThrough {
 
 model Watch {
   id               String    @id @default(uuid())
-  notes            String?
+  notes            String?   @db.MediumText()
   containsSpoilers Boolean   @default(false)
   liked            Boolean?
   rating           Int?
@@ -211,7 +214,7 @@ model Watch {
 
 model Skip {
   id               String    @id @default(uuid())
-  notes            String?
+  notes            String?   @db.MediumText()
   containsSpoilers Boolean   @default(false)
   at               DateTime?
   createdAt        DateTime  @default(now())
@@ -292,7 +295,7 @@ model ClipsExtensionVersion {
   createdAt           DateTime                    @default(now())
   updatedAt           DateTime                    @updatedAt
 
-  extension   ClipsExtension @relation(fields: [extensionId], references: [id])
+  extension   ClipsExtension @relation(fields: [extensionId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   extensionId String
 
   activeForExtension ClipsExtension[] @relation("activeVersion")

@@ -5,8 +5,8 @@ import {
   GithubOAuthFlow,
   GITHUB_OAUTH_MESSAGE_TOPIC,
   SearchParam,
-} from 'global/utilities/auth';
-import type {GithubOAuthMessage} from 'global/utilities/auth';
+} from '~/global/auth';
+import type {GithubOAuthMessage} from '~/global/auth';
 
 export {GithubOAuthFlow};
 

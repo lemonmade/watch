@@ -4,10 +4,9 @@ import {PolicyStatement, Effect} from '@aws-cdk/aws-iam';
 
 import {
   Construct,
-  Database,
   Grantable,
   QuiltServiceLambda,
-} from '../../../global/utilities/infrastructure';
+} from '../../../global/infrastructure';
 
 export class Email extends Construct {
   private readonly queue: Queue;
@@ -16,7 +15,7 @@ export class Email extends Construct {
     return this.queue.queueUrl;
   }
 
-  constructor(parent: Construct, {database}: {database: Database}) {
+  constructor(parent: Construct) {
     super(parent, 'WatchEmail');
 
     this.queue = new Queue(this, 'WatchEmailQueue', {
@@ -31,7 +30,6 @@ export class Email extends Construct {
 
     const emailFunction = new QuiltServiceLambda(this, 'WatchEmailFunction', {
       name: 'email',
-      vpc: database.vpc,
       functionName: 'WatchEmailFunction',
     });
 

@@ -27,19 +27,7 @@
       "path": "./functions/shared"
     },
     {
-      "path": "./functions/api"
-    },
-    {
-      "path": "./functions/migrate"
-    },
-    {
       "path": "./functions/email"
-    },
-    {
-      "path": "./functions/cdn-request-forward-host"
-    },
-    {
-      "path": "./functions/cdn-response-header-cleanup"
     },
     {
       "path": "./functions/tmdb-refresher"
@@ -48,7 +36,7 @@
       "path": "./functions/tmdb-refresher-scheduler"
     },
     {
-      "path": "./functions/auth"
+      "path": "./functions/router"
     },
     {
       "path": "./packages/basics"

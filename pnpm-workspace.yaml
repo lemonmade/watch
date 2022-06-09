@@ -6,6 +6,6 @@ packages:
   - 'scripts/*'
   # Infrastructure
   - 'config/infrastructure'
-  - 'global/utilities/infrastructure'
+  - 'global/infrastructure'
   - 'app/infrastructure'
   - 'functions/*/infrastructure'
