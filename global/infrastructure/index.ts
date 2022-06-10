@@ -32,7 +32,7 @@ const DEFAULT_ENVIRONMENT = {
   region: DEFAULT_REGION,
 };
 
-const root = path.resolve(__dirname, '../../..');
+const root = path.resolve(__dirname, '../..');
 
 export {Construct};
 
@@ -116,7 +116,7 @@ export class QuiltLayer extends LayerVersion {
     },
   ) {
     super(scope, id, {
-      code: Code.fromAsset(buildPath('layers', name)),
+      code: Code.fromAsset(buildPath('lambda/layers', name)),
       ...props,
     });
   }

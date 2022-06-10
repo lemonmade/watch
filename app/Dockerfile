@@ -28,10 +28,12 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
 COPY . .
 
 # Remove not "package.json" files
-RUN find src \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+RUN find . \! -name "package.json" \! -name "pnpm-workspace.yaml" -mindepth 1 -maxdepth 3 -print | xargs rm -rf
 
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
       pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
+
+COPY build/fly/prisma/. app/node_modules/
 
 FROM base
 
@@ -43,7 +45,6 @@ COPY --from=dependencies /root/app/node_modules .
 COPY app/package.json .
 COPY app/build/assets app/build/assets
 COPY app/build/server app/build/server
-COPY app/build/prisma/. app/node_modules/
 
 ENV NODE_ENV production
 

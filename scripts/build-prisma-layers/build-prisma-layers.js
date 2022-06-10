@@ -21,8 +21,11 @@ const prismaEnginesRoot = resolve(
   '..',
 );
 
-const queryLayerOutput = resolve(root, 'build/layers/prisma-query');
-const migrateLayerOutput = resolve(root, 'build/layers/prisma-migrate');
+const flyOutput = resolve(root, 'build/fly/prisma');
+const lambdaQueryLayerOutput = resolve(
+  root,
+  'build/lambda/layers/prisma-query',
+);
 
 run();
 
@@ -36,31 +39,30 @@ async function run() {
   await exec('node', [resolve(prismaEnginesRoot, 'download/index.js')], {
     // Generates the lambda migration engine
     // @see https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_cli_binary_targets
+    // @see https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+    // debian is for the docker build
     env: {
       ...process.env,
-      PRISMA_CLI_BINARY_TARGETS: 'rhel-openssl-1.0.x',
+      PRISMA_CLI_BINARY_TARGETS: 'rhel-openssl-1.0.x,debian-openssl-1.1.x',
     },
   });
 
   try {
-    await Promise.all([remove(queryLayerOutput), remove(migrateLayerOutput)]);
+    await Promise.all([remove(flyOutput), remove(lambdaQueryLayerOutput)]);
   } catch {
     // intentional noop
   }
 
-  await copyPrismaModules(queryLayerOutput);
-
-  await copy(queryLayerOutput, migrateLayerOutput, {
-    recursive: true,
-    overwrite: true,
-    dereference: true,
-  });
+  await Promise.all([
+    copyPrismaModulesForFly(flyOutput),
+    copyPrismaModulesForLambda(lambdaQueryLayerOutput),
+  ]);
 
   await Promise.all([
     // copy(
     //   resolve(prismaEnginesRoot, 'query-engine-rhel-openssl-1.0.x'),
     //   resolve(
-    //     queryLayerOutput,
+    //     lambdaQueryLayerOutput,
     //     'nodejs/node_modules/@prisma/client/query-engine-rhel-openssl-1.0.x',
     //   ),
     //   {
@@ -68,53 +70,64 @@ async function run() {
     //   },
     // ),
     copy(
+      resolve(
+        prismaEnginesRoot,
+        'libquery_engine-debian-openssl-1.1.x.so.node',
+      ),
+      resolve(
+        flyOutput,
+        '.prisma/client/libquery_engine-debian-openssl-1.1.x.so.node',
+      ),
+      {
+        dereference: true,
+      },
+    ),
+    copy(
       resolve(prismaEnginesRoot, 'libquery_engine-rhel-openssl-1.0.x.so.node'),
       resolve(
-        queryLayerOutput,
+        lambdaQueryLayerOutput,
         'nodejs/node_modules/@prisma/client/runtime/libquery_engine-rhel-openssl-1.0.x.so.node',
       ),
       {
         dereference: true,
       },
     ),
-    copy(
-      resolve(prismaEnginesRoot, 'libquery_engine-rhel-openssl-1.0.x.so.node'),
-      resolve(
-        migrateLayerOutput,
-        'nodejs/node_modules/prisma/libquery_engine-rhel-openssl-1.0.x.so.node',
-      ),
-      {
-        dereference: true,
-      },
-    ),
-    copy(
-      resolve(prismaEnginesRoot, 'migration-engine-rhel-openssl-1.0.x'),
-      resolve(
-        migrateLayerOutput,
-        'nodejs/node_modules/prisma/migration-engine-rhel-openssl-1.0.x',
-      ),
-      {
-        dereference: true,
-      },
-    ),
   ]);
-
-  // await Promise.all(
-  //   [queryLayerOutput, migrateLayerOutput].map(async (directory) => {
-  //     const layerName = basename(directory);
-
-  //     await exec('zip', ['-r', `../${layerName}-${hash}.zip`, './nodejs'], {
-  //       stdio: 'inherit',
-  //       cwd: directory,
-  //     });
-  //   }),
-  // );
 }
 
 /**
  * @param {string} output
  */
-async function copyPrismaModules(output) {
+async function copyPrismaModulesForFly(output) {
+  await mkdirp(output);
+
+  await copy(
+    resolve(root, 'node_modules/@prisma'),
+    resolve(output, '@prisma'),
+    {
+      recursive: true,
+      overwrite: true,
+      dereference: true,
+      filter: omitQueryEngines,
+    },
+  );
+
+  await copy(
+    resolve(prismaClientRoot, '../.prisma'),
+    resolve(output, '.prisma'),
+    {
+      recursive: true,
+      overwrite: true,
+      dereference: true,
+      filter: omitQueryEngines,
+    },
+  );
+}
+
+/**
+ * @param {string} output
+ */
+async function copyPrismaModulesForLambda(output) {
   await mkdirp(output);
 
   await copy(

@@ -9,9 +9,6 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  // @see https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  // debian is for the docker build
-  binaryTargets   = ["native", "debian-openssl-1.1.x"]
   previewFeatures = ["referentialIntegrity"]
 }
 
