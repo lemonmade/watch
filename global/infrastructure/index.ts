@@ -198,7 +198,6 @@ export class Database extends Construct {
   }
 
   grantAccess(grantable: IGrantable & IConnectable) {
-    grantable.connections.allowToAnyIpv4(Port.allTraffic());
     this.secret.grantRead(grantable);
   }
 }
