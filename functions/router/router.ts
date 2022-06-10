@@ -1,4 +1,4 @@
-const APP_HOST = 'watch-test-app.fly.dev';
+// const APP_HOST = 'watch-test-app.fly.dev';
 const APP_ASSETS_HOST = 'watch-assets-app.s3.us-east-1.amazonaws.com';
 const CLIPS_ASSETS_HOST = 'watch-assets-clips.s3.us-east-1.amazonaws.com';
 
@@ -20,9 +20,7 @@ const handler: ExportedHandler = {
       });
     }
 
-    return rewriteAndFetch(request, (url) => {
-      url.host = APP_HOST;
-    });
+    return fetch(request);
   },
 };
 

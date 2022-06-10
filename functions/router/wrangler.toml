@@ -4,6 +4,10 @@ main = "./build/runtime/index.mjs"
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2022-06-04"
 
-[route]
+[[routes]]
 pattern = "watch-cloudflare-test.com/*"
 zone_id = "50fc3ee7d66184932ff0f4ad7975f224"
+
+[[routes]]
+pattern = "watch.lemon.tools/*"
+zone_id = "53e60d3d8d5cd320622de996f4d3ddb6"
