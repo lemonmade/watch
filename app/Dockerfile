@@ -39,8 +39,8 @@ FROM base
 
 WORKDIR /root
 
-COPY --from=dependencies /root/node_modules .
-COPY --from=dependencies /root/app/node_modules .
+COPY --from=dependencies /root/node_modules /root/node_modules
+COPY --from=dependencies /root/app/node_modules /root/app/node_modules
 
 COPY app/package.json app/package.json
 COPY app/build/assets app/build/assets

@@ -26,6 +26,7 @@ export class WebApp extends Construct {
 
 class WebAppAssets extends Construct {
   readonly bucket: PublicBucket;
+  readonly clipsBucket: PublicBucket;
 
   constructor(parent: Construct) {
     super(parent, 'WatchWebAppAssetsStack');
@@ -46,6 +47,11 @@ class WebAppAssets extends Construct {
           `public, max-age=${60 * 60 * 24 * 365}, immutable`,
         ),
       ],
+    });
+
+    // TODO: grant access to PUT from outside
+    this.clipsBucket = new PublicBucket(this, 'WatchClipsAssetsBucket', {
+      bucketName: 'watch-assets-clips',
     });
   }
 }
