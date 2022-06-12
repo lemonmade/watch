@@ -34,5 +34,8 @@ function rewriteAndFetch(request: Request, rewrite: (url: URL) => URL | void) {
 
   const newRequest = new Request(newUrl.href, request);
 
+  const originalUrl = new URL(request.url);
+  newRequest.headers.set('X-Forwarded-Host', originalUrl.host);
+
   return fetch(newRequest);
 }

@@ -2,7 +2,7 @@ import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {App} from '@quilted/craft';
 import type {} from '@quilted/craft/vite';
 
-import {prisma, proxiedByCloudflare} from '../config/craft/plugins';
+import {prisma} from '../config/craft/plugins';
 
 export default createApp((app) => {
   app.entry('./App.tsx');
@@ -23,7 +23,6 @@ export default createApp((app) => {
       },
     }),
     prisma(),
-    proxiedByCloudflare(),
     createProjectPlugin<App>({
       name: 'Watch.RandomBits',
       develop({configure}) {
