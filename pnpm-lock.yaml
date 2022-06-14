@@ -326,7 +326,7 @@ importers:
       '@lemon/basics': link:../basics
       '@lemon/css': link:../css
 
-  scripts/build-prisma-layers:
+  scripts/build-prisma:
     specifiers:
       '@types/fs-extra': ^9.0.0
       fs-extra: ^10.0.0
