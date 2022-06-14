@@ -60,6 +60,17 @@ async function run() {
 
   await copy(
     resolve(prismaClientRoot, '../.prisma'),
+    resolve(root, 'build/lambda/prisma-query/.prisma'),
+    {
+      recursive: true,
+      overwrite: true,
+      dereference: true,
+      filter: omitQueryEngines,
+    },
+  );
+
+  await copy(
+    resolve(prismaClientRoot, '../.prisma'),
     resolve(outputRoot, '.prisma'),
     {
       recursive: true,
