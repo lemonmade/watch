@@ -56,6 +56,7 @@ async function run() {
   }
 
   await mkdirp(outputRoot);
+  await mkdirp(resolve(root, 'build/lambda/prisma-query'));
 
   await copy(
     resolve(prismaClientRoot, '../.prisma'),
