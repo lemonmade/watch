@@ -56,11 +56,11 @@ async function run() {
   }
 
   await mkdirp(outputRoot);
-  await mkdirp(resolve(root, 'build/lambda/prisma-query'));
+  await mkdirp(resolve(root, 'build/lambda/layers/prisma-query'));
 
   await copy(
     resolve(prismaClientRoot, '../.prisma'),
-    resolve(root, 'build/lambda/prisma-query/.prisma'),
+    resolve(root, 'build/lambda/layers/prisma-query/.prisma'),
     {
       recursive: true,
       overwrite: true,
