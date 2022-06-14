@@ -1,5 +1,5 @@
 {
-  "name": "script-build-prisma-layers",
+  "name": "script-build-prisma",
   "version": "0.0.0",
   "type": "module",
   "private": true,

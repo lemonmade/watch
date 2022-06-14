@@ -33,19 +33,18 @@ COPY . .
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
       pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
 
-COPY build/fly/prisma/. node_modules/
+COPY build/prisma/.prisma app/node_modules/.prisma
 
 FROM base
 
 WORKDIR /root
 
-COPY --from=dependencies /root/node_modules /root/node_modules
-COPY --from=dependencies /root/app/node_modules /root/app/node_modules
+COPY --from=dependencies /root/app/node_modules /root/node_modules
 
-COPY app/package.json app/package.json
-COPY app/build/assets app/build/assets
-COPY app/build/server app/build/server
+COPY app/package.json package.json
+COPY app/build/assets build/assets
+COPY app/build/server build/server
 
 ENV NODE_ENV production
 
-CMD ["node", "./app/build/server/index.js"]
+CMD ["node", "./build/server/index.js"]
