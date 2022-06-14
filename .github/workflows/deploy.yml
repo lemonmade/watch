@@ -6,11 +6,9 @@ on:
       - main
 
 jobs:
-  ci:
-    name: CI 🧪
-    uses: ./.github/workflows/ci.yml
-    with:
-      build: false
+  checks:
+    name: Checks 📝
+    uses: ./.github/workflows/checks.yml
 
   build:
     name: Build 🏗
@@ -43,7 +41,7 @@ jobs:
 
   deploy-packages:
     name: Deploy updated packages 📦
-    needs: [ci, build]
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +62,7 @@ jobs:
 
   deploy-fly:
     name: Deploy to Fly.io 🦋
-    needs: [ci, build]
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -124,7 +122,7 @@ jobs:
 
   deploy-aws:
     name: Deploy to AWS 🛰
-    needs: [ci, build]
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     steps:
