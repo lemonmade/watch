@@ -54,6 +54,7 @@ importers:
       '@lemon/basics': workspace:*
       '@lemon/css': workspace:*
       '@lemon/zest': workspace:*
+      '@prisma/client': ^3.14.0
       '@quilted/react-query': ^0.1.8
       '@remote-ui/async-subscription': ^2.1.9
       '@remote-ui/core': ^2.1.9
@@ -70,6 +71,7 @@ importers:
     dependencies:
       '@aws-sdk/client-s3': 3.107.0
       '@aws-sdk/s3-request-presigner': 3.107.0
+      '@prisma/client': 3.14.0_prisma@3.14.0
       aws-sdk: 2.1151.0
     devDependencies:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
@@ -4594,11 +4596,9 @@ packages:
     dependencies:
       '@prisma/engines-version': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
       prisma: 3.14.0
-    dev: true
 
   /@prisma/engines-version/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
     resolution: {integrity: sha512-D+yHzq4a2r2Rrd0ZOW/mTZbgDIkUkD8ofKgusEI1xPiZz60Daks+UM7Me2ty5FzH3p/TgyhBpRrfIHx+ha20RQ==}
-    dev: true
 
   /@prisma/engines/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
     resolution: {integrity: sha512-LwZvI3FY6f43xFjQNRuE10JM5R8vJzFTSmbV9X0Wuhv9kscLkjRlZt0BEoiHmO+2HA3B3xxbMfB5du7ZoSFXGg==}
