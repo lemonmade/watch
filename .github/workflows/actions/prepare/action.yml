@@ -9,5 +9,5 @@ runs:
         registry-url: 'https://registry.npmjs.org'
         node-version-file: '.nvmrc'
     - name: Install dependencies
-      run: pnpm install
+      run: PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --frozen-lockfile
       shell: bash
