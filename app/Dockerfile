@@ -3,6 +3,8 @@ FROM node:16-bullseye-slim as base
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl && apt-get install -y ca-certificates
 
+RUN apt-get install tree
+
 # Some references I used for this:
 #
 # https://www.mbelsky.com/posts/dockerizing-a-workspaced-nodejs-application/
@@ -44,6 +46,8 @@ COPY --from=dependencies /root/app/node_modules /root/node_modules
 COPY app/package.json package.json
 COPY app/build/assets build/assets
 COPY app/build/server build/server
+
+RUN tree .
 
 ENV NODE_ENV production
 
