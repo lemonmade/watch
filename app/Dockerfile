@@ -44,10 +44,7 @@ WORKDIR /root
 COPY --from=dependencies /root/app/node_modules /root/node_modules
 
 COPY app/package.json package.json
-COPY app/build/assets build/assets
 COPY app/build/server build/server
-
-RUN tree .
 
 ENV NODE_ENV production
 
