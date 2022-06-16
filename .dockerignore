@@ -1,6 +1,7 @@
 .DS_STORE
 .changeset
 .git
+.github
 .quilt
 .vscode
 *.log

@@ -6,8 +6,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
-    "@prisma/client": "^3.14.0",
-    "aws-sdk": "^2.935.0"
+    "@prisma/client": "^3.15.0",
+    "aws-sdk": "^2.935.0",
+    "prisma": "^3.15.0"
   },
   "devDependencies": {
     "@graphql-tools/schema": "^7.0.0",

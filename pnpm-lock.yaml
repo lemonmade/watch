@@ -6,8 +6,7 @@ importers:
     specifiers:
       '@changesets/changelog-github': ^0.4.3
       '@changesets/cli': ^2.21.1
-      '@prisma/client': ^3.14.0
-      '@prisma/engines': ^3.14.0-0
+      '@prisma/client': ^3.15.0
       '@quilted/aws': ^0.3.36
       '@quilted/browserslist-config': ^0.1.6
       '@quilted/cloudflare': ^0.1.36
@@ -19,7 +18,7 @@ importers:
       '@types/node': ^16.11.0
       esbuild: ^0.14.0
       esbuild-register: ^3.3.2
-      prisma: ^3.14.0
+      prisma: ^3.15.0
       react: npm:@quilted/react@^17.0.0
       react-dom: npm:@quilted/react-dom@^17.0.0
       typescript: ^4.6.0
@@ -27,8 +26,7 @@ importers:
     devDependencies:
       '@changesets/changelog-github': 0.4.3
       '@changesets/cli': 2.21.1
-      '@prisma/client': 3.14.0_prisma@3.14.0
-      '@prisma/engines': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
+      '@prisma/client': 3.15.2_prisma@3.15.2
       '@quilted/aws': 0.3.36_29026460174c8218f050b1b166886fdf
       '@quilted/browserslist-config': 0.1.6
       '@quilted/cloudflare': 0.1.36_29026460174c8218f050b1b166886fdf
@@ -40,7 +38,7 @@ importers:
       '@types/node': 16.11.26
       esbuild: 0.14.27
       esbuild-register: 3.3.2_esbuild@0.14.27
-      prisma: 3.14.0
+      prisma: 3.15.2
       react: /@quilted/react/17.0.2
       react-dom: /@quilted/react-dom/17.0.2
       typescript: 4.6.2
@@ -54,7 +52,7 @@ importers:
       '@lemon/basics': workspace:*
       '@lemon/css': workspace:*
       '@lemon/zest': workspace:*
-      '@prisma/client': ^3.14.0
+      '@prisma/client': ^3.15.0
       '@quilted/react-query': ^0.1.8
       '@remote-ui/async-subscription': ^2.1.9
       '@remote-ui/core': ^2.1.9
@@ -67,12 +65,14 @@ importers:
       graphql: ^15.0.0
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
+      prisma: ^3.15.0
       react-query: ^3.39.0
     dependencies:
       '@aws-sdk/client-s3': 3.107.0
       '@aws-sdk/s3-request-presigner': 3.107.0
-      '@prisma/client': 3.14.0_prisma@3.14.0
+      '@prisma/client': 3.15.2_prisma@3.15.2
       aws-sdk: 2.1151.0
+      prisma: 3.15.2
     devDependencies:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@lemon/basics': link:../packages/basics
@@ -4584,8 +4584,8 @@ packages:
       - supports-color
     dev: true
 
-  /@prisma/client/3.14.0_prisma@3.14.0:
-    resolution: {integrity: sha512-atb41UpgTR1MCst0VIbiHTMw8lmXnwUvE1KyUCAkq08+wJyjRE78Due+nSf+7uwqQn+fBFYVmoojtinhlLOSaA==}
+  /@prisma/client/3.15.2_prisma@3.15.2:
+    resolution: {integrity: sha512-ErqtwhX12ubPhU4d++30uFY/rPcyvjk+mdifaZO5SeM21zS3t4jQrscy8+6IyB0GIYshl5ldTq6JSBo1d63i8w==}
     engines: {node: '>=12.6'}
     requiresBuild: true
     peerDependencies:
@@ -4594,16 +4594,15 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
-      prisma: 3.14.0
+      '@prisma/engines-version': 3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e
+      prisma: 3.15.2
 
-  /@prisma/engines-version/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
-    resolution: {integrity: sha512-D+yHzq4a2r2Rrd0ZOW/mTZbgDIkUkD8ofKgusEI1xPiZz60Daks+UM7Me2ty5FzH3p/TgyhBpRrfIHx+ha20RQ==}
+  /@prisma/engines-version/3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e:
+    resolution: {integrity: sha512-e3k2Vd606efd1ZYy2NQKkT4C/pn31nehyLhVug6To/q8JT8FpiMrDy7zmm3KLF0L98NOQQcutaVtAPhzKhzn9w==}
 
-  /@prisma/engines/3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a:
-    resolution: {integrity: sha512-LwZvI3FY6f43xFjQNRuE10JM5R8vJzFTSmbV9X0Wuhv9kscLkjRlZt0BEoiHmO+2HA3B3xxbMfB5du7ZoSFXGg==}
+  /@prisma/engines/3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e:
+    resolution: {integrity: sha512-NHlojO1DFTsSi3FtEleL9QWXeSF/UjhCW0fgpi7bumnNZ4wj/eQ+BJJ5n2pgoOliTOGv9nX2qXvmHap7rJMNmg==}
     requiresBuild: true
-    dev: true
 
   /@quilted/async/0.3.24_62a3af55a5cf1065428d56f0e3d96aae:
     resolution: {integrity: sha512-7ZdSVomm3B8lnyfOOpEyBjeHt1en3dR7XEk97sIGxWAibepqhD9K4De9oswXHR2yyZ3Cz0dZ6BaKjM0r5Dl5Ow==}
@@ -10829,14 +10828,13 @@ packages:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
     dev: true
 
-  /prisma/3.14.0:
-    resolution: {integrity: sha512-l9MOgNCn/paDE+i1K2fp9NZ+Du4trzPTJsGkaQHVBufTGqzoYHuNk8JfzXuIn0Gte6/ZjyKj652Jq/Lc1tp2yw==}
+  /prisma/3.15.2:
+    resolution: {integrity: sha512-nMNSMZvtwrvoEQ/mui8L/aiCLZRCj5t6L3yujKpcDhIPk7garp8tL4nMx2+oYsN0FWBacevJhazfXAbV1kfBzA==}
     engines: {node: '>=12.6'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 3.14.0-36.2b0c12756921c891fec4f68d9444e18c7d5d4a6a
-    dev: true
+      '@prisma/engines': 3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e
 
   /progress/2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
