@@ -15,7 +15,7 @@ RUN apt-get install tree
 # Set up dependencies
 FROM base as dependencies
 
-WORKDIR /root
+WORKDIR /workspace
 
 RUN npm install -g pnpm@6.32.2
 
@@ -27,7 +27,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
       pnpm fetch --prod
 
 # Copy the rest of the project files
-COPY app/package.json app/package.json
+COPY . .
 
 # Remove not "package.json" files
 # RUN find . -not \( -name "package.json" -or -name "pnpm-lock.yaml" -or -name "pnpm-workspace.yaml" \) -mindepth 1 -maxdepth 3 -print | xargs rm -rf
@@ -37,8 +37,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
 
 COPY build/prisma/.prisma app/node_modules/.prisma
 
-COPY app/package.json app/package.json
-COPY app/build/server app/build/server
+RUN rm -rf packages config build scripts functions graphql global
 
 ENV NODE_ENV production
 
