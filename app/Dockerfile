@@ -24,7 +24,7 @@ COPY pnpm-lock.yaml .
 
 # Fill the PNPM virtual store
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      pnpm fetch --prod
+      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm fetch --prod
 
 # Copy the rest of the project files
 COPY . .
@@ -33,9 +33,9 @@ COPY . .
 # RUN find . -not \( -name "package.json" -or -name "pnpm-lock.yaml" -or -name "pnpm-workspace.yaml" \) -mindepth 1 -maxdepth 3 -print | xargs rm -rf
 
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
+      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
 
-COPY build/prisma/.prisma app/node_modules/.prisma
+COPY build/prisma/.prisma node_modules/.prisma
 
 RUN rm -rf packages config build scripts functions graphql global
 
