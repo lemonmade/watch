@@ -9,7 +9,7 @@ import createAssetManifest from '@quilted/quilt/magic/app/asset-manifest';
 import graphqlHandler from './server/graphql';
 import authHandler from './server/auth';
 
-execSync('tree .', {stdio: 'inherit'});
+execSync('tree . -a', {stdio: 'inherit'});
 
 const httpHandler = createHttpHandler();
 
