@@ -27,7 +27,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
       pnpm fetch --prod
 
 # Copy the rest of the project files
-COPY . .
+COPY app/package.json app/package.json
 
 # Remove not "package.json" files
 # RUN find . -not \( -name "package.json" -or -name "pnpm-lock.yaml" -or -name "pnpm-workspace.yaml" \) -mindepth 1 -maxdepth 3 -print | xargs rm -rf
@@ -37,15 +37,9 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
 
 COPY build/prisma/.prisma app/node_modules/.prisma
 
-FROM base
-
-WORKDIR /root
-
-COPY --from=dependencies /root/app/node_modules /root/node_modules
-
-COPY app/package.json package.json
-COPY app/build/server build/server
+COPY app/package.json app/package.json
+COPY app/build/server app/build/server
 
 ENV NODE_ENV production
 
-CMD ["node", "./build/server/index.js"]
+CMD ["node", "./app/build/server/index.js"]
