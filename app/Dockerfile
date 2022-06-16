@@ -36,7 +36,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
       PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
 
 COPY build/prisma/.prisma node_modules/.prisma
-RUN mkdir -p node_modules/@prisma && mv app/node_modules/@prisma/client node_modules/@prisma/client
+RUN mkdir -p /workspace/node_modules/@prisma && mv /workspace/app/node_modules/@prisma/client /workspace/node_modules/@prisma/client
 
 RUN rm -rf packages config build scripts functions graphql global
 
