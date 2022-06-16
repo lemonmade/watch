@@ -1,6 +1,8 @@
-node_modules
 .DS_STORE
-*.log
+.changeset
+.git
 .quilt
+.vscode
+*.log
 cdk.out
 node_modules
