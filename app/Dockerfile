@@ -21,10 +21,11 @@ RUN npm install -g pnpm@6.32.2
 
 # Copy the lockfile, which is the only file `pnpm fetch` needs to run
 COPY pnpm-lock.yaml .
+COPY prisma/schema.prisma prisma/schema.prisma
 
 # Fill the PNPM virtual store
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm fetch --prod
+      pnpm fetch --prod
 
 # Copy the rest of the project files
 COPY . .
@@ -37,7 +38,8 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
 
 RUN rm -rf build config functions global graphql packages prisma scripts
 
-RUN tree . -a -L 2
+RUN tree node_modules -a -L 2
+RUN tree app/node_modules -a -L 2
 
 ENV NODE_ENV production
 
