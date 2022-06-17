@@ -20,14 +20,6 @@ jobs:
         with:
           cache-key: v7
 
-      - name: Generate Prisma artifacts
-        run: pnpm prisma generate
-
-      - name: Build Prisma engine
-        run: node ./scripts/build-prisma/build-prisma.js
-        env:
-          PRISMA_BINARY_TARGET: debian-openssl-1.1.x
-
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
         with:
