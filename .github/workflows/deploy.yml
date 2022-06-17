@@ -126,6 +126,9 @@ jobs:
         with:
           name: build
 
+      - name: Add empty layer
+        run: mkdir -p build/lambda/layers/prisma-query
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
