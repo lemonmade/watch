@@ -33,9 +33,7 @@ COPY . .
 # RUN find . -not \( -name "package.json" -or -name "pnpm-lock.yaml" -or -name "pnpm-workspace.yaml" \) -mindepth 1 -maxdepth 3 -print | xargs rm -rf
 
 RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
-
-RUN PRISMA_GENERATE_SKIP_AUTOINSTALL=true app/node_modules/.bin/prisma generate --schema /workspace/prisma/schema.prisma
+      pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
 
 RUN rm -rf build config functions global graphql packages prisma scripts
 
