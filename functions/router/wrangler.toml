@@ -3,3 +3,12 @@ main = "./build/runtime/index.mjs"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2022-06-04"
+compatibility_flags = ["r2_public_beta_bindings"]
+
+[[r2_buckets]]
+binding = "APP_ASSETS"
+bucket_name = "watch-assets"
+
+[[r2_buckets]]
+binding = "CLIPS_ASSETS"
+bucket_name = "watch-clips-assets"

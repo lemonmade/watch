@@ -97,6 +97,31 @@ jobs:
           region: northamerica-northeast1
           image: northamerica-northeast1-docker.pkg.dev/watch-353105/watch/${{ matrix.function }}:${{ github.sha }}
 
+
+  deploy-cloudflare-assets:
+    name: Deploy assets to Cloudflare 🌥
+    needs: [checks, build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
+    - name: Configure R2 credentials for AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: us-east-1
+        aws-access-key-id: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
+
+    - name: Sync app assets to R2
+      run: |
+        aws s3 sync ./app/build/assets/ s3://watch-assets/assets/ --endpoint-url https://9bfdb755def60e50760e33036c6f1624.r2.cloudflarestorage.com --cache-control "public, max-age=31536000, immutable"
+
   deploy-fly:
     name: Deploy to Fly.io 🦋
     needs: [checks, build]
@@ -157,9 +182,9 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-  deploy-cloudflare:
-    name: Deploy to Cloudflare 🌥
-    needs: [deploy-fly]
+  deploy-cloudflare-router:
+    name: Deploy router to Cloudflare 🌥
+    needs: [deploy-fly, deploy-cloudflare-assets]
     runs-on: ubuntu-latest
 
     steps:
