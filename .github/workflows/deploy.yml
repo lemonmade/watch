@@ -111,11 +111,9 @@ jobs:
           name: build
 
       - name: Configure R2 credentials for AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: us-east-1
-          aws-access-key-id: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
 
       - name: Sync app assets to R2
         run: |
