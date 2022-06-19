@@ -4,8 +4,3 @@ packages:
   - 'packages/*'
   # Internal tools
   - 'scripts/*'
-  # Infrastructure
-  - 'config/infrastructure'
-  - 'global/infrastructure'
-  - 'app/infrastructure'
-  - 'functions/*/infrastructure'

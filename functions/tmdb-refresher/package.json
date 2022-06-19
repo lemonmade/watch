@@ -3,11 +3,14 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "dependencies": {
-    "aws-sdk": "^2.935.0"
+  "scripts": {
+    "prisma": "prisma",
+    "start": "node ./build/runtime/index.js"
   },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.77"
+  "dependencies": {
+    "@google-cloud/pubsub": "^3.0.0",
+    "@prisma/client": "^3.15.0",
+    "prisma": "^3.15.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service"

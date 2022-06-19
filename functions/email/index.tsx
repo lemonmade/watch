@@ -1,25 +1,29 @@
-import {SES} from 'aws-sdk';
-import type {SQSHandler} from 'aws-lambda';
-
+import Env from '@quilted/quilt/env';
 import {renderEmail} from '@quilted/quilt/server';
 import type {Sender} from '@quilted/quilt/email';
 
+import {createPubSubHandler} from '~/shared/utilities/pubsub';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    SENDGRID_API_KEY: string;
+  }
+}
+
 import {Email} from './Email';
 
-export type {EmailType, PropsForEmail} from './types';
+import type {EmailType, PropsForEmail} from './types';
+
+export type {EmailType, PropsForEmail};
 
 const DEFAULT_SENDER: Sender = {
   email: 'no-reply@lemon.tools',
 };
 
-export const handler: SQSHandler = async (event) => {
-  // eslint-disable-next-line no-console
-  console.log(event);
-  const {body: propsJson, messageAttributes} = event.Records[0]!;
-  const type = messageAttributes.type!.stringValue;
-
-  const props = JSON.parse(propsJson);
-
+export default createPubSubHandler<{
+  type: EmailType;
+  props: PropsForEmail<EmailType>;
+}>(async ({type, props}) => {
   const {
     subject,
     to,
@@ -27,38 +31,44 @@ export const handler: SQSHandler = async (event) => {
     bcc,
     html,
     plainText,
-    sender: {name: senderName, email: senderEmail} = DEFAULT_SENDER,
-  } = await renderEmail(<Email type={type as any} props={props} />);
+    sender = DEFAULT_SENDER,
+  } = await renderEmail(<Email type={type} props={props} />);
 
   if (to == null || to.length === 0 || subject == null) {
     throw new Error();
   }
-
-  const ses = new SES();
-  const sender = senderName
-    ? `${JSON.stringify(senderName)} <${senderEmail}>`
-    : senderEmail;
 
   // eslint-disable-next-line no-console
   console.log(`Sending ${type} email:`);
   // eslint-disable-next-line no-console
   console.log({sender, subject, to, cc, bcc});
 
-  const sesEmail: SES.Types.SendEmailRequest = {
-    Source: sender,
-    Destination: {
-      ToAddresses: to,
-      CcAddresses: cc,
-      BccAddresses: bcc,
-    },
-    Message: {
-      Subject: {Data: subject},
-      Body: {
-        Html: {Data: html},
-        Text: plainText == null ? undefined : {Data: plainText},
-      },
-    },
-  };
+  const content = [{type: 'text/html', value: html}];
 
-  await ses.sendEmail(sesEmail).promise();
-};
+  if (plainText != null) {
+    content.unshift({type: 'text/plain', value: plainText});
+  }
+
+  const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${Env.SENDGRID_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: sender,
+      personalizations: {
+        to: to.map((name) => ({name})),
+        cc: cc?.map((name) => ({name})),
+        bcc: bcc?.map((name) => ({name})),
+      },
+      content,
+    }),
+  });
+
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.log(response);
+    throw new Error('Sendgrid error');
+  }
+});

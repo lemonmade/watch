@@ -1,9 +1,9 @@
 /* eslint no-console: off */
 
-import type {SQSHandler} from 'aws-lambda';
 import Env from '@quilted/quilt/env';
 
-import {createPrisma} from 'shared/utilities/database';
+import {createPrisma} from '~/shared/utilities/database';
+import {createPubSubHandler} from '~/shared/utilities/pubsub';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
@@ -42,41 +42,33 @@ interface TmdbSeason {
 
 const prismaPromise = createPrisma();
 
-export const handler: SQSHandler = async (event) => {
-  console.log(JSON.stringify(event, null, 2));
+export default createPubSubHandler<{id: string; name: string; tmdbId: string}>(
+  async ({id, name, tmdbId}) => {
+    try {
+      const result = await updateSeries({
+        id,
+        name,
+        tmdbId,
+      });
 
-  try {
-    await Promise.all(
-      event.Records.map(async (record) => {
-        const {messageAttributes} = record;
+      const fetchResult = await fetch(
+        'https://discordapp.com/api/webhooks/656640833063223325/1ofugrkDFpqaSAWvD6mLlg5EN3UDOfBdib4WKNE17Q5YxUoz8wpwuLoKCeaZJqCHyfeC',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            content: result ?? `Updated series: **${name}**`,
+          }),
+          headers: {'Content-Type': 'application/json'},
+        },
+      );
 
-        const id = messageAttributes.id!.stringValue;
-        const name = messageAttributes.name!.stringValue;
-        const tmdbId = messageAttributes.tmdbId!.stringValue;
-
-        const result = await updateSeries({
-          id: id!,
-          name: name!,
-          tmdbId: tmdbId!,
-        });
-
-        await fetch(
-          'https://discordapp.com/api/webhooks/656640833063223325/1ofugrkDFpqaSAWvD6mLlg5EN3UDOfBdib4WKNE17Q5YxUoz8wpwuLoKCeaZJqCHyfeC',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              content: result ?? `Updated series: **${name}**`,
-            }),
-            headers: {'Content-Type': 'application/json'},
-          },
-        );
-      }),
-    );
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
+      console.log(fetchResult);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+);
 
 async function updateSeries({
   id: seriesId,

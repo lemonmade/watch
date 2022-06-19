@@ -5,8 +5,7 @@
     "scripts/**/*.ts",
     "graphql.config.ts",
     "quilt.workspace.ts",
-    "**/quilt.project.ts",
-    "**/infrastructure/**/*.ts"
+    "**/quilt.project.ts"
   ],
   "compilerOptions": {
     "outDir": "build/typescript/workspace",
