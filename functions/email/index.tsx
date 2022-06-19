@@ -57,14 +57,15 @@ export default createPubSubHandler<{
     },
     body: JSON.stringify({
       from: sender,
+      subject,
+      content,
       personalizations: [
         {
-          to: to.map((name) => ({name})),
-          cc: cc?.map((name) => ({name})),
-          bcc: bcc?.map((name) => ({name})),
+          to: to.map((email) => ({email})),
+          cc: cc?.map((email) => ({email})),
+          bcc: bcc?.map((email) => ({email})),
         },
       ],
-      content,
     }),
   });
 
