@@ -54,7 +54,7 @@ jobs:
 
   deploy-google-cloud:
     name: Deploy to Google Cloud 🌈
-    needs: [ci, build]
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     strategy:
