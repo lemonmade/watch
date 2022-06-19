@@ -112,6 +112,7 @@ jobs:
 
       - name: Configure R2 credentials for AWS CLI
         run: |
+          aws configure set region us-east-1
           aws configure set aws_access_key_id ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
 
