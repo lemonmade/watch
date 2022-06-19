@@ -57,6 +57,10 @@ jobs:
     needs: [checks, build]
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      id-token: write
+
     strategy:
       matrix:
         function: [email, tmdb-refresher, tmdb-refresher-scheduler]
@@ -77,7 +81,6 @@ jobs:
 
       - name: Log Google Cloud CLI information
         run: gcloud info
-        shell: bash
 
       - name: Restore build artifacts
         uses: actions/download-artifact@v2
