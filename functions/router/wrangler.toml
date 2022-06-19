@@ -1,4 +1,4 @@
-name = "watch-test-worker"
+name = "watch-router"
 main = "./build/runtime/index.mjs"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"

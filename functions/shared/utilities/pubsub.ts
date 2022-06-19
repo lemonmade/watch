@@ -14,13 +14,14 @@ export function createPubSubHandler<Message = unknown>(
 
   handler.post('/', async (request, context) => {
     const body = JSON.parse(request.body!);
-    const message = JSON.parse(
-      Buffer.from(body.message.data, 'base64').toString().trim(),
-    );
 
     /* eslint-disable no-console */
     console.log('Request body:');
     console.log(body);
+
+    const message = JSON.parse(
+      Buffer.from(body.message.data, 'base64').toString().trim(),
+    );
 
     console.log('PubSub message:');
     console.log(message);
