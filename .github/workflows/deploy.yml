@@ -141,36 +141,9 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-  deploy-aws:
-    name: Deploy to AWS 🛰
-    needs: [checks, build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/workflows/actions/prepare
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-
-      - name: Add empty layer
-        run: mkdir -p build/lambda/layers/prisma-query
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy application code to AWS
-        run: pnpm run deploy:cdk deploy WatchStack -- -- --require-approval never
-
   deploy-cloudflare:
     name: Deploy to Cloudflare 🌥
-    needs: [deploy-fly, deploy-aws]
+    needs: [deploy-fly]
     runs-on: ubuntu-latest
 
     steps:
