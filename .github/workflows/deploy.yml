@@ -97,7 +97,6 @@ jobs:
           region: northamerica-northeast1
           image: northamerica-northeast1-docker.pkg.dev/watch-353105/watch/${{ matrix.function }}:${{ github.sha }}
 
-
   deploy-cloudflare-assets:
     name: Deploy assets to Cloudflare 🌥
     needs: [checks, build]
