@@ -68,7 +68,7 @@ export default createPubSubHandler<{
 
   if (!response.ok) {
     // eslint-disable-next-line no-console
-    console.log(response);
+    console.log(await response.text());
     throw new Error('Sendgrid error');
   }
 });
