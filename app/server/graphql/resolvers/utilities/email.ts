@@ -18,6 +18,7 @@ export async function enqueueSendEmail<T extends EmailType>(
 
   const pubsub = new PubSub({
     projectId: Env.GOOGLE_CLOUD_PROJECT_ID,
+    credentials: JSON.parse(Env.GOOGLE_CLOUD_CREDENTIALS),
   });
 
   await pubsub.topic(Env.GOOGLE_CLOUD_EMAIL_TOPIC).publishMessage({
