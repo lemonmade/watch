@@ -72,7 +72,8 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-        project_id: watch-353105
+        with:
+          project_id: watch-353105
 
       - name: Log Google Cloud CLI information
         run: gcloud info
