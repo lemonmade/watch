@@ -1,7 +1,0 @@
-{
-  "name": "api-infrastructure",
-  "dependencies": {
-    "@aws-cdk/aws-lambda-event-sources": "^1.149.0",
-    "@aws-cdk/aws-sqs": "^1.149.0"
-  }
-}

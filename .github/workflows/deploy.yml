@@ -52,6 +52,35 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  deploy-google-cloud:
+    name: Deploy to Google Cloud 🌈
+    needs: [ci, build]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        function: [email, tmdb-refresher, tmdb-refresher-scheduler]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/actions/google-cloud-prepare
+
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
+      - name: Build Docker image on Google Cloud Build
+        run: gcloud builds submit --config ./functions/${{ matrix.function }}/cloudbuild.yaml --substitutions COMMIT_SHA=${{ github.sha }} --ignore-file .dockerignore
+
+      - name: Deploy to Google Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          service: ${{ matrix.function }}
+          region: northamerica-northeast1
+          image: northamerica-northeast1-docker.pkg.dev/watch-353105/watch/${{ matrix.function }}:${{ github.sha }}
+
   deploy-fly:
     name: Deploy to Fly.io 🦋
     needs: [checks, build]
@@ -140,7 +169,7 @@ jobs:
         run: pnpm run deploy:cdk deploy WatchStack -- -- --require-approval never
 
   deploy-cloudflare:
-    name: Deploy to Cloudflare ☁️
+    name: Deploy to Cloudflare 🌥
     needs: [deploy-fly, deploy-aws]
     runs-on: ubuntu-latest
 

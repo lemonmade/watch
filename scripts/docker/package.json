@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "name": "scripts",
+  "devDependencies": {
+    "globby": "^13.1.0"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-console": "off"
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import {createService, quiltService} from '@quilted/craft';
-import {lambda} from '@quilted/aws/craft';
 
 export default createService((service) => {
   service.entry('./index');
@@ -7,8 +6,9 @@ export default createService((service) => {
     quiltService({
       react: true,
       develop: false,
-      httpHandler: false,
+      polyfill: {
+        features: ['fetch'],
+      },
     }),
-    lambda(),
   );
 });

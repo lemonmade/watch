@@ -1,7 +1,0 @@
-{
-  "name": "api-infrastructure",
-  "dependencies": {
-    "@aws-cdk/aws-events": "^1.149.0",
-    "@aws-cdk/aws-events-targets": "^1.149.0"
-  }
-}

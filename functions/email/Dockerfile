@@ -23,26 +23,17 @@ RUN npm install -g pnpm@6.32.2
 COPY pnpm-lock.yaml .
 
 # Fill the PNPM virtual store
-RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm fetch --prod
+RUN PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm fetch --prod
 
 # Copy the rest of the project files
 COPY . .
 
-# Remove not "package.json" files
-# RUN find . -not \( -name "package.json" -or -name "pnpm-lock.yaml" -or -name "pnpm-workspace.yaml" \) -mindepth 1 -maxdepth 3 -print | xargs rm -rf
+RUN PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod email...
 
-RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
-      PRISMA_SKIP_POSTINSTALL_GENERATE=true pnpm install --offline --recursive --prod --frozen-lockfile --filter-prod app...
-
-COPY prisma/schema.prisma ./app/prisma/schema.prisma
-
-RUN PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm --filter app run prisma generate
-
-RUN node ./scripts/docker/cleanup.js app
+RUN node ./scripts/docker/cleanup.js email
 
 RUN tree . -a -L 2
 
 ENV NODE_ENV production
 
-CMD ["node", "./app/build/server/index.js"]
+CMD ["node", "./functions/email/build/runtime/index.js"]
