@@ -1,11 +1,14 @@
-mutation CreateAppFromLocalApp($name: String!) {
-  createApp(name: $name) {
+mutation CreateAppFromLocalApp($name: String!, $handle: String!) {
+  createApp(name: $name, handle: $handle) {
     app {
       id
+      name
+      handle
       extensions {
         ... on ClipsExtension {
           id
           name
+          handle
         }
       }
     }

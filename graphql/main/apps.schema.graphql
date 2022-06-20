@@ -12,12 +12,13 @@ extend type Query {
 }
 
 extend type Mutation {
-  createApp(name: String!): CreateAppPayload!
+  createApp(name: String!, handle: String): CreateAppPayload!
   deleteApp(id: ID!): DeleteAppPayload!
   updateApp(id: ID!, name: String): UpdateAppPayload!
   createClipsExtension(
-    name: String!
     appId: ID!
+    name: String!
+    handle: String
     initialVersion: CreateClipsInitialVersion
   ): CreateClipsExtensionPayload!
   deleteClipsExtension(id: ID!): DeleteClipsExtensionPayload!
@@ -48,7 +49,7 @@ extend type Mutation {
 
 extend type User {
   apps: [App!]!
-  app(id: ID!): App
+  app(id: ID, handle: String): App
 }
 
 scalar TranslationKey
@@ -66,6 +67,7 @@ type Asset {
 type App {
   id: ID!
   name: String!
+  handle: String!
   icon: Icon
   extensions: [AppExtension!]!
 
@@ -75,6 +77,7 @@ type App {
 type ClipsExtension {
   id: ID!
   name: String!
+  handle: String!
   app: App!
   latestVersion: ClipsExtensionVersion
   versions: [ClipsExtensionVersion!]!

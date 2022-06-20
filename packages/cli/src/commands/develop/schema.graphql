@@ -58,6 +58,7 @@ type ClipsExtensionPointSupport {
 type ClipsExtension {
   id: ID!
   name: String!
+  handle: String!
   build: ExtensionBuild!
   supports: [ClipsExtensionPointSupport!]!
 }
@@ -66,6 +67,7 @@ union Extension = ClipsExtension
 
 type App {
   name: String!
+  handle: String!
   extensions: [Extension!]!
   extension(id: ID!): Extension
   clipsExtension(id: ID!): ClipsExtension

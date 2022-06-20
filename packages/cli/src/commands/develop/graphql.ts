@@ -35,6 +35,7 @@ export function createQueryResolver(
     function createGraphQLApp(app: Omit<LocalApp, 'on'>, context: Context) {
       return object('App', {
         name: app.name,
+        handle: app.handle,
         extensions: app.extensions.map((extension) =>
           createGraphQLCLipsExtension(extension, context),
         ),
@@ -61,6 +62,7 @@ export function createQueryResolver(
       return object('ClipsExtension', {
         id: extension.id,
         name: extension.name,
+        handle: extension.handle,
         supports: extension.extensionPoints.map((extensionPoint) =>
           object('ClipsExtensionPointSupport', {
             name: extensionPoint.id,
