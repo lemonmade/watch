@@ -4,6 +4,11 @@ main = "./build/runtime/index.mjs"
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2022-06-04"
 
+[[services]]
+binding = "SERVICE_UPLOAD_CLIPS"
+service = "watch-internal-upload-clips"
+environment = "production"
+
 [[r2_buckets]]
 binding = "APP_ASSETS"
 bucket_name = "watch-assets"

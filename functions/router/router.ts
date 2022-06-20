@@ -4,7 +4,7 @@ const APP_HOST = 'watch-test-app.fly.dev';
 const handler: ExportedHandler<{
   APP_ASSETS: R2Bucket;
   CLIPS_ASSETS: R2Bucket;
-  SERVICE_CLIPS_UPLOAD: Fetcher;
+  SERVICE_UPLOAD_CLIPS: Fetcher;
 }> = {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -19,7 +19,7 @@ const handler: ExportedHandler<{
     }
 
     if (pathname === '/internal/upload/clips') {
-      return env.SERVICE_CLIPS_UPLOAD.fetch(
+      return env.SERVICE_UPLOAD_CLIPS.fetch(
         new Request(new URL('/', url).href, request),
       );
     }
@@ -45,7 +45,7 @@ function rewriteAndFetch(request: Request, rewrite: (url: URL) => URL | void) {
 }
 
 // @see https://developers.cloudflare.com/r2/get-started/
-async function assetFromBucket(url: URL, bucket: any) {
+async function assetFromBucket(url: URL, bucket: R2Bucket) {
   const object = await bucket.get(url.pathname.slice(1));
 
   if (!object || !object.body) {
