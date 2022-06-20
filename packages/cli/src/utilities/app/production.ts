@@ -9,21 +9,22 @@ import findAppMatchingLocalDevelopmentQuery from './graphql/FindAppMatchingLocal
 import type {FindAppMatchingLocalDevelopmentQueryData} from './graphql/FindAppMatchingLocalDevelopmentQuery.graphql';
 import createAppFromLocalAppMutation from './graphql/CreateAppFromLocalAppMutation.graphql';
 
-export type ProductionApp = FindAppMatchingLocalDevelopmentQueryData.Me.App;
+export type ProductionApp = FindAppMatchingLocalDevelopmentQueryData.My.App;
 export type ProductionExtension =
-  FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions;
+  FindAppMatchingLocalDevelopmentQueryData.My.App.Extensions;
 export type ProductionClipsExtension =
-  FindAppMatchingLocalDevelopmentQueryData.Me.App.Extensions_ClipsExtension;
+  FindAppMatchingLocalDevelopmentQueryData.My.App.Extensions_ClipsExtension;
 
 export async function loadProductionApp(
-  {id, name}: LocalApp,
+  {configurationFile}: LocalApp,
   {ui, graphql}: {ui: Ui; graphql: GraphQLFetch},
 ): Promise<ProductionApp> {
+  const {id, name, handle} = configurationFile.value;
   const {data} = await graphql(findAppMatchingLocalDevelopmentQuery, {
-    variables: {id, name},
+    variables: {id, handle},
   });
 
-  const app = data?.me.app;
+  const app = data?.my.app;
 
   if (app == null) {
     if (id) {
@@ -53,7 +54,7 @@ export async function loadProductionApp(
     );
 
     const {data} = await graphql(createAppFromLocalAppMutation, {
-      variables: {name},
+      variables: {name, handle},
     });
 
     const newApp = data?.createApp.app;

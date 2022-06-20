@@ -117,6 +117,25 @@ export const Query: Pick<
   },
 };
 
+export const User: Pick<Resolver<'User'>, 'app' | 'apps'> = {
+  app(_, {id, handle}, {prisma, user}) {
+    if (!id && !handle) {
+      throw new Error('You must supply either an id or a handle');
+    }
+
+    return prisma.app.findFirst({
+      where: {
+        id: id ? fromGid(id).id : undefined,
+        handle: handle || undefined,
+        userId: user.id,
+      },
+    });
+  },
+  apps(_, __, {prisma, user}) {
+    return prisma.app.findMany({take: 50, where: {userId: user.id}});
+  },
+};
+
 export const Mutation: Pick<
   MutationResolver,
   | 'createApp'
@@ -132,9 +151,10 @@ export const Mutation: Pick<
   | 'uninstallClipsExtension'
   | 'updateClipsExtensionInstallation'
 > = {
-  async createApp(_, {name}, {prisma, user}) {
+  async createApp(_, {name, handle}, {prisma, user}) {
+    const normalizedHandle = handle ?? toHandle(name);
     const existingAppWithName = await prisma.app.findFirst({
-      where: {name, userId: user.id},
+      where: {handle: normalizedHandle, userId: user.id},
     });
 
     if (existingAppWithName) {
@@ -145,7 +165,9 @@ export const Mutation: Pick<
       );
     }
 
-    const app = await prisma.app.create({data: {name, userId: user.id}});
+    const app = await prisma.app.create({
+      data: {name, handle: normalizedHandle, userId: user.id},
+    });
 
     return {app};
   },
@@ -173,12 +195,13 @@ export const Mutation: Pick<
   },
   async createClipsExtension(
     _,
-    {name, appId, initialVersion},
+    {name, handle, appId, initialVersion},
     {prisma, request},
   ) {
     const {app, ...extension} = await prisma.clipsExtension.create({
       data: {
         name,
+        handle: handle ?? toHandle(name),
         appId: fromGid(appId).id,
       },
       include: {app: true},

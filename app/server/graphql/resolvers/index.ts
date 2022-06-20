@@ -11,6 +11,7 @@ import {
   AppExtensionInstallation,
   Query as AppsQuery,
   Mutation as AppsMutation,
+  User as AppsUser,
 } from './apps';
 import {
   Series,
@@ -47,7 +48,7 @@ import {
   Mutation as WatchLaterMutation,
 } from './watch-later';
 import {
-  User,
+  User as BaseUser,
   PersonalAccessToken,
   GithubAccount,
   Query as UsersQuery,
@@ -77,6 +78,11 @@ export const Mutation: MutationResolver = {
   ...UsersMutation,
   ...WatchesMutation,
   ...WatchLaterMutation,
+};
+
+const User = {
+  ...BaseUser,
+  ...AppsUser,
 };
 
 export {

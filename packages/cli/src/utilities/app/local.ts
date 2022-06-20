@@ -18,12 +18,14 @@ export interface LocalConfigurationFile<T> {
 export interface LocalAppConfiguration {
   readonly id?: string;
   readonly name: string;
+  readonly handle: string;
   readonly extensions?: string | readonly string[];
 }
 
 export interface LocalApp {
   readonly id: string;
   readonly name: string;
+  readonly handle: string;
   readonly root: string;
   readonly extensions: readonly LocalExtension[];
   readonly configurationFile: LocalConfigurationFile<LocalAppConfiguration>;
@@ -91,6 +93,7 @@ interface LocalExtensionPointSupport {
 interface LocalExtensionConfiguration {
   readonly id?: string;
   readonly name: string;
+  readonly handle: string;
   readonly extensionPoints: readonly LocalExtensionPointSupport[];
   readonly configuration?: Partial<LocalExtensionUserConfiguration>;
 }
@@ -125,6 +128,7 @@ export async function loadLocalApp(): Promise<LocalApp> {
         .toLocaleLowerCase()
         .replace(/\s+/g, '-')}`,
     name: configuration.name,
+    handle: configuration.handle,
     root: path.resolve(),
     extensions: await resolveExtensions(configuration.extensions),
     configurationFile: {
@@ -142,6 +146,9 @@ export async function loadLocalApp(): Promise<LocalApp> {
     },
     get name() {
       return currentApp.name;
+    },
+    get handle() {
+      return currentApp.handle;
     },
     get root() {
       return currentApp.root;
@@ -191,6 +198,7 @@ async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
   return {
     id: configuration.id ?? `gid://watch/LocalApp/1`,
     name: configuration.name,
+    handle: configuration.handle,
     root: path.resolve(),
     extensions: await resolveExtensions(configuration.extensions),
     configurationFile: {
@@ -217,6 +225,10 @@ function validateAppConfig(
 ): asserts value is LocalAppConfiguration {
   if (value.name == null) {
     throw new Error('App config missing field `name`');
+  }
+
+  if (value.handle == null) {
+    throw new Error('App config missing field `handle`');
   }
 
   return value as any;
@@ -277,7 +289,7 @@ async function loadExtensionFromDirectory(
       configuration.id ??
       `gid://watch/LocalClipsExtension/${handleize(path.basename(directory))}`,
     name: configuration.name,
-    handle: handleize(configuration.name),
+    handle: configuration.handle,
     root: directory,
     extensionPoints: configuration.extensionPoints,
     configuration: {schema: [], ...configuration.configuration},
@@ -292,7 +304,11 @@ function validateExtensionConfig(
   value: Partial<LocalExtensionConfiguration>,
 ): asserts value is LocalExtensionConfiguration {
   if (value.name == null) {
-    throw new Error('App config missing field `name`');
+    throw new Error('Extension config missing field `name`');
+  }
+
+  if (value.handle == null) {
+    throw new Error('Extension config missing field `handle`');
   }
 
   return value as any;

@@ -233,6 +233,7 @@ model Skip {
 model App {
   id        String   @id @default(uuid())
   name      String
+  handle    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -241,6 +242,8 @@ model App {
 
   installations   AppInstallation[]
   clipsExtensions ClipsExtension[]
+
+  @@unique([handle, userId])
 }
 
 model AppInstallation {
@@ -259,6 +262,7 @@ model AppInstallation {
 model ClipsExtension {
   id        String   @id @default(uuid())
   name      String
+  handle    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -270,6 +274,8 @@ model ClipsExtension {
 
   versions      ClipsExtensionVersion[]
   installations ClipsExtensionInstallation[]
+
+  @@unique([handle, appId])
 }
 
 enum ClipsApiVersion {
