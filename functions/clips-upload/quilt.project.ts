@@ -6,8 +6,9 @@ export default createService((service) => {
   service.use(
     quiltService({
       develop: false,
-      httpHandler: false,
     }),
-    cloudflareWorkers(),
+    cloudflareWorkers({
+      cache: false,
+    }),
   );
 });

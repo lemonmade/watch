@@ -71,3 +71,5 @@ handler.any('/', async (request, context) => {
     },
   );
 });
+
+export default handler;
