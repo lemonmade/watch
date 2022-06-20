@@ -133,6 +133,8 @@ export async function loadTmdbSeries(
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
+    // eslint-disable-next-line no-console
+    console.log({seriesResult, seriesIds});
     throw error;
   }
 }
