@@ -583,6 +583,7 @@ async function createStagedClipsVersion({
     {path, code},
     {
       secret: Env.UPLOAD_CLIPS_JWT_SECRET,
+      expiresIn: '5m',
     },
   );
 
