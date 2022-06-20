@@ -1,3 +1,4 @@
+import {createHash} from 'crypto';
 import type {
   App as DatabaseApp,
   AppInstallation as DatabaseAppInstallation,
@@ -5,22 +6,31 @@ import type {
   ClipsExtensionVersion as DatabaseClipsExtensionVersion,
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
+import Env from '@quilted/quilt/env';
 
 import type {
   ClipsExtensionPointSupportInput,
   CreateClipsInitialVersion,
   ClipsExtensionConfigurationStringInput,
 } from '../schema';
+import {createSignedToken} from '../../shared/auth';
 
 import type {
   Resolver,
   QueryResolver,
   MutationResolver,
   UnionResolver,
+  Context,
 } from './types';
 import {toHandle} from './utilities/handle';
 import {toGid, fromGid} from './utilities/id';
 import {createUnionResolver, addResolvedType} from './utilities/interfaces';
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    UPLOAD_CLIPS_JWT_SECRET: string;
+  }
+}
 
 declare module './types' {
   export interface ValueMap {
@@ -161,7 +171,11 @@ export const Mutation: Pick<
 
     return {app, installation};
   },
-  async createClipsExtension(_, {name, appId, initialVersion}, {prisma}) {
+  async createClipsExtension(
+    _,
+    {name, appId, initialVersion},
+    {prisma, request},
+  ) {
     const {app, ...extension} = await prisma.clipsExtension.create({
       data: {
         name,
@@ -174,13 +188,13 @@ export const Mutation: Pick<
       return {app, extension, version: null, signedScriptUpload: null};
     }
 
-    const {version: versionInput, signedScriptUpload} =
-      await createStagedClipsVersion({
-        appId: fromGid(appId).id,
-        extensionId: extension.id,
-        extensionName: name,
-        ...initialVersion,
-      });
+    const {version: versionInput} = await createStagedClipsVersion({
+      ...initialVersion,
+      appId: fromGid(appId).id,
+      extensionId: extension.id,
+      extensionName: name,
+      request,
+    });
 
     const version = await prisma.clipsExtensionVersion.create({
       data: {...versionInput, extensionId: extension.id, status: 'BUILDING'},
@@ -190,7 +204,6 @@ export const Mutation: Pick<
       app,
       extension,
       version,
-      signedScriptUpload,
     };
   },
   async updateClipsExtension(_, {id, name}, {prisma}) {
@@ -216,8 +229,8 @@ export const Mutation: Pick<
   },
   async pushClipsExtension(
     _,
-    {extensionId, hash, name, translations, supports, configurationSchema},
-    {prisma},
+    {extensionId, code, name, translations, supports, configurationSchema},
+    {prisma, request},
   ) {
     const id = fromGid(extensionId).id;
 
@@ -231,16 +244,16 @@ export const Mutation: Pick<
       rejectOnNotFound: true,
     });
 
-    const {version: versionInput, signedScriptUpload} =
-      await createStagedClipsVersion({
-        hash,
-        appId: extension.appId,
-        extensionId: id,
-        extensionName: name ?? extension.name,
-        translations,
-        supports,
-        configurationSchema,
-      });
+    const {version: versionInput} = await createStagedClipsVersion({
+      code,
+      appId: extension.appId,
+      extensionId: id,
+      extensionName: name ?? extension.name,
+      translations,
+      supports,
+      configurationSchema,
+      request,
+    });
 
     if (existingVersion) {
       const version = await prisma.clipsExtensionVersion.update({
@@ -250,7 +263,6 @@ export const Mutation: Pick<
 
       return {
         version,
-        signedScriptUpload,
         extension,
       };
     }
@@ -262,7 +274,6 @@ export const Mutation: Pick<
     return {
       extension,
       version,
-      signedScriptUpload,
     };
   },
   async publishLatestClipsExtensionVersion(_, {extensionId}, {prisma}) {
@@ -548,45 +559,47 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
   };
 
 async function createStagedClipsVersion({
-  hash,
+  code,
   appId,
   extensionId,
   extensionName,
   translations,
   supports,
+  request,
   configurationSchema,
 }: {
-  hash: string;
+  code: string;
   appId: string;
+  request: Context['request'];
   extensionId: string;
   extensionName: string;
 } & CreateClipsInitialVersion) {
-  const [{S3Client, PutObjectCommand}, {getSignedUrl}, {getType}] =
-    await Promise.all([
-      import('@aws-sdk/client-s3'),
-      import('@aws-sdk/s3-request-presigner'),
-      import('mime'),
-    ]);
-
-  const s3Client = new S3Client({region: 'us-east-1'});
-
+  const hash = createHash('sha256').update(code).digest('hex');
   const path = `assets/clips/${appId}/${toParam(
     extensionName,
   )}.${extensionId}.${hash}.js`;
 
-  const putCommand = new PutObjectCommand({
-    Bucket: 'watch-assets-clips',
-    Key: path,
-    ContentType: getType(path) ?? 'application/javascript',
-    CacheControl: `public, max-age=${60 * 60 * 24 * 365}, immutable`,
-    Metadata: {
-      'Timing-Allow-Origin': '*',
+  const token = await createSignedToken(
+    {path, code},
+    {
+      secret: Env.UPLOAD_CLIPS_JWT_SECRET,
     },
-  });
+  );
 
-  const signedScriptUpload = await getSignedUrl(s3Client, putCommand, {
-    expiresIn: 3_600,
-  });
+  const putResult = await fetch(
+    new URL('/internal/upload/clips', request.url),
+    {
+      method: 'PUT',
+      body: token,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  if (!putResult.ok) {
+    throw new Error(`Could not upload clips: '${await putResult.text()}'`);
+  }
 
   const version: Omit<
     import('@prisma/client').Prisma.ClipsExtensionVersionCreateWithoutExtensionInput,
@@ -652,7 +665,7 @@ async function createStagedClipsVersion({
       ) as any),
   };
 
-  return {signedScriptUpload, version};
+  return {version};
 }
 
 function normalizeClipsString({

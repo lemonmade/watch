@@ -93,6 +93,14 @@ importers:
       mime: 2.6.0
       react-query: 3.39.1_1d696980c66ac73de981b541c6afe710
 
+  functions/clips-upload:
+    specifiers:
+      '@cloudflare/workers-types': ^3.13.0
+      '@tsndr/cloudflare-worker-jwt': ^1.4.0
+    devDependencies:
+      '@cloudflare/workers-types': 3.13.0
+      '@tsndr/cloudflare-worker-jwt': 1.4.2
+
   functions/email:
     specifiers:
       react: npm:@quilted/react@^17.0.0
@@ -103,9 +111,9 @@ importers:
 
   functions/router:
     specifiers:
-      '@cloudflare/workers-types': ^3.11.0
+      '@cloudflare/workers-types': ^3.13.0
     devDependencies:
-      '@cloudflare/workers-types': 3.11.0
+      '@cloudflare/workers-types': 3.13.0
 
   functions/shared:
     specifiers:
@@ -2586,6 +2594,10 @@ packages:
     resolution: {integrity: sha512-XmKgZZHrCdPsoVQkdd365R7GvwTwDVJsMyEG3Dq/Tgxz6vgrps2c8PXBqEutguwvl0zDAF0AL0e2Z8WG9Dffjw==}
     dev: true
 
+  /@cloudflare/workers-types/3.13.0:
+    resolution: {integrity: sha512-oyhzfYlWBLgd9odJ/WHcsD/8B+IaAjSD+OcPEGLzX5kGRONjwcW3NY0WQfsVIhQzZ6AbPzjwkmj4D2VFwU1xRQ==}
+    dev: true
+
   /@csstools/postcss-color-function/1.1.0_postcss@8.4.12:
     resolution: {integrity: sha512-5D5ND/mZWcQoSfYnSPsXtuiFxhzmhxt6pcjrFLJyldj+p0ZN2vvRpYNX+lahFTtMhAYOa2WmkdGINr0yP0CvGA==}
     engines: {node: ^12 || ^14 || >=16}
@@ -4805,6 +4817,10 @@ packages:
   /@tootallnate/once/1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
+    dev: true
+
+  /@tsndr/cloudflare-worker-jwt/1.4.2:
+    resolution: {integrity: sha512-Yn4gZNPa3cTaf1CWm0pjr5KFQPZLPeHxY9OHbV2gjj4bIOiLYryeCQIjGvqaxNDy7OVImLjNZREACpVdIslyFA==}
     dev: true
 
   /@types/asn1js/2.0.2:

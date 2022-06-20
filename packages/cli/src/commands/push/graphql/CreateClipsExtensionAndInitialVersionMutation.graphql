@@ -12,6 +12,5 @@ mutation CreateClipsExtensionAndInitialVersion(
       id
       name
     }
-    signedScriptUpload
   }
 }
