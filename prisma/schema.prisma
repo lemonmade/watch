@@ -90,7 +90,7 @@ model Series {
   handle      String?
   firstAired  DateTime?
   status      SeriesStatus
-  overview    String?      @db.VarChar(500)
+  overview    String?      @db.VarChar(1000)
   posterUrl   String?
   seasonCount Int
 
@@ -124,7 +124,7 @@ model Season {
   number       Int
   status       SeasonStatus @default(CONTINUING)
   firstAired   DateTime?
-  overview     String?      @db.VarChar(500)
+  overview     String?      @db.VarChar(1000)
   posterUrl    String?
   episodeCount Int
 
@@ -145,7 +145,7 @@ model Episode {
   number     Int
   title      String
   firstAired DateTime?
-  overview   String?   @db.VarChar(500)
+  overview   String?   @db.VarChar(1000)
   stillUrl   String?
 
   season   Season @relation(fields: [seasonId], references: [id])
