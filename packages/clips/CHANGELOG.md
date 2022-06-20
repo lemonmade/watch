@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.3
+
+### Patch Changes
+
+- [`8fc040e`](https://github.com/lemonmade/watch/commit/8fc040ec1bc83603fc3dba6472bf17cb048610df) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
 ## 0.2.2
 
 ### Patch Changes
