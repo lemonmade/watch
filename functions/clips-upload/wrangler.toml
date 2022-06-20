@@ -1,0 +1,12 @@
+name = "watch-internal-upload-clips"
+main = "./build/runtime/index.mjs"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+# Needs secrets:
+# - JWT_SECRET
+
+[[r2_buckets]]
+binding = "CLIPS_ASSETS"
+bucket_name = "watch-clips-assets"

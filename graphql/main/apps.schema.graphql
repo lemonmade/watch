@@ -24,7 +24,7 @@ extend type Mutation {
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
   pushClipsExtension(
     extensionId: ID!
-    hash: String!
+    code: String!
     name: String
     translations: JSON
     supports: [ClipsExtensionPointSupportInput!]
@@ -249,7 +249,7 @@ union AppExtensionInstallation = ClipsExtensionInstallation
 # Mutations
 
 input CreateClipsInitialVersion {
-  hash: String!
+  code: String!
   translations: JSON
   supports: [ClipsExtensionPointSupportInput!]
   configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
@@ -271,7 +271,6 @@ type CreateClipsExtensionPayload {
   app: App
   extension: ClipsExtension
   version: ClipsExtensionVersion
-  signedScriptUpload: Url
 }
 
 type DeleteClipsExtensionPayload {
@@ -287,7 +286,6 @@ type UpdateClipsExtensionPayload {
 type PushClipsExtensionPayload {
   extension: ClipsExtension
   version: ClipsExtensionVersion
-  signedScriptUpload: Url
 }
 
 type PublishClipsExtensionVersionPayload {

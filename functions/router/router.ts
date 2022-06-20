@@ -1,13 +1,10 @@
 const APP_HOST = 'watch-test-app.fly.dev';
 
-interface CloudflareR2Bucket {
-  get(key: string): any;
-}
-
 // TODO: caching
 const handler: ExportedHandler<{
-  APP_ASSETS: CloudflareR2Bucket;
-  CLIPS_ASSETS: CloudflareR2Bucket;
+  APP_ASSETS: R2Bucket;
+  CLIPS_ASSETS: R2Bucket;
+  SERVICE_CLIPS_UPLOAD: Fetcher;
 }> = {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -19,6 +16,12 @@ const handler: ExportedHandler<{
 
     if (pathname.startsWith('/assets/clips/')) {
       return assetFromBucket(url, env.CLIPS_ASSETS);
+    }
+
+    if (pathname === '/internal/upload/clips') {
+      return env.SERVICE_CLIPS_UPLOAD.fetch(
+        new Request(new URL('/', url).href, request),
+      );
     }
 
     return rewriteAndFetch(request, (url) => {

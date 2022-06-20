@@ -3,7 +3,6 @@ import '@quilted/polyfills/fetch';
 import * as path from 'path';
 import {statSync} from 'fs';
 import {readFile} from 'fs/promises';
-import {createHash} from 'crypto';
 
 import {PrintableError, Ui} from '../../ui';
 import {authenticate} from '../../utilities/authentication';
@@ -161,24 +160,21 @@ async function pushExtension(
   },
 ): Promise<PushResult> {
   let result: PushResult;
-  let assetUploadUrl: string | undefined;
 
   const {directory, filename} = buildDetailsForExtension(extension, app);
 
-  const [scriptContents, translations] = await Promise.all([
+  const [code, translations] = await Promise.all([
     readFile(path.join(directory, filename), {
       encoding: 'utf8',
     }),
     loadTranslationsForExtension(extension),
   ]);
 
-  const hash = createHash('sha256').update(scriptContents).digest('hex');
-
   const buildOptions: Pick<
     PushClipsExtensionMutationVariables,
-    'hash' | 'supports' | 'translations' | 'configurationSchema'
+    'code' | 'supports' | 'translations' | 'configurationSchema'
   > = {
-    hash,
+    code,
     translations:
       translations && JSON.stringify(flattenTranslations(translations)),
     supports: extension.extensionPoints.map((supported) => {
@@ -250,7 +246,6 @@ async function pushExtension(
     }
 
     result = {extension, isNew: false};
-    assetUploadUrl = data?.pushClipsExtension.signedScriptUpload ?? undefined;
   } else {
     const {data} = await graphql(
       createClipsExtensionAndInitialVersionMutation,
@@ -272,32 +267,6 @@ async function pushExtension(
     }
 
     result = {extension, isNew: true};
-    assetUploadUrl = data?.createClipsExtension.signedScriptUpload ?? undefined;
-  }
-
-  if (assetUploadUrl == null) {
-    throw new PrintableError(
-      `We could not upload your ${ui.Code(
-        extension.name,
-      )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
-    );
-  }
-
-  const assetUploadResult = await fetch(assetUploadUrl, {
-    method: 'PUT',
-    body: scriptContents,
-    headers: {
-      'Content-Length': String(scriptContents.length),
-      'Content-Type': 'application/javascript',
-    },
-  });
-
-  if (!assetUploadResult.ok) {
-    throw new PrintableError(
-      `We could not upload your ${ui.Code(
-        extension.name,
-      )} extension’s assets. This shouldn’t have happened, so you might need to try running this command again. Sorry about that!`,
-    );
   }
 
   return result;

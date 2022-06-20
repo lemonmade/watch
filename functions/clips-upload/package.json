@@ -5,7 +5,8 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "@cloudflare/workers-types": "^3.13.0"
+    "@cloudflare/workers-types": "^3.13.0",
+    "@tsndr/cloudflare-worker-jwt": "^1.4.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/service"

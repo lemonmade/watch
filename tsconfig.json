@@ -26,6 +26,9 @@
       "path": "./functions/shared"
     },
     {
+      "path": "./functions/clips-upload"
+    },
+    {
       "path": "./functions/email"
     },
     {
