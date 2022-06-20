@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 0.4.8
+
+### Patch Changes
+
+- [#142](https://github.com/lemonmade/watch/pull/142) [`6bd7dd6`](https://github.com/lemonmade/watch/commit/6bd7dd63b2eb7227cff19b7b195bb559d815b2d4) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix local app and extension mappings
+
 ## 0.4.7
 
 ### Patch Changes
