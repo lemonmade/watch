@@ -55,9 +55,9 @@ importers:
       '@lemon/zest': workspace:*
       '@prisma/client': ^3.15.0
       '@quilted/react-query': ^0.1.8
-      '@remote-ui/async-subscription': ^2.1.9
-      '@remote-ui/core': ^2.1.9
-      '@remote-ui/react': ^4.5.1
+      '@remote-ui/async-subscription': ^2.1.10
+      '@remote-ui/core': ^2.1.12
+      '@remote-ui/react': ^4.5.4
       '@types/common-tags': ^1.8.0
       '@watching/clips': workspace:*
       '@watching/graphql': workspace:*
@@ -81,9 +81,9 @@ importers:
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
       '@quilted/react-query': 0.1.8_2857e3cd85c007d96e7b5fc9c825e353
-      '@remote-ui/async-subscription': 2.1.9
-      '@remote-ui/core': 2.1.10
-      '@remote-ui/react': 4.5.2_@quilted+react@17.0.2
+      '@remote-ui/async-subscription': 2.1.10
+      '@remote-ui/core': 2.1.12
+      '@remote-ui/react': 4.5.4_@quilted+react@17.0.2
       '@types/common-tags': 1.8.1
       '@watching/clips': link:../packages/clips
       '@watching/graphql': link:../packages/graphql
@@ -170,6 +170,7 @@ importers:
       '@quilted/http-handlers': ^0.2.36
       '@quilted/polyfills': ^0.2.26
       '@quilted/threads': ^0.1.2
+      '@remote-ui/mini-react': ^1.3.12
       '@rollup/plugin-alias': ^3.0.0
       '@rollup/plugin-commonjs': ^19.0.0
       '@rollup/plugin-node-resolve': ^13.0.0
@@ -188,6 +189,7 @@ importers:
       graphql: ^15.0.0
       mime: ^2.5.0
       open: ^8.0.0
+      pkg-dir: ^6.0.0
       pretty-bytes: ^5.6.0
       rollup: ^2.0.0
       rollup-plugin-esbuild: ^4.0.0
@@ -207,6 +209,7 @@ importers:
       '@quilted/http-handlers': 0.2.36
       '@quilted/polyfills': 0.2.26
       '@quilted/threads': 0.1.2
+      '@remote-ui/mini-react': 1.3.12
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
       '@rollup/plugin-commonjs': 19.0.2_rollup@2.70.1
       '@rollup/plugin-node-resolve': 13.1.3_rollup@2.70.1
@@ -222,6 +225,7 @@ importers:
       graphql: 15.8.0
       mime: 2.6.0
       open: 8.4.0
+      pkg-dir: 6.0.1
       pretty-bytes: 5.6.0
       rollup: 2.70.1
       rollup-plugin-esbuild: 4.8.2_esbuild@0.12.29+rollup@2.70.1
@@ -235,25 +239,25 @@ importers:
 
   packages/clips:
     specifiers:
-      '@remote-ui/async-subscription': ^2.1.8
-      '@remote-ui/core': ^2.1.7
+      '@remote-ui/async-subscription': ^2.1.10
+      '@remote-ui/core': ^2.1.12
     dependencies:
-      '@remote-ui/async-subscription': 2.1.9
-      '@remote-ui/core': 2.1.10
+      '@remote-ui/async-subscription': 2.1.10
+      '@remote-ui/core': 2.1.12
 
   packages/clips-react:
     specifiers:
-      '@remote-ui/async-subscription': ^2.1.8
-      '@remote-ui/core': ^2.1.7
-      '@remote-ui/mini-react': ^1.3.7
-      '@remote-ui/react': ^4.4.2
+      '@remote-ui/async-subscription': ^2.1.10
+      '@remote-ui/core': ^2.1.12
+      '@remote-ui/mini-react': ^1.3.12
+      '@remote-ui/react': ^4.5.4
       '@types/react': ^17.0.0
       '@watching/clips': ^0.2.1
     dependencies:
-      '@remote-ui/async-subscription': 2.1.9
-      '@remote-ui/core': 2.1.10
-      '@remote-ui/mini-react': 1.3.10_feb86f6c62b8148cb26c1d5154540894
-      '@remote-ui/react': 4.5.2_@quilted+react@17.0.2
+      '@remote-ui/async-subscription': 2.1.10
+      '@remote-ui/core': 2.1.12
+      '@remote-ui/mini-react': 1.3.12_44665dc670858ec35c7dce8fe803304f
+      '@remote-ui/react': 4.5.4_@quilted+react@17.0.2
       '@types/react': 17.0.45
       '@watching/clips': link:../clips
 
@@ -4644,19 +4648,19 @@ packages:
       common-tags: 1.8.2
     dev: true
 
-  /@remote-ui/async-subscription/2.1.9:
-    resolution: {integrity: sha512-+5UmqyjQJXLJLOVbEBvfzc/Yt4mV/9J36IGJhCJdpdEmIBde7DjkWBt91eSFxa3+Zx6Enq1unkBl4rqosYgpgw==}
+  /@remote-ui/async-subscription/2.1.10:
+    resolution: {integrity: sha512-nVWh4QjnKPDDFpis7w6Qu3X47Uff380oWs5qoSis/B2pIXDauqxhg1vneNxkxXlJnHoPKq4tTRJvPG0bmU2IVA==}
     dependencies:
-      '@remote-ui/rpc': 1.3.0
+      '@remote-ui/rpc': 1.3.1
 
-  /@remote-ui/core/2.1.10:
-    resolution: {integrity: sha512-zHDO9yxli61QrfQO8U7HP82KHYLtBRjFUDrsVxMOsZpmMQI53wBX0ohWtcEqZUjcmf1l67ck03GFMOr3L3uGpw==}
+  /@remote-ui/core/2.1.12:
+    resolution: {integrity: sha512-smjkHOt3lbtod/hU2JPIUqDOFopRt+xkL64eHQ0XrdGn4W1AwWVHfZkyY/02kWiekpdg96VtKh1OW053zdppiA==}
     dependencies:
-      '@remote-ui/rpc': 1.3.0
+      '@remote-ui/rpc': 1.3.1
       '@remote-ui/types': 1.1.2
 
-  /@remote-ui/mini-react/1.3.10_feb86f6c62b8148cb26c1d5154540894:
-    resolution: {integrity: sha512-5f7vSBGulE7BblIXJpKXZPClEfp4UndopLcwcpRWD2//WqA9elsx6pZsDjZ0XZD/FJLM1Ho+ITucWTLELGyZhg==}
+  /@remote-ui/mini-react/1.3.12:
+    resolution: {integrity: sha512-Tbfz9HweCUfEclby3T9MiP2UY5we4hLjXBQl70dIYJZME/Q6nlnDmqErZV6pV9Rv3++RLzrKy3WUCnolyZXLIg==}
     peerDependencies:
       '@quilted/react-testing': ^0.3.0
       '@remote-ui/async-subscription': ^2.0.0
@@ -4666,25 +4670,40 @@ packages:
       '@remote-ui/async-subscription':
         optional: true
     dependencies:
-      '@remote-ui/async-subscription': 2.1.9
-      '@remote-ui/core': 2.1.10
+      '@remote-ui/core': 2.1.12
       htm: 3.1.1
     dev: false
 
-  /@remote-ui/react/4.5.2_@quilted+react@17.0.2:
-    resolution: {integrity: sha512-2DKqo0x31Tk+9nqfNaBeOvOVl51fw9EYoJj7qTniPE2K2XncJIJsqghd9Ok2yyxXKoMZvBCG4F/uZ4R8onJ6Iw==}
+  /@remote-ui/mini-react/1.3.12_44665dc670858ec35c7dce8fe803304f:
+    resolution: {integrity: sha512-Tbfz9HweCUfEclby3T9MiP2UY5we4hLjXBQl70dIYJZME/Q6nlnDmqErZV6pV9Rv3++RLzrKy3WUCnolyZXLIg==}
+    peerDependencies:
+      '@quilted/react-testing': ^0.3.0
+      '@remote-ui/async-subscription': ^2.0.0
+    peerDependenciesMeta:
+      '@quilted/react-testing':
+        optional: true
+      '@remote-ui/async-subscription':
+        optional: true
     dependencies:
-      '@remote-ui/async-subscription': 2.1.9
-      '@remote-ui/core': 2.1.10
-      '@remote-ui/rpc': 1.3.0
+      '@remote-ui/async-subscription': 2.1.10
+      '@remote-ui/core': 2.1.12
+      htm: 3.1.1
+    dev: false
+
+  /@remote-ui/react/4.5.4_@quilted+react@17.0.2:
+    resolution: {integrity: sha512-cBa5OzXwGH40czjh7gmPPVNKarbo9KCbFmxn9XVmeIIbMJtxYWtuCRXXdRcauoWeRfx5qOThf0zLdX4JyuT+PA==}
+    dependencies:
+      '@remote-ui/async-subscription': 2.1.10
+      '@remote-ui/core': 2.1.12
+      '@remote-ui/rpc': 1.3.1
       '@types/react': 17.0.45
       '@types/react-reconciler': 0.26.7
       react-reconciler: 0.26.2_@quilted+react@17.0.2
     transitivePeerDependencies:
       - react
 
-  /@remote-ui/rpc/1.3.0:
-    resolution: {integrity: sha512-tO0nYON8IhErx/DYxufo7ccwnSh1Vo5mS41HAjUQ+fCctNmRABug0tjvCdOq1E6R6JAq1EbxN0U5w+7pYMcaFg==}
+  /@remote-ui/rpc/1.3.1:
+    resolution: {integrity: sha512-mdz1jQf5UPBOpSJaFF4XhCotBwVTVeUV01Pf6wZmIoEbHn/2m6g2b44qT3qHLOsEWTKF8LVpNtEQqS9yKCLxZQ==}
 
   /@remote-ui/types/1.1.2:
     resolution: {integrity: sha512-F2u6McqvHj2c89FHeozQ0O8qbqhOFMMNYR2HqF33mHCMNTEXzUVheCj7laNO1/dGNXwcJHpoWIBNwfChbEfVyA==}

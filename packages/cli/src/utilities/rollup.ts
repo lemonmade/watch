@@ -1,4 +1,5 @@
 import * as path from 'path';
+import {createRequire} from 'module';
 
 import type {RollupOptions, Plugin} from 'rollup';
 import commonjs from '@rollup/plugin-commonjs';
@@ -10,10 +11,18 @@ import type {LocalExtension} from './app';
 
 const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.tsx';
 
-export function createRollupConfiguration(
+const require = createRequire(import.meta.url);
+
+export async function createRollupConfiguration(
   extension: LocalExtension,
   {mode = 'production'}: {mode?: 'development' | 'production'} = {},
-): RollupOptions {
+): Promise<RollupOptions> {
+  const {packageDirectory} = await import('pkg-dir');
+
+  const remoteUiMiniReactAlias = await packageDirectory({
+    cwd: require.resolve('@remote-ui/mini-react'),
+  });
+
   return {
     input: MAGIC_MODULE_EXTENSION_ENTRY,
     plugins: [
@@ -54,6 +63,7 @@ export function createRollupConfiguration(
           'react-dom': '@remote-ui/mini-react/compat',
           '@remote-ui/react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
           '@remote-ui/react': '@remote-ui/mini-react/compat',
+          '@remote-ui/mini-react': remoteUiMiniReactAlias,
         },
       }),
       nodeResolve({

@@ -59,7 +59,7 @@ export async function develop({ui}: {ui: Ui}) {
   }
 
   await ensureRootOutputDirectory(app);
-  const devServer = createDevServer(app, {ui});
+  const devServer = await createDevServer(app, {ui});
 
   try {
     const result = await devServer.listen();
@@ -91,11 +91,11 @@ export async function develop({ui}: {ui: Ui}) {
   }
 }
 
-function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
+async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
-  const builder = createBuilder(app, {ui, outputRoot});
+  const builder = await createBuilder(app, {ui, outputRoot});
   const resolver = createQueryResolver(app, {builder});
 
   handler.get('/', () =>
@@ -244,17 +244,17 @@ function createWebSocketServer(
   return webSocketServer;
 }
 
-function createBuilder(
+async function createBuilder(
   app: LocalApp,
   {ui, outputRoot}: {ui: Ui; outputRoot: string},
-): Builder {
+): Promise<Builder> {
   const buildStateByExtension = new Map<string, BuildState>();
   const emitter = createEmitter<{
     update: {readonly extension: LocalExtension; readonly state: BuildState};
   }>();
 
   for (const extension of app.extensions) {
-    const baseConfiguration = createRollupConfiguration(extension, {
+    const baseConfiguration = await createRollupConfiguration(extension, {
       mode: 'development',
     });
 

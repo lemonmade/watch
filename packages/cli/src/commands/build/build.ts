@@ -45,7 +45,7 @@ export async function build({ui}: {ui: Ui}) {
 
   const builds = await Promise.all(
     app.extensions.map(async (extension) => {
-      const bundle = await rollup(createRollupConfiguration(extension, {mode: 'production'}));
+      const bundle = await rollup(await createRollupConfiguration(extension, {mode: 'production'}));
       const {directory, filename} = buildDetailsForExtension(extension, app);
 
       const {output: [{code}]} = await bundle.write({
