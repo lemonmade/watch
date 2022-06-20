@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 0.4.6
+
+### Patch Changes
+
+- [`da5f101`](https://github.com/lemonmade/watch/commit/da5f1011b8d3c941e46d5c590874149d63ebcd37) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade quilt libraries
+
+* [`2891a13`](https://github.com/lemonmade/watch/commit/2891a13d259399245b33e204e3a92e21010458d5) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt to fix abort controller issue
+
+- [`d208288`](https://github.com/lemonmade/watch/commit/d208288602033e0f8a4f94146e980dadcce557e2) Thanks [@lemonmade](https://github.com/lemonmade)! - Move to quilt thread/ event libraries
+
+* [#140](https://github.com/lemonmade/watch/pull/140) [`e75f6bd`](https://github.com/lemonmade/watch/commit/e75f6bd551ece3ff8b3bb579858b21f42fb22e11) Thanks [@lemonmade](https://github.com/lemonmade)! - Update clips deploy API calls
+
 ## 0.4.5
 
 ### Patch Changes
