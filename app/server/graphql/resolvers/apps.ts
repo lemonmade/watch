@@ -96,14 +96,13 @@ export const Query: Pick<
       }
 
       return resolvedConditions.every(({series}) => {
-        return ((version.supports as any[]) ?? []).every((supports: any) => {
+        return ((version.supports as any[]) ?? []).some((supports: any) => {
           return (
-            extensionPoint !== supports.extensionPoint ||
-            supports.conditions.every(
+            extensionPoint === supports.name &&
+            supports.conditions.some(
               (supportCondition: any) =>
                 supportCondition.series == null ||
-                supportCondition.series.handle ===
-                  (series.handle ?? toHandle(series.name)),
+                supportCondition.series.handle === series.handle,
             )
           );
         });
