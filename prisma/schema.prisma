@@ -291,7 +291,7 @@ model ClipsExtensionVersion {
   id                  String                      @id @default(uuid())
   status              ClipsExtensionVersionStatus
   apiVersion          ClipsApiVersion
-  scriptUrl           String?
+  scriptUrl           String?                     @db.VarChar(400)
   supports            Json?
   translations        Json?
   configurationSchema Json?
