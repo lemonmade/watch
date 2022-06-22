@@ -4,21 +4,7 @@ import jwt from '@tsndr/cloudflare-worker-jwt';
 
 const handler = createHttpHandler();
 
-handler.any(async (request, context) => {
-  if (request.method !== 'PUT') {
-    return json(
-      {error: 'You must call this API with a PUT method'},
-      {
-        status: 405,
-        headers: {
-          Allow: 'PUT',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'PUT',
-        },
-      },
-    );
-  }
-
+handler.put(async (request, context) => {
   const token = request.body ?? '';
   const valid = await jwt.verify(token, context.env.JWT_SECRET);
 
@@ -78,5 +64,19 @@ handler.any(async (request, context) => {
     },
   );
 });
+
+handler.any(() =>
+  json(
+    {error: 'You must call this API with a PUT method'},
+    {
+      status: 405,
+      headers: {
+        Allow: 'PUT',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'PUT',
+      },
+    },
+  ),
+);
 
 export default handler;
