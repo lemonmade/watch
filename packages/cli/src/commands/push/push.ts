@@ -280,7 +280,7 @@ async function loadTranslationsForExtension(extension: LocalExtension) {
     );
     return JSON.parse(result);
   } catch {
-    return null;
+    // intentional no-op
   }
 }
 

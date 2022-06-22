@@ -38,7 +38,10 @@ export function Apps() {
                 <BlockStack>
                   {app.extensions
                     .filter(
-                      (extension) => extension.__typename === 'ClipsExtension',
+                      (extension) =>
+                        extension.__typename === 'ClipsExtension' &&
+                        // TODO: should not be able to load unpublished extensions!
+                        extension.latestVersion != null,
                     )
                     .map((extension: any) => (
                       <View key={extension.id}>
@@ -50,8 +53,7 @@ export function Apps() {
                                 installExtension.mutate({
                                   id: extension.id,
                                   extensionPoint:
-                                    extension.latestVersion?.supports[0]
-                                      ?.extensionPoint,
+                                    extension.latestVersion?.supports[0]?.name,
                                 });
                               }}
                             >
