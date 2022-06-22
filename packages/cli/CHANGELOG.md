@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 0.4.9
+
+### Patch Changes
+
+- [`22f39ca`](https://github.com/lemonmade/watch/commit/22f39ca12691995161f7f5cff4ed7969f95d6083) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix some clip installation issues
+
 ## 0.4.8
 
 ### Patch Changes
