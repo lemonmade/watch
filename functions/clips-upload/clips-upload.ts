@@ -4,7 +4,7 @@ import jwt from '@tsndr/cloudflare-worker-jwt';
 
 const handler = createHttpHandler();
 
-handler.any('/', async (request, context) => {
+handler.any(async (request, context) => {
   if (request.method !== 'PUT') {
     return json(
       {error: 'You must call this API with a PUT method'},
@@ -58,7 +58,14 @@ handler.any('/', async (request, context) => {
     );
   }
 
-  await context.env.CLIPS_ASSETS.put(path, code);
+  const bucket: R2Bucket = context.env.CLIPS_ASSETS;
+
+  await bucket.put(path, code, {
+    httpMetadata: {
+      contentType: 'text/javascript',
+      cacheControl: 'public, max-age=31536000, immutable',
+    },
+  });
 
   return json(
     {path},
