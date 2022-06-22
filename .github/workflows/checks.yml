@@ -20,7 +20,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-type-check@v2
         with:
-          cache-key: v7
+          cache-key: v8
 
   unit-tests:
     name: Unit tests 🧪
