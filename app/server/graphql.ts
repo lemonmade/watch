@@ -1,5 +1,5 @@
 import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
-import type {Request} from '@quilted/quilt/http-handlers';
+import type {EnhancedRequest} from '@quilted/quilt/http-handlers';
 
 import {getUserIdFromRequest} from './shared/auth';
 import {createPrisma} from './shared/database';
@@ -22,7 +22,7 @@ handler.options(() =>
 );
 
 handler.post(async (request) => {
-  const {operationName, query, variables} = JSON.parse(String(request.body!));
+  const {operationName, query, variables} = await request.json();
 
   /* eslint-disable no-console */
   console.log(`Performing operation: ${operationName}`);
@@ -106,7 +106,7 @@ function loadSchema() {
 }
 
 async function authenticate(
-  request: Request,
+  request: EnhancedRequest,
   prisma: Prisma,
 ): Promise<Authentication> {
   const cookieAuthUserId = await getUserIdFromRequest(request);

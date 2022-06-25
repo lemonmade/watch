@@ -119,7 +119,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
 
   handler.post('/graphql', async (request) => {
     try {
-      const {query, variables} = JSON.parse(request.body ?? '{}');
+      const {query, variables} = await request.json();
 
       const result = await run(query, resolver, {
         variables,

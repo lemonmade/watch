@@ -121,6 +121,7 @@ export function LocalClip<T extends ExtensionPoint>({
         signal: abort.signal,
         variables: {id},
       })) {
+        console.log(result);
         const extension = result.data?.app?.clipsExtension;
         if (extension == null) continue;
         setBuildState(extension.build);
