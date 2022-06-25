@@ -5,7 +5,7 @@ import jwt from '@tsndr/cloudflare-worker-jwt';
 const handler = createHttpHandler();
 
 handler.put(async (request, context) => {
-  const token = request.body ?? '';
+  const token = await request.text();
   const valid = await jwt.verify(token, context.env.JWT_SECRET);
 
   if (!valid) {

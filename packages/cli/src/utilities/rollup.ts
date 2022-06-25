@@ -84,11 +84,9 @@ export async function createRollupConfiguration(
         minify: false,
         target: 'es2017',
         loaders: {'.esnext': 'js'},
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
       esbuildWithJSXRuntime({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
       ...(mode === 'production' ? [minifyChunkWithESBuild()] : []),

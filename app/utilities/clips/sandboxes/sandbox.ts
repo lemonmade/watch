@@ -20,7 +20,7 @@ const clips: ClipsApi = Object.freeze({
   extend(extensionPoint, extend) {
     registeredExtensions.set(extensionPoint, extend);
   },
-});
+} as ClipsApi);
 
 Reflect.defineProperty(self, 'clips', {
   value: clips,

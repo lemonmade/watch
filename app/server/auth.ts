@@ -25,11 +25,13 @@ handler.get('/github/connect', startGithubOAuth);
 handler.get('/github/connect/callback', handleGithubOAuthConnect);
 
 handler.get((request) => {
-  // eslint-disable-next-line no-console
-  console.log('Fallback route', request.url.href);
+  const url = new URL(request.url);
 
-  const loginUrl = new URL('/login', request.url);
-  const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
+  // eslint-disable-next-line no-console
+  console.log('Fallback route', url.href);
+
+  const loginUrl = new URL('/login', url);
+  const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
 
   if (redirectTo) {
     loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
