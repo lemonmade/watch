@@ -1,12 +1,11 @@
-import type {Request} from '@quilted/quilt/http-handlers';
-
 export {createPrisma} from '../shared/database';
 export type {Prisma} from '../shared/database';
 
 export function validateRedirectTo(
   redirectTo: string | undefined,
-  {url}: Request,
+  request: Request,
 ) {
+  const url = new URL(request.url);
   const normalizedRedirectTo =
     typeof redirectTo === 'string' ? new URL(redirectTo, url) : redirectTo;
 

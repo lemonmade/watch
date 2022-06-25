@@ -1,9 +1,8 @@
 import crypto from 'crypto';
 import Env from '@quilted/quilt/env';
-import {redirect, html, fetchJson} from '@quilted/quilt/http-handlers';
+import {redirect, html, EnhancedResponse} from '@quilted/quilt/http-handlers';
 import type {
-  Request,
-  Response,
+  EnhancedRequest,
   CookieOptions,
 } from '@quilted/quilt/http-handlers';
 import {createGraphQLHttpFetch} from '@quilted/quilt';
@@ -52,13 +51,14 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-export function startGithubOAuth(request: Request) {
+export function startGithubOAuth(request: EnhancedRequest) {
   const state = crypto
     .randomBytes(15)
     .map((byte) => byte % 10)
     .join('');
 
-  const redirectTo = request.url.searchParams.get(SearchParam.RedirectTo);
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
 
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubOAuthUrl.searchParams.set(
@@ -68,10 +68,7 @@ export function startGithubOAuth(request: Request) {
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
 
-  const callbackUrl = new URL(
-    'callback',
-    `${request.url.origin}${request.url.pathname}/`,
-  );
+  const callbackUrl = new URL('callback', `${url.origin}${url.pathname}/`);
 
   if (redirectTo) {
     callbackUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
@@ -87,7 +84,7 @@ export function startGithubOAuth(request: Request) {
 
   const cookieOptions = {
     ...DEFAULT_COOKIE_OPTIONS,
-    path: request.url.pathname,
+    path: url.pathname,
   };
 
   response.cookies.set(Cookie.State, state, cookieOptions);
@@ -95,7 +92,7 @@ export function startGithubOAuth(request: Request) {
   return response;
 }
 
-export function handleGithubOAuthSignIn(request: Request) {
+export function handleGithubOAuthSignIn(request: EnhancedRequest) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartSignIn({
@@ -131,7 +128,7 @@ export function handleGithubOAuthSignIn(request: Request) {
 
 function completeSignIn(
   userId: string,
-  {request, redirectTo}: {request: Request; redirectTo?: string},
+  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -143,7 +140,7 @@ function completeSignIn(
   );
 }
 
-export function handleGithubOAuthCreateAccount(request: Request) {
+export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartCreateAccount({
@@ -207,7 +204,7 @@ export function handleGithubOAuthCreateAccount(request: Request) {
 
 function completeCreateAccount(
   userId: string,
-  {request, redirectTo}: {request: Request; redirectTo?: string},
+  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -219,7 +216,7 @@ function completeCreateAccount(
   );
 }
 
-export function handleGithubOAuthConnect(request: Request) {
+export function handleGithubOAuthConnect(request: EnhancedRequest) {
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartConnect({redirectTo, request});
@@ -294,7 +291,7 @@ export function handleGithubOAuthConnect(request: Request) {
 
 function completeConnect(
   userId: string,
-  {request, redirectTo}: {request: Request; redirectTo?: string},
+  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -318,22 +315,23 @@ enum GithubCallbackFailureReason {
 }
 
 interface GithubCallbackFailureResult {
-  readonly request: Request;
+  readonly request: EnhancedRequest;
   readonly reason: GithubCallbackFailureReason;
   readonly redirectTo?: string;
 }
 
 async function handleGithubOAuthCallback(
-  request: Request,
+  request: EnhancedRequest,
   {
     onSuccess,
     onFailure,
   }: {
     onSuccess(result: GithubCallbackResult): Response | Promise<Response>;
-    onFailure(result: GithubCallbackFailureResult): Response;
+    onFailure(result: GithubCallbackFailureResult): EnhancedResponse;
   },
 ) {
-  const {url, cookies} = request;
+  const url = new URL(request.url);
+  const {cookies} = request;
 
   const redirectTo = url.searchParams.get(SearchParam.RedirectTo) ?? undefined;
 
@@ -349,24 +347,33 @@ async function handleGithubOAuthCallback(
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const {access_token: accessToken} = await fetchJson<{access_token: string}>(
+  const accessTokenResponse = await fetch(
     'https://github.com/login/oauth/access_token',
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: Env.GITHUB_CLIENT_ID,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret: Env.GITHUB_CLIENT_SECRET,
-      code,
-      state,
+      method: 'POST',
+      body: JSON.stringify({
+        client_id: Env.GITHUB_CLIENT_ID,
+        client_secret: Env.GITHUB_CLIENT_SECRET,
+        code,
+        state,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     },
   );
+
+  const accessTokenJson = (await accessTokenResponse.json()) as {
+    access_token: string;
+  };
+
+  const {access_token: accessToken} = accessTokenJson;
 
   const queryGithub = createGraphQLHttpFetch({
     uri: 'https://api.github.com/graphql',
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
     },
   });
 
@@ -411,7 +418,7 @@ function restartSignIn({
   reason = SignInErrorReason.Generic,
   redirectTo,
 }: {
-  request: Request;
+  request: EnhancedRequest;
   reason?: SignInErrorReason;
   redirectTo?: string;
 }) {
@@ -439,7 +446,7 @@ function restartCreateAccount({
   reason = CreateAccountErrorReason.Generic,
   redirectTo,
 }: {
-  request: Request;
+  request: EnhancedRequest;
   reason?: CreateAccountErrorReason;
   redirectTo?: string;
 }) {
@@ -469,7 +476,7 @@ function restartConnect({
   request,
   redirectTo,
 }: {
-  request: Request;
+  request: EnhancedRequest;
   redirectTo?: string;
 }) {
   const targetUrl = validatedRedirectUrl(redirectTo, request);
@@ -492,7 +499,7 @@ function modalAuthResponse({
 }: {
   event: Omit<GithubOAuthMessage, 'topic' | 'redirectTo'>;
   redirectTo: URL;
-  request: Request;
+  request: EnhancedRequest;
 }) {
   const content = stripIndent`
     <html>
@@ -505,7 +512,7 @@ function modalAuthResponse({
                 redirectTo: redirectTo.href,
                 ...event,
               }),
-            )}, ${JSON.stringify(request.url.origin)})
+            )}, ${JSON.stringify(new URL(request.url).origin)})
           } else {
             window.location.replace(${JSON.stringify(redirectTo.href)});
           }
@@ -527,8 +534,8 @@ function modalAuthResponse({
 }
 
 function deleteOAuthCookies(
-  response: Response,
-  {request}: {request?: Request},
+  response: EnhancedResponse,
+  {request}: {request?: EnhancedRequest},
 ) {
   if (request == null || request.cookies.has(Cookie.State)) {
     response.cookies.delete(Cookie.State);

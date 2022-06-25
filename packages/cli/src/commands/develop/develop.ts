@@ -12,7 +12,7 @@ import {
   noContent,
   json,
   notFound,
-  response,
+  EnhancedResponse,
 } from '@quilted/http-handlers';
 import {createHttpServer} from '@quilted/http-handlers/node';
 
@@ -119,7 +119,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
 
   handler.post('/graphql', async (request) => {
     try {
-      const {query, variables} = JSON.parse(request.body ?? '{}');
+      const {query, variables} = await request.json();
 
       const result = await run(query, resolver, {
         variables,
@@ -154,19 +154,22 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     async (request) => {
       const assetPath = path.join(
         outputRoot,
-        request.url.pathname.replace('/assets/', ''),
+        new URL(request.url).pathname.replace('/assets/', ''),
       );
 
       try {
         const assetStats = await stat(assetPath);
 
         if (assetStats.isFile()) {
-          return response(await readFile(assetPath, {encoding: 'utf8'}), {
-            headers: {
-              'Timing-Allow-Origin': '*',
-              'Content-Type': mime.getType(assetPath)!,
+          return new EnhancedResponse(
+            await readFile(assetPath, {encoding: 'utf8'}),
+            {
+              headers: {
+                'Timing-Allow-Origin': '*',
+                'Content-Type': mime.getType(assetPath)!,
+              },
             },
-          });
+          );
         } else {
           return notFound();
         }

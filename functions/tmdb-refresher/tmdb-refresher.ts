@@ -11,7 +11,6 @@ declare module '@quilted/quilt/env' {
   }
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 interface TmdbSeries {
   name: string;
   overview?: string;
@@ -38,7 +37,6 @@ interface TmdbSeason {
   poster_path?: string;
   episodes: TmdbEpisode[];
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 const prismaPromise = createPrisma();
 
@@ -158,7 +156,6 @@ async function updateSeries({
 
               return {
                 where: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   seasonId_number: {
                     seasonId: id,
                     number: episode.episode_number,
@@ -233,7 +230,6 @@ async function updateSeries({
   return results.join('\n\n');
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function isOlderThanThirtyDays(episode?: {air_date?: string}) {
   if (episode?.air_date == null) return false;
 

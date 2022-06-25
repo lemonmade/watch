@@ -1,5 +1,4 @@
 import {redirect} from '@quilted/quilt/http-handlers';
-import type {Request} from '@quilted/quilt/http-handlers';
 
 import {
   SearchParam,
@@ -15,7 +14,7 @@ import {
 import {validateRedirectTo, createPrisma} from './shared';
 
 export async function signInFromEmail(request: Request) {
-  const token = request.url.searchParams.get(SearchParam.Token);
+  const token = new URL(request.url).searchParams.get(SearchParam.Token);
 
   if (token == null) {
     return restartSignIn({request});
@@ -69,7 +68,7 @@ export async function signInFromEmail(request: Request) {
 }
 
 export async function createAccountFromEmail(request: Request) {
-  const token = request.url.searchParams.get(SearchParam.Token);
+  const token = new URL(request.url).searchParams.get(SearchParam.Token);
 
   if (token == null) {
     return restartCreateAccount({request});

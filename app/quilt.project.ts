@@ -18,6 +18,8 @@ export default createApp((app) => {
             'DATABASE_URL',
             'JWT_DEFAULT_SECRET',
             'TMDB_ACCESS_TOKEN',
+            'GITHUB_CLIENT_ID',
+            'GITHUB_CLIENT_SECRET',
           ],
         },
       },

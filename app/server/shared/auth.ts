@@ -1,5 +1,8 @@
 import Env from '@quilted/quilt/env';
-import type {Request, Response} from '@quilted/quilt/http-handlers';
+import type {
+  EnhancedRequest,
+  EnhancedResponse,
+} from '@quilted/quilt/http-handlers';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
 declare module '@quilted/quilt/env' {
@@ -50,7 +53,7 @@ export async function verifySignedToken<T = Record<string, unknown>>(
   return {data: data as T, subject: sub || undefined, expired, expiresAt};
 }
 
-export async function getUserIdFromRequest(request: Request) {
+export async function getUserIdFromRequest(request: EnhancedRequest) {
   const cookie = request.cookies.get(Cookie.Auth);
 
   if (!cookie) return undefined;
@@ -63,7 +66,10 @@ export async function getUserIdFromRequest(request: Request) {
   }
 }
 
-export async function addAuthCookies(user: {id: string}, response: Response) {
+export async function addAuthCookies(
+  user: {id: string},
+  response: EnhancedResponse,
+) {
   const token = await createSignedToken(
     {},
     {expiresIn: '7 days', subject: user.id},
@@ -80,9 +86,9 @@ export async function addAuthCookies(user: {id: string}, response: Response) {
   return response;
 }
 
-export function removeAuthCookies<T extends Pick<Response, 'cookies'>>(
+export function removeAuthCookies<T extends Pick<EnhancedResponse, 'cookies'>>(
   response: T,
-  {request}: {request?: Request} = {},
+  {request}: {request?: EnhancedRequest} = {},
 ) {
   if (request == null || request.cookies.has(Cookie.Auth)) {
     response.cookies.delete(Cookie.Auth, {path: '/'});

@@ -18,7 +18,6 @@ export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
   return fetched.json();
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 interface TmdbSeries {
   name: string;
   status: string;
@@ -54,14 +53,12 @@ interface TmdbEpisode {
   season_number: number;
   still_path?: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export async function loadTmdbSeries(
   tmdbId: string,
   {prisma}: Pick<Context, 'prisma'>,
 ) {
   const {external_ids: seriesIds, ...seriesResult} = await tmdbFetch<
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     TmdbSeries & {external_ids: TmdbExternalIds}
   >(`/tv/${tmdbId}?append_to_response=external_ids`);
 

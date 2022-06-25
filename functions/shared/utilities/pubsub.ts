@@ -13,7 +13,7 @@ export function createPubSubHandler<Message = unknown>(
   const handler = createHttpHandler();
 
   handler.post('/', async (request, context) => {
-    const body = JSON.parse(request.body!);
+    const body = await request.json();
 
     /* eslint-disable no-console */
     console.log('Request body:');

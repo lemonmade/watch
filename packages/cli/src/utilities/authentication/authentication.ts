@@ -152,8 +152,8 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
     }),
   );
 
-  handler.post('/', (request) => {
-    const {token} = JSON.parse(request.body ?? '{}');
+  handler.post('/', async (request) => {
+    const {token} = await request.json();
 
     setTimeout(async () => {
       await stopListening();

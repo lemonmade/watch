@@ -1,18 +1,21 @@
-import type {Request, Response} from '@quilted/quilt/http-handlers';
+import type {
+  EnhancedRequest,
+  EnhancedResponse,
+} from '@quilted/quilt/http-handlers';
 
 import type {Prisma} from '../shared/database';
 
 export interface Context {
   readonly user: {id: string};
   readonly prisma: Prisma;
-  readonly request: Request;
+  readonly request: EnhancedRequest;
   readonly response: MutableResponse;
 }
 
 interface MutableResponse {
-  status: Response['status'];
-  readonly headers: Response['headers'];
-  readonly cookies: Response['cookies'];
+  status: EnhancedResponse['status'];
+  readonly headers: EnhancedResponse['headers'];
+  readonly cookies: EnhancedResponse['cookies'];
 }
 
 export type Authentication =
@@ -26,7 +29,7 @@ export type Authentication =
 export function createContext(
   auth: Authentication,
   prisma: Prisma,
-  request: Request,
+  request: EnhancedRequest,
   response: MutableResponse,
 ): Context {
   return {
