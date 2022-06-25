@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 0.4.10
+
+### Patch Changes
+
+- [#145](https://github.com/lemonmade/watch/pull/145) [`994f841`](https://github.com/lemonmade/watch/commit/994f84166a34452c304573b6ebc80c4b5ef687dc) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt dependencies
+
 ## 0.4.9
 
 ### Patch Changes
