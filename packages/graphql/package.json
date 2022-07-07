@@ -9,11 +9,13 @@
   "license": "MIT",
   "exports": {
     ".": {
+      "quilt:source": "./src/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
     },
     "./server": {
+      "quilt:source": "./src/server/index.ts",
       "quilt:esnext": "./build/esnext/server/index.esnext",
       "import": "./build/esm/server/index.mjs",
       "require": "./build/cjs/server/index.cjs"
@@ -31,7 +33,7 @@
   },
   "sideEffects": false,
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/package"
+    "extends": "@quilted/eslint-config/project"
   },
   "dependencies": {
     "graphql": "^16.4.0"

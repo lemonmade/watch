@@ -1,11 +1,11 @@
-import {createService, quiltService} from '@quilted/craft';
+import {createProject, quiltService} from '@quilted/craft';
 
 import {prisma} from '../../config/craft/plugins';
 
-export default createService((service) => {
-  service.entry('./tmdb-refresher');
+export default createProject((service) => {
   service.use(
     quiltService({
+      entry: './tmdb-refresher.ts',
       develop: false,
       polyfill: {features: ['fetch', 'abort-controller']},
     }),

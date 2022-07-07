@@ -9,6 +9,7 @@
   "license": "MIT",
   "exports": {
     ".": {
+      "quilt:source": "./src/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
@@ -27,6 +28,6 @@
     "@remote-ui/core": "^2.1.12"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/package"
+    "extends": "@quilted/eslint-config/project"
   }
 }

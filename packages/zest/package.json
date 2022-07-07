@@ -22,7 +22,7 @@
   "eslintConfig": {
     "extends": [
       "@quilted/eslint-config/react",
-      "@quilted/eslint-config/package"
+      "@quilted/eslint-config/project"
     ]
   }
 }

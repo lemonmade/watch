@@ -25,11 +25,11 @@
     "@graphql-tools/schema": "^7.0.0",
     "@iarna/toml": "^3.0.0",
     "@lemonmade/graphql-live": "^0.1.10",
-    "@quilted/events": "^0.1.5",
-    "@quilted/graphql": "^0.4.39",
-    "@quilted/http-handlers": "^0.2.40",
-    "@quilted/polyfills": "^0.2.27",
-    "@quilted/threads": "^0.1.3",
+    "@quilted/events": "^0.1.8",
+    "@quilted/graphql": "^0.4.42",
+    "@quilted/http-handlers": "^0.2.43",
+    "@quilted/polyfills": "^0.2.30",
+    "@quilted/threads": "^0.1.6",
     "@remote-ui/mini-react": "^1.3.12",
     "@rollup/plugin-alias": "^3.0.0",
     "@rollup/plugin-commonjs": "^19.0.0",
@@ -69,8 +69,10 @@
   },
   "eslintConfig": {
     "extends": [
-      "@quilted/eslint-config/node",
-      "@quilted/eslint-config/package"
-    ]
+      "@quilted/eslint-config/project"
+    ],
+    "env": {
+      "node": true
+    }
   }
 }

@@ -1,7 +1,5 @@
-import {createPackage, quiltPackage} from '@quilted/craft';
+import {createProject, quiltPackage} from '@quilted/craft';
 
-export default createPackage((pkg) => {
-  pkg.entry({source: './src'});
-  pkg.entry({name: 'server', source: './src/server'});
+export default createProject((pkg) => {
   pkg.use(quiltPackage({graphql: true}));
 });

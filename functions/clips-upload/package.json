@@ -9,6 +9,6 @@
     "@tsndr/cloudflare-worker-jwt": "^1.4.0"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/service"
+    "extends": "@quilted/eslint-config/project"
   }
 }
