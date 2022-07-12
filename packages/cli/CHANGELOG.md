@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 0.4.11
+
+### Patch Changes
+
+- [#150](https://github.com/lemonmade/watch/pull/150) [`b9a084d`](https://github.com/lemonmade/watch/commit/b9a084dba65692e565664d98434832c5b688e92a) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt dependencies
+
+- Updated dependencies [[`b9a084d`](https://github.com/lemonmade/watch/commit/b9a084dba65692e565664d98434832c5b688e92a)]:
+  - @watching/clips@0.2.4
+  - @watching/graphql@0.0.1
+
 ## 0.4.10
 
 ### Patch Changes
