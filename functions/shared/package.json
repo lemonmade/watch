@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "@quilted/http-handlers": "^0.2.40",
+    "@quilted/http-handlers": "^0.2.43",
     "aws-sdk": "^2.1096.0",
     "jsonwebtoken": "^8.0.0"
   },
@@ -12,6 +12,6 @@
     "@types/jsonwebtoken": "^8.5.2"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/service"
+    "extends": "@quilted/eslint-config/project"
   }
 }

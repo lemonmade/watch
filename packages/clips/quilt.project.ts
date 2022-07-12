@@ -1,6 +1,5 @@
-import {createPackage, quiltPackage} from '@quilted/craft';
+import {createProject, quiltPackage} from '@quilted/craft';
 
-export default createPackage((pkg) => {
-  pkg.entry({source: './src/index'});
+export default createProject((pkg) => {
   pkg.use(quiltPackage());
 });

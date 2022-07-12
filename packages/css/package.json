@@ -6,6 +6,6 @@
   "main": "src/index.ts",
   "sideEffects": false,
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/package"
+    "extends": "@quilted/eslint-config/project"
   }
 }

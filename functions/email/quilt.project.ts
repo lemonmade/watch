@@ -1,9 +1,9 @@
-import {createService, quiltService} from '@quilted/craft';
+import {createProject, quiltService} from '@quilted/craft';
 
-export default createService((service) => {
-  service.entry('./index');
-  service.use(
+export default createProject((project) => {
+  project.use(
     quiltService({
+      entry: './index.tsx',
       react: true,
       develop: false,
       polyfill: {

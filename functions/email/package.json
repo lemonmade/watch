@@ -11,6 +11,6 @@
     "react-dom": "npm:@quilted/react-dom@^17.0.0"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/service"
+    "extends": "@quilted/eslint-config/project"
   }
 }

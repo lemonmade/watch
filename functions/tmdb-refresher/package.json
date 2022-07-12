@@ -13,6 +13,6 @@
     "prisma": "^3.15.0"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/service"
+    "extends": "@quilted/eslint-config/project"
   }
 }

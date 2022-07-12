@@ -1,10 +1,10 @@
-import {createService, quiltService} from '@quilted/craft';
+import {createProject, quiltService} from '@quilted/craft';
 import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
-export default createService((service) => {
-  service.entry('./clips-upload');
-  service.use(
+export default createProject((project) => {
+  project.use(
     quiltService({
+      entry: './clips-upload.ts',
       develop: false,
     }),
     cloudflareWorkers({

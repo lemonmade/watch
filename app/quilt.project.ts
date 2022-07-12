@@ -1,13 +1,12 @@
-import {createApp, quiltApp, createProjectPlugin} from '@quilted/craft';
-import type {App} from '@quilted/craft';
+import {createProject, quiltApp, createProjectPlugin} from '@quilted/craft';
 import type {} from '@quilted/craft/vite';
 
 import {prisma} from '../config/craft/plugins';
 
-export default createApp((app) => {
-  app.entry('./App.tsx');
+export default createProject((app) => {
   app.use(
     quiltApp({
+      entry: './App.tsx',
       assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
       server: {
@@ -25,7 +24,7 @@ export default createApp((app) => {
       },
     }),
     prisma(),
-    createProjectPlugin<App>({
+    createProjectPlugin({
       name: 'Watch.RandomBits',
       develop({configure}) {
         configure(({viteConfig}) => {
