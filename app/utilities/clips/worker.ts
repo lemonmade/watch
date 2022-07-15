@@ -37,7 +37,7 @@ export function useExtensionSandbox({script, version}: Options) {
     let loadPromise: Promise<void> | undefined;
     let sandbox: ReturnType<typeof createSandbox> | undefined;
     let timings: Writable<SandboxControllerTiming> | undefined;
-    const abort = new AbortController();
+    let abort: AbortController;
     const emitter = createEmitter<{start: void; stop: void; load: void}>();
 
     start();
@@ -101,6 +101,7 @@ export function useExtensionSandbox({script, version}: Options) {
 
       const currentStartId = startId;
 
+      abort = new AbortController();
       timings = {start: Date.now()};
       sandbox = createSandbox({
         signal: abort.signal,
