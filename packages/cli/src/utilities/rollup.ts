@@ -132,7 +132,6 @@ function esbuildWithJSXRuntime(
               {
                 development: false,
                 runtime: 'automatic',
-                importSource: '@remote-ui/mini-react',
               },
             ],
           ],

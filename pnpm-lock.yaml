@@ -170,7 +170,6 @@ importers:
       '@quilted/http-handlers': ^0.2.43
       '@quilted/polyfills': ^0.2.30
       '@quilted/threads': ^0.1.6
-      '@remote-ui/mini-react': ^1.3.12
       '@rollup/plugin-alias': ^3.0.0
       '@rollup/plugin-commonjs': ^19.0.0
       '@rollup/plugin-node-resolve': ^13.0.0
@@ -209,7 +208,6 @@ importers:
       '@quilted/http-handlers': 0.2.43
       '@quilted/polyfills': 0.2.30
       '@quilted/threads': 0.1.6
-      '@remote-ui/mini-react': 1.3.12
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
       '@rollup/plugin-commonjs': 19.0.2_rollup@2.70.1
       '@rollup/plugin-node-resolve': 13.1.3_rollup@2.70.1
@@ -4759,21 +4757,6 @@ packages:
       '@remote-ui/rpc': 1.3.1
       '@remote-ui/types': 1.1.2
 
-  /@remote-ui/mini-react/1.3.12:
-    resolution: {integrity: sha512-Tbfz9HweCUfEclby3T9MiP2UY5we4hLjXBQl70dIYJZME/Q6nlnDmqErZV6pV9Rv3++RLzrKy3WUCnolyZXLIg==}
-    peerDependencies:
-      '@quilted/react-testing': ^0.3.0
-      '@remote-ui/async-subscription': ^2.0.0
-    peerDependenciesMeta:
-      '@quilted/react-testing':
-        optional: true
-      '@remote-ui/async-subscription':
-        optional: true
-    dependencies:
-      '@remote-ui/core': 2.1.12
-      htm: 3.1.1
-    dev: false
-
   /@remote-ui/react/4.5.4_@quilted+react@17.0.5:
     resolution: {integrity: sha512-cBa5OzXwGH40czjh7gmPPVNKarbo9KCbFmxn9XVmeIIbMJtxYWtuCRXXdRcauoWeRfx5qOThf0zLdX4JyuT+PA==}
     dependencies:
@@ -7804,10 +7787,6 @@ packages:
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
-
-  /htm/3.1.1:
-    resolution: {integrity: sha512-983Vyg8NwUE7JkZ6NmOqpCZ+sh1bKv2iYTlUkzlWmA5JD2acKoxd4KVxbMmxX/85mtfdnDmTFoNKcg5DGAvxNQ==}
-    dev: false
 
   /html-encoding-sniffer/2.0.1:
     resolution: {integrity: sha512-D5JbOMBIR/TVZkubHT+OyT2705QvogUW4IBn6nHd756OwieSF9aDYFj4dv6HHEVGYbHaLETa3WggZYWWMyy3ZQ==}
