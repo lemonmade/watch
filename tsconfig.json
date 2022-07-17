@@ -11,55 +11,25 @@
     "outDir": "build/typescript/workspace",
     "module": "commonjs",
     "lib": ["DOM", "ESNext"],
-    "paths": {
-      "global/*": ["./global/*"]
-    }
+    "paths": {"global/*": ["./global/*"]}
   },
   "references": [
-    {
-      "path": "./global"
-    },
-    {
-      "path": "./app"
-    },
-    {
-      "path": "./functions/shared"
-    },
-    {
-      "path": "./functions/clips-upload"
-    },
-    {
-      "path": "./functions/email"
-    },
-    {
-      "path": "./functions/tmdb-refresher"
-    },
-    {
-      "path": "./functions/tmdb-refresher-scheduler"
-    },
-    {
-      "path": "./functions/router"
-    },
-    {
-      "path": "./packages/basics"
-    },
-    {
-      "path": "./packages/cli"
-    },
-    {
-      "path": "./packages/clips"
-    },
-    {
-      "path": "./packages/clips-react"
-    },
-    {
-      "path": "./packages/css"
-    },
-    {
-      "path": "./packages/graphql"
-    },
-    {
-      "path": "./packages/zest"
-    }
+    {"path": "./app"},
+    {"path": "./functions/clips-upload"},
+    {"path": "./functions/email"},
+    {"path": "./functions/router"},
+    {"path": "./functions/shared"},
+    {"path": "./functions/tmdb-refresher"},
+    {"path": "./functions/tmdb-refresher-scheduler"},
+    {"path": "./global"},
+    {"path": "./packages/basics"},
+    {"path": "./packages/cli"},
+    {"path": "./packages/clips"},
+    {"path": "./packages/clips-react"},
+    {"path": "./packages/css"},
+    {"path": "./packages/graphql"},
+    {"path": "./packages/remote-react"},
+    {"path": "./packages/remote-react-utilities"},
+    {"path": "./packages/zest"}
   ]
 }

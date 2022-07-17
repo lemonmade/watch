@@ -270,6 +270,34 @@ importers:
     dependencies:
       graphql: 16.4.0
 
+  packages/remote-react:
+    specifiers:
+      '@quilted/react-testing': ^0.5.0
+      '@quilted/testing': ^0.1.0
+      '@remote-ui/core': ^2.1.0
+      '@types/react': '>=17.0.0 <18.0.0'
+    dependencies:
+      '@quilted/react-testing': 0.5.17_a0196d1569fcdc26bd98f3e4bc6c31fd
+      '@remote-ui/core': 2.1.12
+      '@types/react': 17.0.47
+    devDependencies:
+      '@quilted/testing': 0.1.4
+
+  packages/remote-react-utilities:
+    specifiers:
+      '@quilted/react-utilities': ^0.1.0
+      '@quilted/testing': ^0.1.0
+      '@remote-ui/core': ^2.1.0
+      '@watching/remote-react': ^0.0.0
+      react: npm:@quilted/react@^17.0.0
+    dependencies:
+      '@quilted/react-utilities': 0.1.4_@quilted+react@17.0.5
+      '@remote-ui/core': 2.1.12
+    devDependencies:
+      '@quilted/testing': 0.1.4
+      '@watching/remote-react': link:../remote-react
+      react: /@quilted/react/17.0.5
+
   packages/zest:
     specifiers:
       '@lemon/basics': '*'
@@ -4445,6 +4473,34 @@ packages:
       react-test-renderer: 17.0.2_@quilted+react@17.0.5
     dev: true
 
+  /@quilted/react-testing/0.5.17_a0196d1569fcdc26bd98f3e4bc6c31fd:
+    resolution: {integrity: sha512-Wfrk5YI09tdYkkp7JMSg6moFOSCoL202sv1PfFh1deBpNpbBHatJM1HVrJdFLCzsxLeUg+Y/p+klJna1rIOMhA==}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+      '@jest/globals': ^27.0.0
+      preact: ^10.7.0
+      react: '>=17.0.0 <18.0.0'
+      react-dom: '>=17.0.0 <18.0.0'
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+      '@jest/globals':
+        optional: true
+      preact:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      '@types/react-test-renderer': 17.0.2
+      jest-matcher-utils: 27.5.1
+      react: /@quilted/react/17.0.5
+      react-dom: /@quilted/react-dom/17.0.5
+      react-reconciler: 0.26.2_@quilted+react@17.0.5
+      react-test-renderer: 17.0.2_@quilted+react@17.0.5
+    dev: false
+
   /@quilted/react-utilities/0.1.4_8e06d44731edc7ca93594a4e6d75cdf3:
     resolution: {integrity: sha512-lpJ625Qg+IQXJ4cLp0yLSt+vSzZo0nBKAfyaaPBAUlVZiel3Ngx1ONZ8tE3fouP3I+qZIF44xpmg8M4X3tFXTg==}
     engines: {node: '>=14.0.0'}
@@ -4460,6 +4516,21 @@ packages:
       '@babel/runtime': 7.17.8
       react: /@quilted/react/17.0.5
     dev: true
+
+  /@quilted/react-utilities/0.1.4_@quilted+react@17.0.5:
+    resolution: {integrity: sha512-lpJ625Qg+IQXJ4cLp0yLSt+vSzZo0nBKAfyaaPBAUlVZiel3Ngx1ONZ8tE3fouP3I+qZIF44xpmg8M4X3tFXTg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+      react: '>=17.0.0 <18.0.0'
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: /@quilted/react/17.0.5
+    dev: false
 
   /@quilted/react-workers/0.2.26_8e06d44731edc7ca93594a4e6d75cdf3:
     resolution: {integrity: sha512-m+uK59vK4uPUvf2qlBWQiQki6t7yQcuVsiLeIpVGj1O05+FgoQ6FyJNcqUe5bkrIOC4E0dWbCy50qwlFuvRHCw==}
@@ -4537,6 +4608,18 @@ packages:
       '@babel/runtime': 7.17.8
       common-tags: 1.8.2
       globby: 13.1.1
+    dev: true
+
+  /@quilted/testing/0.1.4:
+    resolution: {integrity: sha512-jV3qmkOCF3GrIoH8I2fg9NZbaG/q1OV6gVRJoVF3yWhB9ebWHcJtuzR7FNZ33uwxyI4foFbcRdLBllWxbyOBoA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+    dependencies:
+      '@types/jest': 27.5.2
     dev: true
 
   /@quilted/testing/0.1.4_@babel+runtime@7.17.8:
@@ -5051,7 +5134,6 @@ packages:
     resolution: {integrity: sha512-+F1KONQTBHDBBhbHuT2GNydeMpPuviduXIVJRB7Y4nma4NR5DrTJfMMZ+jbhEHbpwL+Uqhs1WXh4KHiyrtYTPg==}
     dependencies:
       '@types/react': 17.0.47
-    dev: true
 
   /@types/react/17.0.45:
     resolution: {integrity: sha512-YfhQ22Lah2e3CHPsb93tRwIGNiSwkuz1/blk4e6QrWS0jQzCSNbGLtOEYhPg02W0yGTTmpajp7dCTbBAMN3qsg==}
@@ -5358,7 +5440,6 @@ packages:
   /ansi-styles/5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
-    dev: true
 
   /anymatch/3.1.2:
     resolution: {integrity: sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==}
@@ -5877,7 +5958,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-    dev: true
 
   /chance/1.1.8:
     resolution: {integrity: sha512-v7fi5Hj2VbR6dJEGRWLmJBA83LJMS47pkAbmROFxHWd9qmE1esHRZW8Clf1Fhzr3rjxnNZVCjOEv/ivFxeIMtg==}
@@ -6291,7 +6371,6 @@ packages:
   /diff-sequences/27.5.1:
     resolution: {integrity: sha512-k1gCAXAsNgLwEL+Y8Wvl+M6oEFj5bgazfZULpS5CneoPPXRaCCW7dm+q21Ky2VEE5X+VeRDBVg1Pcvvsr4TtNQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dev: true
 
   /dir-glob/3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -7716,7 +7795,6 @@ packages:
   /has-flag/4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
-    dev: true
 
   /has-property-descriptors/1.0.0:
     resolution: {integrity: sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==}
@@ -8252,7 +8330,6 @@ packages:
       diff-sequences: 27.5.1
       jest-get-type: 27.5.1
       pretty-format: 27.5.1
-    dev: true
 
   /jest-docblock/27.5.1:
     resolution: {integrity: sha512-rl7hlABeTsRYxKiUfpHrQrG4e2obOiTQWfMEH3PxPjOtdsfLQO4ReWSZaQ7DETm4xu07rl4q/h4zcKXyU0/OzQ==}
@@ -8305,7 +8382,6 @@ packages:
   /jest-get-type/27.5.1:
     resolution: {integrity: sha512-2KY95ksYSaK7DMBWQn6dQz3kqAf3BB64y2udeG+hv4KfSOb9qwcYQstTJc1KCbsix+wLZWZYN8t7nwX3GOBLRw==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    dev: true
 
   /jest-haste-map/27.5.1:
     resolution: {integrity: sha512-7GgkZ4Fw4NFbMSDSpZwXeBiIbx+t/46nJ2QitkOjvwPYyZmqttu2TDSimMHP1EkPOi4xUZAN1doE5Vd25H4Jng==}
@@ -8368,7 +8444,6 @@ packages:
       jest-diff: 27.5.1
       jest-get-type: 27.5.1
       pretty-format: 27.5.1
-    dev: true
 
   /jest-message-util/27.5.1:
     resolution: {integrity: sha512-rMyFe1+jnyAAf+NHwTclDz0eAaLkVDdKVHHBFWsBWHnnh5YeJMNWWsv7AbFYXfK3oTqvL7VTWkhNLu1jX24D+g==}
@@ -10102,7 +10177,6 @@ packages:
       ansi-regex: 5.0.1
       ansi-styles: 5.2.0
       react-is: 17.0.2
-    dev: true
 
   /pretty-format/3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
@@ -10236,7 +10310,6 @@ packages:
 
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-    dev: true
 
   /react-query/3.39.1_a0196d1569fcdc26bd98f3e4bc6c31fd:
     resolution: {integrity: sha512-qYKT1bavdDiQZbngWZyPotlBVzcBjDYEJg5RQLBa++5Ix5jjfbEYJmHSZRZD+USVHUSvl/ey9Hu+QfF1QAK80A==}
@@ -10276,7 +10349,6 @@ packages:
       object-assign: 4.1.1
       react: /@quilted/react/17.0.5
       react-is: 17.0.2
-    dev: true
 
   /react-test-renderer/17.0.2_@quilted+react@17.0.5:
     resolution: {integrity: sha512-yaQ9cB89c17PUb0x6UfWRs7kQCorVdHlutU1boVPEsB8IDZH6n9tHxMacc3y0JoXOJUsZb/t/Mb8FUWMKaM7iQ==}
@@ -10288,7 +10360,6 @@ packages:
       react-is: 17.0.2
       react-shallow-renderer: 16.15.0_@quilted+react@17.0.5
       scheduler: 0.20.2
-    dev: true
 
   /read-pkg-up/7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -10994,7 +11065,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
-    dev: true
 
   /supports-color/8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}

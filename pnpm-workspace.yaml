@@ -1,6 +1,5 @@
 packages:
-  - 'app'
-  - 'functions/*'
-  - 'packages/*'
-  # Internal tools
-  - 'scripts/*'
+  - app
+  - functions/*
+  - packages/*
+  - scripts/*
