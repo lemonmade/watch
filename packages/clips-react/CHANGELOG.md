@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.5
+
+### Patch Changes
+
+- [`35287e4`](https://github.com/lemonmade/watch/commit/35287e485b3028f83c8e09438f6a8e5c7634c179) Thanks [@lemonmade](https://github.com/lemonmade)! - Updated mini-react aliasing
+
 ## 0.2.4
 
 ### Patch Changes
