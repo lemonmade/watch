@@ -8,5 +8,5 @@
   },
   "include": ["src"],
   "exclude": ["quilt.project.ts", "build"],
-  "references": [{"path": "../clips"}]
+  "references": [{"path": "../clips"}, {"path": "../remote-react-utilities"}]
 }

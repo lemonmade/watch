@@ -1,7 +1,7 @@
 import type {ReactNode} from 'react';
 
 import type {RemoteRoot} from '@remote-ui/core';
-import {render as renderRemoteUi} from '@remote-ui/react';
+import {render as renderRemoteUi} from '@watching/remote-react-utilities';
 
 import {extend} from '@watching/clips';
 import type {

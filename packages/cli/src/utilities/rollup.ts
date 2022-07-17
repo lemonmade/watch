@@ -1,28 +1,18 @@
 import * as path from 'path';
-import {createRequire} from 'module';
 
 import type {RollupOptions, Plugin} from 'rollup';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import alias from '@rollup/plugin-alias';
 import esbuild from 'rollup-plugin-esbuild';
 
 import type {LocalExtension} from './app';
 
 const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.tsx';
 
-const require = createRequire(import.meta.url);
-
 export async function createRollupConfiguration(
   extension: LocalExtension,
   {mode = 'production'}: {mode?: 'development' | 'production'} = {},
 ): Promise<RollupOptions> {
-  const {packageDirectory} = await import('pkg-dir');
-
-  const remoteUiMiniReactAlias = await packageDirectory({
-    cwd: require.resolve('@remote-ui/mini-react'),
-  });
-
   return {
     input: MAGIC_MODULE_EXTENSION_ENTRY,
     plugins: [
@@ -56,16 +46,6 @@ export async function createRollupConfiguration(
           `;
         },
       },
-      alias({
-        entries: {
-          'react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
-          react: '@remote-ui/mini-react/compat',
-          'react-dom': '@remote-ui/mini-react/compat',
-          '@remote-ui/react/jsx-runtime': '@remote-ui/mini-react/jsx-runtime',
-          '@remote-ui/react': '@remote-ui/mini-react/compat',
-          '@remote-ui/mini-react': remoteUiMiniReactAlias,
-        },
-      }),
       nodeResolve({
         exportConditions: [
           'quilt:esnext',
