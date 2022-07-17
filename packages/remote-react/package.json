@@ -1,0 +1,96 @@
+{
+  "name": "@watching/remote-react",
+  "description": "A tiny React implementation for remote-ui",
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "@watching/registry": "https://registry.npmjs.org"
+  },
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemonmade/quilt",
+    "directory": "packages/remote-react"
+  },
+  "exports": {
+    ".": {
+      "quilt:source": "./source/compat/index.ts",
+      "quilt:esnext": "./build/esnext/compat/index.esnext",
+      "import": "./build/esm/compat/index.mjs",
+      "require": "./build/cjs/compat/index.cjs"
+    },
+    "./jsx-runtime": {
+      "quilt:source": "./source/jsx-runtime.ts",
+      "quilt:esnext": "./build/esnext/jsx-runtime.esnext",
+      "import": "./build/esm/jsx-runtime.mjs",
+      "require": "./build/cjs/jsx-runtime.cjs"
+    },
+    "./jsx-dev-runtime": {
+      "quilt:source": "./source/jsx-runtime.ts",
+      "quilt:esnext": "./build/esnext/jsx-runtime.esnext",
+      "import": "./build/esm/jsx-runtime.mjs",
+      "require": "./build/cjs/jsx-runtime.cjs"
+    },
+    "./testing": {
+      "types": "./build/typescript/testing/index.d.ts",
+      "quilt:source": "./source/testing/index.ts",
+      "quilt:esnext": "./build/esnext/testing/index.esnext",
+      "import": "./build/esm/testing/index.mjs",
+      "require": "./build/cjs/testing/index.cjs"
+    },
+    "./render": {
+      "types": "./build/typescript/compat/render.d.ts",
+      "quilt:source": "./source/compat/render.ts",
+      "quilt:esnext": "./build/esnext/compat/render.esnext",
+      "import": "./build/esm/compat/render.mjs",
+      "require": "./build/cjs/compat/render.cjs"
+    }
+  },
+  "types": "./build/typescript/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "render": [
+        "./build/typescript/compat/render.d.ts"
+      ],
+      "testing": [
+        "./build/typescript/testing/index.d.ts"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@quilted/react-testing": "^0.5.0",
+    "@remote-ui/core": "^2.1.0",
+    "@types/react": ">=17.0.0 <18.0.0"
+  },
+  "peerDependencies": {
+    "@babel/runtime": ">=7.0.0 <8.0.0",
+    "@types/react": "^17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@babel/runtime": {
+      "optional": true
+    },
+    "@types/react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@quilted/testing": "^0.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/project"
+    ],
+    "rules": {
+      "@typescript-eslint/ban-types": "off"
+    }
+  },
+  "browserslist": [
+    "extends @quilted/browserslist-config/defaults"
+  ]
+}
