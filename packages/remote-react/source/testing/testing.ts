@@ -2,8 +2,9 @@ import {createRemoteRoot} from '@remote-ui/core';
 import type {RemoteRoot} from '@remote-ui/core';
 import {createEnvironment} from '@quilted/react-testing/environment';
 import type {
+  Node,
   CustomMount,
-  // Environment,
+  EnvironmentNodeCreator,
 } from '@quilted/react-testing/environment';
 
 import {render} from '../render';
@@ -39,13 +40,10 @@ const {mount, createMount, mounted, unmountAll} = createEnvironment<Context>({
 
 export {mount, createMount, mounted, unmountAll};
 
-type Create = any;
-type Child = ReturnType<Create> | string;
-
 function createNodeFromComponentChild(
   child: ComponentChild,
-  create: Create,
-): Child {
+  create: EnvironmentNodeCreator<{}>,
+): Node<any> | string {
   if (isTextNode(child)) {
     return child.props;
   }
@@ -57,7 +55,10 @@ function createNodeFromComponentChild(
   return (child as any)?.toString() as any;
 }
 
-function createNodeFromVNode(node: VNode<unknown>, create: Create): Child {
+function createNodeFromVNode(
+  node: VNode<unknown>,
+  create: EnvironmentNodeCreator<{}>,
+): Node<any> {
   const props = {...node.props};
   const instance = node._component ?? node._remoteNode;
   const children = toArray(node._children ?? [])

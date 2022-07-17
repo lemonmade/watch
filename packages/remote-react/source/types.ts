@@ -186,7 +186,6 @@ export interface VNode<P = {}> {
 
 // This object is meant to match an object in Preact’s implementation
 // that uses camelcase keys.
-/* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 
 export enum HookType {
   useState = 1,
@@ -202,8 +201,6 @@ export enum HookType {
   // Not a real hook, but the devtools treat is as such
   useDebugvalue = 11,
 }
-
-/* eslint-enable @shopify/typescript/prefer-pascal-case-enums */
 
 export interface Options {
   /** Attach a hook that is invoked whenever a VNode is created. */

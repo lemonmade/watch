@@ -1,6 +1,6 @@
 {
   "name": "@watching/remote-react-utilities",
-  "description": "<YOUR DESCRIPTION HERE>",
+  "description": "Utilities built on @watching/remote-react",
   "type": "module",
   "license": "MIT",
   "publishConfig": {
@@ -13,8 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<USER>/<REPOSITORY>",
-    "directory": ""
+    "url": "https://github.com/lemonmade/watch",
+    "directory": "packages/remote-react-utilities"
   },
   "exports": {
     ".": {
@@ -28,8 +28,8 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^2.1.0",
-    "@quilted/react-utilities": "^0.1.0"
+    "@quilted/react-utilities": "^0.1.0",
+    "@remote-ui/core": "^2.1.0"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0",
@@ -45,7 +45,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.0",
+    "@quilted/testing": "^0.1.4",
     "@watching/remote-react": "^0.0.0",
     "react": "npm:@quilted/react@^17.0.0"
   },

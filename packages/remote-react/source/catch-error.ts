@@ -8,6 +8,7 @@ export function catchError(error: any, vnode: VNode<any>) {
   let currentVNode: VNode<any> | null = vnode;
   let currentError = error;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     currentVNode = vnode._parent;
     const component = currentVNode?._component;

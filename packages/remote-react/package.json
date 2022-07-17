@@ -85,7 +85,10 @@
   "eslintConfig": {
     "extends": [
       "@quilted/eslint-config/project"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/ban-types": "off"
+    }
   },
   "browserslist": [
     "extends @quilted/browserslist-config/defaults"

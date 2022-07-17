@@ -35,7 +35,6 @@ import {diffProps} from './props';
 // issues because `Component` needs to depend on `diff()`, and `diff()` needs to
 // depend on `Component`. For simplicity, I just plunked all the contents in the
 // same file.
-// eslint-disable-next-line @typescript-eslint/ban-types
 export class Component<P = {}, S = {}> implements ComponentInstance<P, S> {
   readonly state!: S;
 
