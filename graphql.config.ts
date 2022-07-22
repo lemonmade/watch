@@ -6,10 +6,10 @@ const config: Configuration = {
       schema: 'graphql/main/*schema.graphql',
       documents: [
         'app/**/*.graphql',
-        'packages/cli/src/commands/publish/**/*.graphql',
-        'packages/cli/src/commands/push/**/*.graphql',
-        'packages/cli/src/utilities/app/**/*.graphql',
-        'packages/cli/src/utilities/authentication/**/*.graphql',
+        'packages/cli/source/commands/publish/**/*.graphql',
+        'packages/cli/source/commands/push/**/*.graphql',
+        'packages/cli/source/utilities/app/**/*.graphql',
+        'packages/cli/source/utilities/authentication/**/*.graphql',
       ],
       exclude: [
         'app/components/Clip/graphql/LocalClipQuery.graphql',
@@ -30,7 +30,7 @@ const config: Configuration = {
       },
     },
     cli: {
-      schema: 'packages/cli/src/commands/develop/schema.graphql',
+      schema: 'packages/cli/source/commands/develop/schema.graphql',
       documents: [
         'app/components/Clip/graphql/LocalClipQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
@@ -41,7 +41,7 @@ const config: Configuration = {
           schema: [
             {
               kind: 'definitions',
-              outputPath: 'packages/cli/src/commands/develop/schema.ts',
+              outputPath: 'packages/cli/source/commands/develop/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types/cli.d.ts'},
           ],
