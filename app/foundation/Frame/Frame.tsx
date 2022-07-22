@@ -13,8 +13,8 @@ import {
   Sticky,
 } from '@lemon/zest';
 
-import {PageDelegateContext} from 'utilities/page';
-import type {PageDelegate} from 'utilities/page';
+import {PageDelegateContext} from '~/shared/page';
+import type {PageDelegate} from '~/shared/page';
 
 interface Props {}
 

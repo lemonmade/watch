@@ -4,9 +4,9 @@ import {useEffect, useState} from 'react';
 import {useCurrentUrl} from '@quilted/quilt';
 import {BlockStack, TextField, Button, Form, TextBlock} from '@lemon/zest';
 
-import {Page} from 'components';
-import {useLocalDevelopmentServer} from 'utilities/clips';
-import type {LocalDevelopmentServer} from 'utilities/clips';
+import {Page} from '~/components';
+import {useLocalDevelopmentServer} from '~/shared/clips';
+import type {LocalDevelopmentServer} from '~/shared/clips';
 
 import developerConsoleQuery from './graphql/DeveloperConsoleQuery.graphql';
 

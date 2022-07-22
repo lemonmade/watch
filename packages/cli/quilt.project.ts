@@ -5,7 +5,7 @@ export default createProject((pkg) => {
     quiltPackage({
       graphql: true,
       binaries: {
-        watchapp: './src/cli.ts',
+        watchapp: './source/cli.ts',
       },
     }),
   );

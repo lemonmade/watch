@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "main": "src/index.ts",
+  "main": "source/index.ts",
   "sideEffects": [
     "*.css"
   ],

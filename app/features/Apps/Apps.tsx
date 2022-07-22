@@ -1,7 +1,7 @@
 import {BlockStack, View, TextBlock, Button, InlineStack} from '@lemon/zest';
 
-import {Page} from 'components';
-import {useQuery, useMutation} from 'utilities/graphql';
+import {Page} from '~/components';
+import {useQuery, useMutation} from '~/shared/graphql';
 
 import appsQuery from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';

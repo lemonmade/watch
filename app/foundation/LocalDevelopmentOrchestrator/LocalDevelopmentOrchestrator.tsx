@@ -9,8 +9,8 @@ import {
 } from '@quilted/quilt/threads';
 import type {ThreadAbortSignal} from '@quilted/quilt/threads';
 
-import {LocalDevelopmentServerContext} from 'utilities/clips';
-import type {LocalDevelopmentServer} from 'utilities/clips';
+import {LocalDevelopmentServerContext} from '~/shared/clips';
+import type {LocalDevelopmentServer} from '~/shared/clips';
 
 import localDevelopmentOrchestratorQuery from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
 import type {LocalDevelopmentOrchestratorQueryData} from './graphql/LocalDevelopmentOrchestratorQuery.graphql';
