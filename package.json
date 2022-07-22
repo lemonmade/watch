@@ -39,7 +39,7 @@
       "app/server/graphql/schema.ts",
       "*.d.ts",
       "**/*.graphql.ts",
-      "packages/cli/src/commands/develop/schema.ts"
+      "packages/cli/source/commands/develop/schema.ts"
     ],
     "rules": {
       "@typescript-eslint/ban-type": "off"
