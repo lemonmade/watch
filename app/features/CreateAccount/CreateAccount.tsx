@@ -12,8 +12,8 @@ import {
 } from '@lemon/zest';
 
 import {CreateAccountErrorReason} from '~/global/auth';
-import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
-import {useMutation} from 'utilities/graphql';
+import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
+import {useMutation} from '~/shared/graphql';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 

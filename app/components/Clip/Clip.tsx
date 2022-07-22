@@ -27,15 +27,15 @@ import {
 import type {
   ClipsExtensionApiVersion,
   JSON as GraphQlJSON,
-} from 'graphql/types';
-import {useQuery, useMutation} from 'utilities/graphql';
-import {useRenderSandbox, useLocalDevelopmentServer} from 'utilities/clips';
+} from '~/graphql/types';
+import {useQuery, useMutation} from '~/shared/graphql';
+import {useRenderSandbox, useLocalDevelopmentServer} from '~/shared/clips';
 import type {
   RenderController,
   ExtensionSandbox,
   LocalExtension,
-} from 'utilities/clips';
-import type {ArrayElement, ThenType} from 'utilities/types';
+} from '~/shared/clips';
+import type {ArrayElement, ThenType} from '~/shared/types';
 
 import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurationQuery.graphql';
 import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';

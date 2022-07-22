@@ -1,7 +1,7 @@
 import {MediaGrid} from '@lemon/zest';
 
-import {Page} from 'components';
-import {parseGid, useQuery} from 'utilities/graphql';
+import {Page} from '~/components';
+import {parseGid, useQuery} from '~/shared/graphql';
 
 import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 

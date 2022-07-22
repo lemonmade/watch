@@ -2,8 +2,8 @@ import type {ReactNode} from 'react';
 
 import {Text, InlineStack, View, Button, TextBlock} from '@lemon/zest';
 
-import {Page} from 'components';
-import {useQuery, useMutation} from 'utilities/graphql';
+import {Page} from '~/components';
+import {useQuery, useMutation} from '~/shared/graphql';
 
 import myAppsQuery from './graphql/MyAppsQuery.graphql';
 import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';
