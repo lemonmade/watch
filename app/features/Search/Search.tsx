@@ -3,8 +3,8 @@ import {Link} from '@quilted/quilt';
 
 import {BlockStack, TextField} from '@lemon/zest';
 
-import {Page} from 'components';
-import {useQuery} from 'utilities/graphql';
+import {Page} from '~/components';
+import {useQuery} from '~/shared/graphql';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 

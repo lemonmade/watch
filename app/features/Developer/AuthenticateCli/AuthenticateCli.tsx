@@ -4,8 +4,8 @@ import {useMutation as useBasicMutation} from 'react-query';
 import {useCurrentUrl, Redirect} from '@quilted/quilt';
 import {BlockStack, TextBlock, Text, Link, Button} from '@lemon/zest';
 
-import {Page} from 'components';
-import {useMutation} from 'utilities/graphql';
+import {Page} from '~/components';
+import {useMutation} from '~/shared/graphql';
 
 import createAccessTokenForCliMutation from './graphql/CreateAccessTokenForCliMutation.graphql';
 

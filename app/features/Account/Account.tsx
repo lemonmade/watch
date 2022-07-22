@@ -12,9 +12,9 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page, SpoilerAvoidance} from 'components';
-import {useGithubOAuthModal, GithubOAuthFlow} from 'utilities/github';
-import {useQuery, useMutation} from 'utilities/graphql';
+import {Page, SpoilerAvoidance} from '~/components';
+import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
+import {useQuery, useMutation} from '~/shared/graphql';
 
 import accountQuery from './graphql/AccountQuery.graphql';
 import type {AccountQueryData} from './graphql/AccountQuery.graphql';

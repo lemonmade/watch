@@ -9,13 +9,13 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "quilt:source": "./src/index.ts",
+      "quilt:source": "./source/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
     },
     "./server": {
-      "quilt:source": "./src/server/index.ts",
+      "quilt:source": "./source/server/index.ts",
       "quilt:esnext": "./build/esnext/server/index.esnext",
       "import": "./build/esm/server/index.mjs",
       "require": "./build/cjs/server/index.cjs"

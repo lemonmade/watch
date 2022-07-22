@@ -1,6 +1,6 @@
 import {BlockStack, InlineStack, Link} from '@lemon/zest';
 
-import {Page} from 'components';
+import {Page} from '~/components';
 
 export function Developer() {
   return (

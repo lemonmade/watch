@@ -1,6 +1,6 @@
 import {Choice, ChoiceList} from '@lemon/zest';
 
-import type {SpoilerAvoidance as SpoilerAvoidanceValue} from 'graphql/types';
+import type {SpoilerAvoidance as SpoilerAvoidanceValue} from '~/graphql/types';
 
 interface Props {
   value: SpoilerAvoidanceValue;

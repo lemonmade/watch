@@ -4,35 +4,21 @@
     "outDir": "build/typescript",
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "components": ["./components"],
-      "graphql/*": ["./graphql/*"],
-      "utilities/*": ["./utilities/*"],
+      "~/components": ["./components"],
+      "~/graphql/*": ["./graphql/*"],
+      "~/shared/*": ["./shared/*"],
       "~/global/*": ["../global/*"]
     }
   },
   "include": ["**/*"],
   "exclude": ["quilt.project.ts", "infrastructure", "build"],
   "references": [
-    {
-      "path": "../functions/email"
-    },
-    {
-      "path": "../global"
-    },
-    {
-      "path": "../packages/basics"
-    },
-    {
-      "path": "../packages/clips"
-    },
-    {
-      "path": "../packages/css"
-    },
-    {
-      "path": "../packages/graphql"
-    },
-    {
-      "path": "../packages/zest"
-    }
+    {"path": "../functions/email"},
+    {"path": "../global"},
+    {"path": "../packages/basics"},
+    {"path": "../packages/clips"},
+    {"path": "../packages/css"},
+    {"path": "../packages/graphql"},
+    {"path": "../packages/zest"}
   ]
 }

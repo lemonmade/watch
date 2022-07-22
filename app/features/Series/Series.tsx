@@ -17,14 +17,13 @@ import {
   InstalledClip,
   Page,
   SpoilerAvoidance,
-} from 'components';
-import type {ClipProps} from 'components';
+} from '~/components';
+import type {ClipProps} from '~/components';
 
-import {parseGid, useQuery, useMutation} from 'utilities/graphql';
-import {useLocalDevelopmentClips} from 'utilities/clips';
+import {parseGid, useQuery, useMutation} from '~/shared/graphql';
+import {useLocalDevelopmentClips} from '~/shared/clips';
 
-import seriesQuery from './graphql/SeriesQuery.graphql';
-import type {SeriesQueryData} from './graphql/SeriesQuery.graphql';
+import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
