@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.13
+
+### Patch Changes
+
+- [#155](https://github.com/lemonmade/watch/pull/155) [`7d967c0`](https://github.com/lemonmade/watch/commit/7d967c044936455e23806936cbf634dd1f6b3c8b) Thanks [@lemonmade](https://github.com/lemonmade)! - Update some clips naming
+
+- Updated dependencies [[`7d967c0`](https://github.com/lemonmade/watch/commit/7d967c044936455e23806936cbf634dd1f6b3c8b)]:
+  - @watching/clips@0.2.5
+
 ## 0.4.12
 
 ### Patch Changes
