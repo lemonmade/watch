@@ -3,7 +3,7 @@ import {BlockStack, View, TextBlock, Button, InlineStack} from '@lemon/zest';
 import {Page} from '~/components';
 import {useQuery, useMutation} from '~/shared/graphql';
 
-import appsQuery from './graphql/AppsQuery.graphql';
+import appsQuery, {type AppsQueryData} from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
 
@@ -38,12 +38,14 @@ export function Apps() {
                 <BlockStack>
                   {app.extensions
                     .filter(
-                      (extension) =>
+                      (
+                        extension,
+                      ): extension is AppsQueryData.Apps.Extensions_ClipsExtension =>
                         extension.__typename === 'ClipsExtension' &&
                         // TODO: should not be able to load unpublished extensions!
                         extension.latestVersion != null,
                     )
-                    .map((extension: any) => (
+                    .map((extension) => (
                       <View key={extension.id}>
                         <InlineStack>
                           <TextBlock>{extension.name}</TextBlock>
@@ -53,7 +55,7 @@ export function Apps() {
                                 installExtension.mutate({
                                   id: extension.id,
                                   target:
-                                    extension.latestVersion?.supports[0]?.name,
+                                    extension.latestVersion?.extends[0]?.target,
                                 });
                               }}
                             >
