@@ -98,7 +98,7 @@ export const Query: Pick<
       return resolvedConditions.every(({series}) => {
         return ((version.extends as any[]) ?? []).some((supports: any) => {
           return (
-            target === supports.name &&
+            target === supports.target &&
             supports.conditions.some(
               (supportCondition: any) =>
                 supportCondition.series == null ||
