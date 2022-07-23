@@ -41,18 +41,18 @@ union ExtensionBuild =
 
 scalar ClipsExtensionPoint
 
-type ClipsExtensionPointSeriesCondition {
+type ClipsExtensionPointSupportSeriesCondition {
   handle: String
 }
 
-type ClipsExtensionPointCondition {
-  series: ClipsExtensionPointSeriesCondition
+type ClipsExtensionPointSupportCondition {
+  series: ClipsExtensionPointSupportSeriesCondition
 }
 
 type ClipsExtensionPointSupport {
-  name: ClipsExtensionPoint!
+  target: ClipsExtensionPoint!
   module: String!
-  conditions: [ClipsExtensionPointCondition!]!
+  conditions: [ClipsExtensionPointSupportCondition!]!
 }
 
 type ClipsExtension {
@@ -60,7 +60,7 @@ type ClipsExtension {
   name: String!
   handle: String!
   build: ExtensionBuild!
-  supports: [ClipsExtensionPointSupport!]!
+  extends: [ClipsExtensionPointSupport!]!
 }
 
 union Extension = ClipsExtension

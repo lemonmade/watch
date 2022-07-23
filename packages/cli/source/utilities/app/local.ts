@@ -40,40 +40,40 @@ export type LocalExtensionConfigurationString =
   | string
   | LocalExtensionConfigurationTranslatedString;
 
-interface LocalExtensionUserConfigurationSchemaStringField {
+interface LocalExtensionUserSettingsStringField {
   type: 'string';
   id: string;
   label: LocalExtensionConfigurationString;
   default?: string;
 }
 
-interface LocalExtensionUserConfigurationSchemaNumberField {
+interface LocalExtensionUserSettingsNumberField {
   type: 'number';
   id: string;
   label: LocalExtensionConfigurationString;
   default?: number;
 }
 
-interface LocalExtensionUserConfigurationSchemaOptionsFieldOption {
+interface LocalExtensionUserSettingsOptionsFieldOption {
   readonly value: string;
   readonly label: LocalExtensionConfigurationString;
 }
 
-interface LocalExtensionUserConfigurationSchemaOptionsField {
+interface LocalExtensionUserSettingsOptionsField {
   type: 'options';
   id: string;
   label: LocalExtensionConfigurationString;
   default?: string;
-  options: readonly LocalExtensionUserConfigurationSchemaOptionsFieldOption[];
+  options: readonly LocalExtensionUserSettingsOptionsFieldOption[];
 }
 
-type LocalExtensionUserConfigurationSchemaField =
-  | LocalExtensionUserConfigurationSchemaStringField
-  | LocalExtensionUserConfigurationSchemaNumberField
-  | LocalExtensionUserConfigurationSchemaOptionsField;
+type LocalExtensionUserSettingsField =
+  | LocalExtensionUserSettingsStringField
+  | LocalExtensionUserSettingsNumberField
+  | LocalExtensionUserSettingsOptionsField;
 
-interface LocalExtensionUserConfiguration {
-  readonly schema: readonly LocalExtensionUserConfigurationSchemaField[];
+interface LocalExtensionUserSettings {
+  readonly fields: readonly LocalExtensionUserSettingsField[];
 }
 
 interface LocalExtensionPointSupportSeriesCondition {
@@ -85,7 +85,7 @@ interface LocalExtensionPointSupportCondition {
 }
 
 interface LocalExtensionPointSupport {
-  readonly id: ExtensionPoint;
+  readonly target: ExtensionPoint;
   readonly module: string;
   readonly conditions?: LocalExtensionPointSupportCondition[];
 }
@@ -94,8 +94,8 @@ interface LocalExtensionConfiguration {
   readonly id?: string;
   readonly name: string;
   readonly handle: string;
-  readonly extensionPoints: readonly LocalExtensionPointSupport[];
-  readonly configuration?: Partial<LocalExtensionUserConfiguration>;
+  readonly extends: readonly LocalExtensionPointSupport[];
+  readonly settings?: Partial<LocalExtensionUserSettings>;
 }
 
 export interface LocalExtension {
@@ -103,8 +103,8 @@ export interface LocalExtension {
   readonly name: string;
   readonly root: string;
   readonly handle: string;
-  readonly extensionPoints: readonly LocalExtensionPointSupport[];
-  readonly configuration: LocalExtensionUserConfiguration;
+  readonly extends: readonly LocalExtensionPointSupport[];
+  readonly settings: LocalExtensionUserSettings;
   readonly configurationFile: LocalConfigurationFile<LocalExtensionConfiguration>;
 }
 
@@ -291,8 +291,8 @@ async function loadExtensionFromDirectory(
     name: configuration.name,
     handle: configuration.handle,
     root: directory,
-    extensionPoints: configuration.extensionPoints,
-    configuration: {schema: [], ...configuration.configuration},
+    extends: configuration.extends,
+    settings: {fields: [], ...configuration.settings},
     configurationFile: {
       path: configurationPath,
       value: configuration,

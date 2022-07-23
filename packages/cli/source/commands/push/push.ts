@@ -26,7 +26,7 @@ import type {PushClipsExtensionMutationVariables} from './graphql/PushClipsExten
 import createClipsExtensionAndInitialVersionMutation from './graphql/CreateClipsExtensionAndInitialVersionMutation.graphql';
 
 type ConfigurationFieldInput = NonNullable<
-  PushClipsExtensionMutationVariables['configurationSchema']
+  PushClipsExtensionMutationVariables['settings']['fields']
 >[number];
 
 type ConfigurationField = NonNullable<
@@ -172,66 +172,68 @@ async function pushExtension(
 
   const buildOptions: Pick<
     PushClipsExtensionMutationVariables,
-    'code' | 'supports' | 'translations' | 'configurationSchema'
+    'code' | 'extends' | 'translations' | 'settings'
   > = {
     code,
     translations:
       translations && JSON.stringify(flattenTranslations(translations)),
-    supports: extension.extensionPoints.map((supported) => {
+    extends: extension.extends.map((supported) => {
       return {
-        name: supported.id,
+        target: supported.target,
         conditions: supported.conditions,
       };
     }),
-    configurationSchema: extension.configuration.schema.map(
-      (
-        field,
-      ): NonNullable<
-        PushClipsExtensionMutationVariables['configurationSchema']
-      >[number] => {
-        switch (field.type) {
-          case 'string': {
-            return {
-              string: {
-                key: field.id,
-                label: configurationStringToGraphQLInput(field.label),
-                default: field.default,
-              },
-            };
+    settings: {
+      fields: extension.settings.fields.map(
+        (
+          field,
+        ): NonNullable<
+          PushClipsExtensionMutationVariables['settings']['fields']
+        >[number] => {
+          switch (field.type) {
+            case 'string': {
+              return {
+                string: {
+                  key: field.id,
+                  label: configurationStringToGraphQLInput(field.label),
+                  default: field.default,
+                },
+              };
+            }
+            case 'number': {
+              return {
+                number: {
+                  key: field.id,
+                  label: configurationStringToGraphQLInput(field.label),
+                  default: field.default,
+                },
+              };
+            }
+            case 'options': {
+              return {
+                options: {
+                  key: field.id,
+                  label: configurationStringToGraphQLInput(field.label),
+                  default: field.default,
+                  options: field.options.map((option) => {
+                    return {
+                      value: option.value,
+                      label: configurationStringToGraphQLInput(option.label),
+                    };
+                  }),
+                },
+              };
+            }
           }
-          case 'number': {
-            return {
-              number: {
-                key: field.id,
-                label: configurationStringToGraphQLInput(field.label),
-                default: field.default,
-              },
-            };
-          }
-          case 'options': {
-            return {
-              options: {
-                key: field.id,
-                label: configurationStringToGraphQLInput(field.label),
-                default: field.default,
-                options: field.options.map((option) => {
-                  return {
-                    value: option.value,
-                    label: configurationStringToGraphQLInput(option.label),
-                  };
-                }),
-              },
-            };
-          }
-        }
-      },
-    ),
+        },
+      ),
+    },
   };
 
   if (production) {
     const {data} = await graphql(pushClipsExtensionMutation, {
       variables: {
-        extensionId: production.id,
+        id: production.id,
         name: extension.name,
         ...buildOptions,
       },

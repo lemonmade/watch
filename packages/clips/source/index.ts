@@ -14,5 +14,5 @@ export type {
   WatchThroughDetailsApi,
 } from './api';
 export type {ClipsApi, ClipsGlobal} from './globals';
-export {extend} from './extend';
+export {extension} from './extension';
 export * from './components';

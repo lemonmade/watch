@@ -1,7 +1,7 @@
 fragment InstalledClipExtension on ClipsExtensionInstallation {
   id
-  extensionPoint
-  configuration
+  target
+  settings
   version {
     id
     apiVersion

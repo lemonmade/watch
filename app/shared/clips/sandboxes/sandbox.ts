@@ -17,7 +17,7 @@ const registeredExtensions = new Map<
 >();
 
 const clips: ClipsApi = Object.freeze({
-  extend(extensionPoint, extend) {
+  register(extensionPoint, extend) {
     registeredExtensions.set(extensionPoint, extend);
   },
 } as ClipsApi);
@@ -49,7 +49,7 @@ export async function render<T extends ExtensionPoint>(
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
   let result = runExtensionPoint(id, root, {
     ...(api as any),
-    configuration: makeStatefulSubscribable((api as any).configuration),
+    settings: makeStatefulSubscribable((api as any).settings),
   });
 
   if (typeof result === 'object' && result != null && 'then' in result) {

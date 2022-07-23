@@ -1,5 +1,5 @@
-mutation PublishLatestClipsExtensionVersion($extensionId: ID!) {
-  publishLatestClipsExtensionVersion(extensionId: $extensionId) {
+mutation PublishLatestClipsExtensionVersion($id: ID!) {
+  publishLatestClipsExtensionVersion(id: $id) {
     version {
       id
       assets {

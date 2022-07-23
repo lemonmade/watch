@@ -100,7 +100,7 @@ async function publishExtension(
   }
 
   const {data} = await graphql(publishLatestClipsExtensionVersion, {
-    variables: {extensionId: production.id},
+    variables: {id: production.id},
   });
 
   if (data == null) {

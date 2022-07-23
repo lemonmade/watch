@@ -38,12 +38,12 @@ query Series($id: ID!) {
     }
   }
   clipsInstallations(
-    extensionPoint: "Series.Details.RenderAccessory"
+    target: "Series.Details.RenderAccessory"
     conditions: [{series: {id: $id}}]
   ) {
     id
-    extensionPoint
-    configuration
+    target
+    settings
     version {
       id
       apiVersion

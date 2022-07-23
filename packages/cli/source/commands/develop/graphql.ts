@@ -63,15 +63,15 @@ export function createQueryResolver(
         id: extension.id,
         name: extension.name,
         handle: extension.handle,
-        supports: extension.extensionPoints.map((extensionPoint) =>
+        extends: extension.extends.map((extensionPoint) =>
           object('ClipsExtensionPointSupport', {
-            name: extensionPoint.id,
+            target: extensionPoint.target,
             module: extensionPoint.module,
             conditions:
               extensionPoint.conditions?.map((condition) =>
-                object('ClipsExtensionPointCondition', {
+                object('ClipsExtensionPointSupportCondition', {
                   series: condition.series
-                    ? object('ClipsExtensionPointSeriesCondition', {
+                    ? object('ClipsExtensionPointSupportSeriesCondition', {
                         handle: condition.series.handle,
                       })
                     : null,

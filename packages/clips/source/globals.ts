@@ -1,9 +1,9 @@
 import type {ExtensionPoints} from './extension-points';
 
 export interface ClipsApi {
-  extend<ExtensionPoint extends keyof ExtensionPoints>(
+  register<ExtensionPoint extends keyof ExtensionPoints>(
     extensionPoint: ExtensionPoint,
-    extend: ExtensionPoints[ExtensionPoint],
+    extension: ExtensionPoints[ExtensionPoint],
   ): void;
 }
 

@@ -1,3 +1,3 @@
 export {useApi} from './api';
-export {useConfiguration} from './configuration';
+export {useSettings} from './settings';
 export {useSubscription} from './subscription';
