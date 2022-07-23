@@ -1,7 +1,7 @@
 import type {ExtensionPoints} from './extension-points';
 
-export function extend<
+export function extension<
   ExtensionPoint extends keyof ExtensionPoints = keyof ExtensionPoints,
->(extend: ExtensionPoints[ExtensionPoint]) {
-  return extend;
+>(extension: ExtensionPoints[ExtensionPoint]) {
+  return extension;
 }

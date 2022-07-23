@@ -5,8 +5,8 @@ query LocalDevelopmentOrchestrator {
       ... on ClipsExtension {
         id
         name
-        supports {
-          name
+        extends {
+          target
           module
           conditions {
             series {

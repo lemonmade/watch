@@ -48,13 +48,10 @@ import type {
 } from './worker';
 
 export interface Options<T extends ExtensionPoint> extends BaseOptions {
-  api: Omit<
-    ApiForExtensionPoint<T>,
-    'extensionPoint' | 'version' | 'configuration'
-  >;
+  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version' | 'settings'>;
   components: ReactComponentsForRuntimeExtension<T>;
   extensionPoint: T;
-  configuration?: string;
+  settings?: string;
 }
 export type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -70,7 +67,7 @@ export interface RenderControllerTiming extends SandboxControllerTiming {
 }
 
 interface RenderControllerInternals<_T extends ExtensionPoint> {
-  configuration: {update(value: Record<string, unknown>): void};
+  settings: {update(value: Record<string, unknown>): void};
 }
 
 export interface RenderControllerEventMap {
@@ -95,7 +92,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
   api: customApi,
   components,
   extensionPoint,
-  configuration,
+  settings,
   ...options
 }: Options<T>) {
   const [sandbox, controller] = useExtensionSandbox(options);
@@ -178,20 +175,20 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           }
         });
 
-        const [configurationSubscribable, updateConfiguration] =
+        const [settingsSubscribable, updateConfiguration] =
           createStaticRemoteSubscribable<Record<string, unknown>>(
-            JSON.parse(configuration ?? '{}'),
+            JSON.parse(settings ?? '{}'),
           );
 
         internals = {
-          configuration: {update: updateConfiguration},
+          settings: {update: updateConfiguration},
         };
 
         api = {
           ...customApi,
           version,
           extensionPoint,
-          configuration: configurationSubscribable,
+          settings: settingsSubscribable,
         };
 
         sandbox.render(

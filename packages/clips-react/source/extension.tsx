@@ -3,7 +3,7 @@ import type {ReactNode} from 'react';
 import type {RemoteRoot} from '@remote-ui/core';
 import {render as renderRemoteUi} from '@watching/remote-react-utilities';
 
-import {extend} from '@watching/clips';
+import {extension as vanillaExtension} from '@watching/clips';
 import type {
   AnyApi,
   ExtensionPoint,
@@ -12,10 +12,10 @@ import type {
 
 import {ApiContext} from './context';
 
-export function render<T extends ExtensionPoint>(
-  renderUi: (api: ApiForExtensionPoint<T>) => ReactNode | Promise<ReactNode>,
+export function extension<ID extends ExtensionPoint>(
+  renderUi: (api: ApiForExtensionPoint<ID>) => ReactNode | Promise<ReactNode>,
 ) {
-  return extend<T>(async (root: RemoteRoot<any>, api: AnyApi) => {
+  return vanillaExtension<ID>(async (root: RemoteRoot<any>, api: AnyApi) => {
     const rendered = await renderUi(api as any);
 
     await new Promise<void>((resolve, reject) => {

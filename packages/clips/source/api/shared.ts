@@ -6,5 +6,5 @@ export type Version = 'unstable';
 export interface StandardApi<ExtensionPoint extends AllowedExtensionPoint> {
   readonly version: Version;
   readonly extensionPoint: ExtensionPoint;
-  readonly configuration: StatefulRemoteSubscribable<Record<string, unknown>>;
+  readonly settings: StatefulRemoteSubscribable<Record<string, unknown>>;
 }

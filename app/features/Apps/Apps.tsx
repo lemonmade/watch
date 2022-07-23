@@ -52,7 +52,7 @@ export function Apps() {
                               onPress={() => {
                                 installExtension.mutate({
                                   id: extension.id,
-                                  extensionPoint:
+                                  target:
                                     extension.latestVersion?.supports[0]?.name,
                                 });
                               }}

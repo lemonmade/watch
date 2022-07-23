@@ -1,18 +1,18 @@
 mutation PushClipsExtension(
-  $extensionId: ID!
+  $id: ID!
   $code: String!
   $name: String
   $translations: JSON
-  $supports: [ClipsExtensionPointSupportInput!]
-  $configurationSchema: [ClipsExtensionConfigurationSchemaFieldsInput!]
+  $extends: [ClipsExtensionPointSupportInput!]
+  $settings: ClipsExtensionSettingsInput!
 ) {
   pushClipsExtension(
-    extensionId: $extensionId
+    id: $id
     code: $code
     name: $name
     translations: $translations
-    supports: $supports
-    configurationSchema: $configurationSchema
+    extends: $extends
+    settings: $settings
   ) {
     version {
       id

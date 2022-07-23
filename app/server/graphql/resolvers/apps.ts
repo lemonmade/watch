@@ -11,7 +11,7 @@ import Env from '@quilted/quilt/env';
 import type {
   ClipsExtensionPointSupportInput,
   CreateClipsInitialVersion,
-  ClipsExtensionConfigurationStringInput,
+  ClipsExtensionSettingsStringInput,
 } from '../schema';
 import {createSignedToken} from '../../shared/auth';
 
@@ -52,16 +52,16 @@ export const Query: Pick<
   apps(_, __, {prisma}) {
     return prisma.app.findMany({take: 50});
   },
-  async clipsInstallations(_, {extensionPoint, conditions}, {user, prisma}) {
+  async clipsInstallations(_, {target, conditions}, {user, prisma}) {
     const installations = await prisma.clipsExtensionInstallation.findMany({
       where: {
         userId: user.id,
-        extensionPoint: extensionPoint ?? undefined,
+        target: target ?? undefined,
         extension: {activeVersion: {status: 'PUBLISHED'}},
       },
       include: {
         extension: {
-          select: {activeVersion: {select: {status: true, supports: true}}},
+          select: {activeVersion: {select: {status: true, extends: true}}},
         },
       },
       take: 50,
@@ -96,9 +96,9 @@ export const Query: Pick<
       }
 
       return resolvedConditions.every(({series}) => {
-        return ((version.supports as any[]) ?? []).some((supports: any) => {
+        return ((version.extends as any[]) ?? []).some((supports: any) => {
           return (
-            extensionPoint === supports.name &&
+            target === supports.name &&
             supports.conditions.some(
               (supportCondition: any) =>
                 supportCondition.series == null ||
@@ -212,8 +212,8 @@ export const Mutation: Pick<
 
     const {version: versionInput} = await createStagedClipsVersion({
       ...initialVersion,
+      id: extension.id,
       appId: fromGid(appId).id,
-      extensionId: extension.id,
       extensionName: name,
       request,
     });
@@ -251,7 +251,7 @@ export const Mutation: Pick<
   },
   async pushClipsExtension(
     _,
-    {extensionId, code, name, translations, supports, configurationSchema},
+    {id: extensionId, code, name, translations, extends: supports, settings},
     {prisma, request},
   ) {
     const id = fromGid(extensionId).id;
@@ -268,12 +268,12 @@ export const Mutation: Pick<
 
     const {version: versionInput} = await createStagedClipsVersion({
       code,
+      id,
       appId: extension.appId,
-      extensionId: id,
       extensionName: name ?? extension.name,
       translations,
-      supports,
-      configurationSchema,
+      extends: supports,
+      settings,
       request,
     });
 
@@ -298,9 +298,9 @@ export const Mutation: Pick<
       version,
     };
   },
-  async publishLatestClipsExtensionVersion(_, {extensionId}, {prisma}) {
+  async publishLatestClipsExtensionVersion(_, {id}, {prisma}) {
     const result = await prisma.clipsExtensionVersion.findFirst({
-      where: {status: 'BUILDING', extensionId: fromGid(extensionId).id},
+      where: {status: 'BUILDING', extensionId: fromGid(id).id},
       include: {extension: true},
     });
 
@@ -326,33 +326,29 @@ export const Mutation: Pick<
       extension,
     };
   },
-  async installClipsExtension(
-    _,
-    {id, extensionPoint, configuration},
-    {user, prisma},
-  ) {
+  async installClipsExtension(_, {id, target, settings}, {user, prisma}) {
     const extension = await prisma.clipsExtension.findFirst({
       where: {id: fromGid(id).id},
       include: {
-        activeVersion: {select: {supports: true}},
+        activeVersion: {select: {extends: true}},
       },
       rejectOnNotFound: true,
     });
 
-    let resolvedExtensionPoint = extensionPoint;
+    let resolvedExtensionPoint = target;
 
     if (resolvedExtensionPoint == null) {
       const supports = extension.activeVersion
-        ?.supports as any as ClipsExtensionPointSupportInput[];
+        ?.extends as any as ClipsExtensionPointSupportInput[];
 
       if (supports?.length === 1) {
-        resolvedExtensionPoint = supports[0]!.name;
+        resolvedExtensionPoint = supports[0]!.target;
       }
     }
 
     if (resolvedExtensionPoint == null) {
       throw new Error(
-        `Could not determine an extension point, you must explicitly provide an extensionPoint argument`,
+        `Could not determine an extension point, you must explicitly provide an target argument`,
       );
     }
 
@@ -368,9 +364,8 @@ export const Mutation: Pick<
       data: {
         userId: user.id,
         extensionId: extension.id,
-        extensionPoint: resolvedExtensionPoint,
-        configuration:
-          configuration == null ? undefined : JSON.parse(configuration),
+        target: resolvedExtensionPoint,
+        settings: settings == null ? undefined : JSON.parse(settings),
         appInstallationId: appInstallation.id,
       },
     });
@@ -380,7 +375,7 @@ export const Mutation: Pick<
       installation,
     };
   },
-  async uninstallClipsExtension(_, {id}: {id: string}, {user, prisma}) {
+  async uninstallClipsExtension(_, {id}, {user, prisma}) {
     const installation = await prisma.clipsExtensionInstallation.findFirst({
       where: {id: fromGid(id).id, userId: user.id},
       select: {
@@ -399,11 +394,7 @@ export const Mutation: Pick<
       extension: installation.extension,
     };
   },
-  async updateClipsExtensionInstallation(
-    _,
-    {id, configuration},
-    {user, prisma},
-  ) {
+  async updateClipsExtensionInstallation(_, {id, settings}, {user, prisma}) {
     const installationDetails =
       await prisma.clipsExtensionInstallation.findFirst({
         where: {id: fromGid(id).id},
@@ -420,10 +411,10 @@ export const Mutation: Pick<
         where: {id: installationDetails.id},
         include: {extension: true},
         data:
-          configuration == null
+          settings == null
             ? {}
             : {
-                configuration: JSON.parse(configuration),
+                settings: JSON.parse(settings),
               },
       });
 
@@ -510,47 +501,46 @@ export const ClipsExtensionVersion: Resolver<'ClipsExtensionVersion'> = {
   assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
   translations: ({translations}) =>
     translations ? JSON.stringify(translations) : null,
-  supports: ({supports}) => (supports as any) ?? [],
-  configurationSchema: ({configurationSchema}) =>
-    (configurationSchema as any) ?? [],
+  extends: ({extends: supports}) => (supports as any) ?? [],
+  settings: ({settings}) => (settings as any) ?? {fields: []},
 };
 
-export const ClipsExtensionPointCondition: UnionResolver = {
+export const ClipsExtensionPointSupportCondition: UnionResolver = {
   __resolveType(condition: {type: string}) {
     switch (condition.type) {
       case 'series':
-        return 'ClipsExtensionPointSeriesCondition';
+        return 'ClipsExtensionPointSupportSeriesCondition';
     }
 
     throw new Error(`Unknown condition: ${condition}`);
   },
 };
 
-export const ClipsExtensionConfigurationString: UnionResolver = {
+export const ClipsExtensionSettingsString: UnionResolver = {
   __resolveType(stringType: {type: string}) {
     switch (stringType.type) {
       case 'static':
-        return 'ClipsExtensionConfigurationStringStatic';
+        return 'ClipsExtensionSettingsStringStatic';
       case 'translation':
-        return 'ClipsExtensionConfigurationStringTranslation';
+        return 'ClipsExtensionSettingsStringTranslation';
     }
 
     throw new Error(`Unknown stringType: ${stringType}`);
   },
 };
 
-export const ClipsExtensionConfigurationField: UnionResolver = {
-  __resolveType(configurationField: {type: string}) {
-    switch (configurationField.type) {
+export const ClipsExtensionSettingsField: UnionResolver = {
+  __resolveType(settingsField: {type: string}) {
+    switch (settingsField.type) {
       case 'string':
-        return 'ClipsExtensionStringConfigurationField';
+        return 'ClipsExtensionSettingsStringField';
       case 'number':
-        return 'ClipsExtensionNumberConfigurationField';
+        return 'ClipsExtensionSettingsNumberField';
       case 'options':
-        return 'ClipsExtensionOptionsConfigurationField';
+        return 'ClipsExtensionSettingsOptionsField';
     }
 
-    throw new Error(`Unknown configuration field: ${configurationField}`);
+    throw new Error(`Unknown settings field: ${settingsField}`);
   },
 };
 
@@ -576,30 +566,26 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       return extension.activeVersion!;
     },
-    configuration: ({configuration}) =>
-      configuration ? JSON.stringify(configuration) : null,
+    settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   };
 
 async function createStagedClipsVersion({
   code,
   appId,
-  extensionId,
   extensionName,
   translations,
-  supports,
+  extends: supports,
   request,
-  configurationSchema,
+  settings,
 }: {
+  id: string;
   code: string;
   appId: string;
   request: Context['request'];
-  extensionId: string;
   extensionName: string;
 } & CreateClipsInitialVersion) {
   const hash = createHash('sha256').update(code).digest('hex');
-  const path = `assets/clips/${appId}/${toParam(
-    extensionName,
-  )}.${extensionId}.${hash}.js`;
+  const path = `assets/clips/${appId}/${toParam(extensionName)}.${hash}.js`;
 
   const token = await createSignedToken(
     {path, code},
@@ -631,11 +617,11 @@ async function createStagedClipsVersion({
     scriptUrl: `https://watch.lemon.tools/${path}`,
     apiVersion: 'UNSTABLE',
     translations: translations && JSON.parse(translations),
-    supports:
+    extends:
       supports &&
-      (supports.map(({name, conditions}) => {
+      (supports.map(({target, conditions}) => {
         return {
-          name,
+          target,
           conditions: conditions?.map((condition) => {
             if (condition?.series?.handle == null) {
               throw new Error(`Unknown condition: ${condition}`);
@@ -645,47 +631,58 @@ async function createStagedClipsVersion({
           }),
         };
       }) as any),
-    configurationSchema:
-      configurationSchema &&
-      (configurationSchema.map(
-        ({string: stringField, number: numberField, options: optionsField}) => {
-          if (stringField) {
-            const {key, label, default: defaultValue} = stringField;
+    settings: settings?.fields
+      ? {
+          fields: settings.fields?.map(
+            ({
+              string: stringField,
+              number: numberField,
+              options: optionsField,
+            }) => {
+              if (stringField) {
+                const {key, label, default: defaultValue} = stringField;
 
-            return {
-              type: 'string',
-              key,
-              default: defaultValue,
-              label: normalizeClipsString(label),
-            };
-          }
+                return {
+                  type: 'string',
+                  key,
+                  default: defaultValue,
+                  label: normalizeClipsString(label),
+                };
+              }
 
-          if (numberField) {
-            const {key, label, default: defaultValue} = numberField;
+              if (numberField) {
+                const {key, label, default: defaultValue} = numberField;
 
-            return {
-              type: 'number',
-              key,
-              default: defaultValue,
-              label: normalizeClipsString(label),
-            };
-          }
+                return {
+                  type: 'number',
+                  key,
+                  default: defaultValue,
+                  label: normalizeClipsString(label),
+                };
+              }
 
-          if (optionsField) {
-            const {key, label, options, default: defaultValue} = optionsField;
-            return {
-              type: 'options',
-              key,
-              default: defaultValue,
-              label: normalizeClipsString(label),
-              options: options.map(({label, value}) => ({
-                value,
-                label: normalizeClipsString(label),
-              })),
-            };
-          }
-        },
-      ) as any),
+              if (optionsField) {
+                const {
+                  key,
+                  label,
+                  options,
+                  default: defaultValue,
+                } = optionsField;
+                return {
+                  type: 'options',
+                  key,
+                  default: defaultValue,
+                  label: normalizeClipsString(label),
+                  options: options.map(({label, value}) => ({
+                    value,
+                    label: normalizeClipsString(label),
+                  })),
+                };
+              }
+            },
+          ) as any,
+        }
+      : undefined,
   };
 
   return {version};
@@ -694,7 +691,7 @@ async function createStagedClipsVersion({
 function normalizeClipsString({
   static: staticString,
   translation,
-}: ClipsExtensionConfigurationStringInput) {
+}: ClipsExtensionSettingsStringInput) {
   if (staticString) {
     return {type: 'static', value: staticString};
   }

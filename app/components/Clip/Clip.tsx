@@ -37,9 +37,9 @@ import type {
 } from '~/shared/clips';
 import type {ArrayElement, ThenType} from '~/shared/types';
 
-import clipsExtensionConfigurationQuery from './graphql/ClipExtensionConfigurationQuery.graphql';
-import type {ClipExtensionConfigurationQueryData} from './graphql/ClipExtensionConfigurationQuery.graphql';
-import updateClipsExtensionConfigurationMutation from './graphql/UpdateClipsExtensionConfigurationMutation.graphql';
+import clipsExtensionSettingsQuery from './graphql/ClipExtensionSettingsQuery.graphql';
+import type {ClipExtensionSettingsQueryData} from './graphql/ClipExtensionSettingsQuery.graphql';
+import updateClipsExtensionSettingsMutation from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
 import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 import localClipQuery from './graphql/LocalClipQuery.graphql';
@@ -60,13 +60,10 @@ export interface Props<T extends ExtensionPoint> {
   version: ClipsExtensionApiVersion;
   script: string;
   api: () => NoInfer<
-    Omit<
-      ApiForExtensionPoint<T>,
-      'extensionPoint' | 'version' | 'configuration'
-    >
+    Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version' | 'settings'>
   >;
   build?: LocalClipQueryData.App.ClipsExtension.Build;
-  configuration?: GraphQlJSON;
+  settings?: GraphQlJSON;
 }
 
 type NoInfer<T> = T & {[K in keyof T]: T[K]};
@@ -81,7 +78,7 @@ export function InstalledClip<T extends ExtensionPoint>({
   api,
   extension,
   version,
-  configuration,
+  settings,
   extensionPoint,
 }: InstalledClipExtensionFragmentData &
   Pick<Props<T>, 'api' | 'extensionPoint'>) {
@@ -93,7 +90,7 @@ export function InstalledClip<T extends ExtensionPoint>({
       name={extension.name}
       version={version.apiVersion}
       script={version.assets[0]!.source}
-      configuration={configuration ?? undefined}
+      settings={settings ?? undefined}
       extensionPoint={extensionPoint}
     />
   );
@@ -164,7 +161,7 @@ export function Clip<T extends ExtensionPoint>({
   script,
   build,
   api,
-  configuration,
+  settings,
 }: Props<T>) {
   const controller = useMemo(
     () => createController(COMPONENTS),
@@ -177,13 +174,11 @@ export function Clip<T extends ExtensionPoint>({
     extensionPoint,
     version: version as any,
     script,
-    configuration,
+    settings,
   });
 
-  useValueOnChange(configuration, () => {
-    sandboxController.internals.configuration.update(
-      JSON.parse(configuration ?? '{}'),
-    );
+  useValueOnChange(settings, () => {
+    sandboxController.internals.settings.update(JSON.parse(settings ?? '{}'));
   });
 
   return build ? (
@@ -245,7 +240,7 @@ function InstalledClipFrame<T extends ExtensionPoint>({
     <ClipFrame
       {...rest}
       controller={controller}
-      renderPopoverContent={() => <InstalledClipConfiguration id={id} />}
+      renderPopoverContent={() => <InstalledClipSettings id={id} />}
       renderPopoverActions={() => (
         <>
           <Button onPress={() => alert('App page not implemented yet!')}>
@@ -268,51 +263,50 @@ function InstalledClipFrame<T extends ExtensionPoint>({
   );
 }
 
-function InstalledClipConfiguration({id}: {id: string}) {
-  const {data, isFetching} = useQuery(clipsExtensionConfigurationQuery, {
+function InstalledClipSettings({id}: {id: string}) {
+  const {data, isFetching} = useQuery(clipsExtensionSettingsQuery, {
     variables: {id},
   });
 
   if (data?.clipsInstallation == null) {
     return (
       <Text>
-        {isFetching ? 'Loading configuration...' : 'Something went wrong!'}
+        {isFetching ? 'Loading settings...' : 'Something went wrong!'}
       </Text>
     );
   }
 
   const {
     clipsInstallation: {
-      configuration,
-      version: {translations, configurationSchema},
+      settings,
+      version: {translations, settings: schema},
     },
   } = data;
 
   return (
-    <InstalledClipLoadedConfiguration
+    <InstalledClipLoadedSettings
       id={id}
-      configuration={configuration}
+      settings={settings}
       translations={translations}
-      configurationSchema={configurationSchema}
+      schema={schema}
     />
   );
 }
 
-function InstalledClipLoadedConfiguration({
+function InstalledClipLoadedSettings({
   id,
-  configuration,
   translations,
-  configurationSchema,
+  settings,
+  schema,
 }: Pick<
-  ClipExtensionConfigurationQueryData.ClipsInstallation.Version,
-  'translations' | 'configurationSchema'
+  ClipExtensionSettingsQueryData.ClipsInstallation.Version,
+  'translations'
 > &
-  Pick<
-    ClipExtensionConfigurationQueryData.ClipsInstallation,
-    'id' | 'configuration'
-  >) {
-  const updateClipsExtensionConfiguration = useMutation(
-    updateClipsExtensionConfigurationMutation,
+  Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'id' | 'settings'> & {
+    schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
+  }) {
+  const updateClipsExtensionSettings = useMutation(
+    updateClipsExtensionSettingsMutation,
   );
 
   const [values, dispatch] = useReducer(
@@ -331,11 +325,11 @@ function InstalledClipLoadedConfiguration({
 
       return state;
     },
-    configuration,
-    (configuration) => {
-      const parsed = {...JSON.parse(configuration ?? '{}')};
+    settings,
+    (settings) => {
+      const parsed = {...JSON.parse(settings ?? '{}')};
 
-      return configurationSchema.reduce<Record<string, unknown>>(
+      return schema.fields.reduce<Record<string, unknown>>(
         (normalized, field) =>
           'key' in field
             ? {
@@ -352,13 +346,13 @@ function InstalledClipLoadedConfiguration({
     const parsedTranslations = JSON.parse(translations ?? '{}');
 
     return (
-      field: ClipExtensionConfigurationQueryData.ClipsInstallation.Version.ConfigurationSchema_ClipsExtensionNumberConfigurationField.Label,
+      field: ClipExtensionSettingsQueryData.ClipsInstallation.Version.Settings.Fields_ClipsExtensionSettingsStringField.Label,
     ) => {
       switch (field.__typename) {
-        case 'ClipsExtensionConfigurationStringStatic': {
+        case 'ClipsExtensionSettingsStringStatic': {
           return field.value;
         }
-        case 'ClipsExtensionConfigurationStringTranslation': {
+        case 'ClipsExtensionSettingsStringTranslation': {
           const translated = parsedTranslations[field.key];
           if (translated == null) {
             throw new Error(`No translation found for ${field.key}`);
@@ -373,9 +367,9 @@ function InstalledClipLoadedConfiguration({
   }, [translations]);
 
   const handleSubmit = () => {
-    updateClipsExtensionConfiguration.mutate({
+    updateClipsExtensionSettings.mutate({
       id,
-      configuration: JSON.stringify(values),
+      settings: JSON.stringify(values),
     });
   };
 
@@ -391,9 +385,9 @@ function InstalledClipLoadedConfiguration({
   return (
     <Form onSubmit={handleSubmit}>
       <BlockStack>
-        {configurationSchema.map((field) => {
+        {schema.fields.map((field) => {
           switch (field.__typename) {
-            case 'ClipsExtensionStringConfigurationField': {
+            case 'ClipsExtensionSettingsStringField': {
               return (
                 <TextField
                   key={field.key}
@@ -402,7 +396,7 @@ function InstalledClipLoadedConfiguration({
                 />
               );
             }
-            case 'ClipsExtensionNumberConfigurationField': {
+            case 'ClipsExtensionSettingsNumberField': {
               return (
                 <TextField
                   key={field.key}
@@ -411,7 +405,7 @@ function InstalledClipLoadedConfiguration({
                 />
               );
             }
-            case 'ClipsExtensionOptionsConfigurationField': {
+            case 'ClipsExtensionSettingsOptionsField': {
               return (
                 <Select
                   key={field.key}

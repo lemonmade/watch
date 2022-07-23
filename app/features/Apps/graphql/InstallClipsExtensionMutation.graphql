@@ -1,5 +1,5 @@
-mutation InstallClipsExtension($id: ID!, $extensionPoint: ClipsExtensionPoint) {
-  installClipsExtension(id: $id, extensionPoint: $extensionPoint) {
+mutation InstallClipsExtension($id: ID!, $target: ClipsExtensionPoint) {
+  installClipsExtension(id: $id, target: $target) {
     extension {
       id
     }

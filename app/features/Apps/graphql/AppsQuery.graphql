@@ -9,8 +9,8 @@ query Apps {
         name
         isInstalled
         latestVersion {
-          supports {
-            name
+          extends {
+            target
           }
         }
       }

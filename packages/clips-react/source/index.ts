@@ -1,4 +1,3 @@
-export {extend} from '@watching/clips';
 export type {
   Version,
   ExtensionPoint,
@@ -16,6 +15,6 @@ export type {
   RenderExtension,
 } from '@watching/clips';
 
-export {render} from './render';
+export {extension} from './extension';
 export {Text, View} from './components';
-export {useApi, useConfiguration, useSubscription} from './hooks';
+export {useApi, useSettings, useSubscription} from './hooks';

@@ -1,8 +1,0 @@
-mutation UpdateClipsExtensionConfiguration($id: ID!, $configuration: JSON) {
-  updateClipsExtensionInstallation(id: $id, configuration: $configuration) {
-    installation {
-      id
-      configuration
-    }
-  }
-}

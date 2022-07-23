@@ -28,19 +28,19 @@ export async function createRollupConfiguration(
           this.addWatchFile(extension.configurationFile.path);
 
           return `
-            ${extension.extensionPoints
+            ${extension.extends
               .map((extensionPoint, index) => {
-                return `import extensionPoint${index} from ${JSON.stringify(
+                return `import extension${index} from ${JSON.stringify(
                   path.resolve(extension.root, extensionPoint.module),
                 )}`;
               })
               .join('\n')}
 
-              ${extension.extensionPoints
+              ${extension.extends
                 .map((extensionPoint, index) => {
-                  return `clips.extend(${JSON.stringify(
-                    extensionPoint.id,
-                  )}, extensionPoint${index});`;
+                  return `clips.register(${JSON.stringify(
+                    extensionPoint.target,
+                  )}, extension${index});`;
                 })
                 .join('\n')}
           `;
