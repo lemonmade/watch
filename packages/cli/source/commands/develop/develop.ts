@@ -12,7 +12,6 @@ import {
   noContent,
   json,
   notFound,
-  EnhancedResponse,
 } from '@quilted/http-handlers';
 import {createHttpServer} from '@quilted/http-handlers/node';
 
@@ -161,15 +160,12 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
         const assetStats = await stat(assetPath);
 
         if (assetStats.isFile()) {
-          return new EnhancedResponse(
-            await readFile(assetPath, {encoding: 'utf8'}),
-            {
-              headers: {
-                'Timing-Allow-Origin': '*',
-                'Content-Type': mime.getType(assetPath)!,
-              },
+          return new Response(await readFile(assetPath, {encoding: 'utf8'}), {
+            headers: {
+              'Timing-Allow-Origin': '*',
+              'Content-Type': mime.getType(assetPath)!,
             },
-          );
+          });
         } else {
           return notFound();
         }

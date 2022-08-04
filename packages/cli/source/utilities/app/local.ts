@@ -90,7 +90,7 @@ interface LocalExtensionPointSupport {
   readonly conditions?: LocalExtensionPointSupportCondition[];
 }
 
-interface LocalExtensionConfiguration {
+export interface LocalExtensionConfiguration {
   readonly id?: string;
   readonly name: string;
   readonly handle: string;
