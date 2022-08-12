@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.7
+
+### Patch Changes
+
+- [#165](https://github.com/lemonmade/watch/pull/165) [`a57b75f`](https://github.com/lemonmade/watch/commit/a57b75fbfb239b933bda1bf307f5301bd8891eb8) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Button component
+
 ## 0.2.6
 
 ### Patch Changes

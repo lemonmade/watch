@@ -1,5 +1,16 @@
 # @watching/cli
 
+## 0.4.14
+
+### Patch Changes
+
+- [#165](https://github.com/lemonmade/watch/pull/165) [`a57b75f`](https://github.com/lemonmade/watch/commit/a57b75fbfb239b933bda1bf307f5301bd8891eb8) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Button component
+
+* [`536c826`](https://github.com/lemonmade/watch/commit/536c826e10808ce0816e844b16a8c706acfaecff) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove unnecessary use of EnhancedResponse
+
+* Updated dependencies [[`a57b75f`](https://github.com/lemonmade/watch/commit/a57b75fbfb239b933bda1bf307f5301bd8891eb8)]:
+  - @watching/clips@0.2.6
+
 ## 0.4.13
 
 ### Patch Changes
