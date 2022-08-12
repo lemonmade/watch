@@ -71,6 +71,7 @@ type NoInfer<T> = T & {[K in keyof T]: T[K]};
 const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
   Text,
   View,
+  Button,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({

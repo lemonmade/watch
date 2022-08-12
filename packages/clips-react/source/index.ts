@@ -16,5 +16,5 @@ export type {
 } from '@watching/clips';
 
 export {extension} from './extension';
-export {Text, View} from './components';
-export {useApi, useSettings, useSubscription} from './hooks';
+export * from './components';
+export * from './hooks';

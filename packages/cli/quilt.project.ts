@@ -4,7 +4,7 @@ export default createProject((pkg) => {
   pkg.use(
     quiltPackage({
       graphql: true,
-      binaries: {
+      executable: {
         watchapp: './source/cli.ts',
       },
     }),
