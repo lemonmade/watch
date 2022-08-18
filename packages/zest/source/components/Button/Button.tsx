@@ -20,6 +20,7 @@ export function Button({
   primary,
   blockSize,
   alignContent,
+  disabled,
   onPress,
 }: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction(id);
@@ -27,6 +28,7 @@ export function Button({
   return (
     <button
       type="button"
+      disabled={disabled}
       className={classes(
         styles.Button,
         primary && styles.primary,
