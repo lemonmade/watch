@@ -23,7 +23,7 @@ export function buildDetailsForExtension(
   app: LocalApp,
 ) {
   return {
-    filename: `${extension.id}.js`,
+    filename: `${extension.handle}.js`,
     directory: path.join(rootOutputDirectory(app), 'build/extensions'),
   };
 }
