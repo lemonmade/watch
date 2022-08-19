@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {readFile, stat} from 'fs/promises';
+import {readFile, access} from 'fs/promises';
 import {watch} from 'chokidar';
 import type {FSWatcher} from 'chokidar';
 import {createEmitter} from '@quilted/events';
@@ -122,11 +122,7 @@ export async function loadLocalApp(): Promise<LocalApp> {
   validateAppConfig(configuration);
 
   let currentApp: Omit<LocalApp, 'on'> = {
-    id:
-      configuration.id ??
-      `gid://watch/LocalApp/${configuration.name
-        .toLocaleLowerCase()
-        .replace(/\s+/g, '-')}`,
+    id: configuration.id ?? `gid://watch/LocalApp/${configuration.handle}`,
     name: configuration.name,
     handle: configuration.handle,
     root: path.resolve(),
@@ -209,9 +205,11 @@ async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
 }
 
 async function tryLoad<T>(file: string): Promise<T> {
-  const appConfigStats = await stat(file);
+  const exists = await access(file)
+    .then(() => true)
+    .catch(() => false);
 
-  if (!appConfigStats.isFile()) {
+  if (!exists) {
     throw new Error(`No file: ${file}`);
   }
 
@@ -287,7 +285,7 @@ async function loadExtensionFromDirectory(
   return {
     id:
       configuration.id ??
-      `gid://watch/LocalClipsExtension/${handleize(path.basename(directory))}`,
+      `gid://watch/LocalClipsExtension/${configuration.handle}`,
     name: configuration.name,
     handle: configuration.handle,
     root: directory,
@@ -322,8 +320,4 @@ function loadExtensionEntry(pattern: string): LocalExtensionEntry {
       {absolute: true},
     ),
   };
-}
-
-function handleize(value: string) {
-  return value.toLocaleLowerCase().replace(/[\s.-]+/g, '-');
 }

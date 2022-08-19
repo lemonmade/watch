@@ -66,7 +66,10 @@ export async function createRollupConfiguration(
         loaders: {'.esnext': 'js'},
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
-      esbuildWithJSXRuntime({
+      esbuild({
+        minify: false,
+        target: 'es2017',
+        jsx: 'automatic',
         define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
       ...(mode === 'production' ? [minifyChunkWithESBuild()] : []),
@@ -106,61 +109,4 @@ function minifyChunkWithESBuild(): Plugin {
         : null;
     },
   };
-}
-
-function esbuildWithJSXRuntime(
-  options: import('esbuild').TransformOptions = {},
-): Plugin {
-  return {
-    name: '@watching/esbuild-with-jsx-runtime',
-    async transform(code, id) {
-      const loader = esbuildLoader(id);
-
-      const [
-        {transformAsync: transformWithBabel},
-        {transform: transformWithESBuild},
-      ] = await Promise.all([import('@babel/core'), import('esbuild')]);
-
-      const {code: intermediateCode} =
-        (await transformWithBabel(code, {
-          filename: id,
-          configFile: false,
-          sourceType: 'module',
-          presets: [
-            [
-              '@babel/preset-react',
-              {
-                development: false,
-                runtime: 'automatic',
-              },
-            ],
-          ],
-          plugins:
-            loader === 'ts'
-              ? [['@babel/plugin-syntax-typescript', {isTSX: true}]]
-              : undefined,
-        })) ?? {};
-
-      if (intermediateCode == null) {
-        return {code: intermediateCode ?? undefined};
-      }
-
-      const {code: finalCode, map} = await transformWithESBuild(
-        intermediateCode,
-        {
-          ...options,
-          target: 'es2017',
-          loader,
-          minify: false,
-        },
-      );
-
-      return {code: finalCode || undefined, map: map || null};
-    },
-  };
-}
-
-const ESBUILD_MATCH = /\.(ts|js)x?$/;
-function esbuildLoader(id: string) {
-  return id.match(ESBUILD_MATCH)?.[1] as 'js' | 'ts' | undefined;
 }

@@ -18,10 +18,6 @@
     "bin"
   ],
   "dependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0",
     "@graphql-tools/schema": "^7.0.0",
     "@iarna/toml": "^3.0.0",
     "@lemonmade/graphql-live": "^0.1.10",
@@ -31,16 +27,16 @@
     "@quilted/polyfills": "^0.2.30",
     "@quilted/threads": "^0.1.6",
     "@rollup/plugin-alias": "^3.0.0",
-    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@types/mime": "^2.0.0",
-    "@watching/graphql": "^0.0.1",
+    "@watching/graphql": "workspace:^0.0.1",
     "ansi-escapes": "^4.0.0",
     "arg": "^5.0.0",
     "brotli-size": "^4.0.0",
     "chokidar": "^3.5.0",
     "colorette": "^1.0.0",
-    "esbuild": "^0.12.1",
+    "esbuild": "^0.15.0",
     "glob": "^7.0.0",
     "graphql": "^15.0.0",
     "mime": "^2.5.0",
@@ -48,7 +44,7 @@
     "pkg-dir": "^6.0.0",
     "pretty-bytes": "^5.6.0",
     "rollup": "^2.0.0",
-    "rollup-plugin-esbuild": "^4.0.0",
+    "rollup-plugin-esbuild": "^4.9.0",
     "strip-ansi": "^6.0.0",
     "toml": "^3.0.0",
     "ws": "^7.0.0"
@@ -56,7 +52,7 @@
   "devDependencies": {
     "@types/glob": "^7.2.0",
     "@types/ws": "^7.0.0",
-    "@watching/clips": "0.2.6"
+    "@watching/clips": "workspace:^0.2.6"
   },
   "peerDependencies": {
     "@watching/clips": "^0.2.6"
