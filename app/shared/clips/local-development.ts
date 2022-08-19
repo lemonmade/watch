@@ -1,7 +1,7 @@
-import {createContext} from 'react';
-import type {ExtensionPoint} from '@watching/clips';
-import {createUseContextHook} from '@quilted/quilt';
-import type {GraphQLOperation} from '@quilted/quilt';
+import {createContext, useMemo} from 'react';
+import {atom, useAtomValue, type PrimitiveAtom} from 'jotai';
+import {type ExtensionPoint} from '@watching/clips';
+import {createUseContextHook, type GraphQLOperation} from '@quilted/quilt';
 
 export interface LocalExtension {
   readonly id: string;
@@ -10,7 +10,8 @@ export interface LocalExtension {
 
 export interface LocalDevelopmentServer {
   readonly url: URL;
-  readonly extensions: readonly LocalExtension[];
+  readonly extensions: PrimitiveAtom<readonly LocalExtension[]>;
+  start(options?: {signal?: AbortSignal}): void;
   query<Data, Variables>(
     operation: GraphQLOperation<Data, Variables>,
     options?: {signal?: AbortSignal; variables?: Variables},
@@ -28,5 +29,16 @@ export function useLocalDevelopmentClips<T extends ExtensionPoint>(
   _extensionPoint: T,
 ) {
   const localDevelopmentServer = useLocalDevelopmentServer({required: false});
-  return localDevelopmentServer?.extensions ?? [];
+  const extensionsAtom = useMemo(
+    () =>
+      atom((get) => {
+        if (localDevelopmentServer)
+          return get(localDevelopmentServer.extensions);
+
+        return [];
+      }),
+    [localDevelopmentServer],
+  );
+
+  return useAtomValue(extensionsAtom);
 }

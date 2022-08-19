@@ -64,6 +64,7 @@ importers:
       aws-sdk: ^2.935.0
       common-tags: ^1.8.0
       graphql: ^15.0.0
+      jotai: ^1.7.8
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
       prisma: ^3.15.0
@@ -89,6 +90,7 @@ importers:
       '@watching/graphql': link:../packages/graphql
       common-tags: 1.8.2
       graphql: 15.8.0
+      jotai: 1.7.8_@quilted+react@17.0.5
       jsonwebtoken: 8.5.1
       mime: 2.6.0
       react-query: 3.39.1_a0196d1569fcdc26bd98f3e4bc6c31fd
@@ -9278,6 +9280,43 @@ packages:
     resolution: {integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==}
     engines: {node: '>= 0.6.0'}
     dev: false
+
+  /jotai/1.7.8_@quilted+react@17.0.5:
+    resolution: {integrity: sha512-rXwWz6uLqyZUCRzWIPiYTjI1hjskVxVpDN3lBoOHi66z6uQFkFmKwR8YhcQd+Ex4lODlReuKNIx6WwsF9aKy3g==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      '@babel/template': '*'
+      '@tanstack/query-core': '*'
+      '@urql/core': '*'
+      immer: '*'
+      optics-ts: '*'
+      react: '>=16.8'
+      valtio: '*'
+      wonka: '*'
+      xstate: '*'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      '@tanstack/query-core':
+        optional: true
+      '@urql/core':
+        optional: true
+      immer:
+        optional: true
+      optics-ts:
+        optional: true
+      valtio:
+        optional: true
+      wonka:
+        optional: true
+      xstate:
+        optional: true
+    dependencies:
+      react: /@quilted/react/17.0.5
+    dev: true
 
   /joycon/3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
