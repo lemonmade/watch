@@ -172,7 +172,7 @@ importers:
       '@types/glob': ^7.2.0
       '@types/mime': ^2.0.0
       '@types/ws': ^7.0.0
-      '@watching/clips': workspace:0.2.6
+      '@watching/clips': workspace:^0.2.6
       '@watching/graphql': workspace:^0.0.1
       ansi-escapes: ^4.0.0
       arg: ^5.0.0
@@ -241,13 +241,13 @@ importers:
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
       '@watching/clips': workspace:^0.2.6
-      '@watching/remote-react-utilities': ^0.0.0
+      '@watching/remote-react-utilities': workspace:^0.1.1
     dependencies:
       '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12
       '@types/react': 17.0.45
       '@watching/clips': link:../clips
-      '@watching/remote-react-utilities': 0.0.0_@quilted+react@17.0.5
+      '@watching/remote-react-utilities': link:../remote-react-utilities
 
   packages/css:
     specifiers: {}
@@ -5602,24 +5602,6 @@ packages:
       '@typescript-eslint/types': 5.29.0
       eslint-visitor-keys: 3.3.0
     dev: true
-
-  /@watching/remote-react-utilities/0.0.0_@quilted+react@17.0.5:
-    resolution: {integrity: sha512-eRYnernYe/YVmq8SPQMClsUpXbLQxHoiQwVKl8KftA4OWpYArWNzfjgxxRDHmwM60m2uyQ3BX5EhetlvRvuYlw==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-      '@watching/remote-react': ^0.0.0
-      react: ^17.0.0
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      '@quilted/react-utilities': 0.1.4_@quilted+react@17.0.5
-      '@remote-ui/core': 2.1.12
-      react: /@quilted/react/17.0.5
-    dev: false
 
   /@watching/remote-react/0.0.0_a0196d1569fcdc26bd98f3e4bc6c31fd:
     resolution: {integrity: sha512-Bn4KB34FQsqc3kq0IGV5ede3P2aGfkvW5JJ2a2/InlqSgbv1RU6zQga/oLDplfRGKuRGseuYP8pwJdiobfpBUA==}

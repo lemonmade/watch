@@ -26,12 +26,12 @@
   "dependencies": {
     "@remote-ui/async-subscription": "^2.1.0",
     "@remote-ui/core": "^2.1.0",
-    "@watching/remote-react-utilities": "^0.0.0",
     "@types/react": "^17.0.0",
-    "@watching/clips": "^0.2.1"
+    "@watching/clips": "workspace:^0.2.6",
+    "@watching/remote-react-utilities": "workspace:^0.1.1"
   },
   "peerDependencies": {
-    "@watching/remote-react": "^0.0.0",
+    "@watching/remote-react": "^17.0.0",
     "react": "^17.0.0"
   },
   "peerDependenciesMeta": {
