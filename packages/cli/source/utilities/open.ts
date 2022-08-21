@@ -7,15 +7,16 @@ const TARGET_MAP: Record<
 > = {
   'Season.Details.RenderAccessory': getSeriesForExtensionPointSupport,
   'Series.Details.RenderAccessory': getSeriesForExtensionPointSupport,
-  'WatchThrough.Details.RenderAccessory': () => '/app/watchthroughs/.random',
+  'WatchThrough.Details.RenderAccessory': () => '/app/watchthrough/.random',
 };
 
-export async function targetForExtension(extension: LocalExtension) {
-  const firstExtends = extension.extends[0];
-
-  if (firstExtends == null) return undefined;
-  return firstExtends
-    ? TARGET_MAP[firstExtends.target](firstExtends)
+export async function targetForExtension(
+  extension: LocalExtension,
+  extensionPoint: LocalExtensionPointSupport | undefined = extension.extends[0],
+) {
+  if (extensionPoint == null) return undefined;
+  return extensionPoint
+    ? TARGET_MAP[extensionPoint.target](extensionPoint)
     : undefined;
 }
 

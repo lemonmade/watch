@@ -7,8 +7,8 @@ import {stat, readFile} from 'fs/promises';
 import {
   on,
   createEmitter,
+  AbortError,
   NestedAbortController,
-  // AbortError,
 } from '@quilted/events';
 import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
 import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
@@ -24,7 +24,7 @@ import {createHttpServer} from '@quilted/http-handlers/node';
 import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
-// import prompts, {type PromptObject} from 'prompts';
+import prompts, {type PromptObject} from 'prompts';
 
 import {parse} from 'graphql';
 
@@ -40,7 +40,11 @@ import {
 } from '../../utilities/build';
 import {targetForExtension} from '../../utilities/open';
 
-import {loadLocalApp, LocalExtension} from '../../utilities/app';
+import {
+  loadLocalApp,
+  LocalExtension,
+  LocalExtensionPointSupport,
+} from '../../utilities/app';
 import type {LocalApp} from '../../utilities/app';
 
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
@@ -91,7 +95,19 @@ export async function develop({ui}: {ui: Ui}) {
       list.Item(`${ui.Code('enter')} to open the developer console`);
     });
 
+    ui.Spacer();
+
     emitKeypressEvents(process.stdin);
+    await runConsole();
+  } catch (error) {
+    throw new PrintableError(
+      `There was a problem while trying to start your development server...`,
+      {original: error as any},
+    );
+  }
+
+  async function runConsole() {
+    process.stdin.resume();
     process.stdin.setRawMode(true);
 
     for await (const [_, key] of on<{
@@ -125,22 +141,64 @@ export async function develop({ui}: {ui: Ui}) {
       }
 
       if (key.sequence === '/' || key.sequence === '?') {
-        await openExtension(app.extensions[0]!);
+        break;
       }
     }
-  } catch (error) {
-    throw new PrintableError(
-      `There was a problem while trying to start your development server...`,
-      {original: error as any},
-    );
+
+    process.stdin.setRawMode(false);
+
+    try {
+      const extensionHandle = await prompt({
+        type: 'autocomplete',
+        message: 'Which extension would you like to preview?',
+        choices: app.extensions.map((extension) => {
+          return {title: extension.name, value: extension.handle};
+        }),
+      });
+
+      const extension = app.extensions.find(
+        (extension) => extension.handle === extensionHandle,
+      );
+
+      if (extension != null) {
+        if (extension.extends.length <= 1) {
+          await openExtension(extension, extension.extends[0]);
+        } else {
+          const extensionPointHandle = await prompt({
+            type: 'autocomplete',
+            message: 'Which extension point would you like to preview?',
+            choices: extension.extends.map((extensionPoint) => {
+              return {
+                title: extensionPoint.target,
+              };
+            }),
+          });
+
+          const extensionPoint = extension.extends.find(
+            (extensionPoint) => extensionPoint.target === extensionPointHandle,
+          );
+
+          await openExtension(extension, extensionPoint);
+        }
+      }
+    } catch (error) {
+      if (error instanceof AbortError) return;
+      throw error;
+    }
+
+    ui.Spacer();
+    await runConsole();
   }
 
   function close() {
     process.exit();
   }
 
-  async function openExtension(extension: LocalExtension) {
-    const target = await targetForExtension(extension);
+  async function openExtension(
+    extension: LocalExtension,
+    extensionPoint?: LocalExtensionPointSupport,
+  ) {
+    const target = await targetForExtension(extension, extensionPoint);
     const url = watchUrl(target ?? DEFAULT_OPEN_PATH);
     await openUrl(url);
   }
@@ -155,18 +213,18 @@ export async function develop({ui}: {ui: Ui}) {
   }
 }
 
-// async function prompt(prompt: Omit<PromptObject, 'name'>) {
-//   const result = await prompts<'value'>(
-//     {name: 'value', ...prompt},
-//     {
-//       onCancel() {
-//         throw new AbortError();
-//       },
-//     },
-//   );
+async function prompt(prompt: Omit<PromptObject, 'name'>) {
+  const result = await prompts<'value'>(
+    {name: 'value', ...prompt},
+    {
+      onCancel() {
+        throw new AbortError();
+      },
+    },
+  );
 
-//   return result.value;
-// }
+  return result.value;
+}
 
 async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   const handler = createHttpHandler();
