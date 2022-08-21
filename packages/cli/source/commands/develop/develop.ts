@@ -92,8 +92,8 @@ export async function develop({ui}: {ui: Ui}) {
           '/',
         )} to jump right to one of your extensions`,
       );
-      list.Item(`${ui.Code('esc')} to open the developer console`);
       list.Item(`${ui.Code('enter')} to open the developer console`);
+      list.Item(`${ui.Code('esc')} to stop the development server`);
     });
 
     ui.Spacer();
