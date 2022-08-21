@@ -1,5 +1,5 @@
-query Series($id: ID!) {
-  series(id: $id) {
+query Series($id: ID, $handle: String) {
+  series(id: $id, handle: $handle) {
     id
     name
     overview
@@ -39,7 +39,7 @@ query Series($id: ID!) {
   }
   clipsInstallations(
     target: "Series.Details.RenderAccessory"
-    conditions: [{series: {id: $id}}]
+    conditions: [{series: {id: $id, handle: $handle}}]
   ) {
     id
     target

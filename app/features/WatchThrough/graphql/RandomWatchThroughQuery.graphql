@@ -1,0 +1,5 @@
+query RandomWatchThrough {
+  randomWatchThrough {
+    id
+  }
+}

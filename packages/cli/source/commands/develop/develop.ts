@@ -2,8 +2,14 @@ import '@quilted/polyfills/fetch';
 
 import * as path from 'path';
 import type {Server} from 'http';
+import {emitKeypressEvents} from 'readline';
 import {stat, readFile} from 'fs/promises';
-import {on, createEmitter, NestedAbortController} from '@quilted/events';
+import {
+  on,
+  createEmitter,
+  AbortError,
+  NestedAbortController,
+} from '@quilted/events';
 import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
 import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
 
@@ -18,6 +24,7 @@ import {createHttpServer} from '@quilted/http-handlers/node';
 import WebSocket from 'ws';
 import mime from 'mime';
 import open from 'open';
+import prompts, {type PromptObject} from 'prompts';
 
 import {parse} from 'graphql';
 
@@ -31,8 +38,13 @@ import {
   rootOutputDirectory,
   ensureRootOutputDirectory,
 } from '../../utilities/build';
+import {targetForExtension} from '../../utilities/open';
 
-import {loadLocalApp, LocalExtension} from '../../utilities/app';
+import {
+  loadLocalApp,
+  LocalExtension,
+  LocalExtensionPointSupport,
+} from '../../utilities/app';
 import type {LocalApp} from '../../utilities/app';
 
 import {findPortAndListen, makeStoppableServer} from '../../utilities/http';
@@ -40,6 +52,8 @@ import {createRollupConfiguration} from '../../utilities/rollup';
 
 import {run, createQueryResolver} from './graphql';
 import type {Builder, BuildState} from './types';
+
+const DEFAULT_OPEN_PATH = '/app/developer/console';
 
 export async function develop({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
@@ -59,35 +73,163 @@ export async function develop({ui}: {ui: Ui}) {
 
   await ensureRootOutputDirectory(app);
   const devServer = await createDevServer(app, {ui});
+  const result = await devServer.listen();
+
+  const localUrl = new URL(`http://localhost:${result.port}`);
+  const localSocketUrl = new URL(`ws://localhost:${result.port}`);
 
   try {
-    const result = await devServer.listen();
-
-    const localUrl = new URL(`http://localhost:${result.port}`);
-    const localSocketUrl = new URL(`ws://localhost:${result.port}`);
-
-    const targetUrl = watchUrl(`/app`);
-    targetUrl.searchParams.set(
-      'connect',
-      new URL('/connect', localSocketUrl).href,
-    );
-
     ui.Heading('success!', {style: (content, style) => style.green(content)});
     ui.TextBlock(
       `We’ve started a development server at ${ui.Link(
         localUrl,
-      )}. In a moment, we’ll open ${ui.Link(
-        targetUrl,
-      )}, which will connect your local environment to the Watch app. All of the extensions in your local workspace will be automatically installed in all their supported extension points, so navigate to the page you are extending to see your extensions in action. Have fun building!`,
+      )}. You can press one of these keys to see preview your work:`,
     );
 
-    await open(targetUrl.href);
+    ui.List((list) => {
+      list.Item(
+        `${ui.Code('?')} or ${ui.Code(
+          '/',
+        )} to jump right to one of your extensions`,
+      );
+      list.Item(`${ui.Code('enter')} to open the developer console`);
+      list.Item(`${ui.Code('esc')} to stop the development server`);
+    });
+
+    ui.Spacer();
+
+    emitKeypressEvents(process.stdin);
+    await runConsole();
   } catch (error) {
     throw new PrintableError(
       `There was a problem while trying to start your development server...`,
       {original: error as any},
     );
   }
+
+  async function runConsole() {
+    process.stdin.resume();
+    process.stdin.setRawMode(true);
+
+    for await (const [_, key] of on<{
+      keypress: [
+        unknown,
+        {
+          name?: string;
+          sequence: string;
+          ctrl: boolean;
+          meta: boolean;
+          shift: boolean;
+        },
+      ];
+    }>(process.stdin as any, 'keypress')) {
+      if (key.name === 'c' && key.ctrl) {
+        return close();
+      }
+
+      // Wanted to do this but it didn't work for me:
+      // https://stackoverflow.com/questions/50497062/how-to-support-default-z-behavior-in-a-node-program-that-detects-key-presses
+      if (key.name === 'z' && key.ctrl) {
+        return close();
+      }
+
+      if (key.name === 'escape') {
+        return close();
+      }
+
+      if (key.name === 'enter' || key.name === 'return') {
+        await openUrl(watchUrl(DEFAULT_OPEN_PATH));
+      }
+
+      if (key.sequence === '/' || key.sequence === '?') {
+        break;
+      }
+    }
+
+    process.stdin.setRawMode(false);
+
+    try {
+      let extension =
+        app.extensions.length === 1 ? app.extensions[0] : undefined;
+
+      if (extension == null) {
+        const extensionHandle = await prompt({
+          type: 'autocomplete',
+          message: 'Which extension would you like to preview?',
+          choices: app.extensions.map((extension) => {
+            return {title: extension.name, value: extension.handle};
+          }),
+        });
+
+        extension = app.extensions.find(
+          (extension) => extension.handle === extensionHandle,
+        );
+      }
+
+      if (extension != null) {
+        if (extension.extends.length <= 1) {
+          await openExtension(extension, extension.extends[0]);
+        } else {
+          const extensionPointHandle = await prompt({
+            type: 'autocomplete',
+            message: 'Which extension point would you like to preview?',
+            choices: extension.extends.map((extensionPoint) => {
+              return {
+                title: extensionPoint.target,
+              };
+            }),
+          });
+
+          const extensionPoint = extension.extends.find(
+            (extensionPoint) => extensionPoint.target === extensionPointHandle,
+          );
+
+          await openExtension(extension, extensionPoint);
+        }
+      }
+    } catch (error) {
+      if (error instanceof AbortError) return;
+      throw error;
+    }
+
+    ui.Spacer();
+    await runConsole();
+  }
+
+  function close() {
+    process.exit();
+  }
+
+  async function openExtension(
+    extension: LocalExtension,
+    extensionPoint?: LocalExtensionPointSupport,
+  ) {
+    const target = await targetForExtension(extension, extensionPoint);
+    const url = watchUrl(target ?? DEFAULT_OPEN_PATH);
+    await openUrl(url);
+  }
+
+  async function openUrl(url: URL) {
+    const newUrl = new URL(url);
+    newUrl.searchParams.set(
+      'connect',
+      new URL('/connect', localSocketUrl).href,
+    );
+    await open(newUrl.href);
+  }
+}
+
+async function prompt(prompt: Omit<PromptObject, 'name'>) {
+  const result = await prompts<'value'>(
+    {name: 'value', ...prompt},
+    {
+      onCancel() {
+        throw new AbortError();
+      },
+    },
+  );
+
+  return result.value;
 }
 
 async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {

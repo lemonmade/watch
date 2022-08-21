@@ -36,9 +36,27 @@ export type SeriesResolver = Resolver<'Series'>;
 export type SeasonResolver = Resolver<'Season'>;
 export type EpisodeResolver = Resolver<'Episode'>;
 
-export const Query: Pick<QueryResolver, 'series'> = {
-  series(_, {id}, {prisma}) {
-    return prisma.series.findFirst({where: {id: fromGid(id).id}});
+export const Query: Pick<QueryResolver, 'series' | 'randomSeries'> = {
+  series(_, {id, handle}, {prisma}) {
+    if (id) {
+      return prisma.series.findFirst({
+        where: {id: fromGid(id).id},
+        rejectOnNotFound: false,
+      });
+    } else if (handle) {
+      return prisma.series.findFirst({
+        where: {handle},
+        rejectOnNotFound: false,
+      });
+    }
+
+    throw new Error(`You must provide either an 'id' or 'handle'`);
+  },
+  randomSeries(_, __, {prisma}) {
+    // TODO: make it more random
+    return prisma.series.findFirst({
+      rejectOnNotFound: true,
+    });
   },
 };
 

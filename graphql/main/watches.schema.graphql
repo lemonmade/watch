@@ -6,6 +6,7 @@ extend type Query {
   watch(id: ID!): Watch
   watchThrough(id: ID!): WatchThrough
   watchThroughs(status: WatchThroughStatus): [WatchThrough!]!
+  randomWatchThrough: WatchThrough
 }
 
 extend type Episode implements Watchable & Skippable {

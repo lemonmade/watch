@@ -16,6 +16,7 @@ export interface Ui {
     content: string,
     props?: {spacing?: boolean; style?: StyleProp},
   ): void;
+  Spacer(): void;
   Text(
     content: string,
     props?: {style?: StyleProp; emphasized?: boolean},
@@ -96,6 +97,9 @@ export function createUi(): Ui {
     TextBlock(content, {style, spacing = true} = {}) {
       if (spacing) newline();
       console.log(prettyFormat(style ? style(content, Style) : content));
+    },
+    Spacer() {
+      newline();
     },
     Text(content, {style, emphasized = false} = {}) {
       const formattedContent = style ? style(content, Style) : content;

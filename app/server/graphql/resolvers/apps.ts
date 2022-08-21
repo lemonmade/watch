@@ -73,18 +73,27 @@ export const Query: Pick<
           throw new Error(`Unknown condition: ${condition}`);
         }
 
-        if (condition.series.id == null) {
-          throw new Error(
-            `You can’t supply a series condition without an id (${condition})`,
-          );
+        if (condition.series.id != null) {
+          const series = await prisma.series.findFirst({
+            where: {id: fromGid(condition.series.id).id},
+            rejectOnNotFound: true,
+          });
+
+          return {condition, series};
         }
 
-        const series = await prisma.series.findFirst({
-          where: {id: fromGid(condition.series.id).id},
-          rejectOnNotFound: true,
-        });
+        if (condition.series.handle != null) {
+          const series = await prisma.series.findFirst({
+            where: {handle: condition.series.handle},
+            rejectOnNotFound: true,
+          });
 
-        return {condition, series};
+          return {condition, series};
+        }
+
+        throw new Error(
+          `You must provide either an 'id' or 'handle' (${condition})`,
+        );
       }) ?? [],
     );
 
@@ -109,7 +118,7 @@ export const Query: Pick<
       });
     });
   },
-  clipsInstallation(_, {id}: {id: string}, {prisma}) {
+  clipsInstallation(_, {id}, {prisma}) {
     return prisma.clipsExtensionInstallation.findFirst({
       where: {id: fromGid(id).id},
     });
