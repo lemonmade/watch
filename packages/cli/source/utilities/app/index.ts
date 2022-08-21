@@ -3,6 +3,7 @@ export type {
   LocalApp,
   LocalAppConfiguration,
   LocalExtension,
+  LocalExtensionPointSupport,
   LocalExtensionConfigurationString,
 } from './local';
 export {

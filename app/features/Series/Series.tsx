@@ -33,12 +33,13 @@ import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 
 export interface Props {
-  id: string;
+  id?: string;
+  handle?: string;
 }
 
-export default function Series({id}: Props) {
+export default function Series({id, handle}: Props) {
   const {data, refetch} = useQuery(seriesQuery, {
-    variables: {id},
+    variables: {id, handle},
   });
 
   if (data?.series == null) {

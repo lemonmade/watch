@@ -1,0 +1,6 @@
+query RandomSeries {
+  randomSeries {
+    id
+    handle
+  }
+}

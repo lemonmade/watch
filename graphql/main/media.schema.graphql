@@ -1,7 +1,8 @@
 #import "./shared.schema.graphql"
 
 extend type Query {
-  series(id: ID!): Series
+  series(id: ID, handle: String): Series
+  randomSeries: Series!
 }
 
 extend type Mutation {

@@ -29,7 +29,7 @@ declare module './types' {
 
 export const Query: Pick<
   QueryResolver,
-  'watch' | 'watchThrough' | 'watchThroughs'
+  'watch' | 'watchThrough' | 'watchThroughs' | 'randomWatchThrough'
 > = {
   watch(_, {id}, {prisma, user}) {
     return prisma.watch.findFirst({
@@ -45,6 +45,12 @@ export const Query: Pick<
     return prisma.watchThrough.findMany({
       where: {status: status ?? undefined, userId: user.id},
       take: 50,
+    });
+  },
+  randomWatchThrough(_, __, {prisma, user}) {
+    return prisma.watchThrough.findFirst({
+      where: {status: 'ONGOING', userId: user.id},
+      rejectOnNotFound: false,
     });
   },
 };
