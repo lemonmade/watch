@@ -92,6 +92,7 @@ export async function develop({ui}: {ui: Ui}) {
           '/',
         )} to jump right to one of your extensions`,
       );
+      list.Item(`${ui.Code('esc')} to open the developer console`);
       list.Item(`${ui.Code('enter')} to open the developer console`);
     });
 
@@ -148,17 +149,22 @@ export async function develop({ui}: {ui: Ui}) {
     process.stdin.setRawMode(false);
 
     try {
-      const extensionHandle = await prompt({
-        type: 'autocomplete',
-        message: 'Which extension would you like to preview?',
-        choices: app.extensions.map((extension) => {
-          return {title: extension.name, value: extension.handle};
-        }),
-      });
+      let extension =
+        app.extensions.length === 1 ? app.extensions[0] : undefined;
 
-      const extension = app.extensions.find(
-        (extension) => extension.handle === extensionHandle,
-      );
+      if (extension == null) {
+        const extensionHandle = await prompt({
+          type: 'autocomplete',
+          message: 'Which extension would you like to preview?',
+          choices: app.extensions.map((extension) => {
+            return {title: extension.name, value: extension.handle};
+          }),
+        });
+
+        extension = app.extensions.find(
+          (extension) => extension.handle === extensionHandle,
+        );
+      }
 
       if (extension != null) {
         if (extension.extends.length <= 1) {
