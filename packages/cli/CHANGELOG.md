@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 0.4.15
+
+### Patch Changes
+
+- [#167](https://github.com/lemonmade/watch/pull/167) [`e66ee9b`](https://github.com/lemonmade/watch/commit/e66ee9bf03eebca63263816ff3903a1f1e8be7af) Thanks [@lemonmade](https://github.com/lemonmade)! - Improved develop command
+
+* [`f45aacf`](https://github.com/lemonmade/watch/commit/f45aacf8121912329fb8c4af040c373fba481fec) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix directory for extensions
+
+- [`a0e98f5`](https://github.com/lemonmade/watch/commit/a0e98f51f823f73526ded28962b06ca0461956d7) Thanks [@lemonmade](https://github.com/lemonmade)! - Simplify CLI builds
+
 ## 0.4.14
 
 ### Patch Changes

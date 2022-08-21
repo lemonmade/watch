@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.8
+
+### Patch Changes
+
+- [`2a00dd1`](https://github.com/lemonmade/watch/commit/2a00dd1188cec0ea4cc4236b57407a5346770e52) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix clips-react dependencies
+
 ## 0.2.7
 
 ### Patch Changes
