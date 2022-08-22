@@ -123,7 +123,7 @@ export function Routes() {
                   ),
                 },
                 {
-                  match: /\w+/,
+                  match: /[\w-]+/,
                   render: ({matched}) => <Series handle={matched} />,
                 },
               ],
