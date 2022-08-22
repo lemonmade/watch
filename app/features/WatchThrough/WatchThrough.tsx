@@ -20,7 +20,7 @@ import {
 } from '@lemon/zest';
 
 import {Page, SpoilerAvoidance} from '~/components';
-import {parseGid, useQuery, useMutation} from '~/shared/graphql';
+import {useQuery, useMutation} from '~/shared/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
@@ -68,7 +68,7 @@ export default function WatchThrough({id}: Props) {
       }
       actions={
         <Menu>
-          <Link to={`/app/series/${parseGid(series.id).id}`}>
+          <Link to={`/app/series/${series.handle}`}>
             More about {series.name}
           </Link>
           {status === 'ONGOING' && (

@@ -51,7 +51,7 @@ export function Search() {
               <Link
                 key={series.id}
                 style={{display: 'block'}}
-                to={`/app/series/${series.id.split('/').pop()}`}
+                to={`/app/series/${series.handle}`}
               >
                 {series.name}
               </Link>

@@ -4,6 +4,7 @@ query Subscriptions {
     series {
       id
       name
+      handle
       poster {
         source
       }

@@ -1,7 +1,7 @@
 import {MediaGrid, Poster} from '@lemon/zest';
 
 import {Link, Page} from '~/components';
-import {parseGid, useQuery} from '~/shared/graphql';
+import {useQuery} from '~/shared/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
@@ -16,7 +16,7 @@ export function Subscriptions() {
     <Page heading="Subscriptions">
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
-          <Link key={id} to={`/app/series/${parseGid(series.id).id}`}>
+          <Link key={id} to={`/app/series/${series.handle}`}>
             {series.poster?.source && (
               <Poster
                 source={

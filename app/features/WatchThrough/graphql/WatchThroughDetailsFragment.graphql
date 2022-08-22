@@ -11,6 +11,7 @@ fragment WatchThroughDetails on WatchThrough {
   series {
     id
     name
+    handle
   }
   status
   actions {

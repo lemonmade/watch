@@ -8,6 +8,7 @@ query WatchLater {
         ... on Series {
           id
           name
+          handle
           poster {
             source
           }

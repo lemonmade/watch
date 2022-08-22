@@ -83,6 +83,11 @@ async function updateSeries({
 
   const prisma = await prismaPromise;
 
+  const series = await prisma.series.findFirst({
+    where: {id: seriesId},
+    rejectOnNotFound: true,
+  });
+
   const seasons = await prisma.season.findMany({
     where: {seriesId},
     select: {
@@ -170,7 +175,7 @@ async function updateSeries({
       });
 
       results.push(
-        `**${name}** (updated existing season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${season.season_number} => \`${id}\``,
+        `**${name}** (updated existing season)\nhttps://watch.lemon.tools/app/series/${series.handle}\nSeason ${season.season_number} => \`${id}\``,
       );
     } else {
       createSeasons.push({
@@ -178,12 +183,12 @@ async function updateSeries({
       });
 
       results.push(
-        `**${name}** (add new season)\nhttps://watch.lemon.tools/app/series/${seriesId}\nSeason ${season.season_number}`,
+        `**${name}** (add new season)\nhttps://watch.lemon.tools/app/series/${series.handle}\nSeason ${season.season_number}`,
       );
     }
   }
 
-  const [series] = await prisma.$transaction([
+  const [updateSeries] = await prisma.$transaction([
     prisma.series.update({
       where: {id: seriesId},
       include: {
@@ -224,7 +229,7 @@ async function updateSeries({
       : []),
   ]);
 
-  results.push(JSON.stringify(series, null, 2));
+  results.push(JSON.stringify(updateSeries, null, 2));
 
   console.log(results.join('\n\n'));
   return results.join('\n\n');

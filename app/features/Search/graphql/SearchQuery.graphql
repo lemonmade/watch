@@ -3,6 +3,7 @@ query Search($query: String!) {
     series {
       id
       name
+      handle
       poster {
         source
       }
