@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 0.4.16
+
+### Patch Changes
+
+- [`6940a21`](https://github.com/lemonmade/watch/commit/6940a211717c7747ccf91804ca77cbf8c3d64f1e) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix use of proxies in front of CLI
+
+* [`fe5872e`](https://github.com/lemonmade/watch/commit/fe5872ebd7524347cac87c7af7405bdfc5a49a13) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove cache from CLI asset server
+
+- [`5802197`](https://github.com/lemonmade/watch/commit/58021970421143f8f1281f10d872c0ef8e7e759e) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix process.env.NODE_ENV resolution in node modules
+
 ## 0.4.15
 
 ### Patch Changes
