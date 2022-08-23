@@ -134,7 +134,11 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
         return close();
       }
 
-      if (key.name === 'escape') {
+      if (
+        key.name === 'escape' ||
+        key.sequence === 'q' ||
+        key.sequence === 'Q'
+      ) {
         return close();
       }
 
