@@ -304,6 +304,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
         if (assetStats.isFile()) {
           return new Response(await readFile(assetPath, {encoding: 'utf8'}), {
             headers: {
+              'Cache-Control': 'no-store',
               'Timing-Allow-Origin': '*',
               'Content-Type': mime.getType(assetPath)!,
             },
