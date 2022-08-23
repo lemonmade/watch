@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 0.4.18
+
+### Patch Changes
+
+- [`b3fc611`](https://github.com/lemonmade/watch/commit/b3fc611ee594be4346e3c8ed4ca338a275a2cf65) Thanks [@lemonmade](https://github.com/lemonmade)! - Expose preview URL over GraphQL
+
+* [`997b59a`](https://github.com/lemonmade/watch/commit/997b59a8ea70ae7dafe816f4be1f45551bdd39bc) Thanks [@lemonmade](https://github.com/lemonmade)! - Allow Q to close development server
+
 ## 0.4.17
 
 ### Patch Changes
