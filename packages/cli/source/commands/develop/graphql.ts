@@ -5,6 +5,7 @@ import {
   createQueryResolver as createQueryResolverForSchema,
 } from '@lemonmade/graphql-live';
 
+import {previewUrl} from '../../utilities/preview';
 import type {LocalApp, LocalExtension} from '../../utilities/app';
 
 import type {Schema} from './schema';
@@ -67,6 +68,16 @@ export function createQueryResolver(
           object('ClipsExtensionPointSupport', {
             target: extensionPoint.target,
             module: extensionPoint.module,
+            preview: object('ClipsExtensionPointPreview', {
+              url: async (_, {rootUrl}) => {
+                const url = await previewUrl(extension, {
+                  extensionPoint,
+                  serverUrl: rootUrl,
+                });
+
+                return url.href;
+              },
+            }),
             conditions:
               extensionPoint.conditions?.map((condition) =>
                 object('ClipsExtensionPointSupportCondition', {

@@ -38,7 +38,11 @@ import {
   rootOutputDirectory,
   ensureRootOutputDirectory,
 } from '../../utilities/build';
-import {targetForExtension} from '../../utilities/open';
+import {
+  previewUrl,
+  addConnectSearchParam,
+  DEFAULT_PREVIEW_PATH,
+} from '../../utilities/preview';
 
 import {
   loadLocalApp,
@@ -52,8 +56,6 @@ import {createRollupConfiguration} from '../../utilities/rollup';
 
 import {run, createQueryResolver} from './graphql';
 import type {Builder, BuildState} from './types';
-
-const DEFAULT_OPEN_PATH = '/app/developer/console';
 
 export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
   const app = await loadLocalApp();
@@ -143,7 +145,10 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
       }
 
       if (key.name === 'enter' || key.name === 'return') {
-        await openUrl(watchUrl(DEFAULT_OPEN_PATH));
+        await open(
+          addConnectSearchParam(watchUrl(DEFAULT_PREVIEW_PATH), localSocketUrl)
+            .href,
+        );
       }
 
       if (key.sequence === '/' || key.sequence === '?') {
@@ -209,18 +214,12 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
     extension: LocalExtension,
     extensionPoint?: LocalExtensionPointSupport,
   ) {
-    const target = await targetForExtension(extension, extensionPoint);
-    const url = watchUrl(target ?? DEFAULT_OPEN_PATH);
-    await openUrl(url);
-  }
+    const url = await previewUrl(extension, {
+      extensionPoint,
+      serverUrl: localSocketUrl,
+    });
 
-  async function openUrl(url: URL) {
-    const newUrl = new URL(url);
-    newUrl.searchParams.set(
-      'connect',
-      new URL('/connect', localSocketUrl).href,
-    );
-    await open(newUrl.href);
+    await open(url.href);
   }
 }
 

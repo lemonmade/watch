@@ -1,4 +1,6 @@
 import {type ExtensionPoint} from '@watching/clips';
+
+import {watchUrl} from './url';
 import {type LocalExtension, type LocalExtensionPointSupport} from './app';
 
 const TARGET_MAP: Record<
@@ -10,9 +12,32 @@ const TARGET_MAP: Record<
   'WatchThrough.Details.RenderAccessory': () => '/app/watchthrough/.random',
 };
 
-export async function targetForExtension(
+export const DEFAULT_PREVIEW_PATH = '/app/developer/console';
+
+export async function previewUrl(
   extension: LocalExtension,
-  extensionPoint: LocalExtensionPointSupport | undefined = extension.extends[0],
+  {
+    serverUrl,
+    extensionPoint,
+  }: {serverUrl: URL; extensionPoint?: LocalExtensionPointSupport},
+) {
+  const target = await targetForExtension(extension, extensionPoint);
+  const previewUrl = watchUrl(target ?? DEFAULT_PREVIEW_PATH);
+  return addConnectSearchParam(previewUrl, serverUrl);
+}
+
+export function addConnectSearchParam(url: URL, serverUrl: URL) {
+  const connectUrl = new URL('/connect', serverUrl);
+  connectUrl.protocol = connectUrl.protocol.replace(/^http/, 'ws');
+
+  url.searchParams.set('connect', connectUrl.href);
+
+  return url;
+}
+
+async function targetForExtension(
+  extension: LocalExtension,
+  extensionPoint = extension.extends[0],
 ) {
   if (extensionPoint == null) return undefined;
   return extensionPoint

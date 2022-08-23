@@ -30,15 +30,18 @@ query DeveloperConsole {
             startedAt
           }
         }
-        # supports {
-        #   name
-        #   module
-        #   conditions {
-        #     series {
-        #       handle
-        #     }
-        #   }
-        # }
+        extends {
+          target
+          module
+          preview {
+            url
+          }
+          conditions {
+            series {
+              handle
+            }
+          }
+        }
       }
     }
   }

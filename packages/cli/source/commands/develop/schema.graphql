@@ -49,9 +49,14 @@ type ClipsExtensionPointSupportCondition {
   series: ClipsExtensionPointSupportSeriesCondition
 }
 
+type ClipsExtensionPointPreview {
+  url: Url!
+}
+
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
   module: String!
+  preview: ClipsExtensionPointPreview!
   conditions: [ClipsExtensionPointSupportCondition!]!
 }
 
