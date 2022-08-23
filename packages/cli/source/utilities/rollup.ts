@@ -3,6 +3,7 @@ import * as path from 'path';
 import type {RollupOptions, Plugin} from 'rollup';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import esbuild from 'rollup-plugin-esbuild';
 
 import type {LocalExtension} from './app';
@@ -16,6 +17,10 @@ export async function createRollupConfiguration(
   return {
     input: MAGIC_MODULE_EXTENSION_ENTRY,
     plugins: [
+      replace({
+        values: {'process.env.NODE_ENV': JSON.stringify(mode)},
+        preventAssignment: true,
+      }),
       {
         name: '@quilted/magic-module/extension-entry',
         async resolveId(id) {
@@ -64,13 +69,11 @@ export async function createRollupConfiguration(
         minify: false,
         target: 'es2017',
         loaders: {'.esnext': 'js'},
-        define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
       esbuild({
         minify: false,
         target: 'es2017',
         jsx: 'automatic',
-        define: {'process.env.NODE_ENV': JSON.stringify(mode)},
       }),
       ...(mode === 'production' ? [minifyChunkWithESBuild()] : []),
     ],

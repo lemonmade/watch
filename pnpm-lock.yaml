@@ -171,6 +171,7 @@ importers:
       '@rollup/plugin-alias': ^3.0.0
       '@rollup/plugin-commonjs': ^22.0.0
       '@rollup/plugin-node-resolve': ^13.0.0
+      '@rollup/plugin-replace': ^4.0.0
       '@types/glob': ^7.2.0
       '@types/mime': ^2.0.0
       '@types/prompts': ^2.0.0
@@ -207,6 +208,7 @@ importers:
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
       '@rollup/plugin-commonjs': 22.0.2_rollup@2.70.1
       '@rollup/plugin-node-resolve': 13.1.3_rollup@2.70.1
+      '@rollup/plugin-replace': 4.0.0_rollup@2.70.1
       '@types/mime': 2.0.3
       '@watching/graphql': link:../graphql
       ansi-escapes: 4.3.2
@@ -5156,6 +5158,16 @@ packages:
       magic-string: 0.25.9
       rollup: 2.70.1
     dev: true
+
+  /@rollup/plugin-replace/4.0.0_rollup@2.70.1:
+    resolution: {integrity: sha512-+rumQFiaNac9y64OHtkHGmdjm7us9bo1PlbgQfdihQtuNxzjpaB064HbRnewUOggLQxVCCyINfStkgmBeQpv1g==}
+    peerDependencies:
+      rollup: ^1.20.0 || ^2.0.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.70.1
+      magic-string: 0.25.9
+      rollup: 2.70.1
+    dev: false
 
   /@rollup/pluginutils/3.1.0_rollup@2.70.1:
     resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
