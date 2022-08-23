@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 0.4.17
+
+### Patch Changes
+
+- [`e714605`](https://github.com/lemonmade/watch/commit/e7146056111d4785b9fcff5eaea44918cb5e1111) Thanks [@lemonmade](https://github.com/lemonmade)! - Add --proxy flag to develop command
+
 ## 0.4.16
 
 ### Patch Changes
