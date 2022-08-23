@@ -344,9 +344,21 @@ function createWebSocketServer(
     path: '/connect',
   });
 
-  webSocketServer.on('connection', async (socket) => {
+  webSocketServer.on('connection', async (socket, request) => {
     const abort = new AbortController();
     const {signal} = abort;
+
+    const forwardedProtocolHeader = request.headers['x-forwarded-proto'];
+    const forwardedProtocol = Array.isArray(forwardedProtocolHeader)
+      ? forwardedProtocolHeader[0]
+      : forwardedProtocolHeader?.split(/\s*,\s*/)[0];
+
+    const connectionUrl = new URL(
+      request.url ?? '/',
+      `${forwardedProtocol ?? 'http'}://${
+        request.headers['x-forwarded-host'] ?? request.headers.host
+      }`,
+    );
 
     const expose = {
       query(
@@ -367,8 +379,7 @@ function createWebSocketServer(
           yield* run(parse(query) as any, resolver, {
             variables,
             signal: resolvedSignal,
-            // TODO: get thr right port, handle proxies, etc
-            context: {rootUrl: new URL('http://localhost:3000')},
+            context: {rootUrl: new URL('/', connectionUrl)},
           });
         })();
       },

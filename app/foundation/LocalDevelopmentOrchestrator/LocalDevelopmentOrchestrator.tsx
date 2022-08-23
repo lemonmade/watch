@@ -110,12 +110,12 @@ function createLocalDevelopmentServer(url: URL): LocalDevelopmentServer {
   );
 
   const query: LocalDevelopmentServer['query'] = async function* query(
-    query,
+    graphql,
     {signal, variables} = {},
   ) {
     const {thread} = await threadPromise.promise;
 
-    const results = thread.query(query.source, {
+    const results = thread.query(graphql.source, {
       variables,
       signal: signal && createThreadAbortSignal(signal),
     }) as AsyncGenerator<any>;

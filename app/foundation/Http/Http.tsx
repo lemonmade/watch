@@ -14,8 +14,8 @@ export function Http() {
       <ContentSecurityPolicy
         reportOnly={isDevelopment}
         defaultSources={["'self'"]}
-        // Allow localhost for connecting to local development servers
-        scriptSources={["'self'", 'http://localhost:*']}
+        // Allow localhost and any HTTP script for connecting to local development servers
+        scriptSources={["'self'", 'http://localhost:*', 'https://*']}
         // We inject style tags into the page, so we need unsafe-inline
         styleSources={["'self'", "'unsafe-inline'"]}
         // data: needed for the favicon
@@ -24,8 +24,15 @@ export function Http() {
         // support worker-src, so we need to set child-src for it.
         childSources={["'self'", 'blob:']}
         workerSources={["'self'", 'blob:']}
-        // Allow localhost for connecting to local development servers
-        connectSources={["'self'", 'http://localhost:*', 'ws://localhost:*']}
+        // Allow a wide array of connection URLs to allow for local development
+        // of extensions.
+        connectSources={[
+          "'self'",
+          'http://localhost:*',
+          'https://*',
+          'ws://localhost:*',
+          'wss://*',
+        ]}
         frameAncestors={false}
         upgradeInsecureRequests={!isDevelopment}
       />
