@@ -14,10 +14,10 @@ const KNOWN_COMMANDS = new Set([
 run();
 
 async function run() {
-  const args = arg({});
+  const args = arg({}, {permissive: true, stopAtPositional: true});
 
   const {
-    _: [command],
+    _: [command, ...remainingArgs],
   } = args;
 
   // eslint-disable-next-line no-console
@@ -52,7 +52,12 @@ async function run() {
       }
       case 'develop': {
         const {develop} = await import('./commands/develop');
-        await develop({ui});
+        const {'--proxy': proxy} = arg(
+          {'--proxy': String},
+          {argv: remainingArgs, permissive: true},
+        );
+
+        await develop({ui, proxy});
         break;
       }
       case 'build': {

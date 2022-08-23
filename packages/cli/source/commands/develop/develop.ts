@@ -55,7 +55,7 @@ import type {Builder, BuildState} from './types';
 
 const DEFAULT_OPEN_PATH = '/app/developer/console';
 
-export async function develop({ui}: {ui: Ui}) {
+export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
   const app = await loadLocalApp();
 
   if (app.extensions.length === 0) {
@@ -75,8 +75,9 @@ export async function develop({ui}: {ui: Ui}) {
   const devServer = await createDevServer(app, {ui});
   const result = await devServer.listen();
 
-  const localUrl = new URL(`http://localhost:${result.port}`);
-  const localSocketUrl = new URL(`ws://localhost:${result.port}`);
+  const localUrl = new URL(proxy ?? `http://localhost:${result.port}`);
+  const localSocketUrl = new URL(localUrl);
+  localSocketUrl.protocol = localSocketUrl.protocol.replace(/^http/, 'ws');
 
   try {
     ui.Heading('success!', {style: (content, style) => style.green(content)});
