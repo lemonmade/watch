@@ -69,10 +69,10 @@ export function createQueryResolver(
             target: extensionPoint.target,
             module: extensionPoint.module,
             preview: object('ClipsExtensionPointPreview', {
-              url: async (_, {rootUrl}) => {
+              url: async ({connect}, {rootUrl}) => {
                 const url = await previewUrl(extension, {
                   extensionPoint,
-                  serverUrl: rootUrl,
+                  connect: connect ? rootUrl : false,
                 });
 
                 return url.href;
@@ -96,7 +96,11 @@ export function createQueryResolver(
               case 'success': {
                 yield object('ExtensionBuildSuccess', {
                   id: `gid://watch/ExtensionBuildSuccess/${extension.handle}/${state.id}`,
-                  assets: [object('Asset', {source: assetUrl.href})],
+                  assets: [
+                    object('Asset', {
+                      source: assetUrl.href,
+                    }),
+                  ],
                   startedAt: new Date(state.startedAt).toISOString(),
                   finishedAt: new Date(
                     state.startedAt + state.duration,

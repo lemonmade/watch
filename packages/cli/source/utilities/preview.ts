@@ -17,17 +17,20 @@ export const DEFAULT_PREVIEW_PATH = '/app/developer/console';
 export async function previewUrl(
   extension: LocalExtension,
   {
-    serverUrl,
+    connect,
     extensionPoint,
-  }: {serverUrl: URL; extensionPoint?: LocalExtensionPointSupport},
+  }: {
+    extensionPoint?: LocalExtensionPointSupport;
+    connect?: URL | false;
+  },
 ) {
   const target = await targetForExtension(extension, extensionPoint);
   const previewUrl = watchUrl(target ?? DEFAULT_PREVIEW_PATH);
-  return addConnectSearchParam(previewUrl, serverUrl);
+  return connect ? addConnectSearchParam(previewUrl, connect) : previewUrl;
 }
 
-export function addConnectSearchParam(url: URL, serverUrl: URL) {
-  const connectUrl = new URL('/connect', serverUrl);
+export function addConnectSearchParam(url: URL, connect: URL) {
+  const connectUrl = new URL('/connect', connect);
   connectUrl.protocol = connectUrl.protocol.replace(/^http/, 'ws');
 
   url.searchParams.set('connect', connectUrl.href);

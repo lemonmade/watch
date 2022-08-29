@@ -1,4 +1,4 @@
 import {createContext} from 'react';
-import type {AnyApi} from '@watching/clips';
+import {type AnyApi, type WithThreadSignals} from '@watching/clips';
 
-export const ApiContext = createContext<AnyApi | null>(null);
+export const ApiContext = createContext<WithThreadSignals<AnyApi> | null>(null);

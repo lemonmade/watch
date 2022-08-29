@@ -1,33 +1,23 @@
 .Link {
-  --z-Link-align: var(--z-implicit-align, center);
+  --z-Link-align: var(--z-implicit-align, left);
   --z-Link-display: var(
     --x-implicit-display-none,
     var(--x-implicit-display-flex, inline-flex)
   );
   --z-Link-min-block-size: var(--zest-action-size);
-  --z-Link-padding: var(--zest-spacing-mini);
   --z-Link-color: var(--zest-color-text);
   --z-Link-background: transparent;
   --z-Link-inline-size: var(--z-implicit-container-inline-size);
 
   appearance: none;
-  border: none;
   background: var(--z-Link-background);
   transition: background 0.2s ease;
   font-size: 1rem;
   color: var(--z-Link-color);
   display: var(--z-Link-display);
-  padding: var(--z-Link-padding);
   min-block-size: var(--z-Link-min-block-size);
   inline-size: var(--z-Link-inline-size);
   text-align: var(--z-Link-align);
-  border-radius: var(
-      --z-implicit-connection-inline-start,
-      var(--zest-border-radius)
-    )
-    var(--z-implicit-connection-inline-end, var(--zest-border-radius))
-    var(--z-implicit-connection-inline-end, var(--zest-border-radius))
-    var(--z-implicit-connection-inline-start, var(--zest-border-radius));
   overflow: hidden;
   text-decoration: none;
   align-items: center;
@@ -54,4 +44,13 @@
 
 .alignContentEnd {
   --z-Link-align-content: end;
+}
+
+.hasAccessory {
+  --z-Link-display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-grid, inline-grid)
+  );
+  grid-template-columns: 1fr auto;
+  grid-gap: var(--x-spacing-small);
 }

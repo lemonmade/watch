@@ -53,18 +53,20 @@ importers:
       '@lemon/basics': workspace:*
       '@lemon/css': workspace:*
       '@lemon/zest': workspace:*
+      '@preact/signals': ^0.0.3
       '@prisma/client': ^3.15.0
       '@quilted/react-query': ^0.1.11
       '@remote-ui/async-subscription': ^2.1.10
       '@remote-ui/core': ^2.1.12
       '@remote-ui/react': ^4.5.4
       '@types/common-tags': ^1.8.0
+      '@types/jsonwebtoken': ^8.0.0
       '@watching/clips': workspace:*
       '@watching/graphql': workspace:*
+      '@watching/thread-signals': workspace:*
       aws-sdk: ^2.935.0
       common-tags: ^1.8.0
       graphql: ^15.0.0
-      jotai: ^1.7.8
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
       prisma: ^3.15.0
@@ -81,16 +83,18 @@ importers:
       '@lemon/basics': link:../packages/basics
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
+      '@preact/signals': 0.0.3
       '@quilted/react-query': 0.1.11_169bf0f3dea4382ac93ccc29e2cb372f
       '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12
       '@remote-ui/react': 4.5.4_@quilted+react@17.0.5
       '@types/common-tags': 1.8.1
+      '@types/jsonwebtoken': 8.5.8
       '@watching/clips': link:../packages/clips
       '@watching/graphql': link:../packages/graphql
+      '@watching/thread-signals': link:../packages/thread-signals
       common-tags: 1.8.2
       graphql: 15.8.0
-      jotai: 1.7.8_@quilted+react@17.0.5
       jsonwebtoken: 8.5.1
       mime: 2.6.0
       react-query: 3.39.1_a0196d1569fcdc26bd98f3e4bc6c31fd
@@ -237,11 +241,11 @@ importers:
 
   packages/clips:
     specifiers:
-      '@remote-ui/async-subscription': ^2.1.10
       '@remote-ui/core': ^2.1.12
+      '@watching/thread-signals': ^0.1.0
     dependencies:
-      '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12
+      '@watching/thread-signals': link:../thread-signals
 
   packages/clips-react:
     specifiers:
@@ -250,12 +254,14 @@ importers:
       '@types/react': ^17.0.0
       '@watching/clips': workspace:^0.2.6
       '@watching/remote-react-utilities': workspace:^0.1.1
+      '@watching/thread-signals': workspace:^0.1.0
     dependencies:
       '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12
       '@types/react': 17.0.45
       '@watching/clips': link:../clips
       '@watching/remote-react-utilities': link:../remote-react-utilities
+      '@watching/thread-signals': link:../thread-signals
 
   packages/css:
     specifiers: {}
@@ -293,6 +299,17 @@ importers:
       '@quilted/testing': 0.1.4
       '@watching/remote-react': 0.0.0_a0196d1569fcdc26bd98f3e4bc6c31fd
       react: /@quilted/react/17.0.5
+
+  packages/thread-signals:
+    specifiers:
+      '@preact/signals-core': 0.0.4
+      '@quilted/testing': ^0.1.0
+      '@quilted/threads': ^0.1.0
+    dependencies:
+      '@preact/signals-core': 0.0.4
+    devDependencies:
+      '@quilted/testing': 0.1.4
+      '@quilted/threads': 0.1.6
 
   packages/zest:
     specifiers:
@@ -3841,23 +3858,34 @@ packages:
       tslib: 2.3.1
       webcrypto-core: 1.7.1
 
+  /@preact/signals-core/0.0.4:
+    resolution: {integrity: sha512-mUn/uKFfgj1Crcz3fOAM5e273ZFdx+pJFXsO1qJG5DML4rnLFXxjbqB0vYZ9cJNbnnRm3qjqc47ih3Ryzg8r6Q==}
+
+  /@preact/signals/0.0.3:
+    resolution: {integrity: sha512-Z7n4tVZ4nhukK1jaC7dUDITBciFo/Ne/p+2UVSLAMc6t5hI3yGpaenjmeItgC1/doov7H+5b6vV0K1QxlmRKfg==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 0.0.4
+    dev: true
+
   /@prefresh/babel-plugin/0.4.3:
     resolution: {integrity: sha512-fYAWbU1WDSLn108kKY4eDaaeUcnszFqXjgaGKYXNZ5NLulpRTpsrY+Sbfo9q8LDpWrBpqIgzjrwNnvglWI1xNQ==}
     dev: true
 
-  /@prefresh/core/1.3.4_preact@10.10.2:
+  /@prefresh/core/1.3.4_preact@10.10.6:
     resolution: {integrity: sha512-s7iNsnyJ3lZEUrYIgmVIB/hKtp4U6mdD91a31Zg7Q8M49O0x2KThrbrMQYraoDDrs4STdFB8Zv6bceUguOoX1A==}
     peerDependencies:
       preact: ^10.0.0
     dependencies:
-      preact: 10.10.2
+      preact: 10.10.6
     dev: true
 
   /@prefresh/utils/1.1.3:
     resolution: {integrity: sha512-Mb9abhJTOV4yCfkXrMrcgFiFT7MfNOw8sDa+XyZBdq/Ai2p4Zyxqsb3EgHLOEdHpMj6J9aiZ54W8H6FTam1u+A==}
     dev: true
 
-  /@prefresh/vite/2.2.8_preact@10.10.2+vite@2.8.6:
+  /@prefresh/vite/2.2.8_preact@10.10.6+vite@2.8.6:
     resolution: {integrity: sha512-yGGa+PKPYPTzMlxgQ8aBgxw9K69I8X4iQ0E6KOcIvls96WKqKLLOYZW9SUgCve446jpUXvc9udviPBZjCeZIIQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -3865,10 +3893,10 @@ packages:
     dependencies:
       '@babel/core': 7.17.8
       '@prefresh/babel-plugin': 0.4.3
-      '@prefresh/core': 1.3.4_preact@10.10.2
+      '@prefresh/core': 1.3.4_preact@10.10.6
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.0
-      preact: 10.10.2
+      preact: 10.10.6
       vite: 2.8.6
     transitivePeerDependencies:
       - supports-color
@@ -4061,7 +4089,7 @@ packages:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
       '@babel/runtime': 7.17.8
       '@jest/types': 28.1.0
-      '@prefresh/vite': 2.2.8_preact@10.10.2+vite@2.8.6
+      '@prefresh/vite': 2.2.8_preact@10.10.6+vite@2.8.6
       '@quilted/async': 0.3.28_62a3af55a5cf1065428d56f0e3d96aae
       '@quilted/browserslist-config': 0.1.9
       '@quilted/eslint-config': 0.1.15_typescript@4.7.4
@@ -4108,7 +4136,7 @@ packages:
       postcss-load-config: 3.1.4_postcss@8.4.12
       postcss-modules: 4.3.1_postcss@8.4.12
       postcss-preset-env: 7.4.3_postcss@8.4.12
-      preact: 10.10.2
+      preact: 10.10.6
       prettier: 2.7.1
       react: /@quilted/react/17.0.5
       regenerator-runtime: 0.13.9
@@ -4169,7 +4197,6 @@ packages:
     peerDependenciesMeta:
       '@babel/runtime':
         optional: true
-    dev: false
 
   /@quilted/events/0.1.8_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-aghUosfFxoT2POUXDyzNE3HkeAOAQZbzzUcEetPPRXM0LMxm69SzB1LoZXksQPdLn/RWSa8vw5tGq7NT76LGYA==}
@@ -4369,7 +4396,7 @@ packages:
       whatwg-fetch: 3.6.2
     dev: true
 
-  /@quilted/preact-mini-compat/0.2.19_ccf801628903f025b246e41182f06287:
+  /@quilted/preact-mini-compat/0.2.19_a541919df2500c2d15329f36afe4a4de:
     resolution: {integrity: sha512-zdqFqy2h6dNvt49nuc6rHOXFzqJy8yDyLM69h9c5dZWoLlC1m6KnaCqcXTTNfPwwqjYFAacpqHvfUP9T9jcYNA==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4379,10 +4406,10 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.17.8
-      preact: 10.10.2
+      preact: 10.10.6
     dev: true
 
-  /@quilted/preact-mini-compat/0.2.19_preact@10.10.2:
+  /@quilted/preact-mini-compat/0.2.19_preact@10.10.6:
     resolution: {integrity: sha512-zdqFqy2h6dNvt49nuc6rHOXFzqJy8yDyLM69h9c5dZWoLlC1m6KnaCqcXTTNfPwwqjYFAacpqHvfUP9T9jcYNA==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4391,7 +4418,7 @@ packages:
       '@babel/runtime':
         optional: true
     dependencies:
-      preact: 10.10.2
+      preact: 10.10.6
 
   /@quilted/prettier/0.2.11:
     resolution: {integrity: sha512-OGkhMYoOmy+9udbMFfT2WtGWzYOCRO1hslAyYSJhGTMUQf9mXUyve6ceOfA+to8WKESAJ9LMYJ93LFg8YOIfmQ==}
@@ -4484,10 +4511,10 @@ packages:
       '@babel/runtime':
         optional: true
     dependencies:
-      '@quilted/preact-mini-compat': 0.2.19_preact@10.10.2
+      '@quilted/preact-mini-compat': 0.2.19_preact@10.10.6
       '@types/react-dom': 17.0.17
-      preact: 10.10.2
-      preact-render-to-string: 5.2.1_preact@10.10.2
+      preact: 10.10.6
+      preact-render-to-string: 5.2.2_preact@10.10.6
 
   /@quilted/react-dom/17.0.5_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-xCdGIO+tSlVtjPA3khcj+UqhXnkZ6kFcxyFZ7SLsi6Yuzwh0JrGvaEbUQx/T6OgzTfulHWojyUrYMniLrBXx5A==}
@@ -4499,10 +4526,10 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.17.8
-      '@quilted/preact-mini-compat': 0.2.19_ccf801628903f025b246e41182f06287
+      '@quilted/preact-mini-compat': 0.2.19_a541919df2500c2d15329f36afe4a4de
       '@types/react-dom': 17.0.17
-      preact: 10.10.2
-      preact-render-to-string: 5.2.1_preact@10.10.2
+      preact: 10.10.6
+      preact-render-to-string: 5.2.2_preact@10.10.6
     dev: true
 
   /@quilted/react-email/0.2.29_8cca229316fc0b1bd4211f2ab69dfb82:
@@ -4841,18 +4868,18 @@ packages:
   /@quilted/react/17.0.5:
     resolution: {integrity: sha512-lG+LFAcPptop1NlCzODn9rO7RXyGiJd7yhKa25vqWhgC0UJxr5jExu8tzOKymbVkKjnBNB7jG2WpIkRp0mmcbQ==}
     dependencies:
-      '@quilted/preact-mini-compat': 0.2.19_preact@10.10.2
+      '@quilted/preact-mini-compat': 0.2.19_preact@10.10.6
       '@types/react': 17.0.48
-      preact: 10.10.2
+      preact: 10.10.6
     transitivePeerDependencies:
       - '@babel/runtime'
 
   /@quilted/react/17.0.5_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-lG+LFAcPptop1NlCzODn9rO7RXyGiJd7yhKa25vqWhgC0UJxr5jExu8tzOKymbVkKjnBNB7jG2WpIkRp0mmcbQ==}
     dependencies:
-      '@quilted/preact-mini-compat': 0.2.19_ccf801628903f025b246e41182f06287
+      '@quilted/preact-mini-compat': 0.2.19_a541919df2500c2d15329f36afe4a4de
       '@types/react': 17.0.48
-      preact: 10.10.2
+      preact: 10.10.6
     transitivePeerDependencies:
       - '@babel/runtime'
     dev: true
@@ -4933,7 +4960,6 @@ packages:
         optional: true
     dependencies:
       '@quilted/events': 0.1.8
-    dev: false
 
   /@quilted/threads/0.1.6_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-YNu3QUAEliNnGR3oy7MEbP1qL01Dp0BPREod9MaYlpwcfqBjJdVOpoTWesdZIPsaTbRn/+TOgByTBDUpsgLoag==}
@@ -9303,43 +9329,6 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: false
 
-  /jotai/1.7.8_@quilted+react@17.0.5:
-    resolution: {integrity: sha512-rXwWz6uLqyZUCRzWIPiYTjI1hjskVxVpDN3lBoOHi66z6uQFkFmKwR8YhcQd+Ex4lODlReuKNIx6WwsF9aKy3g==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@babel/core': '*'
-      '@babel/template': '*'
-      '@tanstack/query-core': '*'
-      '@urql/core': '*'
-      immer: '*'
-      optics-ts: '*'
-      react: '>=16.8'
-      valtio: '*'
-      wonka: '*'
-      xstate: '*'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/template':
-        optional: true
-      '@tanstack/query-core':
-        optional: true
-      '@urql/core':
-        optional: true
-      immer:
-        optional: true
-      optics-ts:
-        optional: true
-      valtio:
-        optional: true
-      wonka:
-        optional: true
-      xstate:
-        optional: true
-    dependencies:
-      react: /@quilted/react/17.0.5
-    dev: true
-
   /joycon/3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -10754,16 +10743,16 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-render-to-string/5.2.1_preact@10.10.2:
-    resolution: {integrity: sha512-Wp3ner1aIVBpKg02C4AoLdBiw4kNaiFSYHr4wUF+fR7FWKAQzNri+iPfPp31sEhAtBfWoJrSxiEFzd5wp5zCgQ==}
+  /preact-render-to-string/5.2.2_preact@10.10.6:
+    resolution: {integrity: sha512-ZBPfzWmHjasQIzysj72VYJ6oa2bphpxNvzLRdRj/XGFKyeTBJIDmoiKJlBGfxzU4TYL2CjpAWmcFIXcV+HQEBg==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.10.2
+      preact: 10.10.6
       pretty-format: 3.8.0
 
-  /preact/10.10.2:
-    resolution: {integrity: sha512-GUXSsfwq4NKhlLYY5ctfNE0IjFk7Xo4952yPI8yMkXdhzeQmQ+FahZITe7CeHXMPyKBVQ8SoCmGNIy9TSOdhgQ==}
+  /preact/10.10.6:
+    resolution: {integrity: sha512-w0mCL5vICUAZrh1DuHEdOWBjxdO62lvcO++jbzr8UhhYcTbFkpegLH9XX+7MadjTl/y0feoqwQ/zAnzkc/EGog==}
 
   /preferred-pm/3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}

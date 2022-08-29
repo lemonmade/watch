@@ -1,7 +1,6 @@
 import {ReactNode, useMemo} from 'react';
 import {useEffect} from 'react';
-import {atom, useSetAtom} from 'jotai';
-import {} from 'jotai/utils';
+import {signal} from '@preact/signals';
 
 import {useInitialUrl} from '@quilted/quilt';
 import {
@@ -71,8 +70,6 @@ function ExtensionPoller({
 }: {
   developmentServer: LocalDevelopmentServer;
 }) {
-  const setExtensions = useSetAtom(developmentServer.extensions);
-
   useEffect(() => {
     const abort = new AbortController();
 
@@ -82,15 +79,15 @@ function ExtensionPoller({
       )) {
         if (data == null) continue;
 
-        setExtensions(
-          data.app.extensions.flatMap((extension) => {
+        developmentServer.extensions.value = data.app.extensions.flatMap(
+          (extension) => {
             if (extension.__typename !== 'ClipsExtension') return [];
 
             return {
               id: extension.id,
               name: extension.name,
             };
-          }),
+          },
         );
       }
     })();
@@ -98,22 +95,23 @@ function ExtensionPoller({
     return () => {
       abort.abort();
     };
-  }, [developmentServer, setExtensions]);
+  }, [developmentServer]);
 
   return null;
 }
 
 function createLocalDevelopmentServer(url: URL): LocalDevelopmentServer {
   const threadPromise = createResolvablePromise<{thread: Thread<ThreadApi>}>();
-  const extensions: LocalDevelopmentServer['extensions'] = atom<readonly any[]>(
-    [],
-  );
+  const extensions: LocalDevelopmentServer['extensions'] = signal([]);
 
   const query: LocalDevelopmentServer['query'] = async function* query(
     graphql,
-    {signal, variables} = {},
+    options,
   ) {
     const {thread} = await threadPromise.promise;
+
+    const signal = options?.signal;
+    const variables = options?.variables;
 
     const results = thread.query(graphql.source, {
       variables,

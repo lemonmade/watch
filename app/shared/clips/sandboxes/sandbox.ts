@@ -1,7 +1,5 @@
 import {retain} from '@quilted/quilt/threads';
-import {createRemoteRoot} from '@remote-ui/core';
-import type {RemoteChannel} from '@remote-ui/core';
-import {makeStatefulSubscribable} from '@remote-ui/async-subscription';
+import {createRemoteRoot, type RemoteChannel} from '@remote-ui/core';
 
 import type {
   ClipsApi,
@@ -47,10 +45,7 @@ export async function render<T extends ExtensionPoint>(
   const root = createRemoteRoot(channel, {components});
 
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
-  let result = runExtensionPoint(id, root, {
-    ...(api as any),
-    settings: makeStatefulSubscribable((api as any).settings),
-  });
+  let result = runExtensionPoint(id, root, api);
 
   if (typeof result === 'object' && result != null && 'then' in result) {
     result = await result;

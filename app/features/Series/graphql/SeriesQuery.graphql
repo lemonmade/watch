@@ -27,6 +27,8 @@ query Series($id: ID, $handle: String) {
     watchThroughs {
       id
       status
+      unfinishedEpisodeCount
+      finishedAt
       from {
         season
         episode

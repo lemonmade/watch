@@ -1,14 +1,11 @@
-import type {ExtensionPoint} from '@watching/clips';
+import {type ExtensionPoint} from '@watching/clips';
+import {type Signal} from '@watching/thread-signals';
 
 import {useApi} from './api';
-import {useSubscription} from './subscription';
-import type {StatefulRemoteSubscribable} from './subscription';
+import {useSignal} from './signals';
 
 export function useSettings<
   Configuration extends Record<string, unknown> = Record<string, unknown>,
 >() {
-  return useSubscription(
-    useApi<ExtensionPoint>()
-      .settings as StatefulRemoteSubscribable<Configuration>,
-  );
+  return useSignal(useApi<ExtensionPoint>().settings as Signal<Configuration>);
 }

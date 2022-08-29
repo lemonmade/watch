@@ -8,5 +8,9 @@
   },
   "include": ["source"],
   "exclude": ["quilt.project.ts", "build"],
-  "references": [{"path": "../clips"}, {"path": "../remote-react-utilities"}]
+  "references": [
+    {"path": "../clips"},
+    {"path": "../remote-react-utilities"},
+    {"path": "../thread-signals"}
+  ]
 }

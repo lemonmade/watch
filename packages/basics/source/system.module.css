@@ -1,11 +1,14 @@
 :root {
-  --x-spacing-small: 0.75rem;
+  --x-spacing-tiny: 0.25rem;
+  --x-spacing-small: 0.5rem;
   --x-spacing-base: 1rem;
   --x-spacing-large: 1.5rem;
+  --x-spacing-huge: 2rem;
 }
 
 .View {
   --View-padding: 0;
+  --View-border: none;
   --View-default-display: block;
 
   display: var(
@@ -26,6 +29,10 @@
   --x-implicit-container-inline-size: initial;
 }
 
+.paddingTiny {
+  --View-padding: var(--x-spacing-tiny);
+}
+
 .paddingSmall {
   --View-padding: var(--x-spacing-small);
 }
@@ -36,6 +43,10 @@
 
 .paddingLarge {
   --View-padding: var(--x-spacing-large);
+}
+
+.paddingHuge {
+  --View-padding: var(--x-spacing-huge);
 }
 
 .displayGrid {
@@ -71,4 +82,18 @@
   width: 1px !important;
   padding: 0 !important;
   border: 0 !important;
+}
+
+.cornerRadiusConcentric {
+  border-radius: calc(
+    var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
+  );
+}
+
+.borderBase {
+  border: 1px solid #555;
+}
+
+.borderSubdued {
+  border: 1px solid #333;
 }

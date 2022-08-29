@@ -24,6 +24,7 @@ export type BuildState =
     };
 
 export interface Builder {
+  outputFile(extension: LocalExtension): string;
   watch(
     extension: Pick<LocalExtension, 'id'>,
     options?: {signal?: AbortSignal},

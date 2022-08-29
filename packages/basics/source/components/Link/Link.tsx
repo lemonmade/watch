@@ -1,17 +1,19 @@
-import type {PropsWithChildren, ComponentProps} from 'react';
+import type {PropsWithChildren, ComponentProps, ReactNode} from 'react';
 import {Link as RouterLink} from '@quilted/quilt';
-import {classes, variation} from '@lemon/css';
+import {variation} from '@lemon/css';
 
+import {useDomProps, toProps, type SystemProps} from '../../system';
 import {useImplicitAction, ariaForAction} from '../../utilities/actions';
 
 import styles from './Link.module.css';
 
-interface Props {
+interface Props extends SystemProps {
   to: ComponentProps<typeof RouterLink>['to'];
   target?: 'currentTab' | 'newTab';
   onPress?(): void;
   blockSize?: 'fill';
   alignContent?: 'start' | 'end' | 'center';
+  accessory?: ReactNode;
 }
 
 export function Link({
@@ -21,7 +23,18 @@ export function Link({
   alignContent,
   blockSize,
   children,
+  accessory,
+  ...systemProps
 }: PropsWithChildren<Props>) {
+  const domProps = useDomProps(systemProps);
+
+  domProps.addClassName(
+    styles.Link,
+    alignContent && styles[variation('alignContent', alignContent)],
+    blockSize && styles[variation('blockSize', blockSize)],
+    Boolean(accessory) && styles.hasAccessory,
+  );
+
   const implicitAction = useImplicitAction();
 
   const externalProps =
@@ -30,11 +43,7 @@ export function Link({
   return (
     <RouterLink
       to={to}
-      className={classes(
-        styles.Link,
-        alignContent && styles[variation('alignContent', alignContent)],
-        blockSize && styles[variation('blockSize', blockSize)],
-      )}
+      {...toProps(domProps)}
       onClick={
         (implicitAction ?? onPress) &&
         (() => {
@@ -45,7 +54,12 @@ export function Link({
       {...ariaForAction(implicitAction)}
       {...externalProps}
     >
-      {children}
+      {accessory ? (
+        <span className={styles.ContentContainer}>{children}</span>
+      ) : (
+        children
+      )}
+      {accessory}
     </RouterLink>
   );
 }

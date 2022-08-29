@@ -216,7 +216,7 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
   ) {
     const url = await previewUrl(extension, {
       extensionPoint,
-      serverUrl: localSocketUrl,
+      connect: localSocketUrl,
     });
 
     await open(url.href);
@@ -415,12 +415,14 @@ async function createBuilder(
       mode: 'development',
     });
 
+    const filename = `${extension.handle}.js`;
+
     const watcher = rollupWatch({
       ...baseConfiguration,
       output: {
         format: 'iife',
         dir: path.join(outputRoot, 'extensions'),
-        entryFileNames: `${extension.id.split('/').pop()}.js`,
+        entryFileNames: filename,
       },
     });
 
@@ -473,6 +475,9 @@ async function createBuilder(
   }
 
   return {
+    outputFile(localExtension) {
+      return path.join(outputRoot, 'extensions', `${localExtension.handle}.js`);
+    },
     async *watch({id}, {signal} = {}) {
       const initialState = buildStateByExtension.get(id);
       if (initialState) yield initialState;

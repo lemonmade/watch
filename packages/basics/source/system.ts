@@ -9,6 +9,9 @@ export function Pixels(num: number): PixelValue {
   return `@px@${num}` as any;
 }
 
+Pixels.test = (value: unknown): value is PixelValue =>
+  typeof value === 'string' && value.startsWith('@px@');
+
 Pixels.parse = (value: PixelValue): number =>
   Number.parseInt(value.substring(4), 10);
 
@@ -26,12 +29,30 @@ Keyword.test = <T extends string = string>(
 Keyword.parse = <T extends string = string>(value: KeywordValue<T>): T =>
   value.substring(4) as T;
 
-export type SpacingKeyword = 'none' | 'small' | 'base' | 'large';
+export type SpacingKeyword =
+  | 'none'
+  | 'tiny'
+  | 'small'
+  | 'base'
+  | 'large'
+  | 'huge';
+export type BorderKeyword = 'none' | 'base' | 'subdued';
+
+export interface Position {
+  type: 'relative' | 'absolute';
+  block?: 'start' | 'center' | 'end';
+  inline?: 'start' | 'center' | 'end';
+}
 
 export interface SystemProps {
   padding?: number | SpacingKeyword | PixelValue | KeywordValue<SpacingKeyword>;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
+
+  position?: Position | Position['type'];
+  border?: boolean | BorderKeyword | KeywordValue<BorderKeyword>;
+  background?: string;
+  cornerRadius?: number | 'concentric';
 }
 
 const PADDING_CLASS_MAP = new Map<string, string | false>([
@@ -41,12 +62,18 @@ const PADDING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('large'), systemStyles.paddingLarge],
 ] as [string, string | false][]);
 
+const BORDER_CLASS_MAP = new Map<string, string | false>([
+  [Keyword<BorderKeyword>('none'), false],
+  [Keyword<BorderKeyword>('subdued'), systemStyles.borderSubdued],
+  [Keyword<BorderKeyword>('base'), systemStyles.borderBase],
+] as [string, string | false][]);
+
 interface SystemDomProps {
   readonly styles: CSSProperties | undefined;
   readonly className: string;
   readonly attributes: Omit<HTMLAttributes<any>, 'styles'>;
   addStyles(styles: CSSProperties | Record<string, any>): void;
-  addClassName(classNames: string | undefined | null | false): void;
+  addClassName(...classNames: (string | undefined | null | false)[]): void;
   addAttributes(attributes: Omit<HTMLAttributes<any>, 'styles'>): void;
 }
 
@@ -58,7 +85,11 @@ export function toProps({styles, className, attributes}: SystemDomProps) {
 
 export function useDomProps({
   display,
+  position,
   padding,
+  background,
+  border,
+  cornerRadius,
   visibility,
   accessibilityVisibility,
 }: SystemProps & {display?: 'block' | 'grid' | 'inline'} = {}): SystemDomProps {
@@ -71,12 +102,12 @@ export function useDomProps({
     Object.assign(styles, newStyles);
   };
 
-  const addClassName: SystemDomProps['addClassName'] = (
-    newClassNames: string | undefined | null | false,
-  ) => {
-    if (!newClassNames) return;
-    if (className.length > 0) className += ' ';
-    className += newClassNames;
+  const addClassName: SystemDomProps['addClassName'] = (...newClassNames) => {
+    for (const newClassName of newClassNames) {
+      if (!newClassName) continue;
+      if (className.length > 0) className += ' ';
+      className += newClassName;
+    }
   };
 
   const addAttributes: SystemDomProps['addAttributes'] = (newAttributes) => {
@@ -100,29 +131,113 @@ export function useDomProps({
   }
 
   if (padding != null) {
-    let normalizedPadding: PixelValue | KeywordValue;
+    let normalizedPadding: PixelValue | KeywordValue<SpacingKeyword>;
 
     if (typeof padding === 'number') {
       normalizedPadding = Pixels(padding);
-    } else if (padding.startsWith('@')) {
-      normalizedPadding = padding as any;
+    } else if (Keyword.test(padding) || Pixels.test(padding)) {
+      normalizedPadding = padding;
     } else {
-      normalizedPadding = Keyword(padding as SpacingKeyword);
+      normalizedPadding = Keyword<SpacingKeyword>(padding);
     }
 
     const systemClassName = PADDING_CLASS_MAP.get(normalizedPadding);
 
-    if (systemClassName == null) {
+    if (systemClassName) {
+      addClassName(systemClassName);
+    } else {
       addStyles({
         padding: relativeSize(Pixels.parse(normalizedPadding as PixelValue)),
       });
-    } else if (systemClassName) {
-      addClassName(systemClassName);
     }
   }
 
   if (accessibilityVisibility === 'hidden' && visibility !== 'hidden') {
     addAttributes({'aria-hidden': true});
+  }
+
+  if (border) {
+    let normalizedBorder: KeywordValue<BorderKeyword>;
+
+    if (typeof border === 'boolean') {
+      normalizedBorder = Keyword('base');
+    } else if (Keyword.test(border)) {
+      normalizedBorder = border as any;
+    } else {
+      normalizedBorder = Keyword(border) as any;
+    }
+
+    const systemClassName = BORDER_CLASS_MAP.get(normalizedBorder);
+
+    if (systemClassName) addClassName(systemClassName);
+  }
+
+  addStyles({backgroundColor: background});
+
+  // concentric border radius is handled with a class
+  if (typeof cornerRadius === 'number') {
+    const radius = relativeSize(cornerRadius);
+    addStyles({
+      '--z-container-corner-radius': radius,
+      borderRadius: radius,
+    });
+  }
+
+  if (position) {
+    if (typeof position === 'string') {
+      addStyles({position});
+    } else {
+      const {type, block, inline} = position;
+      addStyles({position: type});
+
+      if (inline) {
+        switch (inline) {
+          case 'start': {
+            addStyles({left: 0});
+            break;
+          }
+          case 'center': {
+            addStyles({
+              left: 0,
+              right: 0,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            });
+            break;
+          }
+          case 'end': {
+            addStyles({right: 0});
+            break;
+          }
+        }
+      }
+
+      if (block) {
+        switch (block) {
+          case 'start': {
+            addStyles({top: 0});
+            break;
+          }
+          case 'center': {
+            addStyles({
+              top: 0,
+              bottom: 0,
+              marginTop: 'auto',
+              marginBottom: 'auto',
+            });
+            break;
+          }
+          case 'end': {
+            addStyles({bottom: 0});
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  if (cornerRadius === 'concentric') {
+    addClassName(systemStyles.cornerRadiusConcentric);
   }
 
   return {

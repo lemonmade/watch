@@ -14,7 +14,7 @@ export interface ButtonProps {
   /**
    * A callback that is run when the button is pressed.
    */
-  onPress?(): Promise<void>;
+  onPress?(): void | Promise<void>;
 }
 
 /**

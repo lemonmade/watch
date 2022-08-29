@@ -28,7 +28,8 @@
     "@remote-ui/core": "^2.1.0",
     "@types/react": "^17.0.0",
     "@watching/clips": "workspace:^0.2.6",
-    "@watching/remote-react-utilities": "workspace:^0.1.1"
+    "@watching/remote-react-utilities": "workspace:^0.1.1",
+    "@watching/thread-signals": "workspace:^0.1.0"
   },
   "peerDependencies": {
     "@watching/remote-react": "^17.0.0",

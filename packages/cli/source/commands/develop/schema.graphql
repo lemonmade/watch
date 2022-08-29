@@ -50,7 +50,7 @@ type ClipsExtensionPointSupportCondition {
 }
 
 type ClipsExtensionPointPreview {
-  url: Url!
+  url(connect: Boolean): Url!
 }
 
 type ClipsExtensionPointSupport {

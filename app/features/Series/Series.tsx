@@ -8,16 +8,11 @@ import {
   Text,
   Section,
   Heading,
-  TextBlock,
+  Link,
+  Icon,
 } from '@lemon/zest';
 
-import {
-  Link,
-  LocalClip,
-  InstalledClip,
-  Page,
-  SpoilerAvoidance,
-} from '~/components';
+import {LocalClip, InstalledClip, Page, SpoilerAvoidance} from '~/components';
 import type {ClipProps} from '~/components';
 
 import {parseGid, useQuery, useMutation} from '~/shared/graphql';
@@ -182,23 +177,40 @@ function SeriesWithData({
         </View>
         {watchThroughs.length > 0 && (
           <Section>
-            <Heading>Watchthroughs</Heading>
             <BlockStack>
+              <Heading>Watchthroughs</Heading>
               {watchThroughs.map((watchThrough) => (
-                <BlockStack key={watchThrough.id}>
-                  <TextBlock>
-                    From <EpisodeSliceText {...watchThrough.from} />, to{' '}
-                    <EpisodeSliceText {...watchThrough.to} />
-                    {watchThrough.status === 'ONGOING'
-                      ? ' (still watching)'
-                      : ''}
-                  </TextBlock>
-                  <Link
-                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                  >
-                    See watch through
-                  </Link>
-                </BlockStack>
+                <Link
+                  key={watchThrough.id}
+                  to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+                  border="base"
+                  padding="base"
+                  cornerRadius={4}
+                  background="#222"
+                  accessory={<Icon source="arrowEnd" />}
+                >
+                  <BlockStack spacing="tiny">
+                    <Text>
+                      {watchThrough.from.season === watchThrough.to.season ? (
+                        `Season ${watchThrough.from.season}`
+                      ) : (
+                        <>
+                          From <EpisodeSliceText {...watchThrough.from} /> to{' '}
+                          <EpisodeSliceText {...watchThrough.to} />
+                        </>
+                      )}
+                    </Text>
+                    <Text emphasis="subdued">
+                      {watchThrough.finishedAt
+                        ? `Finished on ${new Intl.DateTimeFormat().format(
+                            new Date(watchThrough.finishedAt),
+                          )}`
+                        : watchThrough.unfinishedEpisodeCount > 0
+                        ? `${watchThrough.unfinishedEpisodeCount} episodes left`
+                        : 'Still watching'}
+                    </Text>
+                  </BlockStack>
+                </Link>
               ))}
             </BlockStack>
           </Section>
@@ -288,7 +300,7 @@ function EpisodeSliceText({
   return (
     <>
       season {season}
-      {episode == null ? '' : `, episode ${episode}`}
+      {episode == null || episode === 1 ? '' : `, episode ${episode}`}
     </>
   );
 }

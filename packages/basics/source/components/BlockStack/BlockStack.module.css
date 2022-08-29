@@ -11,12 +11,20 @@
   --x-BlockStack-spacing: 0;
 }
 
+.spacingTiny {
+  --x-BlockStack-spacing: var(--x-spacing-tiny);
+}
+
 .spacingSmall {
   --x-BlockStack-spacing: var(--x-spacing-small);
 }
 
 .spacingLarge {
   --x-BlockStack-spacing: var(--x-spacing-large);
+}
+
+.spacingHuge {
+  --x-BlockStack-spacing: var(--x-spacing-huge);
 }
 
 .alignStretch {

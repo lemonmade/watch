@@ -29,7 +29,7 @@ import type {
   JSON as GraphQlJSON,
 } from '~/graphql/types';
 import {useQuery, useMutation} from '~/shared/graphql';
-import {useRenderSandbox, useLocalDevelopmentServer} from '~/shared/clips';
+import {useRenderSandbox, useLocalDevelopmentServerQuery} from '~/shared/clips';
 import type {
   RenderController,
   ExtensionSandbox,
@@ -37,13 +37,15 @@ import type {
 } from '~/shared/clips';
 import type {ArrayElement, ThenType} from '~/shared/types';
 
-import clipsExtensionSettingsQuery from './graphql/ClipExtensionSettingsQuery.graphql';
-import type {ClipExtensionSettingsQueryData} from './graphql/ClipExtensionSettingsQuery.graphql';
+import clipsExtensionSettingsQuery, {
+  type ClipExtensionSettingsQueryData,
+} from './graphql/ClipExtensionSettingsQuery.graphql';
 import updateClipsExtensionSettingsMutation from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
-import type {InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
+import {type InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
-import localClipQuery from './graphql/LocalClipQuery.graphql';
-import type {LocalClipQueryData} from './graphql/LocalClipQuery.graphql';
+import localClipQuery, {
+  type LocalClipQueryData,
+} from './graphql/LocalClipQuery.graphql';
 
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
@@ -97,36 +99,22 @@ export function InstalledClip<T extends ExtensionPoint>({
   );
 }
 
+const DEFAULT_BUILD_STATE = {
+  __typename: 'ExtensionBuildInProgress',
+  id: '0',
+  startedAt: new Date().toISOString(),
+} as const;
+
 export function LocalClip<T extends ExtensionPoint>({
   id,
   api,
   name,
   extensionPoint,
 }: LocalExtension & Pick<Props<T>, 'api' | 'extensionPoint'>) {
-  const {query} = useLocalDevelopmentServer();
-  const [buildState, setBuildState] =
-    useState<LocalClipQueryData.App.ClipsExtension.Build>({
-      __typename: 'ExtensionBuildInProgress',
-      id: '0',
-      startedAt: new Date().toISOString(),
-    });
-
-  useEffect(() => {
-    const abort = new AbortController();
-
-    (async () => {
-      for await (const result of query(localClipQuery, {
-        signal: abort.signal,
-        variables: {id},
-      })) {
-        const extension = result.data?.app?.clipsExtension;
-        if (extension == null) continue;
-        setBuildState(extension.build);
-      }
-    })();
-
-    return () => abort.abort();
-  }, [query, id]);
+  const buildState =
+    useLocalDevelopmentServerQuery(localClipQuery, {
+      variables: {id},
+    })?.data?.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
 
   const assetRef = useRef<string>();
 

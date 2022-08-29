@@ -1,14 +1,29 @@
-import {useEffect, useState} from 'react';
-// import type {ReactNode} from 'react';
+import {useState} from 'react';
 
 import {useCurrentUrl} from '@quilted/quilt';
-import {BlockStack, TextField, Button, Form, TextBlock} from '@lemon/zest';
+import {
+  BlockStack,
+  TextField,
+  Button,
+  Form,
+  TextBlock,
+  Heading,
+  Section,
+  Link,
+  Text,
+  Icon,
+} from '@lemon/zest';
 
 import {Page} from '~/components';
-import {useLocalDevelopmentServer} from '~/shared/clips';
-import type {LocalDevelopmentServer} from '~/shared/clips';
+import {
+  useLocalDevelopmentServer,
+  useLocalDevelopmentServerQuery,
+  type LocalDevelopmentServer,
+} from '~/shared/clips';
 
-import developerConsoleQuery from './graphql/DeveloperConsoleQuery.graphql';
+import developerConsoleQuery, {
+  type DeveloperConsoleQueryData,
+} from './graphql/DeveloperConsoleQuery.graphql';
 
 export function Console() {
   const developmentServer = useLocalDevelopmentServer({required: false});
@@ -25,30 +40,87 @@ export function Console() {
 }
 
 function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
-  const [data, setData] = useState<any>();
-
-  useEffect(() => {
-    const abort = new AbortController();
-
-    (async () => {
-      for await (const result of server.query(developerConsoleQuery, {
-        signal: abort.signal,
-      })) {
-        setData(result);
-      }
-    })();
-
-    return () => {
-      abort.abort();
-    };
-  }, [server]);
+  const {data} = useLocalDevelopmentServerQuery(developerConsoleQuery);
 
   return (
-    <BlockStack>
-      <TextBlock>Connected to: {server.url.href}</TextBlock>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+    <BlockStack spacing="large">
+      <TextBlock>
+        <Text accessibilityRole="code">{server.url.href}</Text>
+      </TextBlock>
+      {data?.app.extensions.map((extension) => {
+        if (extension.__typename !== 'ClipsExtension') return null;
+
+        return (
+          <Section key={extension.id}>
+            <BlockStack>
+              <BlockStack spacing="small">
+                <Heading>{extension.name}</Heading>
+                <ExtensionBuildResult build={extension.build} />
+              </BlockStack>
+              <BlockStack spacing="small">
+                {extension.extends.map(({target, conditions, preview}) => {
+                  return (
+                    <Link
+                      to={preview.url}
+                      key={target}
+                      padding="small"
+                      border="base"
+                      cornerRadius={4}
+                      background="#222"
+                      accessory={<Icon source="arrowEnd" />}
+                    >
+                      <BlockStack spacing="tiny">
+                        <Text accessibilityRole="code">
+                          {target
+                            .split('.')
+                            .join('.' + String.fromCharCode(8203))}
+                        </Text>
+                        {conditions.length > 0 &&
+                          conditions.map(({series}) => {
+                            if (series == null) return null;
+                            return (
+                              <TextBlock key={`series:${series.handle}`}>
+                                <Text emphasis="subdued">Series: </Text>
+                                <Text emphasis="strong">{series.handle}</Text>
+                              </TextBlock>
+                            );
+                          })}
+                      </BlockStack>
+                    </Link>
+                  );
+                })}
+              </BlockStack>
+            </BlockStack>
+          </Section>
+        );
+      })}
     </BlockStack>
   );
+}
+
+function ExtensionBuildResult({
+  build,
+}: {
+  build: DeveloperConsoleQueryData.App.Extensions_ClipsExtension.Build;
+}) {
+  switch (build.__typename) {
+    case 'ExtensionBuildSuccess': {
+      return <TextBlock>Build succeeded in {build.duration}ms</TextBlock>;
+    }
+    case 'ExtensionBuildInProgress': {
+      return <TextBlock>Build in progress</TextBlock>;
+    }
+    case 'ExtensionBuildError': {
+      return (
+        <TextBlock>
+          Build failed in {build.duration}ms: {build.error}
+        </TextBlock>
+      );
+    }
+    default: {
+      return null;
+    }
+  }
 }
 
 function ConnectToConsole() {
@@ -59,7 +131,7 @@ function ConnectToConsole() {
     if (!localUrl) return;
 
     const normalizedUrl = new URL('/connect', localUrl);
-    normalizedUrl.protocol = 'ws:';
+    normalizedUrl.protocol = normalizedUrl.protocol.replace(/^http/, 'ws');
 
     const targetUrl = new URL(currentUrl);
     targetUrl.searchParams.set('connect', normalizedUrl.href);

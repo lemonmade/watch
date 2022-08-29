@@ -8,11 +8,9 @@ interface Props {
 export function Banner({status, children}: PropsWithChildren<Props>) {
   const background =
     status === 'error' ? 'rgb(105, 10, 10)' : 'rgb(40, 50, 86)';
-  const border =
-    status === 'error' ? 'rgb(196, 26, 26)' : '1px solid rgb(108, 127, 197)';
 
   return (
-    <View cornerRadius={4} padding={16} background={background} border={border}>
+    <View cornerRadius={4} padding="base" background={background} border="base">
       {children}
     </View>
   );
