@@ -180,7 +180,7 @@ importers:
       '@types/mime': ^2.0.0
       '@types/prompts': ^2.0.0
       '@types/ws': ^7.0.0
-      '@watching/clips': workspace:^0.2.8
+      '@watching/clips': workspace:^0.2.9
       '@watching/graphql': workspace:^0.0.1
       ansi-escapes: ^4.0.0
       arg: ^5.0.0
