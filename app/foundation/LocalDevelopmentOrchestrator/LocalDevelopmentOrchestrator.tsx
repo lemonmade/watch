@@ -106,9 +106,12 @@ function createLocalDevelopmentServer(url: URL): LocalDevelopmentServer {
 
   const query: LocalDevelopmentServer['query'] = async function* query(
     graphql,
-    {signal, variables} = {},
+    options,
   ) {
     const {thread} = await threadPromise.promise;
+
+    const signal = options?.signal;
+    const variables = options?.variables;
 
     const results = thread.query(graphql.source, {
       variables,

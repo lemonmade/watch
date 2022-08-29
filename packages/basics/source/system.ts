@@ -143,12 +143,12 @@ export function useDomProps({
 
     const systemClassName = PADDING_CLASS_MAP.get(normalizedPadding);
 
-    if (systemClassName == null) {
+    if (systemClassName) {
+      addClassName(systemClassName);
+    } else {
       addStyles({
         padding: relativeSize(Pixels.parse(normalizedPadding as PixelValue)),
       });
-    } else if (systemClassName) {
-      addClassName(systemClassName);
     }
   }
 
@@ -162,9 +162,9 @@ export function useDomProps({
     if (typeof border === 'boolean') {
       normalizedBorder = Keyword('base');
     } else if (Keyword.test(border)) {
-      normalizedBorder = border;
+      normalizedBorder = border as any;
     } else {
-      normalizedBorder = Keyword(border);
+      normalizedBorder = Keyword(border) as any;
     }
 
     const systemClassName = BORDER_CLASS_MAP.get(normalizedBorder);

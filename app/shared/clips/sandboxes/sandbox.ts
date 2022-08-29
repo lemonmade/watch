@@ -1,6 +1,5 @@
 import {retain} from '@quilted/quilt/threads';
-import {createRemoteRoot} from '@remote-ui/core';
-import type {RemoteChannel} from '@remote-ui/core';
+import {createRemoteRoot, type RemoteChannel} from '@remote-ui/core';
 
 import type {
   ClipsApi,
@@ -9,9 +8,6 @@ import type {
   ExtensionPoints,
   ApiForExtensionPoint,
 } from '@watching/clips';
-
-// TODO: should be able to do '~/shared/threads' here...
-import {acceptThreadSignal} from '../../threads';
 
 const registeredExtensions = new Map<
   keyof ExtensionPoints,
@@ -49,10 +45,7 @@ export async function render<T extends ExtensionPoint>(
   const root = createRemoteRoot(channel, {components});
 
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
-  let result = runExtensionPoint(id, root, {
-    ...(api as any),
-    settings: acceptThreadSignal((api as any).settings),
-  });
+  let result = runExtensionPoint(id, root, api);
 
   if (typeof result === 'object' && result != null && 'then' in result) {
     result = await result;

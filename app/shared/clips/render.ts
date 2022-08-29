@@ -37,8 +37,7 @@ import {retain, release} from '@quilted/quilt/threads';
 import {createEmitter} from '@quilted/quilt';
 import type {Emitter} from '@quilted/quilt';
 import {signal} from '@preact/signals';
-
-import {createThreadSignal} from '~/shared/threads';
+import {createThreadSignal} from '@watching/thread-signals';
 
 import {useExtensionSandbox} from './worker';
 import type {

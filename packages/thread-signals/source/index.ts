@@ -1,11 +1,19 @@
-import {signal as createSignal, effect, type Signal} from '@preact/signals';
+import {
+  signal as createSignal,
+  computed,
+  batch,
+  effect,
+  type Signal,
+} from '@preact/signals-core';
 import {
   retain,
   release,
   acceptThreadAbortSignal,
   createThreadAbortSignal,
   type ThreadAbortSignal,
-} from '@quilted/quilt/threads';
+} from '@quilted/threads';
+
+export {createSignal as signal, computed, batch, effect, type Signal};
 
 export interface ThreadSignal<T> {
   initial: T;

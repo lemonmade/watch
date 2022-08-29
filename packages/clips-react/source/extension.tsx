@@ -7,15 +7,21 @@ import {extension as vanillaExtension} from '@watching/clips';
 import type {
   AnyApi,
   ExtensionPoint,
+  WithThreadSignals,
   ApiForExtensionPoint,
 } from '@watching/clips';
 
 import {ApiContext} from './context';
 
-export function extension<ID extends ExtensionPoint>(
-  renderUi: (api: ApiForExtensionPoint<ID>) => ReactNode | Promise<ReactNode>,
+export function extension<Extends extends ExtensionPoint>(
+  renderUi: (
+    api: ApiForExtensionPoint<Extends>,
+  ) => ReactNode | Promise<ReactNode>,
 ) {
-  return vanillaExtension<ID>(async (root: RemoteRoot<any>, api: AnyApi) => {
+  async function reactExtension(
+    root: RemoteRoot<any>,
+    api: WithThreadSignals<AnyApi>,
+  ) {
     const rendered = await renderUi(api as any);
 
     await new Promise<void>((resolve, reject) => {
@@ -31,5 +37,7 @@ export function extension<ID extends ExtensionPoint>(
         reject(error);
       }
     });
-  });
+  }
+
+  return vanillaExtension<Extends>(reactExtension as any);
 }
