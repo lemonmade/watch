@@ -175,11 +175,9 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           }
         });
 
-        let settingsVersion = 1;
-
-        const settingsSignal = signal<Record<string, unknown>>({
-          version: settingsVersion,
-        });
+        const settingsSignal = signal<Record<string, unknown>>(
+          JSON.parse(settings ?? '{}'),
+        );
 
         internals = {
           settings: {
@@ -195,19 +193,6 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           extensionPoint,
           settings: createThreadSignal(settingsSignal),
         };
-
-        const interval = setInterval(() => {
-          settingsVersion += 1;
-          settingsSignal.value = {version: settingsVersion};
-        }, 1000);
-
-        emitter.on(
-          'stop',
-          () => {
-            clearInterval(interval);
-          },
-          {once: true},
-        );
 
         sandbox.render(
           extensionPoint,
