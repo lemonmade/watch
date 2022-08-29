@@ -199,6 +199,7 @@ function useValueOnChange<T>(
   onChange: (value: T, lastValue: T) => void,
 ) {
   const internals = useRef<[T, typeof onChange]>([value, onChange]);
+  internals.current[1] = onChange;
 
   useEffect(() => {
     const [lastValue, onChange] = internals.current;
@@ -255,7 +256,7 @@ function InstalledClipFrame<T extends ExtensionPoint>({
 }
 
 function InstalledClipSettings({id}: {id: string}) {
-  const {data, isFetching} = useQuery(clipsExtensionSettingsQuery, {
+  const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
     variables: {id},
   });
 
@@ -280,6 +281,7 @@ function InstalledClipSettings({id}: {id: string}) {
       settings={settings}
       translations={translations}
       schema={schema}
+      onUpdate={refetch}
     />
   );
 }
@@ -289,15 +291,18 @@ function InstalledClipLoadedSettings({
   translations,
   settings,
   schema,
+  onUpdate,
 }: Pick<
   ClipExtensionSettingsQueryData.ClipsInstallation.Version,
   'translations'
 > &
   Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'id' | 'settings'> & {
     schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
+    onUpdate(): void;
   }) {
   const updateClipsExtensionSettings = useMutation(
     updateClipsExtensionSettingsMutation,
+    {onSuccess: onUpdate},
   );
 
   const [values, dispatch] = useReducer(
