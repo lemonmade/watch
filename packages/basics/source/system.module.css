@@ -6,6 +6,7 @@
 
 .View {
   --View-padding: 0;
+  --View-border: none;
   --View-default-display: block;
 
   display: var(
@@ -71,4 +72,18 @@
   width: 1px !important;
   padding: 0 !important;
   border: 0 !important;
+}
+
+.cornerRadiusConcentric {
+  border-radius: calc(
+    var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
+  );
+}
+
+.borderBase {
+  border: 1px solid #555;
+}
+
+.borderSubdued {
+  border: 1px solid #333;
 }

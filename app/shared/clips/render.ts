@@ -27,8 +27,6 @@ import type {
   ActionArgumentMap,
 } from '@remote-ui/core';
 import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
-import {createRemoteSubscribable} from '@remote-ui/async-subscription';
-import type {RemoteSubscribable} from '@remote-ui/async-subscription';
 import type {
   AnyComponent,
   ExtensionPoint,
@@ -38,6 +36,9 @@ import type {
 import {retain, release} from '@quilted/quilt/threads';
 import {createEmitter} from '@quilted/quilt';
 import type {Emitter} from '@quilted/quilt';
+import {signal} from '@preact/signals';
+
+import {createThreadSignal} from '~/shared/threads';
 
 import {useExtensionSandbox} from './worker';
 import type {
@@ -175,21 +176,31 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           }
         });
 
-        const [settingsSubscribable, updateConfiguration] =
-          createStaticRemoteSubscribable<Record<string, unknown>>(
-            JSON.parse(settings ?? '{}'),
-          );
+        let settingsVersion = 1;
+
+        const settingsSignal = signal<Record<string, unknown>>({
+          version: settingsVersion,
+        });
 
         internals = {
-          settings: {update: updateConfiguration},
+          settings: {
+            update(value) {
+              settingsSignal.value = value;
+            },
+          },
         };
 
         api = {
           ...customApi,
           version,
           extensionPoint,
-          settings: settingsSubscribable,
+          settings: createThreadSignal(settingsSignal),
         };
+
+        setInterval(() => {
+          settingsVersion += 1;
+          settingsSignal.value = {version: settingsVersion};
+        }, 1000);
 
         sandbox.render(
           extensionPoint,
@@ -223,35 +234,6 @@ export function useRenderSandbox<T extends ExtensionPoint>({
   }, [controller, sandbox]);
 
   return [receiver, renderController] as const;
-}
-
-function createStaticRemoteSubscribable<T>(
-  initial: T,
-): [RemoteSubscribable<T>, (update: T) => void] {
-  let current = initial;
-  const subscribers = new Set<
-    Parameters<RemoteSubscribable<T>['subscribe']>[0]
-  >();
-
-  const update = (value: T) => {
-    current = value;
-
-    for (const subscriber of subscribers) {
-      subscriber(value);
-    }
-  };
-
-  const subscribable = createRemoteSubscribable({
-    get current() {
-      return current;
-    },
-    subscribe: (subscriber) => {
-      subscribers.add(subscriber);
-      return () => subscribers.delete(subscriber);
-    },
-  });
-
-  return [subscribable, update];
 }
 
 const ROOT_ID = Symbol.for('RemoteUi.Root') as any;

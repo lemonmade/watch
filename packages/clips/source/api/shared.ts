@@ -1,10 +1,10 @@
-import type {StatefulRemoteSubscribable} from '@remote-ui/async-subscription';
-import type {ExtensionPoint as AllowedExtensionPoint} from '../extension-points';
+import {type Signal} from '@preact/signals-core';
+import {type ExtensionPoint as AllowedExtensionPoint} from '../extension-points';
 
 export type Version = 'unstable';
 
 export interface StandardApi<ExtensionPoint extends AllowedExtensionPoint> {
   readonly version: Version;
   readonly extensionPoint: ExtensionPoint;
-  readonly settings: StatefulRemoteSubscribable<Record<string, unknown>>;
+  readonly settings: Signal<Record<string, unknown>>;
 }

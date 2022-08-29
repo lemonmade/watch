@@ -20,6 +20,7 @@
     "@lemon/basics": "workspace:*",
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
+    "@preact/signals": "^0.0.3",
     "@quilted/react-query": "^0.1.11",
     "@remote-ui/async-subscription": "^2.1.10",
     "@remote-ui/core": "^2.1.12",
@@ -29,7 +30,6 @@
     "@watching/graphql": "workspace:*",
     "common-tags": "^1.8.0",
     "graphql": "^15.0.0",
-    "jotai": "^1.7.8",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
     "react-query": "^3.39.0"

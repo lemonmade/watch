@@ -4,6 +4,7 @@ export {Checkbox} from './Checkbox';
 export {Choice, ChoiceList} from './ChoiceList';
 export {CollapseGroup} from './CollapseGroup';
 export {DateField} from './DateField';
+export {Icon} from './Icon';
 export {MediaGrid} from './MediaGrid';
 export {Poster} from './Poster';
 export {Rating} from './Rating';
