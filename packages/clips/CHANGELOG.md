@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.7
+
+### Patch Changes
+
+- [#171](https://github.com/lemonmade/watch/pull/171) [`bf2f0b9`](https://github.com/lemonmade/watch/commit/bf2f0b9f27e80cf8b821720152b292d591d73b0c) Thanks [@lemonmade](https://github.com/lemonmade)! - Improved thread state mechanism
+
 ## 0.2.6
 
 ### Patch Changes
