@@ -166,8 +166,10 @@ export function Clip<T extends ExtensionPoint>({
     settings,
   });
 
-  useValueOnChange(settings, () => {
-    sandboxController.internals.settings.update(JSON.parse(settings ?? '{}'));
+  useValueOnChange(settings, (newSettings) => {
+    sandboxController.internals.settings.update(
+      JSON.parse(newSettings ?? '{}'),
+    );
   });
 
   return build ? (
