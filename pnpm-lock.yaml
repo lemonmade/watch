@@ -307,9 +307,9 @@ importers:
       '@quilted/threads': ^0.1.0
     dependencies:
       '@preact/signals-core': 0.0.4
+      '@quilted/threads': 0.1.6
     devDependencies:
       '@quilted/testing': 0.1.4
-      '@quilted/threads': 0.1.6
 
   packages/zest:
     specifiers:
@@ -4197,6 +4197,7 @@ packages:
     peerDependenciesMeta:
       '@babel/runtime':
         optional: true
+    dev: false
 
   /@quilted/events/0.1.8_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-aghUosfFxoT2POUXDyzNE3HkeAOAQZbzzUcEetPPRXM0LMxm69SzB1LoZXksQPdLn/RWSa8vw5tGq7NT76LGYA==}
@@ -4960,6 +4961,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/events': 0.1.8
+    dev: false
 
   /@quilted/threads/0.1.6_@babel+runtime@7.17.8:
     resolution: {integrity: sha512-YNu3QUAEliNnGR3oy7MEbP1qL01Dp0BPREod9MaYlpwcfqBjJdVOpoTWesdZIPsaTbRn/+TOgByTBDUpsgLoag==}

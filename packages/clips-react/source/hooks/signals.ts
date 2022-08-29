@@ -31,7 +31,7 @@ export function useSignal<T>(signal: Signal<T>): T {
       setDetails((currentDetails) => {
         const {value: currentValue, signal} = currentDetails;
         if (currentValue === newValue) return currentDetails;
-        return {value: currentValue, signal};
+        return {value: newValue, signal};
       });
     };
 

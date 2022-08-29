@@ -14,7 +14,7 @@ export function extension<
   function extension(...args: any[]) {
     const normalizedArgs = [...args];
     normalizedArgs.push(acceptSignals(normalizedArgs.pop()));
-    return (run as any)(...args);
+    return (run as any)(...normalizedArgs);
   }
 
   return extension;

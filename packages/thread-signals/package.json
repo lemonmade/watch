@@ -28,17 +28,14 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@preact/signals-core": "0.0.4"
+    "@preact/signals-core": "0.0.4",
+    "@quilted/threads": "^0.1.0"
   },
   "peerDependencies": {
-    "@babel/runtime": ">=7.0.0 <8.0.0",
-    "@quilted/threads": "^0.1.0"
+    "@babel/runtime": ">=7.0.0 <8.0.0"
   },
   "peerDependenciesMeta": {
     "@babel/runtime": {
-      "optional": true
-    },
-    "@quilted/threads": {
       "optional": true
     }
   },
