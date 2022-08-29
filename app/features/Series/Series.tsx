@@ -189,15 +189,27 @@ function SeriesWithData({
                   background="#222"
                   accessory={<Icon source="arrowEnd" />}
                 >
-                  {watchThrough.from.season === watchThrough.to.season ? (
-                    `Season ${watchThrough.from.season}`
-                  ) : (
-                    <>
-                      From <EpisodeSliceText {...watchThrough.from} /> to{' '}
-                      <EpisodeSliceText {...watchThrough.to} />
-                    </>
-                  )}
-                  {watchThrough.status === 'ONGOING' ? ' (still watching)' : ''}
+                  <BlockStack spacing="tiny">
+                    <Text>
+                      {watchThrough.from.season === watchThrough.to.season ? (
+                        `Season ${watchThrough.from.season}`
+                      ) : (
+                        <>
+                          From <EpisodeSliceText {...watchThrough.from} /> to{' '}
+                          <EpisodeSliceText {...watchThrough.to} />
+                        </>
+                      )}
+                    </Text>
+                    <Text emphasis="subdued">
+                      {watchThrough.finishedAt
+                        ? `Finished on ${new Intl.DateTimeFormat().format(
+                            new Date(watchThrough.finishedAt),
+                          )}`
+                        : watchThrough.unfinishedEpisodeCount > 0
+                        ? `${watchThrough.unfinishedEpisodeCount} episodes left`
+                        : 'Still watching'}
+                    </Text>
+                  </BlockStack>
                 </Link>
               ))}
             </BlockStack>

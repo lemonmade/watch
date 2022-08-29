@@ -29,7 +29,13 @@ Keyword.test = <T extends string = string>(
 Keyword.parse = <T extends string = string>(value: KeywordValue<T>): T =>
   value.substring(4) as T;
 
-export type SpacingKeyword = 'none' | 'small' | 'base' | 'large';
+export type SpacingKeyword =
+  | 'none'
+  | 'tiny'
+  | 'small'
+  | 'base'
+  | 'large'
+  | 'huge';
 export type BorderKeyword = 'none' | 'base' | 'subdued';
 
 export interface Position {

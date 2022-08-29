@@ -1,7 +1,9 @@
 :root {
-  --x-spacing-small: 0.75rem;
+  --x-spacing-tiny: 0.25rem;
+  --x-spacing-small: 0.5rem;
   --x-spacing-base: 1rem;
   --x-spacing-large: 1.5rem;
+  --x-spacing-huge: 2rem;
 }
 
 .View {
@@ -27,6 +29,10 @@
   --x-implicit-container-inline-size: initial;
 }
 
+.paddingTiny {
+  --View-padding: var(--x-spacing-tiny);
+}
+
 .paddingSmall {
   --View-padding: var(--x-spacing-small);
 }
@@ -37,6 +43,10 @@
 
 .paddingLarge {
   --View-padding: var(--x-spacing-large);
+}
+
+.paddingHuge {
+  --View-padding: var(--x-spacing-huge);
 }
 
 .displayGrid {

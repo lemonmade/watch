@@ -26,9 +26,11 @@ interface Props extends SystemProps {
 
 const SPACING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('none'), styles.spacingNone],
+  [Keyword<SpacingKeyword>('tiny'), styles.spacingTiny],
   [Keyword<SpacingKeyword>('small'), styles.spacingSmall],
   [Keyword<SpacingKeyword>('base'), false],
   [Keyword<SpacingKeyword>('large'), styles.spacingLarge],
+  [Keyword<SpacingKeyword>('huge'), styles.spacingHuge],
 ] as [string, string | false][]);
 
 export function BlockStack({

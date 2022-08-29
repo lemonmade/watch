@@ -44,7 +44,9 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
 
   return (
     <BlockStack spacing="large">
-      <TextBlock>Connected to: {server.url.href}</TextBlock>
+      <TextBlock>
+        <Text accessibilityRole="code">{server.url.href}</Text>
+      </TextBlock>
       {data?.app.extensions.map((extension) => {
         if (extension.__typename !== 'ClipsExtension') return null;
 
@@ -67,16 +69,18 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                       background="#222"
                       accessory={<Icon source="arrowEnd" />}
                     >
-                      <BlockStack spacing="small">
-                        <TextBlock>
-                          <Text>{target}</Text>
-                        </TextBlock>
+                      <BlockStack spacing="tiny">
+                        <Text accessibilityRole="code">
+                          {target
+                            .split('.')
+                            .join('.' + String.fromCharCode(8203))}
+                        </Text>
                         {conditions.length > 0 &&
                           conditions.map(({series}) => {
                             if (series == null) return null;
                             return (
                               <TextBlock key={`series:${series.handle}`}>
-                                Series:{' '}
+                                <Text emphasis="subdued">Series: </Text>
                                 <Text emphasis="strong">{series.handle}</Text>
                               </TextBlock>
                             );
