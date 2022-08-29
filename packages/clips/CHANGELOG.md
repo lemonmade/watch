@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.9
+
+### Patch Changes
+
+- [`2f4521d`](https://github.com/lemonmade/watch/commit/2f4521de02cf25e0d6d55bdd91ce073226c97bd9) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix signal detection
+
 ## 0.2.8
 
 ### Patch Changes

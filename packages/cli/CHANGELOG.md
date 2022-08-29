@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.21
+
+### Patch Changes
+
+- [`5ac9df8`](https://github.com/lemonmade/watch/commit/5ac9df82845bb22777599b5945feae446f5c44f6) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix esbuild configuration
+
+- Updated dependencies [[`2f4521d`](https://github.com/lemonmade/watch/commit/2f4521de02cf25e0d6d55bdd91ce073226c97bd9)]:
+  - @watching/clips@0.2.9
+
 ## 0.4.20
 
 ### Patch Changes
