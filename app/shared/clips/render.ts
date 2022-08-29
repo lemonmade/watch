@@ -196,10 +196,18 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           settings: createThreadSignal(settingsSignal),
         };
 
-        setInterval(() => {
+        const interval = setInterval(() => {
           settingsVersion += 1;
           settingsSignal.value = {version: settingsVersion};
         }, 1000);
+
+        emitter.on(
+          'stop',
+          () => {
+            clearInterval(interval);
+          },
+          {once: true},
+        );
 
         sandbox.render(
           extensionPoint,
@@ -214,6 +222,14 @@ export function useRenderSandbox<T extends ExtensionPoint>({
       },
       on: emitter.on,
     };
+
+    controller.on('start', () => {
+      emitter.emit('start');
+    });
+
+    controller.on('stop', () => {
+      emitter.emit('stop');
+    });
 
     return renderController;
     // eslint-disable-next-line react-hooks/exhaustive-deps
