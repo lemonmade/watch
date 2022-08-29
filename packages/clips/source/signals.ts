@@ -13,6 +13,7 @@ export function acceptSignals<T>(value: T): WithThreadSignals<T> {
 
   for (const [key, nestedValue] of Object.entries(value)) {
     if (
+      typeof nestedValue === 'object' &&
       nestedValue != null &&
       'initial' in nestedValue &&
       typeof nestedValue.start === 'function'
