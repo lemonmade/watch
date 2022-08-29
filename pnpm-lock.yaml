@@ -180,7 +180,7 @@ importers:
       '@types/mime': ^2.0.0
       '@types/prompts': ^2.0.0
       '@types/ws': ^7.0.0
-      '@watching/clips': workspace:^0.2.7
+      '@watching/clips': workspace:^0.2.8
       '@watching/graphql': workspace:^0.0.1
       ansi-escapes: ^4.0.0
       arg: ^5.0.0
@@ -252,9 +252,9 @@ importers:
       '@remote-ui/async-subscription': ^2.1.0
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
-      '@watching/clips': workspace:^0.2.7
+      '@watching/clips': workspace:^0.2.8
       '@watching/remote-react-utilities': workspace:^0.1.1
-      '@watching/thread-signals': workspace:^0.1.0
+      '@watching/thread-signals': workspace:^0.1.1
     dependencies:
       '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12

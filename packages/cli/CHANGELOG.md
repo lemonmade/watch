@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.20
+
+### Patch Changes
+
+- [`a3aaa2f`](https://github.com/lemonmade/watch/commit/a3aaa2f4604feee444f5103e4c5c3a4e0b2b6f32) Thanks [@lemonmade](https://github.com/lemonmade)! - More modern extension builds
+
+- Updated dependencies [[`ff69702`](https://github.com/lemonmade/watch/commit/ff697028e1bd1fa5d6c115036ccb847166914d65)]:
+  - @watching/clips@0.2.8
+
 ## 0.4.19
 
 ### Patch Changes
