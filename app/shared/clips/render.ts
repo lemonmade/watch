@@ -36,16 +36,14 @@ import type {
 import {retain, release} from '@quilted/quilt/threads';
 import {createEmitter} from '@quilted/quilt';
 import type {Emitter} from '@quilted/quilt';
-import {signal} from '@preact/signals';
-import {createThreadSignal} from '@watching/thread-signals';
+import {
+  signal,
+  createThreadSignal,
+  type Signal,
+} from '@watching/thread-signals';
 
 import {useExtensionSandbox} from './worker';
-import type {
-  ExtensionSandbox,
-  SandboxController,
-  SandboxControllerTiming,
-  Options as BaseOptions,
-} from './worker';
+import type {SandboxController, Options as BaseOptions} from './worker';
 
 export interface Options<T extends ExtensionPoint> extends BaseOptions {
   api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version' | 'settings'>;
@@ -61,7 +59,7 @@ export type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   >;
 };
 
-export interface RenderControllerTiming extends SandboxControllerTiming {
+export interface RenderControllerTiming {
   readonly renderStart?: number;
   readonly renderEnd?: number;
 }
@@ -79,8 +77,8 @@ export interface RenderControllerEventMap {
 
 export interface RenderController<T extends ExtensionPoint> {
   readonly id: string;
-  readonly timings: RenderControllerTiming;
-  readonly sandbox: ExtensionSandbox;
+  readonly timings: Signal<RenderControllerTiming>;
+  readonly sandbox: SandboxController;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
   readonly internals: RenderControllerInternals<T>;
   readonly on: Emitter<RenderControllerEventMap>['on'];
@@ -95,7 +93,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
   settings,
   ...options
 }: Options<T>) {
-  const [sandbox, controller] = useExtensionSandbox(options);
+  const sandbox = useExtensionSandbox(options);
 
   const [receiver, setReceiver] = useState(() => createRemoteReceiver());
   const renderArgumentsRef = useRef<any[]>(undefined as any);
@@ -110,57 +108,46 @@ export function useRenderSandbox<T extends ExtensionPoint>({
   const renderController = useMemo<RenderController<ExtensionPoint>>(() => {
     let api: ApiForExtensionPoint<T>;
     let internals: RenderControllerInternals<T>;
-    let timings: {renderStart?: number; renderEnd?: number} | undefined;
+    let rendered = false;
+    let mounted = false;
+    const timings: Signal<RenderControllerTiming> = signal({});
+
     const emitter = createEmitter<RenderControllerEventMap>();
 
     const renderController: RenderController<ExtensionPoint> = {
       sandbox,
-      timings: {
-        get start() {
-          return controller.timings.start;
-        },
-        get loadStart() {
-          return controller.timings.loadStart;
-        },
-        get loadEnd() {
-          return controller.timings.loadEnd;
-        },
-        get renderStart() {
-          return timings?.renderStart;
-        },
-        get renderEnd() {
-          return timings?.renderEnd;
-        },
-      },
+      timings,
       get id() {
-        return controller.id;
+        return sandbox.id;
       },
       get state() {
-        if (timings) {
-          return timings.renderEnd ? 'rendered' : 'rendering';
+        if (rendered) {
+          return mounted ? 'rendered' : 'rendering';
         }
 
-        return controller.state;
+        return sandbox.state;
       },
       get internals() {
         return internals;
       },
       render(explicitReceiver?: RemoteReceiver) {
-        if (timings != null) return;
+        if (rendered) return;
 
-        const currentId = controller.id;
+        rendered = true;
+
+        const currentId = sandbox.id;
 
         const [extensionPoint, version, receiver, components, customApi = {}] =
           renderArgumentsRef.current;
 
-        if (controller.state === 'loaded') {
-          timings = {renderStart: Date.now()};
+        if (sandbox.state === 'loaded') {
+          timings.value = {renderStart: Date.now()};
         } else {
-          controller.on(
+          sandbox.on(
             'load',
             () => {
-              if (controller.id !== currentId) return;
-              timings = {renderStart: Date.now()};
+              if (sandbox.id !== currentId) return;
+              timings.value = {renderStart: Date.now()};
             },
             {once: true},
           );
@@ -169,8 +156,9 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         const finalReceiver: RemoteReceiver = explicitReceiver ?? receiver;
 
         finalReceiver.on('mount', () => {
-          if (timings && controller.id === currentId) {
-            timings.renderEnd = Date.now();
+          if (sandbox.id === currentId) {
+            mounted = true;
+            timings.value = {...timings.value, renderEnd: Date.now()};
             emitter.emit('render');
           }
         });
@@ -194,44 +182,48 @@ export function useRenderSandbox<T extends ExtensionPoint>({
           settings: createThreadSignal(settingsSignal),
         };
 
-        sandbox.render(
-          extensionPoint,
-          finalReceiver.receive,
-          Object.keys(components),
-          api as any,
+        sandbox.run(({render}) =>
+          render(
+            extensionPoint,
+            finalReceiver.receive,
+            Object.keys(components),
+            api as any,
+          ),
         );
       },
       restart() {
-        timings = undefined;
-        return controller.restart();
+        mounted = false;
+        rendered = false;
+        timings.value = {};
+        return sandbox.restart();
       },
       on: emitter.on,
     };
 
-    controller.on('start', () => {
+    sandbox.on('start', () => {
       emitter.emit('start');
     });
 
-    controller.on('stop', () => {
+    sandbox.on('stop', () => {
       emitter.emit('stop');
     });
 
     return renderController;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sandbox, controller, extensionPoint]);
+  }, [sandbox, extensionPoint]);
 
   useEffect(() => {
-    const initialId = controller.id;
+    const initialId = sandbox.id;
     renderController.render();
 
-    return controller.on('start', () => {
-      if (initialId === controller.id) return;
+    return sandbox.on('start', () => {
+      if (initialId === sandbox.id) return;
       const newReceiver = createRemoteReceiver();
       renderController.render(newReceiver);
       setReceiver(newReceiver);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controller, sandbox]);
+  }, [sandbox]);
 
   return [receiver, renderController] as const;
 }

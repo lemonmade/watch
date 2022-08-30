@@ -1,10 +1,9 @@
 import {useMemo, useEffect} from 'react';
-import type {Version} from '@watching/clips';
-import {createEmitter} from '@quilted/quilt';
-import type {Emitter} from '@quilted/quilt';
+import {type Version} from '@watching/clips';
+import {createEmitter, type Emitter} from '@quilted/quilt';
+import {signal, type Signal} from '@watching/thread-signals';
 
-import {createSandbox} from './sandboxes';
-import type {Sandbox} from './sandboxes';
+import {createSandbox, type Sandbox} from './sandboxes';
 
 export interface Options {
   script: string;
@@ -17,27 +16,28 @@ export interface SandboxControllerTiming {
   readonly loadEnd?: number;
 }
 
+export type ExtensionSandbox = Omit<Sandbox, 'load'>;
+
 export interface SandboxController {
   readonly id: string;
   readonly state: 'stopped' | 'loading' | 'loaded';
-  readonly timings: SandboxControllerTiming;
+  readonly timings: Signal<SandboxControllerTiming>;
   start(): Promise<void>;
   stop(): void;
   restart(): Promise<void>;
+  run<T>(runner: (sandbox: ExtensionSandbox) => T | Promise<T>): Promise<T>;
   on: Emitter<{start: void; stop: void; load: void}>['on'];
 }
-
-export type ExtensionSandbox = Omit<Sandbox, 'load'>;
 
 type Writable<T> = {-readonly [K in keyof T]: T[K]};
 
 export function useExtensionSandbox({script, version}: Options) {
-  const [sandbox, controller] = useMemo(() => {
+  const sandbox = useMemo(() => {
     let startId = 0;
     let loadPromise: Promise<void> | undefined;
     let sandbox: ReturnType<typeof createSandbox> | undefined;
-    let timings: Writable<SandboxControllerTiming> | undefined;
     let abort: AbortController;
+    const timings: Signal<Writable<SandboxControllerTiming>> = signal({});
     const emitter = createEmitter<{start: void; stop: void; load: void}>();
 
     start();
@@ -49,17 +49,7 @@ export function useExtensionSandbox({script, version}: Options) {
     };
 
     const sandboxController: SandboxController = {
-      timings: {
-        get start() {
-          return timings?.start;
-        },
-        get loadStart() {
-          return timings?.loadStart;
-        },
-        get loadEnd() {
-          return timings?.loadEnd;
-        },
-      },
+      timings,
       get id() {
         return String(startId);
       },
@@ -76,9 +66,10 @@ export function useExtensionSandbox({script, version}: Options) {
       stop,
       restart,
       on: emitter.on,
+      run: async (runner) => runner(sandboxProxy),
     };
 
-    return [sandboxProxy, sandboxController] as const;
+    return sandboxController;
 
     async function call<K extends keyof Sandbox>(
       key: K,
@@ -102,12 +93,12 @@ export function useExtensionSandbox({script, version}: Options) {
       const currentStartId = startId;
 
       abort = new AbortController();
-      timings = {start: Date.now()};
+      timings.value = {start: Date.now()};
       sandbox = createSandbox({
         signal: abort.signal,
       });
 
-      timings!.loadStart = Date.now();
+      timings.value.loadStart = Date.now();
       loadPromise = sandbox.load(script, version as Version);
       emitter.emit('start');
 
@@ -118,7 +109,7 @@ export function useExtensionSandbox({script, version}: Options) {
         emitter.emit('load');
 
         if (timings) {
-          timings.loadEnd = Date.now();
+          timings.value.loadEnd = Date.now();
         }
       }
     }
@@ -127,7 +118,7 @@ export function useExtensionSandbox({script, version}: Options) {
       abort.abort();
       sandbox = undefined;
       loadPromise = undefined;
-      timings = undefined;
+      timings.value = {};
       startId += 1;
       emitter.emit('stop');
     }
@@ -140,9 +131,9 @@ export function useExtensionSandbox({script, version}: Options) {
 
   useEffect(() => {
     return () => {
-      controller.stop();
+      sandbox.stop();
     };
-  }, [controller]);
+  }, [sandbox]);
 
-  return [sandbox, controller] as const;
+  return sandbox;
 }

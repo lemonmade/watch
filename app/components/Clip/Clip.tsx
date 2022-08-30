@@ -40,7 +40,9 @@ import type {ArrayElement, ThenType} from '~/shared/types';
 import clipsExtensionSettingsQuery, {
   type ClipExtensionSettingsQueryData,
 } from './graphql/ClipExtensionSettingsQuery.graphql';
-import updateClipsExtensionSettingsMutation from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
+import updateClipsExtensionSettingsMutation, {
+  type UpdateClipsExtensionSettingsMutationData,
+} from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
 import {type InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 import localClipQuery, {
@@ -166,12 +168,6 @@ export function Clip<T extends ExtensionPoint>({
     settings,
   });
 
-  useValueOnChange(settings, (newSettings) => {
-    sandboxController.internals.settings.update(
-      JSON.parse(newSettings ?? '{}'),
-    );
-  });
-
   return build ? (
     <LocalClipFrame
       name={name}
@@ -194,23 +190,6 @@ export function Clip<T extends ExtensionPoint>({
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-function useValueOnChange<T>(
-  value: T,
-  onChange: (value: T, lastValue: T) => void,
-) {
-  const internals = useRef<[T, typeof onChange]>([value, onChange]);
-  internals.current[1] = onChange;
-
-  useEffect(() => {
-    const [lastValue, onChange] = internals.current;
-
-    if (lastValue !== value) {
-      internals.current[0] = value;
-      onChange(value, lastValue);
-    }
-  }, [value]);
-}
-
 interface InstalledClipFrameProps<T extends ExtensionPoint>
   extends Omit<
     ClipFrameProps<T>,
@@ -232,7 +211,9 @@ function InstalledClipFrame<T extends ExtensionPoint>({
     <ClipFrame
       {...rest}
       controller={controller}
-      renderPopoverContent={() => <InstalledClipSettings id={id} />}
+      renderPopoverContent={() => (
+        <InstalledClipSettings id={id} controller={controller} />
+      )}
       renderPopoverActions={() => (
         <>
           <Button onPress={() => alert('App page not implemented yet!')}>
@@ -255,7 +236,13 @@ function InstalledClipFrame<T extends ExtensionPoint>({
   );
 }
 
-function InstalledClipSettings({id}: {id: string}) {
+function InstalledClipSettings({
+  id,
+  controller,
+}: {
+  id: string;
+  controller: RenderController<any>;
+}) {
   const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
     variables: {id},
   });
@@ -281,7 +268,15 @@ function InstalledClipSettings({id}: {id: string}) {
       settings={settings}
       translations={translations}
       schema={schema}
-      onUpdate={refetch}
+      onUpdate={(data) => {
+        refetch();
+        controller.internals.settings.update(
+          JSON.parse(
+            data.updateClipsExtensionInstallation.installation?.settings ??
+              '{}',
+          ),
+        );
+      }}
     />
   );
 }
@@ -298,7 +293,7 @@ function InstalledClipLoadedSettings({
 > &
   Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'id' | 'settings'> & {
     schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
-    onUpdate(): void;
+    onUpdate(data: UpdateClipsExtensionSettingsMutationData): void;
   }) {
   const updateClipsExtensionSettings = useMutation(
     updateClipsExtensionSettingsMutation,
@@ -541,16 +536,19 @@ interface ClipTimingsProps<T extends ExtensionPoint> {
 function ClipTimings<T extends ExtensionPoint>({
   controller,
 }: ClipTimingsProps<T>) {
-  const timings = useTimings(controller);
+  const sandboxTimings = controller.sandbox.timings.value;
+  const timings = controller.timings.value;
   const scripts = useSandboxScripts(controller);
 
   return (
     <View>
-      {timings.start ? (
+      {sandboxTimings.start ? (
         <TextBlock>
-          sandbox started: {new Date(timings.start).toLocaleTimeString()}
-          {timings.loadEnd
-            ? ` (finished in ${timings.loadEnd - timings.start}ms)`
+          sandbox started: {new Date(sandboxTimings.start).toLocaleTimeString()}
+          {sandboxTimings.loadEnd
+            ? ` (finished in ${
+                sandboxTimings.loadEnd - sandboxTimings.start
+              }ms)`
             : null}
         </TextBlock>
       ) : null}
@@ -644,7 +642,9 @@ function useSandboxScripts(controller: RenderController<any>) {
     async function loadScripts() {
       const startIndex = activeIndex;
 
-      const entries = await controller.sandbox.getResourceTimingEntries();
+      const entries = await controller.sandbox.run(
+        ({getResourceTimingEntries}) => getResourceTimingEntries(),
+      );
 
       if (startIndex !== activeIndex) return;
 
@@ -653,43 +653,4 @@ function useSandboxScripts(controller: RenderController<any>) {
   }, [controller]);
 
   return scripts;
-}
-
-function useTimings(controller: RenderController<any>) {
-  const [state, setState] = useState<{
-    id: RenderController<any>['id'];
-    timings: RenderController<any>['timings'];
-    controller: RenderController<any>;
-  }>(() => ({
-    id: controller.id,
-    timings: {...controller.timings},
-    controller,
-  }));
-
-  let timings = state.timings;
-
-  if (state.controller !== controller) {
-    timings = {...controller.timings};
-    setState({controller, timings, id: controller.id});
-  }
-
-  useEffect(() => {
-    const checkForUpdates = () => {
-      setState((currentState) => {
-        if (currentState.id === controller.id) return currentState;
-
-        return {
-          controller,
-          id: controller.id,
-          timings: {...controller.timings},
-        };
-      });
-    };
-
-    checkForUpdates();
-
-    return controller.on('render', () => checkForUpdates());
-  }, [controller]);
-
-  return timings;
 }
