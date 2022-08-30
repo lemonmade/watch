@@ -86,7 +86,7 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
     ui.TextBlock(
       `We’ve started a development server at ${ui.Link(
         localUrl,
-      )}. You can press one of these keys to see preview your work:`,
+      )}. You can press one of these keys to preview your work:`,
     );
 
     ui.List((list) => {
