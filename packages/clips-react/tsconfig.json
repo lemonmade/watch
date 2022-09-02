@@ -11,6 +11,7 @@
   "references": [
     {"path": "../clips"},
     {"path": "../remote-react-utilities"},
+    {"path": "../react-signals"},
     {"path": "../thread-signals"}
   ]
 }

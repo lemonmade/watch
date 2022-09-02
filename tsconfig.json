@@ -28,6 +28,7 @@
     {"path": "./packages/clips-react"},
     {"path": "./packages/css"},
     {"path": "./packages/graphql"},
+    {"path": "./packages/react-signals"},
     {"path": "./packages/remote-react"},
     {"path": "./packages/remote-react-utilities"},
     {"path": "./packages/thread-signals"},

@@ -253,6 +253,7 @@ importers:
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
       '@watching/clips': workspace:^0.2.8
+      '@watching/react-signals': workspace:^0.1.0
       '@watching/remote-react-utilities': workspace:^0.1.1
       '@watching/thread-signals': workspace:^0.1.1
     dependencies:
@@ -260,6 +261,7 @@ importers:
       '@remote-ui/core': 2.1.12
       '@types/react': 17.0.45
       '@watching/clips': link:../clips
+      '@watching/react-signals': link:../react-signals
       '@watching/remote-react-utilities': link:../remote-react-utilities
       '@watching/thread-signals': link:../thread-signals
 
@@ -271,6 +273,19 @@ importers:
       graphql: ^16.4.0
     dependencies:
       graphql: 16.4.0
+
+  packages/react-signals:
+    specifiers:
+      '@preact/signals-core': ^0.0.4
+      '@quilted/testing': ^0.1.0
+      '@types/react': ^17.0.0
+      react: npm:@quilted/react@^17.0.0
+    dependencies:
+      '@types/react': 17.0.48
+    devDependencies:
+      '@preact/signals-core': 0.0.4
+      '@quilted/testing': 0.1.4
+      react: /@quilted/react/17.0.5
 
   packages/remote-react:
     specifiers:
@@ -302,7 +317,7 @@ importers:
 
   packages/thread-signals:
     specifiers:
-      '@preact/signals-core': 0.0.4
+      '@preact/signals-core': ^0.0.4
       '@quilted/testing': ^0.1.0
       '@quilted/threads': ^0.1.0
     dependencies:

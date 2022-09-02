@@ -1,20 +1,20 @@
 {
-  "name": "@watching/thread-signals",
-  "description": "Transfer Preact threads over a thread",
+  "name": "@watching/react-signals",
+  "description": "<YOUR DESCRIPTION HERE>",
   "type": "module",
   "license": "MIT",
   "publishConfig": {
     "access": "public",
     "@watching/registry": "https://registry.npmjs.org"
   },
-  "version": "0.1.1",
+  "version": "0.1.0",
   "engines": {
     "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/lemonmade/watch",
-    "directory": "packages/thread-signals"
+    "directory": "packages/react-signals"
   },
   "exports": {
     ".": {
@@ -28,24 +28,33 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@preact/signals-core": "^0.0.4",
-    "@quilted/threads": "^0.1.0"
+    "@types/react": "^17.0.0"
   },
   "peerDependencies": {
-    "@babel/runtime": ">=7.0.0 <8.0.0"
+    "@babel/runtime": ">=7.0.0 <8.0.0",
+    "@preact/signals-core": "^0.0.4",
+    "react": "^17.0.0"
   },
   "peerDependenciesMeta": {
     "@babel/runtime": {
       "optional": true
+    },
+    "@preact/signals-core": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
     }
   },
   "devDependencies": {
+    "@preact/signals-core": "^0.0.4",
     "@quilted/testing": "^0.1.0",
-    "@quilted/threads": "^0.1.0"
+    "react": "npm:@quilted/react@^17.0.0"
   },
   "eslintConfig": {
     "extends": [
-      "@quilted/eslint-config/project"
+      "@quilted/eslint-config/project",
+      "@quilted/eslint-config/react"
     ]
   },
   "browserslist": [
