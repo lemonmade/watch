@@ -2,7 +2,7 @@ import {useState} from 'react';
 import type {ReactNode} from 'react';
 import {BlockStack, TextBlock, Button, Banner, Text, Layout} from '@lemon/zest';
 
-import {Page} from '~/components';
+import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
 
 import accessTokensQuery from './graphql/AccessTokensQuery.graphql';

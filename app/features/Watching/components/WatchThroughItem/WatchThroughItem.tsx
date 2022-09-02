@@ -1,7 +1,6 @@
 import {classes} from '@lemon/css';
 import {Poster} from '@lemon/zest';
-
-import {Link} from '~/components';
+import {Link} from '@quilted/quilt';
 
 import styles from './WatchThroughItem.module.css';
 

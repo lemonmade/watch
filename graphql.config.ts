@@ -12,7 +12,7 @@ const config: Configuration = {
         'packages/cli/source/utilities/authentication/**/*.graphql',
       ],
       exclude: [
-        'app/components/Clip/graphql/LocalClipQuery.graphql',
+        'app/shared/clips/Clip/graphql/LocalClipQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
         'app/server/**/*.graphql',
@@ -32,7 +32,7 @@ const config: Configuration = {
     cli: {
       schema: 'packages/cli/source/commands/develop/schema.graphql',
       documents: [
-        'app/components/Clip/graphql/LocalClipQuery.graphql',
+        'app/shared/clips/Clip/graphql/LocalClipQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
         'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       ],

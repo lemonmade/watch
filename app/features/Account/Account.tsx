@@ -12,12 +12,14 @@ import {
   Banner,
 } from '@lemon/zest';
 
-import {Page, SpoilerAvoidance} from '~/components';
+import {SpoilerAvoidance} from '~/shared/spoilers';
+import {Page} from '~/shared/page';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
 import {useQuery, useMutation} from '~/shared/graphql';
 
-import accountQuery from './graphql/AccountQuery.graphql';
-import type {AccountQueryData} from './graphql/AccountQuery.graphql';
+import accountQuery, {
+  type AccountQueryData,
+} from './graphql/AccountQuery.graphql';
 import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';

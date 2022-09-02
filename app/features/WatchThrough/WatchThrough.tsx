@@ -19,7 +19,8 @@ import {
   Section,
 } from '@lemon/zest';
 
-import {Page, SpoilerAvoidance} from '~/components';
+import {Page} from '~/shared/page';
+import {SpoilerAvoidance} from '~/shared/spoilers';
 import {useQuery, useMutation} from '~/shared/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';

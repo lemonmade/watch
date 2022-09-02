@@ -2,7 +2,7 @@ import {useEffect} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {View} from '@lemon/zest';
-import {usePageDelegate} from '~/shared/page';
+import {usePageDelegate} from '../delegate';
 
 interface Props {
   heading: ReactNode;

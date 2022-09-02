@@ -12,11 +12,16 @@ import {
   Icon,
 } from '@lemon/zest';
 
-import {LocalClip, InstalledClip, Page, SpoilerAvoidance} from '~/components';
-import type {ClipProps} from '~/components';
+import {Page} from '~/shared/page';
+import {SpoilerAvoidance} from '~/shared/spoilers';
 
 import {parseGid, useQuery, useMutation} from '~/shared/graphql';
-import {useLocalDevelopmentClips} from '~/shared/clips';
+import {
+  useLocalDevelopmentClips,
+  LocalClip,
+  InstalledClip,
+  type ClipProps,
+} from '~/shared/clips';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';

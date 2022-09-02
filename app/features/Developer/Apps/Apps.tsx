@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 
 import {Text, InlineStack, View, Button, TextBlock} from '@lemon/zest';
 
-import {Page} from '~/components';
+import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
 
 import myAppsQuery from './graphql/MyAppsQuery.graphql';

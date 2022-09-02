@@ -1,6 +1,7 @@
 import {MediaGrid, Poster} from '@lemon/zest';
+import {Link} from '@quilted/quilt';
 
-import {Link, Page} from '~/components';
+import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';

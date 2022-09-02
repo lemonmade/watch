@@ -4,7 +4,6 @@
     "outDir": "build/typescript",
     "lib": ["ESNext", "DOM"],
     "paths": {
-      "~/components": ["./components"],
       "~/graphql/*": ["./graphql/*"],
       "~/shared/*": ["./shared/*"],
       "~/global/*": ["../global/*"]

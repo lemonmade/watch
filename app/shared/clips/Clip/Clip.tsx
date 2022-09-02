@@ -29,13 +29,14 @@ import type {
   JSON as GraphQlJSON,
 } from '~/graphql/types';
 import {useQuery, useMutation} from '~/shared/graphql';
-import {useRenderSandbox, useLocalDevelopmentServerQuery} from '~/shared/clips';
-import type {
-  RenderController,
-  ExtensionSandbox,
-  LocalExtension,
-} from '~/shared/clips';
 import type {ArrayElement, ThenType} from '~/shared/types';
+
+import {type Sandbox as ExtensionSandbox} from '../sandboxes';
+import {useRenderSandbox, type RenderController} from '../render';
+import {
+  useLocalDevelopmentServerQuery,
+  type LocalExtension,
+} from '../local-development';
 
 import clipsExtensionSettingsQuery, {
   type ClipExtensionSettingsQueryData,

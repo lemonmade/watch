@@ -1,7 +1,7 @@
 import {Link} from '@quilted/quilt';
 import {MediaGrid, Poster} from '@lemon/zest';
 
-import {Page} from '~/components';
+import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';

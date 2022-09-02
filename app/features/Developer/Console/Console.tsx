@@ -14,7 +14,7 @@ import {
   Icon,
 } from '@lemon/zest';
 
-import {Page} from '~/components';
+import {Page} from '~/shared/page';
 import {
   useLocalDevelopmentServer,
   useLocalDevelopmentServerQuery,
