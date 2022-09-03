@@ -1,11 +1,12 @@
 import type {PropsWithChildren} from 'react';
+import {classes} from '@lemon/css';
+
 import {
-  View,
   toHeadingLevel,
   AutoHeadingContext,
   useAutoHeadingLevel,
-} from '@lemon/basics';
-import {classes} from '@lemon/css';
+} from '../../utilities/headings';
+import {View} from '../View';
 
 import styles from './Banner.module.css';
 

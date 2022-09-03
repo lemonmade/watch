@@ -63,10 +63,6 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                     <Link
                       to={preview.url}
                       key={target}
-                      padding="small"
-                      border="base"
-                      cornerRadius={4}
-                      background="#222"
                       accessory={<Icon source="arrowEnd" />}
                     >
                       <BlockStack spacing="tiny">

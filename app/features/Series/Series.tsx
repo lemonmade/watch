@@ -188,10 +188,6 @@ function SeriesWithData({
                 <Link
                   key={watchThrough.id}
                   to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                  border="base"
-                  padding="base"
-                  cornerRadius={4}
-                  background="#222"
                   accessory={<Icon source="arrowEnd" />}
                 >
                   <BlockStack spacing="tiny">

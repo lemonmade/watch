@@ -1,18 +1,18 @@
 .Button {
   appearance: none;
   border: none;
-  background: var(--x-action-background);
+  background: var(--z-action-background);
   transition: background 0.2s ease;
   font-size: 1rem;
   color: var(--zest-color-text);
   height: var(--zest-action-size);
-  padding: 0 var(--zest-spacing-mini);
-  border-radius: var(--x-corner-radius-base);
+  padding: 0 var(--z-spacing-base);
+  border-radius: var(--z-corner-radius-base);
   overflow: hidden;
 }
 
 .Button:hover {
-  background: var(--x-action-hovered-background);
+  background: var(--z-action-hovered-background);
 }
 
 .Button:focus {
@@ -20,11 +20,11 @@
 }
 
 .Button:focus-visible {
-  background: var(--x-action-focused-background);
+  background: var(--z-action-focused-background);
 }
 
 .Button:active {
-  background: var(--x-action-pressed-background);
+  background: var(--z-action-pressed-background);
 }
 
 .primary {
@@ -38,7 +38,7 @@
 }
 
 .blockSizeFill {
-  --z-Pressable-display: var(--x-implicit-display-none, block);
+  --z-Pressable-display: var(--z-implicit-display-none, block);
   inline-size: 100%;
 }
 

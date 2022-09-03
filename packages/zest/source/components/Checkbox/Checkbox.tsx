@@ -1,5 +1,5 @@
 import type {PropsWithChildren} from 'react';
-import {useUniqueId} from '@lemon/basics';
+import {useUniqueId} from '../../utilities/id';
 
 export interface Props {
   id?: string;

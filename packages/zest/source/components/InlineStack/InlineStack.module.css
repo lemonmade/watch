@@ -1,0 +1,27 @@
+.InlineStack {
+  gap: var(--z-spacing-base);
+  justify-content: start;
+  grid-auto-flow: column;
+  align-items: center;
+  align-content: center;
+}
+
+.spacingNone {
+  gap: 0;
+}
+
+.spacingTiny {
+  gap: var(--z-spacing-tiny);
+}
+
+.spacingSmall {
+  gap: var(--z-spacing-small);
+}
+
+.spacingLarge {
+  gap: var(--z-spacing-large);
+}
+
+.spacingHuge {
+  gap: var(--z-spacing-huge);
+}

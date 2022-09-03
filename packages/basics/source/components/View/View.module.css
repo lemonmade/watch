@@ -1,5 +1,0 @@
-.cornerRadiusConcentric {
-  border-radius: calc(
-    var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
-  );
-}
