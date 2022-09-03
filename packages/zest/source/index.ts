@@ -5,6 +5,7 @@ export {
   Canvas,
   Form,
   Heading,
+  Divider,
   Image,
   InlineStack,
   Item,

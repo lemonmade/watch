@@ -9,3 +9,7 @@ export const AutoHeadingContext = createContext<HeadingLevel | undefined>(
 export function useAutoHeadingLevel() {
   return useContext(AutoHeadingContext);
 }
+
+export function toHeadingLevel(level: number) {
+  return Math.min(Math.max(level, 1), 6) as HeadingLevel;
+}

@@ -1,0 +1,24 @@
+.Banner {
+  --x-surface-background-base: rgb(40 50 86);
+  --x-surface-background-subdued: var(--x-surface-background-base);
+  --x-surface-background-emphasized: var(--x-surface-background-base);
+
+  --x-border-base-color: rgb(94 119 206);
+  --x-border-subdued-color: var(--x-border-base-color);
+  --x-border-emphasized-color: var(--x-border-base-color);
+
+  --x-action-background: rgb(73 87 133);
+  --x-action-hovered-background: rgb(82 99 155);
+  --x-action-focused-background: rgb(82 99 155);
+  --x-action-pressed-background: rgb(97 119 194);
+}
+
+.error {
+  --x-surface-background-base: rgb(105, 10, 10);
+  --x-border-base-color: rgb(208 33 33);
+
+  --x-action-background: rgb(150 58 59);
+  --x-action-hovered-background: rgb(185 60 61);
+  --x-action-focused-background: rgb(185 60 61);
+  --x-action-pressed-background: rgb(212 44 45);
+}

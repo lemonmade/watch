@@ -17,14 +17,16 @@ import type {
 import styles from './InlineStack.module.css';
 
 interface Props extends SystemProps {
-  spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;
+  spacing?: boolean | SpacingKeyword | KeywordValue<SpacingKeyword>;
 }
 
 const SPACING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('none'), styles.spacingNone],
+  [Keyword<SpacingKeyword>('tiny'), styles.spacingTiny],
   [Keyword<SpacingKeyword>('small'), styles.spacingSmall],
   [Keyword<SpacingKeyword>('base'), false],
   [Keyword<SpacingKeyword>('large'), styles.spacingLarge],
+  [Keyword<SpacingKeyword>('huge'), styles.spacingHuge],
 ] as [string, string | false][]);
 
 export function InlineStack({
@@ -38,7 +40,9 @@ export function InlineStack({
   if (spacing != null) {
     let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;
 
-    if (typeof spacing === 'number') {
+    if (typeof spacing === 'boolean') {
+      normalizedSpacing = Keyword(spacing ? 'base' : 'none');
+    } else if (typeof spacing === 'number') {
       normalizedSpacing = Pixels(spacing);
     } else if (spacing.startsWith('@')) {
       normalizedSpacing = spacing as any;

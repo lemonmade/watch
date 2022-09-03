@@ -36,7 +36,9 @@ export type SpacingKeyword =
   | 'base'
   | 'large'
   | 'huge';
-export type BorderKeyword = 'none' | 'base' | 'subdued';
+export type BorderKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
+export type CornerRadiusKeyword = 'none' | 'base' | 'concentric';
+export type BackgroundKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
 
 export interface Position {
   type: 'relative' | 'absolute';
@@ -45,15 +47,35 @@ export interface Position {
 }
 
 export interface SystemProps {
-  padding?: number | SpacingKeyword | PixelValue | KeywordValue<SpacingKeyword>;
+  padding?:
+    | boolean
+    | number
+    | SpacingKeyword
+    | PixelValue
+    | KeywordValue<SpacingKeyword>;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
 
   position?: Position | Position['type'];
   border?: boolean | BorderKeyword | KeywordValue<BorderKeyword>;
-  background?: string;
-  cornerRadius?: number | 'concentric';
+  background?:
+    | boolean
+    | BackgroundKeyword
+    | KeywordValue<BackgroundKeyword>
+    | string;
+  cornerRadius?:
+    | number
+    | boolean
+    | CornerRadiusKeyword
+    | KeywordValue<CornerRadiusKeyword>;
 }
+
+const BACKGROUND_CLASS_MAP = new Map<string, string | false>([
+  [Keyword<BackgroundKeyword>('none'), false],
+  [Keyword<BackgroundKeyword>('subdued'), systemStyles.backgroundSubdued],
+  [Keyword<BackgroundKeyword>('base'), systemStyles.backgroundBase],
+  [Keyword<BackgroundKeyword>('emphasized'), systemStyles.backgroundEmphasized],
+] as [string, string | false][]);
 
 const PADDING_CLASS_MAP = new Map<string, string | false>([
   [Keyword<SpacingKeyword>('none'), false],
@@ -66,6 +88,16 @@ const BORDER_CLASS_MAP = new Map<string, string | false>([
   [Keyword<BorderKeyword>('none'), false],
   [Keyword<BorderKeyword>('subdued'), systemStyles.borderSubdued],
   [Keyword<BorderKeyword>('base'), systemStyles.borderBase],
+  [Keyword<BorderKeyword>('emphasized'), systemStyles.borderEmphasized],
+] as [string, string | false][]);
+
+const CORNER_RADIUS_CLASS_MAP = new Map<string, string | false>([
+  [Keyword<CornerRadiusKeyword>('none'), false],
+  [Keyword<CornerRadiusKeyword>('base'), systemStyles.cornerRadiusBase],
+  [
+    Keyword<CornerRadiusKeyword>('concentric'),
+    systemStyles.cornerRadiusConcentric,
+  ],
 ] as [string, string | false][]);
 
 interface SystemDomProps {
@@ -130,10 +162,12 @@ export function useDomProps({
     );
   }
 
-  if (padding != null) {
+  if (padding) {
     let normalizedPadding: PixelValue | KeywordValue<SpacingKeyword>;
 
-    if (typeof padding === 'number') {
+    if (typeof padding === 'boolean') {
+      normalizedPadding = Keyword<SpacingKeyword>('base');
+    } else if (typeof padding === 'number') {
       normalizedPadding = Pixels(padding);
     } else if (Keyword.test(padding) || Pixels.test(padding)) {
       normalizedPadding = padding;
@@ -172,7 +206,51 @@ export function useDomProps({
     if (systemClassName) addClassName(systemClassName);
   }
 
-  addStyles({backgroundColor: background});
+  if (background) {
+    let normalizedBackground: KeywordValue<BackgroundKeyword>;
+
+    if (typeof background === 'boolean') {
+      normalizedBackground = Keyword('base');
+    } else if (Keyword.test(background)) {
+      normalizedBackground = background as any;
+    } else {
+      normalizedBackground = Keyword(background) as any;
+    }
+
+    const systemClassName = BACKGROUND_CLASS_MAP.get(normalizedBackground);
+
+    if (systemClassName) {
+      addClassName(systemClassName);
+    } else {
+      addStyles({backgroundColor: background});
+    }
+  }
+
+  if (typeof cornerRadius === 'number') {
+    const radius = relativeSize(cornerRadius);
+    addStyles({
+      '--z-container-corner-radius': radius,
+      borderRadius: radius,
+    });
+  } else if (cornerRadius) {
+    let normalizedCornerRadius: KeywordValue<BackgroundKeyword>;
+
+    if (typeof cornerRadius === 'boolean') {
+      normalizedCornerRadius = Keyword('base');
+    } else if (Keyword.test(cornerRadius)) {
+      normalizedCornerRadius = cornerRadius as any;
+    } else {
+      normalizedCornerRadius = Keyword(cornerRadius) as any;
+    }
+
+    const systemClassName = CORNER_RADIUS_CLASS_MAP.get(normalizedCornerRadius);
+
+    if (systemClassName) {
+      addClassName(systemClassName);
+    } else {
+      addStyles({borderRadius: cornerRadius});
+    }
+  }
 
   // concentric border radius is handled with a class
   if (typeof cornerRadius === 'number') {

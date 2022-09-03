@@ -10,3 +10,9 @@ export {
   ariaForAction,
 } from './utilities/actions';
 export {useContainingForm} from './utilities/forms';
+export {
+  AutoHeadingContext,
+  useAutoHeadingLevel,
+  toHeadingLevel,
+  type HeadingLevel,
+} from './utilities/headings';

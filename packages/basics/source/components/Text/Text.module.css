@@ -10,5 +10,6 @@
 }
 
 .subdued {
-  opacity: 0.6;
+  color: var(--x-text-subdued-color);
+  font-weight: var(--x-text-subdued-weight);
 }

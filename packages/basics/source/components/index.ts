@@ -36,3 +36,4 @@ export {List, Item} from './List';
 export {Menu} from './Menu';
 export {Popover, PopoverSheet} from './Popover';
 export {Sticky} from './Sticky';
+export {Divider} from './Divider';

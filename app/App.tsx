@@ -36,6 +36,7 @@ import {
   AuthenticateCli,
   Console,
 } from './features/Developer';
+import {ComponentLibrary} from './features/Internal';
 
 const fetch = createGraphQLHttpFetch({
   credentials: 'include',
@@ -145,6 +146,10 @@ export function Routes() {
               ],
             },
           ],
+        },
+        {
+          match: 'internal',
+          children: [{match: 'components', render: () => <ComponentLibrary />}],
         },
       ],
       [],

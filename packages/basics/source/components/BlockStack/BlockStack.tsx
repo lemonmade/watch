@@ -20,7 +20,7 @@ import styles from './BlockStack.module.css';
 export type AlignKeyword = 'start' | 'end' | 'center' | 'stretch';
 
 interface Props extends SystemProps {
-  spacing?: SpacingKeyword | KeywordValue<SpacingKeyword>;
+  spacing?: boolean | SpacingKeyword | KeywordValue<SpacingKeyword>;
   align?: AlignKeyword | KeywordValue<AlignKeyword>;
 }
 
@@ -53,7 +53,9 @@ export function BlockStack({
   if (spacing != null) {
     let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;
 
-    if (typeof spacing === 'number') {
+    if (typeof spacing === 'boolean') {
+      normalizedSpacing = Keyword(spacing ? 'base' : 'none');
+    } else if (typeof spacing === 'number') {
       normalizedSpacing = Pixels(spacing);
     } else if (spacing.startsWith('@')) {
       normalizedSpacing = spacing as any;

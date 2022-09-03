@@ -1,0 +1,27 @@
+.Divider {
+  /* width: 100%; */
+  align-self: stretch;
+  margin: 0;
+  border: none;
+  box-sizing: margin-box;
+  border-block-end-width: var(--x-border-base-size);
+  border-block-end-color: var(--x-border-base-color);
+  border-block-end-style: var(--x-border-base-style);
+}
+
+.subdued {
+  border-block-end-width: var(--x-border-subdued-size);
+  border-block-end-color: var(--x-border-subdued-color);
+  border-block-end-style: var(--x-border-subdued-style);
+}
+
+.emphasized {
+  border-block-end-width: var(--x-border-emphasized-size);
+  border-block-end-color: var(--x-border-emphasized-color);
+  border-block-end-style: var(--x-border-emphasized-style);
+}
+
+.paddingBase {
+  margin-inline-start: var(--x-spacing-base);
+  margin-inline-end: var(--x-spacing-base);
+}

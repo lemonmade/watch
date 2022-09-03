@@ -4,18 +4,41 @@
   --x-spacing-base: 1rem;
   --x-spacing-large: 1.5rem;
   --x-spacing-huge: 2rem;
+
+  --x-border-base-color: gray;
+  --x-border-base-size: 1px;
+  --x-border-base-style: solid;
+  --x-border-subdued-color: lightgray;
+  --x-border-subdued-size: 1px;
+  --x-border-subdued-style: solid;
+  --x-border-emphasized-color: white;
+  --x-border-emphasized-size: 1px;
+  --x-border-emphasized-style: solid;
+
+  --x-corner-radius-base: 6px;
+
+  --x-surface-background-base: rgb(0 0 0);
+  --x-surface-background-subdued: rgb(0 0 0);
+  --x-surface-background-emphasized: rgb(0 0 0);
+
+  --x-text-base-color: white;
+  --x-text-base-weight: 400;
+  --x-text-subdued-color: white;
+  --x-text-subdued-weight: 400;
+
+  --x-action-background: black;
+  --x-action-hovered-background: rgb(30 30 30);
+  --x-action-focused-background: rgb(30 30 30);
+  --x-action-pressed-background: rgb(50 50 50);
 }
 
 .View {
-  --View-padding: 0;
-  --View-border: none;
   --View-default-display: block;
 
   display: var(
     --x-implicit-display-none,
     var(--x-implicit-display-block, var(--View-default-display))
   );
-  padding: var(--View-padding);
 }
 
 :where(.View) > * {
@@ -30,23 +53,23 @@
 }
 
 .paddingTiny {
-  --View-padding: var(--x-spacing-tiny);
+  padding: var(--x-spacing-tiny);
 }
 
 .paddingSmall {
-  --View-padding: var(--x-spacing-small);
+  padding: var(--x-spacing-small);
 }
 
 .paddingBase {
-  --View-padding: var(--x-spacing-base);
+  padding: var(--x-spacing-base);
 }
 
 .paddingLarge {
-  --View-padding: var(--x-spacing-large);
+  padding: var(--x-spacing-large);
 }
 
 .paddingHuge {
-  --View-padding: var(--x-spacing-huge);
+  padding: var(--x-spacing-huge);
 }
 
 .displayGrid {
@@ -84,6 +107,10 @@
   border: 0 !important;
 }
 
+.cornerRadiusBase {
+  border-radius: var(--x-corner-radius-base);
+}
+
 .cornerRadiusConcentric {
   border-radius: calc(
     var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
@@ -91,9 +118,31 @@
 }
 
 .borderBase {
-  border: 1px solid #555;
+  border-width: var(--x-border-base-size);
+  border-color: var(--x-border-base-color);
+  border-style: var(--x-border-base-style);
 }
 
 .borderSubdued {
-  border: 1px solid #333;
+  border-width: var(--x-border-subdued-size);
+  border-color: var(--x-border-subdued-color);
+  border-style: var(--x-border-subdued-style);
+}
+
+.borderEmphasized {
+  border-width: var(--x-border-emphasized-size);
+  border-color: var(--x-border-emphasized-color);
+  border-style: var(--x-border-emphasized-style);
+}
+
+.backgroundBase {
+  background-color: var(--x-surface-background-base);
+}
+
+.backgroundSubdued {
+  background-color: var(--x-surface-background-subdued);
+}
+
+.backgroundEmphasized {
+  background-color: var(--x-surface-background-emphasized);
 }
