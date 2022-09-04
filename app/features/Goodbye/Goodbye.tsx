@@ -1,10 +1,10 @@
-import {TextBlock, View, Action} from '@lemon/zest';
+import {TextBlock, BlockStack, Action} from '@lemon/zest';
 
 export function Goodbye() {
   return (
-    <View padding={16}>
+    <BlockStack padding spacing>
       <TextBlock>Until we meet again!</TextBlock>
       <Action to="/">Go home</Action>
-    </View>
+    </BlockStack>
   );
 }

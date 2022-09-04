@@ -45,8 +45,5 @@
 }
 
 .hasAccessory.blockSizeFill {
-  display: var(
-    --x-implicit-display-none,
-    var(--x-implicit-display-grid, grid)
-  );
+  display: var(--x-implicit-display-none, var(--x-implicit-display-grid, grid));
 }

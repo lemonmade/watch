@@ -23,10 +23,7 @@
 }
 
 .blockSizeFill {
-  display: var(
-    --x-implicit-display-none,
-    var(--x-implicit-display-flex, flex)
-  );
+  display: var(--x-implicit-display-none, var(--x-implicit-display-flex, flex));
   inline-size: 100%;
 }
 
