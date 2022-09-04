@@ -1,5 +1,4 @@
-import {Link} from '@quilted/quilt';
-import {MediaGrid, Poster} from '@lemon/zest';
+import {MediaGrid, Poster, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
@@ -16,13 +15,13 @@ export function WatchLater() {
       <MediaGrid>
         {watchLater?.items.map(({id, media}) =>
           media.__typename === 'Series' ? (
-            <Link key={id} to={`/app/series/${media.handle}`}>
+            <Action key={id} to={`/app/series/${media.handle}`}>
               {media.poster && (
                 <Poster
                   source={media.poster.source.replace('/original/', '/w342/')}
                 />
               )}
-            </Link>
+            </Action>
           ) : null,
         )}
       </MediaGrid>

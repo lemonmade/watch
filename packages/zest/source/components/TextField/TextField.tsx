@@ -1,10 +1,10 @@
 import type {ComponentProps} from 'react';
-import {
-  TextField as TextFieldInput,
-  Label,
-  BlockStack,
-  useUniqueId,
-} from '@lemon/basics';
+import {useUniqueId} from '../../utilities/id';
+
+import {Label} from '../Label';
+import {BlockStack} from '../BlockStack';
+
+import {TextField as TextFieldInput} from './Input';
 
 interface Props extends ComponentProps<typeof TextFieldInput> {
   label?: string;

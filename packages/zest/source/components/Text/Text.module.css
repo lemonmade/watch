@@ -1,0 +1,15 @@
+.Text {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.code {
+  font-family: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+}
+
+.subdued {
+  color: var(--z-text-subdued-color);
+  font-weight: var(--z-text-subdued-weight);
+}

@@ -1,0 +1,24 @@
+.Banner {
+  --z-surface-background-base: rgb(40 50 86);
+  --z-surface-background-subdued: var(--z-surface-background-base);
+  --z-surface-background-emphasized: var(--z-surface-background-base);
+
+  --z-border-base-color: rgb(94 119 206);
+  --z-border-subdued-color: var(--z-border-base-color);
+  --z-border-emphasized-color: var(--z-border-base-color);
+
+  --z-action-background: rgb(73 87 133);
+  --z-action-hovered-background: rgb(82 99 155);
+  --z-action-focused-background: rgb(82 99 155);
+  --z-action-pressed-background: rgb(97 119 194);
+}
+
+.error {
+  --z-surface-background-base: rgb(105, 10, 10);
+  --z-border-base-color: rgb(208 33 33);
+
+  --z-action-background: rgb(150 58 59);
+  --z-action-hovered-background: rgb(185 60 61);
+  --z-action-focused-background: rgb(185 60 61);
+  --z-action-pressed-background: rgb(212 44 45);
+}

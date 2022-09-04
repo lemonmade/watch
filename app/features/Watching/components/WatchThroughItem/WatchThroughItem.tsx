@@ -1,6 +1,5 @@
 import {classes} from '@lemon/css';
-import {Poster} from '@lemon/zest';
-import {Link} from '@quilted/quilt';
+import {Poster, Pressable} from '@lemon/zest';
 
 import styles from './WatchThroughItem.module.css';
 
@@ -30,8 +29,9 @@ export function WatchThroughItem({
   unfinishedEpisodeCount = 0,
 }: Props) {
   return (
-    <Link
+    <Pressable
       to={to}
+      alignContent="start"
       className={classes(
         styles.WatchThrough,
         unfinishedEpisodeCount > 1 && styles.hasFootnotes,
@@ -69,6 +69,6 @@ export function WatchThroughItem({
           </span>
         </div>
       )}
-    </Link>
+    </Pressable>
   );
 }

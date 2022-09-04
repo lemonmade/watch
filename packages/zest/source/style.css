@@ -1,0 +1,38 @@
+:root {
+  --z-spacing-tiny: 0.25rem;
+  --z-spacing-small: 0.5rem;
+  --z-spacing-base: 1rem;
+  --z-spacing-large: 1.5rem;
+  --z-spacing-huge: 2rem;
+
+  --z-border-base-color: gray;
+  --z-border-base-size: 1px;
+  --z-border-base-style: solid;
+  --z-border-subdued-color: lightgray;
+  --z-border-subdued-size: 1px;
+  --z-border-subdued-style: solid;
+  --z-border-emphasized-color: white;
+  --z-border-emphasized-size: 1px;
+  --z-border-emphasized-style: solid;
+
+  --z-corner-radius-base: 6px;
+
+  --z-surface-background-base: rgb(0 0 0);
+  --z-surface-background-subdued: rgb(0 0 0);
+  --z-surface-background-emphasized: rgb(0 0 0);
+
+  --z-text-base-color: white;
+  --z-text-base-weight: 400;
+  --z-text-subdued-color: gray;
+  --z-text-subdued-weight: 400;
+
+  --z-action-background: rgb(10 10 10);
+  --z-action-hovered-background: rgb(30 30 30);
+  --z-action-focused-background: rgb(30 30 30);
+  --z-action-pressed-background: rgb(50 50 50);
+
+  --z-action-emphasized-background: #395ba6;
+  --z-action-emphasized-hovered-background: #395ba6;
+  --z-action-emphasized-focused-background: #395ba6;
+  --z-action-emphasized-pressed-background: #294789;
+}

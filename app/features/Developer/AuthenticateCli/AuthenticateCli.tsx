@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 import {useMutation as useBasicMutation} from 'react-query';
 
 import {useCurrentUrl, Redirect} from '@quilted/quilt';
-import {BlockStack, TextBlock, Text, Link, Button} from '@lemon/zest';
+import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useMutation} from '~/shared/graphql';
@@ -39,7 +39,7 @@ export function AuthenticateCli() {
 
   if (pingCliWithToken.isSuccess) {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           The CLI has been authenticated successfully! Your command should have
           continued running in the background, and might even already be
@@ -50,7 +50,7 @@ export function AuthenticateCli() {
     );
   } else if (pingCliWithToken.isError) {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           Something went wrong while authenticating the CLI. You’ll need to
           check the output in your terminal for details, and to restart the
@@ -61,7 +61,7 @@ export function AuthenticateCli() {
     );
   } else {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           A local server running on <Text>{redirectTo}</Text> wants to
           authenticate as you. If you recently ran a command in the CLI that
@@ -71,9 +71,9 @@ export function AuthenticateCli() {
         <TextBlock>
           If you want to revoke access to this token in the future, you can do
           so on the{' '}
-          <Link to="/app/developer/access-tokens">access tokens page</Link>.
+          <Action to="/app/developer/access-tokens">access tokens page</Action>.
         </TextBlock>
-        <Button
+        <Action
           onPress={async () => {
             createAccessTokenForCli.mutate(
               {
@@ -91,7 +91,7 @@ export function AuthenticateCli() {
           }}
         >
           Authenticate the CLI
-        </Button>
+        </Action>
       </BlockStack>
     );
   }
@@ -99,7 +99,7 @@ export function AuthenticateCli() {
   return <Page heading="Authenticate the Watch CLI">{content}</Page>;
 }
 
-// Would be nice to have a button to close the window, but I can’t do it in
+// Would be nice to have a action to close the window, but I can’t do it in
 // JavaScript, and feels like a lot of finicky work to do from the CLI.
 function ClosePageCallToAction() {
   return (

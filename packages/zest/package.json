@@ -8,7 +8,6 @@
     "*.css"
   ],
   "dependencies": {
-    "@lemon/basics": "*",
     "@lemon/css": "*"
   },
   "peerDependencies": {

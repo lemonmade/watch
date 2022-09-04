@@ -22,7 +22,6 @@
     {"path": "./functions/tmdb-refresher"},
     {"path": "./functions/tmdb-refresher-scheduler"},
     {"path": "./global"},
-    {"path": "./packages/basics"},
     {"path": "./packages/cli"},
     {"path": "./packages/clips"},
     {"path": "./packages/clips-react"},

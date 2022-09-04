@@ -1,0 +1,38 @@
+.Spacer {
+  min-block-size: var(--z-spacing-base);
+  min-inline-size: var(--z-spacing-base);
+}
+
+.sizeNone {
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.sizeTiny {
+  min-block-size: var(--z-spacing-tiny);
+  min-inline-size: var(--z-spacing-tiny);
+}
+
+.sizeSmall {
+  min-block-size: var(--z-spacing-small);
+  min-inline-size: var(--z-spacing-small);
+}
+
+.sizeLarge {
+  min-block-size: var(--z-spacing-large);
+  min-inline-size: var(--z-spacing-large);
+}
+
+.sizeHuge {
+  min-block-size: var(--z-spacing-huge);
+  min-inline-size: var(--z-spacing-huge);
+}
+
+.sizeLarge {
+  min-block-size: var(--z-spacing-large);
+  min-inline-size: var(--z-spacing-large);
+}
+
+.stretch {
+  margin: auto;
+}

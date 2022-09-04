@@ -2,7 +2,8 @@ import {useMemo, useState} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {
-  Link,
+  raw,
+  Action,
   Menu,
   Layout,
   View,
@@ -49,7 +50,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
   return (
     <PageDelegateContext delegate={pageDelegate}>
       <Layout
-        sizes={[
+        columns={[
           {value: [false, 'fill']},
           {value: ['auto', 'fill'], viewport: {min: 'medium'}},
         ]}
@@ -57,13 +58,13 @@ export function Frame({children}: PropsWithChildren<Props>) {
         <View>
           <Sticky>
             <Menu>
-              <Link to="/app">Watching</Link>
-              <Link to="/app/watch-later">Watch later</Link>
-              <Link to="/app/subscriptions">Subscriptions</Link>
-              <Link to="/app/search">Search</Link>
-              <Link to="/app/apps">Apps</Link>
-              <Link to="/app/developer">Developer</Link>
-              <Link to="/app/me">Me</Link>
+              <Action to="/app">Watching</Action>
+              <Action to="/app/watch-later">Watch later</Action>
+              <Action to="/app/subscriptions">Subscriptions</Action>
+              <Action to="/app/search">Search</Action>
+              <Action to="/app/apps">Apps</Action>
+              <Action to="/app/developer">Developer</Action>
+              <Action to="/app/me">Me</Action>
             </Menu>
           </Sticky>
         </View>
@@ -82,32 +83,30 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
 
   return (
     <Sticky>
-      <View padding={16} background="black">
-        <Layout sizes={['fill', 'auto']}>
-          {actions ? (
-            <Popover>
-              <Pressable align="start">{normalizedHeading}</Pressable>
-              <PopoverSheet>{actions}</PopoverSheet>
-            </Popover>
-          ) : (
-            <View>{normalizedHeading}</View>
-          )}
+      <Layout background={raw`black`} padding columns={['fill', 'auto']}>
+        {actions ? (
           <Popover>
-            <Pressable>Mega menu</Pressable>
-            <PopoverSheet>
-              <Menu>
-                <Link to="/app">Watching</Link>
-                <Link to="/app/watch-later">Watch later</Link>
-                <Link to="/app/subscriptions">Subscriptions</Link>
-                <Link to="/app/search">Search</Link>
-                <Link to="/app/apps">Apps</Link>
-                <Link to="/app/developer">Developer</Link>
-                <Link to="/app/me">Me</Link>
-              </Menu>
-            </PopoverSheet>
+            <Pressable alignContent="start">{normalizedHeading}</Pressable>
+            <PopoverSheet>{actions}</PopoverSheet>
           </Popover>
-        </Layout>
-      </View>
+        ) : (
+          <View>{normalizedHeading}</View>
+        )}
+        <Popover>
+          <Pressable>Mega menu</Pressable>
+          <PopoverSheet>
+            <Menu>
+              <Action to="/app">Watching</Action>
+              <Action to="/app/watch-later">Watch later</Action>
+              <Action to="/app/subscriptions">Subscriptions</Action>
+              <Action to="/app/search">Search</Action>
+              <Action to="/app/apps">Apps</Action>
+              <Action to="/app/developer">Developer</Action>
+              <Action to="/app/me">Me</Action>
+            </Menu>
+          </PopoverSheet>
+        </Popover>
+      </Layout>
     </Sticky>
   );
 }

@@ -1,0 +1,42 @@
+.Pressable {
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-flex, inline-flex)
+  );
+  background: none;
+  appearance: none;
+  border: none;
+  font-size: 1rem;
+  color: inherit;
+  font-family: inherit;
+  inline-size: var(--x-implicit-container-inline-size);
+  border-radius: var(--z-corner-radius-base);
+  align-items: center;
+  justify-content: var(--x-implicit-align, center);
+  text-align: var(--x-implicit-align, center);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.Pressable:focus {
+  outline: none;
+}
+
+.blockSizeFill {
+  display: var(--x-implicit-display-none, var(--x-implicit-display-flex, flex));
+  inline-size: 100%;
+}
+
+.alignContentStart {
+  text-align: start;
+  justify-content: start;
+}
+
+.alignContentEnd {
+  text-align: end;
+  justify-content: end;
+}
+
+.disabled {
+  pointer-events: none;
+}

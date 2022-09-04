@@ -1,7 +1,6 @@
 import {useState, useRef, useEffect} from 'react';
-import {Link} from '@quilted/quilt';
 
-import {BlockStack, TextField} from '@lemon/zest';
+import {BlockStack, TextField, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
@@ -31,7 +30,7 @@ export function Search() {
 
   return (
     <Page heading="Search">
-      <BlockStack>
+      <BlockStack spacing>
         <TextField
           value={search}
           onChange={(value) => setSearch(value)}
@@ -46,15 +45,11 @@ export function Search() {
           }}
         />
         {series.length > 0 ? (
-          <BlockStack spacing="none">
+          <BlockStack>
             {series.map((series) => (
-              <Link
-                key={series.id}
-                style={{display: 'block'}}
-                to={`/app/series/${series.handle}`}
-              >
+              <Action key={series.id} to={`/app/series/${series.handle}`}>
                 {series.name}
-              </Link>
+              </Action>
             ))}
           </BlockStack>
         ) : null}

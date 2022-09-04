@@ -4,12 +4,11 @@ import {useCurrentUrl} from '@quilted/quilt';
 import {
   BlockStack,
   TextField,
-  Button,
+  Action,
   Form,
   TextBlock,
   Heading,
   Section,
-  Link,
   Text,
   Icon,
 } from '@lemon/zest';
@@ -52,7 +51,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
 
         return (
           <Section key={extension.id}>
-            <BlockStack>
+            <BlockStack spacing>
               <BlockStack spacing="small">
                 <Heading>{extension.name}</Heading>
                 <ExtensionBuildResult build={extension.build} />
@@ -60,13 +59,9 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
               <BlockStack spacing="small">
                 {extension.extends.map(({target, conditions, preview}) => {
                   return (
-                    <Link
+                    <Action
                       to={preview.url}
                       key={target}
-                      padding="small"
-                      border="base"
-                      cornerRadius={4}
-                      background="#222"
                       accessory={<Icon source="arrowEnd" />}
                     >
                       <BlockStack spacing="tiny">
@@ -86,7 +81,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                             );
                           })}
                       </BlockStack>
-                    </Link>
+                    </Action>
                   );
                 })}
               </BlockStack>
@@ -141,16 +136,16 @@ function ConnectToConsole() {
 
   return (
     <Form onSubmit={submit}>
-      <BlockStack>
+      <BlockStack spacing>
         <TextField
           label="Local server URL"
           onChange={(value) => {
             setLocalUrl(value);
           }}
         />
-        <Button disabled={!localUrl} onPress={submit}>
+        <Action disabled={!localUrl} onPress={submit}>
           Set local URL
-        </Button>
+        </Action>
       </BlockStack>
     </Form>
   );

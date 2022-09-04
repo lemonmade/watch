@@ -4,7 +4,7 @@ import {useNavigate} from '@quilted/quilt';
 import {
   BlockStack,
   InlineStack,
-  Button,
+  Action,
   Checkbox,
   Heading,
   TextBlock,
@@ -14,7 +14,6 @@ import {
   Text,
   DateField,
   Menu,
-  Link,
   Form,
   Section,
 } from '@lemon/zest';
@@ -69,11 +68,11 @@ export default function WatchThrough({id}: Props) {
       }
       actions={
         <Menu>
-          <Link to={`/app/series/${series.handle}`}>
+          <Action to={`/app/series/${series.handle}`}>
             More about {series.name}
-          </Link>
+          </Action>
           {status === 'ONGOING' && (
-            <Button
+            <Action
               onPress={() => {
                 stopWatchThrough.mutate(
                   {id},
@@ -88,9 +87,9 @@ export default function WatchThrough({id}: Props) {
               }}
             >
               Stop watching
-            </Button>
+            </Action>
           )}
-          <Button
+          <Action
             onPress={() => {
               deleteWatchThrough.mutate(
                 {id},
@@ -105,11 +104,11 @@ export default function WatchThrough({id}: Props) {
             }}
           >
             Delete
-          </Button>
+          </Action>
         </Menu>
       }
     >
-      <BlockStack>
+      <BlockStack spacing>
         {nextEpisode && (
           <NextEpisode
             key={nextEpisode.id}
@@ -130,7 +129,7 @@ export default function WatchThrough({id}: Props) {
         )}
         {actions.length > 0 && <PreviousActionsSection actions={actions} />}
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
@@ -157,12 +156,12 @@ function PreviousActionsSection({
 }) {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Previous actions</Heading>
         {actions.map((action) => {
           if (action.__typename === 'Skip') {
             return (
-              <BlockStack key={action.id}>
+              <BlockStack spacing key={action.id}>
                 <Text>
                   Skipped{' '}
                   {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
@@ -187,7 +186,7 @@ function PreviousActionsSection({
             );
           } else if (action.__typename === 'Watch') {
             return (
-              <BlockStack>
+              <BlockStack spacing>
                 <Text>
                   Watched{' '}
                   {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
@@ -275,9 +274,9 @@ function NextEpisode({
 
   return (
     <Form onSubmit={markEpisodeAsWatched}>
-      <BlockStack>
+      <BlockStack spacing>
         {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
-        <BlockStack>
+        <BlockStack spacing>
           <TextBlock>
             Season {seasonNumber}, episode {episodeNumber}
             {firstAired && (
@@ -298,7 +297,7 @@ function NextEpisode({
             These notes contain spoilers
           </Checkbox>
         </BlockStack>
-        <InlineStack>
+        <InlineStack spacing="small">
           <Rating
             value={rating ?? undefined}
             onChange={(rating) =>
@@ -307,11 +306,11 @@ function NextEpisode({
           />
           {at && <DateField value={at} onChange={setAt} />}
         </InlineStack>
-        <InlineStack>
-          <Button primary onPress={markEpisodeAsWatched}>
+        <InlineStack spacing="small">
+          <Action primary onPress={markEpisodeAsWatched}>
             Watch
-          </Button>
-          <Button
+          </Action>
+          <Action
             onPress={() => {
               const optionalArguments: Omit<
                 WatchThroughSkipNextEpisodeMutationVariables,
@@ -335,7 +334,7 @@ function NextEpisode({
             }}
           >
             Skip
-          </Button>
+          </Action>
         </InlineStack>
       </BlockStack>
     </Form>

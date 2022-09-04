@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "@graphql-tools/schema": "^7.0.0",
-    "@lemon/basics": "workspace:*",
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@preact/signals": "^0.0.3",

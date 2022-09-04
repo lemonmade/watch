@@ -2,13 +2,12 @@ import {useMemo} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {
   View,
-  Button,
+  Action,
   BlockStack,
   InlineStack,
   Text,
   Section,
   Heading,
-  Link,
   Icon,
 } from '@lemon/zest';
 
@@ -95,9 +94,9 @@ function SeriesWithData({
     <Page heading={series.name}>
       <BlockStack spacing="large">
         {series.overview && <Text>{series.overview}</Text>}
-        <InlineStack>
-          <Link to={series.tmdbUrl}>TMDB</Link>
-          <Link to={series.imdbUrl}>IMDB</Link>
+        <InlineStack spacing="small">
+          <Action to={series.tmdbUrl}>TMDB</Action>
+          <Action to={series.imdbUrl}>IMDB</Action>
         </InlineStack>
         {localDevelopmentClips.map((localClip) => (
           <LocalClip
@@ -116,12 +115,16 @@ function SeriesWithData({
           />
         ))}
         {series.seasons.map(({id, number, status, imdbUrl, tmdbUrl}) => (
-          <View key={id}>
+          <View key={id} border padding cornerRadius>
             <Text>Season {number}</Text>
-            <InlineStack>
-              <Link to={tmdbUrl}>TMDB</Link>
-              <Link to={imdbUrl}>IMDB</Link>
-              <Button
+            <InlineStack spacing="small">
+              <Action to={tmdbUrl} target="new">
+                TMDB
+              </Action>
+              <Action to={imdbUrl} target="new">
+                IMDB
+              </Action>
+              <Action
                 onPress={() => {
                   startWatchThrough.mutate(
                     {
@@ -145,21 +148,21 @@ function SeriesWithData({
                 }}
               >
                 Start season watch through
-              </Button>
+              </Action>
               {status === 'CONTINUING' && (
-                <Button
+                <Action
                   onPress={() => {
                     markSeasonAsFinished.mutate({id}, {onSuccess: onUpdate});
                   }}
                 >
                   Mark finished
-                </Button>
+                </Action>
               )}
             </InlineStack>
           </View>
         ))}
         <View>
-          <Button
+          <Action
             onPress={() => {
               startWatchThrough.mutate(
                 {series: series.id},
@@ -178,21 +181,18 @@ function SeriesWithData({
             }}
           >
             Start watch through
-          </Button>
+          </Action>
         </View>
         {watchThroughs.length > 0 && (
           <Section>
-            <BlockStack>
+            <BlockStack spacing>
               <Heading>Watchthroughs</Heading>
               {watchThroughs.map((watchThrough) => (
-                <Link
+                <Action
                   key={watchThrough.id}
                   to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                  border="base"
-                  padding="base"
-                  cornerRadius={4}
-                  background="#222"
                   accessory={<Icon source="arrowEnd" />}
+                  alignContent="start"
                 >
                   <BlockStack spacing="tiny">
                     <Text>
@@ -215,16 +215,16 @@ function SeriesWithData({
                         : 'Still watching'}
                     </Text>
                   </BlockStack>
-                </Link>
+                </Action>
               ))}
             </BlockStack>
           </Section>
         )}
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Subscription</Heading>
             {subscription ? (
-              <Button
+              <Action
                 onPress={() => {
                   unsubscribeFromSeries.mutate(
                     {id: series.id},
@@ -233,9 +233,9 @@ function SeriesWithData({
                 }}
               >
                 Unsubscribe
-              </Button>
+              </Action>
             ) : (
-              <Button
+              <Action
                 onPress={() => {
                   subscribeToSeries.mutate(
                     {id: series.id},
@@ -244,7 +244,7 @@ function SeriesWithData({
                 }}
               >
                 Subscribe
-              </Button>
+              </Action>
             )}
             {subscription && (
               <SpoilerAvoidance
@@ -263,10 +263,10 @@ function SeriesWithData({
           </BlockStack>
         </Section>
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Watch later</Heading>
             {series.inWatchLater ? (
-              <Button
+              <Action
                 onPress={() => {
                   removeSeriesFromWatchLater.mutate(
                     {id: series.id},
@@ -275,9 +275,9 @@ function SeriesWithData({
                 }}
               >
                 Remove from watch later
-              </Button>
+              </Action>
             ) : (
-              <Button
+              <Action
                 onPress={() => {
                   watchSeriesLater.mutate(
                     {id: series.id},
@@ -286,7 +286,7 @@ function SeriesWithData({
                 }}
               >
                 Watch later
-              </Button>
+              </Action>
             )}
           </BlockStack>
         </Section>

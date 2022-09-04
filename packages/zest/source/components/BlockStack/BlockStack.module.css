@@ -1,0 +1,48 @@
+.BlockStack {
+  justify-content: stretch;
+  align-items: center;
+  justify-items: stretch;
+}
+
+.spacingTiny {
+  gap: var(--z-spacing-tiny);
+}
+
+.spacingSmall {
+  gap: var(--z-spacing-small);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
+}
+
+.spacingLarge {
+  gap: var(--z-spacing-large);
+}
+
+.spacingHuge {
+  gap: var(--z-spacing-huge);
+}
+
+.alignStretch {
+  justify-items: stretch;
+}
+
+:where(.alignStretch) > * {
+  --x-implicit-display-block: block;
+  --x-implicit-display-flex: flex;
+  --x-implicit-display-grid: grid;
+  --x-implicit-container-inline-size: 100%;
+}
+
+.alignStart {
+  justify-items: start;
+}
+
+.alignEnd {
+  justify-items: end;
+}
+
+.alignCenter {
+  justify-items: center;
+}

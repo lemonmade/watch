@@ -1,0 +1,114 @@
+.View {
+  --View-default-display: block;
+
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-block, var(--View-default-display))
+  );
+}
+
+:where(.View) > * {
+  --x-implicit-display-none: initial;
+  --x-implicit-display-block: initial;
+  --x-implicit-display-flex: initial;
+  --x-implicit-display-grid: initial;
+  --x-implicit-align: initial;
+  --x-implicit-connection-inline-start: initial;
+  --x-implicit-connection-inline-end: initial;
+  --x-implicit-container-inline-size: initial;
+}
+
+.paddingTiny {
+  padding: var(--z-spacing-tiny);
+}
+
+.paddingSmall {
+  padding: var(--z-spacing-small);
+}
+
+.paddingBase {
+  padding: var(--z-spacing-base);
+}
+
+.paddingLarge {
+  padding: var(--z-spacing-large);
+}
+
+.paddingHuge {
+  padding: var(--z-spacing-huge);
+}
+
+.displayGrid {
+  --View-default-display: grid;
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-grid, var(--View-default-display))
+  );
+}
+
+.displayFlex {
+  --View-default-display: flex;
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-flex, var(--View-default-display))
+  );
+}
+
+.displayInline {
+  --View-default-display: inline;
+}
+
+.visibilityHidden {
+  --z-implicit-display-none: none;
+}
+
+.visibilityVisuallyHidden {
+  position: absolute !important;
+  top: 0;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  overflow: hidden !important;
+  height: 1px !important;
+  width: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.cornerRadiusBase {
+  border-radius: var(--z-corner-radius-base);
+}
+
+.cornerRadiusConcentric {
+  border-radius: calc(
+    var(--z-container-corner-radius, 0) - var(--z-container-inset, 0)
+  );
+}
+
+.borderBase {
+  border-width: var(--z-border-base-size);
+  border-color: var(--z-border-base-color);
+  border-style: var(--z-border-base-style);
+}
+
+.borderSubdued {
+  border-width: var(--z-border-subdued-size);
+  border-color: var(--z-border-subdued-color);
+  border-style: var(--z-border-subdued-style);
+}
+
+.borderEmphasized {
+  border-width: var(--z-border-emphasized-size);
+  border-color: var(--z-border-emphasized-color);
+  border-style: var(--z-border-emphasized-style);
+}
+
+.backgroundBase {
+  background-color: var(--z-surface-background-base);
+}
+
+.backgroundSubdued {
+  background-color: var(--z-surface-background-subdued);
+}
+
+.backgroundEmphasized {
+  background-color: var(--z-surface-background-emphasized);
+}

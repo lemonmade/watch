@@ -1,4 +1,4 @@
-import {BlockStack, View, TextBlock, Button, InlineStack} from '@lemon/zest';
+import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
@@ -18,24 +18,24 @@ export function Apps() {
 
   return (
     <Page heading="Apps">
-      <BlockStack>
+      <BlockStack spacing>
         {data?.apps.map((app) => (
           <View key={app.id}>
-            <InlineStack>
+            <InlineStack spacing>
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
-                <Button
+                <Action
                   onPress={() => {
                     installApp.mutate({id: app.id});
                   }}
                 >
                   Install
-                </Button>
+                </Action>
               )}
             </InlineStack>
             {app.isInstalled && (
               <View>
-                <BlockStack>
+                <BlockStack spacing>
                   {app.extensions
                     .filter(
                       (
@@ -47,10 +47,10 @@ export function Apps() {
                     )
                     .map((extension) => (
                       <View key={extension.id}>
-                        <InlineStack>
+                        <InlineStack spacing>
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
-                            <Button
+                            <Action
                               onPress={() => {
                                 installExtension.mutate({
                                   id: extension.id,
@@ -60,7 +60,7 @@ export function Apps() {
                               }}
                             >
                               Install
-                            </Button>
+                            </Action>
                           )}
                         </InlineStack>
                       </View>

@@ -1,6 +1,6 @@
 import {createContext, useContext, useMemo} from 'react';
 import type {PropsWithChildren} from 'react';
-import {useUniqueId} from '@lemon/basics';
+import {useUniqueId} from '../../utilities/id';
 
 interface ChoiceListContextValue {
   id: string;

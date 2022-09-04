@@ -1,0 +1,15 @@
+.Menu {
+  display: var(--z-implicit-display-none, grid);
+  grid-template-columns: 1fr;
+  gap: var(--z-spacing-tiny);
+  padding: var(--z-spacing-tiny);
+  align-items: center;
+}
+
+:where(.Menu) > * {
+  --x-implicit-display: block;
+  --x-implicit-display-flex: flex;
+  --x-implicit-display-grid: grid;
+  --x-implicit-align: start;
+  --x-implicit-container-inline-size: 100%;
+}

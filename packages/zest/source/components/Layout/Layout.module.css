@@ -1,0 +1,38 @@
+.Layout {
+  grid-template-rows: 1fr;
+  grid-template: 1fr;
+  align-items: stretch;
+}
+
+.Layout > * {
+  --z-implicit-connection-inline-start: 0;
+  --z-implicit-connection-inline-end: 0;
+}
+
+.Layout > *:first-child {
+  --z-implicit-connection-inline-start: initial;
+}
+
+.Layout > *:last-child {
+  --z-implicit-connection-inline-end: initial;
+}
+
+.spacingTiny {
+  gap: var(--z-spacing-tiny);
+}
+
+.spacingSmall {
+  gap: var(--z-spacing-small);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
+}
+
+.spacingLarge {
+  gap: var(--z-spacing-large);
+}
+
+.spacingHuge {
+  gap: var(--z-spacing-huge);
+}

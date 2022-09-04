@@ -1,5 +1,4 @@
-import {MediaGrid, Poster} from '@lemon/zest';
-import {Link} from '@quilted/quilt';
+import {MediaGrid, Poster, Pressable} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
@@ -17,7 +16,7 @@ export function Subscriptions() {
     <Page heading="Subscriptions">
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
-          <Link key={id} to={`/app/series/${series.handle}`}>
+          <Pressable key={id} to={`/app/series/${series.handle}`}>
             {series.poster?.source && (
               <Poster
                 source={
@@ -25,7 +24,7 @@ export function Subscriptions() {
                 }
               />
             )}
-          </Link>
+          </Pressable>
         ))}
       </MediaGrid>
     </Page>
