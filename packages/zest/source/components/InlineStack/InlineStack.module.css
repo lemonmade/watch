@@ -4,6 +4,7 @@
   grid-auto-flow: column;
   align-items: center;
   align-content: center;
+  flex-wrap: wrap;
 }
 
 .spacingNone {

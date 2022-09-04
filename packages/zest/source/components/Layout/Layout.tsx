@@ -2,10 +2,13 @@ import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {useUniqueId} from '../../utilities/id';
+import {raw, type SpacingKeyword, type RawValue} from '../../system';
+
+import {View, type ViewProps} from '../View';
 
 import styles from './Layout.module.css';
 
-export type Size = 'auto' | 'fill' | 'hidden' | false | number;
+export type Size = 'auto' | 'fill' | 'hidden' | false | RawValue;
 export type ViewportSize = 'small' | 'medium' | 'large';
 
 export interface ViewportMedia {
@@ -98,10 +101,11 @@ export interface Media<T> {
 
 export type ValueOrMediaList<T> = T | Media<T>[];
 
-interface Props {
+interface Props extends Omit<ViewProps, 'display'> {
   inlineAlignment?: 'leading' | 'trailing';
   blockAlignment?: 'center' | 'trailing';
-  sizes?: ValueOrMediaList<Size[]>;
+  columns?: ValueOrMediaList<Size[]>;
+  spacing?: boolean | SpacingKeyword;
 }
 
 // In ems, need to make configurable
@@ -111,11 +115,22 @@ const MEDIAQUERY_MAP: Map<ViewportSize, number> = new Map([
   ['large', 70],
 ]);
 
+const SPACING_CLASS_MAP = new Map<SpacingKeyword, string | boolean>([
+  ['none', false],
+  ['tiny', styles.spacingTiny],
+  ['small', styles.spacingSmall],
+  ['base', styles.spacingBase],
+  ['large', styles.spacingLarge],
+  ['huge', styles.spacingHuge],
+] as [SpacingKeyword, string | boolean][]);
+
 export function Layout({
   inlineAlignment,
   blockAlignment,
-  sizes = ['auto'],
+  columns = ['auto'],
+  spacing,
   children,
+  ...rest
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Layout');
 
@@ -123,30 +138,32 @@ export function Layout({
     styles.Layout,
     blockAlignment && styles[variation('blockAlignment', blockAlignment)],
     inlineAlignment && styles[variation('inlineAlignment', inlineAlignment)],
+    spacing &&
+      SPACING_CLASS_MAP.get(typeof spacing === 'boolean' ? 'base' : spacing),
   );
 
   return (
     <>
-      <SizesStyles scope={id} sizes={sizes} />
-      <div id={id} className={className}>
+      <ColumnsStyles scope={id} columns={columns} />
+      <View id={id} className={className} {...rest} display="grid">
         {children}
-      </div>
+      </View>
     </>
   );
 }
 
-function SizesStyles({
+function ColumnsStyles({
   scope,
-  sizes,
+  columns,
 }: {
   scope: string;
-  sizes: NonNullable<Props['sizes']>;
+  columns: NonNullable<Props['columns']>;
 }) {
   const rootSelector = `#${scope}`;
 
   return (
     <style>
-      {Array.from(normalizeMaybeMediaList(sizes))
+      {Array.from(normalizeMaybeMediaList(columns))
         .map(({viewport, value}) =>
           viewport
             ? wrapViewportMedia(viewport, sizesToSelectors(rootSelector, value))
@@ -207,33 +224,27 @@ function sizesToSelectors(root: string, sizes: Size[]) {
       continue;
     }
 
-    switch (size) {
-      case 'auto': {
-        columns.push('auto');
-        rules.push(
-          `:where(${root}) > :nth-child(${
-            index + 1
-          }) { --x-implicit-display-none: initial; --x-implicit-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --x-implicit-container-inline-size: initial; }`,
-        );
-        break;
-      }
-      case 'fill': {
-        columns.push('minmax(0, 1fr)');
-        rules.push(
-          `:where(${root}) > :nth-child(${
-            index + 1
-          }) { --x-implicit-display-none: initial; --x-implicit-display-block: block; --x-implicit-display-flex: flex; --x-implicit-display-grid: grid; --x-implicit-container-inline-size: 100%; }`,
-        );
-        break;
-      }
-      default: {
-        columns.push(`${size}px`);
-        rules.push(
-          `:where(${root}) > :nth-child(${
-            index + 1
-          }) { --x-implicit-display-none: initial; --x-implicit-display-block: block; --x-implicit-display-flex: flex; --x-implicit-display-grid: grid; --x-implicit-container-inline-size: initial; }`,
-        );
-      }
+    if (raw.test(size)) {
+      columns.push(raw.parse(size));
+      rules.push(
+        `:where(${root}) > :nth-child(${
+          index + 1
+        }) { --x-implicit-display-none: initial; --x-implicit-display-block: block; --x-implicit-display-flex: flex; --x-implicit-display-grid: grid; --x-implicit-container-inline-size: initial; }`,
+      );
+    } else if (size === 'auto') {
+      columns.push('auto');
+      rules.push(
+        `:where(${root}) > :nth-child(${
+          index + 1
+        }) { --x-implicit-display-none: initial; --x-implicit-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --x-implicit-container-inline-size: initial; }`,
+      );
+    } else if (size === 'fill') {
+      columns.push('minmax(0, 1fr)');
+      rules.push(
+        `:where(${root}) > :nth-child(${
+          index + 1
+        }) { --x-implicit-display-none: initial; --x-implicit-display-block: block; --x-implicit-display-flex: flex; --x-implicit-display-grid: grid; --x-implicit-container-inline-size: 100%; }`,
+      );
     }
   }
 

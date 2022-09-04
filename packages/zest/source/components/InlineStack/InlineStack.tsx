@@ -1,55 +1,43 @@
 import type {PropsWithChildren} from 'react';
 
-import {Pixels, Keyword, relativeSize} from '../../system';
-import type {PixelValue, SpacingKeyword, KeywordValue} from '../../system';
+import {type SpacingKeyword} from '../../system';
 
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
 import styles from './InlineStack.module.css';
 
 interface Props extends Omit<ViewProps, 'display'> {
-  spacing?: boolean | SpacingKeyword | KeywordValue<SpacingKeyword>;
+  spacing?: boolean | SpacingKeyword;
 }
 
-const SPACING_CLASS_MAP = new Map<string, string | false>([
-  [Keyword<SpacingKeyword>('none'), styles.spacingNone],
-  [Keyword<SpacingKeyword>('tiny'), styles.spacingTiny],
-  [Keyword<SpacingKeyword>('small'), styles.spacingSmall],
-  [Keyword<SpacingKeyword>('base'), false],
-  [Keyword<SpacingKeyword>('large'), styles.spacingLarge],
-  [Keyword<SpacingKeyword>('huge'), styles.spacingHuge],
-] as [string, string | false][]);
+const SPACING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
+  ['none', styles.spacingNone],
+  ['tiny', styles.spacingTiny],
+  ['small', styles.spacingSmall],
+  ['base', false],
+  ['large', styles.spacingLarge],
+  ['huge', styles.spacingHuge],
+] as [SpacingKeyword, string | false][]);
 
 export function InlineStack({
   spacing,
   children,
   ...systemProps
 }: PropsWithChildren<Props>) {
-  const view = useViewProps({...systemProps, display: 'grid'});
+  const view = useViewProps({...systemProps, display: 'flex'});
   view.addClassName(styles.InlineStack);
 
   if (spacing != null) {
-    let normalizedSpacing: PixelValue | KeywordValue<SpacingKeyword>;
+    let normalizedSpacing: SpacingKeyword;
 
     if (typeof spacing === 'boolean') {
-      normalizedSpacing = Keyword(spacing ? 'base' : 'none');
-    } else if (typeof spacing === 'number') {
-      normalizedSpacing = Pixels(spacing);
-    } else if (spacing.startsWith('@')) {
-      normalizedSpacing = spacing as any;
+      normalizedSpacing = spacing ? 'base' : 'none';
     } else {
-      normalizedSpacing = Keyword(spacing as SpacingKeyword);
+      normalizedSpacing = spacing;
     }
 
     const systemClassName = SPACING_CLASS_MAP.get(normalizedSpacing);
-
-    if (systemClassName == null) {
-      view.addStyles({
-        gap: relativeSize(Pixels.parse(normalizedSpacing as PixelValue)),
-      });
-    } else if (systemClassName) {
-      view.addClassName(systemClassName);
-    }
+    view.addClassName(systemClassName);
   }
 
   return <div {...resolveViewProps(view)}>{children}</div>;

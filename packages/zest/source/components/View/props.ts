@@ -2,12 +2,10 @@ import type {CSSProperties, HTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {
-  Pixels,
-  Keyword,
+  raw,
   relativeSize,
+  type RawValue,
   type Position,
-  type PixelValue,
-  type KeywordValue,
   type SpacingKeyword,
   type BackgroundKeyword,
   type BorderKeyword,
@@ -17,59 +15,47 @@ import {
 import styles from './View.module.css';
 
 export interface Props {
+  id?: string;
   className?: string;
-  display?: 'block' | 'grid' | 'inline';
-  padding?:
-    | boolean
-    | number
-    | SpacingKeyword
-    | PixelValue
-    | KeywordValue<SpacingKeyword>;
+  display?: 'block' | 'flex' | 'grid' | 'inline';
+  padding?: boolean | SpacingKeyword | RawValue;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
 
   position?: Position | Position['type'];
-  border?: boolean | BorderKeyword | KeywordValue<BorderKeyword>;
-  background?:
-    | boolean
-    | BackgroundKeyword
-    | KeywordValue<BackgroundKeyword>
-    | string;
-  cornerRadius?:
-    | number
-    | boolean
-    | CornerRadiusKeyword
-    | KeywordValue<CornerRadiusKeyword>;
+  border?: boolean | BorderKeyword | RawValue;
+  background?: boolean | BackgroundKeyword | RawValue;
+  cornerRadius?: boolean | CornerRadiusKeyword | RawValue;
 }
 
-const BACKGROUND_CLASS_MAP = new Map<string, string | false>([
-  [Keyword<BackgroundKeyword>('none'), false],
-  [Keyword<BackgroundKeyword>('subdued'), styles.backgroundSubdued],
-  [Keyword<BackgroundKeyword>('base'), styles.backgroundBase],
-  [Keyword<BackgroundKeyword>('emphasized'), styles.backgroundEmphasized],
-] as [string, string | false][]);
+const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
+  ['none', false],
+  ['subdued', styles.backgroundSubdued],
+  ['base', styles.backgroundBase],
+  ['emphasized', styles.backgroundEmphasized],
+] as [BackgroundKeyword, string | false][]);
 
-const PADDING_CLASS_MAP = new Map<string, string | false>([
-  [Keyword<SpacingKeyword>('none'), false],
-  [Keyword<SpacingKeyword>('tiny'), styles.paddingTiny],
-  [Keyword<SpacingKeyword>('small'), styles.paddingSmall],
-  [Keyword<SpacingKeyword>('base'), styles.paddingBase],
-  [Keyword<SpacingKeyword>('large'), styles.paddingLarge],
-  [Keyword<SpacingKeyword>('huge'), styles.paddingHuge],
-] as [string, string | false][]);
+const PADDING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
+  ['none', false],
+  ['tiny', styles.paddingTiny],
+  ['small', styles.paddingSmall],
+  ['base', styles.paddingBase],
+  ['large', styles.paddingLarge],
+  ['huge', styles.paddingHuge],
+] as [SpacingKeyword, string | false][]);
 
-const BORDER_CLASS_MAP = new Map<string, string | false>([
-  [Keyword<BorderKeyword>('none'), false],
-  [Keyword<BorderKeyword>('subdued'), styles.borderSubdued],
-  [Keyword<BorderKeyword>('base'), styles.borderBase],
-  [Keyword<BorderKeyword>('emphasized'), styles.borderEmphasized],
-] as [string, string | false][]);
+const BORDER_CLASS_MAP = new Map<BorderKeyword, string | false>([
+  ['none', false],
+  ['subdued', styles.borderSubdued],
+  ['base', styles.borderBase],
+  ['emphasized', styles.borderEmphasized],
+] as [BorderKeyword, string | false][]);
 
-const CORNER_RADIUS_CLASS_MAP = new Map<string, string | false>([
-  [Keyword<CornerRadiusKeyword>('none'), false],
-  [Keyword<CornerRadiusKeyword>('base'), styles.cornerRadiusBase],
-  [Keyword<CornerRadiusKeyword>('concentric'), styles.cornerRadiusConcentric],
-] as [string, string | false][]);
+const CORNER_RADIUS_CLASS_MAP = new Map<CornerRadiusKeyword, string | false>([
+  ['none', false],
+  ['base', styles.cornerRadiusBase],
+  ['concentric', styles.cornerRadiusConcentric],
+] as [CornerRadiusKeyword, string | false][]);
 
 export interface DOMPropController {
   readonly styles: CSSProperties | undefined;
@@ -91,6 +77,7 @@ export function resolveViewProps({
 }
 
 export function useViewProps({
+  id,
   className: starterClassName,
   display,
   position,
@@ -125,6 +112,10 @@ export function useViewProps({
     Object.assign(attributes, newAttributes);
   };
 
+  if (id) {
+    addAttributes({id});
+  }
+
   if (display) {
     addClassName(styles[variation('display', display)]);
   }
@@ -140,59 +131,49 @@ export function useViewProps({
     );
   }
 
-  if (padding) {
-    let normalizedPadding: PixelValue | KeywordValue<SpacingKeyword>;
+  if (raw.test(padding)) {
+    addStyles({padding: raw.parse(padding)});
+  } else if (padding) {
+    let normalizedPadding: SpacingKeyword;
 
     if (typeof padding === 'boolean') {
-      normalizedPadding = Keyword<SpacingKeyword>('base');
-    } else if (typeof padding === 'number') {
-      normalizedPadding = Pixels(padding);
-    } else if (Keyword.test(padding) || Pixels.test(padding)) {
-      normalizedPadding = padding;
+      normalizedPadding = 'base';
     } else {
-      normalizedPadding = Keyword<SpacingKeyword>(padding);
+      normalizedPadding = padding;
     }
 
     const systemClassName = PADDING_CLASS_MAP.get(normalizedPadding);
-
-    if (systemClassName) {
-      addClassName(systemClassName);
-    } else {
-      addStyles({
-        padding: relativeSize(Pixels.parse(normalizedPadding as PixelValue)),
-      });
-    }
+    addClassName(systemClassName);
   }
 
   if (accessibilityVisibility === 'hidden' && visibility !== 'hidden') {
     addAttributes({'aria-hidden': true});
   }
 
-  if (border) {
-    let normalizedBorder: KeywordValue<BorderKeyword>;
+  if (raw.test(border)) {
+    addStyles({border: raw.parse(border)});
+  } else if (border) {
+    let normalizedBorder: BorderKeyword;
 
     if (typeof border === 'boolean') {
-      normalizedBorder = Keyword('base');
-    } else if (Keyword.test(border)) {
-      normalizedBorder = border as any;
+      normalizedBorder = 'base';
     } else {
-      normalizedBorder = Keyword(border) as any;
+      normalizedBorder = border;
     }
 
     const systemClassName = BORDER_CLASS_MAP.get(normalizedBorder);
-
-    if (systemClassName) addClassName(systemClassName);
+    addClassName(systemClassName);
   }
 
-  if (background) {
-    let normalizedBackground: KeywordValue<BackgroundKeyword>;
+  if (raw.test(background)) {
+    addStyles({background: raw.parse(background)});
+  } else if (background) {
+    let normalizedBackground: BackgroundKeyword;
 
     if (typeof background === 'boolean') {
-      normalizedBackground = Keyword('base');
-    } else if (Keyword.test(background)) {
-      normalizedBackground = background as any;
+      normalizedBackground = 'base';
     } else {
-      normalizedBackground = Keyword(background) as any;
+      normalizedBackground = background;
     }
 
     const systemClassName = BACKGROUND_CLASS_MAP.get(normalizedBackground);
@@ -204,30 +185,23 @@ export function useViewProps({
     }
   }
 
-  if (typeof cornerRadius === 'number') {
-    const radius = relativeSize(cornerRadius);
+  if (raw.test(cornerRadius)) {
+    const radius = raw.parse(cornerRadius);
     addStyles({
       '--z-container-corner-radius': radius,
       borderRadius: radius,
     });
   } else if (cornerRadius) {
-    let normalizedCornerRadius: KeywordValue<BackgroundKeyword>;
+    let normalizedCornerRadius: CornerRadiusKeyword;
 
     if (typeof cornerRadius === 'boolean') {
-      normalizedCornerRadius = Keyword('base');
-    } else if (Keyword.test(cornerRadius)) {
-      normalizedCornerRadius = cornerRadius as any;
+      normalizedCornerRadius = 'base';
     } else {
-      normalizedCornerRadius = Keyword(cornerRadius) as any;
+      normalizedCornerRadius = cornerRadius;
     }
 
     const systemClassName = CORNER_RADIUS_CLASS_MAP.get(normalizedCornerRadius);
-
-    if (systemClassName) {
-      addClassName(systemClassName);
-    } else {
-      addStyles({borderRadius: cornerRadius});
-    }
+    addClassName(systemClassName);
   }
 
   // concentric border radius is handled with a class

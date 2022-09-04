@@ -1,28 +1,22 @@
-export type PixelValue = `@px@${number}`;
+export type RawValue = `@raw@${any}`;
 
-export function Pixels(num: number): PixelValue {
-  return `@px@${num}` as any;
+export function raw(strings: TemplateStringsArray, ...values: any[]): RawValue {
+  let result = '';
+
+  for (let i = 0; i < strings.length; i++) {
+    result += strings[i];
+    if (i < values.length) {
+      result += values[i];
+    }
+  }
+
+  return `@raw@${result}`;
 }
 
-Pixels.test = (value: unknown): value is PixelValue =>
-  typeof value === 'string' && value.startsWith('@px@');
+raw.test = (value: unknown): value is RawValue =>
+  typeof value === 'string' && value.startsWith('@raw@');
 
-Pixels.parse = (value: PixelValue): number =>
-  Number.parseInt(value.substring(4), 10);
-
-export type KeywordValue<T extends string = string> = `@kw@${T}`;
-
-export function Keyword<T extends string>(value: T): KeywordValue<T> {
-  return `@kw@${value}` as any;
-}
-
-Keyword.test = <T extends string = string>(
-  value: unknown,
-): value is KeywordValue<T> =>
-  typeof value === 'string' && value.startsWith('@kw@');
-
-Keyword.parse = <T extends string = string>(value: KeywordValue<T>): T =>
-  value.substring(4) as T;
+raw.parse = (value: RawValue): string => value.slice(5);
 
 export type SpacingKeyword =
   | 'none'

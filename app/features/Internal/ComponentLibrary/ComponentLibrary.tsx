@@ -1,4 +1,6 @@
 import {
+  raw,
+  Icon,
   Action,
   BlockStack,
   TextField,
@@ -53,6 +55,9 @@ function ActionComponents() {
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
           <Action primary>Action (primary)</Action>
+          <Action accessory={<Icon source="arrowEnd" />}>
+            Action (accessory)
+          </Action>
           <Pressable>Pressable</Pressable>
         </InlineStack>
 
@@ -151,26 +156,32 @@ function LayoutComponents() {
         <Heading>Layout</Heading>
 
         <InlineStack>
-          <View background="gray" padding="base">
+          <View background={raw`gray`} padding="base">
             Inline
           </View>
-          <View background="gray" padding="base">
+          <View background={raw`gray`} padding="base">
             Stack
           </View>
         </InlineStack>
         <BlockStack>
-          <View background="pink" padding="base">
+          <View background={raw`red`} padding="base">
             Block
           </View>
-          <View background="pink" padding="base">
+          <View background={raw`red`} padding="base">
             Stack
           </View>
         </BlockStack>
-        <Layout sizes={['auto', 'fill']}>
-          <View background="orange" padding="base">
-            Inline
+        <Layout spacing columns={['auto', 'fill']}>
+          <View background={raw`darkblue`} padding="base">
+            Fancy
           </View>
-          <View background="orange" padding="base">
+          <View background={raw`darkblue`} padding="base">
+            Layout
+          </View>
+          <View background={raw`darkblue`} padding="base">
+            Fancy
+          </View>
+          <View background={raw`darkblue`} padding="base">
             Layout
           </View>
         </Layout>
