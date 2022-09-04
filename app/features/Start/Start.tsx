@@ -2,7 +2,7 @@ import {Heading, TextBlock, Text, BlockStack, Action} from '@lemon/zest';
 
 export function Start() {
   return (
-    <BlockStack padding>
+    <BlockStack spacing padding>
       <Heading>What are we watching next?</Heading>
 
       <TextBlock>

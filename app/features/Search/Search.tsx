@@ -30,7 +30,7 @@ export function Search() {
 
   return (
     <Page heading="Search">
-      <BlockStack>
+      <BlockStack spacing>
         <TextField
           value={search}
           onChange={(value) => setSearch(value)}
@@ -45,7 +45,7 @@ export function Search() {
           }}
         />
         {series.length > 0 ? (
-          <BlockStack spacing="none">
+          <BlockStack>
             {series.map((series) => (
               <Action key={series.id} to={`/app/series/${series.handle}`}>
                 {series.name}

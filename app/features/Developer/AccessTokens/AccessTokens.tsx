@@ -51,7 +51,7 @@ export function AccessTokens() {
       <TextBlock>No personal access tokens</TextBlock>
     ) : (
       data!.me.accessTokens.map((accessToken) => (
-        <Layout sizes={['fill', 'auto']} key={accessToken.id}>
+        <Layout columns={['fill', 'auto']} key={accessToken.id}>
           <BlockStack spacing="small">
             <Text>
               {accessToken.prefix}
@@ -84,7 +84,7 @@ export function AccessTokens() {
 
   return (
     <Page heading="Access tokens">
-      <BlockStack>
+      <BlockStack spacing>
         {createResult == null ? null : (
           <Banner
             status={createResult.type === 'error' ? 'error' : 'information'}

@@ -39,7 +39,7 @@ export function AuthenticateCli() {
 
   if (pingCliWithToken.isSuccess) {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           The CLI has been authenticated successfully! Your command should have
           continued running in the background, and might even already be
@@ -50,7 +50,7 @@ export function AuthenticateCli() {
     );
   } else if (pingCliWithToken.isError) {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           Something went wrong while authenticating the CLI. You’ll need to
           check the output in your terminal for details, and to restart the
@@ -61,7 +61,7 @@ export function AuthenticateCli() {
     );
   } else {
     content = (
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>
           A local server running on <Text>{redirectTo}</Text> wants to
           authenticate as you. If you recently ran a command in the CLI that

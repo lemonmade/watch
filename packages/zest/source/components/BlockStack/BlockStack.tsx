@@ -15,10 +15,10 @@ interface Props extends ViewProps {
 }
 
 const SPACING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
-  ['none', styles.spacingNone],
+  ['none', false],
   ['tiny', styles.spacingTiny],
   ['small', styles.spacingSmall],
-  ['base', false],
+  ['base', styles.spacingBase],
   ['large', styles.spacingLarge],
   ['huge', styles.spacingHuge],
 ] as [SpacingKeyword, string | false][]);

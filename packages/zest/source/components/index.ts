@@ -24,6 +24,7 @@ export {Pressable} from './Pressable';
 export {Rating} from './Rating';
 export {Section} from './Section';
 export {Select} from './Select';
+export {Spacer} from './Spacer';
 export {SpacingScale} from './SpacingScale';
 export {Sticky} from './Sticky';
 export {Text} from './Text';

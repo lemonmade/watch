@@ -18,10 +18,10 @@ export function Apps() {
 
   return (
     <Page heading="Apps">
-      <BlockStack>
+      <BlockStack spacing>
         {data?.apps.map((app) => (
           <View key={app.id}>
-            <InlineStack>
+            <InlineStack spacing>
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
                 <Action
@@ -35,7 +35,7 @@ export function Apps() {
             </InlineStack>
             {app.isInstalled && (
               <View>
-                <BlockStack>
+                <BlockStack spacing>
                   {app.extensions
                     .filter(
                       (
@@ -47,7 +47,7 @@ export function Apps() {
                     )
                     .map((extension) => (
                       <View key={extension.id}>
-                        <InlineStack>
+                        <InlineStack spacing>
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
                             <Action

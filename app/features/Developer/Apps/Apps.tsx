@@ -27,7 +27,7 @@ export function Apps() {
   }
 
   content = apps.map((app) => (
-    <InlineStack key={app.id}>
+    <InlineStack key={app.id} spacing>
       <View>
         <TextBlock>id: {app.id}</TextBlock>
         <TextBlock>name: {app.name}</TextBlock>

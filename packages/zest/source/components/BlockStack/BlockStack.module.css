@@ -1,12 +1,7 @@
 .BlockStack {
-  gap: var(--z-spacing-base);
   justify-content: stretch;
   align-items: center;
   justify-items: stretch;
-}
-
-.spacingNone {
-  gap: 0;
 }
 
 .spacingTiny {
@@ -15,6 +10,10 @@
 
 .spacingSmall {
   gap: var(--z-spacing-small);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
 }
 
 .spacingLarge {

@@ -37,7 +37,7 @@ export function CreateAccountForm() {
   );
 
   return (
-    <BlockStack padding="base">
+    <BlockStack spacing padding="base">
       <Heading>Create account</Heading>
 
       {reason && <ErrorBanner reason={reason} />}

@@ -108,7 +108,7 @@ export default function WatchThrough({id}: Props) {
         </Menu>
       }
     >
-      <BlockStack>
+      <BlockStack spacing>
         {nextEpisode && (
           <NextEpisode
             key={nextEpisode.id}
@@ -129,7 +129,7 @@ export default function WatchThrough({id}: Props) {
         )}
         {actions.length > 0 && <PreviousActionsSection actions={actions} />}
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
@@ -156,12 +156,12 @@ function PreviousActionsSection({
 }) {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Previous actions</Heading>
         {actions.map((action) => {
           if (action.__typename === 'Skip') {
             return (
-              <BlockStack key={action.id}>
+              <BlockStack spacing key={action.id}>
                 <Text>
                   Skipped{' '}
                   {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
@@ -186,7 +186,7 @@ function PreviousActionsSection({
             );
           } else if (action.__typename === 'Watch') {
             return (
-              <BlockStack>
+              <BlockStack spacing>
                 <Text>
                   Watched{' '}
                   {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
@@ -274,9 +274,9 @@ function NextEpisode({
 
   return (
     <Form onSubmit={markEpisodeAsWatched}>
-      <BlockStack>
+      <BlockStack spacing>
         {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
-        <BlockStack>
+        <BlockStack spacing>
           <TextBlock>
             Season {seasonNumber}, episode {episodeNumber}
             {firstAired && (
@@ -297,7 +297,7 @@ function NextEpisode({
             These notes contain spoilers
           </Checkbox>
         </BlockStack>
-        <InlineStack>
+        <InlineStack spacing="small">
           <Rating
             value={rating ?? undefined}
             onChange={(rating) =>
@@ -306,7 +306,7 @@ function NextEpisode({
           />
           {at && <DateField value={at} onChange={setAt} />}
         </InlineStack>
-        <InlineStack>
+        <InlineStack spacing="small">
           <Action primary onPress={markEpisodeAsWatched}>
             Watch
           </Action>

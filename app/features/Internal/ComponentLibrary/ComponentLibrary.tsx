@@ -26,11 +26,12 @@ import {
   Label,
   Select,
   Layout,
+  Spacer,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
   return (
-    <BlockStack padding="base">
+    <BlockStack spacing padding="base">
       <ActionComponents />
       <Divider />
       <LayoutComponents />
@@ -47,10 +48,10 @@ export default function ComponentLibrary() {
 function ActionComponents() {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Actions</Heading>
 
-        <InlineStack>
+        <InlineStack spacing="small">
           <Action>Action (button)</Action>
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
@@ -78,7 +79,7 @@ function ActionComponents() {
 function DisplayComponents() {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Display</Heading>
         <Banner>Hello world</Banner>
         <Banner status="error">Hello world</Banner>
@@ -90,7 +91,7 @@ function DisplayComponents() {
           <Divider />
 
           <Section padding>
-            <BlockStack>
+            <BlockStack spacing>
               <Heading>Banner section</Heading>
               <TextBlock>Banner section content</TextBlock>
             </BlockStack>
@@ -99,7 +100,7 @@ function DisplayComponents() {
           <Divider padding />
 
           <Section padding>
-            <BlockStack>
+            <BlockStack spacing>
               <Heading>Banner section</Heading>
               <TextBlock>Banner section content</TextBlock>
             </BlockStack>
@@ -124,7 +125,7 @@ function DisplayComponents() {
 function FormComponents() {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Forms</Heading>
 
         <TextField label="Hello world!" />
@@ -152,39 +153,79 @@ function FormComponents() {
 function LayoutComponents() {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Layout</Heading>
 
-        <InlineStack>
-          <View background={raw`gray`} padding="base">
+        <InlineStack spacing>
+          <View cornerRadius background={raw`#333`} padding="base">
             Inline
           </View>
-          <View background={raw`gray`} padding="base">
+          <View cornerRadius background={raw`#333`} padding="base">
             Stack
           </View>
         </InlineStack>
-        <BlockStack>
-          <View background={raw`red`} padding="base">
+        <BlockStack spacing>
+          <View cornerRadius background={raw`darkred`} padding="base">
             Block
           </View>
-          <View background={raw`red`} padding="base">
+          <View cornerRadius background={raw`darkred`} padding="base">
             Stack
           </View>
         </BlockStack>
         <Layout spacing columns={['auto', 'fill']}>
-          <View background={raw`darkblue`} padding="base">
+          <View cornerRadius background={raw`blue`} padding="base">
             Fancy
           </View>
-          <View background={raw`darkblue`} padding="base">
+          <View cornerRadius background={raw`blue`} padding="base">
             Layout
           </View>
-          <View background={raw`darkblue`} padding="base">
+          <View cornerRadius background={raw`blue`} padding="base">
             Fancy
           </View>
-          <View background={raw`darkblue`} padding="base">
+          <View cornerRadius background={raw`blue`} padding="base">
             Layout
           </View>
         </Layout>
+
+        <InlineStack>
+          <View cornerRadius background={raw`purple`} padding="base">
+            Inline
+          </View>
+          <Spacer />
+          <View cornerRadius background={raw`purple`} padding="base">
+            Spacer
+          </View>
+        </InlineStack>
+
+        <InlineStack spacing>
+          <View cornerRadius background={raw`indigo`} padding="base">
+            Inline
+          </View>
+          <Divider />
+          <View cornerRadius background={raw`indigo`} padding="base">
+            Divider
+          </View>
+        </InlineStack>
+
+        <BlockStack>
+          <View cornerRadius background={raw`darkgreen`} padding="base">
+            Block
+          </View>
+          <Spacer />
+          <View cornerRadius background={raw`darkgreen`} padding="base">
+            Spacer
+          </View>
+        </BlockStack>
+
+        <BlockStack spacing>
+          <View cornerRadius background={raw`green`} padding="base">
+            Block
+          </View>
+          <Divider />
+          <View cornerRadius background={raw`green`} padding="base">
+            Divider
+          </View>
+        </BlockStack>
       </BlockStack>
     </Section>
   );
@@ -193,7 +234,7 @@ function LayoutComponents() {
 function TextComponents() {
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Text</Heading>
 
         <Text>Hello world</Text>

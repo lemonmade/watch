@@ -37,7 +37,7 @@ export function Watching(_: Props) {
 
   return (
     <Page heading="Watching">
-      <BlockStack>
+      <BlockStack spacing>
         <MediaGrid>
           {availableWatchThroughs.map(({id, ...props}) => (
             <WatchThroughItem key={id} {...props} />

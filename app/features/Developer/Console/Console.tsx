@@ -51,7 +51,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
 
         return (
           <Section key={extension.id}>
-            <BlockStack>
+            <BlockStack spacing>
               <BlockStack spacing="small">
                 <Heading>{extension.name}</Heading>
                 <ExtensionBuildResult build={extension.build} />
@@ -136,7 +136,7 @@ function ConnectToConsole() {
 
   return (
     <Form onSubmit={submit}>
-      <BlockStack>
+      <BlockStack spacing>
         <TextField
           label="Local server URL"
           onChange={(value) => {

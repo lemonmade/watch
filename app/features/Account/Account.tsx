@@ -42,7 +42,7 @@ export function Account() {
 
   return (
     <Page heading="Account">
-      <BlockStack>
+      <BlockStack spacing>
         <TextBlock>Email: {email}</TextBlock>
         <Action
           onPress={() => {
@@ -57,7 +57,7 @@ export function Account() {
           Sign out
         </Action>
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
@@ -74,7 +74,7 @@ export function Account() {
           }}
         />
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Danger zone</Heading>
             <Action
               onPress={async () => {
@@ -112,7 +112,7 @@ function GithubSection({
 
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         <Heading>Github account</Heading>
         <TextBlock>username: {username}</TextBlock>
         <Action to={profileUrl} target="new">
@@ -159,7 +159,7 @@ function ConnectGithubAccount({
 
   return (
     <Section>
-      <BlockStack>
+      <BlockStack spacing>
         {errorContent}
         <Heading>Github account</Heading>
         <TextBlock>

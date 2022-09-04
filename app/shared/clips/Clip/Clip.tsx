@@ -376,7 +376,7 @@ function InstalledClipLoadedSettings({
 
   return (
     <Form onSubmit={handleSubmit}>
-      <BlockStack>
+      <BlockStack spacing>
         {schema.fields.map((field) => {
           switch (field.__typename) {
             case 'ClipsExtensionSettingsStringField': {
@@ -515,11 +515,11 @@ function ClipFrame<T extends ExtensionPoint>({
         <Popover>
           <Action>{name}</Action>
           <PopoverSheet>
-            <Section padding={16}>
+            <Section padding>
               <ClipTimings controller={controller} />
             </Section>
             {additionalSectionContents && (
-              <Section padding={16}>{additionalSectionContents}</Section>
+              <Section padding>{additionalSectionContents}</Section>
             )}
             {actionContents && <Menu>{actionContents}</Menu>}
           </PopoverSheet>

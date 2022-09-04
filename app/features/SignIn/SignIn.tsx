@@ -37,7 +37,7 @@ function SignInForm() {
   );
 
   return (
-    <BlockStack padding="base">
+    <BlockStack spacing padding>
       <Heading>Sign in</Heading>
 
       {reason && <ErrorBanner reason={reason} />}

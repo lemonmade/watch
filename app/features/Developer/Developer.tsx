@@ -5,8 +5,8 @@ import {Page} from '~/shared/page';
 export function Developer() {
   return (
     <Page heading="Developer">
-      <BlockStack>
-        <InlineStack>
+      <BlockStack spacing>
+        <InlineStack spacing="small">
           <Action to="apps">Apps</Action>
           <Action to="access-tokens">Access tokens</Action>
           <Action to="console">Console</Action>

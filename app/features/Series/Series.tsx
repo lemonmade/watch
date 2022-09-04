@@ -94,7 +94,7 @@ function SeriesWithData({
     <Page heading={series.name}>
       <BlockStack spacing="large">
         {series.overview && <Text>{series.overview}</Text>}
-        <InlineStack>
+        <InlineStack spacing="small">
           <Action to={series.tmdbUrl}>TMDB</Action>
           <Action to={series.imdbUrl}>IMDB</Action>
         </InlineStack>
@@ -117,7 +117,7 @@ function SeriesWithData({
         {series.seasons.map(({id, number, status, imdbUrl, tmdbUrl}) => (
           <View key={id} border padding cornerRadius>
             <Text>Season {number}</Text>
-            <InlineStack>
+            <InlineStack spacing="small">
               <Action to={tmdbUrl} target="new">
                 TMDB
               </Action>
@@ -185,7 +185,7 @@ function SeriesWithData({
         </View>
         {watchThroughs.length > 0 && (
           <Section>
-            <BlockStack>
+            <BlockStack spacing>
               <Heading>Watchthroughs</Heading>
               {watchThroughs.map((watchThrough) => (
                 <Action
@@ -221,7 +221,7 @@ function SeriesWithData({
           </Section>
         )}
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Subscription</Heading>
             {subscription ? (
               <Action
@@ -263,7 +263,7 @@ function SeriesWithData({
           </BlockStack>
         </Section>
         <Section>
-          <BlockStack>
+          <BlockStack spacing>
             <Heading>Watch later</Heading>
             {series.inWatchLater ? (
               <Action
