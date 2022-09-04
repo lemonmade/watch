@@ -123,11 +123,7 @@ function FormComponents() {
         <Heading>Forms</Heading>
 
         <TextField label="Hello world!" />
-        <DateField
-          label="Hello world!"
-          value={new Date()}
-          onChange={() => {}}
-        />
+        <DateField label="Hello world!" value={new Date()} onChange={noop} />
 
         <Select
           label="Select"
@@ -137,7 +133,7 @@ function FormComponents() {
           ]}
         ></Select>
 
-        <ChoiceList onChange={() => {}}>
+        <ChoiceList onChange={noop}>
           <Choice value="hello">Hello</Choice>
           <Choice value="world">World</Choice>
         </ChoiceList>
@@ -208,3 +204,6 @@ function TextComponents() {
     </Section>
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function noop() {}
