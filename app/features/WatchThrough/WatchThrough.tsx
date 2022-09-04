@@ -4,7 +4,7 @@ import {useNavigate} from '@quilted/quilt';
 import {
   BlockStack,
   InlineStack,
-  Button,
+  Action,
   Checkbox,
   Heading,
   TextBlock,
@@ -14,7 +14,6 @@ import {
   Text,
   DateField,
   Menu,
-  Link,
   Form,
   Section,
 } from '@lemon/zest';
@@ -69,11 +68,11 @@ export default function WatchThrough({id}: Props) {
       }
       actions={
         <Menu>
-          <Link to={`/app/series/${series.handle}`}>
+          <Action to={`/app/series/${series.handle}`}>
             More about {series.name}
-          </Link>
+          </Action>
           {status === 'ONGOING' && (
-            <Button
+            <Action
               onPress={() => {
                 stopWatchThrough.mutate(
                   {id},
@@ -88,9 +87,9 @@ export default function WatchThrough({id}: Props) {
               }}
             >
               Stop watching
-            </Button>
+            </Action>
           )}
-          <Button
+          <Action
             onPress={() => {
               deleteWatchThrough.mutate(
                 {id},
@@ -105,7 +104,7 @@ export default function WatchThrough({id}: Props) {
             }}
           >
             Delete
-          </Button>
+          </Action>
         </Menu>
       }
     >
@@ -308,10 +307,10 @@ function NextEpisode({
           {at && <DateField value={at} onChange={setAt} />}
         </InlineStack>
         <InlineStack>
-          <Button primary onPress={markEpisodeAsWatched}>
+          <Action primary onPress={markEpisodeAsWatched}>
             Watch
-          </Button>
-          <Button
+          </Action>
+          <Action
             onPress={() => {
               const optionalArguments: Omit<
                 WatchThroughSkipNextEpisodeMutationVariables,
@@ -335,7 +334,7 @@ function NextEpisode({
             }}
           >
             Skip
-          </Button>
+          </Action>
         </InlineStack>
       </BlockStack>
     </Form>

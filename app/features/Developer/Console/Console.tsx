@@ -4,12 +4,11 @@ import {useCurrentUrl} from '@quilted/quilt';
 import {
   BlockStack,
   TextField,
-  Button,
+  Action,
   Form,
   TextBlock,
   Heading,
   Section,
-  Link,
   Text,
   Icon,
 } from '@lemon/zest';
@@ -60,7 +59,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
               <BlockStack spacing="small">
                 {extension.extends.map(({target, conditions, preview}) => {
                   return (
-                    <Link
+                    <Action
                       to={preview.url}
                       key={target}
                       accessory={<Icon source="arrowEnd" />}
@@ -82,7 +81,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                             );
                           })}
                       </BlockStack>
-                    </Link>
+                    </Action>
                   );
                 })}
               </BlockStack>
@@ -144,9 +143,9 @@ function ConnectToConsole() {
             setLocalUrl(value);
           }}
         />
-        <Button disabled={!localUrl} onPress={submit}>
+        <Action disabled={!localUrl} onPress={submit}>
           Set local URL
-        </Button>
+        </Action>
       </BlockStack>
     </Form>
   );

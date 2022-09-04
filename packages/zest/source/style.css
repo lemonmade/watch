@@ -26,8 +26,13 @@
   --z-text-subdued-color: gray;
   --z-text-subdued-weight: 400;
 
-  --z-action-background: black;
+  --z-action-background: rgb(10 10 10);
   --z-action-hovered-background: rgb(30 30 30);
   --z-action-focused-background: rgb(30 30 30);
   --z-action-pressed-background: rgb(50 50 50);
+
+  --z-action-emphasized-background: #395ba6;
+  --z-action-emphasized-hovered-background: #395ba6;
+  --z-action-emphasized-focused-background: #395ba6;
+  --z-action-emphasized-pressed-background: #294789;
 }

@@ -1,80 +1,93 @@
-import type {MouseEventHandler, PropsWithChildren} from 'react';
+import {type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
+import {Link, type NavigateTo} from '@quilted/quilt';
 
-import {Keyword, type KeywordValue} from '../../system';
-import {useImplicitAction, ariaForAction} from '../../utilities/actions';
-import type {ImplicitActionType} from '../../utilities/actions';
+import {useContainingForm} from '../../utilities/forms';
+import {
+  useImplicitAction,
+  ariaForAction,
+  type ImplicitActionType,
+} from '../../utilities/actions';
 
 import styles from './Pressable.module.css';
 
-export type AlignKeyword = 'start' | 'center' | 'end';
-
-interface Props {
-  align?: AlignKeyword | KeywordValue<AlignKeyword>;
-  implicitAction?:
-    | boolean
-    | ImplicitActionType
-    | KeywordValue<ImplicitActionType>;
+export type Props = {
+  id?: string;
+  className?: string;
+  blockSize?: 'fill';
+  alignContent?: 'start' | 'end' | 'center';
+  disabled?: boolean;
+  type?: ImplicitActionType | 'none';
   onPress?(): void;
-}
+} & (
+  | {type?: ImplicitActionType; to?: never; target?: never}
+  | {to: NavigateTo; target?: 'new' | 'current'}
+);
 
 export function Pressable({
-  onPress,
+  id,
+  to,
+  className: explicitClassName,
+  target,
   children,
-  align,
-  implicitAction = onPress == null,
+  blockSize,
+  alignContent,
+  disabled,
+  type = 'activation',
+  onPress,
 }: PropsWithChildren<Props>) {
-  const implicitActionFromContext = useImplicitAction();
+  const implicitAction = useImplicitAction(id);
+  const allowedImplicitAction =
+    implicitAction == null || to != null || type === 'none'
+      ? undefined
+      : type === implicitAction.type
+      ? implicitAction
+      : undefined;
 
-  let implicitOnClick: (() => void) | undefined;
+  const form = useContainingForm();
 
-  if (implicitActionFromContext) {
-    let parsedImplicitAction: boolean | ImplicitActionType;
+  const className = classes(
+    styles.Pressable,
+    disabled && styles.disabled,
+    alignContent && styles[variation('alignContent', alignContent)],
+    blockSize && styles[variation('blockSize', blockSize)],
+    explicitClassName,
+  );
 
-    if (typeof implicitAction === 'boolean') {
-      parsedImplicitAction = implicitAction;
-    } else if (Keyword.test(implicitAction)) {
-      parsedImplicitAction = Keyword.parse(implicitAction);
-    } else {
-      parsedImplicitAction = implicitAction;
-    }
-
-    if (
-      parsedImplicitAction === true ||
-      implicitActionFromContext.type === parsedImplicitAction
-    ) {
-      implicitOnClick = () => {
-        implicitActionFromContext.perform();
-      };
-    }
-  }
-
-  let onClick: MouseEventHandler<HTMLButtonElement> | undefined;
-
-  if (onPress) {
-    onClick = () => {
-      implicitOnClick?.();
+  const handleClick = () => {
+    if (onPress) {
       onPress();
-    };
-  } else if (implicitOnClick) {
-    onClick = implicitOnClick;
+    } else {
+      allowedImplicitAction?.perform?.();
+    }
+  };
+
+  if (to != null) {
+    const externalProps =
+      target === 'new' ? {target: '_blank', rel: 'noopener noreferrer'} : {};
+
+    return (
+      <Link
+        to={to}
+        className={className}
+        onClick={handleClick}
+        {...externalProps}
+      >
+        {children}
+      </Link>
+    );
   }
+
+  const submitButton = allowedImplicitAction?.type === 'submit';
 
   return (
     <button
-      className={classes(
-        styles.Pressable,
-        align &&
-          styles[
-            variation(
-              'align',
-              Keyword.test(align) ? Keyword.parse(align) : align,
-            )
-          ],
-      )}
-      type="button"
-      onClick={onClick}
-      {...ariaForAction(implicitActionFromContext)}
+      type={submitButton ? 'submit' : 'button'}
+      form={submitButton && form?.nested ? form.id : undefined}
+      disabled={disabled}
+      className={className}
+      onClick={handleClick}
+      {...ariaForAction(allowedImplicitAction)}
     >
       {children}
     </button>

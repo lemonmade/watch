@@ -1,12 +1,8 @@
 .Menu {
-  --z-Menu-display: var(
-    --z-implicit-display-none,
-    var(--z-implicit-display, block)
-  );
-  --z-Menu-padding: var(--zest-spacing-mini);
-
-  padding: var(--z-Menu-padding);
-  display: var(--z-Menu-display);
+  display: var(--z-implicit-display-none, grid);
+  grid-template-columns: 1fr;
+  gap: var(--z-spacing-tiny);
+  padding: var(--z-spacing-tiny);
   align-items: center;
 }
 

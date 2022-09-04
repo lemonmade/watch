@@ -5,9 +5,8 @@ import {
   Heading,
   TextBlock,
   BlockStack,
-  Button,
+  Action,
   Section,
-  Link,
   Text,
   Banner,
 } from '@lemon/zest';
@@ -45,7 +44,7 @@ export function Account() {
     <Page heading="Account">
       <BlockStack>
         <TextBlock>Email: {email}</TextBlock>
-        <Button
+        <Action
           onPress={() => {
             signOut.mutate(
               {},
@@ -56,7 +55,7 @@ export function Account() {
           }}
         >
           Sign out
-        </Button>
+        </Action>
         <Section>
           <BlockStack>
             <Heading>Settings</Heading>
@@ -77,7 +76,7 @@ export function Account() {
         <Section>
           <BlockStack>
             <Heading>Danger zone</Heading>
-            <Button
+            <Action
               onPress={async () => {
                 deleteAccount.mutate(
                   {},
@@ -88,7 +87,7 @@ export function Account() {
               }}
             >
               Delete account
-            </Button>
+            </Action>
           </BlockStack>
         </Section>
       </BlockStack>
@@ -116,10 +115,10 @@ function GithubSection({
       <BlockStack>
         <Heading>Github account</Heading>
         <TextBlock>username: {username}</TextBlock>
-        <Link to={profileUrl} target="newTab">
+        <Action to={profileUrl} target="new">
           Visit profile
-        </Link>
-        <Button
+        </Action>
+        <Action
           onPress={() => {
             disconnectAccount.mutate(
               {},
@@ -129,8 +128,10 @@ function GithubSection({
             );
           }}
         >
-          Disconnect <Text emphasis="strong">{username}</Text>
-        </Button>
+          <Text>
+            Disconnect <Text emphasis="strong">{username}</Text>
+          </Text>
+        </Action>
       </BlockStack>
     </Section>
   );
@@ -164,14 +165,14 @@ function ConnectGithubAccount({
         <TextBlock>
           Connecting your Github account lets you sign in with Github.
         </TextBlock>
-        <Button
+        <Action
           onPress={() => {
             setError(false);
             open({redirectTo: currentUrl.href});
           }}
         >
           Connect Github
-        </Button>
+        </Action>
       </BlockStack>
     </Section>
   );

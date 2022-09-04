@@ -1,4 +1,4 @@
-import {BlockStack, InlineStack, Link} from '@lemon/zest';
+import {BlockStack, InlineStack, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 
@@ -7,9 +7,9 @@ export function Developer() {
     <Page heading="Developer">
       <BlockStack>
         <InlineStack>
-          <Link to="apps">Apps</Link>
-          <Link to="access-tokens">Access tokens</Link>
-          <Link to="console">Console</Link>
+          <Action to="apps">Apps</Action>
+          <Action to="access-tokens">Access tokens</Action>
+          <Action to="console">Console</Action>
         </InlineStack>
       </BlockStack>
     </Page>

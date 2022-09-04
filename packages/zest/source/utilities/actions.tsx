@@ -1,24 +1,24 @@
 import {createContext, useContext} from 'react';
 import type {PropsWithChildren} from 'react';
 
-export interface Target {
+export interface ImplicitActionTarget {
   readonly id: string;
-  readonly type?: 'popover';
+  readonly type?: 'popover' | 'form';
   readonly active?: boolean;
 }
 
-export type ImplicitActionType = 'activation';
+export type ImplicitActionType = 'activation' | 'submit';
 
-export interface Action {
+export interface ImplicitAction {
   readonly id?: string;
-  readonly type?: ImplicitActionType;
-  readonly target?: Target;
-  perform(): void;
+  readonly type: ImplicitActionType;
+  readonly target?: ImplicitActionTarget;
+  perform?(): void;
 }
 
-export const ImplicitActionInternalContext = createContext<Action | undefined>(
-  undefined,
-);
+export const ImplicitActionInternalContext = createContext<
+  ImplicitAction | undefined
+>(undefined);
 
 export function useImplicitAction(id?: string) {
   const implicitAction = useContext(ImplicitActionInternalContext);
@@ -29,7 +29,7 @@ export function useImplicitAction(id?: string) {
 }
 
 interface Props {
-  action?: Action;
+  action?: ImplicitAction;
 }
 
 export function ImplicitActionContext({
@@ -43,7 +43,7 @@ export function ImplicitActionContext({
   );
 }
 
-export function ariaForAction(action?: Action) {
+export function ariaForAction(action?: ImplicitAction) {
   const target = action?.target;
 
   if (!target) return undefined;

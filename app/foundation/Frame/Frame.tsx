@@ -2,7 +2,7 @@ import {useMemo, useState} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {
-  Link,
+  Action,
   Menu,
   Layout,
   View,
@@ -57,13 +57,13 @@ export function Frame({children}: PropsWithChildren<Props>) {
         <View>
           <Sticky>
             <Menu>
-              <Link to="/app">Watching</Link>
-              <Link to="/app/watch-later">Watch later</Link>
-              <Link to="/app/subscriptions">Subscriptions</Link>
-              <Link to="/app/search">Search</Link>
-              <Link to="/app/apps">Apps</Link>
-              <Link to="/app/developer">Developer</Link>
-              <Link to="/app/me">Me</Link>
+              <Action to="/app">Watching</Action>
+              <Action to="/app/watch-later">Watch later</Action>
+              <Action to="/app/subscriptions">Subscriptions</Action>
+              <Action to="/app/search">Search</Action>
+              <Action to="/app/apps">Apps</Action>
+              <Action to="/app/developer">Developer</Action>
+              <Action to="/app/me">Me</Action>
             </Menu>
           </Sticky>
         </View>
@@ -86,7 +86,7 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
         <Layout sizes={['fill', 'auto']}>
           {actions ? (
             <Popover>
-              <Pressable align="start">{normalizedHeading}</Pressable>
+              <Pressable alignContent="start">{normalizedHeading}</Pressable>
               <PopoverSheet>{actions}</PopoverSheet>
             </Popover>
           ) : (
@@ -96,13 +96,13 @@ function Header({actions, children}: PropsWithChildren<{actions?: ReactNode}>) {
             <Pressable>Mega menu</Pressable>
             <PopoverSheet>
               <Menu>
-                <Link to="/app">Watching</Link>
-                <Link to="/app/watch-later">Watch later</Link>
-                <Link to="/app/subscriptions">Subscriptions</Link>
-                <Link to="/app/search">Search</Link>
-                <Link to="/app/apps">Apps</Link>
-                <Link to="/app/developer">Developer</Link>
-                <Link to="/app/me">Me</Link>
+                <Action to="/app">Watching</Action>
+                <Action to="/app/watch-later">Watch later</Action>
+                <Action to="/app/subscriptions">Subscriptions</Action>
+                <Action to="/app/search">Search</Action>
+                <Action to="/app/apps">Apps</Action>
+                <Action to="/app/developer">Developer</Action>
+                <Action to="/app/me">Me</Action>
               </Menu>
             </PopoverSheet>
           </Popover>

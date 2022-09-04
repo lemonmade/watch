@@ -1,6 +1,6 @@
+export {Action} from './Action';
 export {Banner} from './Banner';
 export {BlockStack} from './BlockStack';
-export {Button} from './Button';
 export {Canvas} from './Canvas';
 export {Checkbox} from './Checkbox';
 export {Choice, ChoiceList} from './ChoiceList';
@@ -14,7 +14,6 @@ export {Image} from './Image';
 export {InlineStack} from './InlineStack';
 export {Label} from './Label';
 export {Layout} from './Layout';
-export {Link} from './Link';
 export {List, Item} from './List';
 export {MediaGrid} from './MediaGrid';
 export {Menu} from './Menu';

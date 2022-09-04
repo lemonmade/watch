@@ -1,10 +1,10 @@
-import {TextBlock, BlockStack, Link} from '@lemon/zest';
+import {TextBlock, BlockStack, Action} from '@lemon/zest';
 
 export function SignedOut() {
   return (
     <BlockStack padding="base">
       <TextBlock>Until next time!</TextBlock>
-      <Link to="/sign-in">Sign back in</Link>
+      <Action to="/sign-in">Sign back in</Action>
     </BlockStack>
   );
 }

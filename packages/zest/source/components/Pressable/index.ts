@@ -1,1 +1,1 @@
-export {Pressable} from './Pressable';
+export {Pressable, type Props as PressableProps} from './Pressable';

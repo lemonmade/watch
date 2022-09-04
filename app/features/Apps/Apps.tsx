@@ -1,4 +1,4 @@
-import {BlockStack, View, TextBlock, Button, InlineStack} from '@lemon/zest';
+import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
@@ -24,13 +24,13 @@ export function Apps() {
             <InlineStack>
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
-                <Button
+                <Action
                   onPress={() => {
                     installApp.mutate({id: app.id});
                   }}
                 >
                   Install
-                </Button>
+                </Action>
               )}
             </InlineStack>
             {app.isInstalled && (
@@ -50,7 +50,7 @@ export function Apps() {
                         <InlineStack>
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
-                            <Button
+                            <Action
                               onPress={() => {
                                 installExtension.mutate({
                                   id: extension.id,
@@ -60,7 +60,7 @@ export function Apps() {
                               }}
                             >
                               Install
-                            </Button>
+                            </Action>
                           )}
                         </InlineStack>
                       </View>

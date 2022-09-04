@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 
-import {Text, InlineStack, View, Button, TextBlock} from '@lemon/zest';
+import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
@@ -33,13 +33,13 @@ export function Apps() {
         <TextBlock>name: {app.name}</TextBlock>
         <TextBlock>extensions: {app.extensions.length}</TextBlock>
       </View>
-      <Button
+      <Action
         onPress={() => {
           deleteApp.mutate({id: app.id});
         }}
       >
         Delete
-      </Button>
+      </Action>
     </InlineStack>
   ));
 

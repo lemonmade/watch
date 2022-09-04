@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import {useRoutes, useNavigate, useCurrentUrl} from '@quilted/quilt';
+import {useRoutes, useNavigate, useCurrentUrl, Link} from '@quilted/quilt';
 import {
-  Link,
   View,
   TextField,
   Form,
@@ -9,7 +8,7 @@ import {
   BlockStack,
   TextBlock,
   Banner,
-  Button,
+  Action,
 } from '@lemon/zest';
 
 import {SignInErrorReason} from '~/global/auth';
@@ -96,7 +95,7 @@ function SignInWithGithub({
   });
 
   return (
-    <Button
+    <Action
       onPress={() => {
         open({
           redirectTo:
@@ -105,7 +104,7 @@ function SignInWithGithub({
       }}
     >
       Sign in with Github
-    </Button>
+    </Action>
   );
 }
 

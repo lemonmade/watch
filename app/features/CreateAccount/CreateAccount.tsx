@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {useRoutes, useNavigate, useCurrentUrl} from '@quilted/quilt';
 import {
-  Button,
+  Action,
   View,
   Banner,
   TextField,
@@ -95,7 +95,7 @@ function CreateAccountWithGithub({
   });
 
   return (
-    <Button
+    <Action
       onPress={() => {
         open({
           redirectTo:
@@ -104,7 +104,7 @@ function CreateAccountWithGithub({
       }}
     >
       Create account with Github
-    </Button>
+    </Action>
   );
 }
 

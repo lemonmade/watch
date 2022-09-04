@@ -21,7 +21,7 @@ import {
   Form,
   TextField,
   Select,
-  Button,
+  Action,
 } from '@lemon/zest';
 
 import type {
@@ -76,7 +76,7 @@ type NoInfer<T> = T & {[K in keyof T]: T[K]};
 const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
   Text,
   View,
-  Button,
+  Action,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({
@@ -217,20 +217,20 @@ function InstalledClipFrame<T extends ExtensionPoint>({
       )}
       renderPopoverActions={() => (
         <>
-          <Button onPress={() => alert('App page not implemented yet!')}>
+          <Action onPress={() => alert('App page not implemented yet!')}>
             View app
-          </Button>
-          <Button onPress={() => controller.restart()}>Restart</Button>
-          <Button
+          </Action>
+          <Action onPress={() => controller.restart()}>Restart</Action>
+          <Action
             onPress={() => {
               uninstallClipsExtensionFromClip.mutate({id});
             }}
           >
             Uninstall
-          </Button>
-          <Button onPress={() => alert('Reporting not implemented yet!')}>
+          </Action>
+          <Action onPress={() => alert('Reporting not implemented yet!')}>
             Report an issue
-          </Button>
+          </Action>
         </>
       )}
     />
@@ -414,7 +414,7 @@ function InstalledClipLoadedSettings({
 
           throw new Error();
         })}
-        <Button onPress={handleSubmit}>Update</Button>
+        <Action onPress={handleSubmit}>Update</Action>
       </BlockStack>
     </Form>
   );
@@ -470,7 +470,7 @@ function LocalClipFrame<T extends ExtensionPoint>({
       {...rest}
       renderPopoverContent={() => <LocalDevelopmentOverview build={build} />}
       renderPopoverActions={() => (
-        <Button onPress={() => controller.restart()}>Restart</Button>
+        <Action onPress={() => controller.restart()}>Restart</Action>
       )}
     >
       <div
@@ -513,7 +513,7 @@ function ClipFrame<T extends ExtensionPoint>({
     <BlockStack spacing="small">
       <View>
         <Popover>
-          <Button>{name}</Button>
+          <Action>{name}</Action>
           <PopoverSheet>
             <Section padding={16}>
               <ClipTimings controller={controller} />

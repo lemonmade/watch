@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import type {ReactNode} from 'react';
-import {BlockStack, TextBlock, Button, Banner, Text, Layout} from '@lemon/zest';
+import {BlockStack, TextBlock, Action, Banner, Text, Layout} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery, useMutation} from '~/shared/graphql';
@@ -71,13 +71,13 @@ export function AccessTokens() {
                 : 'never'}
             </Text>
           </BlockStack>
-          <Button
+          <Action
             onPress={() => {
               deleteAccessToken.mutate({id: accessToken.id});
             }}
           >
             Delete
-          </Button>
+          </Action>
         </Layout>
       ))
     );
@@ -93,14 +93,14 @@ export function AccessTokens() {
           </Banner>
         )}
         {accessTokens}
-        <Button
+        <Action
           loading={createAccessToken.isLoading}
           onPress={() => {
             createAccessToken.mutate({});
           }}
         >
           Create access token
-        </Button>
+        </Action>
       </BlockStack>
     </Page>
   );

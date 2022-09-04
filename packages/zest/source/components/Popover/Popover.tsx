@@ -8,8 +8,10 @@ import {
 } from 'react';
 import type {PropsWithChildren} from 'react';
 
-import {ImplicitActionContext} from '../../utilities/actions';
-import type {Action} from '../../utilities/actions';
+import {
+  ImplicitActionContext,
+  type ImplicitAction,
+} from '../../utilities/actions';
 import {useUniqueId} from '../../utilities/id';
 import {useGlobalEvents} from '../../utilities/global-events';
 
@@ -60,9 +62,10 @@ export function Popover({
   );
   const active = usePopoverActive(controller);
 
-  const implicitAction = useMemo<Action>(() => {
+  const implicitAction = useMemo<ImplicitAction>(() => {
     return {
       id: controlledBy,
+      type: 'activation',
       perform: () => controller.set(!controller.active),
       target: {
         id,

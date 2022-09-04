@@ -1,0 +1,52 @@
+.Action {
+  background: var(--z-action-background);
+  transition: background 0.2s ease;
+  color: var(--zest-color-text);
+  min-block-size: var(--zest-action-size);
+  padding: var(--z-spacing-tiny) var(--z-spacing-base);
+  border-radius: var(--z-corner-radius-base);
+}
+
+.Action:hover {
+  background: var(--z-action-hovered-background);
+}
+
+.Action:focus-visible {
+  background: var(--z-action-focused-background);
+}
+
+.Action:active {
+  background: var(--z-action-pressed-background);
+}
+
+.primary {
+  background: var(--z-action-emphasized-background);
+}
+
+.primary:hover {
+  background: var(--z-action-emphasized-hovered-background);
+}
+
+.primary:focus-visible {
+  background: var(--z-action-emphasized-focused-background);
+}
+
+.primary:active {
+  background: var(--z-action-emphasized-pressed-background);
+}
+
+.hasAccessory {
+  display: var(
+    --x-implicit-display-none,
+    var(--x-implicit-display-grid, inline-grid)
+  );
+  grid-template-columns: 1fr auto;
+  grid-gap: var(--x-spacing-small);
+
+  &.blockSizeFill {
+    display: var(
+      --x-implicit-display-none,
+      var(--x-implicit-display-grid, grid)
+    );
+  }
+}

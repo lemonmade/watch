@@ -5,8 +5,15 @@ import {Portal} from '../Portal';
 import {View, useViewProps, resolveViewProps, type ViewProps} from '../View';
 
 import {useUniqueId} from '../../utilities/id';
-import {FormContext, useContainingForm} from '../../utilities/forms';
-import type {FormDetails} from '../../utilities/forms';
+import {
+  ImplicitActionContext,
+  type ImplicitAction,
+} from '../../utilities/actions';
+import {
+  FormContext,
+  useContainingForm,
+  type FormDetails,
+} from '../../utilities/forms';
 
 export interface ImplicitSubmit {
   label: string;
@@ -22,12 +29,18 @@ export function Form({
   id: explicitId,
   onSubmit,
   children,
-  implicitSubmit = true,
+  implicitSubmit = false,
   ...viewProps
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Form', explicitId);
   const nested = useContainingForm() != null;
-  const formDetails = useMemo<FormDetails>(() => ({id, nested}), [id, nested]);
+  const [formDetails, implicitAction] = useMemo<[FormDetails, ImplicitAction]>(
+    () => [
+      {id, nested},
+      {type: 'submit', target: {id, type: 'form'}},
+    ],
+    [id, nested],
+  );
 
   const view = useViewProps(viewProps);
 
@@ -55,12 +68,22 @@ export function Form({
     onSubmit();
   };
 
+  const content = implicitSubmitContent ? (
+    <>
+      {children}
+      {implicitSubmitContent}
+    </>
+  ) : (
+    <ImplicitActionContext action={implicitAction}>
+      {children}
+    </ImplicitActionContext>
+  );
+
   return nested ? (
     <>
       <div {...resolveViewProps(view)}>
         <FormContext.Provider value={formDetails}>
-          {children}
-          {implicitSubmitContent}
+          {content}
         </FormContext.Provider>
       </div>
       <Portal>
@@ -69,10 +92,7 @@ export function Form({
     </>
   ) : (
     <form {...resolveViewProps(view)} id={id} onSubmit={handleSubmit}>
-      <FormContext.Provider value={formDetails}>
-        {children}
-        {implicitSubmitContent}
-      </FormContext.Provider>
+      {content}
     </form>
   );
 }
