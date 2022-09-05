@@ -14,7 +14,6 @@ export {InlineStack} from './InlineStack';
 export {Label} from './Label';
 export {Layout} from './Layout';
 export {List, Item} from './List';
-export {MediaGrid} from './MediaGrid';
 export {Menu} from './Menu';
 export {Popover, PopoverSheet} from './Popover';
 export {Portal} from './Portal';

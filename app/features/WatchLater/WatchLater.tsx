@@ -1,7 +1,8 @@
-import {MediaGrid, Poster, Action} from '@lemon/zest';
+import {Poster, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
+import {MediaGrid} from '~/shared/media';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 

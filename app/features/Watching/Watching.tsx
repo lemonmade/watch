@@ -1,9 +1,10 @@
 import {useMemo, ComponentProps} from 'react';
 
-import {MediaGrid, Action, BlockStack} from '@lemon/zest';
+import {Action, BlockStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {parseGid, useQuery} from '~/shared/graphql';
+import {MediaGrid} from '~/shared/media';
 
 import watchingQuery, {
   WatchingQueryData,
