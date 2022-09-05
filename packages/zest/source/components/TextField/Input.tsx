@@ -24,7 +24,7 @@ export function TextField({
   onInput,
   onChange,
 }: Props) {
-  const id = useUniqueId('TextField', explicitId);
+  const id = useUniqueId('Input', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
   const inlineStyles: Record<string, any> = {};

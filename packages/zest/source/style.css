@@ -8,31 +8,47 @@
   --z-border-base-color: gray;
   --z-border-base-size: 1px;
   --z-border-base-style: solid;
-  --z-border-subdued-color: lightgray;
+  --z-border-subdued-color: rgb(80 80 80);
   --z-border-subdued-size: 1px;
   --z-border-subdued-style: solid;
   --z-border-emphasized-color: white;
   --z-border-emphasized-size: 1px;
   --z-border-emphasized-style: solid;
 
+  --z-corner-radius-small: 4px;
   --z-corner-radius-base: 6px;
 
   --z-surface-background-base: rgb(0 0 0);
-  --z-surface-background-subdued: rgb(0 0 0);
-  --z-surface-background-emphasized: rgb(0 0 0);
+  --z-surface-background-subdued: var(--z-surface-background-base);
+  --z-surface-background-emphasized: var(--z-surface-background-base);
 
-  --z-text-base-color: white;
+  --z-overlay-background-base: rgb(20 20 20);
+
+  --z-text-base-color: rgb(255 255 255);
   --z-text-base-weight: 400;
-  --z-text-subdued-color: gray;
-  --z-text-subdued-weight: 400;
+  --z-text-subdued-color: rgb(160 160 160);
+  --z-text-subdued-weight: var(--z-text-base-weight);
+  --z-text-emphasized-color: var(--z-text-base-color);
+  --z-text-emphasized-weight: 700;
 
+  --z-action-minimum-size: 2.5rem; /* 44px / 16px */
+
+  --z-action-text-color: var(--z-text-base-color);
   --z-action-background: rgb(10 10 10);
   --z-action-hovered-background: rgb(30 30 30);
-  --z-action-focused-background: rgb(30 30 30);
+  --z-action-focused-background: var(--z-action-hovered-background);
   --z-action-pressed-background: rgb(50 50 50);
 
+  --z-action-emphasized-text-color: var(--z-text-base-color);
   --z-action-emphasized-background: #395ba6;
   --z-action-emphasized-hovered-background: #395ba6;
   --z-action-emphasized-focused-background: #395ba6;
   --z-action-emphasized-pressed-background: #294789;
+
+  --z-stacking-layer-0: 10;
+  --z-stacking-layer-1: 20;
+  --z-stacking-layer-2: 30;
+
+  --z-internal-divider-inline-size: 0;
+  --z-internal-divider-block-size: unset;
 }

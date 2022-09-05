@@ -1,8 +1,8 @@
 .MediaGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  row-gap: var(--zest-spacing-extra-large);
-  column-gap: var(--zest-spacing-mini);
+  row-gap: var(--z-spacing-huge);
+  column-gap: var(--z-spacing-small);
   align-items: flex-start;
 }
 

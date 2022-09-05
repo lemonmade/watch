@@ -4,11 +4,13 @@ import {classes} from '@lemon/css';
 import styles from './Text.module.css';
 
 interface Props {
+  className?: string;
   emphasis?: 'strong' | 'subdued';
   accessibilityRole?: 'code';
 }
 
 export function Text({
+  className,
   children,
   emphasis,
   accessibilityRole,
@@ -28,5 +30,7 @@ export function Text({
     }
   }
 
-  return <Element className={classes(...classNames)}>{children}</Element>;
+  return (
+    <Element className={classes(...classNames, className)}>{children}</Element>
+  );
 }

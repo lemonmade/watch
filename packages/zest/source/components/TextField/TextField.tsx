@@ -11,7 +11,7 @@ interface Props extends ComponentProps<typeof TextFieldInput> {
 }
 
 export function TextField({id: explicitId, label, ...baseProps}: Props) {
-  const id = useUniqueId('ZTextField', explicitId);
+  const id = useUniqueId('TextField', explicitId);
 
   return (
     <BlockStack spacing="small">

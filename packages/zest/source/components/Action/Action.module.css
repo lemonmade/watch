@@ -1,8 +1,8 @@
 .Action {
   background: var(--z-action-background);
   transition: background 0.2s ease;
-  color: var(--zest-color-text);
-  min-block-size: var(--zest-action-size);
+  color: var(--z-action-text-color);
+  min-block-size: var(--z-action-minimum-size);
   padding: var(--z-spacing-tiny) var(--z-spacing-base);
   border-radius: var(--z-corner-radius-base);
 }
@@ -20,6 +20,7 @@
 }
 
 .primary {
+  color: var(--z-action-emphasized-text-color);
   background: var(--z-action-emphasized-background);
 }
 

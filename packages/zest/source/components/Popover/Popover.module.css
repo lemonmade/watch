@@ -10,8 +10,8 @@
   left: 0;
   z-index: var(--z-stacking-layer-2);
   z-index: 500;
-  background: var(--zest-color-surface-raised-1);
-  border-radius: var(--zest-border-radius);
+  background: var(--z-overlay-background-base);
+  border-radius: var(--z-corner-radius-base);
   max-width: 20rem;
   transition: transform 0.2s ease;
   transform-origin: 50% 0;

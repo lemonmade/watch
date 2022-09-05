@@ -2,10 +2,11 @@
   appearance: none;
   border: none;
   font-size: 1.25rem;
-  height: var(--zest-action-size);
-  background: var(--zest-color-action);
-  color: var(--zest-color-text);
-  border-radius: var(--zest-border-radius);
-  padding: 0 var(--zest-spacing-mini);
+  min-block-size: var(--z-action-minimum-size);
+  background: transparent;
+  color: inherit;
+  border-radius: var(--z-corner-radius-base);
+  padding: 0 var(--z-spacing-small);
+  border: 1px solid var(--z-border-subdued-color);
   overflow: hidden;
 }

@@ -2,10 +2,10 @@
   position: relative;
   z-index: 10;
   display: block;
-  border-radius: 0 0 var(--zest-border-radius) var(--zest-border-radius);
+  border-radius: 0 0 var(--z-corner-radius-base) var(--z-corner-radius-base);
   transition: background 0.2s ease, transform 0.15s ease;
   text-decoration: none;
-  color: var(--zest-color-text);
+  color: var(--z-text-base-color);
   /* touch-action: manipulation; */
   user-select: none;
   -webkit-touch-callout: none;
@@ -25,7 +25,7 @@
 
 .hasFootnotes .WatchThroughContent {
   padding-bottom: calc(
-    var(--WatchThrough-content-padding) + var(--zest-spacing-mini)
+    var(--WatchThrough-content-padding) + var(--z-spacing-small)
   );
 }
 
@@ -34,14 +34,14 @@
 }
 
 .WatchThroughContent {
-  --WatchThrough-content-padding: var(--zest-spacing-small);
+  --WatchThrough-content-padding: var(--z-spacing-small);
   padding: var(--WatchThrough-content-padding);
 }
 
 .WatchThroughNextEpisodeMeta {
   display: flex;
   align-items: center;
-  margin-bottom: var(--zest-spacing-mini);
+  margin-bottom: var(--z-spacing-small);
   margin-top: -2px;
 }
 
@@ -63,13 +63,12 @@
   font-weight: 700;
   line-height: 1.15;
   font-size: 0.75rem;
-  color: var(--zest-color-action-content-subdued);
+  color: var(--z-text-subdued-color);
   text-transform: uppercase;
 }
 
 .WatchThroughNextEpisodeTitle {
   margin: 0;
-  color: var(--zest-color-action-content);
 }
 
 .WatchThroughFootnote {
@@ -86,11 +85,11 @@
 .WatchThroughBadge {
   display: inline-block;
   padding: 0.1rem 0.4rem 0.15rem;
-  border-radius: var(--zest-border-radius);
+  border-radius: var(--z-corner-radius-small);
   text-transform: uppercase;
   font-weight: 600;
   text-align: center;
-  color: var(--zest-color-surface);
+  color: black;
   white-space: nowrap;
   background-color: rgb(100, 100, 100);
   font-size: 0.7rem;

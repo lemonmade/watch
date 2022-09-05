@@ -16,6 +16,9 @@
   --x-implicit-connection-inline-start: initial;
   --x-implicit-connection-inline-end: initial;
   --x-implicit-container-inline-size: initial;
+
+  --x-internal-divider-inline-size: 0;
+  --x-internal-divider-block-size: initial;
 }
 
 .paddingTiny {

@@ -69,7 +69,9 @@ function ActionComponents() {
 
         <Popover>
           <Action>Action with popover</Action>
-          <PopoverSheet>This is a popover</PopoverSheet>
+          <PopoverSheet>
+            <Section padding>This is a popover</Section>
+          </PopoverSheet>
         </Popover>
       </BlockStack>
     </Section>
@@ -201,7 +203,7 @@ function LayoutComponents() {
           <View cornerRadius background={raw`indigo`} padding="base">
             Inline
           </View>
-          <Divider />
+          <Divider emphasis="subdued" padding="small" />
           <View cornerRadius background={raw`indigo`} padding="base">
             Divider
           </View>

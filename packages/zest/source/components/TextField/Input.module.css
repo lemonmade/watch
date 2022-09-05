@@ -15,14 +15,15 @@
 .multiline > .Input {
   display: grid;
   min-height: calc(
-    var(--x-TextField-lines, 2) * 1em + var(--zest-spacing-mini) * 2
+    var(--x-TextField-lines, 2) * 1em + var(--z-spacing-small) * 2
   );
 }
 
 .Input {
   appearance: none;
   display: block;
-  border: 1px solid var(--zest-color-text-subdued);
+  border: 1px solid var(--z-border-subdued-color);
+  border-radius: var(--z-corner-radius-base);
   background: none;
   width: 100%;
   resize: vertical;
@@ -35,7 +36,7 @@
   font-size: 1em;
   line-height: 1;
   font-family: inherit;
-  padding: var(--zest-spacing-mini) var(--zest-spacing);
+  padding: var(--z-spacing-small) var(--z-spacing-base);
 }
 
 .AutoGrowWrap {

@@ -6,7 +6,6 @@ import {PortalContainerContext} from '../../utilities/portals';
 import {AutoHeadingContext} from '../../utilities/headings';
 
 import './Canvas.module.css';
-
 interface Props {}
 
 export function Canvas({children}: PropsWithChildren<Props>) {
