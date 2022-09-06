@@ -1,0 +1,7 @@
+.GoMenu {
+  position: fixed;
+  bottom: var(--z-spacing-base);
+  right: var(--z-spacing-base);
+  inline-size: fit-content;
+  margin: 0 0 0 auto;
+}

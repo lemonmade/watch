@@ -1,16 +1,20 @@
+import {type ReactNode} from 'react';
+
+import {BlockStack} from '../BlockStack';
+
 import styles from './DateField.module.css';
 
 interface Props {
   id?: string;
-  label?: string;
+  label: ReactNode;
   value: Date;
   onChange(value: Date): void;
 }
 
 export function DateField({id, label, value, onChange}: Props) {
   return (
-    <>
-      {label && <label htmlFor={id}>{label}</label>}
+    <BlockStack spacing="small">
+      <label htmlFor={id}>{label}</label>
       <input
         id={id}
         value={`${value.getFullYear()}-${String(value.getMonth() + 1).padStart(
@@ -31,6 +35,6 @@ export function DateField({id, label, value, onChange}: Props) {
           );
         }}
       />
-    </>
+    </BlockStack>
   );
 }

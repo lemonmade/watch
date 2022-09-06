@@ -13,9 +13,9 @@ import {
   Image,
   Text,
   DateField,
-  Menu,
   Form,
   Section,
+  View,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -54,20 +54,16 @@ export default function WatchThrough({id}: Props) {
 
   return (
     <Page
-      heading={
-        <BlockStack spacing="small">
-          {nextEpisode && (
-            <Text>
-              {from.season === to.season
-                ? `Watching season ${to.season}`
-                : `Watching seasons ${from.season}–${to.season}`}
-            </Text>
-          )}
-          <Heading>{series.name}</Heading>
-        </BlockStack>
+      heading={series.name}
+      detail={
+        nextEpisode
+          ? from.season === to.season
+            ? `Watching season ${to.season}`
+            : `Watching seasons ${from.season}–${to.season}`
+          : null
       }
-      actions={
-        <Menu>
+      menu={
+        <>
           <Action to={`/app/series/${series.handle}`}>
             More about {series.name}
           </Action>
@@ -105,7 +101,7 @@ export default function WatchThrough({id}: Props) {
           >
             Delete
           </Action>
-        </Menu>
+        </>
       }
     >
       <BlockStack spacing>
@@ -280,32 +276,39 @@ function NextEpisode({
           <TextBlock>
             Season {seasonNumber}, episode {episodeNumber}
             {firstAired && (
-              <span>
+              <Text>
                 {' • '}
                 {firstAired.toLocaleDateString(undefined, {
                   month: 'long',
                   year: 'numeric',
                   day: 'numeric',
                 })}
-              </span>
+              </Text>
             )}
           </TextBlock>
           <Heading>{title}</Heading>
           {overview && <TextBlock>{overview}</TextBlock>}
-          <TextField multiline value={notes ?? ''} onChange={setNotes} />
+
+          <View>
+            <Rating
+              value={rating ?? undefined}
+              onChange={(rating) =>
+                rating === 0 ? setRating(null) : setRating(rating)
+              }
+            />
+          </View>
+          <TextField
+            label="Notes"
+            multiline={4}
+            blockSize="fitContent"
+            value={notes ?? ''}
+            onChange={setNotes}
+          />
           <Checkbox checked={containsSpoilers} onChange={setContainsSpoilers}>
             These notes contain spoilers
           </Checkbox>
+          {at && <DateField label="Watched on" value={at} onChange={setAt} />}
         </BlockStack>
-        <InlineStack spacing="small">
-          <Rating
-            value={rating ?? undefined}
-            onChange={(rating) =>
-              rating === 0 ? setRating(null) : setRating(rating)
-            }
-          />
-          {at && <DateField value={at} onChange={setAt} />}
-        </InlineStack>
         <InlineStack spacing="small">
           <Action primary onPress={markEpisodeAsWatched}>
             Watch

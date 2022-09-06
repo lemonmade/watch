@@ -1,0 +1,24 @@
+.ChoiceList {
+  display: flex;
+  flex-direction: column;
+  aign-items: stretch;
+  gap: var(--z-spacing-tiny);
+}
+
+.Choice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--z-spacing-small);
+  min-block-size: var(--z-action-minimum-size);
+  padding: var(--z-spacing-tiny) var(--z-spacing-small);
+  border-radius: var(--z-corner-radius-base);
+}
+
+.Choice:focus-within {
+  background: var(--z-action-focused-background);
+}
+
+.checked {
+  background: var(--z-action-pressed-background);
+}

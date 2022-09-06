@@ -37,9 +37,7 @@ export function WatchThroughItem({
         unfinishedEpisodeCount > 1 && styles.hasFootnotes,
       )}
     >
-      <div className={styles.WatchThroughPoster}>
-        <Poster source={nextEpisode?.poster ?? series.poster!} />
-      </div>
+      <Poster source={nextEpisode?.poster ?? series.poster!} />
       <div className={styles.WatchThroughContent}>
         <header className={styles.WatchThroughNextEpisodeMeta}>
           <div className={styles.WatchThroughIndicator} />

@@ -69,7 +69,9 @@ function ActionComponents() {
 
         <Popover>
           <Action>Action with popover</Action>
-          <PopoverSheet>This is a popover</PopoverSheet>
+          <PopoverSheet>
+            <Section padding>This is a popover</Section>
+          </PopoverSheet>
         </Popover>
       </BlockStack>
     </Section>
@@ -128,8 +130,14 @@ function FormComponents() {
       <BlockStack spacing>
         <Heading>Forms</Heading>
 
-        <TextField label="Hello world!" />
-        <DateField label="Hello world!" value={new Date()} onChange={noop} />
+        <TextField label="Text field" />
+        <TextField label="Text field (multiline)" multiline />
+        <TextField
+          label="Text field (multiline, lines)"
+          multiline={5}
+          blockSize="fitContent"
+        />
+        <DateField label="Date field" value={new Date()} onChange={noop} />
 
         <Select
           label="Select"
@@ -201,7 +209,7 @@ function LayoutComponents() {
           <View cornerRadius background={raw`indigo`} padding="base">
             Inline
           </View>
-          <Divider />
+          <Divider emphasis="subdued" padding="small" />
           <View cornerRadius background={raw`indigo`} padding="base">
             Divider
           </View>

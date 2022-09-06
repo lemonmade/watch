@@ -1,4 +1,7 @@
 .InlineStack {
+  --z-internal-divider-inline-size: initial;
+  --z-internal-divider-block-size: 0;
+
   justify-content: start;
   grid-auto-flow: column;
   align-items: center;

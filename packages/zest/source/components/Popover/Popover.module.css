@@ -9,20 +9,30 @@
   top: 0;
   left: 0;
   z-index: var(--z-stacking-layer-2);
-  z-index: 500;
-  background: var(--zest-color-surface-raised-1);
-  border-radius: var(--zest-border-radius);
+  background: var(--z-overlay-background-base);
+  border-radius: var(--z-corner-radius-base);
   max-width: 20rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.blockAttachmentStart {
+  margin-block-end: var(--z-spacing-small);
+  transform-origin: 50% 100%;
+}
+
+.blockAttachmentEnd {
+  margin-block-start: var(--z-spacing-small);
   transform-origin: 50% 0;
 }
 
 .PopoverSheet[data-state='inactive'],
 .PopoverSheet[data-state='closing'] {
-  transform: scale(0);
+  transform: scale(0.5);
+  opacity: 0;
 }
 
 .PopoverSheet[data-state='opening'],
 .PopoverSheet[data-state='open'] {
   transform: scale(100%);
+  opacity: 1;
 }

@@ -1,21 +1,59 @@
-import {useEffect} from 'react';
 import type {PropsWithChildren, ReactNode} from 'react';
 
-import {View} from '@lemon/zest';
-import {usePageDelegate} from '../delegate';
+import {
+  Text,
+  Section,
+  BlockStack,
+  InlineStack,
+  Heading,
+  Action,
+  Menu,
+  Popover,
+  PopoverSheet,
+} from '@lemon/zest';
 
 interface Props {
   heading: ReactNode;
-  actions?: ReactNode;
+  detail?: ReactNode;
+  menu?: ReactNode;
 }
 
-export function Page({children, actions, heading}: PropsWithChildren<Props>) {
-  const delegate = usePageDelegate();
-
-  useEffect(
-    () => delegate.claim({heading, actions}),
-    [heading, actions, delegate],
+export function Page({
+  children,
+  menu,
+  heading,
+  detail,
+}: PropsWithChildren<Props>) {
+  const headingContent = detail ? (
+    <BlockStack spacing="small">
+      <Heading>{heading}</Heading>
+      <Text>{detail}</Text>
+    </BlockStack>
+  ) : (
+    <Heading>{heading}</Heading>
   );
 
-  return <View padding="base">{children}</View>;
+  const headerContent = menu ? (
+    <InlineStack spacing>
+      {headingContent}
+
+      <Popover>
+        <Action>More…</Action>
+        <PopoverSheet>
+          <Menu>{menu}</Menu>
+        </PopoverSheet>
+      </Popover>
+    </InlineStack>
+  ) : (
+    headingContent
+  );
+
+  return (
+    <>
+      <Section padding="base" content="header">
+        {headerContent}
+      </Section>
+      <Section padding="base">{children}</Section>
+    </>
+  );
 }
