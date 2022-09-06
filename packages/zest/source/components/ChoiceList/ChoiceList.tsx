@@ -1,6 +1,10 @@
 import {createContext, useContext, useMemo} from 'react';
 import type {PropsWithChildren} from 'react';
+import {classes} from '@lemon/css';
+
 import {useUniqueId} from '../../utilities/id';
+
+import styles from './ChoiceList.module.css';
 
 interface ChoiceListContextValue {
   id: string;
@@ -35,7 +39,7 @@ export function ChoiceList<Value extends string = string>({
 
   return (
     <ChoiceListContext.Provider value={contextValue}>
-      <div>{children}</div>
+      <div className={styles.ChoiceList}>{children}</div>
     </ChoiceListContext.Provider>
   );
 }
@@ -59,8 +63,13 @@ export function Choice({
     );
   }
 
+  const checked = value === selectorContext.value;
+
   return (
-    <div>
+    <label
+      htmlFor={id}
+      className={classes(styles.Choice, checked && styles.checked)}
+    >
       <input
         id={id}
         name={selectorContext.id}
@@ -71,7 +80,7 @@ export function Choice({
           selectorContext.onChange(value);
         }}
       ></input>
-      <label htmlFor={id}>{children}</label>
-    </div>
+      <span>{children}</span>
+    </label>
   );
 }
