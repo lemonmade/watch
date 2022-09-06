@@ -48,7 +48,9 @@
   --z-action-emphasized-border: none;
   --z-action-emphasized-hovered-background: rgb(192 51 152);
   --z-action-emphasized-hovered-border: var(--z-action-emphasized-border);
-  --z-action-emphasized-focused-background: var(--z-action-emphasized-hovered-background);
+  --z-action-emphasized-focused-background: var(
+    --z-action-emphasized-hovered-background
+  );
   --z-action-emphasized-focused-border: var(--z-action-emphasized-border);
   --z-action-emphasized-pressed-background: rgb(205 80 169);
   --z-action-emphasized-pressed-border: var(--z-action-emphasized-border);
