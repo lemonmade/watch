@@ -32,6 +32,7 @@ export function Search() {
     <Page heading="Search">
       <BlockStack spacing>
         <TextField
+          label="Search"
           value={search}
           onChange={(value) => setSearch(value)}
           onInput={(value) => {

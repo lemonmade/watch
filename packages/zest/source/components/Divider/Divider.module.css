@@ -3,25 +3,44 @@
 
   /* width: 100%; */
   align-self: stretch;
-  margin: var(--z-internal-divider-inline-size, var(--z-Divider-padding)) var(--z-internal-divider-block-size, var(--z-Divider-padding));
+  margin: var(--z-internal-divider-inline-size, var(--z-Divider-padding))
+    var(--z-internal-divider-block-size, var(--z-Divider-padding));
   border: none;
   border-width: 0;
-  border-inline-end-width: var(--z-internal-divider-inline-size, var(--z-border-base-size));
-  border-block-end-width: var(--z-internal-divider-block-size, var(--z-border-base-size));
+  border-inline-end-width: var(
+    --z-internal-divider-inline-size,
+    var(--z-border-base-size)
+  );
+  border-block-end-width: var(
+    --z-internal-divider-block-size,
+    var(--z-border-base-size)
+  );
   border-color: var(--z-border-base-color);
   border-style: var(--z-border-base-style);
 }
 
 .subdued {
-  border-inline-end-width: var(--z-internal-divider-inline-size, var(--z-border-subdued-size));
-  border-block-end-width: var(--z-internal-divider-block-size, var(--z-border-subdued-size));
+  border-inline-end-width: var(
+    --z-internal-divider-inline-size,
+    var(--z-border-subdued-size)
+  );
+  border-block-end-width: var(
+    --z-internal-divider-block-size,
+    var(--z-border-subdued-size)
+  );
   border-color: var(--z-border-subdued-color);
   border-style: var(--z-border-subdued-style);
 }
 
 .emphasized {
-  border-inline-end-width: var(--z-internal-divider-inline-size, var(--z-border-emphasized-size));
-  border-block-end-width: var(--z-internal-divider-block-size, var(--z-border-emphasized-size));
+  border-inline-end-width: var(
+    --z-internal-divider-inline-size,
+    var(--z-border-emphasized-size)
+  );
+  border-block-end-width: var(
+    --z-internal-divider-block-size,
+    var(--z-border-emphasized-size)
+  );
   border-color: var(--z-border-emphasized-color);
   border-style: var(--z-border-emphasized-style);
 }

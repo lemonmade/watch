@@ -32,10 +32,10 @@ import {
 export default function ComponentLibrary() {
   return (
     <BlockStack spacing padding="base">
-      {/* <ActionComponents />
+      <ActionComponents />
       <Divider />
       <LayoutComponents />
-      <Divider /> */}
+      <Divider />
       <FormComponents />
       <Divider />
       <TextComponents />
