@@ -7,6 +7,7 @@ import {
   useMemo,
 } from 'react';
 import type {PropsWithChildren} from 'react';
+import {classes, variation} from '@lemon/css';
 
 import {
   ImplicitActionContext,
@@ -319,9 +320,16 @@ function PopoverTrigger({children}: PropsWithChildren<PopoverTriggerProps>) {
   );
 }
 
-interface PopoverSheetProps {}
+interface PopoverSheetProps {
+  blockAttachment?: 'start' | 'end';
+  inlineAttachment?: 'start' | 'center' | 'end';
+}
 
-export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
+export function PopoverSheet({
+  blockAttachment = 'end',
+  inlineAttachment = 'center',
+  children,
+}: PropsWithChildren<PopoverSheetProps>) {
   const ref = useRef<HTMLDivElement>(null);
   const controller = usePopoverController();
   const [rendered, setRendered] = useState(false);
@@ -386,13 +394,43 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
         //   (geometry.trigger.left + geometry.trigger.width / 2) /
         //   window.innerWidth;
 
-        const startPosition =
-          geometry.trigger.left +
-          geometry.trigger.width / 2 -
-          geometry.sheet.inline / 2;
+        let inlineStart: number;
+        let blockStart: number;
 
-        sheet.style.left = `${startPosition}px`;
-        sheet.style.top = `${geometry.trigger.top + geometry.trigger.height}px`;
+        switch (inlineAttachment) {
+          case 'start': {
+            inlineStart = geometry.trigger.left;
+            break;
+          }
+          case 'center': {
+            inlineStart =
+              geometry.trigger.left +
+              geometry.trigger.width / 2 -
+              geometry.sheet.inline / 2;
+            break;
+          }
+          case 'end': {
+            inlineStart =
+              geometry.trigger.left +
+              geometry.trigger.width -
+              geometry.sheet.inline;
+            break;
+          }
+        }
+
+        switch (blockAttachment) {
+          case 'start': {
+            blockStart = geometry.trigger.top - geometry.sheet.block;
+            break;
+          }
+          case 'end': {
+            blockStart = geometry.trigger.top + geometry.trigger.height;
+            break;
+          }
+        }
+
+        sheet.style.left = `${inlineStart}px`;
+        sheet.style.top = `${blockStart}px`;
       },
       async prepare() {
         await new Promise<void>((resolve) => {
@@ -419,7 +457,7 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
       unlisten();
       clearSheet();
     };
-  }, [controller]);
+  }, [controller, blockAttachment, inlineAttachment]);
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -434,7 +472,10 @@ export function PopoverSheet({children}: PropsWithChildren<PopoverSheetProps>) {
   return rendered ? (
     <ImplicitActionContext action={undefined}>
       <div
-        className={styles.PopoverSheet}
+        className={classes(
+          styles.PopoverSheet,
+          styles[variation('blockAttachment', blockAttachment)],
+        )}
         id={controller.id}
         ref={ref}
         data-state="inactive"

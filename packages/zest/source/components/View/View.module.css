@@ -7,6 +7,10 @@
   );
 }
 
+.View:empty {
+  display: none;
+}
+
 :where(.View) > * {
   --x-implicit-display-none: initial;
   --x-implicit-display-block: initial;

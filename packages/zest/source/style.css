@@ -34,16 +34,27 @@
   --z-action-minimum-size: 2.5rem; /* 44px / 16px */
 
   --z-action-text-color: var(--z-text-base-color);
-  --z-action-background: rgb(10 10 10);
-  --z-action-hovered-background: rgb(30 30 30);
+  --z-action-background: rgb(30 30 30);
+  --z-action-border: 1px solid rgb(50 50 50);
+  --z-action-hovered-background: rgb(50 50 50);
+  --z-action-hovered-border: var(--z-action-border);
   --z-action-focused-background: var(--z-action-hovered-background);
-  --z-action-pressed-background: rgb(50 50 50);
+  --z-action-focused-border: var(--z-action-border);
+  --z-action-pressed-background: rgb(70 70 70);
+  --z-action-pressed-border: var(--z-action-border);
 
   --z-action-emphasized-text-color: var(--z-text-base-color);
   --z-action-emphasized-background: #395ba6;
+  --z-action-emphasized-border: none;
   --z-action-emphasized-hovered-background: #395ba6;
+  --z-action-emphasized-hovered-border: var(--z-action-emphasized-border);
   --z-action-emphasized-focused-background: #395ba6;
+  --z-action-emphasized-focused-border: var(--z-action-emphasized-border);
   --z-action-emphasized-pressed-background: #294789;
+  --z-action-emphasized-pressed-border: var(--z-action-emphasized-border);
+
+  --z-input-border-color: var(--z-border-subdued-color);
+  --z-input-focused-border-color: #395ba6;
 
   --z-stacking-layer-0: 10;
   --z-stacking-layer-1: 20;

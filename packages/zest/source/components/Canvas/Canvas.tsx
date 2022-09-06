@@ -5,7 +5,9 @@ import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
 import {PortalContainerContext} from '../../utilities/portals';
 import {AutoHeadingContext} from '../../utilities/headings';
 
+import '../../style.css';
 import './Canvas.module.css';
+
 interface Props {}
 
 export function Canvas({children}: PropsWithChildren<Props>) {

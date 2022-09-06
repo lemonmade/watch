@@ -7,6 +7,11 @@
   color: inherit;
   border-radius: var(--z-corner-radius-base);
   padding: 0 var(--z-spacing-small);
-  border: 1px solid var(--z-border-subdued-color);
+  border: 1px solid var(--z-input-border-color);
   overflow: hidden;
+}
+
+.DateField:focus {
+  outline: none;
+  border-color: var(--z-input-focused-border-color);
 }

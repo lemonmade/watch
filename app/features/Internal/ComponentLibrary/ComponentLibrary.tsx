@@ -130,8 +130,14 @@ function FormComponents() {
       <BlockStack spacing>
         <Heading>Forms</Heading>
 
-        <TextField label="Hello world!" />
-        <DateField label="Hello world!" value={new Date()} onChange={noop} />
+        <TextField label="Text field" />
+        <TextField label="Text field (multiline)" multiline />
+        <TextField
+          label="Text field (multiline, lines)"
+          multiline={5}
+          blockSize="fitContent"
+        />
+        <DateField label="Date field" value={new Date()} onChange={noop} />
 
         <Select
           label="Select"

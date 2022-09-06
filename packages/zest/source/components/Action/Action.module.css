@@ -2,6 +2,7 @@
   background: var(--z-action-background);
   transition: background 0.2s ease;
   color: var(--z-action-text-color);
+  border: var(--z-action-border);
   min-block-size: var(--z-action-minimum-size);
   padding: var(--z-spacing-tiny) var(--z-spacing-base);
   border-radius: var(--z-corner-radius-base);
@@ -9,31 +10,38 @@
 
 .Action:hover {
   background: var(--z-action-hovered-background);
+  border: var(--z-action-hovered-border);
 }
 
 .Action:focus-visible {
   background: var(--z-action-focused-background);
+  border: var(--z-action-focused-border);
 }
 
 .Action:active {
   background: var(--z-action-pressed-background);
+  border: var(--z-action-pressed-border);
 }
 
 .primary {
   color: var(--z-action-emphasized-text-color);
   background: var(--z-action-emphasized-background);
+  border: var(--z-action-emphasized-border);
 }
 
 .primary:hover {
   background: var(--z-action-emphasized-hovered-background);
+  border: var(--z-action-emphasized-hovered-border);
 }
 
 .primary:focus-visible {
   background: var(--z-action-emphasized-focused-background);
+  border: var(--z-action-emphasized-focused-border);
 }
 
 .primary:active {
   background: var(--z-action-emphasized-pressed-background);
+  border: var(--z-action-emphasized-pressed-border);
 }
 
 .hasAccessory {

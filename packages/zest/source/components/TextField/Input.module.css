@@ -2,7 +2,7 @@
   overflow: hidden;
 }
 
-.blockSizeFitContent > .InputContainer {
+.blockSizeFitContent {
   display: grid;
 }
 
@@ -22,12 +22,17 @@
 .Input {
   appearance: none;
   display: block;
-  border: 1px solid var(--z-border-subdued-color);
+  border: 1px solid var(--z-input-border-color);
   border-radius: var(--z-corner-radius-base);
   background: none;
   width: 100%;
   resize: vertical;
   color: inherit;
+}
+
+.Input:focus {
+  outline: none;
+  border-color: var(--z-input-focused-border-color);
 }
 
 .Input,
