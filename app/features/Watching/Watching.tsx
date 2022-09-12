@@ -42,7 +42,7 @@ export function Watching(_: Props) {
       menu={
         <>
           <Action icon={<Icon source="arrowEnd" />} to="/app/finished">
-            Finished watching...
+            Finished watching
           </Action>
         </>
       }

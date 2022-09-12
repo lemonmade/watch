@@ -57,12 +57,10 @@ export function Page({
 
   return (
     <>
-      <Section padding="base" content="header">
+      <Section content="header" className={styles.Header}>
         {headerContent}
       </Section>
-      <Section padding="base" className={styles.Content}>
-        {children}
-      </Section>
+      <Section className={styles.Content}>{children}</Section>
     </>
   );
 }
