@@ -55,16 +55,22 @@ function ActionComponents() {
           <Action>Action (button)</Action>
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
-          <Action primary>Action (primary)</Action>
+          <Action emphasis>Action (emphasized)</Action>
+          <Action emphasis="subdued">Action (subdued)</Action>
+          <Action role="destructive">Action (destructive)</Action>
+          <Action size="small">Action (small)</Action>
+          <Action icon={<Icon source="arrowEnd" />}>Action (icon)</Action>
           <Action accessory={<Icon source="arrowEnd" />}>
             Action (accessory)
           </Action>
           <Pressable>Pressable</Pressable>
+          <Pressable to="#">Pressable (link)</Pressable>
         </InlineStack>
 
         <Menu>
           <Action>Menu button</Action>
           <Action to="#">Menu link</Action>
+          <Action role="destructive">Menu destructive</Action>
         </Menu>
 
         <Popover>

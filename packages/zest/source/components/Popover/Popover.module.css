@@ -1,6 +1,6 @@
 .PopoverTrigger {
-  display: var(--x-implicit-display-none, var(--x-implicit-display-flex, flex));
-  max-inline-size: var(--x-implicit-container-inline-size, max-content);
+  display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
+  max-inline-size: var(--z-internal-container-inline-size, max-content);
   align-items: stretch;
 }
 

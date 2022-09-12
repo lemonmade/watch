@@ -29,10 +29,10 @@
 }
 
 :where(.alignStretch) > * {
-  --x-implicit-display-block: block;
-  --x-implicit-display-flex: flex;
-  --x-implicit-display-grid: grid;
-  --x-implicit-container-inline-size: 100%;
+  --z-internal-display-block: block;
+  --z-internal-display-flex: flex;
+  --z-internal-display-grid: grid;
+  --z-internal-container-inline-size: 100%;
 }
 
 .alignStart {

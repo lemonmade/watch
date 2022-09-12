@@ -1,0 +1,47 @@
+.displayInline {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-block, inline)
+  );
+}
+
+.displayBlock {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-block, block)
+  );
+}
+
+.displayInlineGrid {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-grid, inline-grid)
+  );
+}
+
+.displayGrid {
+  display: var(--z-internal-display-none, var(--z-internal-display-grid, grid));
+}
+
+.displayInlineFlex {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-flex, inline-flex)
+  );
+}
+
+.displayFlex {
+  display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
+}
+
+.inlineAlignmentStart {
+  --z-internal-inline-alignment: start;
+}
+
+.inlineAlignmentCenter {
+  --z-internal-inline-alignment: center;
+}
+
+.inlineAlignmentEnd {
+  --z-internal-inline-alignment: end;
+}

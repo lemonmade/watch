@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {useNavigate} from '@quilted/quilt';
 
 import {
+  Icon,
   BlockStack,
   InlineStack,
   Action,
@@ -64,11 +65,16 @@ export default function WatchThrough({id}: Props) {
       }
       menu={
         <>
-          <Action to={`/app/series/${series.handle}`}>
+          <Action
+            icon={<Icon source="arrowEnd" />}
+            to={`/app/series/${series.handle}`}
+          >
             More about {series.name}
           </Action>
           {status === 'ONGOING' && (
             <Action
+              role="destructive"
+              icon={<Icon source="stop" />}
               onPress={() => {
                 stopWatchThrough.mutate(
                   {id},
@@ -86,6 +92,8 @@ export default function WatchThrough({id}: Props) {
             </Action>
           )}
           <Action
+            role="destructive"
+            icon={<Icon source="delete" />}
             onPress={() => {
               deleteWatchThrough.mutate(
                 {id},
@@ -273,20 +281,23 @@ function NextEpisode({
       <BlockStack spacing>
         {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
         <BlockStack spacing>
-          <TextBlock>
-            Season {seasonNumber}, episode {episodeNumber}
-            {firstAired && (
-              <Text>
-                {' • '}
-                {firstAired.toLocaleDateString(undefined, {
-                  month: 'long',
-                  year: 'numeric',
-                  day: 'numeric',
-                })}
-              </Text>
-            )}
-          </TextBlock>
-          <Heading>{title}</Heading>
+          <BlockStack spacing="small">
+            <Heading>{title}</Heading>
+            <Text emphasis="subdued">
+              Season {seasonNumber}, episode {episodeNumber}
+              {firstAired && (
+                <>
+                  {' • '}
+                  {firstAired.toLocaleDateString(undefined, {
+                    month: 'long',
+                    year: 'numeric',
+                    day: 'numeric',
+                  })}
+                </>
+              )}
+            </Text>
+          </BlockStack>
+
           {overview && <TextBlock>{overview}</TextBlock>}
 
           <View>
@@ -310,7 +321,7 @@ function NextEpisode({
           {at && <DateField label="Watched on" value={at} onChange={setAt} />}
         </BlockStack>
         <InlineStack spacing="small">
-          <Action primary onPress={markEpisodeAsWatched}>
+          <Action emphasis onPress={markEpisodeAsWatched}>
             Watch
           </Action>
           <Action

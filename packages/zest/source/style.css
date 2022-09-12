@@ -5,10 +5,10 @@
   --z-spacing-large: 1.5rem;
   --z-spacing-huge: 2rem;
 
-  --z-border-base-color: gray;
+  --z-border-base-color: rgb(125 108 152);
   --z-border-base-size: 1px;
   --z-border-base-style: solid;
-  --z-border-subdued-color: rgb(80 80 80);
+  --z-border-subdued-color: rgb(63 53 78);
   --z-border-subdued-size: 1px;
   --z-border-subdued-style: solid;
   --z-border-emphasized-color: white;
@@ -22,41 +22,131 @@
   --z-surface-background-subdued: var(--z-surface-background-base);
   --z-surface-background-emphasized: var(--z-surface-background-base);
 
-  --z-overlay-background-base: rgb(20 20 20);
+  --z-overlay-background-base: rgb(18 17 20);
 
-  --z-text-base-color: rgb(255 255 255);
+  --z-text-base-color: rgb(230 230 230);
   --z-text-base-weight: 400;
-  --z-text-subdued-color: rgb(160 160 160);
+  --z-text-subdued-color: rgb(146 139 159);
   --z-text-subdued-weight: var(--z-text-base-weight);
   --z-text-emphasized-color: var(--z-text-base-color);
   --z-text-emphasized-weight: 700;
 
   --z-action-minimum-size: 2.5rem; /* 44px / 16px */
 
+  --z-action-background: rgb(35 29 46);
+  --z-action-border: none;
   --z-action-text-color: var(--z-text-base-color);
-  --z-action-background: rgb(26 21 34);
-  --z-action-border: 1px solid rgb(50 50 50);
+  --z-action-icon-color: var(--z-icon-color);
+  --z-action-shadow: none;
   --z-action-hovered-background: rgb(48 39 63);
   --z-action-hovered-border: var(--z-action-border);
+  --z-action-hovered-text-color: var(--z-action-text-color);
+  --z-action-hovered-icon-color: var(--z-action-icon-color);
+  --z-action-hovered-shadow: none;
   --z-action-focused-background: var(--z-action-hovered-background);
   --z-action-focused-border: var(--z-action-border);
+  --z-action-focused-text-color: var(--z-action-text-color);
+  --z-action-focused-icon-color: var(--z-action-icon-color);
+  --z-action-focused-shadow: none;
   --z-action-pressed-background: rgb(82 66 109);
   --z-action-pressed-border: var(--z-action-border);
+  --z-action-pressed-text-color: rgb(227 224 233);
+  --z-action-pressed-icon-color: rgb(227 224 233);
+  --z-action-pressed-shadow: none;
 
-  --z-action-emphasized-text-color: var(--z-text-base-color);
+  --z-action-subdued-background: rgb(35 29 46);
+  --z-action-subdued-border: none;
+  --z-action-subdued-text-color: var(--z-text-base-color);
+  --z-action-subdued-icon-color: var(--z-icon-color);
+  --z-action-subdued-shadow: none;
+  --z-action-subdued-hovered-background: rgb(48 39 63);
+  --z-action-subdued-hovered-border: var(--z-action-subdued-border);
+  --z-action-subdued-hovered-text-color: var(--z-action-subdued-text-color);
+  --z-action-subdued-hovered-icon-color: var(--z-action-subdued-icon-color);
+  --z-action-subdued-hovered-shadow: none;
+  --z-action-subdued-focused-background: var(
+    --z-action-subdued-hovered-background
+  );
+  --z-action-subdued-focused-border: var(--z-action-subdued-border);
+  --z-action-subdued-focused-text-color: var(--z-action-subdued-text-color);
+  --z-action-subdued-focused-icon-color: var(--z-action-subdued-icon-color);
+  --z-action-subdued-focused-shadow: none;
+  --z-action-subdued-pressed-background: rgb(82 66 109);
+  --z-action-subdued-pressed-border: var(--z-action-subdued-border);
+  --z-action-subdued-pressed-text-color: rgb(227 224 233);
+  --z-action-subdued-pressed-icon-color: rgb(227 224 233);
+  --z-action-subdued-pressed-shadow: none;
+
   --z-action-emphasized-background: rgb(176 29 134);
   --z-action-emphasized-border: none;
+  --z-action-emphasized-text-color: rgb(255 255 255);
+  --z-action-emphasized-icon-color: rgb(255 255 255);
+  --z-action-emphasized-shadow: none;
   --z-action-emphasized-hovered-background: rgb(192 51 152);
   --z-action-emphasized-hovered-border: var(--z-action-emphasized-border);
+  --z-action-emphasized-hovered-text-color: var(
+    --z-action-emphasized-text-color
+  );
+  --z-action-emphasized-hovered-icon-color: var(
+    --z-action-emphasized-icon-color
+  );
+  --z-action-emphasized-hovered-shadow: none;
   --z-action-emphasized-focused-background: var(
     --z-action-emphasized-hovered-background
   );
   --z-action-emphasized-focused-border: var(--z-action-emphasized-border);
+  --z-action-emphasized-focused-text-color: var(
+    --z-action-emphasized-text-color
+  );
+  --z-action-emphasized-focused-icon-color: var(
+    --z-action-emphasized-icon-color
+  );
+  --z-action-emphasized-focused-shadow: none;
   --z-action-emphasized-pressed-background: rgb(205 80 169);
   --z-action-emphasized-pressed-border: var(--z-action-emphasized-border);
+  --z-action-emphasized-pressed-text-color: var(
+    --z-action-emphasized-text-color
+  );
+  --z-action-emphasized-pressed-icon-color: var(
+    --z-action-emphasized-icon-color
+  );
+  --z-action-emphasized-pressed-shadow: none;
 
-  --z-input-border-color: var(--z-border-subdued-color);
+  --z-action-destructive-background: rgb(69 32 42);
+  --z-action-destructive-border: none;
+  --z-action-destructive-text-color: rgb(236 214 220);
+  --z-action-destructive-icon-color: rgb(229 175 190);
+  --z-action-destructive-shadow: none;
+  --z-action-destructive-hovered-background: rgb(87 42 54);
+  --z-action-destructive-hovered-border: var(--z-action-destructive-border);
+  --z-action-destructive-hovered-text-color: var(
+    --z-action-destructive-text-color
+  );
+  --z-action-destructive-hovered-icon-color: var(
+    --z-action-destructive-icon-color
+  );
+  --z-action-destructive-hovered-shadow: none;
+  --z-action-destructive-focused-background: var(
+    --z-action-destructive-hovered-background
+  );
+  --z-action-destructive-focused-border: var(--z-action-destructive-border);
+  --z-action-destructive-focused-text-color: var(
+    --z-action-destructive-text-color
+  );
+  --z-action-destructive-focused-icon-color: var(
+    --z-action-destructive-icon-color
+  );
+  --z-action-destructive-focused-shadow: none;
+  --z-action-destructive-pressed-background: rgb(160 60 86);
+  --z-action-destructive-pressed-border: var(--z-action-destructive-border);
+  --z-action-destructive-pressed-text-color: rgb(235 220 224);
+  --z-action-destructive-pressed-icon-color: rgb(235 220 224);
+  --z-action-destructive-pressed-shadow: none;
+
+  --z-input-border-color: var(--z-border-base-color);
   --z-input-focused-border-color: #395ba6;
+
+  --z-icon-color: rgb(201 186 229);
 
   --z-stacking-layer-0: 10;
   --z-stacking-layer-1: 20;
@@ -64,4 +154,5 @@
 
   --z-internal-divider-inline-size: 0;
   --z-internal-divider-block-size: unset;
+  --z-internal-inline-alignment: unset;
 }

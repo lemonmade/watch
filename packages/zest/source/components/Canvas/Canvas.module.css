@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+}
+
 body {
   touch-action: manipulation;
   background: var(--z-surface-background-base);
@@ -15,4 +20,11 @@ body {
     'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+}
+
+:global(#app) {
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
 }

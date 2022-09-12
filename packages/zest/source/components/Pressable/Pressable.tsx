@@ -2,6 +2,7 @@ import {type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 import {Link, type NavigateTo} from '@quilted/quilt';
 
+import systemStyles from '../../system.module.css';
 import {useContainingForm} from '../../utilities/forms';
 import {
   useImplicitAction,
@@ -14,10 +15,11 @@ import styles from './Pressable.module.css';
 export type Props = {
   id?: string;
   className?: string;
-  blockSize?: 'fill';
-  alignContent?: 'start' | 'end' | 'center';
+  display?: 'block' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
+  inlineAlignment?: 'start' | 'end' | 'center';
   disabled?: boolean;
   type?: ImplicitActionType | 'none';
+  accessibilityLabel?: string;
   onPress?(): void;
 } & (
   | {type?: ImplicitActionType; to?: never; target?: never}
@@ -30,11 +32,12 @@ export function Pressable({
   className: explicitClassName,
   target,
   children,
-  blockSize,
-  alignContent,
+  display,
+  inlineAlignment,
   disabled,
   type = 'activation',
   onPress,
+  accessibilityLabel,
 }: PropsWithChildren<Props>) {
   const implicitAction = useImplicitAction(id);
   const allowedImplicitAction =
@@ -47,10 +50,11 @@ export function Pressable({
   const form = useContainingForm();
 
   const className = classes(
+    display && systemStyles[variation('display', display)],
+    inlineAlignment &&
+      systemStyles[variation('inlineAlignment', inlineAlignment)],
     styles.Pressable,
     disabled && styles.disabled,
-    alignContent && styles[variation('alignContent', alignContent)],
-    blockSize && styles[variation('blockSize', blockSize)],
     explicitClassName,
   );
 
@@ -87,6 +91,7 @@ export function Pressable({
       disabled={disabled}
       className={className}
       onClick={handleClick}
+      aria-label={accessibilityLabel}
       {...ariaForAction(allowedImplicitAction)}
     >
       {children}

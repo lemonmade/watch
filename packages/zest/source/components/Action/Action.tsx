@@ -1,29 +1,35 @@
 import {type PropsWithChildren, type ReactNode} from 'react';
-import {classes} from '@lemon/css';
+import {classes, variation} from '@lemon/css';
 import {Pressable, type PressableProps} from '../Pressable';
 
 import styles from './Action.module.css';
 
 export type Props = Omit<PressableProps, 'className'> & {
-  primary?: boolean;
+  emphasis?: boolean | 'subdued' | 'emphasized';
   loading?: boolean;
+  icon?: ReactNode;
   accessory?: ReactNode;
+  role?: 'destructive';
+  size?: 'small' | 'base';
 };
 
 export function Action({
+  role,
   disabled,
-  primary,
+  emphasis,
+  icon,
   accessory,
   children,
+  size,
   ...rest
 }: PropsWithChildren<Props>) {
+  const needsGrid = Boolean(children) && Boolean(accessory || icon);
+  const needsBackdrop = size === 'small';
+
   const content = (
     <>
-      {accessory ? (
-        <span className={styles.ContentContainer}>{children}</span>
-      ) : (
-        children
-      )}
+      {icon}
+      {needsGrid ? <span>{children}</span> : children}
       {accessory}
     </>
   );
@@ -34,12 +40,19 @@ export function Action({
       className={classes(
         styles.Action,
         disabled && styles.disabled,
-        primary && styles.primary,
+        (emphasis === true || emphasis === 'emphasized') && styles.emphasized,
+        emphasis === 'subdued' && styles.subdued,
+        role === 'destructive' && styles.destructive,
+        Boolean(icon) && styles.hasIcon,
         Boolean(accessory) && styles.hasAccessory,
+        needsGrid && styles.spacing,
+        size && styles[variation('size', size)],
       )}
       disabled={disabled}
+      display={needsGrid ? 'inlineGrid' : 'inlineFlex'}
     >
       {content}
+      {needsBackdrop && <span className={styles.Backdrop} />}
     </Pressable>
   );
 }
