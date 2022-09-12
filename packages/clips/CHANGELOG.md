@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.10
+
+### Patch Changes
+
+- [#176](https://github.com/lemonmade/watch/pull/176) [`3b7701a`](https://github.com/lemonmade/watch/commit/3b7701ab48cff3af7f7138eb83c7067b1646808c) Thanks [@lemonmade](https://github.com/lemonmade)! - Rename Button => Action
+
 ## 0.2.9
 
 ### Patch Changes

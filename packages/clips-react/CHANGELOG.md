@@ -1,5 +1,17 @@
 # @watching/clips-react
 
+## 0.2.11
+
+### Patch Changes
+
+- [#176](https://github.com/lemonmade/watch/pull/176) [`3b7701a`](https://github.com/lemonmade/watch/commit/3b7701ab48cff3af7f7138eb83c7067b1646808c) Thanks [@lemonmade](https://github.com/lemonmade)! - Rename Button => Action
+
+* [`a2de088`](https://github.com/lemonmade/watch/commit/a2de088fb5a488db970c8b889a14038212cc94ae) Thanks [@lemonmade](https://github.com/lemonmade)! - Add react-signals package
+
+* Updated dependencies [[`3b7701a`](https://github.com/lemonmade/watch/commit/3b7701ab48cff3af7f7138eb83c7067b1646808c), [`a2de088`](https://github.com/lemonmade/watch/commit/a2de088fb5a488db970c8b889a14038212cc94ae)]:
+  - @watching/clips@0.2.10
+  - @watching/thread-signals@0.1.2
+
 ## 0.2.10
 
 ### Patch Changes

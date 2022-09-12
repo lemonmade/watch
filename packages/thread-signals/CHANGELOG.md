@@ -1,5 +1,11 @@
 # @watching/thread-signals
 
+## 0.1.2
+
+### Patch Changes
+
+- [`a2de088`](https://github.com/lemonmade/watch/commit/a2de088fb5a488db970c8b889a14038212cc94ae) Thanks [@lemonmade](https://github.com/lemonmade)! - Add react-signals package
+
 ## 0.1.1
 
 ### Patch Changes
