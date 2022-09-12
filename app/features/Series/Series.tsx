@@ -115,7 +115,7 @@ function SeriesWithData({
           />
         ))}
         {series.seasons.map(({id, number, status, imdbUrl, tmdbUrl}) => (
-          <View key={id} border padding cornerRadius>
+          <View key={id}>
             <Text>Season {number}</Text>
             <InlineStack spacing="small">
               <Action to={tmdbUrl} target="new">
@@ -187,36 +187,38 @@ function SeriesWithData({
           <Section>
             <BlockStack spacing>
               <Heading>Watchthroughs</Heading>
-              {watchThroughs.map((watchThrough) => (
-                <Action
-                  key={watchThrough.id}
-                  to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                  accessory={<Icon source="arrowEnd" />}
-                  alignContent="start"
-                >
-                  <BlockStack spacing="tiny">
-                    <Text>
-                      {watchThrough.from.season === watchThrough.to.season ? (
-                        `Season ${watchThrough.from.season}`
-                      ) : (
-                        <>
-                          From <EpisodeSliceText {...watchThrough.from} /> to{' '}
-                          <EpisodeSliceText {...watchThrough.to} />
-                        </>
-                      )}
-                    </Text>
-                    <Text emphasis="subdued">
-                      {watchThrough.finishedAt
-                        ? `Finished on ${new Intl.DateTimeFormat().format(
-                            new Date(watchThrough.finishedAt),
-                          )}`
-                        : watchThrough.unfinishedEpisodeCount > 0
-                        ? `${watchThrough.unfinishedEpisodeCount} episodes left`
-                        : 'Still watching'}
-                    </Text>
-                  </BlockStack>
-                </Action>
-              ))}
+              <BlockStack spacing="small">
+                {watchThroughs.map((watchThrough) => (
+                  <Action
+                    key={watchThrough.id}
+                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+                    accessory={<Icon source="arrowEnd" />}
+                    inlineAlignment="start"
+                  >
+                    <BlockStack spacing="tiny">
+                      <Text>
+                        {watchThrough.from.season === watchThrough.to.season ? (
+                          `Season ${watchThrough.from.season}`
+                        ) : (
+                          <>
+                            From <EpisodeSliceText {...watchThrough.from} /> to{' '}
+                            <EpisodeSliceText {...watchThrough.to} />
+                          </>
+                        )}
+                      </Text>
+                      <Text emphasis="subdued">
+                        {watchThrough.finishedAt
+                          ? `Finished on ${new Intl.DateTimeFormat().format(
+                              new Date(watchThrough.finishedAt),
+                            )}`
+                          : watchThrough.unfinishedEpisodeCount > 0
+                          ? `${watchThrough.unfinishedEpisodeCount} episodes left`
+                          : 'Still watching'}
+                      </Text>
+                    </BlockStack>
+                  </Action>
+                ))}
+              </BlockStack>
             </BlockStack>
           </Section>
         )}

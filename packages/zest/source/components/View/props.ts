@@ -11,13 +11,14 @@ import {
   type BorderKeyword,
   type CornerRadiusKeyword,
 } from '../../system';
+import systemStyles from '../../system.module.css';
 
 import styles from './View.module.css';
 
 export interface Props {
   id?: string;
   className?: string;
-  display?: 'block' | 'flex' | 'grid' | 'inline';
+  display?: 'block' | 'inline' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
   padding?: boolean | SpacingKeyword | RawValue;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
@@ -117,7 +118,7 @@ export function useViewProps({
   }
 
   if (display) {
-    addClassName(styles[variation('display', display)]);
+    addClassName(systemStyles[variation('display', display)]);
   }
 
   if (visibility === 'hidden') {

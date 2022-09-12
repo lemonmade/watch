@@ -1,8 +1,4 @@
 .Pressable {
-  display: var(
-    --x-implicit-display-none,
-    var(--x-implicit-display-flex, inline-flex)
-  );
   background: none;
   appearance: none;
   border: none;
@@ -10,13 +6,14 @@
   color: inherit;
   font-weight: inherit;
   font-family: inherit;
-  inline-size: var(--x-implicit-container-inline-size);
-  border-radius: var(--z-corner-radius-base);
+  inline-size: var(--z-internal-container-inline-size);
+  border-radius: 0;
   align-items: center;
-  justify-content: var(--x-implicit-align, center);
-  text-align: var(--x-implicit-align, center);
+  justify-content: var(--z-internal-inline-alignment, center);
+  text-align: var(--z-internal-inline-alignment, center);
   text-decoration: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0 0 0 / 0%);
 }
 
 .Pressable:focus {
@@ -24,18 +21,7 @@
 }
 
 .blockSizeFill {
-  display: var(--x-implicit-display-none, var(--x-implicit-display-flex, flex));
   inline-size: 100%;
-}
-
-.alignContentStart {
-  text-align: start;
-  justify-content: start;
-}
-
-.alignContentEnd {
-  text-align: end;
-  justify-content: end;
 }
 
 .disabled {

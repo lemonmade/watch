@@ -36,7 +36,15 @@
     "react-query": "^3.39.0"
   },
   "eslintConfig": {
-    "extends": "@quilted/eslint-config/app"
+    "extends": "@quilted/eslint-config/app",
+    "rules": {
+      "jsx-a11y/aria-role": [
+        "error",
+        {
+          "ignoreNonDOM": true
+        }
+      ]
+    }
   },
   "browserslist": {
     "defaults": [

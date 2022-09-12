@@ -15,4 +15,6 @@ export {
   type CornerRadiusKeyword,
 } from './system';
 
+export {default as systemStyles} from './system.module.css';
+
 export * from './components';

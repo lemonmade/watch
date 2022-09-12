@@ -1,0 +1,32 @@
+.NavigationItem {
+  --z-icon-color: var(--z-action-icon-color);
+  min-block-size: var(--z-action-minimum-size);
+  padding: var(--z-spacing-tiny) var(--z-spacing-base);
+  gap: var(--z-spacing-small);
+  grid-template-columns: auto 1fr;
+  border-radius: var(--z-corner-radius-base);
+  color: var(--z-action-text-color);
+}
+
+.NavigationItem:where(:hover) {
+  --z-icon-color: var(--z-action-hovered-icon-color);
+  background: var(--z-action-hovered-background);
+  color: var(--z-action-hovered-text-color);
+}
+
+.NavigationItem:where(:focus-visible) {
+  --z-icon-color: var(--z-action-focused-icon-color);
+  background: var(--z-action-focused-background);
+  color: var(--z-action-focused-text-color);
+}
+
+.NavigationItem:where(:active),
+.selected {
+  --z-icon-color: var(--z-action-pressed-icon-color);
+  background: var(--z-action-pressed-background);
+  color: var(--z-action-pressed-text-color);
+}
+
+.selected {
+  background: var(--z-action-pressed-background);
+}

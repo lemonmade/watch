@@ -1,7 +1,46 @@
+.Frame {
+  --Navigation-inline-size: 12rem;
+  position: relative;
+  z-index: var(--z-stacking-layer-1);
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+}
+
+.Content {
+  padding-block-end: calc(
+    var(--z-action-minimum-size) + (2 * var(--z-spacing-small))
+  );
+}
+
+.Navigation {
+  --z-internal-display-none: none;
+  background: var(--z-overlay-background-base);
+  border-inline-end: 1px solid rgb(36 31 45);
+}
+
+.NavigationContent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  inline-size: var(--Navigation-inline-size);
+}
+
+@media screen and (min-width: 32em) {
+  .Frame {
+    grid-template-columns: var(--Navigation-inline-size) 1fr;
+  }
+
+  .Navigation {
+    --z-internal-display-none: initial;
+  }
+}
+
 .GoMenu {
   position: fixed;
   bottom: var(--z-spacing-base);
   right: var(--z-spacing-base);
+  z-index: var(--z-stacking-layer-2);
   inline-size: fit-content;
   margin: 0 0 0 auto;
 }

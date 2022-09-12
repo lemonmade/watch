@@ -31,7 +31,7 @@ export function WatchThroughItem({
   return (
     <Pressable
       to={to}
-      alignContent="start"
+      inlineAlignment="start"
       className={classes(
         styles.WatchThrough,
         unfinishedEpisodeCount > 1 && styles.hasFootnotes,

@@ -6,7 +6,7 @@
   align-items: flex-start;
 }
 
-@media (min-width: 36.25em) {
+@media (min-width: 40em) {
   .MediaGrid {
     grid-template-columns: repeat(3, 1fr);
   }

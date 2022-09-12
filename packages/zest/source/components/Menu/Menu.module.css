@@ -7,9 +7,9 @@
 }
 
 :where(.Menu) > * {
-  --x-implicit-display: block;
-  --x-implicit-display-flex: flex;
-  --x-implicit-display-grid: grid;
-  --x-implicit-align: start;
-  --x-implicit-container-inline-size: 100%;
+  --z-internal-display: block;
+  --z-internal-display-flex: flex;
+  --z-internal-display-grid: grid;
+  --z-internal-inline-alignment: start;
+  --z-internal-container-inline-size: 100%;
 }

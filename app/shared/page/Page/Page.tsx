@@ -1,6 +1,7 @@
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {
+  Icon,
   Text,
   Section,
   BlockStack,
@@ -11,6 +12,8 @@ import {
   Popover,
   PopoverSheet,
 } from '@lemon/zest';
+
+import styles from './Page.module.css';
 
 interface Props {
   heading: ReactNode;
@@ -24,26 +27,30 @@ export function Page({
   heading,
   detail,
 }: PropsWithChildren<Props>) {
-  const headingContent = detail ? (
-    <BlockStack spacing="small">
+  const headingContent = menu ? (
+    <InlineStack spacing="small">
       <Heading>{heading}</Heading>
-      <Text>{detail}</Text>
-    </BlockStack>
-  ) : (
-    <Heading>{heading}</Heading>
-  );
-
-  const headerContent = menu ? (
-    <InlineStack spacing>
-      {headingContent}
 
       <Popover>
-        <Action>More…</Action>
+        <Action
+          size="small"
+          icon={<Icon source="more" />}
+          accessibilityLabel="More…"
+        />
         <PopoverSheet>
           <Menu>{menu}</Menu>
         </PopoverSheet>
       </Popover>
     </InlineStack>
+  ) : (
+    <Heading>{heading}</Heading>
+  );
+
+  const headerContent = detail ? (
+    <BlockStack spacing="tiny">
+      {headingContent}
+      <Text emphasis="subdued">{detail}</Text>
+    </BlockStack>
   ) : (
     headingContent
   );
@@ -53,7 +60,9 @@ export function Page({
       <Section padding="base" content="header">
         {headerContent}
       </Section>
-      <Section padding="base">{children}</Section>
+      <Section padding="base" className={styles.Content}>
+        {children}
+      </Section>
     </>
   );
 }
