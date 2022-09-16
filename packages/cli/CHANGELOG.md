@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.22
+
+### Patch Changes
+
+- [`cc0055a`](https://github.com/lemonmade/watch/commit/cc0055af63b36cc5c5aa947f7602d19018d1db24) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix CLI preview message
+
+- Updated dependencies [[`3b7701a`](https://github.com/lemonmade/watch/commit/3b7701ab48cff3af7f7138eb83c7067b1646808c)]:
+  - @watching/clips@0.2.10
+
 ## 0.4.21
 
 ### Patch Changes
