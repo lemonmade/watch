@@ -28,8 +28,8 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@preact/signals-core": "^0.0.4",
-    "@quilted/threads": "^0.1.0"
+    "@preact/signals-core": "^1.1.0",
+    "@quilted/threads": "^0.1.6"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"
@@ -40,7 +40,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.0",
+    "@quilted/testing": "^0.1.4",
     "@quilted/threads": "^0.1.0"
   },
   "eslintConfig": {

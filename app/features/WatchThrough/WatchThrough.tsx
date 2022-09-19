@@ -1,5 +1,5 @@
-import {useState} from 'react';
 import {useNavigate} from '@quilted/quilt';
+import {useSignal, type Signal} from '@watching/react-signals';
 
 import {
   Icon,
@@ -246,23 +246,28 @@ function NextEpisode({
   seasonNumber: number;
   onAction?(): void;
 }) {
-  const [rating, setRating] = useState<null | number>(null);
-  const [notes, setNotes] = useState<null | string>(null);
-  const [containsSpoilers, setContainsSpoilers] = useState(false);
+  const rating = useSignal<null | number>(null);
+  const notes = useSignal<null | string>(null);
+  const containsSpoilers = useSignal(false);
+  const at = useSignal<Date>(new Date());
+
   const watchNextEpisode = useMutation(watchNextEpisodeMutation);
   const skipNextEpisode = useMutation(skipNextEpisodeMutation);
-  const [at, setAt] = useState<Date | null>(() => new Date());
 
   const markEpisodeAsWatched = () => {
     const optionalArguments: Omit<
       WatchThroughWatchNextEpisodeMutationVariables,
       'episode' | 'watchThrough'
     > = {
-      finishedAt: at?.toISOString(),
+      finishedAt: at.value?.toISOString(),
     };
 
-    if (notes) optionalArguments.notes = {content: notes, containsSpoilers};
-    if (rating) optionalArguments.rating = rating;
+    if (notes.value)
+      optionalArguments.notes = {
+        content: notes.value,
+        containsSpoilers: containsSpoilers.value,
+      };
+    if (rating.value) optionalArguments.rating = rating.value;
 
     watchNextEpisode.mutate(
       {
@@ -301,24 +306,10 @@ function NextEpisode({
           {overview && <TextBlock>{overview}</TextBlock>}
 
           <View>
-            <Rating
-              value={rating ?? undefined}
-              onChange={(rating) =>
-                rating === 0 ? setRating(null) : setRating(rating)
-              }
-            />
+            <EpisodeRating value={rating} />
           </View>
-          <TextField
-            label="Notes"
-            multiline={4}
-            blockSize="fitContent"
-            value={notes ?? ''}
-            onChange={setNotes}
-          />
-          <Checkbox checked={containsSpoilers} onChange={setContainsSpoilers}>
-            These notes contain spoilers
-          </Checkbox>
-          {at && <DateField label="Watched on" value={at} onChange={setAt} />}
+          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
+          <WatchedAt value={at} />
         </BlockStack>
         <InlineStack spacing="small">
           <Action emphasis onPress={markEpisodeAsWatched}>
@@ -329,10 +320,13 @@ function NextEpisode({
               const optionalArguments: Omit<
                 WatchThroughSkipNextEpisodeMutationVariables,
                 'episode' | 'watchThrough'
-              > = {at: at?.toISOString()};
+              > = {at: at.value?.toISOString()};
 
-              if (notes) {
-                optionalArguments.notes = {content: notes, containsSpoilers};
+              if (notes.value) {
+                optionalArguments.notes = {
+                  content: notes.value,
+                  containsSpoilers: containsSpoilers.value,
+                };
               }
 
               skipNextEpisode.mutate(
@@ -352,5 +346,74 @@ function NextEpisode({
         </InlineStack>
       </BlockStack>
     </Form>
+  );
+}
+
+function EpisodeRating({value: rating}: {value: Signal<null | number>}) {
+  return (
+    <Rating
+      value={rating.value ?? undefined}
+      onChange={(newRating) => {
+        rating.value = newRating === 0 ? null : newRating;
+      }}
+    />
+  );
+}
+
+function WatchedAt({value: at}: {value: Signal<Date>}) {
+  return (
+    <DateField
+      label="Watched on"
+      value={at.value}
+      onChange={(newDate) => {
+        at.value = newDate;
+      }}
+    />
+  );
+}
+
+function DetailedReview({
+  notes,
+  containsSpoilers,
+}: {
+  notes: Signal<null | string>;
+  containsSpoilers: Signal<boolean>;
+}) {
+  return (
+    <>
+      <NotesTextField value={notes} />
+      <NotesContainSpoilersCheckbox value={containsSpoilers} />
+    </>
+  );
+}
+
+function NotesTextField({value: notes}: {value: Signal<null | string>}) {
+  return (
+    <TextField
+      label="Notes"
+      multiline={4}
+      blockSize="fitContent"
+      value={notes.value ?? ''}
+      onChange={(newNote) => {
+        notes.value = newNote;
+      }}
+    />
+  );
+}
+
+function NotesContainSpoilersCheckbox({
+  value: containsSpoilers,
+}: {
+  value: Signal<boolean>;
+}) {
+  return (
+    <Checkbox
+      checked={containsSpoilers.value}
+      onChange={(newContainsSpoilers) => {
+        containsSpoilers.value = newContainsSpoilers;
+      }}
+    >
+      These notes contain spoilers
+    </Checkbox>
   );
 }

@@ -1,14 +1,19 @@
 import {useState, useEffect, useMemo, useCallback} from 'react';
 import {signal, computed, effect, type Signal} from '@preact/signals-core';
 
+export * from '@preact/signals-core';
+
 const EMPTY_ARGUMENTS = Object.freeze([]) as any as unknown[];
 
 export function useSignal<T>(
-  value: T,
+  value: T | (() => T),
   args: unknown[] = EMPTY_ARGUMENTS,
 ): Signal<T> {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => signal(value), args);
+  return useMemo(
+    () => signal(typeof value === 'function' ? (value as any)() : value),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    args,
+  );
 }
 
 export function useComputed<T>(
