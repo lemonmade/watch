@@ -21,12 +21,14 @@ export interface ImplicitSubmit {
 
 interface Props extends ViewProps {
   id?: string;
+  loading?: boolean;
   implicitSubmit?: boolean | ImplicitSubmit;
   onSubmit(): void;
 }
 
 export function Form({
   id: explicitId,
+  loading,
   onSubmit,
   children,
   implicitSubmit = false,
@@ -81,7 +83,11 @@ export function Form({
 
   return nested ? (
     <>
-      <div {...resolveViewProps(view)}>
+      <div
+        {...resolveViewProps(view)}
+        // @ts-expect-error This is a valid prop!
+        inert={loading}
+      >
         <FormContext.Provider value={formDetails}>
           {content}
         </FormContext.Provider>
@@ -91,7 +97,13 @@ export function Form({
       </Portal>
     </>
   ) : (
-    <form {...resolveViewProps(view)} id={id} onSubmit={handleSubmit}>
+    <form
+      {...resolveViewProps(view)}
+      id={id}
+      onSubmit={handleSubmit}
+      // @ts-expect-error This is a valid prop!
+      inert={loading}
+    >
       {content}
     </form>
   );

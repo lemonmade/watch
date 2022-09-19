@@ -1,6 +1,5 @@
 import {
   raw,
-  Icon,
   Action,
   BlockStack,
   TextField,
@@ -22,11 +21,11 @@ import {
   List,
   Item,
   Popover,
-  PopoverSheet,
   Label,
   Select,
   Layout,
   Spacer,
+  Modal,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
@@ -55,32 +54,108 @@ function ActionComponents() {
           <Action>Action (button)</Action>
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
+          <Action loading>Action (loading)</Action>
           <Action emphasis>Action (emphasized)</Action>
-          <Action emphasis="subdued">Action (subdued)</Action>
-          <Action role="destructive">Action (destructive)</Action>
-          <Action size="small">Action (small)</Action>
-          <Action icon={<Icon source="arrowEnd" />}>Action (icon)</Action>
-          <Action accessory={<Icon source="arrowEnd" />}>
-            Action (accessory)
+          <Action emphasis disabled icon="arrowEnd">
+            Action (emphasized disabled)
           </Action>
+          <Action emphasis loading icon="arrowEnd">
+            Action (emphasized loading)
+          </Action>
+          <Action emphasis="subdued">Action (subdued)</Action>
+          <Action emphasis="subdued" disabled icon="arrowEnd">
+            Action (subdued disabled)
+          </Action>
+          <Action emphasis="subdued" loading icon="arrowEnd">
+            Action (subdued loading)
+          </Action>
+          <Action role="destructive" icon="delete">
+            Action (destructive)
+          </Action>
+          <Action role="destructive" disabled icon="delete">
+            Action (destructive disabled)
+          </Action>
+          <Action role="destructive" loading icon="delete">
+            Action (destructive loading)
+          </Action>
+          <Action modal={<ActionExampleModal />}>Action (modal)</Action>
+          <Action size="small">Action (small)</Action>
+          <Action secondaryIcon="arrowEnd">Action (secondary icon)</Action>
           <Pressable>Pressable</Pressable>
           <Pressable to="#">Pressable (link)</Pressable>
         </InlineStack>
 
+        <Divider emphasis="subdued" />
+
+        <InlineStack spacing="small">
+          <Action accessory={<ActionAccessoryExampleMenu />}>Accessory</Action>
+          <Action emphasis accessory={<ActionAccessoryExampleMenu />}>
+            Accessory (emphasized)
+          </Action>
+          <Action emphasis="subdued" accessory={<ActionAccessoryExampleMenu />}>
+            Accessory (subdued)
+          </Action>
+          <Action role="destructive" accessory={<ActionAccessoryExampleMenu />}>
+            Accessory (destructive)
+          </Action>
+          <Action disabled accessory={<ActionAccessoryExampleMenu />}>
+            Accessory (disabled)
+          </Action>
+          <Action accessory={<ActionAccessoryExampleMenu disabled />}>
+            Accessory (accessory disabled)
+          </Action>
+          <Action emphasis disabled accessory={<ActionAccessoryExampleMenu />}>
+            Accessory (emphasized disabled)
+          </Action>
+        </InlineStack>
+
+        <Divider emphasis="subdued" />
+
         <Menu>
           <Action>Menu button</Action>
           <Action to="#">Menu link</Action>
-          <Action role="destructive">Menu destructive</Action>
+          <Action emphasis="subdued">Menu button (subdued)</Action>
+          <Action emphasis>Menu button (emphasized)</Action>
+          <Action icon="delete" role="destructive">
+            Menu button (destructive)
+          </Action>
         </Menu>
-
-        <Popover>
-          <Action>Action with popover</Action>
-          <PopoverSheet>
-            <Section padding>This is a popover</Section>
-          </PopoverSheet>
-        </Popover>
       </BlockStack>
     </Section>
+  );
+}
+
+function ActionAccessoryExampleMenu({disabled = false} = {}) {
+  return (
+    <Action
+      disabled={disabled}
+      accessibilityLabel="More actions"
+      icon="more"
+      popover={
+        <Popover>
+          <Menu>
+            <Action>Menu button</Action>
+            <Action to="#">Menu link</Action>
+            <Action role="destructive">Menu destructive</Action>
+          </Menu>
+        </Popover>
+      }
+    />
+  );
+}
+
+function ActionExampleModal() {
+  return (
+    <Modal>
+      <Section padding>Modal content!</Section>
+      <Divider />
+      <Section padding>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi
+        blanditiis laborum dolor velit mollitia, distinctio fugit possimus
+        illum, nulla enim ab! Ipsa reiciendis, earum accusantium quibusdam nemo
+        porro aspernatur itaque.
+      </Section>
+    </Modal>
   );
 }
 

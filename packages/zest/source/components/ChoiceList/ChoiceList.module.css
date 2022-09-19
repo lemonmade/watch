@@ -10,15 +10,15 @@
   flex-direction: row;
   align-items: center;
   gap: var(--z-spacing-small);
-  min-block-size: var(--z-action-minimum-size);
+  min-block-size: var(--z-Action-minimum-size);
   padding: var(--z-spacing-tiny) var(--z-spacing-small);
   border-radius: var(--z-corner-radius-base);
 }
 
 .Choice:focus-within {
-  background: var(--z-action-focused-background);
+  background: var(--z-Action-focused-background);
 }
 
 .checked {
-  background: var(--z-action-pressed-background);
+  background: var(--z-Action-pressed-background);
 }

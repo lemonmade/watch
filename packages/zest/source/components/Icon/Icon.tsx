@@ -1,20 +1,22 @@
 import {type ComponentType} from 'react';
 import styles from './Icon.module.css';
 
+export type IconSource =
+  | 'arrowEnd'
+  | 'watching'
+  | 'watchlist'
+  | 'subscription'
+  | 'search'
+  | 'app'
+  | 'developer'
+  | 'user'
+  | 'go'
+  | 'delete'
+  | 'stop'
+  | 'more';
+
 export interface Props {
-  source:
-    | 'arrowEnd'
-    | 'watching'
-    | 'watchlist'
-    | 'subscription'
-    | 'search'
-    | 'app'
-    | 'developer'
-    | 'user'
-    | 'go'
-    | 'delete'
-    | 'stop'
-    | 'more';
+  source: IconSource;
 }
 
 const ICON_MAP = new Map<Props['source'], ComponentType>([

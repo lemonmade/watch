@@ -1,32 +1,32 @@
 .NavigationItem {
-  --z-icon-color: var(--z-action-icon-color);
-  min-block-size: var(--z-action-minimum-size);
+  --z-Icon-base-color: var(--z-Action-icon-color);
+  min-block-size: var(--z-Action-minimum-size);
   padding: var(--z-spacing-tiny) var(--z-spacing-base);
   gap: var(--z-spacing-small);
   grid-template-columns: auto 1fr;
   border-radius: var(--z-corner-radius-base);
-  color: var(--z-action-text-color);
+  color: var(--z-Action-text-color);
 }
 
 .NavigationItem:where(:hover) {
-  --z-icon-color: var(--z-action-hovered-icon-color);
-  background: var(--z-action-hovered-background);
-  color: var(--z-action-hovered-text-color);
+  --z-Icon-base-color: var(--z-Action-hovered-icon-color);
+  background: var(--z-Action-hovered-background);
+  color: var(--z-Action-hovered-text-color);
 }
 
 .NavigationItem:where(:focus-visible) {
-  --z-icon-color: var(--z-action-focused-icon-color);
-  background: var(--z-action-focused-background);
-  color: var(--z-action-focused-text-color);
+  --z-Icon-base-color: var(--z-Action-focused-icon-color);
+  background: var(--z-Action-focused-background);
+  color: var(--z-Action-focused-text-color);
 }
 
 .NavigationItem:where(:active),
 .selected {
-  --z-icon-color: var(--z-action-pressed-icon-color);
-  background: var(--z-action-pressed-background);
-  color: var(--z-action-pressed-text-color);
+  --z-Icon-base-color: var(--z-Action-pressed-icon-color);
+  background: var(--z-Action-pressed-background);
+  color: var(--z-Action-pressed-text-color);
 }
 
 .selected {
-  background: var(--z-action-pressed-background);
+  background: var(--z-Action-pressed-background);
 }

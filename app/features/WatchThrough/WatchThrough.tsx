@@ -1,22 +1,23 @@
+import {type PropsWithChildren} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {useSignal, type Signal} from '@watching/react-signals';
 
 import {
-  Icon,
   BlockStack,
   InlineStack,
   Action,
   Checkbox,
   Heading,
-  TextBlock,
+  Layout,
   TextField,
   Rating,
   Image,
   Text,
-  DateField,
+  DatePicker,
   Form,
+  Menu,
   Section,
-  View,
+  Popover,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -65,16 +66,13 @@ export default function WatchThrough({id}: Props) {
       }
       menu={
         <>
-          <Action
-            icon={<Icon source="arrowEnd" />}
-            to={`/app/series/${series.handle}`}
-          >
+          <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
             More about {series.name}
           </Action>
           {status === 'ONGOING' && (
             <Action
               role="destructive"
-              icon={<Icon source="stop" />}
+              icon="stop"
               onPress={() => {
                 stopWatchThrough.mutate(
                   {id},
@@ -93,7 +91,7 @@ export default function WatchThrough({id}: Props) {
           )}
           <Action
             role="destructive"
-            icon={<Icon source="delete" />}
+            icon="delete"
             onPress={() => {
               deleteWatchThrough.mutate(
                 {id},
@@ -229,7 +227,6 @@ function NextEpisode({
   id,
   title,
   image,
-  overview,
   firstAired,
   watchThroughId,
   episodeNumber,
@@ -250,11 +247,122 @@ function NextEpisode({
   const notes = useSignal<null | string>(null);
   const containsSpoilers = useSignal(false);
   const at = useSignal<Date>(new Date());
+  const submitting = useSignal(false);
 
-  const watchNextEpisode = useMutation(watchNextEpisodeMutation);
-  const skipNextEpisode = useMutation(skipNextEpisodeMutation);
+  return (
+    <WatchEpisodeForm
+      id={id}
+      watchThroughId={watchThroughId}
+      loading={submitting}
+      at={at}
+      rating={rating}
+      notes={notes}
+      containsSpoilers={containsSpoilers}
+      onWatchStart={() => {
+        submitting.value = true;
+      }}
+      onWatch={() => {
+        submitting.value = false;
+        onAction?.();
+      }}
+    >
+      <BlockStack spacing>
+        {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
+        <BlockStack spacing>
+          <Layout spacing blockAlignment="start" columns={['fill', 'auto']}>
+            <BlockStack spacing="small">
+              <Heading>{title}</Heading>
 
-  const markEpisodeAsWatched = () => {
+              <BlockStack spacing="tiny">
+                <Text emphasis="subdued">
+                  Season {seasonNumber}, Episode {episodeNumber}
+                </Text>
+                {firstAired && (
+                  <Text emphasis="subdued">
+                    {firstAired.toLocaleDateString(undefined, {
+                      month: 'long',
+                      year: 'numeric',
+                      day: 'numeric',
+                    })}
+                  </Text>
+                )}
+              </BlockStack>
+            </BlockStack>
+
+            <Action
+              emphasis
+              type="submit"
+              accessory={
+                <Action
+                  icon="more"
+                  accessibilityLabel="More actions"
+                  popover={
+                    <Popover inlineAttachment="end">
+                      <Menu>
+                        <SkipEpisodeAction
+                          id={id}
+                          loading={submitting}
+                          watchThroughId={watchThroughId}
+                          at={at}
+                          notes={notes}
+                          containsSpoilers={containsSpoilers}
+                          onSkipStart={() => {
+                            submitting.value = true;
+                          }}
+                          onSkip={() => {
+                            submitting.value = false;
+                            onAction?.();
+                          }}
+                        />
+                      </Menu>
+                    </Popover>
+                  }
+                />
+              }
+            >
+              Watch
+            </Action>
+          </Layout>
+
+          <InlineStack spacing>
+            <EpisodeRating value={rating} />
+            <WatchedAt value={at} />
+          </InlineStack>
+
+          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
+        </BlockStack>
+      </BlockStack>
+    </WatchEpisodeForm>
+  );
+}
+
+interface WatchEpisodeFormProps {
+  id: string;
+  loading: Signal<boolean>;
+  at: Signal<Date>;
+  rating: Signal<number | null>;
+  notes: Signal<string | null>;
+  containsSpoilers: Signal<boolean>;
+  watchThroughId: string;
+  onWatch?(): void;
+  onWatchStart?(): void;
+}
+
+function WatchEpisodeForm({
+  id,
+  at,
+  notes,
+  rating,
+  loading,
+  containsSpoilers,
+  watchThroughId,
+  onWatch,
+  onWatchStart,
+  children,
+}: PropsWithChildren<WatchEpisodeFormProps>) {
+  const {mutate, isLoading} = useMutation(watchNextEpisodeMutation);
+
+  const watchEpisode = () => {
     const optionalArguments: Omit<
       WatchThroughWatchNextEpisodeMutationVariables,
       'episode' | 'watchThrough'
@@ -262,90 +370,94 @@ function NextEpisode({
       finishedAt: at.value?.toISOString(),
     };
 
-    if (notes.value)
+    if (notes.value) {
       optionalArguments.notes = {
         content: notes.value,
         containsSpoilers: containsSpoilers.value,
       };
-    if (rating.value) optionalArguments.rating = rating.value;
+    }
 
-    watchNextEpisode.mutate(
+    if (rating.value) {
+      optionalArguments.rating = rating.value;
+    }
+
+    onWatchStart?.();
+    mutate(
       {
         ...optionalArguments,
         episode: id,
         watchThrough: watchThroughId,
       },
       {
-        onSettled: onAction,
+        onSettled: onWatch,
       },
     );
   };
 
   return (
-    <Form onSubmit={markEpisodeAsWatched}>
-      <BlockStack spacing>
-        {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
-        <BlockStack spacing>
-          <BlockStack spacing="small">
-            <Heading>{title}</Heading>
-            <Text emphasis="subdued">
-              Season {seasonNumber}, episode {episodeNumber}
-              {firstAired && (
-                <>
-                  {' • '}
-                  {firstAired.toLocaleDateString(undefined, {
-                    month: 'long',
-                    year: 'numeric',
-                    day: 'numeric',
-                  })}
-                </>
-              )}
-            </Text>
-          </BlockStack>
-
-          {overview && <TextBlock>{overview}</TextBlock>}
-
-          <View>
-            <EpisodeRating value={rating} />
-          </View>
-          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
-          <WatchedAt value={at} />
-        </BlockStack>
-        <InlineStack spacing="small">
-          <Action emphasis onPress={markEpisodeAsWatched}>
-            Watch
-          </Action>
-          <Action
-            onPress={() => {
-              const optionalArguments: Omit<
-                WatchThroughSkipNextEpisodeMutationVariables,
-                'episode' | 'watchThrough'
-              > = {at: at.value?.toISOString()};
-
-              if (notes.value) {
-                optionalArguments.notes = {
-                  content: notes.value,
-                  containsSpoilers: containsSpoilers.value,
-                };
-              }
-
-              skipNextEpisode.mutate(
-                {
-                  ...optionalArguments,
-                  episode: id,
-                  watchThrough: watchThroughId,
-                },
-                {
-                  onSettled: onAction,
-                },
-              );
-            }}
-          >
-            Skip
-          </Action>
-        </InlineStack>
-      </BlockStack>
+    <Form loading={isLoading || loading.value || false} onSubmit={watchEpisode}>
+      {children}
     </Form>
+  );
+}
+
+interface SkipEpisodeActionProps {
+  id: string;
+  watchThroughId: string;
+  loading: Signal<boolean>;
+  at: Signal<Date>;
+  notes: Signal<string | null>;
+  containsSpoilers: Signal<boolean>;
+  onSkip?(): void;
+  onSkipStart?(): void;
+}
+
+function SkipEpisodeAction({
+  id,
+  loading,
+  at,
+  notes,
+  containsSpoilers,
+  watchThroughId,
+  onSkip,
+  onSkipStart,
+}: SkipEpisodeActionProps) {
+  const {mutate, isLoading} = useMutation(skipNextEpisodeMutation);
+
+  const skipEpisode = () => {
+    const optionalArguments: Omit<
+      WatchThroughSkipNextEpisodeMutationVariables,
+      'episode' | 'watchThrough'
+    > = {at: at.value?.toISOString()};
+
+    if (notes.value) {
+      optionalArguments.notes = {
+        content: notes.value,
+        containsSpoilers: containsSpoilers.value,
+      };
+    }
+
+    onSkipStart?.();
+    mutate(
+      {
+        ...optionalArguments,
+        episode: id,
+        watchThrough: watchThroughId,
+      },
+      {
+        onSettled: onSkip,
+      },
+    );
+  };
+
+  return (
+    <Action
+      loading={isLoading || loading.value || false}
+      icon="arrowEnd"
+      onPress={skipEpisode}
+    >
+      Skip…
+    </Action>
   );
 }
 
@@ -362,7 +474,7 @@ function EpisodeRating({value: rating}: {value: Signal<null | number>}) {
 
 function WatchedAt({value: at}: {value: Signal<Date>}) {
   return (
-    <DateField
+    <DatePicker
       label="Watched on"
       value={at.value}
       onChange={(newDate) => {

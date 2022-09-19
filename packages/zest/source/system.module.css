@@ -45,3 +45,8 @@
 .inlineAlignmentEnd {
   --z-internal-inline-alignment: end;
 }
+
+.resetOrientation {
+  --z-internal-divider-inline-size: 0;
+  --z-internal-divider-block-size: initial;
+}

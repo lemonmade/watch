@@ -1,9 +1,11 @@
-import {createContext, useContext} from 'react';
+import {createContext, useContext, useMemo} from 'react';
 import type {PropsWithChildren} from 'react';
+
+import type {EmphasisValue, ActionRoleKeyword} from '../system';
 
 export interface ImplicitActionTarget {
   readonly id: string;
-  readonly type?: 'popover' | 'form';
+  readonly type?: 'popover' | 'modal' | 'form';
   readonly active?: boolean;
 }
 
@@ -28,16 +30,25 @@ export function useImplicitAction(id?: string) {
   }
 }
 
-interface Props {
+interface ImplicitActionProps {
   action?: ImplicitAction;
 }
 
 export function ImplicitActionContext({
   action,
   children,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<ImplicitActionProps>) {
   return (
     <ImplicitActionInternalContext.Provider value={action}>
+      {children}
+    </ImplicitActionInternalContext.Provider>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function ImplicitActionReset({children}: PropsWithChildren<{}>) {
+  return (
+    <ImplicitActionInternalContext.Provider value={undefined}>
       {children}
     </ImplicitActionInternalContext.Provider>
   );
@@ -54,4 +65,43 @@ export function ariaForAction(action?: ImplicitAction) {
     'aria-controls': target.id,
     'aria-owns': target.id,
   };
+}
+
+export interface ActionConnectedAccessory {
+  role?: ActionRoleKeyword;
+  emphasis?: EmphasisValue;
+}
+
+const ActionConnectedAccessoryContext = createContext<
+  ActionConnectedAccessory | false
+>(false);
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function ConnectedAccessoryReset({children}: PropsWithChildren<{}>) {
+  return (
+    <ActionConnectedAccessoryContext.Provider value={false}>
+      {children}
+    </ActionConnectedAccessoryContext.Provider>
+  );
+}
+
+export function ConnectedAccessoryContext({
+  children,
+  role,
+  emphasis,
+}: PropsWithChildren<{role?: ActionRoleKeyword; emphasis?: EmphasisValue}>) {
+  const accessory = useMemo<ActionConnectedAccessory>(
+    () => ({role, emphasis}),
+    [role, emphasis],
+  );
+
+  return (
+    <ActionConnectedAccessoryContext.Provider value={accessory}>
+      {children}
+    </ActionConnectedAccessoryContext.Provider>
+  );
+}
+
+export function useConnectedAccessory() {
+  return useContext(ActionConnectedAccessoryContext);
 }

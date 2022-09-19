@@ -28,6 +28,9 @@ export type SpacingKeyword =
 export type BorderKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
 export type CornerRadiusKeyword = 'none' | 'base' | 'concentric';
 export type BackgroundKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
+export type EmphasisKeyword = 'emphasized' | 'subdued';
+export type EmphasisValue = EmphasisKeyword | boolean;
+export type ActionRoleKeyword = 'destructive';
 
 export interface Position {
   type: 'relative' | 'absolute';

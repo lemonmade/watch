@@ -2,19 +2,7 @@
   grid-template-rows: 1fr;
   grid-template: 1fr;
   align-items: stretch;
-}
-
-.Layout > * {
-  --z-implicit-connection-inline-start: 0;
-  --z-implicit-connection-inline-end: 0;
-}
-
-.Layout > *:first-child {
-  --z-implicit-connection-inline-start: initial;
-}
-
-.Layout > *:last-child {
-  --z-implicit-connection-inline-end: initial;
+  justify-content: stretch;
 }
 
 .spacingTiny {
@@ -35,4 +23,28 @@
 
 .spacingHuge {
   gap: var(--z-spacing-huge);
+}
+
+.inlineAlignmentStart {
+  justify-content: start;
+}
+
+.inlineAlignmentEnd {
+  justify-content: end;
+}
+
+.inlineAlignmentCenter {
+  justify-content: center;
+}
+
+.blockAlignmentStart {
+  align-items: start;
+}
+
+.blockAlignmentEnd {
+  align-items: end;
+}
+
+.blockAlignmentCenter {
+  align-items: center;
 }

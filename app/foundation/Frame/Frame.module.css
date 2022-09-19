@@ -8,7 +8,7 @@
 
 .Content {
   padding-block-end: calc(
-    var(--z-action-minimum-size) + (2 * var(--z-spacing-small))
+    var(--z-Action-minimum-size) + (2 * var(--z-spacing-small))
   );
 }
 

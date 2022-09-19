@@ -2,7 +2,7 @@
   display: inline-block;
   block-size: 20px;
   pointer-events: none;
-  color: var(--z-icon-color);
+  color: var(--z-Icon-base-color);
 }
 
 .Icon > svg {

@@ -1,4 +1,4 @@
-.DateField {
+.DatePicker {
   appearance: none;
   border: none;
   font-size: 1.25rem;
@@ -11,7 +11,6 @@
   overflow: hidden;
 }
 
-.DateField:focus {
+.DatePicker:focus {
   outline: none;
-  border-color: var(--z-input-focused-border-color);
 }

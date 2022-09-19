@@ -77,6 +77,7 @@ export function Account() {
           <BlockStack spacing>
             <Heading>Danger zone</Heading>
             <Action
+              role="destructive"
               onPress={async () => {
                 deleteAccount.mutate(
                   {},

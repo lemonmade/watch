@@ -79,7 +79,7 @@ export function resolveViewProps({
 
 export function useViewProps({
   id,
-  className: starterClassName,
+  className: explicitClassName,
   display,
   position,
   padding,
@@ -89,7 +89,7 @@ export function useViewProps({
   visibility,
   accessibilityVisibility,
 }: Props = {}): DOMPropController {
-  let className = classes(styles.View!, starterClassName);
+  let className = classes(systemStyles.resetOrientation, styles.View!);
   let domStyles: DOMPropController['styles'];
   let attributes: DOMPropController['attributes'];
 
@@ -269,6 +269,10 @@ export function useViewProps({
 
   if (cornerRadius === 'concentric') {
     addClassName(styles.cornerRadiusConcentric);
+  }
+
+  if (explicitClassName) {
+    addClassName(explicitClassName);
   }
 
   return {

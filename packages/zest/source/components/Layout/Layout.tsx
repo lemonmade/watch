@@ -102,8 +102,8 @@ export interface Media<T> {
 export type ValueOrMediaList<T> = T | Media<T>[];
 
 interface Props extends Omit<ViewProps, 'display'> {
-  inlineAlignment?: 'leading' | 'trailing';
-  blockAlignment?: 'center' | 'trailing';
+  inlineAlignment?: 'start' | 'center' | 'end';
+  blockAlignment?: 'start' | 'center' | 'end';
   columns?: ValueOrMediaList<Size[]>;
   spacing?: boolean | SpacingKeyword;
 }

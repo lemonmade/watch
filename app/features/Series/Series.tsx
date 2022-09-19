@@ -8,7 +8,6 @@ import {
   Text,
   Section,
   Heading,
-  Icon,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -192,7 +191,7 @@ function SeriesWithData({
                   <Action
                     key={watchThrough.id}
                     to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                    accessory={<Icon source="arrowEnd" />}
+                    secondaryIcon="arrowEnd"
                     inlineAlignment="start"
                   >
                     <BlockStack spacing="tiny">

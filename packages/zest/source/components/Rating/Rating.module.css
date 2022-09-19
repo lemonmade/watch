@@ -5,7 +5,7 @@
 
   display: inline-block;
   border-radius: var(--z-corner-radius-base);
-  background: var(--z-action-background);
+  background: var(--z-Action-background);
   padding: 0 var(--z-spacing-small);
   outline: none;
   touch-action: none;
@@ -15,7 +15,7 @@
 
 .Rating:focus,
 .Rating:hover {
-  background: var(--z-action-hovered-background);
+  background: var(--z-Action-hovered-background);
 }
 
 .Rating:active,
@@ -27,7 +27,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  min-height: var(--z-action-minimum-size);
+  min-height: var(--z-Action-minimum-size);
   pointer-events: none;
 }
 

@@ -1,0 +1,25 @@
+.Modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 999;
+  background: var(--z-surface-background-base);
+  border-radius: var(--z-corner-radius-base);
+
+  transform: translate(-50%, -50%);
+
+  inline-size: 100%;
+  max-inline-size: 30rem;
+
+  min-block-size: 3rem;
+}
+
+.Backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgb(0 0 0 / 75%);
+  z-index: 998;
+}
