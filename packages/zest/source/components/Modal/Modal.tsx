@@ -8,6 +8,7 @@ import {
 } from '../../utilities/actions';
 import {useCanvas, type Canvas} from '../../utilities/canvas';
 import {StackedLayer} from '../../utilities/layers';
+import {AutoHeadingContext} from '../../utilities/headings';
 
 import systemStyles from '../../system.module.css';
 
@@ -15,9 +16,11 @@ import {Portal} from '../Portal';
 
 import styles from './Modal.module.css';
 
-interface ModalProps {}
+interface ModalProps {
+  padding?: boolean;
+}
 
-export function Modal({children}: PropsWithChildren<ModalProps>) {
+export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
   const ref = useRef<HTMLDivElement>(null);
   const implicitAction = useImplicitAction();
   const canvas = useCanvas();
@@ -37,19 +40,22 @@ export function Modal({children}: PropsWithChildren<ModalProps>) {
       <ImplicitActionReset>
         <LockCanvas canvas={canvas} />
         <Portal>
-          <StackedLayer>
-            <div
-              className={classes(
-                systemStyles.resetOrientation,
-                styles.Modal,
-                styles.active,
-              )}
-              id={id}
-              ref={ref}
-            >
-              {children}
-            </div>
-          </StackedLayer>
+          <AutoHeadingContext.Provider value={2}>
+            <StackedLayer>
+              <div
+                className={classes(
+                  systemStyles.resetOrientation,
+                  styles.Modal,
+                  styles.active,
+                  padding && styles.padding,
+                )}
+                id={id}
+                ref={ref}
+              >
+                {children}
+              </div>
+            </StackedLayer>
+          </AutoHeadingContext.Provider>
           <div
             className={styles.Backdrop}
             onPointerDown={() => {

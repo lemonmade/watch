@@ -20,6 +20,7 @@ import {
   Section,
   Popover,
   Modal,
+  TextBlock,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -44,9 +45,6 @@ export default function WatchThrough({id}: Props) {
   const {data, refetch} = useQuery(watchThroughQuery, {
     variables: {id},
   });
-  const navigate = useNavigate();
-  const stopWatchThrough = useMutation(stopWatchThroughMutation);
-  const deleteWatchThrough = useMutation(deleteWatchThroughMutation);
   const updateWatchThroughSettings = useMutation(
     updateWatchThroughSettingsMutation,
   );
@@ -71,44 +69,8 @@ export default function WatchThrough({id}: Props) {
           <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
             More about {series.name}
           </Action>
-          {status === 'ONGOING' && (
-            <Action
-              role="destructive"
-              icon="stop"
-              onPress={() => {
-                stopWatchThrough.mutate(
-                  {id},
-                  {
-                    onSuccess({stopWatchThrough}) {
-                      if (stopWatchThrough.watchThrough?.id) {
-                        navigate('/app');
-                      }
-                    },
-                  },
-                );
-              }}
-            >
-              Stop watching
-            </Action>
-          )}
-          <Action
-            role="destructive"
-            icon="delete"
-            onPress={() => {
-              deleteWatchThrough.mutate(
-                {id},
-                {
-                  onSuccess({deleteWatchThrough}) {
-                    if (deleteWatchThrough) {
-                      navigate('/app');
-                    }
-                  },
-                },
-              );
-            }}
-          >
-            Delete
-          </Action>
+          {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
+          <DeleteWatchThroughAction id={id} name={series.name} />
         </>
       }
     >
@@ -150,78 +112,6 @@ export default function WatchThrough({id}: Props) {
         </Section>
       </BlockStack>
     </Page>
-  );
-}
-
-function PreviousActionsSection({
-  actions,
-}: {
-  actions: readonly WatchThroughQueryData.WatchThrough.Actions[];
-}) {
-  return (
-    <Section>
-      <BlockStack spacing>
-        <Heading>Previous actions</Heading>
-        {actions.map((action) => {
-          if (action.__typename === 'Skip') {
-            return (
-              <BlockStack spacing key={action.id}>
-                <Text>
-                  Skipped{' '}
-                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
-                  {action.media.__typename === 'Episode' ||
-                  action.media.__typename === 'Season'
-                    ? action.media.number
-                    : ''}
-                  {action.at
-                    ? ` (on ${new Date(action.at).toLocaleDateString()})`
-                    : ''}
-                </Text>
-                {action.notes ? (
-                  <Text>
-                    Notes
-                    {action.notes.containsSpoilers
-                      ? ' (contains spoilers)'
-                      : ''}
-                    : {action.notes.content}
-                  </Text>
-                ) : null}
-              </BlockStack>
-            );
-          } else if (action.__typename === 'Watch') {
-            return (
-              <BlockStack spacing>
-                <Text>
-                  Watched{' '}
-                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
-                  {action.media.__typename === 'Episode' ||
-                  action.media.__typename === 'Season'
-                    ? action.media.number
-                    : ''}
-                  {action.finishedAt
-                    ? ` (on ${new Date(
-                        action.finishedAt,
-                      ).toLocaleDateString()})`
-                    : ''}
-                </Text>
-                <Text>Rating: {action.rating}</Text>
-                {action.notes ? (
-                  <Text>
-                    Notes
-                    {action.notes.containsSpoilers
-                      ? ' (contains spoilers)'
-                      : ''}
-                    : {action.notes.content}
-                  </Text>
-                ) : null}
-              </BlockStack>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </BlockStack>
-    </Section>
   );
 }
 
@@ -535,9 +425,9 @@ function SkipEpisodeModal({
   const skipEpisode = useSkipEpisode({...options, at, notes, containsSpoilers});
 
   return (
-    <Modal>
+    <Modal padding>
       <Form onSubmit={skipEpisode}>
-        <BlockStack padding="large" spacing>
+        <BlockStack spacing>
           <Heading>Skip episode</Heading>
 
           <Layout
@@ -618,4 +508,165 @@ function useSkipEpisode({
   };
 
   return skipEpisode;
+}
+
+interface DeleteWatchThroughActionProps {
+  id: string;
+  name: string;
+}
+
+function DeleteWatchThroughAction(props: DeleteWatchThroughActionProps) {
+  return (
+    <Action
+      role="destructive"
+      icon="delete"
+      modal={<DeleteWatchThroughModal {...props} />}
+    >
+      Delete…
+    </Action>
+  );
+}
+
+function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
+  const navigate = useNavigate();
+  const deleteWatchThrough = useMutation(deleteWatchThroughMutation);
+
+  return (
+    <Modal padding>
+      <BlockStack spacing>
+        <Heading>Delete watch through</Heading>
+
+        <TextBlock>
+          Are you sure you want to delete this watch through of{' '}
+          <Text emphasis>{name}</Text>? This will delete all of the ratings and
+          notes you have left as part of this watch through, and can’t be
+          undone.
+        </TextBlock>
+
+        <InlineStack alignment="end" spacing="small">
+          <Action>Cancel</Action>
+
+          <Action
+            role="destructive"
+            onPress={() => {
+              deleteWatchThrough.mutate(
+                {id},
+                {
+                  onSuccess({deleteWatchThrough}) {
+                    if (deleteWatchThrough) {
+                      navigate('/app');
+                    }
+                  },
+                },
+              );
+            }}
+          >
+            Delete
+          </Action>
+        </InlineStack>
+      </BlockStack>
+    </Modal>
+  );
+}
+
+interface StopWatchThroughActionProps {
+  id: string;
+}
+
+function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
+  const navigate = useNavigate();
+  const stopWatchThrough = useMutation(stopWatchThroughMutation);
+
+  return (
+    <Action
+      role="destructive"
+      icon="stop"
+      onPress={() => {
+        stopWatchThrough.mutate(
+          {id},
+          {
+            onSuccess({stopWatchThrough}) {
+              if (stopWatchThrough.watchThrough?.id) {
+                navigate('/app');
+              }
+            },
+          },
+        );
+      }}
+    >
+      Stop watching
+    </Action>
+  );
+}
+
+function PreviousActionsSection({
+  actions,
+}: {
+  actions: readonly WatchThroughQueryData.WatchThrough.Actions[];
+}) {
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading>Previous actions</Heading>
+        {actions.map((action) => {
+          if (action.__typename === 'Skip') {
+            return (
+              <BlockStack spacing key={action.id}>
+                <Text>
+                  Skipped{' '}
+                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
+                  {action.media.__typename === 'Episode' ||
+                  action.media.__typename === 'Season'
+                    ? action.media.number
+                    : ''}
+                  {action.at
+                    ? ` (on ${new Date(action.at).toLocaleDateString()})`
+                    : ''}
+                </Text>
+                {action.notes ? (
+                  <Text>
+                    Notes
+                    {action.notes.containsSpoilers
+                      ? ' (contains spoilers)'
+                      : ''}
+                    : {action.notes.content}
+                  </Text>
+                ) : null}
+              </BlockStack>
+            );
+          } else if (action.__typename === 'Watch') {
+            return (
+              <BlockStack spacing>
+                <Text>
+                  Watched{' '}
+                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
+                  {action.media.__typename === 'Episode' ||
+                  action.media.__typename === 'Season'
+                    ? action.media.number
+                    : ''}
+                  {action.finishedAt
+                    ? ` (on ${new Date(
+                        action.finishedAt,
+                      ).toLocaleDateString()})`
+                    : ''}
+                </Text>
+                <Text>Rating: {action.rating}</Text>
+                {action.notes ? (
+                  <Text>
+                    Notes
+                    {action.notes.containsSpoilers
+                      ? ' (contains spoilers)'
+                      : ''}
+                    : {action.notes.content}
+                  </Text>
+                ) : null}
+              </BlockStack>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </BlockStack>
+    </Section>
+  );
 }

@@ -14,6 +14,10 @@
   min-block-size: 3rem;
 }
 
+.padding {
+  padding: var(--z-spacing-large);
+}
+
 .Backdrop {
   position: fixed;
   top: 0;

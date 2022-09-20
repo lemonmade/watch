@@ -5,7 +5,7 @@ import styles from './Text.module.css';
 
 interface Props {
   className?: string;
-  emphasis?: 'strong' | 'subdued';
+  emphasis?: boolean | 'strong' | 'subdued';
   accessibilityRole?: 'code';
 }
 
@@ -20,7 +20,8 @@ export function Text({
   let Element: 'span' | 'strong' = 'span';
 
   switch (emphasis) {
-    case 'strong': {
+    case 'strong':
+    case true: {
       Element = 'strong';
       break;
     }
