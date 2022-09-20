@@ -8,7 +8,7 @@
 
   transform: translate(-50%, -50%);
 
-  inline-size: 100%;
+  inline-size: calc(100% - (2 * var(--z-spacing-base)));
   max-inline-size: 30rem;
 
   min-block-size: 3rem;

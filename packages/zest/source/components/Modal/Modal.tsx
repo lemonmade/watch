@@ -1,4 +1,4 @@
-import {useRef, type PropsWithChildren} from 'react';
+import {useRef, useEffect, type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
 import {
@@ -6,6 +6,7 @@ import {
   ImplicitActionReset,
   ConnectedAccessoryReset,
 } from '../../utilities/actions';
+import {useCanvas, type Canvas} from '../../utilities/canvas';
 
 import systemStyles from '../../system.module.css';
 
@@ -16,6 +17,7 @@ interface ModalProps {}
 export function Modal({children}: PropsWithChildren<ModalProps>) {
   const ref = useRef<HTMLDivElement>(null);
   const implicitAction = useImplicitAction();
+  const canvas = useCanvas();
 
   if (
     implicitAction == null ||
@@ -30,6 +32,7 @@ export function Modal({children}: PropsWithChildren<ModalProps>) {
   return active ? (
     <ConnectedAccessoryReset>
       <ImplicitActionReset>
+        <LockCanvas canvas={canvas} />
         <div
           className={classes(
             systemStyles.resetOrientation,
@@ -38,12 +41,28 @@ export function Modal({children}: PropsWithChildren<ModalProps>) {
           )}
           id={id}
           ref={ref}
-          data-state="inactive"
         >
           {children}
         </div>
-        <div className={styles.Backdrop} />
+        <div
+          className={styles.Backdrop}
+          onPointerDown={() => {
+            implicitAction.perform?.();
+          }}
+        />
       </ImplicitActionReset>
     </ConnectedAccessoryReset>
   ) : null;
+}
+
+function LockCanvas({canvas}: {canvas: Canvas}) {
+  useEffect(() => {
+    canvas.locked.value = true;
+
+    return () => {
+      canvas.locked.value = false;
+    };
+  }, [canvas]);
+
+  return null;
 }

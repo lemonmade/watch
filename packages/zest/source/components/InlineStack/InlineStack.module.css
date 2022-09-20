@@ -2,7 +2,7 @@
   --z-internal-divider-inline-size: initial;
   --z-internal-divider-block-size: 0;
 
-  justify-content: start;
+  justify-content: var(--z-internal-inline-alignment, start);
   grid-auto-flow: column;
   align-items: center;
   align-content: center;

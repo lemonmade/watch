@@ -22,9 +22,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-block-size: 100vh;
   min-block-size: 100dvh;
+  scrollbar-gutter: stable;
 }
 
 :global(#app) {
   min-block-size: 100vh;
   min-block-size: 100dvh;
+}
+
+.locked {
+  overflow: hidden;
 }

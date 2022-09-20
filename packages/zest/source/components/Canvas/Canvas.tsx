@@ -1,36 +1,61 @@
-import {useMemo, useState} from 'react';
-import type {PropsWithChildren, ContextType} from 'react';
+import {useEffect, useMemo} from 'react';
+import type {PropsWithChildren} from 'react';
+import {signal, effect} from '@preact/signals-core';
 
+import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
-import {PortalContainerContext} from '../../utilities/portals';
 import {AutoHeadingContext} from '../../utilities/headings';
 
 import '../../style.css';
-import './Canvas.module.css';
+import styles from './Canvas.module.css';
 
 interface Props {}
 
 export function Canvas({children}: PropsWithChildren<Props>) {
-  const {idFactory} = useMemo(() => ({idFactory: new UniqueIdFactory()}), []);
+  const {canvas, idFactory} = useMemo(() => {
+    const canvas: CanvasType = {
+      locked: signal(false),
+      portal: {
+        container: signal(null),
+      },
+    };
+
+    return {canvas, idFactory: new UniqueIdFactory()};
+  }, []);
 
   return (
     <UniqueIdContext.Provider value={idFactory}>
       <AutoHeadingContext.Provider value={1}>
-        <PortalContainer>{children}</PortalContainer>
+        <CanvasProvider canvas={canvas}>{children}</CanvasProvider>
       </AutoHeadingContext.Provider>
     </UniqueIdContext.Provider>
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-function PortalContainer({children}: PropsWithChildren<{}>) {
-  const [portalContainer, setPortalContainer] =
-    useState<ContextType<typeof PortalContainerContext>>(null);
+function CanvasProvider({
+  canvas,
+  children,
+}: PropsWithChildren<{canvas: CanvasType}>) {
+  useEffect(
+    () =>
+      effect(() => {
+        if (canvas.locked.value) {
+          document.body.classList.add(styles.locked!);
+        } else {
+          document.body.classList.remove(styles.locked!);
+        }
+      }),
+    [canvas],
+  );
 
   return (
-    <PortalContainerContext.Provider value={portalContainer}>
+    <CanvasContext.Provider value={canvas}>
       {children}
-      <div ref={setPortalContainer} />
-    </PortalContainerContext.Provider>
+      <div
+        ref={(element) => {
+          canvas.portal.container.value = element;
+        }}
+      />
+    </CanvasContext.Provider>
   );
 }

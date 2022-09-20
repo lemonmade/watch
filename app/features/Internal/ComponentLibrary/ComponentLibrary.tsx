@@ -148,12 +148,34 @@ function ActionExampleModal() {
   return (
     <Modal>
       <Section padding>Modal content!</Section>
-      <Divider />
+      <Divider emphasis="subdued" />
       <Section padding>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi
         blanditiis laborum dolor velit mollitia, distinctio fugit possimus
         illum, nulla enim ab! Ipsa reiciendis, earum accusantium quibusdam nemo
         porro aspernatur itaque.
+      </Section>
+      <Section padding>
+        <InlineStack alignment="end" spacing="small">
+          <Action
+            accessory={
+              <Action
+                icon="more"
+                accessibilityLabel="More actions"
+                popover={
+                  <Popover>
+                    <Menu>
+                      <Action>Nice!</Action>
+                    </Menu>
+                  </Popover>
+                }
+              />
+            }
+          >
+            Dismiss
+          </Action>
+          <Action emphasis>Save</Action>
+        </InlineStack>
       </Section>
     </Modal>
   );

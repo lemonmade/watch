@@ -8,7 +8,9 @@
     "*.css"
   ],
   "dependencies": {
-    "@lemon/css": "*"
+    "@lemon/css": "*",
+    "@preact/signals-core": "^1.1.0",
+    "@quilted/react-utilities": "^0.1.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0 <18.0.0"

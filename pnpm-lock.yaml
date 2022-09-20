@@ -326,8 +326,12 @@ importers:
   packages/zest:
     specifiers:
       '@lemon/css': '*'
+      '@preact/signals-core': ^1.1.0
+      '@quilted/react-utilities': ^0.1.0
     dependencies:
       '@lemon/css': link:../css
+      '@preact/signals-core': 1.1.1
+      '@quilted/react-utilities': 0.1.4_619eb7192a1e119c6a7483243ef75838
 
   scripts/docker:
     specifiers:
