@@ -29,7 +29,3 @@ body {
   min-block-size: 100vh;
   min-block-size: 100dvh;
 }
-
-.locked {
-  overflow: hidden;
-}

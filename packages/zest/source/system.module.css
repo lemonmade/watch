@@ -46,7 +46,15 @@
   --z-internal-inline-alignment: end;
 }
 
+.inlineAlignmentSpaceBetween {
+  --z-internal-inline-alignment: space-between;
+}
+
 .resetOrientation {
   --z-internal-divider-inline-size: 0;
   --z-internal-divider-block-size: initial;
+}
+
+.scrollLock {
+  overflow: hidden;
 }

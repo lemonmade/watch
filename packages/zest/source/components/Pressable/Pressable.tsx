@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import {forwardRef, type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 import {Link, type NavigateTo} from '@quilted/quilt';
 
@@ -26,19 +26,25 @@ export type Props = {
   | {to: NavigateTo; target?: 'new' | 'current'}
 );
 
-export function Pressable({
-  id,
-  to,
-  className: explicitClassName,
-  target,
-  children,
-  display,
-  inlineAlignment,
-  disabled,
-  type = 'activation',
-  onPress,
-  accessibilityLabel,
-}: PropsWithChildren<Props>) {
+export const Pressable = forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  Props
+>(function Pressable(
+  {
+    id,
+    to,
+    className: explicitClassName,
+    target,
+    children,
+    display,
+    inlineAlignment,
+    disabled,
+    type = 'activation',
+    onPress,
+    accessibilityLabel,
+  }: PropsWithChildren<Props>,
+  ref,
+) {
   const implicitAction = useImplicitAction(id);
   const allowedImplicitAction =
     implicitAction == null || to != null || type === 'none'
@@ -61,8 +67,9 @@ export function Pressable({
   const handleClick = () => {
     if (onPress) {
       onPress();
-    } else {
-      allowedImplicitAction?.perform?.();
+    } else if (allowedImplicitAction?.type === 'activation') {
+      const {target} = allowedImplicitAction;
+      target.set(!target.active.value);
     }
   };
 
@@ -86,6 +93,7 @@ export function Pressable({
 
   return (
     <button
+      ref={ref as any}
       type={submitButton ? 'submit' : 'button'}
       form={submitButton && form?.nested ? form.id : undefined}
       disabled={disabled}
@@ -97,4 +105,4 @@ export function Pressable({
       {children}
     </button>
   );
-}
+});

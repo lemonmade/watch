@@ -3,18 +3,22 @@ import type {PropsWithChildren} from 'react';
 import {signal, effect} from '@preact/signals-core';
 
 import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
+import {LayerContext} from '../../utilities/layers';
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
 import {AutoHeadingContext} from '../../utilities/headings';
 
+import systemStyles from '../../system.module.css';
+
 import '../../style.css';
-import styles from './Canvas.module.css';
+import './Canvas.module.css';
 
 interface Props {}
 
 export function Canvas({children}: PropsWithChildren<Props>) {
   const {canvas, idFactory} = useMemo(() => {
     const canvas: CanvasType = {
-      locked: signal(false),
+      scroll: signal('auto'),
+      inert: signal(false),
       portal: {
         container: signal(null),
       },
@@ -39,10 +43,14 @@ function CanvasProvider({
   useEffect(
     () =>
       effect(() => {
-        if (canvas.locked.value) {
-          document.body.classList.add(styles.locked!);
+        if (canvas.scroll.value === 'locked') {
+          document.body.classList.add(systemStyles.scrollLock!);
         } else {
-          document.body.classList.remove(styles.locked!);
+          document.body.classList.remove(systemStyles.scrollLock!);
+
+          if (document.body.classList.length === 0) {
+            document.body.removeAttribute('class');
+          }
         }
       }),
     [canvas],
@@ -50,7 +58,7 @@ function CanvasProvider({
 
   return (
     <CanvasContext.Provider value={canvas}>
-      {children}
+      <LayerContext.Provider value={canvas}>{children}</LayerContext.Provider>
       <div
         ref={(element) => {
           canvas.portal.container.value = element;

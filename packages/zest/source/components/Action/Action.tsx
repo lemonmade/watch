@@ -1,4 +1,10 @@
-import {type PropsWithChildren, type ReactNode, type ReactElement} from 'react';
+import {
+  useRef,
+  forwardRef,
+  type PropsWithChildren,
+  type ReactNode,
+  type ReactElement,
+} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {Icon, type IconSource} from '../Icon';
@@ -29,11 +35,13 @@ export type Props = Omit<PressableProps, 'className'> & {
 };
 
 export function Action({popover, modal, ...rest}: PropsWithChildren<Props>) {
-  let action = <ActionInternal {...rest} />;
+  const ref = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
+
+  let action = <ActionInternal ref={ref} {...rest} />;
 
   if (popover !== undefined) {
     action = (
-      <ImplicitPopoverActivation popover={popover}>
+      <ImplicitPopoverActivation target={ref} popover={popover}>
         {action}
       </ImplicitPopoverActivation>
     );
@@ -46,18 +54,24 @@ export function Action({popover, modal, ...rest}: PropsWithChildren<Props>) {
   return action;
 }
 
-function ActionInternal({
-  role,
-  disabled,
-  emphasis,
-  icon,
-  secondaryIcon,
-  children,
-  size,
-  accessory,
-  loading,
-  ...rest
-}: PropsWithChildren<Omit<Props, 'popover'>>) {
+const ActionInternal = forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  Omit<Props, 'popover'>
+>(function ActionInternal(
+  {
+    role,
+    disabled,
+    emphasis,
+    icon,
+    secondaryIcon,
+    children,
+    size,
+    accessory,
+    loading,
+    ...rest
+  },
+  ref,
+) {
   const needsGrid = Boolean(children) && Boolean(secondaryIcon || icon);
   const connectedAccessory = useConnectedAccessory();
 
@@ -81,6 +95,7 @@ function ActionInternal({
   const pressable = (
     <Pressable
       {...(rest as any)}
+      ref={ref}
       className={classes(
         styles.Action,
         (finalEmphasis === true || finalEmphasis === 'emphasized') &&
@@ -111,7 +126,7 @@ function ActionInternal({
   ) : (
     pressable
   );
-}
+});
 
 function resolveIcon(icon: IconSource | ReactElement) {
   return typeof icon === 'string' ? <Icon source={icon} /> : icon;

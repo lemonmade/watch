@@ -24,7 +24,7 @@
   display: block;
   border: 1px solid var(--z-input-border-color);
   border-radius: var(--z-corner-radius-base);
-  background: none;
+  background: var(--z-input-background);
   width: 100%;
   resize: vertical;
   color: inherit;

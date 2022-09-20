@@ -2,8 +2,10 @@ import {createContext} from 'react';
 import {createUseContextHook} from '@quilted/react-utilities';
 import {type Signal} from '@preact/signals-core';
 
-export interface Canvas {
-  readonly locked: Signal<boolean>;
+import {type Layer} from './layers';
+
+export interface Canvas extends Layer {
+  readonly scroll: Signal<'locked' | 'auto'>;
   readonly portal: {
     readonly container: Signal<HTMLElement | null>;
   };

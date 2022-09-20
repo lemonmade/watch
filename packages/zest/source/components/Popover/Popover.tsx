@@ -1,11 +1,14 @@
-import {useState, useRef, useEffect, type PropsWithChildren} from 'react';
+import {useRef, useEffect, type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
+import {effect, useComputed} from '@watching/react-signals';
 
 import {
   ImplicitActionReset,
   ConnectedAccessoryReset,
 } from '../../utilities/actions';
 import {usePopoverController} from '../../utilities/popovers';
+
+// import {Portal} from '../Portal';
 
 import styles from './Popover.module.css';
 
@@ -21,35 +24,20 @@ export function Popover({
 }: PropsWithChildren<PopoverProps>) {
   const ref = useRef<HTMLDivElement>(null);
   const controller = usePopoverController();
-  const [rendered, setRendered] = useState(false);
+  const rendered = useComputed(() => controller.state.value !== 'inactive');
 
   const helpers = useRef<any>({});
 
   useEffect(() => {
-    const setState = (state: string) => {
+    const teardownEffect = effect(() => {
+      const state = controller.state.value;
+
       if (ref.current) {
         ref.current.dataset.state = state;
       }
-    };
-
-    const unlisten = controller.subscribe(() => {
-      switch (controller.state) {
-        case 'preparing': {
-          setRendered(true);
-          break;
-        }
-        case 'inactive': {
-          setRendered(false);
-          break;
-        }
-        case 'open': {
-          setState('open');
-          break;
-        }
-      }
     });
 
-    const clearSheet = controller.setSheet({
+    const teardownSheet = controller.setSheet({
       measure() {
         const {current: sheet} = ref;
 
@@ -132,33 +120,35 @@ export function Popover({
       },
       async open() {
         const transitionEnd = onTransitionEnd(ref.current);
-        setState('opening');
+        controller.state.value = 'opening';
         await transitionEnd;
       },
       async close() {
         const transitionEnd = onTransitionEnd(ref.current);
-        setState('closing');
+        controller.state.value = 'closing';
         await transitionEnd;
       },
     });
 
     return () => {
-      unlisten();
-      clearSheet();
+      teardownEffect();
+      teardownSheet();
     };
   }, [controller, blockAttachment, inlineAttachment]);
 
+  const isRendered = rendered.value;
+
   useEffect(() => {
     const handle = window.setTimeout(() => {
-      helpers.current.onRenderChange?.(rendered);
+      helpers.current.onRenderChange?.(isRendered);
     }, 10);
 
     return () => {
       window.clearTimeout(handle);
     };
-  }, [rendered]);
+  }, [isRendered]);
 
-  return rendered ? (
+  return isRendered ? (
     <ConnectedAccessoryReset>
       <ImplicitActionReset>
         <div

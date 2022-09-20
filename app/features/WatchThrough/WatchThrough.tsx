@@ -3,6 +3,7 @@ import {useNavigate} from '@quilted/quilt';
 import {useSignal, type Signal} from '@watching/react-signals';
 
 import {
+  raw,
   BlockStack,
   InlineStack,
   Action,
@@ -18,6 +19,7 @@ import {
   Menu,
   Section,
   Popover,
+  Modal,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -314,6 +316,16 @@ function NextEpisode({
                             onAction?.();
                           }}
                         />
+                        <SkipEpisodeWithNotesAction
+                          id={id}
+                          episodeNumber={episodeNumber}
+                          seasonNumber={seasonNumber}
+                          title={title}
+                          image={image}
+                          loading={submitting}
+                          watchThroughId={watchThroughId}
+                          onSkip={onAction}
+                        />
                       </Menu>
                     </Popover>
                   }
@@ -401,66 +413,6 @@ function WatchEpisodeForm({
   );
 }
 
-interface SkipEpisodeActionProps {
-  id: string;
-  watchThroughId: string;
-  loading: Signal<boolean>;
-  at: Signal<Date>;
-  notes: Signal<string | null>;
-  containsSpoilers: Signal<boolean>;
-  onSkip?(): void;
-  onSkipStart?(): void;
-}
-
-function SkipEpisodeAction({
-  id,
-  loading,
-  at,
-  notes,
-  containsSpoilers,
-  watchThroughId,
-  onSkip,
-  onSkipStart,
-}: SkipEpisodeActionProps) {
-  const {mutate, isLoading} = useMutation(skipNextEpisodeMutation);
-
-  const skipEpisode = () => {
-    const optionalArguments: Omit<
-      WatchThroughSkipNextEpisodeMutationVariables,
-      'episode' | 'watchThrough'
-    > = {at: at.value?.toISOString()};
-
-    if (notes.value) {
-      optionalArguments.notes = {
-        content: notes.value,
-        containsSpoilers: containsSpoilers.value,
-      };
-    }
-
-    onSkipStart?.();
-    mutate(
-      {
-        ...optionalArguments,
-        episode: id,
-        watchThrough: watchThroughId,
-      },
-      {
-        onSettled: onSkip,
-      },
-    );
-  };
-
-  return (
-    <Action
-      loading={isLoading || loading.value || false}
-      icon="arrowEnd"
-      onPress={skipEpisode}
-    >
-      Skip…
-    </Action>
-  );
-}
-
 function EpisodeRating({value: rating}: {value: Signal<null | number>}) {
   return (
     <Rating
@@ -528,4 +480,142 @@ function NotesContainSpoilersCheckbox({
       These notes contain spoilers
     </Checkbox>
   );
+}
+
+interface SkipEpisodeActionProps extends SkipEpisodeOptions {
+  loading: Signal<boolean>;
+}
+
+function SkipEpisodeAction({loading, ...options}: SkipEpisodeActionProps) {
+  const skipEpisode = useSkipEpisode(options);
+
+  return (
+    <Action loading={loading.value} icon="arrowEnd" onPress={skipEpisode}>
+      Skip
+    </Action>
+  );
+}
+
+interface SkipEpisodeWithNotesActionProps
+  extends Omit<
+    SkipEpisodeOptions,
+    'at' | 'notes' | 'containsSpoilers' | 'onSkipStart'
+  > {
+  title: string;
+  image?: string;
+  seasonNumber: number;
+  episodeNumber: number;
+  loading: Signal<boolean>;
+}
+
+function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
+  return (
+    <Action
+      loading={props.loading.value}
+      icon="arrowEnd"
+      modal={<SkipEpisodeModal {...props} />}
+    >
+      Skip with note…
+    </Action>
+  );
+}
+
+function SkipEpisodeModal({
+  title,
+  image,
+  episodeNumber,
+  seasonNumber,
+  loading,
+  ...options
+}: SkipEpisodeWithNotesActionProps) {
+  const notes = useSignal<null | string>(null);
+  const containsSpoilers = useSignal(false);
+  const at = useSignal<Date>(new Date());
+
+  const skipEpisode = useSkipEpisode({...options, at, notes, containsSpoilers});
+
+  return (
+    <Modal>
+      <Form onSubmit={skipEpisode}>
+        <BlockStack padding="large" spacing>
+          <Heading>Skip episode</Heading>
+
+          <Layout
+            border="subdued"
+            cornerRadius
+            columns={image ? [raw`8rem`, 'fill'] : undefined}
+          >
+            {image ? (
+              <Image source={image} aspectRatio={1.77} fit="cover" />
+            ) : null}
+            <BlockStack spacing="small" padding>
+              <Text>{title}</Text>
+              <Text emphasis="subdued">
+                Season {seasonNumber}, Episode {episodeNumber}
+              </Text>
+            </BlockStack>
+          </Layout>
+
+          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
+
+          <InlineStack alignment="spaceBetween">
+            <WatchedAt value={at} />
+            <Action emphasis type="submit">
+              Skip Episode
+            </Action>
+          </InlineStack>
+        </BlockStack>
+      </Form>
+    </Modal>
+  );
+}
+
+interface SkipEpisodeOptions {
+  id: string;
+  watchThroughId: string;
+  at?: Signal<Date>;
+  notes?: Signal<string | null>;
+  containsSpoilers?: Signal<boolean>;
+  onSkip?(): void;
+  onSkipStart?(): void;
+}
+
+function useSkipEpisode({
+  id,
+  watchThroughId,
+  at,
+  notes,
+  containsSpoilers,
+  onSkip,
+  onSkipStart,
+}: SkipEpisodeOptions) {
+  const {mutate} = useMutation(skipNextEpisodeMutation);
+
+  const skipEpisode = () => {
+    const optionalArguments: Omit<
+      WatchThroughSkipNextEpisodeMutationVariables,
+      'episode' | 'watchThrough'
+    > = {at: at?.value?.toISOString()};
+
+    if (notes?.value) {
+      optionalArguments.notes = {
+        content: notes.value,
+        containsSpoilers: containsSpoilers?.value ?? false,
+      };
+    }
+
+    onSkipStart?.();
+    mutate(
+      {
+        ...optionalArguments,
+        episode: id,
+        watchThrough: watchThroughId,
+      },
+      {
+        onSettled: onSkip,
+      },
+    );
+  };
+
+  return skipEpisode;
 }

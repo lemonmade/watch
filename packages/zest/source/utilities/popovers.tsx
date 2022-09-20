@@ -1,19 +1,18 @@
 import {
   createContext,
-  useState,
-  useRef,
-  useContext,
   useEffect,
   useMemo,
+  type RefObject,
   type ReactNode,
   type PropsWithChildren,
 } from 'react';
-
-import styles from '../system.module.css';
+import {signal, computed, type Signal} from '@preact/signals-core';
+import {createUseContextHook} from '@quilted/react-utilities';
 
 import {useUniqueId} from './id';
+import {useLayer, type Layer} from './layers';
 import {useGlobalEvents} from './global-events';
-import {ImplicitActionContext, type ImplicitAction} from './actions';
+import {ImplicitActionContext, type ImplicitActionActivation} from './actions';
 
 export interface PopoverSheetController {
   prepare(id: string): Promise<void>;
@@ -29,52 +28,89 @@ export interface PopoverTriggerController {
   contains(element: HTMLElement): boolean;
 }
 
+export type PopoverState =
+  | 'inactive'
+  | 'preparing'
+  | 'opening'
+  | 'open'
+  | 'closing';
+
 export interface PopoverController {
   readonly id: string;
   readonly activationId: string;
-  readonly active: boolean;
-  readonly state: 'inactive' | 'preparing' | 'opening' | 'open' | 'closing';
-  set(active: boolean): void;
-  subscribe(subscriber: () => void): () => void;
+  readonly active: Signal<boolean>;
+  readonly state: Signal<PopoverState>;
+  set(active: boolean): Promise<void>;
   setTrigger(trigger: PopoverTriggerController): () => void;
-  setSheet(controller: PopoverSheetController): () => void;
+  setSheet(sheet: PopoverSheetController): () => void;
 }
 
 const PopoverControllerContext = createContext<PopoverController | null>(null);
 
 interface PopoverContextProps {
+  target: RefObject<HTMLElement>;
   popover: ReactNode | false;
 }
 
+export const usePopoverController = createUseContextHook(
+  PopoverControllerContext,
+);
+
 export function ImplicitPopoverActivation({
+  target,
   popover,
   children,
 }: PropsWithChildren<PopoverContextProps>) {
   const id = useUniqueId('Popover');
+  const layer = useLayer();
   const globalEvents = useGlobalEvents();
   const controller = useMemo(
-    () => createPopoverController(id, globalEvents),
-    [id, globalEvents],
+    () => createPopoverController(id, layer, globalEvents),
+    [id, layer, globalEvents],
   );
-  const active = usePopoverActive(controller);
 
-  const implicitAction = useMemo<ImplicitAction>(() => {
+  const implicitAction = useMemo<ImplicitActionActivation>(() => {
     return {
-      id,
+      id: controller.id,
       type: 'activation',
-      perform: () => controller.set(!controller.active),
       target: {
-        id,
+        id: controller.id,
         type: 'popover',
-        active,
+        active: controller.active,
+        async set(active) {
+          if (layer.inert.value) return;
+          controller.set(active);
+        },
       },
     };
-  }, [controller, id, active]);
+  }, [controller, layer]);
+
+  useEffect(() => {
+    return controller.setTrigger({
+      measure() {
+        const targetElement = getElementFromRef(target);
+
+        if (targetElement == null) {
+          throw new Error('no trigger!');
+        }
+
+        return targetElement.getBoundingClientRect();
+      },
+      contains(element) {
+        const targetElement = getElementFromRef(target);
+
+        return (
+          (targetElement === element || targetElement?.contains(element)) ??
+          false
+        );
+      },
+    });
+  }, [controller, target]);
 
   return (
     <PopoverControllerContext.Provider value={controller}>
       <ImplicitActionContext action={implicitAction}>
-        <PopoverTrigger>{children}</PopoverTrigger>
+        {children}
         {popover}
       </ImplicitActionContext>
     </PopoverControllerContext.Provider>
@@ -83,16 +119,21 @@ export function ImplicitPopoverActivation({
 
 function createPopoverController(
   id: string,
+  layer: Layer,
   globalEvents: ReturnType<typeof useGlobalEvents>,
 ) {
   let currentSheet: PopoverSheetController | null = null;
   let currentTrigger: PopoverTriggerController | null = null;
   let activationCount = 0;
   let closing = false;
-  let state: PopoverController['state'] = 'inactive';
+
+  const state: PopoverController['state'] = signal('inactive');
+  const active = computed(() => {
+    const currentState = state.value;
+    return currentState !== 'closing' && currentState !== 'inactive';
+  });
 
   const cleanupTasks = new Set<() => void>();
-  const subscribers = new Set<() => void>();
 
   const currentActivationId = () => `Activation${activationCount}`;
 
@@ -106,7 +147,7 @@ function createPopoverController(
 
   function update() {
     if (
-      state === 'inactive' ||
+      state.value === 'inactive' ||
       currentSheet == null ||
       currentTrigger == null
     ) {
@@ -120,12 +161,16 @@ function createPopoverController(
   }
 
   async function activate() {
-    if (state === 'open' || state === 'opening') return;
+    const currentState = state.value;
+
+    if (currentState === 'open' || currentState === 'opening') return;
 
     activationCount += 1;
     closing = false;
 
     const stopPointerDownListen = globalEvents.on('pointerdown', (target) => {
+      if (layer.inert.value) return;
+
       if (currentSheet?.contains(target) || currentTrigger?.contains(target)) {
         return;
       }
@@ -137,25 +182,22 @@ function createPopoverController(
       stopPointerDownListen();
     });
 
-    await setState(state === 'inactive' ? 'preparing' : 'opening');
+    await setState(currentState === 'inactive' ? 'preparing' : 'opening');
   }
 
   async function deactivate() {
-    if (state === 'closing' || state === 'inactive') return;
+    const currentState = state.value;
+
+    if (currentState === 'closing' || currentState === 'inactive') return;
 
     closing = true;
     cleanup();
 
-    await setState(state === 'preparing' ? 'inactive' : 'closing');
+    await setState(currentState === 'preparing' ? 'inactive' : 'closing');
   }
 
-  const setState = (newState: typeof state) => {
-    state = newState;
-
-    for (const subscriber of subscribers) {
-      subscriber();
-    }
-
+  const setState = (newState: PopoverState) => {
+    state.value = newState;
     return updateSheet();
   };
 
@@ -164,7 +206,7 @@ function createPopoverController(
 
     const activationId = currentActivationId();
 
-    switch (state) {
+    switch (state.value) {
       case 'preparing': {
         await currentSheet.prepare(activationId);
         if (activationId === currentActivationId() && !closing) {
@@ -190,34 +232,21 @@ function createPopoverController(
     }
   }
 
-  const isActive = () => state !== 'closing' && state !== 'inactive';
-
   const controller: PopoverController = {
     id,
     get activationId() {
       return currentActivationId();
     },
-    get state() {
-      return state;
-    },
-    get active() {
-      return isActive();
-    },
+    state,
+    active,
     set(active) {
-      if (active) {
-        activate();
-      } else {
-        deactivate();
-      }
-    },
-    subscribe(subscriber) {
-      subscribers.add(subscriber);
-      return () => subscribers.delete(subscriber);
+      return active ? activate() : deactivate();
     },
     setSheet(sheet) {
-      const wasActive = isActive();
+      const wasActive = active.value;
       currentSheet = sheet;
-      state = 'inactive';
+      state.value = 'inactive';
+
       if (wasActive) activate();
 
       return () => {
@@ -241,85 +270,15 @@ function createPopoverController(
   return controller;
 }
 
-function usePopoverActive(controller: PopoverController) {
-  const [activeState, setActiveState] = useState(() => ({
-    id: controller.activationId,
-    active: controller.active,
-    controller,
-  }));
+function getElementFromRef(ref: RefObject<HTMLElement>): HTMLElement | null {
+  if (ref.current == null) return null;
 
-  let active = activeState.active;
-
-  if (controller !== activeState.controller) {
-    active = controller.active;
-    setActiveState({active, controller, id: controller.activationId});
+  // I don't know why, but some of the forwardRef components don’t seem to work correctly,
+  // and only forward the component reference, not the HTML element. Those refs store the
+  // element in a `base` property.
+  if ((ref.current as any).base instanceof HTMLElement) {
+    return (ref.current as any).base;
   }
 
-  useEffect(() => {
-    const checkForUpdates = () => {
-      setActiveState((currentActiveState) => {
-        if (
-          currentActiveState.controller !== controller ||
-          currentActiveState.id === controller.activationId ||
-          currentActiveState.active === controller.active
-        ) {
-          return currentActiveState;
-        }
-
-        return {
-          controller,
-          id: controller.activationId,
-          active: controller.active,
-        };
-      });
-    };
-
-    checkForUpdates();
-
-    return controller.subscribe(checkForUpdates);
-  }, [controller]);
-
-  return active;
-}
-
-interface PopoverTriggerProps {}
-
-function PopoverTrigger({children}: PropsWithChildren<PopoverTriggerProps>) {
-  const controller = usePopoverController();
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    return controller.setTrigger({
-      measure() {
-        const {current: trigger} = ref;
-
-        if (trigger == null) {
-          throw new Error('no trigger!');
-        }
-
-        return trigger.getBoundingClientRect();
-      },
-      contains(element) {
-        return (
-          (ref.current === element || ref.current?.contains(element)) ?? false
-        );
-      },
-    });
-  }, [controller]);
-
-  return (
-    <div ref={ref} className={styles.displayInlineGrid}>
-      {children}
-    </div>
-  );
-}
-
-export function usePopoverController() {
-  const controller = useContext(PopoverControllerContext);
-
-  if (controller == null) {
-    throw new Error('No popover controller found!');
-  }
-
-  return controller;
+  return ref.current;
 }

@@ -1,5 +1,6 @@
 import {createContext, useContext, useMemo} from 'react';
 import type {PropsWithChildren} from 'react';
+import {type Signal} from '@preact/signals-core';
 
 import type {EmphasisValue, ActionRoleKeyword} from '../system';
 
@@ -9,14 +10,35 @@ export interface ImplicitActionTarget {
   readonly active?: boolean;
 }
 
+export interface ImplicitActionTargetForm {
+  readonly id: string;
+  readonly type: 'form';
+}
+
+export interface ImplicitActionTargetActivatable {
+  readonly id: string;
+  readonly type: 'popover' | 'modal';
+  readonly active: Signal<boolean>;
+  set(active: boolean): Promise<void>;
+}
+
 export type ImplicitActionType = 'activation' | 'submit';
 
-export interface ImplicitAction {
+export interface ImplicitActionBase {
   readonly id?: string;
-  readonly type: ImplicitActionType;
-  readonly target?: ImplicitActionTarget;
-  perform?(): void;
 }
+
+export interface ImplicitActionSubmit extends ImplicitActionBase {
+  type: 'submit';
+  target: ImplicitActionTargetForm;
+}
+
+export interface ImplicitActionActivation extends ImplicitActionBase {
+  type: 'activation';
+  target: ImplicitActionTargetActivatable;
+}
+
+export type ImplicitAction = ImplicitActionSubmit | ImplicitActionActivation;
 
 export const ImplicitActionInternalContext = createContext<
   ImplicitAction | undefined
@@ -55,13 +77,13 @@ export function ImplicitActionReset({children}: PropsWithChildren<{}>) {
 }
 
 export function ariaForAction(action?: ImplicitAction) {
-  const target = action?.target;
+  if (action?.type !== 'activation') return undefined;
 
-  if (!target) return undefined;
+  const {target} = action;
 
   return {
     'aria-expanded':
-      target.type === 'popover' ? target.active ?? false : undefined,
+      target.type === 'popover' ? target.active.value : undefined,
     'aria-controls': target.id,
     'aria-owns': target.id,
   };

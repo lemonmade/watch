@@ -1,4 +1,5 @@
-import {useState, useMemo, type ReactNode, type PropsWithChildren} from 'react';
+import {useMemo, type ReactNode, type PropsWithChildren} from 'react';
+import {signal} from '@preact/signals-core';
 
 import styles from '../system.module.css';
 
@@ -14,20 +15,23 @@ export function ImplicitModalActivation({
   children,
 }: PropsWithChildren<ModalContextProps>) {
   const id = useUniqueId('Modal');
-  const [active, setActive] = useState(false);
 
   const implicitAction = useMemo<ImplicitAction>(() => {
+    const active = signal(false);
+
     return {
       id,
       type: 'activation',
-      perform: () => setActive((active) => !active),
       target: {
         id,
         type: 'modal',
         active,
+        async set(newActive) {
+          active.value = newActive;
+        },
       },
     };
-  }, [id, active]);
+  }, [id]);
 
   return (
     <ImplicitActionContext action={implicitAction}>

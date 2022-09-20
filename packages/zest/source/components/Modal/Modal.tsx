@@ -7,8 +7,11 @@ import {
   ConnectedAccessoryReset,
 } from '../../utilities/actions';
 import {useCanvas, type Canvas} from '../../utilities/canvas';
+import {StackedLayer} from '../../utilities/layers';
 
 import systemStyles from '../../system.module.css';
+
+import {Portal} from '../Portal';
 
 import styles from './Modal.module.css';
 
@@ -27,29 +30,33 @@ export function Modal({children}: PropsWithChildren<ModalProps>) {
     return null;
   }
 
-  const {id, active = false} = implicitAction.target;
+  const {id, active} = implicitAction.target;
 
-  return active ? (
+  return active.value ? (
     <ConnectedAccessoryReset>
       <ImplicitActionReset>
         <LockCanvas canvas={canvas} />
-        <div
-          className={classes(
-            systemStyles.resetOrientation,
-            styles.Modal,
-            active && styles.active,
-          )}
-          id={id}
-          ref={ref}
-        >
-          {children}
-        </div>
-        <div
-          className={styles.Backdrop}
-          onPointerDown={() => {
-            implicitAction.perform?.();
-          }}
-        />
+        <Portal>
+          <StackedLayer>
+            <div
+              className={classes(
+                systemStyles.resetOrientation,
+                styles.Modal,
+                styles.active,
+              )}
+              id={id}
+              ref={ref}
+            >
+              {children}
+            </div>
+          </StackedLayer>
+          <div
+            className={styles.Backdrop}
+            onPointerDown={() => {
+              implicitAction.target.set(false);
+            }}
+          />
+        </Portal>
       </ImplicitActionReset>
     </ConnectedAccessoryReset>
   ) : null;
@@ -57,10 +64,12 @@ export function Modal({children}: PropsWithChildren<ModalProps>) {
 
 function LockCanvas({canvas}: {canvas: Canvas}) {
   useEffect(() => {
-    canvas.locked.value = true;
+    canvas.inert.value = true;
+    canvas.scroll.value = 'locked';
 
     return () => {
-      canvas.locked.value = false;
+      canvas.inert.value = false;
+      canvas.scroll.value = 'auto';
     };
   }, [canvas]);
 
