@@ -13,7 +13,7 @@
   position: relative;
   min-block-size: var(--z-Action-minimum-size);
   margin: calc(-1 * var(--z-Action-inset-block-nudge, 0)) 0;
-  padding: var(--z-Action-inset-block-size, var(--z-spacing-tiny)) var(--z-internal-Action-inline-padding);
+  padding: calc(var(--z-Action-inset-block-size, 0px) + var(--z-spacing-tiny)) var(--z-internal-Action-inline-padding);
   border: var(--z-Action-inset-none, var(--z-internal-Action-border));
   border-radius: var(--z-Action-inset-none, var(--z-internal-Action-corner-radius));
   background: var(--z-Action-inset-none, var(--z-internal-Action-background));
