@@ -19,14 +19,16 @@ import type {EmphasisValue, ActionRoleKeyword} from '../../system';
 
 import styles from './Action.module.css';
 
-export type Props = Omit<PressableProps, 'className'> & {
+export type Props = Omit<PressableProps, 'className' | 'display'> & {
   emphasis?: EmphasisValue;
   loading?: boolean;
+  selected?: boolean;
   icon?: IconSource | ReactElement;
   secondaryIcon?: IconSource | ReactElement;
   role?: ActionRoleKeyword;
   size?: 'small' | 'base';
   accessory?: ReactNode;
+  inlineSize?: 'content' | 'fill';
 };
 
 export const Action = forwardRef<
@@ -43,6 +45,8 @@ export const Action = forwardRef<
     size,
     accessory,
     loading,
+    inlineSize,
+    selected,
     ...rest
   },
   ref,
@@ -77,6 +81,7 @@ export const Action = forwardRef<
           styles.emphasized,
         finalEmphasis === 'subdued' && styles.subdued,
         finalRole === 'destructive' && styles.destructive,
+        selected && styles.selected,
         Boolean(icon) && styles.hasIcon,
         Boolean(secondaryIcon) && styles.hasSecondaryIcon,
         needsGrid && styles.spacing,
@@ -85,7 +90,15 @@ export const Action = forwardRef<
         Boolean(connectedAccessory) && styles.connectedAccessory,
       )}
       disabled={finalDisabled}
-      display={needsGrid ? 'inlineGrid' : 'inlineFlex'}
+      display={
+        needsGrid
+          ? inlineSize === 'fill'
+            ? 'grid'
+            : 'inlineGrid'
+          : inlineSize === 'fill'
+          ? 'flex'
+          : 'inlineFlex'
+      }
     >
       {content}
     </Pressable>

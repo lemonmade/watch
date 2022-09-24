@@ -1,23 +1,13 @@
-.NavigationItem {
-  --z-Icon-base-color: var(--z-Action-icon-color);
-  min-block-size: var(--z-Action-minimum-size);
-  padding: var(--z-spacing-tiny) var(--z-spacing-base);
-  gap: var(--z-spacing-small);
-  grid-template-columns: auto 1fr;
-  border-radius: var(--z-corner-radius-base);
-  color: var(--z-Action-text-color);
-}
+.Navigation {
+  --z-Action-inset-content: '';
+  --z-Action-inset-display: block;
+  --z-Action-inset-none: none;
+  --z-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
+  --z-Action-inset-block-nudge: 0;
 
-.NavigationItem:where(:hover) {
-  --z-Icon-base-color: var(--z-Action-hovered-icon-color);
-  background: var(--z-Action-hovered-background);
-  color: var(--z-Action-hovered-text-color);
-}
+  --z-Action-background: transparent;
 
-.NavigationItem:where(:focus-visible) {
-  --z-Icon-base-color: var(--z-Action-focused-icon-color);
-  background: var(--z-Action-focused-background);
-  color: var(--z-Action-focused-text-color);
+  padding: var(--z-spacing-small);
 }
 
 .NavigationItem:where(:active),
@@ -25,8 +15,4 @@
   --z-Icon-base-color: var(--z-Action-pressed-icon-color);
   background: var(--z-Action-pressed-background);
   color: var(--z-Action-pressed-text-color);
-}
-
-.selected {
-  background: var(--z-Action-pressed-background);
 }

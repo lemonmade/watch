@@ -1,19 +1,18 @@
-import {type ReactNode, type PropsWithChildren, useMemo} from 'react';
+import {useMemo, type ComponentProps, type PropsWithChildren} from 'react';
 import {useCurrentUrl, useRouter, type NavigateTo} from '@quilted/quilt';
-import {classes} from '@lemon/css';
-import {View, Pressable, Text, Icon, type IconSource} from '@lemon/zest';
+import {View, Action, Icon} from '@lemon/zest';
 
 import styles from './Navigation.module.css';
 
 export interface NavigationProps {}
 
 export function Navigation({children}: PropsWithChildren<NavigationProps>) {
-  return <View padding="small">{children}</View>;
+  return <View className={styles.Navigation}>{children}</View>;
 }
 
 export interface NavigationItemProps {
   to: NavigateTo;
-  icon: IconSource | ReactNode;
+  icon: ComponentProps<typeof Icon>['source'];
   matches?: (string | RegExp)[];
 }
 
@@ -26,15 +25,15 @@ export function NavigationItem({
   const selected = useItemSelected(to, matches);
 
   return (
-    <Pressable
+    <Action
+      selected={selected}
       to={to}
-      display="grid"
       inlineAlignment="start"
-      className={classes(styles.NavigationItem, selected && styles.selected)}
+      inlineSize="fill"
+      icon={icon}
     >
-      {typeof icon === 'string' ? <Icon source={icon as any} /> : icon}
-      <Text>{children}</Text>
-    </Pressable>
+      {children}
+    </Action>
   );
 }
 

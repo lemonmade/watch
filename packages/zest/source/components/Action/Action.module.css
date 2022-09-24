@@ -68,6 +68,16 @@
     --z-internal-Action-text-color: var(--z-Action-pressed-text-color);
   }
 
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-selected-border);
+    --z-internal-Action-background: var(--z-Action-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-selected-text-color);
+  }
+
   &:where(:disabled) {
     --z-Icon-base-color: var(--z-Action-disabled-icon-color);
 
@@ -116,6 +126,16 @@
     --z-internal-Action-divider-color: var(--z-Action-emphasized-pressed-divider-color);
     --z-internal-Action-shadow: var(--z-Action-emphasized-pressed-shadow);
     --z-internal-Action-text-color: var(--z-Action-emphasized-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-emphasized-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-emphasized-selected-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-selected-text-color);
   }
 
   &:where(:disabled) {
@@ -168,6 +188,16 @@
     --z-internal-Action-text-color: var(--z-Action-subdued-pressed-text-color);
   }
 
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-subdued-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-subdued-selected-border);
+    --z-internal-Action-background: var(--z-Action-subdued-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-selected-text-color);
+  }
+
   &:where(:disabled) {
     --z-Icon-base-color: var(--z-Action-subdued-disabled-icon-color);
 
@@ -216,6 +246,16 @@
     --z-internal-Action-divider-color: var(--z-Action-destructive-pressed-divider-color);
     --z-internal-Action-shadow: var(--z-Action-destructive-pressed-shadow);
     --z-internal-Action-text-color: var(--z-Action-destructive-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-destructive-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-selected-border);
+    --z-internal-Action-background: var(--z-Action-destructive-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-selected-text-color);
   }
 
   &:where(:disabled) {
