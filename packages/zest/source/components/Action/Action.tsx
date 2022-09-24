@@ -1,9 +1,8 @@
 import {
-  useRef,
   forwardRef,
-  type PropsWithChildren,
   type ReactNode,
   type ReactElement,
+  type PropsWithChildren,
 } from 'react';
 import {classes, variation} from '@lemon/css';
 
@@ -15,8 +14,6 @@ import {
   ConnectedAccessoryContext,
   ConnectedAccessoryReset,
 } from '../../utilities/actions';
-import {ImplicitPopoverActivation} from '../../utilities/popovers';
-import {ImplicitModalActivation} from '../../utilities/overlays';
 
 import type {EmphasisValue, ActionRoleKeyword} from '../../system';
 
@@ -30,34 +27,12 @@ export type Props = Omit<PressableProps, 'className'> & {
   role?: ActionRoleKeyword;
   size?: 'small' | 'base';
   accessory?: ReactNode;
-  popover?: ReactNode | false;
-  modal?: ReactNode | false;
 };
 
-export function Action({popover, modal, ...rest}: PropsWithChildren<Props>) {
-  const ref = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
-
-  let action = <ActionInternal ref={ref} {...rest} />;
-
-  if (popover !== undefined) {
-    action = (
-      <ImplicitPopoverActivation target={ref} popover={popover}>
-        {action}
-      </ImplicitPopoverActivation>
-    );
-  } else if (modal !== undefined) {
-    action = (
-      <ImplicitModalActivation modal={modal}>{action}</ImplicitModalActivation>
-    );
-  }
-
-  return action;
-}
-
-const ActionInternal = forwardRef<
+export const Action = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  Omit<Props, 'popover'>
->(function ActionInternal(
+  PropsWithChildren<Props>
+>(function Action(
   {
     role,
     disabled,

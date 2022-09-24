@@ -7,9 +7,14 @@
   border-radius: var(--z-corner-radius-base);
   box-shadow: 0 2px 5px rgba(0 0 0 / 50%);
   max-width: 20rem;
+  pointer-events: none;
   transition: transform 0.1s ease, opacity 0.15s ease;
 
-  &[data-state='inactive'],
+  &[data-state='preparing'] {
+    opacity: 0;
+  }
+
+  &[data-state='closed']
   &[data-state='closing'] {
     transform: scale(0.7);
     opacity: 0;
@@ -17,6 +22,7 @@
 
   &[data-state='opening'],
   &[data-state='open'] {
+    pointer-events: auto;
     transform: scale(100%);
     opacity: 1;
   }

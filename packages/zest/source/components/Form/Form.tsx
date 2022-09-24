@@ -6,10 +6,6 @@ import {View, useViewProps, resolveViewProps, type ViewProps} from '../View';
 
 import {useUniqueId} from '../../utilities/id';
 import {
-  ImplicitActionContext,
-  type ImplicitAction,
-} from '../../utilities/actions';
-import {
   FormContext,
   useContainingForm,
   type FormDetails,
@@ -36,13 +32,7 @@ export function Form({
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Form', explicitId);
   const nested = useContainingForm() != null;
-  const [formDetails, implicitAction] = useMemo<[FormDetails, ImplicitAction]>(
-    () => [
-      {id, nested},
-      {type: 'submit', target: {id, type: 'form'}},
-    ],
-    [id, nested],
-  );
+  const formDetails = useMemo<FormDetails>(() => ({id, nested}), [id, nested]);
 
   const view = useViewProps(viewProps);
 
@@ -76,9 +66,7 @@ export function Form({
       {implicitSubmitContent}
     </>
   ) : (
-    <ImplicitActionContext action={implicitAction}>
-      {children}
-    </ImplicitActionContext>
+    children
   );
 
   return nested ? (

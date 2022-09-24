@@ -1,48 +1,122 @@
 import {useMemo, type ReactNode, type PropsWithChildren} from 'react';
-import {signal} from '@preact/signals-core';
+import {signal, type Signal, type ReadonlySignal} from '@preact/signals-core';
+import {createEmitter, type Emitter} from '@quilted/events';
+import {
+  createUseContextHook,
+  createOptionalContext,
+} from '@quilted/react-utilities';
 
-import styles from '../system.module.css';
-
-import {useUniqueId} from './id';
-import {ImplicitActionContext, type ImplicitAction} from './actions';
-
-interface ModalContextProps {
-  modal: ReactNode | false;
+export interface OverlayEvents {
+  open: void;
+  close: void;
+  change: boolean;
 }
 
-export function ImplicitModalActivation({
-  modal,
+export type OverlayState = 'open' | 'closed';
+
+export interface OverlayController extends Pick<Emitter<OverlayEvents>, 'on'> {
+  readonly id: string;
+  readonly state: ReadonlySignal<OverlayState>;
+  readonly trigger: Signal<HTMLElement | null>;
+  readonly overlay: Signal<HTMLElement | null>;
+  readonly target: {readonly id: string};
+  open(): void;
+  close(): void;
+  toggle(): void;
+}
+
+const OverlayControllerContext = createOptionalContext<OverlayController>();
+export const useOverlayController = createUseContextHook(
+  OverlayControllerContext,
+);
+
+export interface OverlayContextProps {
+  id?: string;
+  overlay: ReactNode;
+  targetId: string;
+}
+
+export function OverlayContext({
+  id,
+  overlay,
+  targetId,
   children,
-}: PropsWithChildren<ModalContextProps>) {
-  const id = useUniqueId('Modal');
-
-  const implicitAction = useMemo<ImplicitAction>(() => {
-    const active = signal(false);
-
-    return {
-      id,
-      type: 'activation',
-      target: {
-        id,
-        type: 'modal',
-        active,
-        async set(newActive) {
-          active.value = newActive;
-        },
-      },
-    };
-  }, [id]);
+}: PropsWithChildren<OverlayContextProps>) {
+  const controller = useMemo(
+    () => createOverlayController({id, targetId}),
+    [id, targetId],
+  );
 
   return (
-    <ImplicitActionContext action={implicitAction}>
-      <ModalTrigger>{children}</ModalTrigger>
-      {modal}
-    </ImplicitActionContext>
+    <>
+      <OverlayControllerContext.Provider value={controller}>
+        {children}
+        {overlay}
+      </OverlayControllerContext.Provider>
+    </>
   );
 }
 
-interface ModalTriggerProps {}
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function OverlayContextReset({children}: PropsWithChildren<{}>) {
+  return (
+    <OverlayControllerContext.Provider value={undefined}>
+      {children}
+    </OverlayControllerContext.Provider>
+  );
+}
 
-function ModalTrigger({children}: PropsWithChildren<ModalTriggerProps>) {
-  return <div className={styles.displayInlineGrid}>{children}</div>;
+export interface OverlayControllerOptions {
+  id?: string;
+  targetId: string;
+}
+
+export function createOverlayController({
+  targetId,
+  id = `${targetId}Overlay`,
+}: OverlayControllerOptions) {
+  const emitter = createEmitter<OverlayEvents>();
+  const trigger: OverlayController['trigger'] = signal(null);
+  const overlay: OverlayController['overlay'] = signal(null);
+  const state = signal<OverlayState>('closed');
+
+  const controller: OverlayController = {
+    id,
+    state,
+    trigger,
+    overlay,
+    on: emitter.on,
+    target: {id: targetId},
+    open() {
+      if (state.value === 'open') return;
+
+      state.value = 'open';
+      emitter.emit('open');
+      emitter.emit('change', true);
+    },
+    close() {
+      if (state.value === 'closed') return;
+
+      state.value = 'closed';
+      emitter.emit('close');
+      emitter.emit('change', false);
+    },
+    toggle() {
+      return state.value === 'open' ? controller.close() : controller.open();
+    },
+  };
+
+  return controller;
+}
+
+export function ariaForOverlay(overlay?: OverlayController) {
+  if (overlay == null) return undefined;
+
+  const {state, target} = overlay;
+
+  return {
+    'aria-expanded': state.value === 'open',
+    'aria-controls': target.id,
+    'aria-owns': target.id,
+  };
 }

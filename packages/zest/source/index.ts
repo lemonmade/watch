@@ -1,11 +1,6 @@
 import './style.css';
 
 export {
-  type ImplicitAction,
-  type ImplicitActionTarget,
-  type ImplicitActionType,
-} from './utilities/actions';
-export {
   raw,
   type Position,
   type RawValue,

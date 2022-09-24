@@ -10,8 +10,9 @@
   "dependencies": {
     "@lemon/css": "workspace:*",
     "@preact/signals-core": "^1.1.0",
-    "@watching/react-signals": "workspace:*",
-    "@quilted/react-utilities": "^0.1.0"
+    "@quilted/events": "^0.1.9",
+    "@quilted/react-utilities": "^0.1.5",
+    "@watching/react-signals": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=16.8.0 <18.0.0"

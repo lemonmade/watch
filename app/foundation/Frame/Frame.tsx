@@ -1,6 +1,6 @@
 import {type PropsWithChildren} from 'react';
 
-import {Action, Menu, View, Popover, Modal} from '@lemon/zest';
+import {Action, Menu, View, Modal} from '@lemon/zest';
 
 import {Navigation, NavigationItem} from './components/Navigation';
 

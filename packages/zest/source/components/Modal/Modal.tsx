@@ -2,10 +2,10 @@ import {useRef, useEffect, type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
 import {
-  useImplicitAction,
-  ImplicitActionReset,
-  ConnectedAccessoryReset,
-} from '../../utilities/actions';
+  OverlayContextReset,
+  useOverlayController,
+} from '../../utilities/overlays';
+import {ConnectedAccessoryReset} from '../../utilities/actions';
 import {useCanvas, type Canvas} from '../../utilities/canvas';
 import {StackedLayer} from '../../utilities/layers';
 import {AutoHeadingContext} from '../../utilities/headings';
@@ -22,49 +22,36 @@ interface ModalProps {
 
 export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
   const ref = useRef<HTMLDivElement>(null);
-  const implicitAction = useImplicitAction();
   const canvas = useCanvas();
+  const overlay = useOverlayController();
 
-  if (
-    implicitAction == null ||
-    implicitAction.type !== 'activation' ||
-    implicitAction.target == null
-  ) {
-    return null;
-  }
-
-  const {id, active} = implicitAction.target;
-
-  return active.value ? (
-    <ConnectedAccessoryReset>
-      <ImplicitActionReset>
-        <LockCanvas canvas={canvas} />
-        <Portal>
+  return overlay.state.value === 'open' ? (
+    <>
+      <LockCanvas canvas={canvas} />
+      <OverlayContextReset>
+        <ConnectedAccessoryReset>
           <AutoHeadingContext.Provider value={2}>
-            <StackedLayer>
-              <div
-                className={classes(
-                  systemStyles.resetOrientation,
-                  styles.Modal,
-                  styles.active,
-                  padding && styles.padding,
-                )}
-                id={id}
-                ref={ref}
-              >
-                {children}
-              </div>
-            </StackedLayer>
+            <Portal>
+              <StackedLayer>
+                <div
+                  className={classes(
+                    systemStyles.resetOrientation,
+                    styles.Modal,
+                    styles.active,
+                    padding && styles.padding,
+                  )}
+                  id={overlay.id}
+                  ref={ref}
+                >
+                  {children}
+                </div>
+              </StackedLayer>
+              <div className={styles.Backdrop} onPointerDown={overlay.close} />
+            </Portal>
           </AutoHeadingContext.Provider>
-          <div
-            className={styles.Backdrop}
-            onPointerDown={() => {
-              implicitAction.target.set(false);
-            }}
-          />
-        </Portal>
-      </ImplicitActionReset>
-    </ConnectedAccessoryReset>
+        </ConnectedAccessoryReset>
+      </OverlayContextReset>
+    </>
   ) : null;
 }
 

@@ -1,4 +1,5 @@
 import {createContext, useContext, useEffect} from 'react';
+// import {createEmitter, type Emitter} from '@quilted/events';
 
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown';
 
