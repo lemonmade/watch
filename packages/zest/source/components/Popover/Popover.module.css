@@ -8,24 +8,28 @@
   box-shadow: 0 2px 5px rgba(0 0 0 / 50%);
   max-width: 20rem;
   pointer-events: none;
+  transform: scale(100%);
+  opacity: 1;
+}
+
+.transitionOpenEnd,
+.transitionOpen {
+  pointer-events: auto;
+}
+
+.transitionOpenEnd,
+.transitionCloseEnd {
   transition: transform 0.1s ease, opacity 0.15s ease;
+}
 
-  &[data-state='preparing'] {
-    opacity: 0;
-  }
+.transitionPreparing {
+  opacity: 0;
+}
 
-  &[data-state='closed']
-  &[data-state='closing'] {
-    transform: scale(0.7);
-    opacity: 0;
-  }
-
-  &[data-state='opening'],
-  &[data-state='open'] {
-    pointer-events: auto;
-    transform: scale(100%);
-    opacity: 1;
-  }
+.transitionOpenStart,
+.transitionCloseEnd {
+  transform: scale(0.7);
+  opacity: 0;
 }
 
 .blockAttachmentStart {

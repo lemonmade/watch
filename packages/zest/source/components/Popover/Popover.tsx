@@ -1,9 +1,9 @@
-import {useRef, useEffect, type PropsWithChildren, useMemo} from 'react';
+import {useEffect, useRef, type PropsWithChildren, useMemo} from 'react';
 import {classes, variation} from '@lemon/css';
 import {
   signal,
   computed,
-  effect,
+  useSignalValue,
   type Signal,
   type ReadonlySignal,
 } from '@watching/react-signals';
@@ -34,33 +34,19 @@ export function Popover({
 }: PropsWithChildren<PopoverProps>) {
   const controller = usePopoverController({blockAttachment, inlineAttachment});
 
-  useEffect(
-    () =>
-      effect(() => {
-        const state = controller.state.value;
-
-        const popover = controller.popover.value;
-
-        if (popover) {
-          popover.dataset.state = state;
-        }
-      }),
-    [controller],
-  );
-
   return controller.rendered.value ? (
     <ConnectedAccessoryReset>
       <OverlayContextReset>
         <div
           className={classes(
             styles.Popover,
+            styles[variation('transition', controller.state.value)],
             styles[variation('blockAttachment', blockAttachment)],
           )}
           id={controller.id}
           ref={(element) => {
             controller.popover.value = element;
           }}
-          data-state="closed"
         >
           {children}
         </div>
@@ -69,20 +55,33 @@ export function Popover({
   ) : null;
 }
 
-type PopoverState = 'preparing' | 'opening' | 'open' | 'closing' | 'closed';
+type PopoverState =
+  | 'preparing'
+  | 'openStart'
+  | 'openEnd'
+  | 'open'
+  | 'closeStart'
+  | 'closeEnd'
+  | 'closed';
 
 interface PopoverController extends Pick<OverlayController, 'id'> {
   readonly state: Signal<PopoverState>;
   readonly rendered: ReadonlySignal<boolean>;
   readonly popover: OverlayController['overlay'];
-  open(): Promise<void>;
-  close(): Promise<void>;
+  open(): Promise<boolean>;
+  close(): Promise<boolean>;
 }
 
-interface PopoverActivation {
+interface PopoverTransition {
   readonly id: string;
   readonly abort: AbortController;
 }
+
+const CLOSING_STATES = new Set<PopoverState>([
+  'closeStart',
+  'closeEnd',
+  'closed',
+]);
 
 function usePopoverController({
   blockAttachment,
@@ -98,10 +97,12 @@ function usePopoverController({
     const rendered: PopoverController['rendered'] = computed(
       () => state.value !== 'closed',
     );
+    const canOpen = computed(() => CLOSING_STATES.has(state.value));
+
     const {trigger, overlay} = overlayController;
 
-    let activationCount = 0;
-    let currentActivation: PopoverActivation | undefined;
+    let transitionCount = 0;
+    let currentTransition: PopoverTransition | undefined;
 
     function update() {
       const currentTrigger = trigger.value;
@@ -120,8 +121,6 @@ function usePopoverController({
 
       let inlineStart: number;
       let blockStart: number;
-
-      console.log({inlineAttachment, triggerGeometry, overlayGeometry});
 
       switch (inlineAttachment) {
         case 'start': {
@@ -159,18 +158,16 @@ function usePopoverController({
       currentOverlay.style.top = `${blockStart}px`;
     }
 
-    async function open() {
-      const currentState = state.value;
-
-      if (currentState !== 'closing' && currentState !== 'closed') return;
+    function open() {
+      if (!canOpen.value) return Promise.resolve(false);
 
       const abortController = new AbortController();
 
-      const oldActivation = currentActivation;
+      const oldTransition = currentTransition;
 
-      activationCount += 1;
-      currentActivation = {
-        id: String(activationCount),
+      transitionCount += 1;
+      currentTransition = {
+        id: String(transitionCount),
         abort: abortController,
       };
 
@@ -189,103 +186,73 @@ function usePopoverController({
 
       abortController.signal.addEventListener('abort', stopPointerDownListen);
 
-      oldActivation?.abort.abort();
+      oldTransition?.abort.abort();
 
-      await setState(currentState === 'closed' ? 'preparing' : 'opening');
+      return setState(state.value === 'closed' ? 'preparing' : 'openStart');
     }
 
-    async function close() {
-      const currentState = state.value;
-
-      if (currentState === 'closing' || currentState === 'closed') return;
-
-      await setState(currentState === 'preparing' ? 'closed' : 'closing');
+    function close() {
+      if (canOpen.value) return Promise.resolve(false);
+      return setState(state.value === 'preparing' ? 'closed' : 'closeStart');
     }
 
-    async function setState(newState: PopoverState) {
-      const activation = currentActivation;
+    async function setState(newState: PopoverState): Promise<boolean> {
+      const transition = currentTransition;
 
-      if (newState === 'preparing') {
-        const promise = new Promise<void>((resolve) => {
-          helpers.current.onRenderChange = (rendered: boolean) => {
-            if (!rendered) return;
-            delete helpers.current.onRenderChange;
-            resolve();
-          };
+      const isActiveTransitionStep = () =>
+        transition === currentTransition && state.value === newState;
+
+      switch (newState) {
+        case 'preparing': {
+          state.value = 'preparing';
+          await nextAnimationFrame();
+          return isActiveTransitionStep() ? setState('openStart') : false;
+        }
+        case 'openStart': {
+          update();
+          state.value = 'openStart';
+          await nextAnimationFrame();
+          return isActiveTransitionStep() ? setState('openEnd') : false;
+        }
+        case 'openEnd': {
+          state.value = 'openEnd';
+          await nextOverlayTransition();
+          return isActiveTransitionStep() ? setState('open') : false;
+        }
+        case 'closeStart': {
+          state.value = 'closeStart';
+          await nextAnimationFrame();
+          return isActiveTransitionStep() ? setState('closeEnd') : false;
+        }
+        case 'closeEnd': {
+          state.value = 'closeEnd';
+          await nextOverlayTransition();
+          return isActiveTransitionStep() ? setState('closed') : false;
+        }
+        default: {
+          state.value = newState;
+          return true;
+        }
+      }
+    }
+
+    function nextOverlayTransition() {
+      return once(overlay.value!, 'transitionend', {
+        signal: currentTransition?.abort.signal,
+        abort: 'returns',
+      });
+    }
+
+    function nextAnimationFrame() {
+      return new Promise<void>((resolve) => {
+        currentTransition?.abort.signal.addEventListener('abort', () => {
+          resolve();
         });
 
-        state.value = 'preparing';
-
-        await promise;
-
-        if (
-          activation?.id !== currentActivation?.id ||
-          state.value !== 'preparing'
-        ) {
-          return;
-        }
-
-        await setState('opening');
-
-        return;
-      }
-
-      if (!overlay.value) {
-        state.value = newState;
-        return;
-      }
-
-      if (newState === 'opening') {
-        update();
-
-        const transitionEnd = once(overlay.value, 'transitionend', {
-          signal: activation?.abort.signal,
-          abort: 'returns',
-        });
-
-        state.value = 'opening';
-        await transitionEnd;
-
-        if (
-          activation?.id !== currentActivation?.id ||
-          state.value !== 'opening'
-        ) {
-          return;
-        }
-
-        await setState('open');
-
-        return;
-      }
-
-      if (newState === 'closing') {
-        const transitionEnd = once(overlay.value, 'transitionend', {
-          signal: activation?.abort.signal,
-          abort: 'returns',
-        });
-
-        state.value = 'closing';
-        await transitionEnd;
-
-        if (
-          activation?.id !== currentActivation?.id ||
-          state.value !== 'closing'
-        ) {
-          return;
-        }
-
-        await setState('closed');
-
-        return;
-      }
-
-      if (newState === 'closed') {
-        state.value = newState;
-        currentActivation?.abort.abort();
-        return;
-      }
-
-      state.value = newState;
+        helpers.current.onStateChange = () => {
+          resolve();
+        };
+      });
     }
 
     return {
@@ -304,6 +271,23 @@ function usePopoverController({
     inlineAttachment,
   ]);
 
+  const state = useSignalValue(popover.state);
+
+  useEffect(() => {
+    const onStateChange = helpers.current.onStateChange;
+
+    if (!onStateChange) return;
+
+    const handle = window.requestAnimationFrame(() => {
+      onStateChange();
+      delete helpers.current.onStateChange;
+    });
+
+    return () => {
+      window.cancelAnimationFrame(handle);
+    };
+  }, [state]);
+
   useEffect(
     () =>
       overlayController.on('change', (open) => {
@@ -315,18 +299,6 @@ function usePopoverController({
       }),
     [popover, overlayController],
   );
-
-  const rendered = popover.rendered.value;
-
-  useEffect(() => {
-    const handle = window.setTimeout(() => {
-      helpers.current.onRenderChange?.(rendered);
-    }, 50);
-
-    return () => {
-      window.clearTimeout(handle);
-    };
-  }, [rendered]);
 
   return popover;
 }
