@@ -32,29 +32,52 @@ export function Popover({
   blockAttachment = 'end',
   inlineAttachment = 'center',
 }: PropsWithChildren<PopoverProps>) {
-  const controller = usePopoverController({blockAttachment, inlineAttachment});
+  const popover = usePopoverController({blockAttachment, inlineAttachment});
 
-  return controller.rendered.value ? (
+  return popover.rendered.value ? (
     <ConnectedAccessoryReset>
       <OverlayContextReset>
         <Portal>
-          <div
-            className={classes(
-              styles.Popover,
-              styles[variation('transition', controller.state.value)],
-              styles[variation('blockAttachment', blockAttachment)],
-            )}
-            id={controller.id}
-            ref={(element) => {
-              controller.popover.value = element;
-            }}
+          <PopoverSheet
+            popover={popover}
+            blockAttachment={blockAttachment}
+            inlineAttachment={inlineAttachment}
           >
             {children}
-          </div>
+          </PopoverSheet>
         </Portal>
       </OverlayContextReset>
     </ConnectedAccessoryReset>
   ) : null;
+}
+
+function PopoverSheet({
+  popover,
+  blockAttachment,
+  children,
+}: PropsWithChildren<
+  Required<Pick<PopoverProps, 'blockAttachment' | 'inlineAttachment'>> & {
+    popover: PopoverController;
+  }
+>) {
+  const layer = useLayer();
+
+  return (
+    <div
+      className={classes(
+        styles.Popover,
+        styles[variation('transition', popover.state.value)],
+        styles[variation('blockAttachment', blockAttachment)],
+      )}
+      id={popover.id}
+      ref={(element) => {
+        popover.overlay.value = element;
+      }}
+      style={{zIndex: (layer.level + 1) * 10}}
+    >
+      {children}
+    </div>
+  );
 }
 
 type PopoverState =
@@ -69,7 +92,7 @@ type PopoverState =
 interface PopoverController extends Pick<OverlayController, 'id'> {
   readonly state: Signal<PopoverState>;
   readonly rendered: ReadonlySignal<boolean>;
-  readonly popover: OverlayController['overlay'];
+  readonly overlay: OverlayController['overlay'];
   open(): Promise<boolean>;
   close(): Promise<boolean>;
 }
@@ -105,6 +128,15 @@ function usePopoverController({
 
     let transitionCount = 0;
     let currentTransition: PopoverTransition | undefined;
+
+    return {
+      id: overlayController.id,
+      state,
+      rendered,
+      overlay: overlayController.overlay,
+      open,
+      close,
+    };
 
     function update() {
       const currentTrigger = trigger.value;
@@ -258,15 +290,6 @@ function usePopoverController({
         };
       });
     }
-
-    return {
-      id: overlayController.id,
-      state,
-      rendered,
-      popover: overlayController.overlay,
-      open,
-      close,
-    };
   }, [
     layer,
     globalEvents,

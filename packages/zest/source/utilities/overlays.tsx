@@ -112,11 +112,11 @@ export function createOverlayController({
 export function ariaForOverlay(overlay?: OverlayController) {
   if (overlay == null) return undefined;
 
-  const {state, target} = overlay;
+  const {id, state} = overlay;
 
   return {
     'aria-expanded': state.value === 'open',
-    'aria-controls': target.id,
-    'aria-owns': target.id,
+    'aria-controls': id,
+    'aria-owns': id,
   };
 }

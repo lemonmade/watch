@@ -3,7 +3,7 @@ import type {PropsWithChildren} from 'react';
 import {signal, effect} from '@preact/signals-core';
 
 import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
-import {LayerContext} from '../../utilities/layers';
+import {RootLayer} from '../../utilities/layers';
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
 import {AutoHeadingContext} from '../../utilities/headings';
 
@@ -17,6 +17,7 @@ interface Props {}
 export function Canvas({children}: PropsWithChildren<Props>) {
   const {canvas, idFactory} = useMemo(() => {
     const canvas: CanvasType = {
+      level: 0,
       scroll: signal('auto'),
       inert: signal(false),
       portal: {
@@ -27,19 +28,6 @@ export function Canvas({children}: PropsWithChildren<Props>) {
     return {canvas, idFactory: new UniqueIdFactory()};
   }, []);
 
-  return (
-    <UniqueIdContext.Provider value={idFactory}>
-      <AutoHeadingContext.Provider value={1}>
-        <CanvasProvider canvas={canvas}>{children}</CanvasProvider>
-      </AutoHeadingContext.Provider>
-    </UniqueIdContext.Provider>
-  );
-}
-
-function CanvasProvider({
-  canvas,
-  children,
-}: PropsWithChildren<{canvas: CanvasType}>) {
   useEffect(
     () =>
       effect(() => {
@@ -57,13 +45,17 @@ function CanvasProvider({
   );
 
   return (
-    <CanvasContext.Provider value={canvas}>
-      <LayerContext.Provider value={canvas}>{children}</LayerContext.Provider>
-      <div
-        ref={(element) => {
-          canvas.portal.container.value = element;
-        }}
-      />
-    </CanvasContext.Provider>
+    <UniqueIdContext.Provider value={idFactory}>
+      <AutoHeadingContext.Provider value={1}>
+        <CanvasContext.Provider value={canvas}>
+          <RootLayer layer={canvas}>{children}</RootLayer>
+          <div
+            ref={(element) => {
+              canvas.portal.container.value = element;
+            }}
+          />
+        </CanvasContext.Provider>
+      </AutoHeadingContext.Provider>
+    </UniqueIdContext.Provider>
   );
 }

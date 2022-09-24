@@ -26,6 +26,8 @@ body {
 }
 
 :global(#app) {
+  position: relative;
+  z-index: 0;
   min-block-size: 100vh;
   min-block-size: 100dvh;
 }

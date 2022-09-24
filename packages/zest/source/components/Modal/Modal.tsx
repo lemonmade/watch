@@ -1,13 +1,14 @@
-import {useRef, useEffect, type PropsWithChildren} from 'react';
+import {useEffect, type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
 import {
   OverlayContextReset,
   useOverlayController,
+  type OverlayController,
 } from '../../utilities/overlays';
 import {ConnectedAccessoryReset} from '../../utilities/actions';
-import {useCanvas, type Canvas} from '../../utilities/canvas';
-import {StackedLayer} from '../../utilities/layers';
+import {useCanvas} from '../../utilities/canvas';
+import {useLayer} from '../../utilities/layers';
 import {AutoHeadingContext} from '../../utilities/headings';
 
 import systemStyles from '../../system.module.css';
@@ -21,32 +22,19 @@ interface ModalProps {
 }
 
 export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
-  const ref = useRef<HTMLDivElement>(null);
-  const canvas = useCanvas();
   const overlay = useOverlayController();
 
   return overlay.state.value === 'open' ? (
     <>
-      <LockCanvas canvas={canvas} />
+      <LockCanvas />
       <OverlayContextReset>
         <ConnectedAccessoryReset>
           <AutoHeadingContext.Provider value={2}>
             <Portal>
-              <StackedLayer>
-                <div
-                  className={classes(
-                    systemStyles.resetOrientation,
-                    styles.Modal,
-                    styles.active,
-                    padding && styles.padding,
-                  )}
-                  id={overlay.id}
-                  ref={ref}
-                >
-                  {children}
-                </div>
-              </StackedLayer>
-              <div className={styles.Backdrop} onPointerDown={overlay.close} />
+              <ModalSheet overlay={overlay} padding={padding}>
+                {children}
+              </ModalSheet>
+              <ModalBackdrop overlay={overlay} />
             </Portal>
           </AutoHeadingContext.Provider>
         </ConnectedAccessoryReset>
@@ -55,7 +43,46 @@ export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
   ) : null;
 }
 
-function LockCanvas({canvas}: {canvas: Canvas}) {
+function ModalSheet({
+  overlay,
+  padding,
+  children,
+}: PropsWithChildren<
+  Pick<ModalProps, 'padding'> & {overlay: OverlayController}
+>) {
+  const layer = useLayer();
+
+  return (
+    <div
+      className={classes(
+        systemStyles.resetOrientation,
+        styles.Modal,
+        styles.active,
+        padding && styles.padding,
+      )}
+      style={{zIndex: (layer.level + 1) * 10}}
+      id={overlay.id}
+    >
+      {children}
+    </div>
+  );
+}
+
+function ModalBackdrop({overlay}: {overlay: OverlayController}) {
+  const layer = useLayer();
+
+  return (
+    <div
+      className={styles.Backdrop}
+      style={{zIndex: (layer.level + 1) * 10 - 1}}
+      onPointerDown={overlay.close}
+    />
+  );
+}
+
+function LockCanvas() {
+  const canvas = useCanvas();
+
   useEffect(() => {
     canvas.inert.value = true;
     canvas.scroll.value = 'locked';
