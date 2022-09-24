@@ -18,7 +18,7 @@ import {
 import {useLayer} from '../../utilities/layers';
 import {useGlobalEvents} from '../../utilities/global-events';
 
-// import {Portal} from '../Portal';
+import {Portal} from '../Portal';
 
 import styles from './Popover.module.css';
 
@@ -37,19 +37,21 @@ export function Popover({
   return controller.rendered.value ? (
     <ConnectedAccessoryReset>
       <OverlayContextReset>
-        <div
-          className={classes(
-            styles.Popover,
-            styles[variation('transition', controller.state.value)],
-            styles[variation('blockAttachment', blockAttachment)],
-          )}
-          id={controller.id}
-          ref={(element) => {
-            controller.popover.value = element;
-          }}
-        >
-          {children}
-        </div>
+        <Portal>
+          <div
+            className={classes(
+              styles.Popover,
+              styles[variation('transition', controller.state.value)],
+              styles[variation('blockAttachment', blockAttachment)],
+            )}
+            id={controller.id}
+            ref={(element) => {
+              controller.popover.value = element;
+            }}
+          >
+            {children}
+          </div>
+        </Portal>
       </OverlayContextReset>
     </ConnectedAccessoryReset>
   ) : null;
@@ -171,20 +173,22 @@ function usePopoverController({
         abort: abortController,
       };
 
-      const stopPointerDownListen = globalEvents.on('pointerdown', (target) => {
-        if (layer.inert.value) return;
+      globalEvents.on(
+        'pointerdown',
+        (target) => {
+          if (layer.inert.value) return;
 
-        if (
-          overlay.value?.contains(target) ||
-          trigger.value?.contains(target)
-        ) {
-          return;
-        }
+          if (
+            overlay.value?.contains(target) ||
+            trigger.value?.contains(target)
+          ) {
+            return;
+          }
 
-        overlayController.close();
-      });
-
-      abortController.signal.addEventListener('abort', stopPointerDownListen);
+          overlayController.close();
+        },
+        {signal: abortController.signal},
+      );
 
       oldTransition?.abort.abort();
 

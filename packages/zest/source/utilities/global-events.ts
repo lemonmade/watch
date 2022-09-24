@@ -1,89 +1,58 @@
 import {createContext, useContext, useEffect} from 'react';
-// import {createEmitter, type Emitter} from '@quilted/events';
+import {
+  addListener,
+  createEmitterWithInternals,
+  type Emitter,
+} from '@quilted/events';
 
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown';
 
-export class GlobalEventManager {
-  private readonly eventMap = new Map<
-    GlobalEvent,
-    Set<(target: HTMLElement) => void>
-  >();
+type GlobalEventMap = {
+  [Event in GlobalEvent]: HTMLElement;
+};
 
-  private readonly listenerMap = new Map<GlobalEvent, () => void>();
-
-  on(event: GlobalEvent, handler: (target: HTMLElement) => void): () => void {
-    let handlers = this.eventMap.get(event);
-
-    if (handlers == null) {
-      handlers = new Set();
-      this.eventMap.set(event, handlers);
-    }
-
-    if (!this.listenerMap.has(event)) {
-      const listener = (element: HTMLElement) => {
-        for (const handler of handlers!) {
-          handler(element);
-        }
-      };
-
-      this.listenerMap.set(event, addEventListener(event, listener));
-    }
-
-    handlers.add(handler);
-
-    return () => {
-      handlers!.delete(handler);
-      if (handlers!.size === 0) {
-        const listener = this.listenerMap.get(event);
-
-        if (listener) {
-          listener();
-          this.listenerMap.delete(event);
-        }
-      }
-    };
-  }
-}
-
-function addEventListener(
-  event: GlobalEvent,
-  listener: (element: HTMLElement) => void,
-) {
-  const wrappedListener = (event: Event) => {
-    listener(event.target as any);
-  };
-
-  targetForEvent(event).addEventListener(event, wrappedListener, {
-    passive: true,
-  });
-
-  return () => {
-    removeEventListener(event, wrappedListener);
-  };
-}
-
-function removeEventListener(
-  event: GlobalEvent,
-  listener: (event: Event) => void,
-) {
-  targetForEvent(event).removeEventListener(event, listener);
-}
-
-function targetForEvent(event: GlobalEvent) {
-  switch (event) {
-    case 'pointerdown':
-      return document;
-    default:
-      return window;
-  }
-}
+export interface GlobalEventManager
+  extends Pick<Emitter<GlobalEventMap>, 'on'> {}
 
 export const GlobalEventContext = createContext<GlobalEventManager>(
-  new GlobalEventManager(),
+  createGlobalEventManager(),
 );
 
 export function useGlobalEvents() {
   return useContext(GlobalEventContext);
+}
+
+function createGlobalEventManager(): GlobalEventManager {
+  const emitter = createEmitterWithInternals<GlobalEventMap>();
+  const abortByEvent = new Map<GlobalEvent, AbortController>();
+
+  emitter.internal.on('add', ({event}) => {
+    if (abortByEvent.has(event)) return;
+
+    const abort = new AbortController();
+    abortByEvent.set(event, abort);
+
+    addListener(
+      targetForEvent(event),
+      event,
+      (pointerEvent) => {
+        emitter.emit(event, pointerEvent.target);
+      },
+      {signal: abort.signal},
+    );
+  });
+
+  emitter.internal.on('remove', ({event, all}) => {
+    if (all.size > 0) return;
+
+    const abort = abortByEvent.get(event);
+    abortByEvent.delete(event);
+    abort?.abort();
+  });
+
+  return {
+    on: emitter.on,
+  };
 }
 
 export function useGlobalEventListener(
@@ -96,4 +65,13 @@ export function useGlobalEventListener(
     () => globalEventContext.on(event, handler),
     [event, handler, globalEventContext],
   );
+}
+
+function targetForEvent(event: GlobalEvent) {
+  switch (event) {
+    case 'pointerdown':
+      return document;
+    default:
+      return window;
+  }
 }
