@@ -10,7 +10,7 @@ import {AutoHeadingContext} from '../../utilities/headings';
 import systemStyles from '../../system.module.css';
 
 import '../../style.css';
-import './Canvas.module.css';
+import styles from './Canvas.module.css';
 
 interface Props {}
 
@@ -28,32 +28,40 @@ export function Canvas({children}: PropsWithChildren<Props>) {
     return {canvas, idFactory: new UniqueIdFactory()};
   }, []);
 
-  useEffect(
-    () =>
-      effect(() => {
-        if (canvas.scroll.value === 'locked') {
-          document.body.classList.add(systemStyles.scrollLock!);
-        } else {
-          document.body.classList.remove(systemStyles.scrollLock!);
+  useEffect(() => {
+    const portals = document.createElement('div');
+    portals.classList.add(styles.Portals!);
+    document.body.append(portals);
+    canvas.portal.container.value = portals;
 
-          if (document.body.classList.length === 0) {
-            document.body.removeAttribute('class');
-          }
+    const teardown = effect(() => {
+      if (canvas.scroll.value === 'locked') {
+        document.body.classList.add(systemStyles.scrollLock!);
+      } else {
+        document.body.classList.remove(systemStyles.scrollLock!);
+
+        if (document.body.classList.length === 0) {
+          document.body.removeAttribute('class');
         }
-      }),
-    [canvas],
-  );
+      }
+    });
+
+    return () => {
+      teardown();
+
+      portals.remove();
+
+      if (canvas.portal.container.value === portals) {
+        canvas.portal.container.value = null;
+      }
+    };
+  }, [canvas]);
 
   return (
     <UniqueIdContext.Provider value={idFactory}>
       <AutoHeadingContext.Provider value={1}>
         <CanvasContext.Provider value={canvas}>
           <RootLayer layer={canvas}>{children}</RootLayer>
-          <div
-            ref={(element) => {
-              canvas.portal.container.value = element;
-            }}
-          />
         </CanvasContext.Provider>
       </AutoHeadingContext.Provider>
     </UniqueIdContext.Provider>

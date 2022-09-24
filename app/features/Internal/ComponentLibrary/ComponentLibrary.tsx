@@ -134,9 +134,13 @@ function ActionAccessoryExampleMenu({disabled = false} = {}) {
       popover={
         <Popover>
           <Menu>
-            <Action>Menu button</Action>
-            <Action to="#">Menu link</Action>
-            <Action role="destructive">Menu destructive</Action>
+            <Action icon="watchlist">Menu button</Action>
+            <Action icon="arrowEnd" to="#">
+              Menu link
+            </Action>
+            <Action icon="delete" role="destructive">
+              Menu destructive
+            </Action>
           </Menu>
         </Popover>
       }

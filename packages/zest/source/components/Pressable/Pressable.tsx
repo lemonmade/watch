@@ -31,25 +31,28 @@ export type Props = {
       to: NavigateTo;
       target?: 'new' | 'current';
       type?: 'activation' | 'none';
+      popover?: ReactNode | false;
+      modal?: ReactNode | false;
     }
   | {
-      type?: 'activation' | 'submit' | 'none';
+      type?: 'activation';
       to?: never;
       target?: never;
+      popover?: ReactNode | false;
+      modal?: ReactNode | false;
     }
-) &
-  (
-    | {
-        type?: 'activation';
-        popover?: ReactNode | false;
-        modal?: ReactNode | false;
-      }
-    | {type: 'submit' | 'none'; popover?: never; modal?: never}
-  );
+  | {
+      type: 'submit' | 'none';
+      to?: never;
+      target?: never;
+      popover?: never;
+      modal?: never;
+    }
+);
 
 export const Pressable = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  Props
+  PropsWithChildren<Props>
 >(function Pressable(props, ref) {
   const {id, popover, modal} = props;
   const hasOverlay = popover !== undefined || modal !== undefined;

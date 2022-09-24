@@ -74,7 +74,7 @@ export default function WatchThrough({id}: Props) {
         </>
       }
     >
-      <BlockStack spacing>
+      <BlockStack spacing="huge">
         {nextEpisode && (
           <NextEpisode
             key={nextEpisode.id}
@@ -579,7 +579,6 @@ function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
 
   return (
     <Action
-      role="destructive"
       icon="stop"
       onPress={() => {
         stopWatchThrough.mutate(

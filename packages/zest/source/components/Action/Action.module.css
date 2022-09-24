@@ -8,25 +8,29 @@
   --z-internal-Action-text-color: var(--z-Action-text-color);
   --z-internal-Action-corner-radius: var(--z-corner-radius-base);
   --z-internal-Action-transition: background 0.2s ease;
+  --z-internal-Action-inline-padding: var(--z-spacing-base);
 
+  position: relative;
   min-block-size: var(--z-Action-minimum-size);
-  padding: var(--z-spacing-tiny) var(--z-spacing-base);
-  border: var(--z-internal-Action-border);
-  border-radius: var(--z-internal-Action-corner-radius);
-  background: var(--z-internal-Action-background);
-  box-shadow: var(--z-internal-Action-shadow);
+  margin: calc(-1 * var(--z-Action-inset-block-nudge, 0)) 0;
+  padding: var(--z-Action-inset-block-size, var(--z-spacing-tiny)) var(--z-internal-Action-inline-padding);
+  border: var(--z-Action-inset-none, var(--z-internal-Action-border));
+  border-radius: var(--z-Action-inset-none, var(--z-internal-Action-corner-radius));
+  background: var(--z-Action-inset-none, var(--z-internal-Action-background));
+  box-shadow: var(--z-Action-inset-none, var(--z-internal-Action-shadow));
   color: var(--z-internal-Action-text-color);
   transition: var(--z-internal-Action-transition);
 
   &::before {
-    display: none;
+    content: var(--z-Action-inset-content);
+    display: var(--z-Action-inset-display, none);
     pointer-events: none;
     position: absolute;
     z-index: -1;
-    top: 0;
+    top: var(--z-Action-inset-block-size, 0);
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: var(--z-Action-inset-block-size, 0);
     border: var(--z-internal-Action-border);
     border-radius: var(--z-internal-Action-corner-radius);
     background: var(--z-internal-Action-background);
@@ -226,22 +230,13 @@
 }
 
 .sizeSmall {
-  --z-internal-Action-small-block-inset: var(--z-spacing-small);
-  
-  position: relative;
-  padding: var(--z-internal-Action-small-block-inset) var(--z-spacing-small);
-  margin-block-start: calc(-1 * var(--z-internal-Action-small-block-inset));
-  margin-block-end: calc(-1 * var(--z-internal-Action-small-block-inset));
-  background: none;
-  border: none;
-  box-shadow: none;
+  --z-Action-inset-content: '';
+  --z-Action-inset-display: block;
+  --z-Action-inset-none: none;
+  --z-Action-inset-block-size: var(--z-spacing-small);
+  --z-Action-inset-block-nudge: var(--z-Action-inset-block-size);
 
-  &::before {
-    content: '';
-    display: block;
-    top: var(--z-internal-Action-small-block-inset);
-    bottom: var(--z-internal-Action-small-block-inset);
-  }
+  --z-internal-Action-inline-padding: var(--z-spacing-small);
 }
 
 .spacing {
@@ -250,6 +245,10 @@
 
 .hasIcon {
   grid-template-columns: auto 1fr;
+
+  & > *:first-child {
+    margin-inline-start: calc(-0.5 * var(--z-spacing-small));
+  }
 }
 
 .hasSecondaryIcon {
