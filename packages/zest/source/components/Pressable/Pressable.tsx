@@ -3,6 +3,7 @@ import {
   type Ref,
   type ReactNode,
   type PropsWithChildren,
+  type MouseEvent,
 } from 'react';
 import {classes, variation} from '@lemon/css';
 import {Link, type NavigateTo} from '@quilted/quilt';
@@ -117,24 +118,29 @@ export const PressableInternal = forwardRef<
     explicitClassName,
   );
 
-  const handleClick = () => {
+  const handleClick = (
+    event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) => {
     if (onPress) {
+      event.preventDefault();
       onPress();
     } else if (overlay && (type == null || type === 'activation')) {
+      event.preventDefault();
       overlay.toggle();
     }
   };
 
   const resolvedRef: Ref<HTMLAnchorElement | HTMLButtonElement> = overlay
     ? (element) => {
-        overlay!.trigger.value = element;
+        const resolvedElement = (element as any)?.base ?? element;
+        overlay!.trigger.value = resolvedElement;
 
         if (ref == null) return;
 
         if (typeof ref === 'function') {
-          ref(element);
+          ref(resolvedElement);
         } else {
-          ref.current = element;
+          ref.current = resolvedElement;
         }
       }
     : ref;
