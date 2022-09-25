@@ -1,43 +1,19 @@
 .Popover {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: var(--z-stacking-layer-2);
   background: var(--z-overlay-background-base);
   border-radius: var(--z-corner-radius-base);
   box-shadow: 0 2px 5px rgba(0 0 0 / 50%);
   max-width: 20rem;
-  pointer-events: none;
   transform: scale(100%);
   opacity: 1;
 }
 
 .transitionOpenEnd,
-.transitionOpen {
-  pointer-events: auto;
-}
-
-.transitionOpenEnd,
 .transitionCloseEnd {
-  transition: transform 0.2s cubic-bezier(.29,1.66,.51,.88), opacity 0.15s ease;
-}
-
-.transitionPreparing {
-  opacity: 0;
+  transition: transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88), opacity 0.15s ease;
 }
 
 .transitionOpenStart,
 .transitionCloseEnd {
   transform: scale(0.7);
   opacity: 0;
-}
-
-.blockAttachmentStart {
-  margin-block-end: var(--z-spacing-small);
-  transform-origin: 50% 100%;
-}
-
-.blockAttachmentEnd {
-  margin-block-start: var(--z-spacing-small);
-  transform-origin: 50% 0;
 }

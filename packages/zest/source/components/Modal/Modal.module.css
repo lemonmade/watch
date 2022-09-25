@@ -1,8 +1,6 @@
 .Modal {
-  position: fixed;
-  left: 50%;
   top: 50%;
-  z-index: 999;
+  left: 50%;
   background: var(--z-surface-background-base);
   border-radius: var(--z-corner-radius-base);
 
@@ -14,15 +12,17 @@
   min-block-size: 3rem;
 }
 
-.padding {
-  padding: var(--z-spacing-large);
+.transitionOpenEnd,
+.transitionCloseEnd {
+  transition: transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88), opacity 0.15s ease;
 }
 
-.Backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgb(0 0 0 / 75%);
+.transitionOpenStart,
+.transitionCloseEnd {
+  transform: scale(0.85) translate(-50%, calc(3rem - 50%));
+  opacity: 0;
+}
+
+.padding {
+  padding: var(--z-spacing-large);
 }

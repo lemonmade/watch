@@ -150,16 +150,15 @@ function ActionAccessoryExampleMenu({disabled = false} = {}) {
 
 function ActionExampleModal() {
   return (
-    <Modal>
-      <Section padding>Modal content!</Section>
-      <Divider emphasis="subdued" />
-      <Section padding>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi
-        blanditiis laborum dolor velit mollitia, distinctio fugit possimus
-        illum, nulla enim ab! Ipsa reiciendis, earum accusantium quibusdam nemo
-        porro aspernatur itaque.
-      </Section>
-      <Section padding>
+    <Modal padding>
+      <BlockStack spacing>
+        <Heading>Modal content</Heading>
+        <TextBlock>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi
+          blanditiis laborum dolor velit mollitia, distinctio fugit possimus
+          illum, nulla enim ab! Ipsa reiciendis, earum accusantium quibusdam
+          nemo porro aspernatur itaque.
+        </TextBlock>
         <InlineStack alignment="end" spacing="small">
           <Action
             accessory={
@@ -180,7 +179,7 @@ function ActionExampleModal() {
           </Action>
           <Action emphasis>Save</Action>
         </InlineStack>
-      </Section>
+      </BlockStack>
     </Modal>
   );
 }

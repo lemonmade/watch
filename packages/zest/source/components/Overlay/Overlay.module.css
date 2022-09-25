@@ -1,0 +1,65 @@
+.Overlay {
+  --z-internal-Overlay-transform-origin-inline: 50%;
+  --z-internal-Overlay-transform-origin-block: 50%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform-origin: var(--z-internal-Overlay-transform-origin-inline) var(--z-internal-Overlay-transform-origin-block);
+}
+
+.transitionOpenEnd,
+.transitionOpen {
+  pointer-events: auto;
+}
+
+.transitionPreparing {
+  opacity: 0 !important;
+}
+
+.blockAttachmentStart {
+  --z-internal-Overlay-transform-origin-block: 100%;
+  margin-block-end: var(--z-spacing-small);
+}
+
+.blockAttachmentEnd {
+  --z-internal-Overlay-transform-origin-block: 0;
+  margin-block-start: var(--z-spacing-small);
+}
+
+.inlineAttachmentStart {
+  --z-internal-Overlay-transform-origin-inline: 100%;
+}
+
+.inlineAttachmentEnd {
+  --z-internal-Overlay-transform-origin-inline: 0;
+}
+
+.Backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--z-Overlay-backdrop-color);
+}
+
+.transitionOpenEnd,
+.transitionOpen {
+  pointer-events: auto;
+}
+
+.Backdrop-transitionPreparing {
+  opacity: 0 !important;
+}
+
+.Backdrop-transitionOpenEnd,
+.Backdrop-transitionCloseEnd {
+  transition: opacity 0.15s ease;
+}
+
+.Backdrop-transitionOpenStart,
+.Backdrop-transitionCloseEnd {
+  opacity: 0;
+}

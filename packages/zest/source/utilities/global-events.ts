@@ -5,10 +5,10 @@ import {
   type Emitter,
 } from '@quilted/events';
 
-type GlobalEvent = 'resize' | 'scroll' | 'pointerdown';
+type GlobalEvent = 'resize' | 'scroll' | 'pointerdown' | 'keyup';
 
 type GlobalEventMap = {
-  [Event in GlobalEvent]: HTMLElement;
+  [EventName in GlobalEvent]: Event;
 };
 
 export interface GlobalEventManager
@@ -26,17 +26,17 @@ function createGlobalEventManager(): GlobalEventManager {
   const emitter = createEmitterWithInternals<GlobalEventMap>();
   const abortByEvent = new Map<GlobalEvent, AbortController>();
 
-  emitter.internal.on('add', ({event}) => {
-    if (abortByEvent.has(event)) return;
+  emitter.internal.on('add', ({event: eventName}) => {
+    if (abortByEvent.has(eventName)) return;
 
     const abort = new AbortController();
-    abortByEvent.set(event, abort);
+    abortByEvent.set(eventName, abort);
 
     addListener(
-      targetForEvent(event),
-      event,
-      (pointerEvent) => {
-        emitter.emit(event, pointerEvent.target);
+      targetForEvent(eventName),
+      eventName,
+      (event) => {
+        emitter.emit(eventName, event);
       },
       {signal: abort.signal},
     );
@@ -61,10 +61,11 @@ export function useGlobalEventListener(
 ) {
   const globalEventContext = useGlobalEvents();
 
-  useEffect(
-    () => globalEventContext.on(event, handler),
-    [event, handler, globalEventContext],
-  );
+  useEffect(() => {
+    const abort = new AbortController();
+    globalEventContext.on(event, handler, {signal: abort.signal});
+    return () => abort.abort();
+  }, [event, handler, globalEventContext]);
 }
 
 function targetForEvent(event: GlobalEvent) {

@@ -224,6 +224,9 @@
   --z-input-background: rgb(37 27 52);
 
   --z-Icon-base-color: rgb(201 186 229);
+  --z-Icon-base-size: 1.25rem;
+
+  --z-Overlay-backdrop-color: rgb(14 12 18 / 85%);
 
   --z-stacking-layer-0: 10;
   --z-stacking-layer-1: 20;

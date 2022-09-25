@@ -286,8 +286,13 @@
 .hasIcon {
   grid-template-columns: auto 1fr;
 
-  & > *:first-child {
+  & > *:first-child:not(:only-child) {
     margin-inline-start: calc(-0.5 * var(--z-spacing-small));
+  }
+
+  &.sizeSmall > *:first-child {
+    margin-block-start: calc(-0.5 * var(--z-Icon-base-size));
+    margin-block-end: calc(-0.5 * var(--z-Icon-base-size));
   }
 }
 
