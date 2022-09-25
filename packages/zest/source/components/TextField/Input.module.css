@@ -28,6 +28,10 @@
   width: 100%;
   resize: vertical;
   color: inherit;
+
+  &::placeholder {
+    color: var(--z-Input-placeholder-color);
+  }
 }
 
 .Input:focus {

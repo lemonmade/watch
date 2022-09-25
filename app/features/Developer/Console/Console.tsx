@@ -10,6 +10,7 @@ import {
   Heading,
   Section,
   Text,
+  Icon,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -61,7 +62,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                     <Action
                       to={preview.url}
                       key={target}
-                      secondaryIcon="arrowEnd"
+                      detail={<Icon source="arrowEnd" />}
                     >
                       <BlockStack spacing="tiny">
                         <Text accessibilityRole="code">

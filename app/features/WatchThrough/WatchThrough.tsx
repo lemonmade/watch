@@ -138,7 +138,7 @@ function NextEpisode({
   const rating = useSignal<null | number>(null);
   const notes = useSignal<null | string>(null);
   const containsSpoilers = useSignal(false);
-  const at = useSignal<Date>(new Date());
+  const at = useSignal<Date | undefined>(new Date());
   const submitting = useSignal(false);
 
   return (
@@ -228,7 +228,7 @@ function NextEpisode({
 
           <InlineStack spacing>
             <EpisodeRating value={rating} />
-            <WatchedAt value={at} />
+            <EpisodeDatePicker action="watch" value={at} />
           </InlineStack>
 
           <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
@@ -241,7 +241,7 @@ function NextEpisode({
 interface WatchEpisodeFormProps {
   id: string;
   loading: Signal<boolean>;
-  at: Signal<Date>;
+  at: Signal<Date | undefined>;
   rating: Signal<number | null>;
   notes: Signal<string | null>;
   containsSpoilers: Signal<boolean>;
@@ -314,10 +314,24 @@ function EpisodeRating({value: rating}: {value: Signal<null | number>}) {
   );
 }
 
-function WatchedAt({value: at}: {value: Signal<Date>}) {
+function EpisodeDatePicker({
+  action,
+  value: at,
+}: {
+  action: 'watch' | 'skip';
+  value: Signal<Date | undefined>;
+}) {
   return (
     <DatePicker
-      label="Watched on"
+      label={
+        at.value
+          ? action === 'watch'
+            ? 'Watched'
+            : 'Skipped'
+          : action === 'watch'
+          ? 'Watched on…'
+          : 'Skipped on…'
+      }
       value={at.value}
       onChange={(newDate) => {
         at.value = newDate;
@@ -325,7 +339,6 @@ function WatchedAt({value: at}: {value: Signal<Date>}) {
     />
   );
 }
-
 function DetailedReview({
   notes,
   containsSpoilers,
@@ -420,7 +433,7 @@ function SkipEpisodeModal({
 }: SkipEpisodeWithNotesActionProps) {
   const notes = useSignal<null | string>(null);
   const containsSpoilers = useSignal(false);
-  const at = useSignal<Date>(new Date());
+  const at = useSignal<Date | undefined>(new Date());
 
   const skipEpisode = useSkipEpisode({...options, at, notes, containsSpoilers});
 
@@ -448,8 +461,8 @@ function SkipEpisodeModal({
 
           <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
 
-          <InlineStack alignment="spaceBetween">
-            <WatchedAt value={at} />
+          <InlineStack alignment="spaceBetween" spacing="small">
+            <EpisodeDatePicker action="skip" value={at} />
             <Action emphasis type="submit">
               Skip Episode
             </Action>
@@ -463,7 +476,7 @@ function SkipEpisodeModal({
 interface SkipEpisodeOptions {
   id: string;
   watchThroughId: string;
-  at?: Signal<Date>;
+  at?: Signal<Date | undefined>;
   notes?: Signal<string | null>;
   containsSpoilers?: Signal<boolean>;
   onSkip?(): void;

@@ -1,6 +1,6 @@
 import {type PropsWithChildren} from 'react';
 
-import {Action, Menu, View, Modal} from '@lemon/zest';
+import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 
 import {Navigation, NavigationItem} from './components/Navigation';
 
@@ -25,7 +25,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
       </View>
 
       <View className={styles.GoMenu}>
-        <Action emphasis secondaryIcon="go" modal={<GoModal />}>
+        <Action emphasis detail={<Icon source="go" />} modal={<GoModal />}>
           Go
         </Action>
       </View>

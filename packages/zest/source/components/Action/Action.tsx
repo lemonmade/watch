@@ -24,7 +24,7 @@ export type Props = Omit<PressableProps, 'className' | 'display'> & {
   loading?: boolean;
   selected?: boolean;
   icon?: IconSource | ReactElement;
-  secondaryIcon?: IconSource | ReactElement;
+  detail?: ReactElement;
   role?: ActionRoleKeyword;
   size?: 'small' | 'base';
   accessory?: ReactNode;
@@ -40,7 +40,7 @@ export const Action = forwardRef<
     disabled,
     emphasis,
     icon,
-    secondaryIcon,
+    detail,
     children,
     size,
     accessory,
@@ -51,7 +51,7 @@ export const Action = forwardRef<
   },
   ref,
 ) {
-  const needsGrid = Boolean(children) && Boolean(secondaryIcon || icon);
+  const needsGrid = Boolean(children) && Boolean(detail || icon);
   const connectedAccessory = useConnectedAccessory();
 
   let finalEmphasis = emphasis;
@@ -67,7 +67,7 @@ export const Action = forwardRef<
     <>
       {icon && resolveIcon(icon)}
       {needsGrid ? <span>{children}</span> : children}
-      {secondaryIcon && resolveIcon(secondaryIcon)}
+      {detail}
     </>
   );
 
@@ -83,7 +83,7 @@ export const Action = forwardRef<
         finalRole === 'destructive' && styles.destructive,
         selected && styles.selected,
         Boolean(icon) && styles.hasIcon,
-        Boolean(secondaryIcon) && styles.hasSecondaryIcon,
+        Boolean(detail) && styles.hasDetail,
         needsGrid && styles.spacing,
         size && styles[variation('size', size)],
         accessory && styles.connectedMain,

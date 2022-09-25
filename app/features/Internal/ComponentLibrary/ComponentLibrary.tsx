@@ -11,7 +11,7 @@ import {
   Pressable,
   Text,
   TextBlock,
-  DateField,
+  DatePicker,
   Divider,
   InlineStack,
   View,
@@ -26,7 +26,9 @@ import {
   Layout,
   Spacer,
   Modal,
+  Icon,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 export default function ComponentLibrary() {
   return (
@@ -80,7 +82,7 @@ function ActionComponents() {
           </Action>
           <Action modal={<ActionExampleModal />}>Action (modal)</Action>
           <Action size="small">Action (small)</Action>
-          <Action secondaryIcon="arrowEnd">Action (secondary icon)</Action>
+          <Action detail={<Icon source="arrowEnd" />}>Action (detail)</Action>
           <Pressable>Pressable</Pressable>
           <Pressable to="#">Pressable (link)</Pressable>
         </InlineStack>
@@ -243,7 +245,6 @@ function FormComponents() {
           multiline={5}
           blockSize="fitContent"
         />
-        <DateField label="Date field" value={new Date()} onChange={noop} />
 
         <Select
           label="Select"
@@ -258,9 +259,25 @@ function FormComponents() {
           <Choice value="world">World</Choice>
         </ChoiceList>
 
-        <Rating />
+        <InlineStack spacing>
+          <Rating />
+          <DatePickerExample />
+        </InlineStack>
       </BlockStack>
     </Section>
+  );
+}
+
+function DatePickerExample() {
+  const date = useSignal<Date | undefined>(new Date());
+  return (
+    <DatePicker
+      label={date.value ? 'Watched' : 'Watched on…'}
+      value={date.value}
+      onChange={(newDate) => {
+        date.value = newDate;
+      }}
+    />
   );
 }
 

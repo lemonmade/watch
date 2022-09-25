@@ -286,8 +286,12 @@
 .hasIcon {
   grid-template-columns: auto 1fr;
 
-  & > *:first-child:not(:only-child) {
+  &:not(.sizeSmall) > *:first-child {
     margin-inline-start: calc(-0.5 * var(--z-spacing-small));
+
+    &:only-child {
+      margin-inline-end: calc(-0.5 * var(--z-spacing-small));
+    }
   }
 
   &.sizeSmall > *:first-child {
@@ -296,11 +300,11 @@
   }
 }
 
-.hasSecondaryIcon {
+.hasDetail {
   grid-template-columns: 1fr auto;
 }
 
-.hasIcon.hasSecondaryIcon {
+.hasIcon.hasDetail {
   grid-template-columns: auto 1fr auto;
 }
 

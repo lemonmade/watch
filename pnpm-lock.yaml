@@ -330,12 +330,14 @@ importers:
       '@quilted/events': ^0.1.10
       '@quilted/react-utilities': ^0.1.5
       '@watching/react-signals': workspace:*
+      date-fns: ^2.29.3
     dependencies:
       '@lemon/css': link:../css
       '@preact/signals-core': 1.1.1
       '@quilted/events': 0.1.10_@babel+runtime@7.18.9
       '@quilted/react-utilities': 0.1.5_619eb7192a1e119c6a7483243ef75838
       '@watching/react-signals': link:../react-signals
+      date-fns: 2.29.3
 
   scripts/docker:
     specifiers:
@@ -6503,6 +6505,11 @@ packages:
     resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
     dev: true
 
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
+
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     dependencies:
@@ -9393,7 +9400,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:

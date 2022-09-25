@@ -222,6 +222,7 @@
   --z-input-border-color: var(--z-border-base-color);
   --z-input-focused-border-color: #395ba6;
   --z-input-background: rgb(37 27 52);
+  --z-Input-placeholder-color: var(--z-text-subdued-color);
 
   --z-Icon-base-color: rgb(201 186 229);
   --z-Icon-base-size: 1.25rem;

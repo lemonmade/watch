@@ -1,12 +1,12 @@
 .Rating {
   --z-Rating-star-gap: 0.3rem;
-  --z-Rating-star-size: 1.5rem;
+  --z-Rating-star-size: 1.75rem;
   --z-Rating-star-fill: yellow;
 
   display: inline-block;
   border-radius: var(--z-corner-radius-base);
   background: var(--z-Action-background);
-  padding: 0 var(--z-spacing-small);
+  padding: var(--z-spacing-tiny) var(--z-spacing-small);
   outline: none;
   touch-action: none;
   user-select: none;

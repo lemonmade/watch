@@ -12,6 +12,7 @@ interface Props {
   value?: string;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
+  placeholder?: string;
   onInput?(value: string): void;
   onChange?(value: string): void;
 }
@@ -21,6 +22,7 @@ export function TextField({
   value: currentValue,
   multiline = false,
   blockSize = multiline === true ? 'fitContent' : undefined,
+  placeholder,
   onInput,
   onChange,
 }: Props) {
@@ -67,6 +69,7 @@ export function TextField({
         }}
         onBlur={() => onChange?.(value ?? '')}
         form={containingForm?.nested ? containingForm.id : undefined}
+        placeholder={placeholder}
       />
       {blockSize === 'fitContent' && (
         <div className={styles.AutoGrowWrap}>{value} </div>
