@@ -18,7 +18,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2
         with:
-          cache-key: v11
+          cache-key: v12
 
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
