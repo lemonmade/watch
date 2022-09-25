@@ -381,6 +381,16 @@ function useOverlayTransitionController({
           await nextOverlayTransition();
           return isActiveTransitionStep() ? setState('closed') : false;
         }
+        case 'open': {
+          state.value = 'open';
+          focusFirstFocusable(overlayController.overlay.value);
+          return true;
+        }
+        case 'closed': {
+          state.value = 'closed';
+          focusFirstFocusable(overlayController.trigger.value);
+          return true;
+        }
         default: {
           state.value = newState;
           return true;
@@ -439,4 +449,18 @@ function useOverlayTransitionController({
   }, [controller, overlayController]);
 
   return controller;
+}
+
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function focusFirstFocusable(element: HTMLElement | null) {
+  if (element == null) return;
+
+  if (element.matches(FOCUSABLE_SELECTOR)) {
+    element.focus();
+    return;
+  }
+
+  element.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
 }
