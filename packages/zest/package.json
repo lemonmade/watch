@@ -11,7 +11,7 @@
     "@lemon/css": "workspace:*",
     "@preact/signals-core": "^1.1.0",
     "@quilted/events": "^0.1.10",
-    "@quilted/react-utilities": "^0.1.5",
+    "@quilted/react-utilities": "^0.1.6",
     "@watching/react-signals": "workspace:*",
     "date-fns": "^2.29.3"
   },
