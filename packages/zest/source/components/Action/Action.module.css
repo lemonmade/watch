@@ -1,313 +1,286 @@
 .Action {
-  --z-icon-color: var(--z-action-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-background)
-  );
-  box-shadow: var(--z-internal-action-backdrop-unset, var(--z-action-shadow));
-  transition: background 0.2s ease;
-  color: var(--z-action-text-color);
-  border: var(--z-action-border);
-  min-block-size: var(--z-action-minimum-size);
-  padding: var(--z-spacing-tiny) var(--z-spacing-base);
-  border-radius: var(--z-corner-radius-base);
-}
+  --z-Icon-base-color: var(--z-Action-icon-color);
 
-.Backdrop {
-  background: var(--z-action-background);
-  box-shadow: var(--z-action-shadow);
-  border-radius: var(--z-corner-radius-base);
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
+  --z-internal-Action-border: var(--z-Action-border);
+  --z-internal-Action-background: var(--z-Action-background);
+  --z-internal-Action-divider-color: var(--z-Action-divider-color);
+  --z-internal-Action-shadow: var(--z-Action-shadow);
+  --z-internal-Action-text-color: var(--z-Action-text-color);
+  --z-internal-Action-corner-radius: var(--z-corner-radius-base);
+  --z-internal-Action-transition: background 0.2s ease;
+  --z-internal-Action-inline-padding: var(--z-spacing-base);
 
-.Action:where(:hover) {
-  --z-icon-color: var(--z-action-hovered-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-hovered-background)
-  );
-  border: var(--z-action-hovered-border);
-  color: var(--z-action-hovered-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-hovered-shadow)
-  );
-}
+  position: relative;
+  min-block-size: var(--z-Action-minimum-size);
+  margin: calc(-1 * var(--z-Action-inset-block-nudge, 0)) 0;
+  padding: calc(var(--z-Action-inset-block-size, 0px) + var(--z-spacing-tiny)) var(--z-internal-Action-inline-padding);
+  border: var(--z-Action-inset-none, var(--z-internal-Action-border));
+  border-radius: var(--z-Action-inset-none, var(--z-internal-Action-corner-radius));
+  background: var(--z-Action-inset-none, var(--z-internal-Action-background));
+  box-shadow: var(--z-Action-inset-none, var(--z-internal-Action-shadow));
+  color: var(--z-internal-Action-text-color);
+  transition: var(--z-internal-Action-transition);
 
-.Action:where(:hover) > .Backdrop {
-  background: var(--z-action-hovered-background);
-  box-shadow: var(--z-action-hovered-shadow);
-}
+  &::before {
+    content: var(--z-Action-inset-content);
+    display: var(--z-Action-inset-display, none);
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+    top: var(--z-Action-inset-block-size, 0);
+    left: 0;
+    right: 0;
+    bottom: var(--z-Action-inset-block-size, 0);
+    border: var(--z-internal-Action-border);
+    border-radius: var(--z-internal-Action-corner-radius);
+    background: var(--z-internal-Action-background);
+    box-shadow: var(--z-internal-Action-shadow);
+    transition: var(--z-internal-Action-transition);
+  }
 
-.Action:where(:focus-visible) {
-  --z-icon-color: var(--z-action-focused-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-focused-background)
-  );
-  border: var(--z-action-focused-border);
-  color: var(--z-action-focused-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-focused-shadow)
-  );
-}
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-hovered-icon-color);
 
-.Action:where(:focus-visible) > .Backdrop {
-  background: var(--z-action-focused-background);
-  box-shadow: var(--z-action-focused-shadow);
-}
+    --z-internal-Action-border: var(--z-Action-hovered-border);
+    --z-internal-Action-background: var(--z-Action-hovered-background);
+    --z-internal-Action-divider-color: var(--z-Action-hovered-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-hovered-shadow);
+    --z-internal-Action-text-color: var(--z-Action-hovered-text-color);
+  }
 
-.Action:where(:active) {
-  --z-icon-color: var(--z-action-pressed-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-pressed-background)
-  );
-  border: var(--z-action-pressed-border);
-  color: var(--z-action-pressed-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-pressed-shadow)
-  );
-}
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-base-color: var(--z-Action-focused-icon-color);
 
-.Action:where(:active) > .Backdrop {
-  background: var(--z-action-pressed-background);
-  box-shadow: var(--z-action-pressed-shadow);
+    --z-internal-Action-border: var(--z-Action-focused-border);
+    --z-internal-Action-background: var(--z-Action-focused-background);
+    --z-internal-Action-divider-color: var(--z-Action-focused-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-focused-shadow);
+    --z-internal-Action-text-color: var(--z-Action-focused-text-color);
+  }
+
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-pressed-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-pressed-border);
+    --z-internal-Action-background: var(--z-Action-pressed-background);
+    --z-internal-Action-divider-color: var(--z-Action-pressed-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-pressed-shadow);
+    --z-internal-Action-text-color: var(--z-Action-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-selected-border);
+    --z-internal-Action-background: var(--z-Action-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-selected-text-color);
+  }
+
+  &:where(:disabled) {
+    --z-Icon-base-color: var(--z-Action-disabled-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-disabled-border);
+    --z-internal-Action-background: var(--z-Action-disabled-background);
+    --z-internal-Action-divider-color: var(--z-Action-disabled-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-disabled-shadow);
+    --z-internal-Action-text-color: var(--z-Action-disabled-text-color);
+  }
 }
 
 .emphasized {
-  --z-icon-color: var(--z-action-emphasized-icon-color);
-  color: var(--z-action-emphasized-text-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-background)
-  );
-  border: var(--z-action-emphasized-border);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-shadow)
-  );
-}
+  --z-Icon-base-color: var(--z-Action-emphasized-icon-color);
 
-.emphasized > .Backdrop {
-  background: var(--z-action-emphasized-background);
-  box-shadow: var(--z-action-emphasized-shadow);
-}
+  --z-internal-Action-border: var(--z-Action-emphasized-border);
+  --z-internal-Action-background: var(--z-Action-emphasized-background);
+  --z-internal-Action-divider-color: var(--z-Action-emphasized-divider-color);
+  --z-internal-Action-shadow: var(--z-Action-emphasized-shadow);
+  --z-internal-Action-text-color: var(--z-Action-emphasized-text-color);
 
-.emphasized:where(:hover) {
-  --z-icon-color: var(--z-action-emphasized-hovered-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-hovered-background)
-  );
-  border: var(--z-action-emphasized-hovered-border);
-  color: var(--z-action-emphasized-hovered-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-hovered-shadow)
-  );
-}
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-emphasized-hovered-icon-color);
 
-.emphasized:where(:hover) > .Backdrop {
-  background: var(--z-action-emphasized-hovered-background);
-  box-shadow: var(--z-action-emphasized-hovered-shadow);
-}
+    --z-internal-Action-border: var(--z-Action-emphasized-hovered-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-hovered-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-hovered-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-hovered-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-hovered-text-color);
+  }
 
-.emphasized:where(:focus-visible) {
-  --z-icon-color: var(--z-action-emphasized-focused-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-focused-background)
-  );
-  border: var(--z-action-emphasized-focused-border);
-  color: var(--z-action-emphasized-focused-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-focused-shadow)
-  );
-}
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-base-color: var(--z-Action-emphasized-focused-icon-color);
 
-.emphasized:where(:focus-visible) > .Backdrop {
-  background: var(--z-action-emphasized-focused-background);
-  box-shadow: var(--z-action-emphasized-focused-shadow);
-}
+    --z-internal-Action-border: var(--z-Action-emphasized-focused-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-focused-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-focused-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-focused-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-focused-text-color);
+  }
 
-.emphasized:where(:active) {
-  --z-icon-color: var(--z-action-emphasized-pressed-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-pressed-background)
-  );
-  border: var(--z-action-emphasized-pressed-border);
-  color: var(--z-action-emphasized-pressed-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-emphasized-pressed-shadow)
-  );
-}
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-emphasized-pressed-icon-color);
 
-.emphasized:where(:active) > .Backdrop {
-  background: var(--z-action-emphasized-pressed-background);
-  box-shadow: var(--z-action-emphasized-pressed-shadow);
+    --z-internal-Action-border: var(--z-Action-emphasized-pressed-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-pressed-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-pressed-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-pressed-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-emphasized-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-emphasized-selected-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-selected-text-color);
+  }
+
+  &:where(:disabled) {
+    --z-Icon-base-color: var(--z-Action-emphasized-disabled-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-emphasized-disabled-border);
+    --z-internal-Action-background: var(--z-Action-emphasized-disabled-background);
+    --z-internal-Action-divider-color: var(--z-Action-emphasized-disabled-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-disabled-shadow);
+    --z-internal-Action-text-color: var(--z-Action-emphasized-disabled-text-color);
+  }
 }
 
 .subdued {
-  --z-icon-color: var(--z-action-subdued-icon-color);
-  color: var(--z-action-subdued-text-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-background)
-  );
-  border: var(--z-action-subdued-border);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-shadow)
-  );
-}
+  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
 
-.subdued > .Backdrop {
-  background: var(--z-action-subdued-background);
-  box-shadow: var(--z-action-subdued-shadow);
-}
+  --z-internal-Action-border: var(--z-Action-subdued-border);
+  --z-internal-Action-background: var(--z-Action-subdued-background);
+  --z-internal-Action-divider-color: var(--z-Action-subdued-divider-color);
+  --z-internal-Action-shadow: var(--z-Action-subdued-shadow);
+  --z-internal-Action-text-color: var(--z-Action-subdued-text-color);
 
-.subdued:where(:hover) {
-  --z-icon-color: var(--z-action-subdued-hovered-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-hovered-background)
-  );
-  border: var(--z-action-subdued-hovered-border);
-  color: var(--z-action-subdued-hovered-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-hovered-shadow)
-  );
-}
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
 
-.subdued:where(:hover) > .Backdrop {
-  background: var(--z-action-subdued-hovered-background);
-  box-shadow: var(--z-action-subdued-hovered-shadow);
-}
+    --z-internal-Action-border: var(--z-Action-subdued-hovered-border);
+    --z-internal-Action-background: var(--z-Action-subdued-hovered-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-hovered-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-hovered-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-hovered-text-color);
+  }
 
-.subdued:where(:focus-visible) {
-  --z-icon-color: var(--z-action-subdued-focused-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-focused-background)
-  );
-  border: var(--z-action-subdued-focused-border);
-  color: var(--z-action-subdued-focused-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-focused-shadow)
-  );
-}
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
 
-.subdued:where(:focus-visible) > .Backdrop {
-  background: var(--z-action-subdued-focused-background);
-  box-shadow: var(--z-action-subdued-focused-shadow);
-}
+    --z-internal-Action-border: var(--z-Action-subdued-focused-border);
+    --z-internal-Action-background: var(--z-Action-subdued-focused-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-focused-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-focused-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-focused-text-color);
+  }
 
-.subdued:where(:active) {
-  --z-icon-color: var(--z-action-subdued-pressed-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-pressed-background)
-  );
-  border: var(--z-action-subdued-pressed-border);
-  color: var(--z-action-subdued-pressed-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-subdued-pressed-shadow)
-  );
-}
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
 
-.subdued:where(:active) > .Backdrop {
-  background: var(--z-action-subdued-pressed-background);
-  box-shadow: var(--z-action-subdued-pressed-shadow);
+    --z-internal-Action-border: var(--z-Action-subdued-pressed-border);
+    --z-internal-Action-background: var(--z-Action-subdued-pressed-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-pressed-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-pressed-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-subdued-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-subdued-selected-border);
+    --z-internal-Action-background: var(--z-Action-subdued-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-selected-text-color);
+  }
+
+  &:where(:disabled) {
+    --z-Icon-base-color: var(--z-Action-subdued-disabled-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-subdued-disabled-border);
+    --z-internal-Action-background: var(--z-Action-subdued-disabled-background);
+    --z-internal-Action-divider-color: var(--z-Action-subdued-disabled-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-subdued-disabled-shadow);
+    --z-internal-Action-text-color: var(--z-Action-subdued-disabled-text-color);
+  }
 }
 
 .destructive {
-  --z-icon-color: var(--z-action-destructive-icon-color);
-  color: var(--z-action-destructive-text-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-background)
-  );
-  border: var(--z-action-destructive-border);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-shadow)
-  );
+  --z-Icon-base-color: var(--z-Action-destructive-icon-color);
+
+  --z-internal-Action-border: var(--z-Action-destructive-border);
+  --z-internal-Action-background: var(--z-Action-destructive-background);
+  --z-internal-Action-divider-color: var(--z-Action-destructive-divider-color);
+  --z-internal-Action-shadow: var(--z-Action-destructive-shadow);
+  --z-internal-Action-text-color: var(--z-Action-destructive-text-color);
+
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-destructive-hovered-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-hovered-border);
+    --z-internal-Action-background: var(--z-Action-destructive-hovered-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-hovered-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-hovered-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-hovered-text-color);
+  }
+
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-base-color: var(--z-Action-destructive-focused-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-focused-border);
+    --z-internal-Action-background: var(--z-Action-destructive-focused-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-focused-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-focused-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-focused-text-color);
+  }
+
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-destructive-pressed-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-pressed-border);
+    --z-internal-Action-background: var(--z-Action-destructive-pressed-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-pressed-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-pressed-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-base-color: var(--z-Action-destructive-selected-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-selected-border);
+    --z-internal-Action-background: var(--z-Action-destructive-selected-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-selected-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-selected-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-selected-text-color);
+  }
+
+  &:where(:disabled) {
+    --z-Icon-base-color: var(--z-Action-destructive-disabled-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-disabled-border);
+    --z-internal-Action-background: var(--z-Action-destructive-disabled-background);
+    --z-internal-Action-divider-color: var(--z-Action-destructive-disabled-divider-color);
+    --z-internal-Action-shadow: var(--z-Action-destructive-disabled-shadow);
+    --z-internal-Action-text-color: var(--z-Action-destructive-disabled-text-color);
+  }
 }
 
-.destructive > .Backdrop {
-  background: var(--z-action-destructive-background);
-  box-shadow: var(--z-action-destructive-shadow);
-}
+.sizeSmall {
+  --z-Action-inset-content: '';
+  --z-Action-inset-display: block;
+  --z-Action-inset-none: none;
+  --z-Action-inset-block-size: var(--z-spacing-small);
+  --z-Action-inset-block-nudge: var(--z-Action-inset-block-size);
 
-.destructive:where(:hover) {
-  --z-icon-color: var(--z-action-destructive-hovered-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-hovered-background)
-  );
-  border: var(--z-action-destructive-hovered-border);
-  color: var(--z-action-destructive-hovered-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-hovered-shadow)
-  );
-}
-
-.destructive:where(:hover) > .Backdrop {
-  background: var(--z-action-destructive-hovered-background);
-  box-shadow: var(--z-action-destructive-hovered-shadow);
-}
-
-.destructive:where(:focus-visible) {
-  --z-icon-color: var(--z-action-destructive-focused-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-focused-background)
-  );
-  border: var(--z-action-destructive-focused-border);
-  color: var(--z-action-destructive-focused-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-focused-shadow)
-  );
-}
-
-.destructive:where(:focus-visible) > .Backdrop {
-  background: var(--z-action-destructive-focused-background);
-  box-shadow: var(--z-action-destructive-focused-shadow);
-}
-.destructive:where(:active) {
-  --z-icon-color: var(--z-action-destructive-pressed-icon-color);
-  background: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-pressed-background)
-  );
-  border: var(--z-action-destructive-pressed-border);
-  color: var(--z-action-destructive-pressed-text-color);
-  box-shadow: var(
-    --z-internal-action-backdrop-unset,
-    var(--z-action-destructive-pressed-shadow)
-  );
-}
-
-.destructive:where(:active) > .Backdrop {
-  background: var(--z-action-destructive-pressed-background);
-  box-shadow: var(--z-action-destructive-pressed-shadow);
+  --z-internal-Action-inline-padding: var(--z-spacing-small);
 }
 
 .spacing {
@@ -316,26 +289,44 @@
 
 .hasIcon {
   grid-template-columns: auto 1fr;
+
+  &:not(.sizeSmall) > *:first-child {
+    margin-inline-start: calc(-0.5 * var(--z-spacing-small));
+
+    &:only-child {
+      margin-inline-end: calc(-0.5 * var(--z-spacing-small));
+    }
+  }
+
+  &.sizeSmall > *:first-child {
+    margin-block-start: calc(-0.5 * var(--z-Icon-base-size));
+    margin-block-end: calc(-0.5 * var(--z-Icon-base-size));
+  }
 }
 
-.hasAccessory {
+.hasDetail {
   grid-template-columns: 1fr auto;
 }
 
-.hasIcon.hasAccessory {
+.hasIcon.hasDetail {
   grid-template-columns: auto 1fr auto;
 }
 
-.sizeSmall {
-  --z-internal-action-backdrop-unset: none;
-  position: relative;
-  padding: var(--z-spacing-tiny) var(--z-spacing-small);
-  margin-block-start: calc(-1 * var(--z-spacing-small));
-  margin-block-end: calc(-1 * var(--z-spacing-small));
+.ActionContainer {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-grid, inline-grid)
+  );
+  grid-template-columns: 1fr auto;
 }
 
-.sizeSmall > .Backdrop {
-  display: block;
-  top: var(--z-spacing-small);
-  bottom: var(--z-spacing-small);
+.connectedMain {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-inline-end: 1px solid var(--z-internal-Action-divider-color);
+}
+
+.connectedAccessory {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }

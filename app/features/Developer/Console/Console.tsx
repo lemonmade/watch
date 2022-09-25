@@ -62,7 +62,7 @@ function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
                     <Action
                       to={preview.url}
                       key={target}
-                      accessory={<Icon source="arrowEnd" />}
+                      detail={<Icon source="arrowEnd" />}
                     >
                       <BlockStack spacing="tiny">
                         <Text accessibilityRole="code">

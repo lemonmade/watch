@@ -20,6 +20,10 @@ export interface Props {
   className?: string;
   display?: 'block' | 'inline' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
   padding?: boolean | SpacingKeyword | RawValue;
+  paddingInlineStart?: boolean | SpacingKeyword | RawValue;
+  paddingInlineEnd?: boolean | SpacingKeyword | RawValue;
+  paddingBlockStart?: boolean | SpacingKeyword | RawValue;
+  paddingBlockEnd?: boolean | SpacingKeyword | RawValue;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
 
@@ -79,17 +83,21 @@ export function resolveViewProps({
 
 export function useViewProps({
   id,
-  className: starterClassName,
+  className: explicitClassName,
   display,
   position,
   padding,
+  paddingInlineStart,
+  paddingInlineEnd,
+  paddingBlockStart,
+  paddingBlockEnd,
   background,
   border,
   cornerRadius,
   visibility,
   accessibilityVisibility,
 }: Props = {}): DOMPropController {
-  let className = classes(styles.View!, starterClassName);
+  let className = classes(systemStyles.resetOrientation, styles.View!);
   let domStyles: DOMPropController['styles'];
   let attributes: DOMPropController['attributes'];
 
@@ -113,6 +121,36 @@ export function useViewProps({
     Object.assign(attributes, newAttributes);
   };
 
+  const handlePadding = (
+    padding: Props['padding'],
+    side?: 'inlineStart' | 'inlineEnd' | 'blockStart' | 'blockEnd',
+  ) => {
+    if (padding == null) return;
+
+    if (raw.test(padding)) {
+      addStyles({padding: raw.parse(padding)});
+    } else {
+      let normalizedPadding: SpacingKeyword;
+
+      if (padding === true) {
+        normalizedPadding = 'base';
+      } else if (padding === false) {
+        normalizedPadding = 'none';
+      } else {
+        normalizedPadding = padding;
+      }
+
+      addClassName(
+        systemStyles[
+          variation(
+            side ? variation('padding', side) : 'padding',
+            normalizedPadding,
+          )
+        ],
+      );
+    }
+  };
+
   if (id) {
     addAttributes({id});
   }
@@ -131,6 +169,12 @@ export function useViewProps({
       ],
     );
   }
+
+  handlePadding(padding);
+  handlePadding(paddingInlineStart, 'inlineStart');
+  handlePadding(paddingInlineEnd, 'inlineEnd');
+  handlePadding(paddingBlockStart, 'blockStart');
+  handlePadding(paddingBlockEnd, 'blockEnd');
 
   if (raw.test(padding)) {
     addStyles({padding: raw.parse(padding)});
@@ -269,6 +313,10 @@ export function useViewProps({
 
   if (cornerRadius === 'concentric') {
     addClassName(styles.cornerRadiusConcentric);
+  }
+
+  if (explicitClassName) {
+    addClassName(explicitClassName);
   }
 
   return {

@@ -1,38 +1,19 @@
-.PopoverTrigger {
-  display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
-  max-inline-size: var(--z-internal-container-inline-size, max-content);
-  align-items: stretch;
-}
-
-.PopoverSheet {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: var(--z-stacking-layer-2);
+.Popover {
   background: var(--z-overlay-background-base);
   border-radius: var(--z-corner-radius-base);
+  box-shadow: 0 2px 5px rgba(0 0 0 / 50%);
   max-width: 20rem;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.blockAttachmentStart {
-  margin-block-end: var(--z-spacing-small);
-  transform-origin: 50% 100%;
-}
-
-.blockAttachmentEnd {
-  margin-block-start: var(--z-spacing-small);
-  transform-origin: 50% 0;
-}
-
-.PopoverSheet[data-state='inactive'],
-.PopoverSheet[data-state='closing'] {
-  transform: scale(0.5);
-  opacity: 0;
-}
-
-.PopoverSheet[data-state='opening'],
-.PopoverSheet[data-state='open'] {
   transform: scale(100%);
   opacity: 1;
+}
+
+.transitionOpenEnd,
+.transitionCloseEnd {
+  transition: transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88), opacity 0.15s ease;
+}
+
+.transitionOpenStart,
+.transitionCloseEnd {
+  transform: scale(0.7);
+  opacity: 0;
 }

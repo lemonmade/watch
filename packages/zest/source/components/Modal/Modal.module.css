@@ -1,0 +1,28 @@
+.Modal {
+  top: 50%;
+  left: 50%;
+  background: var(--z-surface-background-base);
+  border-radius: var(--z-corner-radius-base);
+
+  transform: translate(-50%, -50%);
+
+  inline-size: calc(100% - (2 * var(--z-spacing-base)));
+  max-inline-size: 30rem;
+
+  min-block-size: 3rem;
+}
+
+.transitionOpenEnd,
+.transitionCloseEnd {
+  transition: transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88), opacity 0.15s ease;
+}
+
+.transitionOpenStart,
+.transitionCloseEnd {
+  transform: scale(0.9) translate(-50%, calc(-50% + 2rem));
+  opacity: 0;
+}
+
+.padding {
+  padding: var(--z-spacing-large);
+}

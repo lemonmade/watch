@@ -18,7 +18,7 @@
 .WatchThrough:focus,
 .WatchThrough:active {
   outline: none;
-  background: var(--z-action-hovered-background);
+  background: var(--z-Action-hovered-background);
 }
 
 .WatchThrough:active {

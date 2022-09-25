@@ -11,7 +11,6 @@ import type {
 } from '@watching/clips';
 import {
   Popover,
-  PopoverSheet,
   BlockStack,
   View,
   TextBlock,
@@ -76,7 +75,8 @@ type NoInfer<T> = T & {[K in keyof T]: T[K]};
 const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
   Text,
   View,
-  Action,
+  // TypeScript can’t handle the complex union type :(
+  Action: Action as any,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({
@@ -512,19 +512,23 @@ function ClipFrame<T extends ExtensionPoint>({
   return (
     <BlockStack spacing="small">
       <View>
-        <Popover>
-          <Action>{name}</Action>
-          <PopoverSheet>
-            <Section padding>
-              <ClipTimings controller={controller} />
-            </Section>
-            {additionalSectionContents && (
-              <Section padding>{additionalSectionContents}</Section>
-            )}
-            {actionContents && <Menu>{actionContents}</Menu>}
-          </PopoverSheet>
-        </Popover>
+        <Action
+          popover={
+            <Popover>
+              <Section padding>
+                <ClipTimings controller={controller} />
+              </Section>
+              {additionalSectionContents && (
+                <Section padding>{additionalSectionContents}</Section>
+              )}
+              {actionContents && <Menu>{actionContents}</Menu>}
+            </Popover>
+          }
+        >
+          {name}
+        </Action>
       </View>
+
       <View>{children}</View>
     </BlockStack>
   );

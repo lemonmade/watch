@@ -1,71 +1,71 @@
 import {createContext, useContext, useEffect} from 'react';
+import {
+  addListener,
+  createEmitterWithInternals,
+  type Emitter,
+} from '@quilted/events';
 
-type GlobalEvent = 'resize' | 'scroll' | 'pointerdown';
+type GlobalEvent = 'resize' | 'scroll' | 'pointerdown' | 'keyup';
 
-export class GlobalEventManager {
-  private readonly eventMap = new Map<
-    GlobalEvent,
-    Set<(target: HTMLElement) => void>
-  >();
+type GlobalEventMap = {
+  [EventName in GlobalEvent]: Event;
+};
 
-  private readonly listenerMap = new Map<GlobalEvent, () => void>();
+export interface GlobalEventManager
+  extends Pick<Emitter<GlobalEventMap>, 'on'> {}
 
-  on(event: GlobalEvent, handler: (target: HTMLElement) => void): () => void {
-    let handlers = this.eventMap.get(event);
+export const GlobalEventContext = createContext<GlobalEventManager>(
+  createGlobalEventManager(),
+);
 
-    if (handlers == null) {
-      handlers = new Set();
-      this.eventMap.set(event, handlers);
-    }
-
-    if (!this.listenerMap.has(event)) {
-      const listener = (element: HTMLElement) => {
-        for (const handler of handlers!) {
-          handler(element);
-        }
-      };
-
-      this.listenerMap.set(event, addEventListener(event, listener));
-    }
-
-    handlers.add(handler);
-
-    return () => {
-      handlers!.delete(handler);
-      if (handlers!.size === 0) {
-        const listener = this.listenerMap.get(event);
-
-        if (listener) {
-          listener();
-          this.listenerMap.delete(event);
-        }
-      }
-    };
-  }
+export function useGlobalEvents() {
+  return useContext(GlobalEventContext);
 }
 
-function addEventListener(
-  event: GlobalEvent,
-  listener: (element: HTMLElement) => void,
-) {
-  const wrappedListener = (event: Event) => {
-    listener(event.target as any);
-  };
+function createGlobalEventManager(): GlobalEventManager {
+  const emitter = createEmitterWithInternals<GlobalEventMap>();
+  const abortByEvent = new Map<GlobalEvent, AbortController>();
 
-  targetForEvent(event).addEventListener(event, wrappedListener, {
-    passive: true,
+  emitter.internal.on('add', ({event: eventName}) => {
+    if (abortByEvent.has(eventName)) return;
+
+    const abort = new AbortController();
+    abortByEvent.set(eventName, abort);
+
+    addListener(
+      targetForEvent(eventName),
+      eventName,
+      (event) => {
+        emitter.emit(eventName, event);
+      },
+      {signal: abort.signal},
+    );
   });
 
-  return () => {
-    removeEventListener(event, wrappedListener);
+  emitter.internal.on('remove', ({event, all}) => {
+    if (all.size > 0) return;
+
+    const abort = abortByEvent.get(event);
+    abortByEvent.delete(event);
+    abort?.abort();
+  });
+
+  return {
+    on: emitter.on,
   };
 }
 
-function removeEventListener(
+export function useGlobalEventListener(
   event: GlobalEvent,
-  listener: (event: Event) => void,
+  handler: () => void,
 ) {
-  targetForEvent(event).removeEventListener(event, listener);
+  const globalEventContext = useGlobalEvents();
+
+  useEffect(() => {
+    const abort = new AbortController();
+    globalEventContext.on(event, handler, {signal: abort.signal});
+    return () => abort.abort();
+  }, [event, handler, globalEventContext]);
 }
 
 function targetForEvent(event: GlobalEvent) {
@@ -75,24 +75,4 @@ function targetForEvent(event: GlobalEvent) {
     default:
       return window;
   }
-}
-
-export const GlobalEventContext = createContext<GlobalEventManager>(
-  new GlobalEventManager(),
-);
-
-export function useGlobalEvents() {
-  return useContext(GlobalEventContext);
-}
-
-export function useGlobalEventListener(
-  event: GlobalEvent,
-  handler: () => void,
-) {
-  const globalEventContext = useGlobalEvents();
-
-  useEffect(
-    () => globalEventContext.on(event, handler),
-    [event, handler, globalEventContext],
-  );
 }

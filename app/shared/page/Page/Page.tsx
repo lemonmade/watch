@@ -1,7 +1,6 @@
 import type {PropsWithChildren, ReactNode} from 'react';
 
 import {
-  Icon,
   Text,
   Section,
   BlockStack,
@@ -10,7 +9,6 @@ import {
   Action,
   Menu,
   Popover,
-  PopoverSheet,
 } from '@lemon/zest';
 
 import styles from './Page.module.css';
@@ -31,16 +29,16 @@ export function Page({
     <InlineStack spacing="small">
       <Heading>{heading}</Heading>
 
-      <Popover>
-        <Action
-          size="small"
-          icon={<Icon source="more" />}
-          accessibilityLabel="More…"
-        />
-        <PopoverSheet>
-          <Menu>{menu}</Menu>
-        </PopoverSheet>
-      </Popover>
+      <Action
+        size="small"
+        icon="more"
+        accessibilityLabel="More…"
+        popover={
+          <Popover>
+            <Menu>{menu}</Menu>
+          </Popover>
+        }
+      />
     </InlineStack>
   ) : (
     <Heading>{heading}</Heading>

@@ -18,43 +18,9 @@
   );
 }
 
-.paddingTiny {
-  padding: var(--z-spacing-tiny);
-}
-
-.paddingSmall {
-  padding: var(--z-spacing-small);
-}
-
-.paddingBase {
-  padding: var(--z-spacing-base);
-}
-
-.paddingLarge {
-  padding: var(--z-spacing-large);
-}
-
-.paddingHuge {
-  padding: var(--z-spacing-huge);
-}
-
-.visibilityHidden {
-  --z-implicit-display-none: none;
-}
-
-.visibilityVisuallyHidden {
-  position: absolute !important;
-  top: 0;
-  clip: rect(1px, 1px, 1px, 1px) !important;
-  overflow: hidden !important;
-  height: 1px !important;
-  width: 1px !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-
 .cornerRadiusBase {
   border-radius: var(--z-corner-radius-base);
+  overflow: hidden;
 }
 
 .cornerRadiusConcentric {

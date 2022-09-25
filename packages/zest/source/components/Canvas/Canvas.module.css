@@ -22,9 +22,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-block-size: 100vh;
   min-block-size: 100dvh;
+  scrollbar-gutter: stable;
 }
 
-:global(#app) {
+:global(:where(#app)) {
+  position: relative;
+  z-index: 0;
   min-block-size: 100vh;
   min-block-size: 100dvh;
+}
+
+.Portals {
+  position: relative;
+  z-index: 2;
 }

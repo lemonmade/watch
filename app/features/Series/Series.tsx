@@ -192,8 +192,8 @@ function SeriesWithData({
                   <Action
                     key={watchThrough.id}
                     to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                    accessory={<Icon source="arrowEnd" />}
                     inlineAlignment="start"
+                    detail={<Icon source="arrowEnd" />}
                   >
                     <BlockStack spacing="tiny">
                       <Text>

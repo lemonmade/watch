@@ -4,6 +4,7 @@ import {classes, variation} from '@lemon/css';
 
 import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
+import {useMenuController} from '../../utilities/menus';
 
 import styles from './Input.module.css';
 
@@ -12,6 +13,7 @@ interface Props {
   value?: string;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
+  placeholder?: string;
   onInput?(value: string): void;
   onChange?(value: string): void;
 }
@@ -21,12 +23,15 @@ export function TextField({
   value: currentValue,
   multiline = false,
   blockSize = multiline === true ? 'fitContent' : undefined,
+  placeholder,
   onInput,
   onChange,
 }: Props) {
   const id = useUniqueId('Input', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
+  const menu = useMenuController({required: false});
+
   const inlineStyles: Record<string, any> = {};
 
   if (typeof multiline === 'number') {
@@ -55,10 +60,12 @@ export function TextField({
           setValue(currentTarget.value);
           onInput?.(currentTarget.value);
         }}
-        onKeyPress={({
-          key,
-          currentTarget,
-        }: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onKeyDown={menu?.keypress}
+        onKeyPress={(
+          event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => {
+          const {key, currentTarget} = event;
+
           if (!multiline && key.toLowerCase() === 'enter') {
             setValue(currentTarget.value);
             onInput?.(currentTarget.value);
@@ -67,6 +74,7 @@ export function TextField({
         }}
         onBlur={() => onChange?.(value ?? '')}
         form={containingForm?.nested ? containingForm.id : undefined}
+        placeholder={placeholder}
       />
       {blockSize === 'fitContent' && (
         <div className={styles.AutoGrowWrap}>{value} </div>
