@@ -24,6 +24,7 @@ import {
 import {LockCanvas} from '../../utilities/canvas';
 import {useLayer, type Layer} from '../../utilities/layers';
 import {useGlobalEventListener} from '../../utilities/global-events';
+import {focusFirstFocusable} from '../../utilities/focus';
 
 import {Portal} from '../Portal';
 
@@ -449,18 +450,4 @@ function useOverlayTransitionController({
   }, [controller, overlayController]);
 
   return controller;
-}
-
-const FOCUSABLE_SELECTOR =
-  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
-function focusFirstFocusable(element: HTMLElement | null) {
-  if (element == null) return;
-
-  if (element.matches(FOCUSABLE_SELECTOR)) {
-    element.focus();
-    return;
-  }
-
-  element.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
 }

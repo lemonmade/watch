@@ -111,17 +111,20 @@ function DatePickerPopover({
   return (
     <Popover>
       <View className={styles.DatePicker}>
-        <View padding="small" paddingBlockEnd={false}>
-          <TextField
-            label="Date"
-            labelStyle="placeholder"
-            value={dateSearch.value}
-            onInput={(newValue) => {
-              dateSearch.value = newValue;
-            }}
-          />
-        </View>
-        <Menu>{menuItems}</Menu>
+        <Menu
+          filter={
+            <TextField
+              label="Date"
+              labelStyle="placeholder"
+              value={dateSearch.value}
+              onInput={(newValue) => {
+                dateSearch.value = newValue;
+              }}
+            />
+          }
+        >
+          {menuItems}
+        </Menu>
       </View>
     </Popover>
   );

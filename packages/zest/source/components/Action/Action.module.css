@@ -48,7 +48,8 @@
     --z-internal-Action-text-color: var(--z-Action-hovered-text-color);
   }
 
-  &:where(:focus-visible) {
+  &:where(:focus-visible),
+  &:where(.focused) {
     --z-Icon-base-color: var(--z-Action-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-focused-border);
@@ -108,7 +109,8 @@
     --z-internal-Action-text-color: var(--z-Action-emphasized-hovered-text-color);
   }
 
-  &:where(:focus-visible) {
+  &:where(:focus-visible),
+  &:where(.focused) {
     --z-Icon-base-color: var(--z-Action-emphasized-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-focused-border);
@@ -168,7 +170,8 @@
     --z-internal-Action-text-color: var(--z-Action-subdued-hovered-text-color);
   }
 
-  &:where(:focus-visible) {
+  &:where(:focus-visible),
+  &:where(.focused) {
     --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-focused-border);
@@ -228,7 +231,8 @@
     --z-internal-Action-text-color: var(--z-Action-destructive-hovered-text-color);
   }
 
-  &:where(:focus-visible) {
+  &:where(:focus-visible),
+  &:where(.focused) {
     --z-Icon-base-color: var(--z-Action-destructive-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-focused-border);

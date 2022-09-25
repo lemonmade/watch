@@ -4,6 +4,7 @@ import {classes, variation} from '@lemon/css';
 
 import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
+import {useMenuController} from '../../utilities/menus';
 
 import styles from './Input.module.css';
 
@@ -29,6 +30,8 @@ export function TextField({
   const id = useUniqueId('Input', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
+  const menu = useMenuController({required: false});
+
   const inlineStyles: Record<string, any> = {};
 
   if (typeof multiline === 'number') {
@@ -57,10 +60,12 @@ export function TextField({
           setValue(currentTarget.value);
           onInput?.(currentTarget.value);
         }}
-        onKeyPress={({
-          key,
-          currentTarget,
-        }: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onKeyDown={menu?.keypress}
+        onKeyPress={(
+          event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => {
+          const {key, currentTarget} = event;
+
           if (!multiline && key.toLowerCase() === 'enter') {
             setValue(currentTarget.value);
             onInput?.(currentTarget.value);

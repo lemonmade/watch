@@ -22,3 +22,7 @@
   --z-internal-inline-alignment: start;
   --z-internal-container-inline-size: 100%;
 }
+
+.Filter {
+  padding-block-end: var(--z-spacing-small);
+}
