@@ -75,7 +75,8 @@ type NoInfer<T> = T & {[K in keyof T]: T[K]};
 const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
   Text,
   View,
-  Action,
+  // TypeScript can’t handle the complex union type :(
+  Action: Action as any,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({
