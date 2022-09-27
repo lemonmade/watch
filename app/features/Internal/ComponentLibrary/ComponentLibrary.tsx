@@ -1,6 +1,7 @@
 import {
   raw,
   Action,
+  ActionList,
   BlockStack,
   TextField,
   Heading,
@@ -27,6 +28,7 @@ import {
   Spacer,
   Modal,
   Icon,
+  Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -122,6 +124,15 @@ function ActionComponents() {
             Menu button (destructive)
           </Action>
         </Menu>
+
+        <ActionList>
+          <Action icon="watch">Item one</Action>
+          <Action icon="skip">Item two</Action>
+          <Action icon="stop">Item three</Action>
+          <Action icon="delete" role="destructive">
+            Item (destructive)
+          </Action>
+        </ActionList>
       </BlockStack>
     </Section>
   );
@@ -409,6 +420,9 @@ function TextComponents() {
           <Item>List item 2</Item>
           <Item>List item 3</Item>
         </List>
+        <InlineStack>
+          <Tag>Tag</Tag>
+        </InlineStack>
       </BlockStack>
     </Section>
   );

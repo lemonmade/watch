@@ -1,4 +1,5 @@
 export {Action} from './Action';
+export {ActionList} from './ActionList';
 export {Banner} from './Banner';
 export {BlockStack} from './BlockStack';
 export {Canvas} from './Canvas';
@@ -26,6 +27,7 @@ export {Section} from './Section';
 export {Select} from './Select';
 export {Spacer} from './Spacer';
 export {Sticky} from './Sticky';
+export {Tag} from './Tag';
 export {Text} from './Text';
 export {TextBlock} from './TextBlock';
 export {TextField} from './TextField';

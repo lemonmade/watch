@@ -28,13 +28,6 @@
   justify-items: stretch;
 }
 
-:where(.alignStretch) > * {
-  --z-internal-display-block: block;
-  --z-internal-display-flex: flex;
-  --z-internal-display-grid: grid;
-  --z-internal-container-inline-size: 100%;
-}
-
 .alignStart {
   justify-items: start;
 }

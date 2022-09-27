@@ -107,7 +107,12 @@ export function Menu({
   return (
     <MenuControllerContext.Provider value={menu}>
       <div
-        className={classes(styles.Menu, systemStyles.resetOrientation)}
+        className={classes(
+          systemStyles.resetOrientation,
+          systemStyles.contentInlineSizeFill,
+          systemStyles.inlineAlignmentStart,
+          styles.Menu,
+        )}
         ref={filter ? undefined : menuRef}
         {...(filter ? menuProps : undefined)}
       >

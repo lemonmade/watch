@@ -186,7 +186,7 @@ function SeriesWithData({
         {watchThroughs.length > 0 && (
           <Section>
             <BlockStack spacing>
-              <Heading>Watchthroughs</Heading>
+              <Heading divider>Watches</Heading>
               <BlockStack spacing="small">
                 {watchThroughs.map((watchThrough) => (
                   <Action
@@ -224,7 +224,7 @@ function SeriesWithData({
         )}
         <Section>
           <BlockStack spacing>
-            <Heading>Subscription</Heading>
+            <Heading divider>Subscription</Heading>
             {subscription ? (
               <Action
                 onPress={() => {
@@ -266,7 +266,7 @@ function SeriesWithData({
         </Section>
         <Section>
           <BlockStack spacing>
-            <Heading>Watch later</Heading>
+            <Heading divider>Watch later</Heading>
             {series.inWatchLater ? (
               <Action
                 onPress={() => {

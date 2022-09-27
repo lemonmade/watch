@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import {useMemo, type PropsWithChildren} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {useSignal, type Signal} from '@watching/react-signals';
 
@@ -7,6 +7,7 @@ import {
   BlockStack,
   InlineStack,
   Action,
+  ActionList,
   Checkbox,
   Heading,
   Layout,
@@ -21,6 +22,8 @@ import {
   Popover,
   Modal,
   TextBlock,
+  Tag,
+  Icon,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -54,14 +57,16 @@ export default function WatchThrough({id}: Props) {
   const {nextEpisode, status, series, actions, settings, from, to} =
     data.watchThrough;
 
+  const watchingSingleSeason = from.season === to.season;
+
   return (
     <Page
       heading={series.name}
       detail={
         nextEpisode
-          ? from.season === to.season
-            ? `Watching season ${to.season}`
-            : `Watching seasons ${from.season}–${to.season}`
+          ? watchingSingleSeason
+            ? `Watching Season ${to.season}`
+            : `Watching Seasons ${from.season}–${to.season}`
           : null
       }
       menu={
@@ -90,13 +95,14 @@ export default function WatchThrough({id}: Props) {
             watchThroughId={id}
             image={nextEpisode.still?.source ?? undefined}
             overview={nextEpisode.overview ?? undefined}
+            watchingSingleSeason={watchingSingleSeason}
             onAction={() => refetch()}
           />
         )}
-        {actions.length > 0 && <PreviousActionsSection actions={actions} />}
+        {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
         <Section>
           <BlockStack spacing>
-            <Heading>Settings</Heading>
+            <Heading divider>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
               onChange={(spoilerAvoidance) => {
@@ -123,6 +129,7 @@ function NextEpisode({
   watchThroughId,
   episodeNumber,
   seasonNumber,
+  watchingSingleSeason,
   onAction,
 }: {
   id: string;
@@ -133,6 +140,7 @@ function NextEpisode({
   watchThroughId: string;
   episodeNumber: number;
   seasonNumber: number;
+  watchingSingleSeason: boolean;
   onAction?(): void;
 }) {
   const rating = useSignal<null | number>(null);
@@ -166,9 +174,13 @@ function NextEpisode({
               <Heading>{title}</Heading>
 
               <BlockStack spacing="tiny">
-                <Text emphasis="subdued">
-                  Season {seasonNumber}, Episode {episodeNumber}
-                </Text>
+                {watchingSingleSeason ? (
+                  <Text emphasis="subdued">Episode {episodeNumber}</Text>
+                ) : (
+                  <Text emphasis="subdued">
+                    Season {seasonNumber}, Episode {episodeNumber}
+                  </Text>
+                )}
                 {firstAired && (
                   <Text emphasis="subdued">
                     {firstAired.toLocaleDateString(undefined, {
@@ -393,7 +405,7 @@ function SkipEpisodeAction({loading, ...options}: SkipEpisodeActionProps) {
   const skipEpisode = useSkipEpisode(options);
 
   return (
-    <Action loading={loading.value} icon="arrowEnd" onPress={skipEpisode}>
+    <Action loading={loading.value} icon="skip" onPress={skipEpisode}>
       Skip
     </Action>
   );
@@ -415,7 +427,7 @@ function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
   return (
     <Action
       loading={props.loading.value}
-      icon="arrowEnd"
+      icon="skip"
       modal={<SkipEpisodeModal {...props} />}
     >
       Skip with note…
@@ -611,7 +623,7 @@ function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
   );
 }
 
-function PreviousActionsSection({
+function PreviousEpisodesSection({
   actions,
 }: {
   actions: readonly WatchThroughQueryData.WatchThrough.Actions[];
@@ -619,66 +631,108 @@ function PreviousActionsSection({
   return (
     <Section>
       <BlockStack spacing>
-        <Heading>Previous actions</Heading>
-        {actions.map((action) => {
-          if (action.__typename === 'Skip') {
-            return (
-              <BlockStack spacing key={action.id}>
-                <Text>
-                  Skipped{' '}
-                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
-                  {action.media.__typename === 'Episode' ||
-                  action.media.__typename === 'Season'
-                    ? action.media.number
-                    : ''}
-                  {action.at
-                    ? ` (on ${new Date(action.at).toLocaleDateString()})`
-                    : ''}
-                </Text>
-                {action.notes ? (
-                  <Text>
-                    Notes
-                    {action.notes.containsSpoilers
-                      ? ' (contains spoilers)'
-                      : ''}
-                    : {action.notes.content}
-                  </Text>
-                ) : null}
-              </BlockStack>
-            );
-          } else if (action.__typename === 'Watch') {
-            return (
-              <BlockStack spacing>
-                <Text>
-                  Watched{' '}
-                  {action.media.__typename === 'Episode' ? 'episode' : 'season'}{' '}
-                  {action.media.__typename === 'Episode' ||
-                  action.media.__typename === 'Season'
-                    ? action.media.number
-                    : ''}
-                  {action.finishedAt
-                    ? ` (on ${new Date(
-                        action.finishedAt,
-                      ).toLocaleDateString()})`
-                    : ''}
-                </Text>
-                <Text>Rating: {action.rating}</Text>
-                {action.notes ? (
-                  <Text>
-                    Notes
-                    {action.notes.containsSpoilers
-                      ? ' (contains spoilers)'
-                      : ''}
-                    : {action.notes.content}
-                  </Text>
-                ) : null}
-              </BlockStack>
-            );
-          } else {
-            return null;
-          }
-        })}
+        <Heading divider>Previous episodes</Heading>
+
+        <ActionList>
+          {actions.map((action) =>
+            action.__typename === 'Skip' ? (
+              <SkipAction action={action} />
+            ) : action.__typename === 'Watch' ? (
+              <WatchAction action={action} />
+            ) : null,
+          )}
+        </ActionList>
       </BlockStack>
     </Section>
   );
+}
+
+function WatchAction({
+  action,
+}: {
+  action: WatchThroughQueryData.WatchThrough.Actions_Watch;
+}) {
+  const {media, rating, notes} = action;
+
+  const ratingContent =
+    rating != null ? <Rating value={rating} size="small" readonly /> : null;
+
+  const notesContent = notes ? <Tag>Notes</Tag> : null;
+
+  return (
+    <Action
+      detail={<Icon source="disclosureInlineEnd" />}
+      modal={<WatchActionEditModal action={action} />}
+    >
+      <BlockStack spacing="small">
+        <Text emphasis>
+          {media.__typename === 'Episode'
+            ? media.title
+            : media.__typename === 'Season'
+            ? `Season ${media.number}`
+            : ''}
+        </Text>
+        {media.__typename === 'Episode' && (
+          <Text emphasis="subdued">
+            Episode {media.number}
+            {action.finishedAt ? ' • ' : ''}
+            {action.finishedAt && <PrettyDate date={action.finishedAt} />}
+          </Text>
+        )}
+        {ratingContent && notesContent ? (
+          <InlineStack spacing="small">
+            {ratingContent}
+            {notesContent}
+          </InlineStack>
+        ) : (
+          <>
+            {ratingContent}
+            {notesContent}
+          </>
+        )}
+      </BlockStack>
+    </Action>
+  );
+}
+
+function WatchActionEditModal({
+  action,
+}: {
+  action: WatchThroughQueryData.WatchThrough.Actions_Watch;
+}) {
+  return <Modal padding>{JSON.stringify(action.media)}</Modal>;
+}
+
+function SkipAction({
+  action,
+}: {
+  action: WatchThroughQueryData.WatchThrough.Actions_Skip;
+}) {
+  const {media, at, notes} = action;
+
+  return (
+    <Action>
+      <BlockStack spacing key={action.id}>
+        <Text>
+          Skipped {media.__typename === 'Episode' ? 'Episode' : 'Season'}{' '}
+          {media.__typename === 'Episode' || media.__typename === 'Season'
+            ? media.number
+            : ''}
+          {at ? ` (on ${new Date(at).toLocaleDateString()})` : ''}
+        </Text>
+        {notes ? <Tag>Notes</Tag> : null}
+      </BlockStack>
+    </Action>
+  );
+}
+
+function PrettyDate({date}: {date: string | Date}) {
+  const dateString = typeof date === 'string' ? date : date.toISOString();
+
+  const content = useMemo(
+    () => new Date(dateString).toLocaleDateString(),
+    [dateString],
+  );
+
+  return <>{content}</>;
 }

@@ -1,0 +1,14 @@
+.ActionList {
+  --z-internal-Action-forced-block-padding: var(--z-spacing-small);
+
+  & > *:not(:first-child) {
+    --z-internal-forced-block-start-divider: 1px solid var(--z-border-subdued-color);
+    --z-internal-forced-block-start-inline-start-corner-radius: 0;
+    --z-internal-forced-block-start-inline-end-corner-radius: 0;
+  }
+  
+  & > *:not(:last-child) {
+    --z-internal-forced-block-end-inline-start-corner-radius: 0;
+    --z-internal-forced-block-end-inline-end-corner-radius: 0;
+  }
+}
