@@ -3,6 +3,7 @@ import {useNavigate} from '@quilted/quilt';
 import {
   View,
   Action,
+  ActionList,
   BlockStack,
   InlineStack,
   Text,
@@ -187,16 +188,16 @@ function SeriesWithData({
           <Section>
             <BlockStack spacing>
               <Heading divider>Watches</Heading>
-              <BlockStack spacing="small">
+              <ActionList>
                 {watchThroughs.map((watchThrough) => (
                   <Action
                     key={watchThrough.id}
                     to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
                     inlineAlignment="start"
-                    detail={<Icon source="arrowEnd" />}
+                    detail={<Icon source="disclosureInlineEnd" />}
                   >
                     <BlockStack spacing="tiny">
-                      <Text>
+                      <Text emphasis>
                         {watchThrough.from.season === watchThrough.to.season ? (
                           `Season ${watchThrough.from.season}`
                         ) : (
@@ -218,7 +219,7 @@ function SeriesWithData({
                     </BlockStack>
                   </Action>
                 ))}
-              </BlockStack>
+              </ActionList>
             </BlockStack>
           </Section>
         )}
