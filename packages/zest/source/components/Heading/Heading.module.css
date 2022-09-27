@@ -1,3 +1,51 @@
 .Heading {
+  --z-internal-Heading-font-size: 1rem;
+  --z-internal-Heading-weight: 700;
+  --z-internal-Heading-color: var(--z-text-base-color);
+
   margin: 0;
+  font-size: var(--z-internal-Heading-font-size);
+  font-weight: var(--z-internal-Heading-weight);
+  color: var(--z-internal-Heading-color);
+}
+
+.level1 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-1-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-1-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-1-color);
+}
+
+.level2 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-2-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-2-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-2-color);
+}
+
+.level3 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-3-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-3-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-3-color);
+}
+
+.level4 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-4-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-4-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-4-color);
+}
+
+.level5 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-5-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-5-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-5-color);
+}
+
+.level6 {
+  --z-internal-Heading-font-size: var(--z-Heading-level-6-font-size);
+  --z-internal-Heading-weight: var(--z-Heading-level-6-weight);
+  --z-internal-Heading-color: var(--z-Heading-level-6-color);
+}
+
+.divider {
+  padding-block-end: 0.3em;
+  border-block-end: 0.2rem solid var(--z-border-base-color);
 }

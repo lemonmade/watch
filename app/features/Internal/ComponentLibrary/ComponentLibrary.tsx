@@ -366,7 +366,33 @@ function TextComponents() {
   return (
     <Section>
       <BlockStack spacing>
-        <Heading>Text</Heading>
+        <Heading>Typography</Heading>
+
+        <Heading level={1} accessibilityRole="presentation">
+          Heading (one)
+        </Heading>
+        <Heading level={2} accessibilityRole="presentation">
+          Heading (two)
+        </Heading>
+        <Heading level={3} accessibilityRole="presentation">
+          Heading (three)
+        </Heading>
+        <Heading level={4} accessibilityRole="presentation">
+          Heading (four)
+        </Heading>
+        <Heading level={5} accessibilityRole="presentation">
+          Heading (five)
+        </Heading>
+        <Heading level={6} accessibilityRole="presentation">
+          Heading (six)
+        </Heading>
+
+        <Heading divider level={3} accessibilityRole="presentation">
+          Heading (divider)
+        </Heading>
+        <Heading divider level={6} accessibilityRole="presentation">
+          Heading (divider, six)
+        </Heading>
 
         <Text>Hello world</Text>
         <Text emphasis="strong">Hello world</Text>
