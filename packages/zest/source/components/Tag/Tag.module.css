@@ -1,0 +1,9 @@
+.Tag {
+  display: inline-flex;
+  font-size: 0.8rem;
+  block-size: 1.1rem;
+  border-radius: 0.55rem;
+  color: var(--z-text-subdued-color);
+  border: 1px solid var(--z-border-subdued-color);
+  padding: 0 var(--z-spacing-tiny);
+}

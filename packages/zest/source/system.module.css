@@ -34,6 +34,13 @@
   display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
 }
 
+:where(.contentInlineSizeFill) > * {
+  --z-internal-display-block: block;
+  --z-internal-display-flex: flex;
+  --z-internal-display-grid: grid;
+  --z-internal-container-inline-size: 100%;
+}
+
 .inlineAlignmentStart {
   --z-internal-inline-alignment: start;
 }

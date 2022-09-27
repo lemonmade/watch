@@ -2,25 +2,17 @@
   --z-Action-background: transparent;
   --z-Action-subdued-background: transparent;
 
-  --z-Action-inset-content: '';
-  --z-Action-inset-display: block;
-  --z-Action-inset-none: none;
-  --z-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
-  --z-Action-inset-block-nudge: 0;
+  --z-internal-Action-inset-content: '';
+  --z-internal-Action-inset-display: block;
+  --z-internal-Action-inset-none: none;
+  --z-internal-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
+  --z-internal-Action-inset-block-nudge: 0;
 
   display: var(--z-implicit-display-none, grid);
   grid-template-columns: 1fr;
   padding: var(--z-spacing-small);
   align-items: center;
   min-inline-size: 12rem;
-}
-
-:where(.Menu) > * {
-  --z-internal-display: block;
-  --z-internal-display-flex: flex;
-  --z-internal-display-grid: grid;
-  --z-internal-inline-alignment: start;
-  --z-internal-container-inline-size: 100%;
 }
 
 .Filter {

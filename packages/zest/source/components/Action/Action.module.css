@@ -9,30 +9,113 @@
   --z-internal-Action-corner-radius: var(--z-corner-radius-base);
   --z-internal-Action-transition: background 0.2s ease;
   --z-internal-Action-inline-padding: var(--z-spacing-base);
+  --z-internal-Action-block-padding: var(
+    --z-internal-Action-forced-block-padding,
+    var(--z-spacing-tiny)
+  );
 
   position: relative;
   min-block-size: var(--z-Action-minimum-size);
-  margin: calc(-1 * var(--z-Action-inset-block-nudge, 0)) 0;
-  padding: calc(var(--z-Action-inset-block-size, 0px) + var(--z-spacing-tiny)) var(--z-internal-Action-inline-padding);
-  border: var(--z-Action-inset-none, var(--z-internal-Action-border));
-  border-radius: var(--z-Action-inset-none, var(--z-internal-Action-corner-radius));
-  background: var(--z-Action-inset-none, var(--z-internal-Action-background));
-  box-shadow: var(--z-Action-inset-none, var(--z-internal-Action-shadow));
+  margin: calc(-1 * var(--z-internal-Action-inset-block-nudge, 0)) 0;
+  padding: calc(
+      var(--z-internal-Action-inset-block-size, 0px) +
+        var(--z-internal-Action-block-padding)
+    )
+    var(--z-internal-Action-inline-padding);
+  border-block-start: var(
+    --z-internal-Action-inset-none,
+    var(
+      --z-internal-forced-block-start-divider,
+      var(--z-internal-Action-border)
+    )
+  );
+  border-block-end: var(
+    --z-internal-Action-inset-none,
+    var(
+      --z-internal-forced-block-end-divider,
+      var(--z-internal-Action-border)
+    )
+  );
+  border-inline-start: var(
+    --z-internal-Action-inset-none,
+    var(
+      --z-internal-forced-inline-start-divider,
+      var(--z-internal-Action-border)
+    )
+  );
+  border-inline-end: var(
+    --z-internal-Action-inset-none,
+    var(
+      --z-internal-forced-inline-end-divider,
+      var(--z-internal-Action-border)
+    )
+  );
+  border-radius: var(
+      --z-internal-Action-inset-none,
+      var(
+        --z-internal-forced-block-start-inline-start-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Action-inset-none,
+      var(
+        --z-internal-forced-block-start-inline-end-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Action-inset-none,
+      var(
+        --z-internal-forced-block-end-inline-end-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Action-inset-none,
+      var(
+        --z-internal-forced-block-end-inline-start-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+    );
+  background: var(
+    --z-internal-Action-inset-none,
+    var(--z-internal-Action-background)
+  );
+  box-shadow: var(
+    --z-internal-Action-inset-none,
+    var(--z-internal-Action-shadow)
+  );
   color: var(--z-internal-Action-text-color);
   transition: var(--z-internal-Action-transition);
 
   &::before {
-    content: var(--z-Action-inset-content);
-    display: var(--z-Action-inset-display, none);
+    content: var(--z-internal-Action-inset-content);
+    display: var(--z-internal-Action-inset-display, none);
     pointer-events: none;
     position: absolute;
     z-index: -1;
-    top: var(--z-Action-inset-block-size, 0);
+    top: var(--z-internal-Action-inset-block-size, 0);
     left: 0;
     right: 0;
-    bottom: var(--z-Action-inset-block-size, 0);
+    bottom: var(--z-internal-Action-inset-block-size, 0);
     border: var(--z-internal-Action-border);
-    border-radius: var(--z-internal-Action-corner-radius);
+    border-radius: var(
+        --z-internal-forced-block-start-inline-start-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-start-inline-end-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-end-inline-end-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-end-inline-start-corner-radius,
+        var(--z-internal-Action-corner-radius)
+      );
     background: var(--z-internal-Action-background);
     box-shadow: var(--z-internal-Action-shadow);
     transition: var(--z-internal-Action-transition);
@@ -103,10 +186,16 @@
     --z-Icon-base-color: var(--z-Action-emphasized-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-hovered-border);
-    --z-internal-Action-background: var(--z-Action-emphasized-hovered-background);
-    --z-internal-Action-divider-color: var(--z-Action-emphasized-hovered-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-hovered-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-hovered-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-emphasized-hovered-shadow);
-    --z-internal-Action-text-color: var(--z-Action-emphasized-hovered-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-hovered-text-color
+    );
   }
 
   &:where(:focus-visible),
@@ -114,40 +203,64 @@
     --z-Icon-base-color: var(--z-Action-emphasized-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-focused-border);
-    --z-internal-Action-background: var(--z-Action-emphasized-focused-background);
-    --z-internal-Action-divider-color: var(--z-Action-emphasized-focused-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-focused-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-focused-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-emphasized-focused-shadow);
-    --z-internal-Action-text-color: var(--z-Action-emphasized-focused-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-focused-text-color
+    );
   }
 
   &:where(:active) {
     --z-Icon-base-color: var(--z-Action-emphasized-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-pressed-border);
-    --z-internal-Action-background: var(--z-Action-emphasized-pressed-background);
-    --z-internal-Action-divider-color: var(--z-Action-emphasized-pressed-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-pressed-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-pressed-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-emphasized-pressed-shadow);
-    --z-internal-Action-text-color: var(--z-Action-emphasized-pressed-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-pressed-text-color
+    );
   }
 
   &:where(.selected) {
     --z-Icon-base-color: var(--z-Action-emphasized-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-selected-border);
-    --z-internal-Action-background: var(--z-Action-emphasized-selected-background);
-    --z-internal-Action-divider-color: var(--z-Action-emphasized-selected-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-selected-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-selected-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-emphasized-selected-shadow);
-    --z-internal-Action-text-color: var(--z-Action-emphasized-selected-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-selected-text-color
+    );
   }
 
   &:where(:disabled) {
     --z-Icon-base-color: var(--z-Action-emphasized-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-disabled-border);
-    --z-internal-Action-background: var(--z-Action-emphasized-disabled-background);
-    --z-internal-Action-divider-color: var(--z-Action-emphasized-disabled-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-disabled-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-disabled-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-emphasized-disabled-shadow);
-    --z-internal-Action-text-color: var(--z-Action-emphasized-disabled-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-disabled-text-color
+    );
   }
 }
 
@@ -165,7 +278,9 @@
 
     --z-internal-Action-border: var(--z-Action-subdued-hovered-border);
     --z-internal-Action-background: var(--z-Action-subdued-hovered-background);
-    --z-internal-Action-divider-color: var(--z-Action-subdued-hovered-divider-color);
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-hovered-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-subdued-hovered-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-hovered-text-color);
   }
@@ -176,7 +291,9 @@
 
     --z-internal-Action-border: var(--z-Action-subdued-focused-border);
     --z-internal-Action-background: var(--z-Action-subdued-focused-background);
-    --z-internal-Action-divider-color: var(--z-Action-subdued-focused-divider-color);
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-focused-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-subdued-focused-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-focused-text-color);
   }
@@ -186,7 +303,9 @@
 
     --z-internal-Action-border: var(--z-Action-subdued-pressed-border);
     --z-internal-Action-background: var(--z-Action-subdued-pressed-background);
-    --z-internal-Action-divider-color: var(--z-Action-subdued-pressed-divider-color);
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-pressed-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-subdued-pressed-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-pressed-text-color);
   }
@@ -196,7 +315,9 @@
 
     --z-internal-Action-border: var(--z-Action-subdued-selected-border);
     --z-internal-Action-background: var(--z-Action-subdued-selected-background);
-    --z-internal-Action-divider-color: var(--z-Action-subdued-selected-divider-color);
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-selected-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-subdued-selected-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-selected-text-color);
   }
@@ -206,7 +327,9 @@
 
     --z-internal-Action-border: var(--z-Action-subdued-disabled-border);
     --z-internal-Action-background: var(--z-Action-subdued-disabled-background);
-    --z-internal-Action-divider-color: var(--z-Action-subdued-disabled-divider-color);
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-disabled-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-subdued-disabled-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-disabled-text-color);
   }
@@ -225,10 +348,16 @@
     --z-Icon-base-color: var(--z-Action-destructive-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-hovered-border);
-    --z-internal-Action-background: var(--z-Action-destructive-hovered-background);
-    --z-internal-Action-divider-color: var(--z-Action-destructive-hovered-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-hovered-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-hovered-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-destructive-hovered-shadow);
-    --z-internal-Action-text-color: var(--z-Action-destructive-hovered-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-hovered-text-color
+    );
   }
 
   &:where(:focus-visible),
@@ -236,49 +365,75 @@
     --z-Icon-base-color: var(--z-Action-destructive-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-focused-border);
-    --z-internal-Action-background: var(--z-Action-destructive-focused-background);
-    --z-internal-Action-divider-color: var(--z-Action-destructive-focused-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-focused-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-focused-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-destructive-focused-shadow);
-    --z-internal-Action-text-color: var(--z-Action-destructive-focused-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-focused-text-color
+    );
   }
 
   &:where(:active) {
     --z-Icon-base-color: var(--z-Action-destructive-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-pressed-border);
-    --z-internal-Action-background: var(--z-Action-destructive-pressed-background);
-    --z-internal-Action-divider-color: var(--z-Action-destructive-pressed-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-pressed-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-pressed-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-destructive-pressed-shadow);
-    --z-internal-Action-text-color: var(--z-Action-destructive-pressed-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-pressed-text-color
+    );
   }
 
   &:where(.selected) {
     --z-Icon-base-color: var(--z-Action-destructive-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-selected-border);
-    --z-internal-Action-background: var(--z-Action-destructive-selected-background);
-    --z-internal-Action-divider-color: var(--z-Action-destructive-selected-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-selected-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-selected-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-destructive-selected-shadow);
-    --z-internal-Action-text-color: var(--z-Action-destructive-selected-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-selected-text-color
+    );
   }
 
   &:where(:disabled) {
     --z-Icon-base-color: var(--z-Action-destructive-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-disabled-border);
-    --z-internal-Action-background: var(--z-Action-destructive-disabled-background);
-    --z-internal-Action-divider-color: var(--z-Action-destructive-disabled-divider-color);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-disabled-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-disabled-divider-color
+    );
     --z-internal-Action-shadow: var(--z-Action-destructive-disabled-shadow);
-    --z-internal-Action-text-color: var(--z-Action-destructive-disabled-text-color);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-disabled-text-color
+    );
   }
 }
 
 .sizeSmall {
-  --z-Action-inset-content: '';
-  --z-Action-inset-display: block;
-  --z-Action-inset-none: none;
-  --z-Action-inset-block-size: var(--z-spacing-small);
-  --z-Action-inset-block-nudge: var(--z-Action-inset-block-size);
+  --z-internal-Action-inset-content: '';
+  --z-internal-Action-inset-display: block;
+  --z-internal-Action-inset-none: none;
+  --z-internal-Action-inset-block-size: var(--z-spacing-small);
+  --z-internal-Action-inset-block-nudge: var(
+    --z-internal-Action-inset-block-size
+  );
 
   --z-internal-Action-inline-padding: var(--z-spacing-small);
 }

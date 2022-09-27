@@ -5,7 +5,6 @@ import {signal, effect} from '@preact/signals-core';
 import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
 import {RootLayer} from '../../utilities/layers';
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
-import {AutoHeadingContext} from '../../utilities/headings';
 
 import systemStyles from '../../system.module.css';
 
@@ -59,11 +58,9 @@ export function Canvas({children}: PropsWithChildren<Props>) {
 
   return (
     <UniqueIdContext.Provider value={idFactory}>
-      <AutoHeadingContext.Provider value={1}>
-        <CanvasContext.Provider value={canvas}>
-          <RootLayer layer={canvas}>{children}</RootLayer>
-        </CanvasContext.Provider>
-      </AutoHeadingContext.Provider>
+      <CanvasContext.Provider value={canvas}>
+        <RootLayer layer={canvas}>{children}</RootLayer>
+      </CanvasContext.Provider>
     </UniqueIdContext.Provider>
   );
 }

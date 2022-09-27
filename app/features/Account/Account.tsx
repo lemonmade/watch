@@ -42,23 +42,25 @@ export function Account() {
 
   return (
     <Page heading="Account">
-      <BlockStack spacing>
-        <TextBlock>Email: {email}</TextBlock>
-        <Action
-          onPress={() => {
-            signOut.mutate(
-              {},
-              {
-                onSettled: () => navigate('/signed-out'),
-              },
-            );
-          }}
-        >
-          Sign out
-        </Action>
+      <BlockStack spacing="huge">
+        <BlockStack spacing>
+          <TextBlock>Email: {email}</TextBlock>
+          <Action
+            onPress={() => {
+              signOut.mutate(
+                {},
+                {
+                  onSettled: () => navigate('/signed-out'),
+                },
+              );
+            }}
+          >
+            Sign out
+          </Action>
+        </BlockStack>
         <Section>
           <BlockStack spacing>
-            <Heading>Settings</Heading>
+            <Heading divider>Settings</Heading>
             <SpoilerAvoidance
               value={settings.spoilerAvoidance}
               onChange={(spoilerAvoidance) => {
@@ -75,7 +77,7 @@ export function Account() {
         />
         <Section>
           <BlockStack spacing>
-            <Heading>Danger zone</Heading>
+            <Heading divider>Danger zone</Heading>
             <Action
               role="destructive"
               onPress={async () => {
@@ -114,7 +116,7 @@ function GithubSection({
   return (
     <Section>
       <BlockStack spacing>
-        <Heading>Github account</Heading>
+        <Heading divider>Github account</Heading>
         <TextBlock>username: {username}</TextBlock>
         <Action to={profileUrl} target="new">
           Visit profile

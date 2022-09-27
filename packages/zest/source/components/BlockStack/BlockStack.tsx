@@ -1,6 +1,7 @@
 import type {PropsWithChildren} from 'react';
 import {variation} from '@lemon/css';
 
+import systemStyles from '../../system.module.css';
 import {type SpacingKeyword} from '../../system';
 
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
@@ -33,7 +34,10 @@ export function BlockStack({
   view.addClassName(styles.BlockStack);
 
   if (align != null) {
-    view.addClassName(styles[variation('align', align)]);
+    view.addClassName(
+      styles[variation('align', align)],
+      align === 'stretch' && systemStyles.contentInlineSizeFill,
+    );
   }
 
   if (spacing != null) {

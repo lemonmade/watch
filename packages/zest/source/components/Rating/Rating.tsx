@@ -9,10 +9,20 @@ import {
 import {classes} from '@lemon/css';
 import styles from './Rating.module.css';
 
-interface Props {
-  value?: number;
-  onChange?(value: number): void;
-}
+export type Props =
+  | {
+      value?: number;
+      size?: 'small' | 'base';
+    } & (
+      | {
+          onChange?(value: number): void;
+          readonly?: false;
+        }
+      | {
+          readonly: true;
+          onChange?: never;
+        }
+    );
 
 enum StarFill {
   None,
@@ -27,7 +37,19 @@ const PERCENTAGE_TO_PREFER_FILLING = 0.9;
 
 // https://www.w3.org/TR/wai-aria-practices/examples/slider/slider-1.html
 
-export const Rating = memo(function Rating({value, onChange}: Props) {
+export function Rating(props: Props) {
+  return props.readonly ? (
+    <ReadonlyRating {...props} />
+  ) : (
+    <EditableRating {...props} />
+  );
+}
+
+function ReadonlyRating({value}: Pick<Props, 'value'>) {
+  return <div>Rating: {value == null ? 'unset' : value}</div>;
+}
+
+export const EditableRating = memo(function Rating({value, onChange}: Props) {
   const starContainer = useRef<null | HTMLDivElement>(null);
   const [inProgressValue, setInProgressValue] = useState<number | undefined>(
     undefined,
