@@ -709,6 +709,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       }
       iconAlignment="start"
       detail={<Icon source="disclosureInlineEnd" />}
+      modal={<PreviousActionSkipEditModal action={action} />}
     >
       <BlockStack spacing="small" key={action.id}>
         <Text emphasis>{media.title}</Text>
@@ -721,6 +722,10 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       </BlockStack>
     </Action>
   );
+}
+
+function PreviousActionSkipEditModal({action}: {action: SkipAction}) {
+  return <Modal padding>{JSON.stringify(action.media)}</Modal>;
 }
 
 function PrettyDate({date}: {date: string | Date}) {
