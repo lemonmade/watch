@@ -2,6 +2,7 @@ import {
   raw,
   Action,
   ActionList,
+  Checkbox,
   BlockStack,
   TextField,
   Heading,
@@ -31,6 +32,7 @@ import {
   Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
+import {ComponentProps} from 'react';
 
 export default function ComponentLibrary() {
   return (
@@ -265,6 +267,10 @@ function FormComponents() {
           ]}
         ></Select>
 
+        <CheckboxExample>A basic checkbox</CheckboxExample>
+        <CheckboxExample disabled>A disabled checkbox</CheckboxExample>
+        <CheckboxExample readonly>A readonly checkbox</CheckboxExample>
+
         <ChoiceList onChange={noop}>
           <Choice value="hello">Hello</Choice>
           <Choice value="world">World</Choice>
@@ -277,6 +283,14 @@ function FormComponents() {
       </BlockStack>
     </Section>
   );
+}
+
+function CheckboxExample(
+  props: Omit<ComponentProps<typeof Checkbox>, 'checked'>,
+) {
+  const checked = useSignal(false);
+
+  return <Checkbox {...(props as any)} checked={checked} />;
 }
 
 function DatePickerExample() {

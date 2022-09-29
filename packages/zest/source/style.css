@@ -24,6 +24,8 @@
 
   --z-overlay-background-base: rgb(18 17 20);
 
+  --z-text-base-font-size: 1em;
+  --z-text-base-line-height: 1.2;
   --z-text-base-color: rgb(230 230 230);
   --z-text-base-weight: 400;
   --z-text-subdued-color: rgb(146 139 159);
@@ -223,6 +225,12 @@
   --z-input-focused-border-color: #395ba6;
   --z-input-background: rgb(37 27 52);
   --z-Input-placeholder-color: var(--z-text-subdued-color);
+
+  --z-Checkbox-border-size: 1px;
+  --z-Checkbox-border-color: var(--z-border-base-color);
+  --z-Checkbox-background: var(--z-input-background);
+  --z-Checkbox-focused-background: #395ba6;
+  --z-Checkbox-focused-border-color: var(--z-Checkbox-focused-background);
 
   --z-Icon-base-color: rgb(201 186 229);
   --z-Icon-base-size: 1.25rem;

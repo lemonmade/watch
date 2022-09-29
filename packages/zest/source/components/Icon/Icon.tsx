@@ -10,6 +10,7 @@ export type IconSource =
   | 'app'
   | 'developer'
   | 'user'
+  | 'check'
   | 'go'
   | 'delete'
   | 'stop'
@@ -33,6 +34,7 @@ const ICON_MAP = new Map<IconProps['source'], ComponentType>([
   ['app', AppIcon],
   ['developer', DeveloperIcon],
   ['user', UserIcon],
+  ['check', CheckIcon],
   ['go', GoIcon],
   ['delete', DeleteIcon],
   ['stop', StopIcon],
@@ -68,7 +70,6 @@ function ArrowEndIcon() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="w-5 h-5"
     >
       <path
         fillRule="evenodd"
@@ -212,6 +213,18 @@ function UserIcon() {
   );
 }
 
+function CheckIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M14.723 6.237a.94.94 0 0 1 .053 1.277l-5.366 6.193a.834.834 0 0 1-.611.293.83.83 0 0 1-.622-.264l-2.927-3.097a.94.94 0 0 1 0-1.278.82.82 0 0 1 1.207 0l2.297 2.43 4.763-5.498a.821.821 0 0 1 1.206-.056Z" />
+    </svg>
+  );
+}
+
 function GoIcon() {
   return (
     <svg
@@ -275,7 +288,6 @@ function MoreIcon() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="w-5 h-5"
     >
       <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
     </svg>

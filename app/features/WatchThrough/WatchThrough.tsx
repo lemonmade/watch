@@ -366,7 +366,9 @@ function DetailedReview({
   return (
     <>
       <NotesTextField value={notes} />
-      <NotesContainSpoilersCheckbox value={containsSpoilers} />
+      <Checkbox checked={containsSpoilers}>
+        These notes contain spoilers
+      </Checkbox>
     </>
   );
 }
@@ -382,23 +384,6 @@ function NotesTextField({value: notes}: {value: Signal<null | string>}) {
         notes.value = newNote;
       }}
     />
-  );
-}
-
-function NotesContainSpoilersCheckbox({
-  value: containsSpoilers,
-}: {
-  value: Signal<boolean>;
-}) {
-  return (
-    <Checkbox
-      checked={containsSpoilers.value}
-      onChange={(newContainsSpoilers) => {
-        containsSpoilers.value = newContainsSpoilers;
-      }}
-    >
-      These notes contain spoilers
-    </Checkbox>
   );
 }
 
