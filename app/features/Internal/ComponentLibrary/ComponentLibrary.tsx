@@ -258,6 +258,11 @@ function FormComponents() {
           multiline={5}
           blockSize="fitContent"
         />
+        <TextFieldExample label="Controlled text field" />
+        <TextFieldExample
+          label="Controlled text field (change on input)"
+          changeTiming="input"
+        />
 
         <Select
           label="Select"
@@ -282,6 +287,18 @@ function FormComponents() {
         </InlineStack>
       </BlockStack>
     </Section>
+  );
+}
+
+function TextFieldExample(
+  props: Omit<ComponentProps<typeof TextField>, 'value'>,
+) {
+  const value = useSignal('');
+  return (
+    <BlockStack spacing>
+      <TextField {...(props as any)} value={value} />
+      <TextBlock>Value: {value.value}</TextBlock>
+    </BlockStack>
   );
 }
 

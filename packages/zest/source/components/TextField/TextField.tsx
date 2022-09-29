@@ -31,7 +31,7 @@ export function TextField({
       </Label>
       <TextFieldInput
         id={id}
-        {...baseProps}
+        {...(baseProps as any)}
         placeholder={
           labelStyle === 'placeholder' && typeof label === 'string'
             ? label

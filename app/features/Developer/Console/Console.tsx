@@ -1,5 +1,3 @@
-import {useState} from 'react';
-
 import {useCurrentUrl} from '@quilted/quilt';
 import {
   BlockStack,
@@ -12,6 +10,7 @@ import {
   Text,
   Icon,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 import {Page} from '~/shared/page';
 import {
@@ -120,12 +119,12 @@ function ExtensionBuildResult({
 
 function ConnectToConsole() {
   const currentUrl = useCurrentUrl();
-  const [localUrl, setLocalUrl] = useState<string>('');
+  const localUrl = useSignal('');
 
   const submit = () => {
-    if (!localUrl) return;
+    if (!localUrl.value) return;
 
-    const normalizedUrl = new URL('/connect', localUrl);
+    const normalizedUrl = new URL('/connect', localUrl.value);
     normalizedUrl.protocol = normalizedUrl.protocol.replace(/^http/, 'ws');
 
     const targetUrl = new URL(currentUrl);
@@ -139,14 +138,22 @@ function ConnectToConsole() {
       <BlockStack spacing>
         <TextField
           label="Local server URL"
-          onChange={(value) => {
-            setLocalUrl(value);
-          }}
+          value={localUrl}
+          changeTiming="input"
         />
-        <Action disabled={!localUrl} onPress={submit}>
+        <Action disabled={!isValidUrl(localUrl.value)} type="submit">
           Set local URL
         </Action>
       </BlockStack>
     </Form>
   );
+}
+
+function isValidUrl(url: string) {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 }

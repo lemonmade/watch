@@ -148,8 +148,8 @@ function NextEpisode({
   watchingSingleSeason: boolean;
   onAction?(): void;
 }) {
-  const rating = useSignal<null | number>(null);
-  const notes = useSignal<null | string>(null);
+  const rating = useSignal<number | undefined>(undefined);
+  const notes = useSignal<string | undefined>(undefined);
   const containsSpoilers = useSignal(false);
   const at = useSignal<Date | undefined>(new Date());
   const submitting = useSignal(false);
@@ -259,8 +259,8 @@ interface WatchEpisodeFormProps {
   id: string;
   loading: Signal<boolean>;
   at: Signal<Date | undefined>;
-  rating: Signal<number | null>;
-  notes: Signal<string | null>;
+  rating: Signal<number | undefined>;
+  notes: Signal<string | undefined>;
   containsSpoilers: Signal<boolean>;
   watchThroughId: string;
   onWatch?(): void;
@@ -320,12 +320,12 @@ function WatchEpisodeForm({
   );
 }
 
-function EpisodeRating({value: rating}: {value: Signal<null | number>}) {
+function EpisodeRating({value: rating}: {value: Signal<number | undefined>}) {
   return (
     <Rating
       value={rating.value ?? undefined}
       onChange={(newRating) => {
-        rating.value = newRating === 0 ? null : newRating;
+        rating.value = newRating === 0 ? undefined : newRating;
       }}
     />
   );
@@ -360,7 +360,7 @@ function DetailedReview({
   notes,
   containsSpoilers,
 }: {
-  notes: Signal<null | string>;
+  notes: Signal<string | undefined>;
   containsSpoilers: Signal<boolean>;
 }) {
   return (
@@ -373,16 +373,13 @@ function DetailedReview({
   );
 }
 
-function NotesTextField({value: notes}: {value: Signal<null | string>}) {
+function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
   return (
     <TextField
       label="Notes"
       multiline={4}
       blockSize="fitContent"
-      value={notes.value ?? ''}
-      onChange={(newNote) => {
-        notes.value = newNote;
-      }}
+      value={notes}
     />
   );
 }
@@ -433,9 +430,9 @@ function SkipEpisodeModal({
   loading,
   ...options
 }: SkipEpisodeWithNotesActionProps) {
-  const notes = useSignal<null | string>(null);
-  const containsSpoilers = useSignal(false);
   const at = useSignal<Date | undefined>(new Date());
+  const notes = useSignal<string | undefined>(undefined);
+  const containsSpoilers = useSignal(false);
 
   const skipEpisode = useSkipEpisode({...options, at, notes, containsSpoilers});
 
@@ -479,7 +476,7 @@ interface SkipEpisodeOptions {
   id: string;
   watchThroughId: string;
   at?: Signal<Date | undefined>;
-  notes?: Signal<string | null>;
+  notes?: Signal<string | undefined>;
   containsSpoilers?: Signal<boolean>;
   onSkip?(): void;
   onSkipStart?(): void;
