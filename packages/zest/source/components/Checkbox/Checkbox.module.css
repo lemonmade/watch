@@ -21,7 +21,7 @@
 
   position: relative;
   appearance: none;
-  margin: -0.25em 0 calc(-0.25em - 1px);
+  margin: -0.25em 0;
   block-size: var(--z-internal-Checkbox-input-size);
   inline-size: var(--z-internal-Checkbox-input-size);
   border-radius: var(--z-internal-Checkbox-corner-radius);
