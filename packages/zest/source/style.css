@@ -231,6 +231,7 @@
   --z-Checkbox-background: var(--z-input-background);
   --z-Checkbox-focused-background: #395ba6;
   --z-Checkbox-focused-border-color: var(--z-Checkbox-focused-background);
+  --z-Checkbox-disabled-border-color: var(--z-border-subdued-color);
 
   --z-Icon-base-color: rgb(201 186 229);
   --z-Icon-base-size: 1.25rem;

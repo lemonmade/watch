@@ -1,4 +1,5 @@
 .Checkbox {
+  --z-internal-Checkbox-border-color: var(--z-Checkbox-border-color);
   --z-internal-Checkbox-corner-radius: var(--z-corner-radius-base);
   --z-internal-Checkbox-block-inset: calc(
     (var(--z-Action-minimum-size) - (var(--z-text-base-line-height) * var(--z-text-base-font-size))) * -0.5
@@ -25,7 +26,7 @@
   inline-size: var(--z-internal-Checkbox-input-size);
   border-radius: var(--z-internal-Checkbox-corner-radius);
   background-color: var(--z-Checkbox-background);
-  border: var(--z-Checkbox-border-size) solid var(--z-Checkbox-border-color);
+  border: var(--z-Checkbox-border-size) solid var(--z-internal-Checkbox-border-color);
 
   &:checked {
     --z-internal-Checkbox-overlay-opacity: 1;
@@ -35,6 +36,14 @@
   &:focus-visible {
     --z-internal-Checkbox-focus-ring-opacity: 1;
     outline: 1px solid transparent;
+  }
+
+  &:disabled {
+    --z-internal-Checkbox-border-color: var(--z-Checkbox-disabled-border-color);
+
+    & + .Label {
+      color: var(--z-text-subdued-color);
+    }
   }
   
   &::before {

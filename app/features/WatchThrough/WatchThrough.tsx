@@ -363,10 +363,18 @@ function DetailedReview({
   notes: Signal<string | undefined>;
   containsSpoilers: Signal<boolean>;
 }) {
+  const hasNotes = Boolean(notes.value);
+
   return (
     <>
       <NotesTextField value={notes} />
-      <Checkbox checked={containsSpoilers}>
+      <Checkbox
+        disabled={!hasNotes}
+        checked={hasNotes && containsSpoilers}
+        onChange={(checked) => {
+          containsSpoilers.value = checked;
+        }}
+      >
         These notes contain spoilers
       </Checkbox>
     </>
@@ -380,6 +388,7 @@ function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
       multiline={4}
       blockSize="fitContent"
       value={notes}
+      changeTiming="input"
     />
   );
 }

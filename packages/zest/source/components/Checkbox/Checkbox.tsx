@@ -11,28 +11,16 @@ export type Props = {
   id?: string;
 } & (
   | {
-      disabled?: false;
-      readonly?: false;
+      disabled?: boolean | Signal<boolean>;
+      readonly?: boolean | Signal<boolean>;
       checked: boolean;
       onChange(checked: boolean): void;
     }
   | {
-      disabled?: false;
-      readonly?: false;
+      disabled?: boolean | Signal<boolean>;
+      readonly?: boolean | Signal<boolean>;
       checked: Signal<boolean>;
       onChange?(checked: boolean): void;
-    }
-  | {
-      checked: boolean | Signal<boolean>;
-      disabled: true;
-      readonly?: false;
-      onChange?: never;
-    }
-  | {
-      checked: boolean | Signal<boolean>;
-      disabled?: false;
-      readonly: true;
-      onChange?: never;
     }
 );
 
@@ -46,16 +34,17 @@ export function Checkbox({
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Checkbox', explicitId);
 
+  const resolvedChecked = resolveMaybeSignal(checked);
+  const resolvedDisabled = resolveMaybeSignal(disabled);
+  const resolvedReadonly = resolveMaybeSignal(readonly);
+
   const handleChange =
     onChange ??
-    (disabled || readonly || typeof checked === 'boolean'
+    (resolvedDisabled || resolvedReadonly || typeof checked === 'boolean'
       ? undefined
       : (newChecked) => {
           checked.value = newChecked;
         });
-
-  const resolvedChecked =
-    typeof checked === 'boolean' ? checked : checked.value;
 
   return (
     <label
@@ -66,8 +55,8 @@ export function Checkbox({
         id={id}
         type="checkbox"
         checked={resolvedChecked}
-        disabled={disabled}
-        readOnly={readonly}
+        disabled={resolvedDisabled}
+        readOnly={resolvedReadonly}
         className={styles.Input}
         onChange={
           handleChange &&
@@ -79,4 +68,10 @@ export function Checkbox({
       <span className={styles.Label}>{children}</span>
     </label>
   );
+}
+
+function resolveMaybeSignal<T>(value: T | Signal<T>): T {
+  return typeof value === 'object' && value != null && 'value' in value
+    ? value.value
+    : value;
 }
