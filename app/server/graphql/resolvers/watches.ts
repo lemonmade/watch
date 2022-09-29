@@ -93,21 +93,14 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
       ...watches.map(addResolvedType('Watch')),
       ...skips.map(addResolvedType('Skip')),
     ].sort((actionOne, actionTwo) => {
-      if (actionOne.season != null) {
-        return actionTwo.season == null
-          ? actionOne.season.number < actionTwo.episode!.season.number
-            ? 1
-            : -1
-          : actionOne.season.number < actionTwo.season.number
-          ? 1
-          : -1;
-      } else if (actionTwo.season != null) {
-        return actionTwo.season.number < actionOne.episode!.season.number
-          ? 1
-          : -1;
-      }
+      const {season: seasonOne, episode: episodeOne = 0} =
+        getSeasonAndEpisode(actionOne);
+      const {season: seasonTwo, episode: episodeTwo = 0} =
+        getSeasonAndEpisode(actionTwo);
 
-      return actionOne.episode!.number < actionTwo.episode!.number ? 1 : -1;
+      return seasonOne !== seasonTwo
+        ? seasonTwo - seasonOne
+        : episodeTwo - episodeOne;
     });
   },
   watches({id}, _, {user, prisma}) {
@@ -247,6 +240,18 @@ export const Skip: Resolver<'Skip'> = {
     return notes == null ? null : {content: notes, containsSpoilers};
   },
 };
+
+function getSeasonAndEpisode(action: {
+  season?: {number: number} | null;
+  episode?: {number: number; season: {number: number}} | null;
+}) {
+  return action.season
+    ? {season: action.season.number}
+    : {
+        season: action.episode!.season.number,
+        episode: action.episode!.number,
+      };
+}
 
 export const Action = createUnionResolver();
 

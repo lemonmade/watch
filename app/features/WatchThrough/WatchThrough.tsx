@@ -24,11 +24,12 @@ import {
   TextBlock,
   Tag,
   Icon,
+  IconHighlight,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {SpoilerAvoidance} from '~/shared/spoilers';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {useQuery, useMutation, type PickTypename} from '~/shared/graphql';
 
 import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
 import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
@@ -43,6 +44,10 @@ import updateWatchThroughSettingsMutation from './graphql/UpdateWatchThroughSett
 export interface Props {
   id: string;
 }
+
+type WatchThrough = WatchThroughQueryData.WatchThrough;
+type WatchAction = PickTypename<WatchThrough['actions'][number], 'Watch'>;
+type SkipAction = PickTypename<WatchThrough['actions'][number], 'Skip'>;
 
 export default function WatchThrough({id}: Props) {
   const {data, refetch} = useQuery(watchThroughQuery, {
@@ -636,9 +641,9 @@ function PreviousEpisodesSection({
         <ActionList>
           {actions.map((action) =>
             action.__typename === 'Skip' ? (
-              <SkipAction action={action} />
+              <PreviousActionSkip action={action} />
             ) : action.__typename === 'Watch' ? (
-              <WatchAction action={action} />
+              <PreviousActionWatch action={action} />
             ) : null,
           )}
         </ActionList>
@@ -647,12 +652,10 @@ function PreviousEpisodesSection({
   );
 }
 
-function WatchAction({
-  action,
-}: {
-  action: WatchThroughQueryData.WatchThrough.Actions_Watch;
-}) {
+function PreviousActionWatch({action}: {action: WatchAction}) {
   const {media, rating, notes} = action;
+
+  if (media.__typename !== 'Episode') return null;
 
   const ratingContent =
     rating != null ? <Rating value={rating} size="small" readonly /> : null;
@@ -661,64 +664,58 @@ function WatchAction({
 
   return (
     <Action
+      icon={
+        <IconHighlight>
+          <Icon source="watch" />
+        </IconHighlight>
+      }
+      iconAlignment="start"
       detail={<Icon source="disclosureInlineEnd" />}
-      modal={<WatchActionEditModal action={action} />}
+      modal={<PreviousActionWatchEditModal action={action} />}
     >
       <BlockStack spacing="small">
-        <Text emphasis>
-          {media.__typename === 'Episode'
-            ? media.title
-            : media.__typename === 'Season'
-            ? `Season ${media.number}`
-            : ''}
+        <Text emphasis>{media.title}</Text>
+        <Text emphasis="subdued">
+          Season {media.season.number}, Episode {media.number}
+          {action.finishedAt ? ' • ' : ''}
+          {action.finishedAt && <PrettyDate date={action.finishedAt} />}
         </Text>
-        {media.__typename === 'Episode' && (
-          <Text emphasis="subdued">
-            Episode {media.number}
-            {action.finishedAt ? ' • ' : ''}
-            {action.finishedAt && <PrettyDate date={action.finishedAt} />}
-          </Text>
-        )}
-        {ratingContent && notesContent ? (
+        {ratingContent || notesContent ? (
           <InlineStack spacing="small">
             {ratingContent}
             {notesContent}
           </InlineStack>
-        ) : (
-          <>
-            {ratingContent}
-            {notesContent}
-          </>
-        )}
+        ) : null}
       </BlockStack>
     </Action>
   );
 }
 
-function WatchActionEditModal({
-  action,
-}: {
-  action: WatchThroughQueryData.WatchThrough.Actions_Watch;
-}) {
+function PreviousActionWatchEditModal({action}: {action: WatchAction}) {
   return <Modal padding>{JSON.stringify(action.media)}</Modal>;
 }
 
-function SkipAction({
-  action,
-}: {
-  action: WatchThroughQueryData.WatchThrough.Actions_Skip;
-}) {
+function PreviousActionSkip({action}: {action: SkipAction}) {
   const {media, at, notes} = action;
 
+  if (media.__typename !== 'Episode') return null;
+
   return (
-    <Action>
-      <BlockStack spacing key={action.id}>
-        <Text>
-          Skipped {media.__typename === 'Episode' ? 'Episode' : 'Season'}{' '}
-          {media.__typename === 'Episode' || media.__typename === 'Season'
-            ? media.number
-            : ''}
-          {at ? ` (on ${new Date(at).toLocaleDateString()})` : ''}
+    <Action
+      icon={
+        <IconHighlight>
+          <Icon source="skip" />
+        </IconHighlight>
+      }
+      iconAlignment="start"
+      detail={<Icon source="disclosureInlineEnd" />}
+    >
+      <BlockStack spacing="small" key={action.id}>
+        <Text emphasis>{media.title}</Text>
+        <Text emphasis="subdued">
+          Season {media.season.number}, Episode {media.number}
+          {at ? ' • ' : ''}
+          {at && <PrettyDate date={at} />}
         </Text>
         {notes ? <Tag>Notes</Tag> : null}
       </BlockStack>

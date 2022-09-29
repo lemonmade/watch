@@ -1,4 +1,4 @@
-import {type ComponentType} from 'react';
+import {PropsWithChildren, type ComponentType} from 'react';
 import styles from './Icon.module.css';
 
 export type IconSource =
@@ -20,11 +20,11 @@ export type IconSource =
   | 'watch'
   | 'disclosureInlineEnd';
 
-export interface Props {
+export interface IconProps {
   source: IconSource;
 }
 
-const ICON_MAP = new Map<Props['source'], ComponentType>([
+const ICON_MAP = new Map<IconProps['source'], ComponentType>([
   ['arrowEnd', ArrowEndIcon],
   ['watching', WatchingIcon],
   ['watchlist', WatchlistIcon],
@@ -44,7 +44,7 @@ const ICON_MAP = new Map<Props['source'], ComponentType>([
   ['disclosureInlineEnd', DisclosureInlineEndIcon],
 ]);
 
-export function Icon({source}: Props) {
+export function Icon({source}: IconProps) {
   const IconComponent = ICON_MAP.get(source)!;
 
   return (
@@ -52,6 +52,14 @@ export function Icon({source}: Props) {
       <IconComponent />
     </span>
   );
+}
+
+export interface IconHighlightProps {}
+
+export function IconHighlight({
+  children,
+}: PropsWithChildren<IconHighlightProps>) {
+  return <span className={styles.IconHighlight}>{children}</span>;
 }
 
 function ArrowEndIcon() {

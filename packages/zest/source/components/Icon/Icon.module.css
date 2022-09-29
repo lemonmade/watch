@@ -9,3 +9,15 @@
   width: var(--z-Icon-base-size);
   height: var(--z-Icon-base-size);
 }
+
+.IconHighlight {
+  --z-internal-Icon-highlight-size: calc(1.8 * var(--z-Icon-base-size));
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  block-size: var(--z-internal-Icon-highlight-size);
+  inline-size: var(--z-internal-Icon-highlight-size);
+  border-radius: 50%;
+  background: var(--Z-Icon-highlight-base-color);
+}

@@ -2,6 +2,11 @@ import {useGraphQLQuery, useGraphQLMutation} from '@quilted/react-query';
 
 export {useGraphQLQuery as useQuery, useGraphQLMutation as useMutation};
 
+export type PickTypename<
+  Type extends {__typename: string},
+  Typename extends Type['__typename'],
+> = Extract<Type, {__typename: Typename}>;
+
 const GID_REGEXP = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/;
 
 export function parseGid(gid: string): {type: string; id: string} {
