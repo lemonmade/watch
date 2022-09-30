@@ -13,6 +13,7 @@
     --z-internal-Action-forced-block-padding,
     var(--z-spacing-tiny)
   );
+  --z-internal-Action-alignment: center;
 
   position: relative;
   min-block-size: var(--z-Action-minimum-size);
@@ -445,6 +446,10 @@
 .hasIcon {
   grid-template-columns: auto 1fr;
 
+  & > *:first-child {
+    align-self: var(--z-internal-Action-alignment);
+  }
+
   &:not(.sizeSmall) > *:first-child {
     margin-inline-start: calc(-0.5 * var(--z-spacing-small));
 
@@ -457,6 +462,18 @@
     margin-block-start: calc(-0.5 * var(--z-Icon-base-size));
     margin-block-end: calc(-0.5 * var(--z-Icon-base-size));
   }
+}
+
+.iconAlignmentStart {
+  --z-internal-Action-alignment: start;
+}
+
+.iconAlignmentEnd {
+  --z-internal-Action-alignment: end;
+}
+
+.iconAlignmentCenter {
+  --z-internal-Action-alignment: center;
 }
 
 .hasDetail {

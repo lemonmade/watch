@@ -1,7 +1,7 @@
 .BlockStack {
   justify-content: stretch;
   align-items: center;
-  justify-items: stretch;
+  justify-items: var(--z-internal-inline-alignment, stretch);
 }
 
 .spacingTiny {

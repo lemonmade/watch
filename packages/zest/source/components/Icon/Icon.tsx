@@ -1,4 +1,4 @@
-import {type ComponentType} from 'react';
+import {PropsWithChildren, type ComponentType} from 'react';
 import styles from './Icon.module.css';
 
 export type IconSource =
@@ -10,6 +10,7 @@ export type IconSource =
   | 'app'
   | 'developer'
   | 'user'
+  | 'check'
   | 'go'
   | 'delete'
   | 'stop'
@@ -20,11 +21,11 @@ export type IconSource =
   | 'watch'
   | 'disclosureInlineEnd';
 
-export interface Props {
+export interface IconProps {
   source: IconSource;
 }
 
-const ICON_MAP = new Map<Props['source'], ComponentType>([
+const ICON_MAP = new Map<IconProps['source'], ComponentType>([
   ['arrowEnd', ArrowEndIcon],
   ['watching', WatchingIcon],
   ['watchlist', WatchlistIcon],
@@ -33,6 +34,7 @@ const ICON_MAP = new Map<Props['source'], ComponentType>([
   ['app', AppIcon],
   ['developer', DeveloperIcon],
   ['user', UserIcon],
+  ['check', CheckIcon],
   ['go', GoIcon],
   ['delete', DeleteIcon],
   ['stop', StopIcon],
@@ -44,7 +46,7 @@ const ICON_MAP = new Map<Props['source'], ComponentType>([
   ['disclosureInlineEnd', DisclosureInlineEndIcon],
 ]);
 
-export function Icon({source}: Props) {
+export function Icon({source}: IconProps) {
   const IconComponent = ICON_MAP.get(source)!;
 
   return (
@@ -54,13 +56,20 @@ export function Icon({source}: Props) {
   );
 }
 
+export interface IconHighlightProps {}
+
+export function IconHighlight({
+  children,
+}: PropsWithChildren<IconHighlightProps>) {
+  return <span className={styles.IconHighlight}>{children}</span>;
+}
+
 function ArrowEndIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="w-5 h-5"
     >
       <path
         fillRule="evenodd"
@@ -204,6 +213,18 @@ function UserIcon() {
   );
 }
 
+function CheckIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M14.723 6.237a.94.94 0 0 1 .053 1.277l-5.366 6.193a.834.834 0 0 1-.611.293.83.83 0 0 1-.622-.264l-2.927-3.097a.94.94 0 0 1 0-1.278.82.82 0 0 1 1.207 0l2.297 2.43 4.763-5.498a.821.821 0 0 1 1.206-.056Z" />
+    </svg>
+  );
+}
+
 function GoIcon() {
   return (
     <svg
@@ -267,7 +288,6 @@ function MoreIcon() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="w-5 h-5"
     >
       <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
     </svg>

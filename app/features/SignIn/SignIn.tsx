@@ -10,6 +10,7 @@ import {
   Banner,
   Action,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 import {SignInErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
@@ -52,7 +53,7 @@ function SignInForm() {
 }
 
 function SignInWithEmail() {
-  const [email, setEmail] = useState('');
+  const email = useSignal('');
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
   const signInWithEmail = useMutation(signInWithEmailMutation);
@@ -62,7 +63,7 @@ function SignInWithEmail() {
       onSubmit={() => {
         signInWithEmail.mutate(
           {
-            email,
+            email: email.value,
             redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
           },
           {
@@ -73,7 +74,7 @@ function SignInWithEmail() {
         );
       }}
     >
-      <TextField label="Email" onChange={(value) => setEmail(value)} />
+      <TextField label="Email" value={email} />
     </Form>
   );
 }

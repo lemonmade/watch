@@ -1,31 +1,77 @@
-import type {PropsWithChildren} from 'react';
+import {type PropsWithChildren} from 'react';
+import {type Signal} from '@watching/react-signals';
+import {classes} from '@lemon/css';
+
+import systemStyles from '../../system.module.css';
 import {useUniqueId} from '../../utilities/id';
 
-export interface Props {
+import styles from './Checkbox.module.css';
+
+export type Props = {
   id?: string;
-  checked?: boolean;
-  onChange(checked: boolean): void;
-}
+} & (
+  | {
+      disabled?: boolean | Signal<boolean>;
+      readonly?: boolean | Signal<boolean>;
+      checked: boolean;
+      onChange(checked: boolean): void;
+    }
+  | {
+      disabled?: boolean | Signal<boolean>;
+      readonly?: boolean | Signal<boolean>;
+      checked: Signal<boolean>;
+      onChange?(checked: boolean): void;
+    }
+);
 
 export function Checkbox({
   id: explicitId,
   checked,
+  disabled,
+  readonly,
   children,
   onChange,
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Checkbox', explicitId);
 
+  const resolvedChecked = resolveMaybeSignal(checked);
+  const resolvedDisabled = resolveMaybeSignal(disabled);
+  const resolvedReadonly = resolveMaybeSignal(readonly);
+
+  const handleChange =
+    onChange ??
+    (resolvedDisabled || resolvedReadonly || typeof checked === 'boolean'
+      ? undefined
+      : (newChecked) => {
+          checked.value = newChecked;
+        });
+
   return (
-    <div>
+    <label
+      htmlFor={id}
+      className={classes(systemStyles.displayInlineGrid, styles.Checkbox)}
+    >
       <input
         id={id}
         type="checkbox"
-        checked={checked}
-        onChange={({currentTarget: {checked}}) => {
-          onChange(checked);
-        }}
+        checked={resolvedChecked}
+        disabled={resolvedDisabled}
+        readOnly={resolvedReadonly}
+        className={styles.Input}
+        onChange={
+          handleChange &&
+          (({currentTarget: {checked}}) => {
+            handleChange(checked);
+          })
+        }
       ></input>
-      <label htmlFor={id}>{children}</label>
-    </div>
+      <span className={styles.Label}>{children}</span>
+    </label>
   );
+}
+
+function resolveMaybeSignal<T>(value: T | Signal<T>): T {
+  return typeof value === 'object' && value != null && 'value' in value
+    ? value.value
+    : value;
 }

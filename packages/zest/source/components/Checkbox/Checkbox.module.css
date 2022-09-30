@@ -1,0 +1,74 @@
+.Checkbox {
+  --z-internal-Checkbox-border-color: var(--z-Checkbox-border-color);
+  --z-internal-Checkbox-corner-radius: var(--z-corner-radius-base);
+  --z-internal-Checkbox-block-inset: calc(
+    (var(--z-Action-minimum-size) - (var(--z-text-base-line-height) * var(--z-text-base-font-size))) * -0.5
+  );
+  --z-internal-Checkbox-overlay-opacity: 0;
+  --z-internal-Checkbox-overlay-scale: 0.25;
+  --z-internal-Checkbox-focus-ring-opacity: 0;
+  --z-internal-Checkbox-focus-ring-inset: 0.125rem;
+
+  grid-template-columns: auto 1fr;
+  min-block-size: var(--z-Action-minimum-size);
+  align-items: center;
+  margin: var(--z-internal-Checkbox-block-inset) 0;
+  gap: var(--z-spacing-small);
+}
+
+.Input {
+  --z-internal-Checkbox-input-size: 1.25rem;
+
+  position: relative;
+  appearance: none;
+  margin: -0.25em 0;
+  block-size: var(--z-internal-Checkbox-input-size);
+  inline-size: var(--z-internal-Checkbox-input-size);
+  border-radius: var(--z-internal-Checkbox-corner-radius);
+  background-color: var(--z-Checkbox-background);
+  border: var(--z-Checkbox-border-size) solid var(--z-internal-Checkbox-border-color);
+
+  &:checked {
+    --z-internal-Checkbox-overlay-opacity: 1;
+    --z-internal-Checkbox-overlay-scale: 1;
+  }
+  
+  &:focus-visible {
+    --z-internal-Checkbox-focus-ring-opacity: 1;
+    outline: 1px solid transparent;
+  }
+
+  &:disabled {
+    --z-internal-Checkbox-border-color: var(--z-Checkbox-disabled-border-color);
+
+    & + .Label {
+      color: var(--z-text-subdued-color);
+    }
+  }
+  
+  &::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: calc(-1 * (var(--z-internal-Checkbox-focus-ring-inset) + var(--z-Checkbox-border-size)));
+    box-shadow: 0 0 0 0.125rem var(--z-Checkbox-focused-border-color);
+    border-radius: calc(var(--z-internal-Checkbox-corner-radius) + var(--z-internal-Checkbox-focus-ring-inset));
+    opacity: var(--z-internal-Checkbox-focus-ring-opacity);
+    transition: opacity 0.2s ease;
+  }
+
+  &::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: calc(-1 * var(--z-Checkbox-border-size));
+    border: var(--z-Checkbox-border-size) solid var(--z-Checkbox-focused-border-color);
+    background-color: var(--z-Checkbox-focused-background);
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E");
+    background-size: cover;
+    border-radius: var(--z-internal-Checkbox-corner-radius);
+    opacity: var(--z-internal-Checkbox-overlay-opacity);
+    transform: var(--z-internal-Checkbox-overlay-scale);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+}

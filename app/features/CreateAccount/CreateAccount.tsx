@@ -10,6 +10,7 @@ import {
   TextBlock,
   Heading,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 import {CreateAccountErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
@@ -52,7 +53,7 @@ export function CreateAccountForm() {
 }
 
 function CreateAccountWithEmail() {
-  const [email, setEmail] = useState('');
+  const email = useSignal('');
   const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
   const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
@@ -62,7 +63,7 @@ function CreateAccountWithEmail() {
       onSubmit={() => {
         createAccountWithEmail.mutate(
           {
-            email,
+            email: email.value,
             redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
           },
           {
@@ -73,7 +74,7 @@ function CreateAccountWithEmail() {
         );
       }}
     >
-      <TextField label="Email" onChange={(value) => setEmail(value)} />
+      <TextField label="Email" value={email} />
     </Form>
   );
 }

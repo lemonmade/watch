@@ -1,5 +1,24 @@
 .TextField {
-  overflow: hidden;
+  --z-internal-TextField-corner-radius: var(--z-corner-radius-base);
+  --z-internal-TextField-focus-ring-inset: 0.125rem;
+  --z-internal-TextField-focus-ring-opacity: 0;
+
+  position: relative;
+
+  &:focus-within {
+    --z-internal-TextField-focus-ring-opacity: 1;
+  }
+
+  &::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: calc(-1 * var(--z-internal-TextField-focus-ring-inset));
+    box-shadow: 0 0 0 0.125rem var(--z-input-focused-border-color);
+    border-radius: calc(var(--z-internal-TextField-corner-radius) + var(--z-internal-TextField-focus-ring-inset));
+    opacity: var(--z-internal-TextField-focus-ring-opacity);
+    transition: opacity 0.2s ease;
+  }
 }
 
 .blockSizeFitContent {
@@ -22,8 +41,8 @@
 .Input {
   appearance: none;
   display: block;
-  border: 1px solid var(--z-input-border-color);
-  border-radius: var(--z-corner-radius-base);
+  border: var(--z-TextField-border-size) solid var(--z-input-border-color);
+  border-radius: var(--z-internal-TextField-corner-radius);
   background: var(--z-input-background);
   width: 100%;
   resize: vertical;
@@ -35,15 +54,14 @@
 }
 
 .Input:focus {
-  outline: none;
-  border-color: var(--z-input-focused-border-color);
+  outline: 1px solid transparent;
 }
 
 .Input,
 .AutoGrowWrap {
   grid-area: 1 / 1 / 2 / 2;
   font-size: 1em;
-  line-height: 1;
+  line-height: var(--z-text-base-line-height);
   font-family: inherit;
   padding: var(--z-spacing-small) var(--z-spacing-base);
 }

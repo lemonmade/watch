@@ -1,1 +1,1 @@
-export {Icon, type IconSource} from './Icon';
+export {Icon, IconHighlight, type IconSource} from './Icon';

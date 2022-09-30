@@ -31,7 +31,8 @@ export type BackgroundKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
 export type EmphasisKeyword = 'emphasized' | 'subdued';
 export type EmphasisValue = EmphasisKeyword | boolean;
 export type ActionRoleKeyword = 'destructive';
-export type AlignKeyword = 'start' | 'center' | 'end' | 'spaceBetween';
+export type BasicAlignmentKeyword = 'start' | 'center' | 'end';
+export type AlignKeyword = BasicAlignmentKeyword | 'spaceBetween';
 
 export interface Position {
   type: 'relative' | 'absolute';

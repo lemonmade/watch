@@ -14,6 +14,8 @@ body {
   background: var(--z-surface-background-base);
   color: var(--z-text-base-color);
   font-weight: var(--z-text-base-weight);
+  font-size: var(--z-text-base-font-size);
+  line-height: var(--z-text-base-line-height);
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',

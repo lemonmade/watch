@@ -116,7 +116,7 @@ function DatePickerPopover({
             <TextField
               label="Date"
               labelStyle="placeholder"
-              value={dateSearch.value}
+              value={dateSearch}
               onInput={(newValue) => {
                 dateSearch.value = newValue;
               }}

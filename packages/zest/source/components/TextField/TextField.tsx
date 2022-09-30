@@ -22,7 +22,7 @@ export function TextField({
   const id = useUniqueId('TextField', explicitId);
 
   return (
-    <BlockStack spacing="small">
+    <BlockStack spacing="small" align="stretch">
       <Label
         target={id}
         visibility={labelStyle === 'placeholder' ? 'hidden' : 'visible'}
@@ -31,7 +31,7 @@ export function TextField({
       </Label>
       <TextFieldInput
         id={id}
-        {...baseProps}
+        {...(baseProps as any)}
         placeholder={
           labelStyle === 'placeholder' && typeof label === 'string'
             ? label

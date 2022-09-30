@@ -2,6 +2,7 @@ import {
   raw,
   Action,
   ActionList,
+  Checkbox,
   BlockStack,
   TextField,
   Heading,
@@ -31,6 +32,7 @@ import {
   Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
+import {ComponentProps} from 'react';
 
 export default function ComponentLibrary() {
   return (
@@ -256,6 +258,11 @@ function FormComponents() {
           multiline={5}
           blockSize="fitContent"
         />
+        <TextFieldExample label="Controlled text field" />
+        <TextFieldExample
+          label="Controlled text field (change on input)"
+          changeTiming="input"
+        />
 
         <Select
           label="Select"
@@ -264,6 +271,10 @@ function FormComponents() {
             {value: 'option-two', label: 'Option Two'},
           ]}
         ></Select>
+
+        <CheckboxExample>A basic checkbox</CheckboxExample>
+        <CheckboxExample disabled>A disabled checkbox</CheckboxExample>
+        <CheckboxExample readonly>A readonly checkbox</CheckboxExample>
 
         <ChoiceList onChange={noop}>
           <Choice value="hello">Hello</Choice>
@@ -277,6 +288,26 @@ function FormComponents() {
       </BlockStack>
     </Section>
   );
+}
+
+function TextFieldExample(
+  props: Omit<ComponentProps<typeof TextField>, 'value'>,
+) {
+  const value = useSignal('');
+  return (
+    <BlockStack spacing>
+      <TextField {...(props as any)} value={value} />
+      <TextBlock>Value: {value.value}</TextBlock>
+    </BlockStack>
+  );
+}
+
+function CheckboxExample(
+  props: Omit<ComponentProps<typeof Checkbox>, 'checked'>,
+) {
+  const checked = useSignal(false);
+
+  return <Checkbox {...(props as any)} checked={checked} />;
 }
 
 function DatePickerExample() {
