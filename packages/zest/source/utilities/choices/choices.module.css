@@ -1,8 +1,9 @@
 .Choice {
   --z-internal-Choice-border-color: var(--z-Choice-border-color);
   --z-internal-Choice-corner-radius: 50%;
+  --z-internal-Choice-text-line-block-size: calc(var(--z-text-base-line-height) * var(--z-text-base-font-size));
   --z-internal-Choice-block-inset: calc(
-    (var(--z-Action-minimum-size) - (var(--z-text-base-line-height) * var(--z-text-base-font-size))) * -0.5
+    (var(--z-Action-minimum-size) - var(--z-internal-Choice-text-line-block-size)) * -0.5
   );
   --z-internal-Choice-overlay-opacity: 0;
   --z-internal-Choice-overlay-scale: 0.25;
@@ -12,7 +13,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   min-block-size: var(--z-Action-minimum-size);
-  align-items: center;
+  align-items: start;
   padding: calc(-1 * var(--z-internal-Choice-block-inset)) 0;
   margin: var(--z-internal-Choice-block-inset) 0;
   column-gap: var(--z-spacing-small);
@@ -32,7 +33,7 @@
 
   position: relative;
   appearance: none;
-  margin: -0.25em 0;
+  margin: 0;
   block-size: var(--z-internal-Choice-input-size);
   inline-size: var(--z-internal-Choice-input-size);
   border-radius: var(--z-internal-Choice-corner-radius);
