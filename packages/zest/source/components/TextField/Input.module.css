@@ -49,7 +49,7 @@
   color: inherit;
 
   &::placeholder {
-    color: var(--z-Input-placeholder-color);
+    color: var(--z-TextField-placeholder-color);
   }
 }
 

@@ -368,13 +368,7 @@ function DetailedReview({
   return (
     <>
       <NotesTextField value={notes} />
-      <Checkbox
-        disabled={!hasNotes}
-        checked={hasNotes && containsSpoilers}
-        onChange={(checked) => {
-          containsSpoilers.value = checked;
-        }}
-      >
+      <Checkbox disabled={!hasNotes} checked={hasNotes && containsSpoilers}>
         These notes contain spoilers
       </Checkbox>
     </>
@@ -664,7 +658,7 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
       detail={<Icon source="disclosureInlineEnd" />}
       modal={<PreviousActionWatchEditModal action={action} />}
     >
-      <BlockStack spacing="small">
+      <BlockStack spacing="tiny">
         <Text emphasis>{media.title}</Text>
         <Text emphasis="subdued">
           Season {media.season.number}, Episode {media.number}
@@ -702,7 +696,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       detail={<Icon source="disclosureInlineEnd" />}
       modal={<PreviousActionSkipEditModal action={action} />}
     >
-      <BlockStack spacing="small" key={action.id}>
+      <BlockStack spacing="tiny">
         <Text emphasis>{media.title}</Text>
         <Text emphasis="subdued">
           Season {media.season.number}, Episode {media.number}
