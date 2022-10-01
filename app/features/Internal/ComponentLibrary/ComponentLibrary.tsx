@@ -390,14 +390,9 @@ function CheckboxExample(
 
 function DatePickerExample() {
   const date = useSignal<Date | undefined>(new Date());
+
   return (
-    <DatePicker
-      label={date.value ? 'Watched' : 'Watched on…'}
-      value={date.value}
-      onChange={(newDate) => {
-        date.value = newDate;
-      }}
-    />
+    <DatePicker label={date.value ? 'Watched' : 'Watched on…'} value={date} />
   );
 }
 

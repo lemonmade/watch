@@ -1,5 +1,10 @@
 import {useMemo, type ReactNode} from 'react';
 import {
+  isSignal,
+  resolveSignalOrValue,
+  type SignalOrValue,
+} from '@watching/react-signals';
+import {
   isToday,
   isYesterday,
   startOfToday,
@@ -24,30 +29,42 @@ import {useComputed, useSignal} from '@watching/react-signals';
 interface Props {
   id?: string;
   label: ReactNode;
-  value?: Date;
-  onChange(value: Date | undefined): void;
+  value?: SignalOrValue<Date | undefined>;
+  onChange?(value: Date | undefined): void;
 }
 
 export function DatePicker({id, label, value, onChange}: Props) {
+  const resolvedValue = resolveSignalOrValue(value);
+  const handleChange =
+    onChange ??
+    (isSignal(value)
+      ? (newDate: Date | undefined) => {
+          value.value = newDate;
+        }
+      : undefined);
+
   const content =
-    value == null ? (
+    resolvedValue == null ? (
       <Text emphasis="subdued">{label}</Text>
     ) : (
       <Text>
-        <Text emphasis="subdued">{label}</Text> <DatePickerLabel date={value} />
+        <Text emphasis="subdued">{label}</Text>{' '}
+        <DatePickerLabel date={resolvedValue} />
       </Text>
     );
 
   return (
     <Action
       id={id}
-      popover={<DatePickerPopover onChange={onChange} />}
+      popover={
+        handleChange ? <DatePickerPopover onChange={handleChange} /> : null
+      }
       accessory={
-        value == null ? undefined : (
+        resolvedValue == null || handleChange == null ? null : (
           <Action
             icon="delete"
             accessibilityLabel="Clear date"
-            onPress={() => onChange(undefined)}
+            onPress={() => handleChange(undefined)}
           />
         )
       }

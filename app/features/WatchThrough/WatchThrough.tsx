@@ -1,6 +1,10 @@
 import {useMemo, type PropsWithChildren} from 'react';
-import {useNavigate} from '@quilted/quilt';
-import {useSignal, type Signal} from '@watching/react-signals';
+import {
+  useNavigate,
+  createOptionalContext,
+  createUseContextHook,
+} from '@quilted/quilt';
+import {signal, useSignal, type Signal} from '@watching/react-signals';
 
 import {
   raw,
@@ -50,7 +54,14 @@ type WatchThrough = WatchThroughQueryData.WatchThrough;
 type WatchAction = PickTypename<WatchThrough['actions'][number], 'Watch'>;
 type SkipAction = PickTypename<WatchThrough['actions'][number], 'Skip'>;
 
-export default function WatchThrough({id}: Props) {
+interface PageDetails {
+  initialActionDate: Signal<Date | undefined>;
+}
+
+const PageDetailsContext = createOptionalContext<PageDetails>();
+const usePageDetails = createUseContextHook(PageDetailsContext);
+
+export default function WatchThroughDetails({id}: Props) {
   const {data, refetch} = useQuery(watchThroughQuery, {
     variables: {id},
   });
@@ -74,51 +85,58 @@ function WatchThroughWithData({
 
   const watchingSingleSeason = from.season === to.season;
 
-  return (
-    <Page
-      heading={series.name}
-      detail={
-        nextEpisode
-          ? watchingSingleSeason
-            ? `Watching Season ${to.season}`
-            : `Watching Seasons ${from.season}–${to.season}`
-          : null
-      }
-      menu={
-        <>
-          <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
-            More about {series.name}
-          </Action>
-          {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
-          <DeleteWatchThroughAction id={id} name={series.name} />
-        </>
-      }
-    >
-      <BlockStack spacing="huge">
-        {nextEpisode && (
-          <NextEpisode
-            key={nextEpisode.id}
-            id={nextEpisode.id}
-            title={nextEpisode.title}
-            episodeNumber={nextEpisode.number}
-            seasonNumber={nextEpisode.season.number}
-            firstAired={
-              nextEpisode.firstAired
-                ? new Date(nextEpisode.firstAired)
-                : undefined
-            }
-            watchThroughId={id}
-            image={nextEpisode.still?.source ?? undefined}
-            overview={nextEpisode.overview ?? undefined}
-            watchingSingleSeason={watchingSingleSeason}
-            onAction={() => refetch()}
-          />
-        )}
-        {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
+  const pageDetails = useMemo<PageDetails>(() => {
+    const initialActionDate = signal(new Date());
+    return {initialActionDate};
+  }, []);
 
-        <SettingsSection id={id} settings={settings} refetch={refetch} />
-      </BlockStack>
-    </Page>
+  return (
+    <PageDetailsContext.Provider value={pageDetails}>
+      <Page
+        heading={series.name}
+        detail={
+          nextEpisode
+            ? watchingSingleSeason
+              ? `Watching Season ${to.season}`
+              : `Watching Seasons ${from.season}–${to.season}`
+            : null
+        }
+        menu={
+          <>
+            <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
+              More about {series.name}
+            </Action>
+            {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
+            <DeleteWatchThroughAction id={id} name={series.name} />
+          </>
+        }
+      >
+        <BlockStack spacing="huge">
+          {nextEpisode && (
+            <NextEpisode
+              key={nextEpisode.id}
+              id={nextEpisode.id}
+              title={nextEpisode.title}
+              episodeNumber={nextEpisode.number}
+              seasonNumber={nextEpisode.season.number}
+              firstAired={
+                nextEpisode.firstAired
+                  ? new Date(nextEpisode.firstAired)
+                  : undefined
+              }
+              watchThroughId={id}
+              image={nextEpisode.still?.source ?? undefined}
+              overview={nextEpisode.overview ?? undefined}
+              watchingSingleSeason={watchingSingleSeason}
+              onAction={() => refetch()}
+            />
+          )}
+          {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
+
+          <SettingsSection id={id} settings={settings} refetch={refetch} />
+        </BlockStack>
+      </Page>
+    </PageDetailsContext.Provider>
   );
 }
 
@@ -144,10 +162,12 @@ function NextEpisode({
   watchingSingleSeason: boolean;
   onAction?(): void;
 }) {
+  const {initialActionDate} = usePageDetails();
+
   const rating = useSignal<number | undefined>(undefined);
   const notes = useSignal<string | undefined>(undefined);
   const containsSpoilers = useSignal(false);
-  const at = useSignal<Date | undefined>(new Date());
+  const at = useSignal<Date | undefined>(initialActionDate.value);
   const submitting = useSignal(false);
 
   return (
@@ -334,6 +354,8 @@ function EpisodeDatePicker({
   action: 'watch' | 'skip';
   value: Signal<Date | undefined>;
 }) {
+  const {initialActionDate} = usePageDetails();
+
   return (
     <DatePicker
       label={
@@ -345,9 +367,10 @@ function EpisodeDatePicker({
           ? 'Watched on…'
           : 'Skipped on…'
       }
-      value={at.value}
+      value={at}
       onChange={(newDate) => {
         at.value = newDate;
+        initialActionDate.value = newDate;
       }}
     />
   );
@@ -429,7 +452,9 @@ function SkipEpisodeModal({
   loading,
   ...options
 }: SkipEpisodeWithNotesActionProps) {
-  const at = useSignal<Date | undefined>(new Date());
+  const {initialActionDate} = usePageDetails();
+
+  const at = useSignal<Date | undefined>(initialActionDate.value);
   const notes = useSignal<string | undefined>(undefined);
   const containsSpoilers = useSignal(false);
 
