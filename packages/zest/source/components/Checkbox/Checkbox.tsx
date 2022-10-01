@@ -7,22 +7,13 @@ import {useUniqueId} from '../../utilities/id';
 
 import styles from './Checkbox.module.css';
 
-export type Props = {
+export interface Props {
   id?: string;
-} & (
-  | {
-      disabled?: boolean | Signal<boolean>;
-      readonly?: boolean | Signal<boolean>;
-      checked: boolean;
-      onChange(checked: boolean): void;
-    }
-  | {
-      disabled?: boolean | Signal<boolean>;
-      readonly?: boolean | Signal<boolean>;
-      checked: Signal<boolean>;
-      onChange?(checked: boolean): void;
-    }
-);
+  disabled?: boolean | Signal<boolean>;
+  readonly?: boolean | Signal<boolean>;
+  checked: boolean | Signal<boolean>;
+  onChange?(checked: boolean): void;
+}
 
 export function Checkbox({
   id: explicitId,
