@@ -286,9 +286,20 @@ function useOverlayTransitionController({
 
       const triggerGeometry = currentTrigger.getBoundingClientRect();
       const overlayGeometry = currentOverlay.getBoundingClientRect();
+      const overlayStyles = window.getComputedStyle(currentOverlay);
+      const overlayMargins = {
+        inlineStart: Number.parseFloat(overlayStyles.marginLeft || '0'),
+        inlineEnd: Number.parseFloat(overlayStyles.marginRight || '0'),
+      };
+      const viewportGeometry = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
 
       let inlineStart: number;
       let blockStart: number;
+
+      const triggerCenter = triggerGeometry.left + triggerGeometry.width / 2;
 
       switch (inlineAttachment) {
         case 'start': {
@@ -296,10 +307,39 @@ function useOverlayTransitionController({
           break;
         }
         case 'center': {
-          inlineStart =
-            triggerGeometry.left +
-            triggerGeometry.width / 2 -
-            overlayGeometry.width / 2;
+          const overlayInlineStart = triggerCenter - overlayGeometry.width / 2;
+          const overlayInlineEnd = triggerCenter + overlayGeometry.width / 2;
+
+          console.log({
+            overlayInlineStart,
+            overlayInlineEnd,
+            triggerGeometry,
+            overlayMargins,
+            overlayGeometry,
+            viewportGeometry,
+          });
+
+          if (
+            overlayInlineStart <
+            Math.min(overlayMargins.inlineStart, triggerGeometry.left)
+          ) {
+            inlineStart = triggerGeometry.left - overlayMargins.inlineStart;
+          } else if (
+            viewportGeometry.width - overlayInlineEnd <
+            Math.min(
+              overlayMargins.inlineEnd,
+              viewportGeometry.width - triggerGeometry.right,
+            )
+          ) {
+            inlineStart =
+              triggerGeometry.left +
+              triggerGeometry.width -
+              overlayGeometry.width -
+              overlayMargins.inlineStart;
+          } else {
+            inlineStart = overlayInlineStart - overlayMargins.inlineStart;
+          }
+
           break;
         }
         case 'end': {
@@ -322,6 +362,14 @@ function useOverlayTransitionController({
         }
       }
 
+      const inlineOrigin =
+        (triggerCenter - (inlineStart + overlayMargins.inlineStart)) /
+        overlayGeometry.width;
+
+      currentOverlay.style.setProperty(
+        '--z-internal-Overlay-transform-origin-inline',
+        `${inlineOrigin * 100}%`,
+      );
       currentOverlay.style.left = `${inlineStart}px`;
       currentOverlay.style.top = `${blockStart}px`;
     }

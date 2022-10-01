@@ -20,12 +20,10 @@
 
 .blockAttachmentStart {
   --z-internal-Overlay-transform-origin-block: 100%;
-  margin-block-end: var(--z-spacing-small);
 }
 
 .blockAttachmentEnd {
   --z-internal-Overlay-transform-origin-block: 0;
-  margin-block-start: var(--z-spacing-small);
 }
 
 .inlineAttachmentStart {

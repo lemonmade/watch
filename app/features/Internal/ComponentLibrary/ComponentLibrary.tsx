@@ -39,6 +39,8 @@ export default function ComponentLibrary() {
     <BlockStack spacing padding="base">
       <ActionComponents />
       <Divider />
+      <PopoverComponents />
+      <Divider />
       <LayoutComponents />
       <Divider />
       <FormComponents />
@@ -196,6 +198,51 @@ function ActionExampleModal() {
         </InlineStack>
       </BlockStack>
     </Modal>
+  );
+}
+
+function PopoverComponents() {
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading>Popovers</Heading>
+        <Section>
+          <BlockStack spacing>
+            <Heading>inlineAttachment=center</Heading>
+
+            <InlineStack spacing alignment="spaceBetween">
+              <Spacer size="none" />
+              <PopoverExample inlineAttachment="center" />
+              <PopoverExample inlineAttachment="center" />
+              <PopoverExample inlineAttachment="center" />
+              <PopoverExample inlineAttachment="center" />
+            </InlineStack>
+          </BlockStack>
+        </Section>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function PopoverExample({
+  inlineAttachment,
+  blockAttachment,
+}: ComponentProps<typeof Popover>) {
+  return (
+    <Action
+      popover={
+        <Popover
+          inlineAttachment={inlineAttachment}
+          blockAttachment={blockAttachment}
+        >
+          <Menu>
+            <Action>Nice!</Action>
+          </Menu>
+        </Popover>
+      }
+    >
+      Popover
+    </Action>
   );
 }
 
