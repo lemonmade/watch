@@ -10,6 +10,7 @@ import {
   Text,
   Banner,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 import {SpoilerAvoidance} from '~/shared/spoilers';
 import {Page} from '~/shared/page';
@@ -29,12 +30,6 @@ export function Account() {
   const {data, refetch} = useQuery(accountQuery);
   const signOut = useMutation(signOutMutation);
   const deleteAccount = useMutation(deleteAccountMutation);
-  const updateAccountSpoilerAvoidance = useMutation(
-    updateAccountSpoilerAvoidanceMutation,
-    {
-      onSettled: () => refetch(),
-    },
-  );
 
   if (data == null) return null;
 
@@ -58,17 +53,10 @@ export function Account() {
             Sign out
           </Action>
         </BlockStack>
-        <Section>
-          <BlockStack spacing>
-            <Heading divider>Settings</Heading>
-            <SpoilerAvoidance
-              value={settings.spoilerAvoidance}
-              onChange={(spoilerAvoidance) => {
-                updateAccountSpoilerAvoidance.mutate({spoilerAvoidance});
-              }}
-            />
-          </BlockStack>
-        </Section>
+        <SpoilerAvoidanceSection
+          spoilerAvoidance={settings.spoilerAvoidance}
+          refetch={refetch}
+        />
         <GithubSection
           account={githubAccount ?? undefined}
           onConnectionChange={() => {
@@ -176,6 +164,42 @@ function ConnectGithubAccount({
         >
           Connect Github
         </Action>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function SpoilerAvoidanceSection({
+  spoilerAvoidance,
+  refetch,
+}: {
+  spoilerAvoidance: AccountQueryData.Me.Settings['spoilerAvoidance'];
+  refetch(): Promise<any>;
+}) {
+  const spoilerAvoidanceSignal = useSignal(spoilerAvoidance, [
+    spoilerAvoidance,
+  ]);
+
+  const updateAccountSpoilerAvoidance = useMutation(
+    updateAccountSpoilerAvoidanceMutation,
+  );
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Settings</Heading>
+        <SpoilerAvoidance
+          value={spoilerAvoidanceSignal}
+          onChange={(spoilerAvoidance) => {
+            spoilerAvoidanceSignal.value = spoilerAvoidance;
+            updateAccountSpoilerAvoidance.mutate(
+              {spoilerAvoidance},
+              {
+                onSettled: () => refetch(),
+              },
+            );
+          }}
+        />
       </BlockStack>
     </Section>
   );

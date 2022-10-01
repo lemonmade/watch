@@ -14,12 +14,12 @@ interface Props extends Omit<ViewProps, 'display'> {
 }
 
 const SPACING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
-  ['none', false],
-  ['tiny', styles.spacingTiny],
-  ['small', styles.spacingSmall],
-  ['base', styles.spacingBase],
-  ['large', styles.spacingLarge],
-  ['huge', styles.spacingHuge],
+  ['none', systemStyles.spacingNone],
+  ['tiny', systemStyles.spacingTiny],
+  ['small', systemStyles.spacingSmall],
+  ['base', systemStyles.spacingBase],
+  ['large', systemStyles.spacingLarge],
+  ['huge', systemStyles.spacingHuge],
 ] as [SpacingKeyword, string | false][]);
 
 export function InlineStack({

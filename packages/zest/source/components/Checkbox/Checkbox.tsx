@@ -1,5 +1,8 @@
 import {type PropsWithChildren} from 'react';
-import {type Signal} from '@watching/react-signals';
+import {
+  resolveSignalOrValue,
+  type SignalOrValue,
+} from '@watching/react-signals';
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
@@ -9,9 +12,9 @@ import styles from './Checkbox.module.css';
 
 export interface Props {
   id?: string;
-  disabled?: boolean | Signal<boolean>;
-  readonly?: boolean | Signal<boolean>;
-  checked: boolean | Signal<boolean>;
+  disabled?: SignalOrValue<boolean>;
+  readonly?: SignalOrValue<boolean>;
+  checked: SignalOrValue<boolean>;
   onChange?(checked: boolean): void;
 }
 
@@ -25,9 +28,9 @@ export function Checkbox({
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Checkbox', explicitId);
 
-  const resolvedChecked = resolveMaybeSignal(checked);
-  const resolvedDisabled = resolveMaybeSignal(disabled);
-  const resolvedReadonly = resolveMaybeSignal(readonly);
+  const resolvedChecked = resolveSignalOrValue(checked);
+  const resolvedDisabled = resolveSignalOrValue(disabled);
+  const resolvedReadonly = resolveSignalOrValue(readonly);
 
   const handleChange =
     onChange ??
@@ -59,10 +62,4 @@ export function Checkbox({
       <span className={styles.Label}>{children}</span>
     </label>
   );
-}
-
-function resolveMaybeSignal<T>(value: T | Signal<T>): T {
-  return typeof value === 'object' && value != null && 'value' in value
-    ? value.value
-    : value;
 }

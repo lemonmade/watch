@@ -57,6 +57,30 @@
   --z-internal-inline-alignment: space-between;
 }
 
+.spacingNone {
+  gap: 0;
+}
+
+.spacingTiny {
+  gap: var(--z-spacing-tiny);
+}
+
+.spacingSmall {
+  gap: var(--z-spacing-small);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
+}
+
+.spacingLarge {
+  gap: var(--z-spacing-large);
+}
+
+.spacingHuge {
+  gap: var(--z-spacing-huge);
+}
+
 
 .paddingTiny {
   padding: var(--z-spacing-tiny);

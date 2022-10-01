@@ -234,6 +234,13 @@
   --z-Checkbox-focused-border-color: var(--z-Checkbox-focused-background);
   --z-Checkbox-disabled-border-color: var(--z-border-subdued-color);
 
+  --z-Choice-border-size: 2px;
+  --z-Choice-border-color: var(--z-border-base-color);
+  --z-Choice-background: var(--z-input-background);
+  --z-Choice-focused-background: rgb(34 150 248);
+  --z-Choice-focused-border-color: var(--z-Choice-focused-background);
+  --z-Choice-disabled-border-color: var(--z-border-subdued-color);
+
   --z-Icon-base-color: rgb(201 186 229);
   --z-Icon-base-size: 1.25rem;
   --Z-Icon-highlight-base-color: rgb(69 59 95);

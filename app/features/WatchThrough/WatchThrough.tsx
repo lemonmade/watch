@@ -31,8 +31,9 @@ import {Page} from '~/shared/page';
 import {SpoilerAvoidance} from '~/shared/spoilers';
 import {useQuery, useMutation, type PickTypename} from '~/shared/graphql';
 
-import watchThroughQuery from './graphql/WatchThroughQuery.graphql';
-import type {WatchThroughQueryData} from './graphql/WatchThroughQuery.graphql';
+import watchThroughQuery, {
+  type WatchThroughQueryData,
+} from './graphql/WatchThroughQuery.graphql';
 import watchNextEpisodeMutation from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import type {WatchThroughWatchNextEpisodeMutationVariables} from './graphql/WatchThroughWatchNextEpisodeMutation.graphql';
 import skipNextEpisodeMutation from './graphql/WatchThroughSkipNextEpisodeMutation.graphql';
@@ -53,14 +54,23 @@ export default function WatchThrough({id}: Props) {
   const {data, refetch} = useQuery(watchThroughQuery, {
     variables: {id},
   });
-  const updateWatchThroughSettings = useMutation(
-    updateWatchThroughSettingsMutation,
-  );
 
   if (data?.watchThrough == null) return null;
 
-  const {nextEpisode, status, series, actions, settings, from, to} =
-    data.watchThrough;
+  return (
+    <WatchThroughWithData watchThrough={data.watchThrough} refetch={refetch} />
+  );
+}
+
+function WatchThroughWithData({
+  watchThrough,
+  refetch,
+}: {
+  watchThrough: WatchThroughQueryData.WatchThrough;
+  refetch(): Promise<any>;
+}) {
+  const {id, nextEpisode, status, series, actions, settings, from, to} =
+    watchThrough;
 
   const watchingSingleSeason = from.season === to.season;
 
@@ -105,22 +115,8 @@ export default function WatchThrough({id}: Props) {
           />
         )}
         {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
-        <Section>
-          <BlockStack spacing>
-            <Heading divider>Settings</Heading>
-            <SpoilerAvoidance
-              value={settings.spoilerAvoidance}
-              onChange={(spoilerAvoidance) => {
-                updateWatchThroughSettings.mutate(
-                  {id, spoilerAvoidance},
-                  {
-                    onSuccess: () => refetch(),
-                  },
-                );
-              }}
-            />
-          </BlockStack>
-        </Section>
+
+        <SettingsSection id={id} settings={settings} refetch={refetch} />
       </BlockStack>
     </Page>
   );
@@ -722,4 +718,44 @@ function PrettyDate({date}: {date: string | Date}) {
   );
 
   return <>{content}</>;
+}
+
+function SettingsSection({
+  id,
+  settings,
+  refetch,
+}: {
+  id: string;
+  settings: WatchThroughQueryData.WatchThrough.Settings;
+  refetch(): Promise<void>;
+}) {
+  const updateWatchThroughSettings = useMutation(
+    updateWatchThroughSettingsMutation,
+  );
+
+  const spoilerAvoidance = useSignal(settings.spoilerAvoidance, [
+    settings.spoilerAvoidance,
+  ]);
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Settings</Heading>
+        <SpoilerAvoidance
+          value={spoilerAvoidance}
+          onChange={(newSpoilerAvoidance) => {
+            spoilerAvoidance.value = newSpoilerAvoidance;
+            updateWatchThroughSettings.mutate(
+              {id, spoilerAvoidance: newSpoilerAvoidance},
+              {
+                onSuccess() {
+                  refetch();
+                },
+              },
+            );
+          }}
+        />
+      </BlockStack>
+    </Section>
+  );
 }

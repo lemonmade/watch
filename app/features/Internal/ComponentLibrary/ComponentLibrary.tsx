@@ -1,3 +1,4 @@
+import {type ComponentProps} from 'react';
 import {
   raw,
   Action,
@@ -32,7 +33,6 @@ import {
   Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
-import {ComponentProps} from 'react';
 
 export default function ComponentLibrary() {
   return (
@@ -345,6 +345,18 @@ function FormComponents() {
         <ChoiceList onChange={noop}>
           <Choice value="hello">Hello</Choice>
           <Choice value="world">World</Choice>
+          <Choice
+            value="helpText"
+            helpText="Here’s a helpful hint about this option!"
+          >
+            With help text
+          </Choice>
+          <Choice value="disabled" disabled>
+            Disabled
+          </Choice>
+          <Choice value="readonly" readonly>
+            Readonly
+          </Choice>
         </ChoiceList>
 
         <InlineStack spacing>

@@ -11,6 +11,7 @@ import {
   Heading,
   Icon,
 } from '@lemon/zest';
+import {useSignal} from '@watching/react-signals';
 
 import {Page} from '~/shared/page';
 import {SpoilerAvoidance} from '~/shared/spoilers';
@@ -71,9 +72,6 @@ function SeriesWithData({
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
   const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
-  const updateSubscriptionSettings = useMutation(
-    updateSubscriptionSettingsMutation,
-  );
   const watchSeriesLater = useMutation(watchSeriesLaterMutation);
   const removeSeriesFromWatchLater = useMutation(
     removeSeriesFromWatchLaterMutation,
@@ -250,17 +248,10 @@ function SeriesWithData({
               </Action>
             )}
             {subscription && (
-              <SpoilerAvoidance
-                value={subscription.settings.spoilerAvoidance}
-                onChange={(spoilerAvoidance) => {
-                  updateSubscriptionSettings.mutate(
-                    {
-                      id: series.id,
-                      spoilerAvoidance,
-                    },
-                    {onSuccess: onUpdate},
-                  );
-                }}
+              <SpoilerAvoidanceSection
+                id={series.id}
+                spoilerAvoidance={subscription.settings.spoilerAvoidance}
+                onUpdate={onUpdate}
               />
             )}
           </BlockStack>
@@ -310,5 +301,39 @@ function EpisodeSliceText({
       season {season}
       {episode == null || episode === 1 ? '' : `, episode ${episode}`}
     </>
+  );
+}
+
+function SpoilerAvoidanceSection({
+  id,
+  spoilerAvoidance,
+  onUpdate,
+}: {
+  id: string;
+  spoilerAvoidance: SeriesQueryData.Series.Subscription.Settings['spoilerAvoidance'];
+  onUpdate(): void;
+}) {
+  const spoilerAvoidanceSignal = useSignal(spoilerAvoidance, [
+    spoilerAvoidance,
+  ]);
+
+  const updateSubscriptionSettings = useMutation(
+    updateSubscriptionSettingsMutation,
+  );
+
+  return (
+    <SpoilerAvoidance
+      value={spoilerAvoidanceSignal}
+      onChange={(spoilerAvoidance) => {
+        spoilerAvoidanceSignal.value = spoilerAvoidance;
+        updateSubscriptionSettings.mutate(
+          {
+            id,
+            spoilerAvoidance,
+          },
+          {onSuccess: onUpdate},
+        );
+      }}
+    />
   );
 }
