@@ -131,6 +131,7 @@ function OverlaySheet({
 
   useGlobalEventListener('pointerdown', handlePointerDown as any);
   useGlobalEventListener('keyup', handleKeyUp as any);
+  useGlobalEventListener('scroll', overlay.updatePosition);
 
   return (
     <div
@@ -188,6 +189,7 @@ interface OverlayTransitionController extends Pick<OverlayController, 'id'> {
   readonly parentLayer: Layer;
   open(): Promise<boolean>;
   close(): Promise<boolean>;
+  updatePosition(): void;
 }
 
 interface PopoverTransition {
@@ -231,6 +233,8 @@ function useOverlayTransitionController({
 
     let transitionCount = 0;
     let currentTransition: PopoverTransition | undefined;
+    let overlayGeometry: DOMRect;
+    let overlayMargins: {inlineStart: number; inlineEnd: number};
 
     return {
       id: overlayController.id,
@@ -242,6 +246,7 @@ function useOverlayTransitionController({
       open,
       close,
       start,
+      updatePosition,
       parentLayer: layer,
     };
 
@@ -270,6 +275,21 @@ function useOverlayTransitionController({
       return true;
     }
 
+    function measureOverlay() {
+      if (relativeTo !== 'trigger') return;
+
+      const currentOverlay = overlay.value;
+      if (currentOverlay == null) return;
+
+      const overlayStyles = window.getComputedStyle(currentOverlay);
+
+      overlayGeometry = currentOverlay.getBoundingClientRect();
+      overlayMargins = {
+        inlineStart: Number.parseFloat(overlayStyles.marginLeft || '0'),
+        inlineEnd: Number.parseFloat(overlayStyles.marginRight || '0'),
+      };
+    }
+
     function updatePosition() {
       if (relativeTo !== 'trigger') return;
 
@@ -279,18 +299,14 @@ function useOverlayTransitionController({
       if (
         state.value === 'closed' ||
         currentTrigger == null ||
-        currentOverlay == null
+        currentOverlay == null ||
+        overlayGeometry == null ||
+        overlayMargins == null
       ) {
         return;
       }
 
       const triggerGeometry = currentTrigger.getBoundingClientRect();
-      const overlayGeometry = currentOverlay.getBoundingClientRect();
-      const overlayStyles = window.getComputedStyle(currentOverlay);
-      const overlayMargins = {
-        inlineStart: Number.parseFloat(overlayStyles.marginLeft || '0'),
-        inlineEnd: Number.parseFloat(overlayStyles.marginRight || '0'),
-      };
       const viewportGeometry = {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -428,7 +444,10 @@ function useOverlayTransitionController({
         case 'preparing': {
           state.value = 'preparing';
           await nextAnimationFrame();
-          return isActiveTransitionStep() ? setState('openStart') : false;
+          if (!isActiveTransitionStep()) return false;
+
+          measureOverlay();
+          return setState('openStart');
         }
         case 'openStart': {
           updatePosition();

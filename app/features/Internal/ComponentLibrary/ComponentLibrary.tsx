@@ -149,7 +149,7 @@ function ActionAccessoryExampleMenu({disabled = false} = {}) {
       accessibilityLabel="More actions"
       icon="more"
       popover={
-        <Popover>
+        <Popover inlineAttachment="end">
           <Menu>
             <Action icon="watchlist">Menu button</Action>
             <Action icon="arrowEnd" to="#">

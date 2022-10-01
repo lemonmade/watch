@@ -1,9 +1,5 @@
 import {createContext, useContext, useEffect} from 'react';
-import {
-  addListener,
-  createEmitterWithInternals,
-  type Emitter,
-} from '@quilted/events';
+import {createEmitterWithInternals, type Emitter} from '@quilted/events';
 
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown' | 'keyup';
 
@@ -32,13 +28,12 @@ function createGlobalEventManager(): GlobalEventManager {
     const abort = new AbortController();
     abortByEvent.set(eventName, abort);
 
-    addListener(
-      targetForEvent(eventName),
+    targetForEvent(eventName).addEventListener(
       eventName,
       (event) => {
         emitter.emit(eventName, event);
       },
-      {signal: abort.signal},
+      {signal: abort.signal, passive: true},
     );
   });
 
