@@ -217,6 +217,25 @@ function PopoverComponents() {
               <PopoverExample inlineAttachment="center" />
               <PopoverExample inlineAttachment="center" />
             </InlineStack>
+
+            <Heading>inlineAttachment=start</Heading>
+
+            <InlineStack spacing alignment="spaceBetween">
+              <PopoverExample inlineAttachment="start" />
+              <PopoverExample inlineAttachment="start" />
+              <PopoverExample inlineAttachment="start" />
+              <PopoverExample inlineAttachment="start" />
+              <Spacer size="none" />
+            </InlineStack>
+
+            <Heading>inlineAttachment=end</Heading>
+
+            <InlineStack spacing alignment="spaceBetween">
+              <PopoverExample inlineAttachment="end" />
+              <PopoverExample inlineAttachment="end" />
+              <PopoverExample inlineAttachment="end" />
+              <PopoverExample inlineAttachment="end" />
+            </InlineStack>
           </BlockStack>
         </Section>
       </BlockStack>

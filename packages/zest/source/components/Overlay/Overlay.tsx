@@ -303,29 +303,40 @@ function useOverlayTransitionController({
 
       switch (inlineAttachment) {
         case 'start': {
-          inlineStart = triggerGeometry.left;
+          const inlineEndOverflow =
+            triggerGeometry.left +
+            overlayMargins.inlineEnd +
+            overlayGeometry.width -
+            viewportGeometry.width;
+
+          if (inlineEndOverflow < 0) {
+            inlineStart = triggerGeometry.left - overlayMargins.inlineStart;
+          } else if (inlineEndOverflow < overlayGeometry.width / 2) {
+            inlineStart =
+              triggerGeometry.left -
+              overlayMargins.inlineStart -
+              inlineEndOverflow;
+          } else {
+            inlineStart =
+              triggerGeometry.left +
+              triggerGeometry.width -
+              overlayGeometry.width -
+              overlayMargins.inlineStart;
+          }
+
           break;
         }
         case 'center': {
           const overlayInlineStart = triggerCenter - overlayGeometry.width / 2;
           const overlayInlineEnd = triggerCenter + overlayGeometry.width / 2;
 
-          console.log({
-            overlayInlineStart,
-            overlayInlineEnd,
-            triggerGeometry,
-            overlayMargins,
-            overlayGeometry,
-            viewportGeometry,
-          });
-
           if (
-            overlayInlineStart <
+            overlayInlineStart <=
             Math.min(overlayMargins.inlineStart, triggerGeometry.left)
           ) {
             inlineStart = triggerGeometry.left - overlayMargins.inlineStart;
           } else if (
-            viewportGeometry.width - overlayInlineEnd <
+            viewportGeometry.width - overlayInlineEnd <=
             Math.min(
               overlayMargins.inlineEnd,
               viewportGeometry.width - triggerGeometry.right,
@@ -343,10 +354,20 @@ function useOverlayTransitionController({
           break;
         }
         case 'end': {
-          inlineStart =
+          const desiredInlineStart =
             triggerGeometry.left +
             triggerGeometry.width -
-            overlayGeometry.width;
+            overlayGeometry.width -
+            overlayMargins.inlineStart;
+
+          if (desiredInlineStart >= 0) {
+            inlineStart = desiredInlineStart;
+          } else if (-desiredInlineStart < overlayGeometry.width / 2) {
+            inlineStart = 0;
+          } else {
+            inlineStart = triggerGeometry.left - overlayMargins.inlineStart;
+          }
+
           break;
         }
       }
