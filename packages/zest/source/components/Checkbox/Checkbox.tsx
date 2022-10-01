@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import {type ReactNode, type PropsWithChildren} from 'react';
 import {
   resolveSignalOrValue,
   type SignalOrValue,
@@ -6,15 +6,15 @@ import {
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
+import {choiceStyles} from '../../utilities/choices';
 import {useUniqueId} from '../../utilities/id';
-
-import styles from './Checkbox.module.css';
 
 export interface Props {
   id?: string;
   disabled?: SignalOrValue<boolean>;
   readonly?: SignalOrValue<boolean>;
   checked: SignalOrValue<boolean>;
+  helpText?: ReactNode;
   onChange?(checked: boolean): void;
 }
 
@@ -24,6 +24,7 @@ export function Checkbox({
   disabled,
   readonly,
   children,
+  helpText,
   onChange,
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Checkbox', explicitId);
@@ -43,7 +44,12 @@ export function Checkbox({
   return (
     <label
       htmlFor={id}
-      className={classes(systemStyles.displayInlineGrid, styles.Checkbox)}
+      className={classes(
+        systemStyles.displayInlineGrid,
+        choiceStyles.Choice,
+        choiceStyles.cornerRadiusBase,
+        Boolean(helpText) && choiceStyles.hasHelpText,
+      )}
     >
       <input
         id={id}
@@ -51,7 +57,7 @@ export function Checkbox({
         checked={resolvedChecked}
         disabled={resolvedDisabled}
         readOnly={resolvedReadonly}
-        className={styles.Input}
+        className={choiceStyles.Input}
         onChange={
           handleChange &&
           (({currentTarget: {checked}}) => {
@@ -59,7 +65,8 @@ export function Checkbox({
           })
         }
       ></input>
-      <span className={styles.Label}>{children}</span>
+      <span className={choiceStyles.Label}>{children}</span>
+      {helpText && <span className={choiceStyles.HelpText}>{helpText}</span>}
     </label>
   );
 }

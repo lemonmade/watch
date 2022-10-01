@@ -1,21 +1,18 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  type ReactNode,
-  type PropsWithChildren,
-} from 'react';
+import {useMemo, type ReactNode, type PropsWithChildren} from 'react';
 import {
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
 } from '@watching/react-signals';
+import {
+  createOptionalContext,
+  createUseContextHook,
+} from '@quilted/react-utilities';
 import {classes, variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
+import {choiceStyles} from '../../utilities/choices';
 import {useUniqueId} from '../../utilities/id';
-
-import styles from './ChoiceList.module.css';
 
 interface ChoiceListContextValue {
   id: string;
@@ -23,7 +20,8 @@ interface ChoiceListContextValue {
   onChange?(value: string): void;
 }
 
-const ChoiceListContext = createContext<ChoiceListContextValue | null>(null);
+const ChoiceListContext = createOptionalContext<ChoiceListContextValue>();
+const useChoiceListContext = createUseContextHook(ChoiceListContext);
 
 export interface Props<Value extends string = string> {
   id?: string;
@@ -87,41 +85,39 @@ export function Choice({
   helpText,
 }: PropsWithChildren<ChoiceProps>) {
   const id = useUniqueId('ChoiceListOption', explicitId);
-  const selectorContext = useContext(ChoiceListContext);
+  const choiceListContext = useChoiceListContext();
   const resolvedDisabled = resolveSignalOrValue(disabled);
   const resolvedReadonly = resolveSignalOrValue(readonly);
 
-  if (selectorContext == null) {
-    throw new Error(
-      `You need to render <Option> in an <ChoiceList> component.`,
-    );
-  }
-
-  const handleChange = selectorContext.onChange;
+  const handleChange = choiceListContext.onChange;
 
   return (
     <label
       htmlFor={id}
-      className={classes(styles.Choice, helpText && styles.hasHelpText)}
+      className={classes(
+        choiceStyles.Choice,
+        choiceStyles.cornerRadiusFullyRounded,
+        helpText && choiceStyles.hasHelpText,
+      )}
     >
       <input
         id={id}
-        name={selectorContext.id}
+        name={choiceListContext.id}
         type="radio"
         value={value}
-        checked={value === resolveSignalOrValue(selectorContext.value)}
+        checked={value === resolveSignalOrValue(choiceListContext.value)}
         onChange={
           handleChange &&
           (({currentTarget: {value}}) => {
             handleChange(value);
           })
         }
-        className={styles.Input}
+        className={choiceStyles.Input}
         disabled={resolvedDisabled}
         readOnly={resolvedReadonly}
       ></input>
-      <span className={styles.Label}>{children}</span>
-      {helpText && <span className={styles.HelpText}>{helpText}</span>}
+      <span className={choiceStyles.Label}>{children}</span>
+      {helpText && <span className={choiceStyles.HelpText}>{helpText}</span>}
     </label>
   );
 }
