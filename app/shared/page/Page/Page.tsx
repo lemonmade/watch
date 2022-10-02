@@ -7,7 +7,6 @@ import {
   InlineStack,
   Heading,
   Action,
-  Menu,
   Popover,
 } from '@lemon/zest';
 
@@ -33,11 +32,7 @@ export function Page({
         size="small"
         icon="more"
         accessibilityLabel="More…"
-        popover={
-          <Popover>
-            <Menu>{menu}</Menu>
-          </Popover>
-        }
+        popover={<Popover>{menu}</Popover>}
       />
     </InlineStack>
   ) : (

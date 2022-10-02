@@ -129,6 +129,12 @@ function ActionComponents() {
           </Action>
         </Menu>
 
+        <Menu label="Important actions…">
+          <Action icon="delete">Menu</Action>
+          <Action>With</Action>
+          <Action>Label</Action>
+        </Menu>
+
         <ActionList>
           <Action icon="watch">Item one</Action>
           <Action icon="skip">Item two</Action>

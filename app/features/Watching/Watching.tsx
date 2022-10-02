@@ -1,6 +1,6 @@
 import {useMemo, ComponentProps} from 'react';
 
-import {Action, BlockStack} from '@lemon/zest';
+import {Menu, Action, BlockStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {parseGid, useQuery} from '~/shared/graphql';
@@ -40,11 +40,11 @@ export function Watching(_: Props) {
     <Page
       heading="Watching"
       menu={
-        <>
+        <Menu>
           <Action icon="arrowEnd" to="/app/finished">
             Finished watching
           </Action>
-        </>
+        </Menu>
       }
     >
       <BlockStack spacing>

@@ -120,11 +120,17 @@ enum WatchThroughStatus {
   FINISHED
 }
 
+type EpisodeDescriptor {
+  season: Int!
+  episode: Int!
+}
+
 type WatchThrough {
   id: ID!
   series: Series!
   from: EpisodeSlice!
   to: EpisodeSlice!
+  on: EpisodeDescriptor
   startedAt: Date
   createdAt: Date!
   updatedAt: Date!

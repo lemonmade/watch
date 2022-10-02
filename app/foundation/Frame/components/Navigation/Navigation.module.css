@@ -1,9 +1,9 @@
 .Navigation {
-  --z-Action-inset-content: '';
-  --z-Action-inset-display: block;
-  --z-Action-inset-none: none;
-  --z-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
-  --z-Action-inset-block-nudge: 0;
+  --z-internal-Action-inset-content: '';
+  --z-internal-Action-inset-display: block;
+  --z-internal-Action-inset-none: none;
+  --z-internal-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
+  --z-internal-Action-inset-block-nudge: 0;
 
   --z-Action-background: transparent;
 

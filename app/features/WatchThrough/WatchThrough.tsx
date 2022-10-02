@@ -102,13 +102,13 @@ function WatchThroughWithData({
             : null
         }
         menu={
-          <>
+          <Menu>
             <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
               More about {series.name}
             </Action>
             {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
             <DeleteWatchThroughAction id={id} name={series.name} />
-          </>
+          </Menu>
         }
       >
         <BlockStack spacing="huge">

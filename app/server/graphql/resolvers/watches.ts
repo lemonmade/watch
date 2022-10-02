@@ -69,6 +69,17 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
   to({to}) {
     return sliceFromBuffer(to);
   },
+  on({current}) {
+    if (current == null) return null;
+
+    const slice = sliceFromBuffer(current);
+
+    if (slice.episode == null) {
+      throw new Error('Invalid current episode');
+    }
+
+    return slice;
+  },
   async actions({id}, _, {user, prisma}) {
     const [watches, skips] = await Promise.all([
       prisma.watch.findMany({

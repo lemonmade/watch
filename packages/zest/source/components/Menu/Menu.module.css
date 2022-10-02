@@ -15,6 +15,22 @@
   min-inline-size: 12rem;
 }
 
+.Label {
+  position: relative;
+  padding: 0 var(--z-spacing-base) calc(var(--z-spacing-small) + 0.125rem);
+  font-size: 0.9em;
+  color: var(--z-text-subdued-color);
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    inset-inline: var(--z-spacing-base);
+    inset-block-end: calc(var(--z-spacing-small) * 0.5);
+    border-top: 2px solid var(--z-border-subdued-color);
+  }
+}
+
 .Filter {
   padding-block-end: var(--z-spacing-small);
 }

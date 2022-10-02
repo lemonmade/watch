@@ -21,11 +21,13 @@ import styles from './Menu.module.css';
 
 interface MenuProps {
   id?: string;
+  label?: ReactNode;
   filter?: ReactNode;
 }
 
 export function Menu({
   id: explicitId,
+  label,
   filter,
   children,
 }: PropsWithChildren<MenuProps>) {
@@ -93,9 +95,12 @@ export function Menu({
     internals.current.menu = element;
   };
 
-  const content = filter ? (
+  const nestedMenu = Boolean(filter || label);
+
+  const content = nestedMenu ? (
     <>
-      <div className={styles.Filter}>{filter}</div>
+      {label && <div className={styles.Label}>{label}</div>}
+      {filter && <div className={styles.Filter}>{filter}</div>}
       <div ref={menuRef} {...menuProps}>
         {children}
       </div>
@@ -113,8 +118,8 @@ export function Menu({
           systemStyles.inlineAlignmentStart,
           styles.Menu,
         )}
-        ref={filter ? undefined : menuRef}
-        {...(filter ? menuProps : undefined)}
+        ref={nestedMenu ? undefined : menuRef}
+        {...(nestedMenu ? undefined : menuProps)}
       >
         {content}
       </div>
