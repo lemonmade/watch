@@ -130,9 +130,7 @@ function ActionComponents() {
         </Menu>
 
         <Menu label="Important actions…">
-          <Action icon="delete">Menu</Action>
-          <Action>With</Action>
-          <Action>Label</Action>
+          <Action icon="delete">Delete</Action>
         </Menu>
 
         <ActionList>
