@@ -1,28 +1,25 @@
 import {
   useRef,
-  useState,
-  KeyboardEventHandler,
-  PointerEventHandler,
   memo,
   useCallback,
+  type KeyboardEventHandler,
+  type PointerEventHandler,
 } from 'react';
 import {classes} from '@lemon/css';
+import {
+  resolveSignalOrValue,
+  useSignal,
+  type SignalOrValue,
+} from '@watching/react-signals';
+
 import styles from './Rating.module.css';
 
-export type Props =
-  | {
-      value?: number;
-      size?: 'small' | 'base';
-    } & (
-      | {
-          onChange?(value: number): void;
-          readonly?: false;
-        }
-      | {
-          readonly: true;
-          onChange?: never;
-        }
-    );
+export interface Props {
+  value?: SignalOrValue<number | undefined>;
+  size?: 'small' | 'base';
+  onChange?(value: number | undefined): void;
+  readonly?: SignalOrValue<boolean>;
+}
 
 enum StarFill {
   None,
@@ -38,7 +35,7 @@ const PERCENTAGE_TO_PREFER_FILLING = 0.9;
 // https://www.w3.org/TR/wai-aria-practices/examples/slider/slider-1.html
 
 export function Rating(props: Props) {
-  return props.readonly ? (
+  return resolveSignalOrValue(props.readonly) ? (
     <ReadonlyRating {...props} />
   ) : (
     <EditableRating {...props} />
@@ -46,17 +43,18 @@ export function Rating(props: Props) {
 }
 
 function ReadonlyRating({value}: Pick<Props, 'value'>) {
-  return <div>Rating: {value == null ? 'unset' : value}</div>;
+  const resolvedValue = resolveSignalOrValue(value);
+
+  return <div>Rating: {resolvedValue == null ? 'unset' : resolvedValue}</div>;
 }
 
 export const EditableRating = memo(function Rating({value, onChange}: Props) {
   const starContainer = useRef<null | HTMLDivElement>(null);
-  const [inProgressValue, setInProgressValue] = useState<number | undefined>(
-    undefined,
-  );
+  const resolvedValue = resolveSignalOrValue(value);
+  const inProgressValue = useSignal<number | undefined>(undefined);
 
-  const valueRef = useRef(value);
-  valueRef.current = value;
+  const valueRef = useRef(resolvedValue);
+  valueRef.current = resolvedValue;
 
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
@@ -70,7 +68,7 @@ export const EditableRating = memo(function Rating({value, onChange}: Props) {
   };
 
   const updateValueBySteps = (steps: number) =>
-    updateValue(Math.max(0, Math.min(100, (value || 0) + steps * 10)));
+    updateValue(Math.max(0, Math.min(100, (resolvedValue ?? 0) + steps * 10)));
 
   const handleKeyPress: KeyboardEventHandler<HTMLDivElement> = ({
     key,
@@ -128,13 +126,13 @@ export const EditableRating = memo(function Rating({value, onChange}: Props) {
           Math.floor(positionWithinStars * 10 + PERCENTAGE_TO_PREFER_FILLING) *
           10;
 
-        setInProgressValue(nearestTen);
+        inProgressValue.value = nearestTen;
         inProgressValueRef.current = nearestTen;
       };
 
       const finish = () => {
         updateValue(inProgressValueRef.current);
-        setInProgressValue(undefined);
+        inProgressValue.value = undefined;
 
         document.removeEventListener('pointerup', finish);
         document.removeEventListener('pointercancel', finish);
@@ -147,8 +145,10 @@ export const EditableRating = memo(function Rating({value, onChange}: Props) {
       document.addEventListener('pointercancel', finish);
       document.addEventListener('pointermove', handleEvent);
     },
-    [],
+    [inProgressValue],
   );
+
+  const resolvedInProgressValue = inProgressValue.value;
 
   return (
     <div
@@ -157,16 +157,51 @@ export const EditableRating = memo(function Rating({value, onChange}: Props) {
       role="slider"
       aria-valuemax={100}
       aria-valuemin={0}
-      aria-valuenow={value}
+      aria-valuenow={resolvedValue}
       onKeyDown={handleKeyPress}
       onPointerDown={handlePointerDown}
     >
       <div className={styles.StarContainer} ref={starContainer}>
-        <Star fill={fillForValueInRange(value, inProgressValue, 0, 20)} />
-        <Star fill={fillForValueInRange(value, inProgressValue, 20, 40)} />
-        <Star fill={fillForValueInRange(value, inProgressValue, 40, 60)} />
-        <Star fill={fillForValueInRange(value, inProgressValue, 60, 80)} />
-        <Star fill={fillForValueInRange(value, inProgressValue, 80, 100)} />
+        <Star
+          fill={fillForValueInRange(
+            resolvedValue,
+            resolvedInProgressValue,
+            0,
+            20,
+          )}
+        />
+        <Star
+          fill={fillForValueInRange(
+            resolvedValue,
+            resolvedInProgressValue,
+            20,
+            40,
+          )}
+        />
+        <Star
+          fill={fillForValueInRange(
+            resolvedValue,
+            resolvedInProgressValue,
+            40,
+            60,
+          )}
+        />
+        <Star
+          fill={fillForValueInRange(
+            resolvedValue,
+            resolvedInProgressValue,
+            60,
+            80,
+          )}
+        />
+        <Star
+          fill={fillForValueInRange(
+            resolvedValue,
+            resolvedInProgressValue,
+            80,
+            100,
+          )}
+        />
       </div>
     </div>
   );
