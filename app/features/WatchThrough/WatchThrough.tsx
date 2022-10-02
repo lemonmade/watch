@@ -584,8 +584,8 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
 
           <Action
             role="destructive"
-            onPress={() => {
-              deleteWatchThrough.mutate(
+            onPress={async () => {
+              await deleteWatchThrough.mutateAsync(
                 {id},
                 {
                   onSuccess({deleteWatchThrough}) {
