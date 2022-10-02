@@ -17,8 +17,7 @@ import {once} from '@quilted/events';
 
 import {ConnectedAccessoryReset} from '../../utilities/actions';
 import {
-  OverlayContextReset,
-  useOverlayController,
+  useContainingOverlay,
   type OverlayController,
 } from '../../utilities/overlays';
 import {LockCanvas} from '../../utilities/canvas';
@@ -59,20 +58,18 @@ export function Overlay({
 
   return overlay.rendered.value ? (
     <ConnectedAccessoryReset>
-      <OverlayContextReset>
-        <Portal>
-          <OverlaySheet
-            overlay={overlay}
-            blockAttachment={blockAttachment}
-            inlineAttachment={inlineAttachment}
-            {...rest}
-          >
-            {children}
-          </OverlaySheet>
-        </Portal>
-        {modal && <OverlayBackdrop overlay={overlay} />}
-        {modal && <LockCanvas />}
-      </OverlayContextReset>
+      <Portal>
+        <OverlaySheet
+          overlay={overlay}
+          blockAttachment={blockAttachment}
+          inlineAttachment={inlineAttachment}
+          {...rest}
+        >
+          {children}
+        </OverlaySheet>
+      </Portal>
+      {modal && <OverlayBackdrop overlay={overlay} />}
+      {modal && <LockCanvas />}
     </ConnectedAccessoryReset>
   ) : null;
 }
@@ -215,7 +212,7 @@ function useOverlayTransitionController({
   >
 >) {
   const layer = useLayer();
-  const overlayController = useOverlayController();
+  const overlayController = useContainingOverlay();
   const helpers = useRef<any>({});
 
   const controller = useMemo<

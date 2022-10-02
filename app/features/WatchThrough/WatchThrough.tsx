@@ -216,7 +216,7 @@ function NextEpisode({
 
             <Action
               emphasis
-              type="submit"
+              perform="submit"
               accessory={
                 <Action
                   icon="more"
@@ -486,7 +486,7 @@ function SkipEpisodeModal({
 
           <InlineStack alignment="spaceBetween" spacing="small">
             <EpisodeDatePicker action="skip" value={at} />
-            <Action emphasis type="submit">
+            <Action emphasis perform="submit">
               Skip Episode
             </Action>
           </InlineStack>
@@ -515,9 +515,9 @@ function useSkipEpisode({
   onSkip,
   onSkipStart,
 }: SkipEpisodeOptions) {
-  const {mutate} = useMutation(skipNextEpisodeMutation);
+  const {mutateAsync} = useMutation(skipNextEpisodeMutation);
 
-  const skipEpisode = () => {
+  const skipEpisode = async () => {
     const optionalArguments: Omit<
       WatchThroughSkipNextEpisodeMutationVariables,
       'episode' | 'watchThrough'
@@ -531,7 +531,7 @@ function useSkipEpisode({
     }
 
     onSkipStart?.();
-    mutate(
+    await mutateAsync(
       {
         ...optionalArguments,
         episode: id,
@@ -580,7 +580,7 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
         </TextBlock>
 
         <InlineStack alignment="end" spacing="small">
-          <Action>Cancel</Action>
+          <Action perform="closeContainingOverlay">Cancel</Action>
 
           <Action
             role="destructive"

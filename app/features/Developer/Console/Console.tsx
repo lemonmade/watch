@@ -141,7 +141,7 @@ function ConnectToConsole() {
           value={localUrl}
           changeTiming="input"
         />
-        <Action disabled={!isValidUrl(localUrl.value)} type="submit">
+        <Action disabled={!isValidUrl(localUrl.value)} perform="submit">
           Set local URL
         </Action>
       </BlockStack>

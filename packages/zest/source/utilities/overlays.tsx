@@ -1,4 +1,4 @@
-import {useMemo, type ReactNode, type PropsWithChildren} from 'react';
+import {type PropsWithChildren} from 'react';
 import {signal, type Signal, type ReadonlySignal} from '@preact/signals-core';
 import {createEmitter, type Emitter} from '@quilted/events';
 import {
@@ -26,32 +26,22 @@ export interface OverlayController extends Pick<Emitter<OverlayEvents>, 'on'> {
 }
 
 const OverlayControllerContext = createOptionalContext<OverlayController>();
-export const useOverlayController = createUseContextHook(
+export const useContainingOverlay = createUseContextHook(
   OverlayControllerContext,
 );
 
 export interface OverlayContextProps {
-  id?: string;
-  overlay: ReactNode;
-  targetId: string;
+  controller: OverlayController;
 }
 
 export function OverlayContext({
-  id,
-  overlay,
-  targetId,
+  controller,
   children,
 }: PropsWithChildren<OverlayContextProps>) {
-  const controller = useMemo(
-    () => createOverlayController({id, targetId}),
-    [id, targetId],
-  );
-
   return (
     <>
       <OverlayControllerContext.Provider value={controller}>
         {children}
-        {overlay}
       </OverlayControllerContext.Provider>
     </>
   );
