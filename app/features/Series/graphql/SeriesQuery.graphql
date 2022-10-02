@@ -18,6 +18,7 @@ query Series($id: ID, $handle: String) {
       tmdbUrl
       firstAired
       episodeCount
+      isSpecials
       poster {
         source
       }

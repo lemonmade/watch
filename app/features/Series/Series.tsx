@@ -238,10 +238,6 @@ function SeasonsSection({
   seasons,
   onUpdate,
 }: Pick<SeriesQueryData.Series, 'id' | 'seasons'> & {onUpdate(): void}) {
-  const navigate = useNavigate();
-  const startWatchThrough = useMutation(startWatchThroughMutation);
-  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
-
   if (seasons.length === 0) return null;
 
   const lastSeason = seasons[seasons.length - 1]!;
@@ -250,166 +246,191 @@ function SeasonsSection({
     <Section>
       <BlockStack spacing>
         <Heading divider>Seasons</Heading>
-        {seasons.map(
-          ({
+        {seasons.map((season) => {
+          const {
             id,
             number,
+            isSpecials,
             status,
-            imdbUrl,
-            tmdbUrl,
             firstAired,
             poster,
             episodeCount,
-          }) => {
-            const isLastSeason = lastSeason?.id === id;
+          } = season;
 
-            return (
-              <Layout
-                key={id}
-                spacing
-                columns={
-                  poster?.source
-                    ? [raw`4rem`, 'fill', 'auto']
-                    : ['fill', 'auto']
-                }
-                blockAlignment="start"
-              >
-                {poster?.source ? (
-                  <Image source={poster.source} aspectRatio={2 / 3} />
-                ) : null}
+          return (
+            <Layout
+              key={id}
+              spacing
+              columns={
+                poster?.source ? [raw`4rem`, 'fill', 'auto'] : ['fill', 'auto']
+              }
+              blockAlignment="start"
+            >
+              {poster?.source ? (
+                <Image source={poster.source} aspectRatio={2 / 3} />
+              ) : null}
 
-                <BlockStack spacing="tiny">
-                  <InlineStack spacing="small">
-                    <Text emphasis>Season {number}</Text>
-
-                    <Action
-                      icon="more"
-                      size="small"
-                      accessibilityLabel="More actions…"
-                      popover={
-                        <Popover>
-                          <Menu label="See season in…">
-                            <Action icon="arrowEnd" to={tmdbUrl} target="new">
-                              TMDB
-                            </Action>
-                            <Action icon="arrowEnd" to={imdbUrl} target="new">
-                              IMDB
-                            </Action>
-                          </Menu>
-
-                          {status === 'CONTINUING' && (
-                            <Menu label="Internal">
-                              <Action
-                                icon="stop"
-                                onPress={async () => {
-                                  await markSeasonAsFinished.mutateAsync(
-                                    {id},
-                                    {onSuccess: onUpdate},
-                                  );
-                                }}
-                              >
-                                Mark finished
-                              </Action>
-                            </Menu>
-                          )}
-                        </Popover>
-                      }
-                    />
-                  </InlineStack>
-
-                  <Text emphasis="subdued">
-                    {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
+              <BlockStack spacing="tiny">
+                <InlineStack spacing="small">
+                  <Text emphasis>
+                    {isSpecials ? 'Specials' : `Season ${number}`}
                   </Text>
 
-                  {firstAired || status === 'CONTINUING' ? (
-                    <InlineStack spacing="small">
-                      {firstAired && (
-                        <Text emphasis="subdued">
-                          {new Date(firstAired).getFullYear()}
-                        </Text>
-                      )}
+                  <SeasonActions season={season} onUpdate={onUpdate} />
+                </InlineStack>
 
-                      {status === 'CONTINUING' ? <Tag>Ongoing</Tag> : null}
-                    </InlineStack>
-                  ) : null}
-                </BlockStack>
+                <Text emphasis="subdued">
+                  {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
+                </Text>
 
-                <Action
-                  accessory={
-                    isLastSeason ? null : (
-                      <Action
-                        icon="more"
-                        accessibilityLabel="More actions…"
-                        popover={
-                          <Popover>
-                            <Menu>
-                              <Action
-                                icon="watch"
-                                onPress={async () => {
-                                  await startWatchThrough.mutateAsync(
-                                    {
-                                      series: seriesId,
-                                      from: {season: number},
-                                      to: {season: lastSeason.number},
-                                    },
-                                    {
-                                      onSuccess({startWatchThrough}) {
-                                        const watchThroughId =
-                                          startWatchThrough?.watchThrough?.id;
+                {firstAired || status === 'CONTINUING' ? (
+                  <InlineStack spacing="small">
+                    {firstAired && (
+                      <Text emphasis="subdued">
+                        {new Date(firstAired).getFullYear()}
+                      </Text>
+                    )}
 
-                                        if (watchThroughId) {
-                                          navigate(
-                                            `/app/watchthrough/${
-                                              parseGid(watchThroughId).id
-                                            }`,
-                                          );
-                                        }
-                                      },
-                                    },
-                                  );
-                                }}
-                              >
-                                Watch from season {number} to{' '}
-                                {lastSeason.number}
-                              </Action>
-                            </Menu>
-                          </Popover>
-                        }
-                      />
-                    )
-                  }
-                  onPress={async () => {
-                    await startWatchThrough.mutateAsync(
-                      {
-                        series: seriesId,
-                        from: {season: number},
-                        to: {season: number},
-                      },
-                      {
-                        onSuccess({startWatchThrough}) {
-                          const watchThroughId =
-                            startWatchThrough?.watchThrough?.id;
+                    {status === 'CONTINUING' ? <Tag>Ongoing</Tag> : null}
+                  </InlineStack>
+                ) : null}
+              </BlockStack>
 
-                          if (watchThroughId) {
-                            navigate(
-                              `/app/watchthrough/${
-                                parseGid(watchThroughId).id
-                              }`,
-                            );
-                          }
-                        },
-                      },
-                    );
-                  }}
-                >
-                  Watch
-                </Action>
-              </Layout>
-            );
-          },
-        )}
+              <SeasonWatchThroughAction
+                seriesId={seriesId}
+                season={season}
+                lastSeason={lastSeason}
+              />
+            </Layout>
+          );
+        })}
       </BlockStack>
     </Section>
+  );
+}
+
+function SeasonActions({
+  season,
+  onUpdate,
+}: {
+  season: SeriesQueryData.Series.Seasons;
+  onUpdate(): void;
+}) {
+  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
+
+  return (
+    <Action
+      icon="more"
+      size="small"
+      accessibilityLabel="More actions…"
+      popover={
+        <Popover>
+          <Menu label="See season in…">
+            <Action icon="arrowEnd" to={season.tmdbUrl} target="new">
+              TMDB
+            </Action>
+            <Action icon="arrowEnd" to={season.imdbUrl} target="new">
+              IMDB
+            </Action>
+          </Menu>
+
+          {season.status === 'CONTINUING' && (
+            <Menu label="Internal">
+              <Action
+                icon="stop"
+                onPress={async () => {
+                  await markSeasonAsFinished.mutateAsync(
+                    {id: season.id},
+                    {onSuccess: onUpdate},
+                  );
+                }}
+              >
+                Mark finished
+              </Action>
+            </Menu>
+          )}
+        </Popover>
+      }
+    />
+  );
+}
+
+function SeasonWatchThroughAction({
+  seriesId,
+  season,
+  lastSeason,
+}: {
+  seriesId: string;
+  season: SeriesQueryData.Series.Seasons;
+  lastSeason: SeriesQueryData.Series.Seasons;
+}) {
+  const navigate = useNavigate();
+  const startWatchThrough = useMutation(startWatchThroughMutation);
+
+  const accessory =
+    season.id === lastSeason.id ? null : (
+      <Action
+        icon="more"
+        accessibilityLabel="More actions…"
+        popover={
+          <Popover>
+            <Menu>
+              <Action
+                icon="watch"
+                onPress={async () => {
+                  await startWatchThrough.mutateAsync(
+                    {
+                      series: seriesId,
+                      from: {season: season.number},
+                      to: {season: lastSeason.number},
+                    },
+                    {
+                      onSuccess({startWatchThrough}) {
+                        const watchThroughId =
+                          startWatchThrough?.watchThrough?.id;
+
+                        if (watchThroughId) {
+                          navigate(
+                            `/app/watchthrough/${parseGid(watchThroughId).id}`,
+                          );
+                        }
+                      },
+                    },
+                  );
+                }}
+              >
+                Watch from season {season.number} to {lastSeason.number}
+              </Action>
+            </Menu>
+          </Popover>
+        }
+      />
+    );
+
+  return (
+    <Action
+      accessory={accessory}
+      onPress={async () => {
+        await startWatchThrough.mutateAsync(
+          {
+            series: seriesId,
+            from: {season: season.number},
+            to: {season: season.number},
+          },
+          {
+            onSuccess({startWatchThrough}) {
+              const watchThroughId = startWatchThrough?.watchThrough?.id;
+
+              if (watchThroughId) {
+                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+              }
+            },
+          },
+        );
+      }}
+    >
+      Watch
+    </Action>
   );
 }
 
