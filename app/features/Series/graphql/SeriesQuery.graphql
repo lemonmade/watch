@@ -17,6 +17,7 @@ query Series($id: ID, $handle: String) {
       imdbUrl
       tmdbUrl
       firstAired
+      episodeCount
       poster {
         source
       }

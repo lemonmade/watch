@@ -42,6 +42,7 @@ type Season {
   series: Series!
   number: Int!
   episodes: [Episode!]!
+  episodeCount: Int!
   firstAired: Date
   poster: Image
   overview: String

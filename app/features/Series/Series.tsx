@@ -14,6 +14,7 @@ import {
   Popover,
   Image,
   raw,
+  Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -250,7 +251,16 @@ function SeasonsSection({
       <BlockStack spacing>
         <Heading divider>Seasons</Heading>
         {seasons.map(
-          ({id, number, status, imdbUrl, tmdbUrl, firstAired, poster}) => {
+          ({
+            id,
+            number,
+            status,
+            imdbUrl,
+            tmdbUrl,
+            firstAired,
+            poster,
+            episodeCount,
+          }) => {
             const isLastSeason = lastSeason?.id === id;
 
             return (
@@ -271,6 +281,7 @@ function SeasonsSection({
                 <BlockStack spacing="tiny">
                   <InlineStack spacing="small">
                     <Text emphasis>Season {number}</Text>
+
                     <Action
                       icon="more"
                       size="small"
@@ -284,9 +295,12 @@ function SeasonsSection({
                             <Action icon="arrowEnd" to={imdbUrl} target="new">
                               IMDB
                             </Action>
+                          </Menu>
 
-                            {status === 'CONTINUING' && (
+                          {status === 'CONTINUING' && (
+                            <Menu label="Internal">
                               <Action
+                                icon="stop"
                                 onPress={async () => {
                                   await markSeasonAsFinished.mutateAsync(
                                     {id},
@@ -296,19 +310,28 @@ function SeasonsSection({
                               >
                                 Mark finished
                               </Action>
-                            )}
-                          </Menu>
+                            </Menu>
+                          )}
                         </Popover>
                       }
                     />
                   </InlineStack>
 
-                  <Text emphasis="subdued">10 episodes</Text>
-                  {firstAired && (
-                    <Text emphasis="subdued">
-                      {new Date(firstAired).getFullYear()}
-                    </Text>
-                  )}
+                  <Text emphasis="subdued">
+                    {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
+                  </Text>
+
+                  {firstAired || status === 'CONTINUING' ? (
+                    <InlineStack spacing="small">
+                      {firstAired && (
+                        <Text emphasis="subdued">
+                          {new Date(firstAired).getFullYear()}
+                        </Text>
+                      )}
+
+                      {status === 'CONTINUING' ? <Tag>Ongoing</Tag> : null}
+                    </InlineStack>
+                  ) : null}
                 </BlockStack>
 
                 <Action
