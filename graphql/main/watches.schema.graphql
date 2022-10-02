@@ -21,6 +21,7 @@ extend type Season implements Watchable & Skippable {
   skips: [Skip!]!
   latestWatch: Watch
   latestSkip: Skip
+  firstAired: Date
 }
 
 extend type Series {

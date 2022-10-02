@@ -1,4 +1,5 @@
 .InlineStack {
+  --z-internal-container-inline-size: initial;
   --z-internal-divider-inline-size: initial;
   --z-internal-divider-block-size: 0;
 

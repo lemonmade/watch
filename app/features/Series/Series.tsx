@@ -1,7 +1,6 @@
 import {useMemo} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {
-  View,
   Action,
   ActionList,
   BlockStack,
@@ -12,6 +11,9 @@ import {
   Icon,
   Menu,
   Layout,
+  Popover,
+  Image,
+  raw,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -69,16 +71,6 @@ function SeriesWithData({
   clipsInstallations: SeriesQueryData['clipsInstallations'];
   onUpdate(): void;
 }) {
-  const navigate = useNavigate();
-  const startWatchThrough = useMutation(startWatchThroughMutation);
-  const subscribeToSeries = useMutation(subscribeToSeriesMutation);
-  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
-  const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
-  const watchSeriesLater = useMutation(watchSeriesLaterMutation);
-  const removeSeriesFromWatchLater = useMutation(
-    removeSeriesFromWatchLaterMutation,
-  );
-
   const localDevelopmentClips = useLocalDevelopmentClips(
     'Series.Details.RenderAccessory',
   );
@@ -89,30 +81,20 @@ function SeriesWithData({
     return () => ({series: {id: series.id, name: series.name}});
   }, [series]);
 
-  const {watchThroughs, subscription} = series;
-
-  const ongoingWatchThrough = watchThroughs.find(
-    ({status}) => status === 'ONGOING',
-  );
+  const {seasons, watchThroughs, subscription} = series;
 
   return (
     <Page
       heading={series.name}
       menu={
-        <BlockStack>
-          {/* <Menu>
-            <Action>Nice!</Action>
-          </Menu> */}
-
-          <Menu label="See series in…">
-            <Action to={series.tmdbUrl} target="new" icon="arrowEnd">
-              TMDB
-            </Action>
-            <Action to={series.imdbUrl} target="new" icon="arrowEnd">
-              IMDB
-            </Action>
-          </Menu>
-        </BlockStack>
+        <Menu label="See series in…">
+          <Action to={series.tmdbUrl} target="new" icon="arrowEnd">
+            TMDB
+          </Action>
+          <Action to={series.imdbUrl} target="new" icon="arrowEnd">
+            IMDB
+          </Action>
+        </Menu>
       }
     >
       <BlockStack spacing="huge">
@@ -126,34 +108,13 @@ function SeriesWithData({
               {value: ['fill', 'fill'], viewport: {min: 'large'}},
             ]}
           >
-            {ongoingWatchThrough == null ? (
-              <Action>Watch</Action>
-            ) : (
-              <Action
-                to={`/app/watchthrough/${parseGid(ongoingWatchThrough.id).id}`}
-              >
-                Watching Season {ongoingWatchThrough.on.season}
-              </Action>
-            )}
+            <WatchSeriesAction id={series.id} watchThroughs={watchThroughs} />
 
-            <Action
-              inlineSize="fill"
-              onPress={async () => {
-                if (series.inWatchLater) {
-                  await removeSeriesFromWatchLater.mutateAsync(
-                    {id: series.id},
-                    {onSuccess: onUpdate},
-                  );
-                } else {
-                  await watchSeriesLater.mutateAsync(
-                    {id: series.id},
-                    {onSuccess: onUpdate},
-                  );
-                }
-              }}
-            >
-              Watchlist
-            </Action>
+            <WatchlistAction
+              id={series.id}
+              inWatchLater={series.inWatchLater}
+              onUpdate={onUpdate}
+            />
           </Layout>
 
           {localDevelopmentClips.map((localClip) => (
@@ -174,22 +135,230 @@ function SeriesWithData({
           ))}
         </BlockStack>
 
-        <BlockStack>
-          {series.seasons.map(({id, number, status, imdbUrl, tmdbUrl}) => (
-            <View key={id}>
-              <Text>Season {number}</Text>
-              <InlineStack spacing="small">
-                <Action to={tmdbUrl} target="new">
-                  TMDB
-                </Action>
-                <Action to={imdbUrl} target="new">
-                  IMDB
-                </Action>
+        <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
+
+        <WatchThroughsSection watchThroughs={watchThroughs} />
+
+        <SettingsSection
+          id={series.id}
+          subscription={subscription}
+          onUpdate={onUpdate}
+        />
+      </BlockStack>
+    </Page>
+  );
+}
+
+function WatchSeriesAction({
+  id,
+  watchThroughs,
+}: Pick<SeriesQueryData.Series, 'id' | 'watchThroughs'>) {
+  const navigate = useNavigate();
+  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const ongoingWatchThrough = watchThroughs.find(
+    ({status}) => status === 'ONGOING',
+  );
+
+  if (ongoingWatchThrough != null) {
+    return (
+      <Action
+        icon="watch"
+        to={`/app/watchthrough/${parseGid(ongoingWatchThrough.id).id}`}
+      >
+        Watching Season {ongoingWatchThrough.on!.season}
+      </Action>
+    );
+  }
+
+  return (
+    <Action
+      icon="watch"
+      onPress={async () => {
+        await startWatchThrough.mutateAsync(
+          {
+            series: id,
+            from: {season: 1},
+          },
+          {
+            onSuccess({startWatchThrough}) {
+              const watchThroughId = startWatchThrough?.watchThrough?.id;
+
+              if (watchThroughId) {
+                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+              }
+            },
+          },
+        );
+      }}
+    >
+      {watchThroughs.length > 0 ? 'Watch again' : 'Watch'}
+    </Action>
+  );
+}
+
+function WatchlistAction({
+  id,
+  inWatchLater,
+  onUpdate,
+}: Pick<SeriesQueryData.Series, 'id' | 'inWatchLater'> & {onUpdate(): void}) {
+  const watchSeriesLater = useMutation(watchSeriesLaterMutation);
+  const removeSeriesFromWatchLater = useMutation(
+    removeSeriesFromWatchLaterMutation,
+  );
+
+  const inWatchList = useSignal(inWatchLater, [inWatchLater]);
+
+  return (
+    <Action
+      inlineSize="fill"
+      icon="watchlist"
+      selected={inWatchList}
+      onPress={async () => {
+        const isInWatchList = inWatchList.value;
+        inWatchList.value = !isInWatchList;
+
+        if (isInWatchList) {
+          await removeSeriesFromWatchLater.mutateAsync(
+            {id},
+            {onSuccess: onUpdate},
+          );
+        } else {
+          await watchSeriesLater.mutateAsync({id}, {onSuccess: onUpdate});
+        }
+      }}
+    >
+      Watchlist
+    </Action>
+  );
+}
+
+function SeasonsSection({
+  id: seriesId,
+  seasons,
+  onUpdate,
+}: Pick<SeriesQueryData.Series, 'id' | 'seasons'> & {onUpdate(): void}) {
+  const navigate = useNavigate();
+  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
+
+  if (seasons.length === 0) return null;
+
+  const lastSeason = seasons[seasons.length - 1]!;
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Seasons</Heading>
+        {seasons.map(
+          ({id, number, status, imdbUrl, tmdbUrl, firstAired, poster}) => {
+            const isLastSeason = lastSeason?.id === id;
+
+            return (
+              <Layout
+                key={id}
+                spacing
+                columns={
+                  poster?.source
+                    ? [raw`4rem`, 'fill', 'auto']
+                    : ['fill', 'auto']
+                }
+                blockAlignment="start"
+              >
+                {poster?.source ? (
+                  <Image source={poster.source} aspectRatio={2 / 3} />
+                ) : null}
+
+                <BlockStack spacing="tiny">
+                  <InlineStack spacing="small">
+                    <Text emphasis>Season {number}</Text>
+                    <Action
+                      icon="more"
+                      size="small"
+                      accessibilityLabel="More actions…"
+                      popover={
+                        <Popover>
+                          <Menu label="See season in…">
+                            <Action icon="arrowEnd" to={tmdbUrl} target="new">
+                              TMDB
+                            </Action>
+                            <Action icon="arrowEnd" to={imdbUrl} target="new">
+                              IMDB
+                            </Action>
+
+                            {status === 'CONTINUING' && (
+                              <Action
+                                onPress={async () => {
+                                  await markSeasonAsFinished.mutateAsync(
+                                    {id},
+                                    {onSuccess: onUpdate},
+                                  );
+                                }}
+                              >
+                                Mark finished
+                              </Action>
+                            )}
+                          </Menu>
+                        </Popover>
+                      }
+                    />
+                  </InlineStack>
+
+                  <Text emphasis="subdued">10 episodes</Text>
+                  {firstAired && (
+                    <Text emphasis="subdued">
+                      {new Date(firstAired).getFullYear()}
+                    </Text>
+                  )}
+                </BlockStack>
+
                 <Action
-                  onPress={() => {
-                    startWatchThrough.mutate(
+                  accessory={
+                    isLastSeason ? null : (
+                      <Action
+                        icon="more"
+                        accessibilityLabel="More actions…"
+                        popover={
+                          <Popover>
+                            <Menu>
+                              <Action
+                                icon="watch"
+                                onPress={async () => {
+                                  await startWatchThrough.mutateAsync(
+                                    {
+                                      series: seriesId,
+                                      from: {season: number},
+                                      to: {season: lastSeason.number},
+                                    },
+                                    {
+                                      onSuccess({startWatchThrough}) {
+                                        const watchThroughId =
+                                          startWatchThrough?.watchThrough?.id;
+
+                                        if (watchThroughId) {
+                                          navigate(
+                                            `/app/watchthrough/${
+                                              parseGid(watchThroughId).id
+                                            }`,
+                                          );
+                                        }
+                                      },
+                                    },
+                                  );
+                                }}
+                              >
+                                Watch from season {number} to{' '}
+                                {lastSeason.number}
+                              </Action>
+                            </Menu>
+                          </Popover>
+                        }
+                      />
+                    )
+                  }
+                  onPress={async () => {
+                    await startWatchThrough.mutateAsync(
                       {
-                        series: series.id,
+                        series: seriesId,
                         from: {season: number},
                         to: {season: number},
                       },
@@ -210,98 +379,104 @@ function SeriesWithData({
                     );
                   }}
                 >
-                  Start season watch through
+                  Watch
                 </Action>
-                {status === 'CONTINUING' && (
-                  <Action
-                    onPress={() => {
-                      markSeasonAsFinished.mutate({id}, {onSuccess: onUpdate});
-                    }}
-                  >
-                    Mark finished
-                  </Action>
-                )}
-              </InlineStack>
-            </View>
-          ))}
-        </BlockStack>
-
-        {watchThroughs.length > 0 && (
-          <Section>
-            <BlockStack spacing>
-              <Heading divider>Watches</Heading>
-              <ActionList>
-                {watchThroughs.map((watchThrough) => (
-                  <Action
-                    key={watchThrough.id}
-                    to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
-                    inlineAlignment="start"
-                    detail={<Icon source="disclosureInlineEnd" />}
-                  >
-                    <BlockStack spacing="tiny">
-                      <Text emphasis>
-                        {watchThrough.from.season === watchThrough.to.season ? (
-                          `Season ${watchThrough.from.season}`
-                        ) : (
-                          <>
-                            From <EpisodeSliceText {...watchThrough.from} /> to{' '}
-                            <EpisodeSliceText {...watchThrough.to} />
-                          </>
-                        )}
-                      </Text>
-                      <Text emphasis="subdued">
-                        {watchThrough.finishedAt
-                          ? `Finished on ${new Intl.DateTimeFormat().format(
-                              new Date(watchThrough.finishedAt),
-                            )}`
-                          : watchThrough.unfinishedEpisodeCount > 0
-                          ? `${watchThrough.unfinishedEpisodeCount} episodes left`
-                          : 'Still watching'}
-                      </Text>
-                    </BlockStack>
-                  </Action>
-                ))}
-              </ActionList>
-            </BlockStack>
-          </Section>
+              </Layout>
+            );
+          },
         )}
-        <Section>
-          <BlockStack spacing>
-            <Heading divider>Subscription</Heading>
-            {subscription ? (
-              <Action
-                onPress={() => {
-                  unsubscribeFromSeries.mutate(
-                    {id: series.id},
-                    {onSuccess: onUpdate},
-                  );
-                }}
-              >
-                Unsubscribe
-              </Action>
-            ) : (
-              <Action
-                onPress={() => {
-                  subscribeToSeries.mutate(
-                    {id: series.id},
-                    {onSuccess: onUpdate},
-                  );
-                }}
-              >
-                Subscribe
-              </Action>
-            )}
-            {subscription && (
-              <SpoilerAvoidanceSection
-                id={series.id}
-                spoilerAvoidance={subscription.settings.spoilerAvoidance}
-                onUpdate={onUpdate}
-              />
-            )}
-          </BlockStack>
-        </Section>
       </BlockStack>
-    </Page>
+    </Section>
+  );
+}
+
+function WatchThroughsSection({
+  watchThroughs,
+}: Pick<SeriesQueryData.Series, 'watchThroughs'>) {
+  if (watchThroughs.length === 0) return null;
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Watches</Heading>
+        <ActionList>
+          {watchThroughs.map((watchThrough) => (
+            <Action
+              key={watchThrough.id}
+              to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+              inlineAlignment="start"
+              detail={<Icon source="disclosureInlineEnd" />}
+            >
+              <BlockStack spacing="tiny">
+                <Text emphasis>
+                  {watchThrough.from.season === watchThrough.to.season ? (
+                    `Season ${watchThrough.from.season}`
+                  ) : (
+                    <>
+                      From <EpisodeSliceText {...watchThrough.from} /> to{' '}
+                      <EpisodeSliceText {...watchThrough.to} />
+                    </>
+                  )}
+                </Text>
+                <Text emphasis="subdued">
+                  {watchThrough.finishedAt
+                    ? `Finished on ${new Intl.DateTimeFormat().format(
+                        new Date(watchThrough.finishedAt),
+                      )}`
+                    : watchThrough.unfinishedEpisodeCount > 0
+                    ? `${watchThrough.unfinishedEpisodeCount} episodes left`
+                    : 'Still watching'}
+                </Text>
+              </BlockStack>
+            </Action>
+          ))}
+        </ActionList>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function SettingsSection({
+  id,
+  subscription,
+  onUpdate,
+}: Pick<SeriesQueryData.Series, 'id' | 'subscription'> & {onUpdate(): void}) {
+  const subscribeToSeries = useMutation(subscribeToSeriesMutation);
+  const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Settings</Heading>
+        {subscription ? (
+          <Action
+            onPress={async () => {
+              await unsubscribeFromSeries.mutateAsync(
+                {id},
+                {onSuccess: onUpdate},
+              );
+            }}
+          >
+            Unsubscribe
+          </Action>
+        ) : (
+          <Action
+            onPress={async () => {
+              await subscribeToSeries.mutateAsync({id}, {onSuccess: onUpdate});
+            }}
+          >
+            Subscribe
+          </Action>
+        )}
+        {subscription && (
+          <SpoilerAvoidanceSection
+            id={id}
+            spoilerAvoidance={subscription.settings.spoilerAvoidance}
+            onUpdate={onUpdate}
+          />
+        )}
+      </BlockStack>
+    </Section>
   );
 }
 

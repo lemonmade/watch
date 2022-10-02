@@ -5,14 +5,14 @@
   --z-internal-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
   --z-internal-Action-inset-block-nudge: 0;
 
+  --z-Action-selected-background: var(--z-Action-pressed-background);
+  --z-Action-selected-divider-color: var(--z-Action-pressed-divider-color);
+  --z-Action-selected-border: var(--z-Action-pressed-border);
+  --z-Action-selected-text-color: var(--z-Action-pressed-text-color);
+  --z-Action-selected-icon-color: var(--z-Action-pressed-icon-color);
+  --z-Action-selected-shadow: var(--z-Action-pressed-shadow);
+
   --z-Action-background: transparent;
 
   padding: var(--z-spacing-small);
-}
-
-.NavigationItem:where(:active),
-.selected {
-  --z-Icon-base-color: var(--z-Action-pressed-icon-color);
-  background: var(--z-Action-pressed-background);
-  color: var(--z-Action-pressed-text-color);
 }

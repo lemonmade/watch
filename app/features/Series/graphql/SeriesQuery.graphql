@@ -16,6 +16,10 @@ query Series($id: ID, $handle: String) {
       overview
       imdbUrl
       tmdbUrl
+      firstAired
+      poster {
+        source
+      }
     }
     subscription {
       id

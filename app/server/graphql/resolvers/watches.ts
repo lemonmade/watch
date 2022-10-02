@@ -72,13 +72,13 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
   on({current}) {
     if (current == null) return null;
 
-    const slice = sliceFromBuffer(current);
+    const {episode, season} = sliceFromBuffer(current);
 
-    if (slice.episode == null) {
+    if (episode == null) {
       throw new Error('Invalid current episode');
     }
 
-    return slice;
+    return {episode, season};
   },
   async actions({id}, _, {user, prisma}) {
     const [watches, skips] = await Promise.all([

@@ -444,7 +444,8 @@
 }
 
 .hasIcon {
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto auto;
+  
 
   & > *:first-child {
     align-self: var(--z-internal-Action-alignment);

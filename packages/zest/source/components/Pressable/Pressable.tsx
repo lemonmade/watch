@@ -8,6 +8,10 @@ import {
 } from 'react';
 import {classes, variation} from '@lemon/css';
 import {Link, type NavigateTo} from '@quilted/quilt';
+import {
+  resolveSignalOrValue,
+  type SignalOrValue,
+} from '@watching/react-signals';
 
 import systemStyles from '../../system.module.css';
 import {useUniqueId} from '../../utilities/id';
@@ -34,7 +38,8 @@ export interface Props {
   className?: string;
   display?: 'block' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
   inlineAlignment?: 'start' | 'end' | 'center';
-  disabled?: boolean;
+  disabled?: SignalOrValue<boolean>;
+  selected?: SignalOrValue<boolean>;
   accessibilityLabel?: string;
   to?: NavigateTo;
   target?: 'new' | 'current';
@@ -105,6 +110,7 @@ export const PressableInternal = forwardRef<
     display,
     inlineAlignment,
     disabled,
+    selected,
     onPress,
     accessibilityLabel,
     modal,
@@ -118,13 +124,15 @@ export const PressableInternal = forwardRef<
 ) {
   const form = useContainingForm();
   const containingOverlay = useContainingOverlay({required: false});
+  const resolvedDisabled = resolveSignalOrValue(disabled);
+  const resolvedSelected = resolveSignalOrValue(selected);
 
   const className = classes(
     display && systemStyles[variation('display', display)],
     inlineAlignment &&
       systemStyles[variation('inlineAlignment', inlineAlignment)],
     styles.Pressable,
-    disabled && styles.disabled,
+    resolvedDisabled && styles.disabled,
     explicitClassName,
   );
 
@@ -181,6 +189,7 @@ export const PressableInternal = forwardRef<
         to={to}
         className={className}
         onClick={handleClick}
+        aria-current={resolvedSelected ? 'page' : undefined}
         {...externalProps}
         {...rest}
       >
@@ -196,10 +205,11 @@ export const PressableInternal = forwardRef<
       ref={resolvedRef as any}
       type={submitButton ? 'submit' : 'button'}
       form={submitButton && form?.nested ? form.id : undefined}
-      disabled={disabled}
+      disabled={resolvedDisabled}
       className={className}
       onClick={handleClick}
       aria-label={accessibilityLabel}
+      aria-pressed={resolvedSelected == null ? undefined : resolvedSelected}
       {...ariaForOverlay(overlay)}
       {...rest}
     >

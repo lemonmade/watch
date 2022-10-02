@@ -93,6 +93,13 @@ function ActionComponents() {
           <Pressable to="#">Pressable (link)</Pressable>
         </InlineStack>
 
+        <Action>Action that fills</Action>
+        <Action icon="delete">Action that fills</Action>
+        <Action icon="delete" inlineAlignment="start">
+          Action that fills that is really really really really really really
+          really really really really long
+        </Action>
+
         <Divider emphasis="subdued" />
 
         <InlineStack spacing="small">

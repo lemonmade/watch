@@ -227,23 +227,23 @@ function sizesToSelectors(root: string, sizes: Size[]) {
     if (raw.test(size)) {
       columns.push(raw.parse(size));
       rules.push(
-        `:where(${root}) > :nth-child(${
+        `:where(${root}) > :where(:nth-child(${
           index + 1
-        }) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
+        })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
       );
     } else if (size === 'auto') {
       columns.push('auto');
       rules.push(
-        `:where(${root}) > :nth-child(${
+        `:where(${root}) > :where(:nth-child(${
           index + 1
         }) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }`,
       );
     } else if (size === 'fill') {
       columns.push('minmax(0, 1fr)');
       rules.push(
-        `:where(${root}) > :nth-child(${
+        `:where(${root}) > :where(:nth-child(${
           index + 1
-        }) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
+        })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
       );
     }
   }
