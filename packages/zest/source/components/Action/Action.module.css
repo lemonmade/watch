@@ -7,13 +7,17 @@
   --z-internal-Action-shadow: var(--z-Action-shadow);
   --z-internal-Action-text-color: var(--z-Action-text-color);
   --z-internal-Action-corner-radius: var(--z-corner-radius-base);
-  --z-internal-Action-transition: background 0.2s ease;
+  --z-internal-Action-transition: background 0.2s ease, color 0.2s ease;
   --z-internal-Action-inline-padding: var(--z-spacing-base);
   --z-internal-Action-block-padding: var(
     --z-internal-Action-forced-block-padding,
     var(--z-spacing-tiny)
   );
   --z-internal-Action-alignment: center;
+
+  --z-internal-Action-loading-indicator-opacity: 0;
+  --z-internal-Action-loading-content-opacity: 1;
+  --z-internal-Action-loading-opacity-transition: opacity 0.2s ease;
 
   position: relative;
   min-block-size: var(--z-Action-minimum-size);
@@ -91,11 +95,14 @@
   transition: var(--z-internal-Action-transition);
 
   &::before {
+    z-index: -1;
     content: var(--z-internal-Action-inset-content);
     display: var(--z-internal-Action-inset-display, none);
+  }
+
+  &::before {
     pointer-events: none;
     position: absolute;
-    z-index: -1;
     top: var(--z-internal-Action-inset-block-size, 0);
     left: 0;
     right: 0;
@@ -163,7 +170,7 @@
     --z-internal-Action-text-color: var(--z-Action-selected-text-color);
   }
 
-  &:where(:disabled) {
+  &:where(.disabled) {
     --z-Icon-base-color: var(--z-Action-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-disabled-border);
@@ -171,6 +178,22 @@
     --z-internal-Action-divider-color: var(--z-Action-disabled-divider-color);
     --z-internal-Action-shadow: var(--z-Action-disabled-shadow);
     --z-internal-Action-text-color: var(--z-Action-disabled-text-color);
+  }
+
+  &:where(.loading) {
+    --z-Icon-base-color: var(--z-Action-loading-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-loading-border);
+    --z-internal-Action-background: var(
+      --z-Action-loading-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-loading-divider-color
+    );
+    --z-internal-Action-shadow: var(--z-Action-loading-shadow);
+    --z-internal-Action-text-color: var(
+      --z-Action-loading-text-color
+    );
   }
 }
 
@@ -248,7 +271,7 @@
     );
   }
 
-  &:where(:disabled) {
+  &:where(.disabled) {
     --z-Icon-base-color: var(--z-Action-emphasized-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-disabled-border);
@@ -261,6 +284,22 @@
     --z-internal-Action-shadow: var(--z-Action-emphasized-disabled-shadow);
     --z-internal-Action-text-color: var(
       --z-Action-emphasized-disabled-text-color
+    );
+  }
+
+  &:where(.loading) {
+    --z-Icon-base-color: var(--z-Action-emphasized-loading-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-emphasized-loading-border);
+    --z-internal-Action-background: var(
+      --z-Action-emphasized-loading-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-emphasized-loading-divider-color
+    );
+    --z-internal-Action-shadow: var(--z-Action-emphasized-loading-shadow);
+    --z-internal-Action-text-color: var(
+      --z-Action-emphasized-loading-text-color
     );
   }
 }
@@ -323,7 +362,7 @@
     --z-internal-Action-text-color: var(--z-Action-subdued-selected-text-color);
   }
 
-  &:where(:disabled) {
+  &:where(.disabled) {
     --z-Icon-base-color: var(--z-Action-subdued-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-disabled-border);
@@ -333,6 +372,22 @@
     );
     --z-internal-Action-shadow: var(--z-Action-subdued-disabled-shadow);
     --z-internal-Action-text-color: var(--z-Action-subdued-disabled-text-color);
+  }
+
+  &:where(.loading) {
+    --z-Icon-base-color: var(--z-Action-subdued-loading-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-subdued-loading-border);
+    --z-internal-Action-background: var(
+      --z-Action-subdued-loading-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-subdued-loading-divider-color
+    );
+    --z-internal-Action-shadow: var(--z-Action-subdued-loading-shadow);
+    --z-internal-Action-text-color: var(
+      --z-Action-subdued-loading-text-color
+    );
   }
 }
 
@@ -410,7 +465,7 @@
     );
   }
 
-  &:where(:disabled) {
+  &:where(.disabled) {
     --z-Icon-base-color: var(--z-Action-destructive-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-disabled-border);
@@ -423,6 +478,22 @@
     --z-internal-Action-shadow: var(--z-Action-destructive-disabled-shadow);
     --z-internal-Action-text-color: var(
       --z-Action-destructive-disabled-text-color
+    );
+  }
+
+  &:where(.loading) {
+    --z-Icon-base-color: var(--z-Action-destructive-loading-icon-color);
+
+    --z-internal-Action-border: var(--z-Action-destructive-loading-border);
+    --z-internal-Action-background: var(
+      --z-Action-destructive-loading-background
+    );
+    --z-internal-Action-divider-color: var(
+      --z-Action-destructive-loading-divider-color
+    );
+    --z-internal-Action-shadow: var(--z-Action-destructive-loading-shadow);
+    --z-internal-Action-text-color: var(
+      --z-Action-destructive-loading-text-color
     );
   }
 }
@@ -477,6 +548,11 @@
   --z-internal-Action-alignment: center;
 }
 
+.Content {
+  opacity: var(--z-internal-Action-loading-content-opacity);
+  transition: var(--z-internal-Action-loading-opacity-transition);
+}
+
 .hasDetail {
   grid-template-columns: 1fr auto;
 }
@@ -484,6 +560,128 @@
 .hasIcon.hasDetail {
   grid-template-columns: auto 1fr auto;
 }
+
+.loading {
+  --z-internal-Action-loading-indicator-opacity: 1;
+
+  &:not(.hasIcon) {
+    --z-internal-Action-loading-content-opacity: 0;
+  }
+
+  &.hasIcon {
+    --z-internal-Action-loading-icon-opacity: 0;
+  }
+}
+
+.IconContainer {
+  position: relative;
+}
+
+.Icon {
+  opacity: var(--z-internal-Action-loading-icon-opacity);
+  transition: var(--z-internal-Action-loading-opacity-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LoadingContent {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: var(--z-internal-Action-loading-indicator-opacity);
+  transition: var(--z-internal-Action-loading-opacity-transition);
+}
+
+.LoadingIcon {
+  --z-internal-Loading-icon-size: 1.25rem;
+
+  width: var(--z-internal-Loading-icon-size);
+  height: var(--z-internal-Loading-icon-size);
+  position: relative;
+}
+
+.LoadingIcon::after,
+.LoadingIcon::before {
+  content: '';  
+  box-sizing: border-box;
+  width: var(--z-internal-Loading-icon-size);
+  height: var(--z-internal-Loading-icon-size);
+  border-radius: 50%;
+  background: var(--z-Icon-base-color);
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: animloader 1.2s ease-out infinite;
+}
+
+.LoadingIcon::after {
+  animation-delay: 0.6s;
+}
+
+@keyframes animloader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* .LoadingIcon {
+  --z-internal-Loading-icon-size: 1.25rem;
+
+  margin-top: calc(var(--z-internal-Loading-icon-size) * -0.25);
+  width: var(--z-internal-Loading-icon-size);
+  height: var(--z-internal-Loading-icon-size);
+  display: block;
+  position: relative;
+  color: #FFF;
+  animation: rotation 1s linear infinite;
+
+  &::before,
+  &::after {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    width: calc(var(--z-internal-Loading-icon-size) * 0.5);
+    height: calc(var(--z-internal-Loading-icon-size) * 0.5);
+    top: 0;
+    background-color: #FFF;
+    border-radius: 50%;
+    animation: scale50 1s infinite ease-in-out;
+  }
+}
+
+.LoadingIcon::before {
+  top: auto;
+  bottom: 0;
+  opacity: 0.35;
+  animation-delay: 0.5s;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+@keyframes scale50 {
+  0%, 100% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+}  */
 
 .ActionContainer {
   display: var(

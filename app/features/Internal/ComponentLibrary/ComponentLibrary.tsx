@@ -62,30 +62,24 @@ function ActionComponents() {
           <Action>Action (button)</Action>
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
-          <Action loading>Action (loading)</Action>
+
           <Action emphasis>Action (emphasized)</Action>
           <Action emphasis disabled icon="arrowEnd">
             Action (emphasized disabled)
           </Action>
-          <Action emphasis loading icon="arrowEnd">
-            Action (emphasized loading)
-          </Action>
+
           <Action emphasis="subdued">Action (subdued)</Action>
           <Action emphasis="subdued" disabled icon="arrowEnd">
             Action (subdued disabled)
           </Action>
-          <Action emphasis="subdued" loading icon="arrowEnd">
-            Action (subdued loading)
-          </Action>
+
           <Action role="destructive" icon="delete">
             Action (destructive)
           </Action>
           <Action role="destructive" disabled icon="delete">
             Action (destructive disabled)
           </Action>
-          <Action role="destructive" loading icon="delete">
-            Action (destructive loading)
-          </Action>
+
           <Action modal={<ActionExampleModal />}>Action (modal)</Action>
           <Action size="small">Action (small)</Action>
           <Action detail={<Icon source="arrowEnd" />}>Action (detail)</Action>
@@ -99,6 +93,8 @@ function ActionComponents() {
           Action that fills that is really really really really really really
           really really really really long
         </Action>
+
+        <LoadingActionExample />
 
         <Divider emphasis="subdued" />
 
@@ -130,6 +126,9 @@ function ActionComponents() {
           <Action>Menu button</Action>
           <Action to="#">Menu link</Action>
           <Action emphasis="subdued">Menu button (subdued)</Action>
+          <Action loading icon="arrowEnd">
+            Menu button (loading)
+          </Action>
           <Action emphasis>Menu button (emphasized)</Action>
           <Action icon="delete" role="destructive">
             Menu button (destructive)
@@ -144,12 +143,38 @@ function ActionComponents() {
           <Action icon="watch">Item one</Action>
           <Action icon="skip">Item two</Action>
           <Action icon="stop">Item three</Action>
+          <Action icon="go" loading>
+            Item four (loading)
+          </Action>
           <Action icon="delete" role="destructive">
             Item (destructive)
           </Action>
         </ActionList>
       </BlockStack>
     </Section>
+  );
+}
+
+function LoadingActionExample() {
+  const loading = useSignal(false);
+
+  return (
+    <BlockStack spacing>
+      <Checkbox checked={loading}>Loading buttons</Checkbox>
+
+      <InlineStack spacing>
+        <Action loading={loading}>Action (loading)</Action>
+        <Action emphasis loading={loading} icon="arrowEnd">
+          Action (emphasized loading)
+        </Action>
+        <Action emphasis="subdued" loading={loading} icon="arrowEnd">
+          Action (subdued loading)
+        </Action>
+        <Action role="destructive" loading={loading} icon="delete">
+          Action (destructive loading)
+        </Action>
+      </InlineStack>
+    </BlockStack>
   );
 }
 
