@@ -117,6 +117,7 @@ export function Menu({
           systemStyles.contentInlineSizeFill,
           systemStyles.inlineAlignmentStart,
           styles.Menu,
+          Boolean(label) && styles.hasLabel,
         )}
         ref={nestedMenu ? undefined : menuRef}
         {...(nestedMenu ? undefined : menuProps)}

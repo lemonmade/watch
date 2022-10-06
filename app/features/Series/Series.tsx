@@ -335,7 +335,7 @@ function SeasonActions({
           </Menu>
 
           {season.status === 'CONTINUING' && (
-            <Menu label="Internal">
+            <Menu label="Internal…">
               <Action
                 icon="stop"
                 onPress={async () => {
