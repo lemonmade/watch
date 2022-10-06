@@ -2,7 +2,7 @@
   --z-Action-background: transparent;
   --z-Action-subdued-background: transparent;
   --z-Action-disabled-background: transparent;
-  --z-Action-loading-background: transparent;
+  --z-Action-inert-background: transparent;
 
   --z-internal-Action-inset-content: '';
   --z-internal-Action-inset-display: block;

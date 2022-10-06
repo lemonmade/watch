@@ -69,16 +69,16 @@ export default function WatchThroughDetails({id}: Props) {
   if (data?.watchThrough == null) return null;
 
   return (
-    <WatchThroughWithData watchThrough={data.watchThrough} refetch={refetch} />
+    <WatchThroughWithData watchThrough={data.watchThrough} onUpdate={refetch} />
   );
 }
 
 function WatchThroughWithData({
   watchThrough,
-  refetch,
+  onUpdate,
 }: {
   watchThrough: WatchThroughQueryData.WatchThrough;
-  refetch(): Promise<any>;
+  onUpdate(): Promise<any>;
 }) {
   const {id, nextEpisode, status, series, actions, settings, from, to} =
     watchThrough;
@@ -114,7 +114,6 @@ function WatchThroughWithData({
         <BlockStack spacing="huge">
           {nextEpisode && (
             <NextEpisode
-              key={nextEpisode.id}
               id={nextEpisode.id}
               title={nextEpisode.title}
               episodeNumber={nextEpisode.number}
@@ -128,12 +127,12 @@ function WatchThroughWithData({
               image={nextEpisode.still?.source ?? undefined}
               overview={nextEpisode.overview ?? undefined}
               watchingSingleSeason={watchingSingleSeason}
-              onAction={() => refetch()}
+              onUpdate={() => onUpdate()}
             />
           )}
           {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
 
-          <SettingsSection id={id} settings={settings} refetch={refetch} />
+          <SettingsSection id={id} settings={settings} onUpdate={onUpdate} />
         </BlockStack>
       </Page>
     </PageDetailsContext.Provider>
@@ -149,7 +148,7 @@ function NextEpisode({
   episodeNumber,
   seasonNumber,
   watchingSingleSeason,
-  onAction,
+  onUpdate,
 }: {
   id: string;
   title: string;
@@ -160,32 +159,24 @@ function NextEpisode({
   episodeNumber: number;
   seasonNumber: number;
   watchingSingleSeason: boolean;
-  onAction?(): void;
+  onUpdate(): void | Promise<void>;
 }) {
   const {initialActionDate} = usePageDetails();
 
-  const rating = useSignal<number | undefined>(undefined);
-  const notes = useSignal<string | undefined>(undefined);
-  const containsSpoilers = useSignal(false);
-  const at = useSignal<Date | undefined>(initialActionDate.value);
-  const submitting = useSignal(false);
+  const rating = useSignal<number | undefined>(undefined, [id]);
+  const notes = useSignal<string | undefined>(undefined, [id]);
+  const containsSpoilers = useSignal(false, [id]);
+  const at = useSignal<Date | undefined>(initialActionDate.value, [id]);
 
   return (
     <WatchEpisodeForm
       id={id}
       watchThroughId={watchThroughId}
-      loading={submitting}
       at={at}
       rating={rating}
       notes={notes}
       containsSpoilers={containsSpoilers}
-      onWatchStart={() => {
-        submitting.value = true;
-      }}
-      onWatch={() => {
-        submitting.value = false;
-        onAction?.();
-      }}
+      onUpdate={onUpdate}
     >
       <BlockStack spacing>
         {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
@@ -216,6 +207,7 @@ function NextEpisode({
 
             <Action
               emphasis
+              icon="watch"
               perform="submit"
               accessory={
                 <Action
@@ -226,18 +218,11 @@ function NextEpisode({
                       <Menu>
                         <SkipEpisodeAction
                           id={id}
-                          loading={submitting}
-                          watchThroughId={watchThroughId}
                           at={at}
                           notes={notes}
                           containsSpoilers={containsSpoilers}
-                          onSkipStart={() => {
-                            submitting.value = true;
-                          }}
-                          onSkip={() => {
-                            submitting.value = false;
-                            onAction?.();
-                          }}
+                          watchThroughId={watchThroughId}
+                          onUpdate={onUpdate}
                         />
                         <SkipEpisodeWithNotesAction
                           id={id}
@@ -245,9 +230,8 @@ function NextEpisode({
                           seasonNumber={seasonNumber}
                           title={title}
                           image={image}
-                          loading={submitting}
                           watchThroughId={watchThroughId}
-                          onSkip={onAction}
+                          onUpdate={onUpdate}
                         />
                       </Menu>
                     </Popover>
@@ -273,14 +257,12 @@ function NextEpisode({
 
 interface WatchEpisodeFormProps {
   id: string;
-  loading: Signal<boolean>;
   at: Signal<Date | undefined>;
   rating: Signal<number | undefined>;
   notes: Signal<string | undefined>;
   containsSpoilers: Signal<boolean>;
   watchThroughId: string;
-  onWatch?(): void;
-  onWatchStart?(): void;
+  onUpdate(): void | Promise<void>;
 }
 
 function WatchEpisodeForm({
@@ -288,16 +270,14 @@ function WatchEpisodeForm({
   at,
   notes,
   rating,
-  loading,
   containsSpoilers,
   watchThroughId,
-  onWatch,
-  onWatchStart,
   children,
+  onUpdate,
 }: PropsWithChildren<WatchEpisodeFormProps>) {
-  const {mutate, isLoading} = useMutation(watchNextEpisodeMutation);
+  const {mutateAsync} = useMutation(watchNextEpisodeMutation);
 
-  const watchEpisode = () => {
+  const watchEpisode = async () => {
     const optionalArguments: Omit<
       WatchThroughWatchNextEpisodeMutationVariables,
       'episode' | 'watchThrough'
@@ -316,24 +296,16 @@ function WatchEpisodeForm({
       optionalArguments.rating = rating.value;
     }
 
-    onWatchStart?.();
-    mutate(
-      {
-        ...optionalArguments,
-        episode: id,
-        watchThrough: watchThroughId,
-      },
-      {
-        onSettled: onWatch,
-      },
-    );
+    await mutateAsync({
+      ...optionalArguments,
+      episode: id,
+      watchThrough: watchThroughId,
+    });
+
+    await onUpdate();
   };
 
-  return (
-    <Form loading={isLoading || loading.value || false} onSubmit={watchEpisode}>
-      {children}
-    </Form>
-  );
+  return <Form onSubmit={watchEpisode}>{children}</Form>;
 }
 
 function EpisodeRating({value: rating}: {value: Signal<number | undefined>}) {
@@ -406,39 +378,29 @@ function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
   );
 }
 
-interface SkipEpisodeActionProps extends SkipEpisodeOptions {
-  loading: Signal<boolean>;
-}
+interface SkipEpisodeActionProps extends SkipEpisodeOptions {}
 
-function SkipEpisodeAction({loading, ...options}: SkipEpisodeActionProps) {
+function SkipEpisodeAction(options: SkipEpisodeActionProps) {
   const skipEpisode = useSkipEpisode(options);
 
   return (
-    <Action loading={loading.value} icon="skip" onPress={skipEpisode}>
+    <Action icon="skip" onPress={skipEpisode}>
       Skip
     </Action>
   );
 }
 
 interface SkipEpisodeWithNotesActionProps
-  extends Omit<
-    SkipEpisodeOptions,
-    'at' | 'notes' | 'containsSpoilers' | 'onSkipStart'
-  > {
+  extends Omit<SkipEpisodeOptions, 'at' | 'notes' | 'containsSpoilers'> {
   title: string;
   image?: string;
   seasonNumber: number;
   episodeNumber: number;
-  loading: Signal<boolean>;
 }
 
 function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
   return (
-    <Action
-      loading={props.loading.value}
-      icon="skip"
-      modal={<SkipEpisodeModal {...props} />}
-    >
+    <Action icon="skip" modal={<SkipEpisodeModal {...props} />}>
       Skip with note…
     </Action>
   );
@@ -449,7 +411,6 @@ function SkipEpisodeModal({
   image,
   episodeNumber,
   seasonNumber,
-  loading,
   ...options
 }: SkipEpisodeWithNotesActionProps) {
   const {initialActionDate} = usePageDetails();
@@ -502,8 +463,7 @@ interface SkipEpisodeOptions {
   at?: Signal<Date | undefined>;
   notes?: Signal<string | undefined>;
   containsSpoilers?: Signal<boolean>;
-  onSkip?(): void;
-  onSkipStart?(): void;
+  onUpdate(): void | Promise<void>;
 }
 
 function useSkipEpisode({
@@ -512,8 +472,7 @@ function useSkipEpisode({
   at,
   notes,
   containsSpoilers,
-  onSkip,
-  onSkipStart,
+  onUpdate,
 }: SkipEpisodeOptions) {
   const {mutateAsync} = useMutation(skipNextEpisodeMutation);
 
@@ -530,17 +489,13 @@ function useSkipEpisode({
       };
     }
 
-    onSkipStart?.();
-    await mutateAsync(
-      {
-        ...optionalArguments,
-        episode: id,
-        watchThrough: watchThroughId,
-      },
-      {
-        onSettled: onSkip,
-      },
-    );
+    await mutateAsync({
+      ...optionalArguments,
+      episode: id,
+      watchThrough: watchThroughId,
+    });
+
+    await onUpdate();
   };
 
   return skipEpisode;
@@ -616,8 +571,8 @@ function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
   return (
     <Action
       icon="stop"
-      onPress={() => {
-        stopWatchThrough.mutate(
+      onPress={async () => {
+        await stopWatchThrough.mutateAsync(
           {id},
           {
             onSuccess({stopWatchThrough}) {
@@ -748,11 +703,11 @@ function PrettyDate({date}: {date: string | Date}) {
 function SettingsSection({
   id,
   settings,
-  refetch,
+  onUpdate,
 }: {
   id: string;
   settings: WatchThroughQueryData.WatchThrough.Settings;
-  refetch(): Promise<void>;
+  onUpdate(): void | Promise<void>;
 }) {
   const updateWatchThroughSettings = useMutation(
     updateWatchThroughSettingsMutation,
@@ -774,7 +729,7 @@ function SettingsSection({
               {id, spoilerAvoidance: newSpoilerAvoidance},
               {
                 onSuccess() {
-                  refetch();
+                  onUpdate();
                 },
               },
             );

@@ -164,11 +164,18 @@ function LoadingActionExample() {
 
       <InlineStack spacing>
         <Action loading={loading}>Action (loading)</Action>
-        <Action emphasis loading={loading} icon="arrowEnd">
-          Action (emphasized loading)
+        <Action
+          icon="close"
+          accessory={<ActionAccessoryExampleMenu />}
+          loading={loading}
+        >
+          Action (accessory loading)
         </Action>
         <Action emphasis="subdued" loading={loading} icon="arrowEnd">
           Action (subdued loading)
+        </Action>
+        <Action emphasis loading={loading} icon="arrowEnd">
+          Action (emphasized loading)
         </Action>
         <Action role="destructive" loading={loading} icon="delete">
           Action (destructive loading)

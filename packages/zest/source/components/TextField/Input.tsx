@@ -1,10 +1,14 @@
 import {useState, useRef, type ChangeEvent, type KeyboardEvent} from 'react';
-import {type Signal} from '@preact/signals-core';
 import {classes, variation} from '@lemon/css';
+import {
+  resolveSignalOrValue,
+  type SignalOrValue,
+} from '@watching/react-signals';
 
 import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
 import {useMenuController} from '../../utilities/menus';
+import {useActionScope} from '../../utilities/actions';
 
 import styles from './Input.module.css';
 
@@ -15,40 +19,13 @@ export type TextFieldProps = {
   multiline?: boolean | number;
   blockSize?: 'fitContent';
   placeholder?: string;
-} & (
-  | {
-      disabled?: false;
-      readonly?: false;
-      value?: string;
-      changeTiming?: ChangeTiming;
-      onChange(value: string): void;
-      onInput?(value: string): void;
-    }
-  | {
-      disabled?: false;
-      readonly?: false;
-      value: Signal<string>;
-      changeTiming?: ChangeTiming;
-      onChange?(value: string): void;
-      onInput?(value: string): void;
-    }
-  | {
-      value?: string | Signal<string | undefined>;
-      disabled: true;
-      readonly?: false;
-      changeTiming?: never;
-      onChange?: never;
-      onInput?: never;
-    }
-  | {
-      value?: string | Signal<string | undefined>;
-      disabled?: false;
-      readonly: true;
-      changeTiming?: never;
-      onChange?: never;
-      onInput?: never;
-    }
-);
+  value?: SignalOrValue<string | undefined>;
+  disabled?: SignalOrValue<boolean>;
+  readonly?: SignalOrValue<boolean>;
+  changeTiming?: ChangeTiming;
+  onChange?(value: string): void;
+  onInput?(value: string): void;
+};
 
 export function TextField({
   id: explicitId,
@@ -66,6 +43,12 @@ export function TextField({
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
   const menu = useMenuController({required: false});
+  const actionScope = useActionScope({required: false});
+
+  const resolvedDisabled = resolveSignalOrValue(disabled);
+  const resolvedReadonly = resolveSignalOrValue(readonly);
+
+  const finalReadonly = resolvedReadonly || actionScope?.active.value;
 
   const inlineStyles: Record<string, any> = {};
 
@@ -77,8 +60,8 @@ export function TextField({
 
   const handleChange =
     onChange ??
-    (disabled ||
-    readonly ||
+    (resolvedDisabled ||
+    finalReadonly ||
     currentValue == null ||
     typeof currentValue === 'string'
       ? undefined
@@ -131,8 +114,8 @@ export function TextField({
         }
         form={containingForm?.nested ? containingForm.id : undefined}
         placeholder={placeholder}
-        disabled={disabled}
-        readOnly={readonly}
+        disabled={resolvedDisabled}
+        readOnly={finalReadonly}
       />
       {blockSize === 'fitContent' && (
         <div className={styles.AutoGrowWrap}>{value} </div>
@@ -142,9 +125,9 @@ export function TextField({
 }
 
 function usePartiallyControlledState(
-  value: string | Signal<string | undefined> = '',
+  value: SignalOrValue<string | undefined> = '',
 ) {
-  const resolvedValue = typeof value === 'string' ? value : value.value ?? '';
+  const resolvedValue = resolveSignalOrValue(value) ?? '';
   const [localValue, setLocalValue] = useState(resolvedValue);
   const lastExplicitValue = useRef(resolvedValue);
 

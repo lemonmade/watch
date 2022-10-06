@@ -1,10 +1,17 @@
 import {useMemo} from 'react';
+import {computed, signal} from '@watching/react-signals';
 import type {PropsWithChildren, ReactNode, FormEventHandler} from 'react';
 
 import {Portal} from '../Portal';
 import {View, useViewProps, resolveViewProps, type ViewProps} from '../View';
 
+import {removeFromSet} from '../../utilities/sets';
 import {useUniqueId} from '../../utilities/id';
+import {
+  createActionScope,
+  ActionScopeContext,
+  type ActionScope,
+} from '../../utilities/actions';
 import {
   FormContext,
   useContainingForm,
@@ -17,14 +24,12 @@ export interface ImplicitSubmit {
 
 interface Props extends ViewProps {
   id?: string;
-  loading?: boolean;
   implicitSubmit?: boolean | ImplicitSubmit;
-  onSubmit(): void;
+  onSubmit(): void | Promise<void>;
 }
 
 export function Form({
   id: explicitId,
-  loading,
   onSubmit,
   children,
   implicitSubmit = false,
@@ -32,7 +37,59 @@ export function Form({
 }: PropsWithChildren<Props>) {
   const id = useUniqueId('Form', explicitId);
   const nested = useContainingForm() != null;
-  const formDetails = useMemo<FormDetails>(() => ({id, nested}), [id, nested]);
+  const {formDetails, actionScope, performSubmit} = useMemo<{
+    formDetails: FormDetails;
+    actionScope: ActionScope;
+    performSubmit<T>(
+      submit: () => T,
+      options?: {id?: string; signal?: AbortSignal},
+    ): void;
+  }>(() => {
+    const actionScope = createActionScope({id});
+    const submits = signal<Set<{id: string}>>(new Set());
+    let submitCount = 0;
+
+    return {
+      actionScope,
+      formDetails: {
+        id,
+        nested,
+        submitting: computed(() => submits.value.size > 0),
+      },
+      performSubmit(
+        submit,
+        {id: submitId = `${id}:Submit${submitCount++}`, signal} = {},
+      ) {
+        return actionScope.perform(
+          () => {
+            const submitResult = submit();
+
+            if (typeof (submitResult as any)?.then !== 'function') {
+              return submitResult;
+            }
+
+            const submitObject = {id: submitId};
+            const finish = () => {
+              submits.value = removeFromSet(submits.value, submitObject);
+            };
+
+            submits.value = new Set([...submits.value, submitObject]);
+            signal?.addEventListener('abort', finish, {once: true});
+
+            return (async () => {
+              try {
+                const result = await submitResult;
+                return result;
+              } finally {
+                finish();
+              }
+            })() as any;
+          },
+          {id: submitId, signal},
+        );
+      },
+    };
+  }, [id, nested]);
 
   const view = useViewProps(viewProps);
 
@@ -54,10 +111,10 @@ export function Form({
     );
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    onSubmit();
+    performSubmit(onSubmit);
   };
 
   const content = implicitSubmitContent ? (
@@ -71,28 +128,24 @@ export function Form({
 
   return nested ? (
     <>
-      <div
-        {...resolveViewProps(view)}
-        // @ts-expect-error This is a valid prop!
-        inert={loading}
-      >
-        <FormContext.Provider value={formDetails}>
-          {content}
-        </FormContext.Provider>
+      <div {...resolveViewProps(view)}>
+        <ActionScopeContext scope={actionScope}>
+          <FormContext.Provider value={formDetails}>
+            {content}
+          </FormContext.Provider>
+        </ActionScopeContext>
       </div>
       <Portal>
         <form id={id} onSubmit={handleSubmit} />
       </Portal>
     </>
   ) : (
-    <form
-      {...resolveViewProps(view)}
-      id={id}
-      onSubmit={handleSubmit}
-      // @ts-expect-error This is a valid prop!
-      inert={loading}
-    >
-      {content}
+    <form {...resolveViewProps(view)} id={id} onSubmit={handleSubmit}>
+      <ActionScopeContext scope={actionScope}>
+        <FormContext.Provider value={formDetails}>
+          {content}
+        </FormContext.Provider>
+      </ActionScopeContext>
     </form>
   );
 }

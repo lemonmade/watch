@@ -5,6 +5,7 @@ import {signal, effect} from '@preact/signals-core';
 import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
 import {RootLayer} from '../../utilities/layers';
 import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
+import {createActionScope} from '../../utilities/actions';
 
 import systemStyles from '../../system.module.css';
 
@@ -24,7 +25,11 @@ export function Canvas({children}: PropsWithChildren<Props>) {
       },
     };
 
-    return {canvas, idFactory: new UniqueIdFactory()};
+    return {
+      canvas,
+      idFactory: new UniqueIdFactory(),
+      actionScope: createActionScope({id: 'Canvas'}),
+    };
   }, []);
 
   useEffect(() => {

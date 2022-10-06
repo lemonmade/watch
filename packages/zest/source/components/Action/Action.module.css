@@ -180,19 +180,19 @@
     --z-internal-Action-text-color: var(--z-Action-disabled-text-color);
   }
 
-  &:where(.loading) {
-    --z-Icon-base-color: var(--z-Action-loading-icon-color);
+  &:where(.inert) {
+    --z-Icon-base-color: var(--z-Action-inert-icon-color);
 
-    --z-internal-Action-border: var(--z-Action-loading-border);
+    --z-internal-Action-border: var(--z-Action-inert-border);
     --z-internal-Action-background: var(
-      --z-Action-loading-background
+      --z-Action-inert-background
     );
     --z-internal-Action-divider-color: var(
-      --z-Action-loading-divider-color
+      --z-Action-inert-divider-color
     );
-    --z-internal-Action-shadow: var(--z-Action-loading-shadow);
+    --z-internal-Action-shadow: var(--z-Action-inert-shadow);
     --z-internal-Action-text-color: var(
-      --z-Action-loading-text-color
+      --z-Action-inert-text-color
     );
   }
 }
@@ -287,19 +287,19 @@
     );
   }
 
-  &:where(.loading) {
-    --z-Icon-base-color: var(--z-Action-emphasized-loading-icon-color);
+  &:where(.inert) {
+    --z-Icon-base-color: var(--z-Action-emphasized-inert-icon-color);
 
-    --z-internal-Action-border: var(--z-Action-emphasized-loading-border);
+    --z-internal-Action-border: var(--z-Action-emphasized-inert-border);
     --z-internal-Action-background: var(
-      --z-Action-emphasized-loading-background
+      --z-Action-emphasized-inert-background
     );
     --z-internal-Action-divider-color: var(
-      --z-Action-emphasized-loading-divider-color
+      --z-Action-emphasized-inert-divider-color
     );
-    --z-internal-Action-shadow: var(--z-Action-emphasized-loading-shadow);
+    --z-internal-Action-shadow: var(--z-Action-emphasized-inert-shadow);
     --z-internal-Action-text-color: var(
-      --z-Action-emphasized-loading-text-color
+      --z-Action-emphasized-inert-text-color
     );
   }
 }
@@ -374,19 +374,19 @@
     --z-internal-Action-text-color: var(--z-Action-subdued-disabled-text-color);
   }
 
-  &:where(.loading) {
-    --z-Icon-base-color: var(--z-Action-subdued-loading-icon-color);
+  &:where(.inert) {
+    --z-Icon-base-color: var(--z-Action-subdued-inert-icon-color);
 
-    --z-internal-Action-border: var(--z-Action-subdued-loading-border);
+    --z-internal-Action-border: var(--z-Action-subdued-inert-border);
     --z-internal-Action-background: var(
-      --z-Action-subdued-loading-background
+      --z-Action-subdued-inert-background
     );
     --z-internal-Action-divider-color: var(
-      --z-Action-subdued-loading-divider-color
+      --z-Action-subdued-inert-divider-color
     );
-    --z-internal-Action-shadow: var(--z-Action-subdued-loading-shadow);
+    --z-internal-Action-shadow: var(--z-Action-subdued-inert-shadow);
     --z-internal-Action-text-color: var(
-      --z-Action-subdued-loading-text-color
+      --z-Action-subdued-inert-text-color
     );
   }
 }
@@ -481,19 +481,19 @@
     );
   }
 
-  &:where(.loading) {
-    --z-Icon-base-color: var(--z-Action-destructive-loading-icon-color);
+  &:where(.inert) {
+    --z-Icon-base-color: var(--z-Action-destructive-inert-icon-color);
 
-    --z-internal-Action-border: var(--z-Action-destructive-loading-border);
+    --z-internal-Action-border: var(--z-Action-destructive-inert-border);
     --z-internal-Action-background: var(
-      --z-Action-destructive-loading-background
+      --z-Action-destructive-inert-background
     );
     --z-internal-Action-divider-color: var(
-      --z-Action-destructive-loading-divider-color
+      --z-Action-destructive-inert-divider-color
     );
-    --z-internal-Action-shadow: var(--z-Action-destructive-loading-shadow);
+    --z-internal-Action-shadow: var(--z-Action-destructive-inert-shadow);
     --z-internal-Action-text-color: var(
-      --z-Action-destructive-loading-text-color
+      --z-Action-destructive-inert-text-color
     );
   }
 }
@@ -616,14 +616,14 @@
   position: absolute;
   left: 0;
   top: 0;
-  animation: animloader 1.2s ease-out infinite;
+  animation: actionLoadingIcon 1.2s ease-out infinite;
 }
 
 .LoadingIcon::after {
-  animation-delay: 0.6s;
+  animation-delay: -0.6s;
 }
 
-@keyframes animloader {
+@keyframes actionLoadingIcon {
   0% {
     transform: scale(0);
     opacity: 1;
@@ -633,55 +633,6 @@
     opacity: 0;
   }
 }
-
-/* .LoadingIcon {
-  --z-internal-Loading-icon-size: 1.25rem;
-
-  margin-top: calc(var(--z-internal-Loading-icon-size) * -0.25);
-  width: var(--z-internal-Loading-icon-size);
-  height: var(--z-internal-Loading-icon-size);
-  display: block;
-  position: relative;
-  color: #FFF;
-  animation: rotation 1s linear infinite;
-
-  &::before,
-  &::after {
-    content: '';  
-    box-sizing: border-box;
-    position: absolute;
-    width: calc(var(--z-internal-Loading-icon-size) * 0.5);
-    height: calc(var(--z-internal-Loading-icon-size) * 0.5);
-    top: 0;
-    background-color: #FFF;
-    border-radius: 50%;
-    animation: scale50 1s infinite ease-in-out;
-  }
-}
-
-.LoadingIcon::before {
-  top: auto;
-  bottom: 0;
-  opacity: 0.35;
-  animation-delay: 0.5s;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-} 
-@keyframes scale50 {
-  0%, 100% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1);
-  }
-}  */
 
 .ActionContainer {
   display: var(

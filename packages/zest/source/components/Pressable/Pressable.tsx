@@ -47,7 +47,7 @@ export interface Props {
   postPerform?: PostPerformAction | false;
   popover?: ReactNode | false;
   modal?: ReactNode | false;
-  onPress?(): void;
+  onPress?(): void | Promise<void>;
 }
 
 export const Pressable = forwardRef<

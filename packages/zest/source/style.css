@@ -47,12 +47,12 @@
   --z-Action-disabled-text-color: var(--z-text-subdued-color);
   --z-Action-disabled-icon-color: rgb(131 119 155);
   --z-Action-disabled-shadow: none;
-  --z-Action-loading-background: var(--z-Action-background);
-  --z-Action-loading-divider-color: var(--z-Action-divider-color);
-  --z-Action-loading-border: var(--z-Action-border);
-  --z-Action-loading-text-color: var(--z-Action-disabled-text-color);
-  --z-Action-loading-icon-color: var(--z-Action-icon-color);
-  --z-Action-loading-shadow: none;
+  --z-Action-inert-background: var(--z-Action-background);
+  --z-Action-inert-divider-color: var(--z-Action-divider-color);
+  --z-Action-inert-border: var(--z-Action-border);
+  --z-Action-inert-text-color: var(--z-Action-disabled-text-color);
+  --z-Action-inert-icon-color: var(--z-Action-icon-color);
+  --z-Action-inert-shadow: none;
   --z-Action-hovered-background: rgb(48 39 63);
   --z-Action-hovered-divider-color: var(--z-Action-divider-color);
   --z-Action-hovered-border: var(--z-Action-border);
@@ -90,12 +90,12 @@
   --z-Action-subdued-disabled-text-color: var(--z-text-subdued-color);
   --z-Action-subdued-disabled-icon-color: rgb(131 119 155);
   --z-Action-subdued-disabled-shadow: none;
-  --z-Action-subdued-loading-background: var(--z-Action-subdued-background);
-  --z-Action-subdued-loading-divider-color: var(--z-Action-subdued-divider-color);
-  --z-Action-subdued-loading-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-loading-text-color: var(--z-Action-subdued-disabled-text-color);
-  --z-Action-subdued-loading-icon-color: var(--z-Action-subdued-icon-color);
-  --z-Action-subdued-loading-shadow: none;
+  --z-Action-subdued-inert-background: var(--z-Action-subdued-background);
+  --z-Action-subdued-inert-divider-color: var(--z-Action-subdued-divider-color);
+  --z-Action-subdued-inert-border: var(--z-Action-subdued-border);
+  --z-Action-subdued-inert-text-color: var(--z-Action-subdued-disabled-text-color);
+  --z-Action-subdued-inert-icon-color: var(--z-Action-subdued-icon-color);
+  --z-Action-subdued-inert-shadow: none;
   --z-Action-subdued-hovered-background: rgb(48 39 63);
   --z-Action-subdued-hovered-divider-color: var(--z-Action-subdued-divider-color);
   --z-Action-subdued-hovered-border: var(--z-Action-subdued-border);
@@ -135,12 +135,12 @@
   --z-Action-emphasized-disabled-text-color: rgb(184 150 174);
   --z-Action-emphasized-disabled-icon-color: var(--z-Action-emphasized-disabled-text-color);
   --z-Action-emphasized-disabled-shadow: none;
-  --z-Action-emphasized-loading-background: var(--z-Action-emphasized-background);
-  --z-Action-emphasized-loading-divider-color: var(--z-Action-emphasized-divider-color);
-  --z-Action-emphasized-loading-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-loading-text-color: rgb(210 189 204);
-  --z-Action-emphasized-loading-icon-color: var(--z-Action-emphasized-icon-color);
-  --z-Action-emphasized-loading-shadow: none;
+  --z-Action-emphasized-inert-background: var(--z-Action-emphasized-background);
+  --z-Action-emphasized-inert-divider-color: var(--z-Action-emphasized-divider-color);
+  --z-Action-emphasized-inert-border: var(--z-Action-emphasized-border);
+  --z-Action-emphasized-inert-text-color: rgb(210 189 204);
+  --z-Action-emphasized-inert-icon-color: var(--z-Action-emphasized-icon-color);
+  --z-Action-emphasized-inert-shadow: none;
   --z-Action-emphasized-hovered-background: rgb(192 51 152);
   --z-Action-emphasized-hovered-divider-color: var(
     --z-Action-emphasized-divider-color
@@ -198,12 +198,12 @@
   --z-Action-destructive-disabled-text-color: rgb(172 144 152);
   --z-Action-destructive-disabled-icon-color: rgb(172 144 152);
   --z-Action-destructive-disabled-shadow: var(--z-Action-destructive-shadow);
-  --z-Action-destructive-loading-background: var(--z-Action-destructive-background);
-  --z-Action-destructive-loading-divider-color: var(--z-Action-destructive-divider-color);
-  --z-Action-destructive-loading-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-loading-text-color: rgb(185 150 159);
-  --z-Action-destructive-loading-icon-color: var(--z-Action-destructive-icon-color);
-  --z-Action-destructive-loading-shadow: none;
+  --z-Action-destructive-inert-background: var(--z-Action-destructive-background);
+  --z-Action-destructive-inert-divider-color: var(--z-Action-destructive-divider-color);
+  --z-Action-destructive-inert-border: var(--z-Action-destructive-border);
+  --z-Action-destructive-inert-text-color: rgb(185 150 159);
+  --z-Action-destructive-inert-icon-color: var(--z-Action-destructive-icon-color);
+  --z-Action-destructive-inert-shadow: none;
   --z-Action-destructive-hovered-background: rgb(138 30 60);
   --z-Action-destructive-hovered-divider-color: var(
     --z-Action-destructive-divider-color
