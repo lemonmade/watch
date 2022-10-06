@@ -29,6 +29,7 @@ import {
   Tag,
   Icon,
   IconHighlight,
+  PrettyDate,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -195,11 +196,7 @@ function NextEpisode({
                 )}
                 {firstAired && (
                   <Text emphasis="subdued">
-                    {firstAired.toLocaleDateString(undefined, {
-                      month: 'long',
-                      year: 'numeric',
-                      day: 'numeric',
-                    })}
+                    <PrettyDate date={firstAired} />
                   </Text>
                 )}
               </BlockStack>
@@ -673,7 +670,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       detail={<Icon source="disclosureInlineEnd" />}
       modal={<PreviousActionSkipEditModal action={action} />}
     >
-      <BlockStack spacing="tiny">
+      <BlockStack spacing="small">
         <Text emphasis>{media.title}</Text>
         <Text emphasis="subdued">
           Season {media.season.number}, Episode {media.number}
@@ -688,17 +685,6 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
 
 function PreviousActionSkipEditModal({action}: {action: SkipAction}) {
   return <Modal padding>{JSON.stringify(action.media)}</Modal>;
-}
-
-function PrettyDate({date}: {date: string | Date}) {
-  const dateString = typeof date === 'string' ? date : date.toISOString();
-
-  const content = useMemo(
-    () => new Date(dateString).toLocaleDateString(),
-    [dateString],
-  );
-
-  return <>{content}</>;
 }
 
 function SettingsSection({

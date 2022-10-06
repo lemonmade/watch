@@ -1,5 +1,7 @@
 import {useMemo, type ReactNode} from 'react';
 import {
+  useComputed,
+  useSignal,
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
@@ -21,10 +23,16 @@ import {Popover} from '../Popover';
 import {Menu} from '../Menu';
 import {Text} from '../Text';
 import {TextField} from '../TextField';
+import {View} from '../View';
+
+import {
+  prettyDate,
+  shortDate,
+  weekdayDetails,
+  type WeekdayDetails,
+} from '../../utilities/dates';
 
 import styles from './DatePicker.module.css';
-import {View} from '../View';
-import {useComputed, useSignal} from '@watching/react-signals';
 
 interface Props {
   id?: string;
@@ -82,7 +90,7 @@ function DatePickerLabel({date}: {date: Date}) {
       return weekdayDetails(date.getDay()).label;
     }
 
-    return shortDate(date, {weekday: true});
+    return prettyDate(date);
   }, [date]);
 
   return <Text emphasis>{content}</Text>;
@@ -134,9 +142,7 @@ function DatePickerPopover({
               label="Date"
               labelStyle="placeholder"
               value={dateSearch}
-              onInput={(newValue) => {
-                dateSearch.value = newValue;
-              }}
+              changeTiming="input"
             />
           }
         >
@@ -263,36 +269,6 @@ function dateSuggestionsForSearch(search: string): DateSuggestion[] {
   return suggestions;
 }
 
-interface WeekdayDetails {
-  day: number;
-  previous: Date;
-  label: string;
-}
-
-const WEEKDAY_CACHE = new Map<number, WeekdayDetails>();
-
-function weekdayDetails(weekday: number) {
-  if (WEEKDAY_CACHE.has(weekday)) {
-    return WEEKDAY_CACHE.get(weekday)!;
-  }
-
-  const previous = previousDay(Date.now(), weekday);
-
-  const label = new Intl.DateTimeFormat(undefined, {
-    weekday: 'long',
-  }).format(previous);
-
-  const details: WeekdayDetails = {
-    day: weekday,
-    previous,
-    label,
-  };
-
-  WEEKDAY_CACHE.set(weekday, details);
-
-  return details;
-}
-
 function weekdaySuggestion(date: Date): DateSuggestion {
   return {
     date,
@@ -302,20 +278,6 @@ function weekdaySuggestion(date: Date): DateSuggestion {
         : shortDate(date, {weekday: true}),
     detail: daysAgo(date),
   };
-}
-
-function shortDate(
-  date: Date,
-  {
-    weekday = false,
-    month = 'short',
-  }: {weekday?: boolean; month?: 'short' | 'long'} = {},
-) {
-  return new Intl.DateTimeFormat(undefined, {
-    month,
-    day: 'numeric',
-    weekday: weekday ? 'short' : undefined,
-  }).format(date);
 }
 
 function daysAgo(date: Date) {

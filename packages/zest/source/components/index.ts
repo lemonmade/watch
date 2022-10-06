@@ -22,6 +22,7 @@ export {Popover} from './Popover';
 export {Portal} from './Portal';
 export {Poster} from './Poster';
 export {Pressable} from './Pressable';
+export {PrettyDate} from './PrettyDate';
 export {Rating} from './Rating';
 export {Section} from './Section';
 export {Select} from './Select';
