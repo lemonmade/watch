@@ -39,7 +39,7 @@ export function prettyDate(date: Date) {
     ? 'Yesterday'
     : differenceInDays < 7
     ? weekdayDetails(date.getDay()).label
-    : differenceInDays < 60
+    : differenceInDays < 30
     ? shortDate(date, {weekday: true})
     : new Intl.DateTimeFormat(undefined, {
         month: 'long',
