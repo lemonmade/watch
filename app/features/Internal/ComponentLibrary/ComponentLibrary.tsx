@@ -403,7 +403,9 @@ function FormComponents() {
         </ChoiceList>
 
         <InlineStack spacing>
+          <Rating readonly />
           <Rating />
+          <Rating size="large" />
           <DatePickerExample />
         </InlineStack>
       </BlockStack>

@@ -1,68 +1,90 @@
 .Rating {
-  --z-Rating-star-gap: 0.3rem;
-  --z-Rating-star-size: 1.75rem;
-  --z-Rating-star-fill: yellow;
+  --z-Rating-internal-star-gap: 0.15rem;
+  --z-internal-Rating-star-size: 1rem;
+  --z-internal-Rating-star-filled-color: rgb(235 234 85);
+  --z-internal-Rating-star-was-filled-color: rgb(144 143 42);
+  --z-internal-Rating-star-unfilled-color: rgb(133 123 151);
+  --z-internal-Rating-star-color: var(--z-internal-Rating-star-unfilled-color);
 
-  display: inline-block;
-  border-radius: var(--z-corner-radius-base);
-  background: var(--z-Action-background);
-  padding: var(--z-spacing-tiny) var(--z-spacing-small);
+  display: inline-flex;
   outline: none;
   touch-action: none;
   user-select: none;
+  padding: var(--z-spacing-tiny) 0;
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
-.Rating:focus,
-.Rating:hover {
-  background: var(--z-Action-hovered-background);
+.interactive {
+  --z-internal-Rating-star-size: calc(var(--z-Action-minimum-size) - (2 * var(--z-spacing-small)));
+
+  border-radius: var(--z-corner-radius-base);
+  background: var(--z-Action-background);
+  padding: var(--z-spacing-small);
+
+  &:focus,
+  &:hover {
+    background: var(--z-Action-hovered-background);
+  }
+
+  &:active,
+  &:focus-visible {
+    transform: scale(0.9);
+  }
 }
 
-.Rating:active,
-.Rating:focus {
-  transform: scale(0.9);
+.sizeLarge {
+  --z-internal-Rating-star-size: 2rem;
+  --z-Rating-internal-star-gap: 0.3rem;
 }
 
 .StarContainer {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  min-height: var(--z-Action-minimum-size);
+  gap: var(--z-Rating-internal-star-gap);
   pointer-events: none;
 }
 
 .Star {
-  height: var(--z-Rating-star-size);
-  width: var(--z-Rating-star-size);
+  position: relative;
+  display: inline-block;
+  block-size: var(--z-internal-Rating-star-size);
+  inline-size: var(--z-internal-Rating-star-size);
 }
 
-.Star + .Star {
-  margin-left: var(--z-Rating-star-gap);
+.Star-fillFull > .StarIcon,
+.Star-fillHalfAndHalf > .StarIcon,
+.Star-fillPartial > .StarIcon:first-of-type {
+  --z-internal-Rating-star-color: var(--z-internal-Rating-star-filled-color);
 }
 
-.Star-fillPartial .StarPath:first-of-type {
-  fill: var(--z-Rating-star-fill);
+.Star-fillFullInverse > .StarIcon,
+.Star-fillPartialInverse > .StarIcon:first-of-type,
+.Star-fillHalfAndHalf > .StarIcon:not(:first-of-type) {
+  --z-internal-Rating-star-color: var(--z-internal-Rating-star-was-filled-color);
 }
 
-.Star-fillFull .StarPath,
-.Star-fillHalfAndHalf .StarPath {
-  fill: var(--z-Rating-star-fill);
-}
+.StarIcon {
+  z-index: 5;
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  color: var(--z-internal-Rating-star-color);
+  transition: fill 0.1s ease;
+  block-size: var(--z-internal-Rating-star-size);
+  inline-size: var(--z-internal-Rating-star-size);
+  overflow: hidden;
 
-.Star-fillFullInverse .StarPath {
-  fill: var(--z-Rating-star-fill);
-  opacity: 0.3;
-}
+  & > svg {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    block-size: var(--z-internal-Rating-star-size);
+    inline-size: var(--z-internal-Rating-star-size);
+  }
 
-.Star-fillPartialInverse .StarPath:first-of-type {
-  fill: var(--z-Rating-star-fill);
-  opacity: 0.3;
-}
-
-.Star-fillHalfAndHalf .StarPath:not(:first-of-type) {
-  opacity: 0.3;
-}
-
-.StarPath {
-  fill: rgb(120 120 120);
+  &:first-child {
+    z-index: 10;
+    inline-size: 50%;
+  }
 }

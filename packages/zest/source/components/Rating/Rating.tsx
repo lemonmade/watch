@@ -5,7 +5,7 @@ import {
   type KeyboardEventHandler,
   type PointerEventHandler,
 } from 'react';
-import {classes} from '@lemon/css';
+import {classes, variation} from '@lemon/css';
 import {
   resolveSignalOrValue,
   useSignal,
@@ -16,7 +16,7 @@ import styles from './Rating.module.css';
 
 export interface Props {
   value?: SignalOrValue<number | undefined>;
-  size?: 'small' | 'base';
+  size?: 'base' | 'large';
   onChange?(value: number | undefined): void;
   readonly?: SignalOrValue<boolean>;
 }
@@ -42,13 +42,40 @@ export function Rating(props: Props) {
   );
 }
 
-function ReadonlyRating({value}: Pick<Props, 'value'>) {
+function ReadonlyRating({size, value}: Pick<Props, 'size' | 'value'>) {
   const resolvedValue = resolveSignalOrValue(value);
 
-  return <div>Rating: {resolvedValue == null ? 'unset' : resolvedValue}</div>;
+  return (
+    <div
+      className={classes(
+        styles.Rating,
+        size && styles[variation('size', size)],
+      )}
+    >
+      <div className={styles.StarContainer}>
+        <Star fill={fillForValueInRange(resolvedValue, resolvedValue, 0, 20)} />
+        <Star
+          fill={fillForValueInRange(resolvedValue, resolvedValue, 20, 40)}
+        />
+        <Star
+          fill={fillForValueInRange(resolvedValue, resolvedValue, 40, 60)}
+        />
+        <Star
+          fill={fillForValueInRange(resolvedValue, resolvedValue, 60, 80)}
+        />
+        <Star
+          fill={fillForValueInRange(resolvedValue, resolvedValue, 80, 100)}
+        />
+      </div>
+    </div>
+  );
 }
 
-export const EditableRating = memo(function Rating({value, onChange}: Props) {
+export const EditableRating = memo(function Rating({
+  size,
+  value,
+  onChange,
+}: Props) {
   const starContainer = useRef<null | HTMLDivElement>(null);
   const resolvedValue = resolveSignalOrValue(value);
   const inProgressValue = useSignal<number | undefined>(undefined);
@@ -152,7 +179,11 @@ export const EditableRating = memo(function Rating({value, onChange}: Props) {
 
   return (
     <div
-      className={styles.Rating}
+      className={classes(
+        styles.Rating,
+        styles.interactive,
+        size && styles[variation('size', size)],
+      )}
       tabIndex={0}
       role="slider"
       aria-valuemax={100}
@@ -252,12 +283,7 @@ interface StarProps {
 
 const Star = memo(function Star({fill}: StarProps) {
   return (
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <span
       className={classes(
         styles.Star,
         fill === StarFill.Full && styles['Star-fillFull'],
@@ -265,16 +291,30 @@ const Star = memo(function Star({fill}: StarProps) {
         fill === StarFill.FullInverse && styles['Star-fillFullInverse'],
         fill === StarFill.PartialInverse && styles['Star-fillPartialInverse'],
         fill === StarFill.HalfAndHalf && styles['Star-fillHalfAndHalf'],
+        fill === StarFill.None && styles['Star-none'],
       )}
     >
-      <path
-        d="M16 26.2662L7.29927 30.7148C7.0073 30.8859 6.77372 30.943 6.54015 30.943C6.24817 30.943 6.07299 30.8289 5.9562 30.6578C5.83942 30.4867 5.78102 30.2586 5.78102 29.9734C5.78102 29.9163 5.78102 29.7452 5.83942 29.5741L7.47445 20.1635L0.467153 13.4905C0.116788 13.1483 0 12.8631 0 12.5779C0 12.1217 0.350365 11.8365 1.10949 11.7224L10.8029 10.3536L15.1241 1.79848C15.3577 1.28517 15.6496 1 16 1V26.2662Z"
-        className={styles.StarPath}
-      />
-      <path
-        d="M16 26.2662L24.7007 30.7148C24.9927 30.8859 25.2263 30.943 25.4599 30.943C25.7518 30.943 25.927 30.8289 26.0438 30.6578C26.1606 30.4867 26.219 30.2586 26.219 29.9734C26.219 29.9163 26.219 29.7452 26.1606 29.5741L24.5255 20.1635L31.5328 13.4905C31.8832 13.1483 32 12.8631 32 12.5779C32 12.1217 31.6496 11.8365 30.8905 11.7224L21.1971 10.3536L16.8759 1.79848C16.6423 1.28517 16.3504 1 16 1V26.2662Z"
-        className={styles.StarPath}
-      />
-    </svg>
+      <StarIcon />
+      <StarIcon />
+    </span>
   );
 });
+
+function StarIcon() {
+  return (
+    <span className={styles.StarIcon}>
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7.29927 30.7714L16 26.3143L24.7007 30.7714C24.9927 30.9428 25.2263 31 25.4599 31C25.7518 31 25.927 30.8857 26.0438 30.7143C26.1606 30.5428 26.219 30.3143 26.219 30.0286C26.219 29.9713 26.219 29.7999 26.1606 29.6285L24.5255 20.2L31.5328 13.5143C31.8832 13.1714 32 12.8857 32 12.5999C32 12.1429 31.6496 11.8571 30.8905 11.7428L21.1971 10.3714L16.8759 1.8C16.6423 1.28571 16.3504 1 16 1C15.6496 1 15.3577 1.28571 15.1241 1.8L10.8029 10.3714L1.10949 11.7428C0.350365 11.8571 0 12.1429 0 12.5999C0 12.8857 0.116788 13.1714 0.467153 13.5143L7.47445 20.2L5.83942 29.6285C5.78102 29.7999 5.78102 29.9713 5.78102 30.0286C5.78102 30.3143 5.83942 30.5428 5.9562 30.7143C6.07299 30.8857 6.24817 31 6.54015 31C6.77372 31 7.0073 30.9428 7.29927 30.7714Z"
+          fill="currentColor"
+        />
+      </svg>
+    </span>
+  );
+}

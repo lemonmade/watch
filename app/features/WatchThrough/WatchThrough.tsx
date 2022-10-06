@@ -311,6 +311,7 @@ function WatchEpisodeForm({
 function EpisodeRating({value: rating}: {value: Signal<number | undefined>}) {
   return (
     <Rating
+      size="large"
       value={rating.value ?? undefined}
       onChange={(newRating) => {
         rating.value = newRating === 0 ? undefined : newRating;
@@ -619,7 +620,7 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
   if (media.__typename !== 'Episode') return null;
 
   const ratingContent =
-    rating != null ? <Rating value={rating} size="small" readonly /> : null;
+    rating != null ? <Rating value={rating} readonly /> : null;
 
   const notesContent = notes ? <Tag>Notes</Tag> : null;
 
