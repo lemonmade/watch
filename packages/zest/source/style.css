@@ -8,12 +8,15 @@
   --z-border-base-color: rgb(125 108 152);
   --z-border-base-size: 1px;
   --z-border-base-style: solid;
+  --z-border-base: var(--z-border-base-size) var(--z-border-base-style) var(--z-border-base-color);
   --z-border-subdued-color: rgb(63 53 78);
   --z-border-subdued-size: 1px;
   --z-border-subdued-style: solid;
+  --z-border-subdued: var(--z-border-subdued-size) var(--z-border-subdued-style) var(--z-border-subdued-color);
   --z-border-emphasized-color: white;
   --z-border-emphasized-size: 1px;
   --z-border-emphasized-style: solid;
+  --z-border-emphasized: var(--z-border-emphasized-size) var(--z-border-emphasized-style) var(--z-border-emphasized-color);
 
   --z-corner-radius-small: 4px;
   --z-corner-radius-base: 6px;

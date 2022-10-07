@@ -3,6 +3,7 @@
   left: 50%;
   background: var(--z-surface-background-base);
   border-radius: var(--z-corner-radius-base);
+  border: var(--z-border-subdued);
 
   transform: translate(-50%, -50%);
 

@@ -1,6 +1,7 @@
 .Popover {
   background: var(--z-overlay-background-base);
   border-radius: var(--z-corner-radius-base);
+  border: var(--z-border-subdued);
   box-shadow: 0 2px 5px rgba(0 0 0 / 50%);
   max-width: 20rem;
   transform: scale(100%);
