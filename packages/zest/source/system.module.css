@@ -41,6 +41,10 @@
   --z-internal-container-inline-size: 100%;
 }
 
+.inlineAlignmentReset {
+  --z-internal-inline-alignment: initial;
+}
+
 .inlineAlignmentStart {
   --z-internal-inline-alignment: start;
 }

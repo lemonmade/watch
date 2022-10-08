@@ -67,6 +67,7 @@ fragment WatchThroughDetails on WatchThrough {
     number
     overview
     firstAired
+    hasAired
     still {
       source
     }

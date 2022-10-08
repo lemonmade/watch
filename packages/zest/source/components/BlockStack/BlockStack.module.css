@@ -5,17 +5,17 @@
 }
 
 .alignStretch {
-  justify-items: stretch;
+  --z-internal-inline-alignment: initial;
 }
 
 .alignStart {
-  justify-items: start;
+  --z-internal-inline-alignment: start;
 }
 
 .alignEnd {
-  justify-items: end;
+  --z-internal-inline-alignment: end;
 }
 
 .alignCenter {
-  justify-items: center;
+  --z-internal-inline-alignment: center;
 }

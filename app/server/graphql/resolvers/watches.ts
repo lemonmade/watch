@@ -814,7 +814,9 @@ async function updateWatchThrough(
   const to = sliceFromBuffer(watchThrough.to);
 
   const nextEpisodeInSeasonNumber =
-    episodeNumber === season.episodeCount ? undefined : episodeNumber + 1;
+    episodeNumber === season.episodeCount && season.status === 'ENDED'
+      ? undefined
+      : episodeNumber + 1;
 
   const updatedAt =
     'watch' in action
@@ -826,9 +828,7 @@ async function updateWatchThrough(
   if (
     to.season === season.number &&
     (to.episode === episodeNumber ||
-      (to.episode == null &&
-        nextEpisodeInSeasonNumber == null &&
-        season.status === 'ENDED'))
+      (to.episode == null && nextEpisodeInSeasonNumber == null))
   ) {
     const [updatedWatchThrough] = await Promise.all([
       prisma.watchThrough.update({

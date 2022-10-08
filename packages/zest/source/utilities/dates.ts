@@ -37,6 +37,20 @@ export function prettyDate(date: Date) {
     ? 'Today'
     : differenceInDays === 1
     ? 'Yesterday'
+    : differenceInDays === -1
+    ? 'Tomorrow'
+    : differenceInDays < -7
+    ? new Intl.DateTimeFormat(undefined, {
+        month: 'long',
+        day: 'numeric',
+        year: differenceInDays < -365 ? undefined : 'numeric',
+      }).format(date)
+    : differenceInDays < 0
+    ? new Intl.DateTimeFormat(undefined, {
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+      }).format(date)
     : differenceInDays < 7
     ? weekdayDetails(date.getDay()).label
     : differenceInDays < 30

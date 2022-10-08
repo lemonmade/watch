@@ -1,3 +1,4 @@
 .TextBlock {
   margin: 0;
+  text-align: var(--z-internal-inline-alignment);
 }

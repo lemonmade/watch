@@ -18,6 +18,7 @@ type Episode {
   season: Season!
   number: Int!
   firstAired: Date
+  hasAired: Boolean!
   still: Image
   overview: String
 }

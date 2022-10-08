@@ -10,6 +10,7 @@ import {
   type BackgroundKeyword,
   type BorderKeyword,
   type CornerRadiusKeyword,
+  type BasicAlignmentKeyword,
 } from '../../system';
 import systemStyles from '../../system.module.css';
 
@@ -31,6 +32,8 @@ export interface Props {
   border?: boolean | BorderKeyword | RawValue;
   background?: boolean | BackgroundKeyword | RawValue;
   cornerRadius?: boolean | CornerRadiusKeyword | RawValue;
+
+  inlineAlignment?: BasicAlignmentKeyword | 'reset';
 }
 
 const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
@@ -96,6 +99,7 @@ export function useViewProps({
   cornerRadius,
   visibility,
   accessibilityVisibility,
+  inlineAlignment,
 }: Props = {}): DOMPropController {
   let className = classes(systemStyles.resetOrientation, styles.View!);
   let domStyles: DOMPropController['styles'];
@@ -247,6 +251,10 @@ export function useViewProps({
 
     const systemClassName = CORNER_RADIUS_CLASS_MAP.get(normalizedCornerRadius);
     addClassName(systemClassName);
+  }
+
+  if (inlineAlignment) {
+    addClassName(systemStyles[variation('inlineAlignment', inlineAlignment)]);
   }
 
   // concentric border radius is handled with a class

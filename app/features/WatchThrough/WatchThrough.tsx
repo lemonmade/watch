@@ -113,7 +113,7 @@ function WatchThroughWithData({
         }
       >
         <BlockStack spacing="huge">
-          {nextEpisode && (
+          {nextEpisode != null && nextEpisode.hasAired ? (
             <NextEpisode
               id={nextEpisode.id}
               title={nextEpisode.title}
@@ -130,13 +130,38 @@ function WatchThroughWithData({
               watchingSingleSeason={watchingSingleSeason}
               onUpdate={() => onUpdate()}
             />
-          )}
+          ) : nextEpisode != null || status === 'ONGOING' ? (
+            <UpToDate nextEpisode={nextEpisode} />
+          ) : null}
+
           {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
 
           <SettingsSection id={id} settings={settings} onUpdate={onUpdate} />
         </BlockStack>
       </Page>
     </PageDetailsContext.Provider>
+  );
+}
+
+function UpToDate({nextEpisode}: {nextEpisode?: WatchThrough['nextEpisode']}) {
+  return (
+    <Section padding="large" border="subdued" cornerRadius>
+      <BlockStack spacing align="center">
+        <Heading level={4}>You’re all caught up!</Heading>
+
+        {nextEpisode?.firstAired == null ? (
+          <TextBlock>The next episode will appear here once it airs.</TextBlock>
+        ) : (
+          <TextBlock>
+            The next episode airs{' '}
+            <Text emphasis>
+              <PrettyDate date={nextEpisode.firstAired} />
+            </Text>
+            .
+          </TextBlock>
+        )}
+      </BlockStack>
+    </Section>
   );
 }
 

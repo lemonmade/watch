@@ -172,6 +172,17 @@ export const Episode: EpisodeResolver = {
   still({stillUrl}) {
     return stillUrl ? {source: stillUrl} : null;
   },
+  async hasAired({firstAired, seasonId}, _, {prisma}) {
+    if (firstAired != null) {
+      return firstAired.getTime() < Date.now();
+    }
+
+    const season = await prisma.season.findFirstOrThrow({
+      where: {id: seasonId},
+    });
+
+    return season.status !== 'CONTINUING';
+  },
   ...EpisodeWatches,
   ...EpisodeLists,
 };
