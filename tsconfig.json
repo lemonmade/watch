@@ -9,7 +9,7 @@
   ],
   "compilerOptions": {
     "outDir": "build/typescript/workspace",
-    "module": "commonjs",
+    "module": "ESNext",
     "lib": ["DOM", "ESNext"],
     "paths": {"global/*": ["./global/*"]}
   },

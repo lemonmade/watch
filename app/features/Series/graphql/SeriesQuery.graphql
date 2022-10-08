@@ -19,6 +19,8 @@ query Series($id: ID, $handle: String) {
       firstAired
       episodeCount
       isSpecials
+      isUpcoming
+      isCurrentlyAiring
       poster {
         source
       }

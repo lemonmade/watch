@@ -3,10 +3,11 @@
   "compilerOptions": {
     "outDir": "build/typescript",
     "paths": {
-      "~/shared/*": ["../shared/*"]
+      "~/shared/*": ["../shared/*"],
+      "~/global/*": ["../../global/*"]
     }
   },
   "include": ["**/*"],
   "exclude": ["quilt.project.ts", "infrastructure", "build"],
-  "references": [{"path": "../shared"}]
+  "references": [{"path": "../shared"}, {"path": "../../global"}]
 }

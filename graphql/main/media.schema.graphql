@@ -7,6 +7,8 @@ extend type Query {
 
 extend type Mutation {
   updateSeason(id: ID!, status: SeasonStatus): UpdateSeasonPayload!
+  deleteSeries(id: ID!): DeleteSeriesPayload!
+  synchronizeSeriesWithTmdb(id: ID!): SynchronizeSeriesWithTmdbPayload!
 }
 
 type Episode {
@@ -47,6 +49,8 @@ type Season {
   poster: Image
   overview: String
   isSpecials: Boolean!
+  isUpcoming: Boolean!
+  isCurrentlyAiring: Boolean!
   status: SeasonStatus!
 }
 
@@ -78,4 +82,12 @@ type Series {
 
 type UpdateSeasonPayload {
   season: Season
+}
+
+type DeleteSeriesPayload {
+  deletedId: ID
+}
+
+type SynchronizeSeriesWithTmdbPayload {
+  series: Series
 }

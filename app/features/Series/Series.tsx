@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {type ComponentProps, useMemo} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {
   Action,
@@ -15,6 +15,8 @@ import {
   Image,
   raw,
   Tag,
+  Modal,
+  TextBlock,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -33,6 +35,8 @@ import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
+import deleteSeriesMutation from './graphql/DeleteSeriesMutation.graphql';
+import synchronizeSeriesWithTmdbMutation from './graphql/SynchronizeSeriesWithTmdbMutation.graphql';
 import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutation.graphql';
 import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
@@ -58,7 +62,9 @@ export default function Series({id, handle}: Props) {
     <SeriesWithData
       series={series}
       clipsInstallations={clipsInstallations}
-      onUpdate={() => refetch()}
+      onUpdate={async () => {
+        await refetch();
+      }}
     />
   );
 }
@@ -70,7 +76,7 @@ function SeriesWithData({
 }: {
   series: NonNullable<SeriesQueryData['series']>;
   clipsInstallations: SeriesQueryData['clipsInstallations'];
-  onUpdate(): void;
+  onUpdate(): Promise<void>;
 }) {
   const localDevelopmentClips = useLocalDevelopmentClips(
     'Series.Details.RenderAccessory',
@@ -88,14 +94,24 @@ function SeriesWithData({
     <Page
       heading={series.name}
       menu={
-        <Menu label="See series in…">
-          <Action to={series.tmdbUrl} target="new" icon="arrowEnd">
-            TMDB
-          </Action>
-          <Action to={series.imdbUrl} target="new" icon="arrowEnd">
-            IMDB
-          </Action>
-        </Menu>
+        <>
+          <Menu label="See series in…">
+            <Action to={series.tmdbUrl} target="new" icon="arrowEnd">
+              TMDB
+            </Action>
+            <Action to={series.imdbUrl} target="new" icon="arrowEnd">
+              IMDB
+            </Action>
+          </Menu>
+
+          <Menu label="Internal…">
+            <SynchronizeSeriesWithTmdbAction
+              seriesId={series.id}
+              onUpdate={onUpdate}
+            />
+            <DeleteSeriesAction seriesId={series.id} />
+          </Menu>
+        </>
       }
     >
       <BlockStack spacing="huge">
@@ -201,7 +217,9 @@ function WatchlistAction({
   id,
   inWatchLater,
   onUpdate,
-}: Pick<SeriesQueryData.Series, 'id' | 'inWatchLater'> & {onUpdate(): void}) {
+}: Pick<SeriesQueryData.Series, 'id' | 'inWatchLater'> & {
+  onUpdate(): Promise<void>;
+}) {
   const watchSeriesLater = useMutation(watchSeriesLaterMutation);
   const removeSeriesFromWatchLater = useMutation(
     removeSeriesFromWatchLaterMutation,
@@ -233,11 +251,80 @@ function WatchlistAction({
   );
 }
 
+function SynchronizeSeriesWithTmdbAction({
+  seriesId,
+  onUpdate,
+}: {
+  seriesId: string;
+  onUpdate(): Promise<void>;
+}) {
+  const sync = useMutation(synchronizeSeriesWithTmdbMutation);
+
+  return (
+    <Action
+      icon="sync"
+      onPress={async () => {
+        await sync.mutateAsync({id: seriesId});
+        await onUpdate();
+      }}
+    >
+      Synchronize with TMDB
+    </Action>
+  );
+}
+
+function DeleteSeriesAction(props: ComponentProps<typeof DeleteSeriesModal>) {
+  return (
+    <Action
+      icon="delete"
+      role="destructive"
+      modal={<DeleteSeriesModal {...props} />}
+    >
+      Delete…
+    </Action>
+  );
+}
+
+function DeleteSeriesModal({seriesId}: {seriesId: string}) {
+  const navigate = useNavigate();
+  const deleteSeries = useMutation(deleteSeriesMutation);
+
+  return (
+    <Modal padding>
+      <BlockStack spacing="large">
+        <Heading>Delete series</Heading>
+        <TextBlock>
+          This will fail if any watchthroughs or lists reference the series.
+        </TextBlock>
+        <InlineStack alignment="end">
+          <Action
+            role="destructive"
+            onPress={async () => {
+              const result = await deleteSeries.mutateAsync({id: seriesId});
+
+              if (result?.deleteSeries.deletedId == null) {
+                // TODO: handle error
+                return;
+              }
+
+              navigate('/app');
+            }}
+          >
+            Delete
+          </Action>
+        </InlineStack>
+      </BlockStack>
+    </Modal>
+  );
+}
+
 function SeasonsSection({
   id: seriesId,
   seasons,
   onUpdate,
-}: Pick<SeriesQueryData.Series, 'id' | 'seasons'> & {onUpdate(): void}) {
+}: Pick<SeriesQueryData.Series, 'id' | 'seasons'> & {
+  onUpdate(): Promise<void>;
+}) {
   if (seasons.length === 0) return null;
 
   const lastSeason = seasons[seasons.length - 1]!;
@@ -251,6 +338,8 @@ function SeasonsSection({
             id,
             number,
             isSpecials,
+            isUpcoming,
+            isCurrentlyAiring,
             status,
             firstAired,
             poster,
@@ -291,16 +380,22 @@ function SeasonsSection({
                       </Text>
                     )}
 
-                    {status === 'CONTINUING' ? <Tag>Ongoing</Tag> : null}
+                    {isCurrentlyAiring ? (
+                      <Tag>Ongoing</Tag>
+                    ) : isUpcoming ? (
+                      <Tag>Upcoming</Tag>
+                    ) : null}
                   </InlineStack>
                 ) : null}
               </BlockStack>
 
-              <SeasonWatchThroughAction
-                seriesId={seriesId}
-                season={season}
-                lastSeason={lastSeason}
-              />
+              {isUpcoming ? null : (
+                <SeasonWatchThroughAction
+                  seriesId={seriesId}
+                  season={season}
+                  lastSeason={lastSeason}
+                />
+              )}
             </Layout>
           );
         })}
@@ -314,7 +409,7 @@ function SeasonActions({
   onUpdate,
 }: {
   season: SeriesQueryData.Series.Seasons;
-  onUpdate(): void;
+  onUpdate(): Promise<void>;
 }) {
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
 
@@ -484,7 +579,9 @@ function SettingsSection({
   id,
   subscription,
   onUpdate,
-}: Pick<SeriesQueryData.Series, 'id' | 'subscription'> & {onUpdate(): void}) {
+}: Pick<SeriesQueryData.Series, 'id' | 'subscription'> & {
+  onUpdate(): Promise<void>;
+}) {
   const subscribeToSeries = useMutation(subscribeToSeriesMutation);
   const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
 
@@ -546,7 +643,7 @@ function SpoilerAvoidanceSection({
 }: {
   id: string;
   spoilerAvoidance: SeriesQueryData.Series.Subscription.Settings['spoilerAvoidance'];
-  onUpdate(): void;
+  onUpdate(): Promise<void>;
 }) {
   const spoilerAvoidanceSignal = useSignal(spoilerAvoidance, [
     spoilerAvoidance,

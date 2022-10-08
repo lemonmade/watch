@@ -3,6 +3,7 @@ import type {
   Season as DatabaseSeason,
   Episode as DatabaseEpisode,
 } from '@prisma/client';
+import {updateSeries} from '~/global/tmdb';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
@@ -135,6 +136,19 @@ export const Season: SeasonResolver = {
   isSpecials({number}) {
     return number === 0;
   },
+  isUpcoming({status, firstAired}) {
+    return (
+      status === 'CONTINUING' &&
+      (firstAired == null || Date.now() < firstAired.getTime())
+    );
+  },
+  isCurrentlyAiring({status, firstAired}) {
+    return (
+      status === 'CONTINUING' &&
+      firstAired != null &&
+      Date.now() > firstAired.getTime()
+    );
+  },
   ...SeasonLists,
   ...SeasonWatches,
 };
@@ -163,7 +177,10 @@ export const Episode: EpisodeResolver = {
   ...EpisodeLists,
 };
 
-export const Mutation: Pick<MutationResolver, 'updateSeason'> = {
+export const Mutation: Pick<
+  MutationResolver,
+  'updateSeason' | 'deleteSeries' | 'synchronizeSeriesWithTmdb'
+> = {
   // Should be gated on permissions, and should update watchthroughs async
   async updateSeason(_, {id: gid, status}, {prisma}) {
     const {id} = fromGid(gid);
@@ -227,5 +244,16 @@ export const Mutation: Pick<MutationResolver, 'updateSeason'> = {
     }
 
     return {season};
+  },
+  async deleteSeries(_, {id: gid}, {prisma}) {
+    const {id} = fromGid(gid);
+    await prisma.series.delete({where: {id}});
+    return {deletedId: gid};
+  },
+  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma}) {
+    const {id} = fromGid(gid);
+    const {tmdbId, name} = await prisma.series.findFirstOrThrow({where: {id}});
+    const {series} = await updateSeries({id, name, tmdbId, prisma});
+    return {series};
   },
 };

@@ -128,7 +128,7 @@ model Season {
   posterUrl    String?
   episodeCount Int
 
-  series   Series @relation(fields: [seriesId], references: [id])
+  series   Series @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seriesId String
 
   episodes Episode[]
@@ -137,6 +137,7 @@ model Season {
   skips   Skip[]
 
   listItems ListItem[]
+
   @@unique([seriesId, number])
 }
 
@@ -148,13 +149,14 @@ model Episode {
   overview   String?   @db.VarChar(1000)
   stillUrl   String?
 
-  season   Season @relation(fields: [seasonId], references: [id])
+  season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seasonId String
 
   skips   Skip[]
   watches Watch[]
 
   listItems ListItem[]
+
   @@unique([seasonId, number])
 }
 

@@ -1,0 +1,7 @@
+mutation SynchronizeSeriesWithTmdb($id: ID!) {
+  synchronizeSeriesWithTmdb(id: $id) {
+    series {
+      id
+    }
+  }
+}

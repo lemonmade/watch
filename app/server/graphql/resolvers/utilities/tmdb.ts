@@ -72,6 +72,10 @@ export async function loadTmdbSeries(
     )
   ).filter(({season_number: seasonNumber}) => seasonNumber != null);
 
+  const lastSeasonWithAirDate = seasonResults
+    .reverse()
+    .find((season) => season.air_date != null);
+
   try {
     const series = await prisma.series.create({
       data: {
@@ -101,8 +105,11 @@ export async function loadTmdbSeries(
                 firstAired: tmdbAirDateToDate(season.air_date),
                 overview: season.overview ?? null,
                 status:
-                  season.season_number === seriesResult.number_of_seasons &&
-                  tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
+                  tmdbStatusToEnum(seriesResult.status) === 'RETURNING' &&
+                  (season.air_date == null ||
+                    lastSeasonWithAirDate == null ||
+                    season.season_number ===
+                      lastSeasonWithAirDate.season_number)
                     ? 'CONTINUING'
                     : 'ENDED',
                 posterUrl: season.poster_path
