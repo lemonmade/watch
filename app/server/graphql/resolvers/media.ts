@@ -4,11 +4,10 @@ import type {
   Episode as DatabaseEpisode,
 } from '@prisma/client';
 import {updateSeries} from '~/global/tmdb';
+import {bufferFromSlice, type Slice} from '~/global/slices';
 
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
-import {bufferFromSlice} from './utilities/slices';
-import type {Slice} from './utilities/slices';
 import {toHandle} from './utilities/handle';
 
 import {

@@ -307,7 +307,7 @@ function DeleteSeriesModal({seriesId}: {seriesId: string}) {
                 return;
               }
 
-              navigate('/app');
+              navigate('/app', {replace: true});
             }}
           >
             Delete

@@ -11,9 +11,14 @@ export const prisma = new PrismaClient({
   },
 });
 
-console.log(
-  await prisma.series.findMany({
-    take: 10,
-    where: {name: {contains: 'drag Race'}},
-  }),
-);
+const watchthrough = await prisma.watchThrough.findFirstOrThrow({
+  where: {
+    series: {
+      name: {
+        contains: 'drag race uk',
+      },
+    },
+  },
+});
+
+console.log(watchthrough);

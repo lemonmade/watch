@@ -3,7 +3,9 @@ import type {
   Skip as DatabaseSkip,
   WatchThrough as DatabaseWatchThrough,
   Episode as DatabaseEpisode,
+  Season as DatabaseSeason,
 } from '@prisma/client';
+import {bufferFromSlice, sliceFromBuffer, type Slice} from '~/global/slices';
 
 import type {QueryResolver, MutationResolver, Resolver, Context} from './types';
 import {toGid, fromGid} from './utilities/id';
@@ -12,8 +14,6 @@ import {
   createUnionResolver,
   createInterfaceResolver,
 } from './utilities/interfaces';
-import {bufferFromSlice, sliceFromBuffer} from './utilities/slices';
-import type {Slice} from './utilities/slices';
 
 import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists';
@@ -638,7 +638,14 @@ export const Mutation: Pick<
     const series = await prisma.series.findFirst({
       where: {id: seriesId},
       include: {
-        seasons: {select: {id: true, number: true, episodeCount: true}},
+        seasons: {
+          select: {
+            id: true,
+            number: true,
+            episodeCount: true,
+            firstAired: true,
+          },
+        },
       },
       rejectOnNotFound: true,
     });
@@ -650,7 +657,11 @@ export const Mutation: Pick<
         : {season: 1, episode: 1});
 
     const normalizedTo: Slice = to ?? {
-      season: Math.max(...series.seasons.map((season) => season.number)),
+      season: Math.max(
+        ...series.seasons.map((season) =>
+          seasonHasStarted(season) ? season.number : 1,
+        ),
+      ),
     };
 
     const toSeason = series.seasons.find(
@@ -771,6 +782,10 @@ export const Mutation: Pick<
     return {watchThrough};
   },
 };
+
+function seasonHasStarted({firstAired}: Pick<DatabaseSeason, 'firstAired'>) {
+  return firstAired != null && firstAired.getTime() < Date.now();
+}
 
 // Assumes you already validated ownership of the watchthrough!
 async function updateWatchThrough(

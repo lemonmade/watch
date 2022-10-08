@@ -543,7 +543,7 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
                 {
                   onSuccess({deleteWatchThrough}) {
                     if (deleteWatchThrough) {
-                      navigate('/app');
+                      navigate('/app', {replace: true});
                     }
                   },
                 },
