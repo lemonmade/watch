@@ -80,7 +80,12 @@ function SignInWithEmail() {
         );
       }}
     >
-      <TextField label="Email" value={email} />
+      <TextField
+        type="email"
+        label="Email"
+        value={email}
+        autocomplete="username"
+      />
     </Form>
   );
 }
@@ -148,6 +153,7 @@ function SignInWithWebAuthn() {
     >
       <BlockStack spacing>
         <TextField
+          type="email"
           label="Email"
           value={email}
           changeTiming="input"

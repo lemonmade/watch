@@ -1,4 +1,10 @@
-import {useState, useRef, type ChangeEvent, type KeyboardEvent} from 'react';
+import {
+  useState,
+  useRef,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type HTMLAttributes,
+} from 'react';
 import {classes, variation} from '@lemon/css';
 import {
   resolveSignalOrValue,
@@ -14,10 +20,12 @@ import styles from './Input.module.css';
 
 export type ChangeTiming = 'commit' | 'input';
 
-type AutocompleteField = 'username' | 'email' | 'webauthn';
+export type AutocompleteField = 'username' | 'email' | 'webauthn';
+export type TextFieldType = 'text' | 'email';
 
 export type TextFieldProps = {
   id?: string;
+  type?: TextFieldType;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
   placeholder?: string;
@@ -35,6 +43,7 @@ export type TextFieldProps = {
 export function TextField({
   id: explicitId,
   value: currentValue,
+  type,
   disabled,
   readonly,
   multiline = false,
@@ -56,7 +65,12 @@ export function TextField({
 
   const finalReadonly = resolvedReadonly || actionScope?.active.value;
 
+  let inputMode: HTMLAttributes<HTMLElement>['inputMode'];
   const inlineStyles: Record<string, any> = {};
+
+  if (type === 'email') {
+    inputMode = 'email';
+  }
 
   if (typeof multiline === 'number') {
     inlineStyles['--x-TextField-lines'] = multiline;
@@ -89,6 +103,7 @@ export function TextField({
         type={multiline ? undefined : 'text'}
         className={styles.Input}
         value={value}
+        inputMode={inputMode}
         onChange={({
           currentTarget,
         }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
