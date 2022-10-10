@@ -185,6 +185,7 @@ function GraphQL({children}: PropsWithChildren) {
 function urlIsExternal(url: URL, currentUrl: URL) {
   return (
     url.origin !== currentUrl.origin ||
-    url.pathname.startsWith('/internal/auth')
+    url.pathname.startsWith('/internal/auth') ||
+    url.pathname.startsWith('/api')
   );
 }

@@ -1,9 +1,14 @@
-import {createHttpHandler, json, noContent} from '@quilted/quilt/http-handlers';
-import type {EnhancedRequest} from '@quilted/quilt/http-handlers';
+import {
+  createHttpHandler,
+  html,
+  json,
+  noContent,
+  type EnhancedRequest,
+} from '@quilted/quilt/http-handlers';
+import {stripIndent} from 'common-tags';
 
 import {getUserIdFromRequest} from './shared/auth';
-import {createPrisma} from './shared/database';
-import type {Prisma} from './shared/database';
+import {createPrisma, type Prisma} from './shared/database';
 
 import type {Authentication} from './graphql/context';
 
@@ -15,7 +20,7 @@ handler.options(() =>
   noContent({
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Method': 'POST',
+      'Access-Control-Allow-Method': 'GET, POST',
       'Access-Control-Allow-Headers': 'Content-Type',
     },
   }),
@@ -136,3 +141,55 @@ async function authenticate(
 
   return {type: 'accessToken', userId: token.userId};
 }
+
+handler.get(() => {
+  return html(stripIndent`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          body {
+            height: 100%;
+            margin: 0;
+            width: 100%;
+            overflow: hidden;
+          }
+    
+          #graphiql {
+            height: 100vh;
+          }
+        </style>
+    
+        <script
+          crossorigin
+          src="https://unpkg.com/react@17/umd/react.development.js"
+        ></script>
+        <script
+          crossorigin
+          src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+        ></script>
+    
+        <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+      </head>
+    
+      <body>
+        <div id="graphiql">Loading...</div>
+        <script
+          src="https://unpkg.com/graphiql/graphiql.min.js"
+          type="application/javascript"
+        ></script>
+        <script>
+          ReactDOM.render(
+            React.createElement(GraphiQL, {
+              fetcher: GraphiQL.createFetcher({
+                url: window.location.href,
+              }),
+              defaultEditorToolsVisibility: true,
+            }),
+            document.getElementById('graphiql'),
+          );
+        </script>
+      </body>
+    </html>
+  `);
+});
