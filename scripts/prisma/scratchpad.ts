@@ -11,13 +11,9 @@ export const prisma = new PrismaClient({
   },
 });
 
-const watchthrough = await prisma.watchThrough.findFirstOrThrow({
+const watchthrough = await prisma.watchThrough.delete({
   where: {
-    series: {
-      name: {
-        contains: 'drag race uk',
-      },
-    },
+    id: '028cfcef-1e9d-47e9-9dc9-8d7c7464392e',
   },
 });
 
