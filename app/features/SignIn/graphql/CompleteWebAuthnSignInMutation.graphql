@@ -1,0 +1,10 @@
+mutation CompleteWebAuthnSignIn($credential: JSON!) {
+  completeWebAuthnSignIn(credential: $credential) {
+    credential {
+      id
+    }
+    user {
+      id
+    }
+  }
+}

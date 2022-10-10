@@ -9,6 +9,7 @@ import {
   Section,
   Text,
   Banner,
+  View,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -24,16 +25,17 @@ import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
 import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
+import startWebAuthnRegistrationMutation from './graphql/StartWebAuthnRegistrationMutation.graphql';
+import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredentialMutation.graphql';
 
 export function Account() {
   const navigate = useNavigate();
   const {data, refetch} = useQuery(accountQuery);
   const signOut = useMutation(signOutMutation);
-  const deleteAccount = useMutation(deleteAccountMutation);
 
   if (data == null) return null;
 
-  const {email, githubAccount, settings} = data.me;
+  const {email, githubAccount, settings, webAuthnCredentials} = data.me;
 
   return (
     <Page heading="Account">
@@ -53,9 +55,11 @@ export function Account() {
             Sign out
           </Action>
         </BlockStack>
-        <SpoilerAvoidanceSection
-          spoilerAvoidance={settings.spoilerAvoidance}
-          refetch={refetch}
+        <WebAuthnSection
+          credentials={webAuthnCredentials}
+          onUpdate={async () => {
+            await refetch();
+          }}
         />
         <GithubSection
           account={githubAccount ?? undefined}
@@ -63,26 +67,70 @@ export function Account() {
             refetch();
           }}
         />
-        <Section>
-          <BlockStack spacing>
-            <Heading divider>Danger zone</Heading>
-            <Action
-              role="destructive"
-              onPress={async () => {
-                deleteAccount.mutate(
-                  {},
-                  {
-                    onSuccess: () => navigate('/goodbye'),
-                  },
-                );
-              }}
-            >
-              Delete account
-            </Action>
-          </BlockStack>
-        </Section>
+        <SpoilerAvoidanceSection
+          spoilerAvoidance={settings.spoilerAvoidance}
+          refetch={refetch}
+        />
+        <DangerZone />
       </BlockStack>
     </Page>
+  );
+}
+
+function WebAuthnSection({
+  credentials,
+  onUpdate,
+}: {
+  credentials: AccountQueryData.Me['webAuthnCredentials'];
+  onUpdate(): Promise<void>;
+}) {
+  const startWebAuthnRegistration = useMutation(
+    startWebAuthnRegistrationMutation,
+  );
+  const createWebAuthnCredential = useMutation(
+    createWebAuthnCredentialMutation,
+  );
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>WebAuthn</Heading>
+
+        {credentials.length > 0 && (
+          <BlockStack spacing>
+            {credentials.map(({id}) => (
+              <View key={id}>{id}</View>
+            ))}
+          </BlockStack>
+        )}
+
+        <TextBlock>Connect a WebAuthn authenticator</TextBlock>
+        <Action
+          onPress={async () => {
+            const [{startRegistration}, result] = await Promise.all([
+              import('@simplewebauthn/browser'),
+              startWebAuthnRegistration.mutateAsync({}),
+            ]);
+
+            const registrationOptions = JSON.parse(
+              result.startWebAuthnRegistration.result,
+            );
+
+            const registrationResult = await startRegistration(
+              registrationOptions,
+            );
+
+            await createWebAuthnCredential.mutateAsync({
+              credential: JSON.stringify(registrationResult),
+            });
+
+            await onUpdate();
+          }}
+        >
+          Connect
+        </Action>
+      </BlockStack>
+    </Section>
   );
 }
 
@@ -200,6 +248,32 @@ function SpoilerAvoidanceSection({
             );
           }}
         />
+      </BlockStack>
+    </Section>
+  );
+}
+
+function DangerZone() {
+  const navigate = useNavigate();
+  const deleteAccount = useMutation(deleteAccountMutation);
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Danger zone</Heading>
+        <Action
+          role="destructive"
+          onPress={async () => {
+            deleteAccount.mutate(
+              {},
+              {
+                onSuccess: () => navigate('/goodbye'),
+              },
+            );
+          }}
+        >
+          Delete account
+        </Action>
       </BlockStack>
     </Section>
   );

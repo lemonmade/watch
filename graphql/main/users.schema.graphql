@@ -19,6 +19,14 @@ extend type Mutation {
   updateUserSettings(
     spoilerAvoidance: SpoilerAvoidance
   ): UpdateUserSettingsPayload!
+  startWebAuthnRegistration: StartRegistrationPayload!
+  createWebAuthnCredential(credential: JSON!): CreateWebAuthnCredentialPayload!
+  startWebAuthnSignIn(email: String!): StartWebAuthnSignInPayload!
+  completeWebAuthnSignIn(credential: JSON!): CompleteWebAuthnSignInPayload!
+}
+
+type WebAuthnCredential {
+  id: ID!
 }
 
 scalar GithubID
@@ -31,6 +39,7 @@ type User {
   id: ID!
   email: Email!
   githubAccount: GithubAccount
+  webAuthnCredentials: [WebAuthnCredential!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
 }
@@ -85,4 +94,22 @@ type DeletePersonalAccessTokenPayload {
 
 type UpdateUserSettingsPayload {
   user: User!
+}
+
+type StartRegistrationPayload {
+  result: JSON!
+}
+
+type CreateWebAuthnCredentialPayload {
+  credential: WebAuthnCredential
+  user: User!
+}
+
+type StartWebAuthnSignInPayload {
+  result: JSON!
+}
+
+type CompleteWebAuthnSignInPayload {
+  user: User
+  credential: WebAuthnCredential
 }

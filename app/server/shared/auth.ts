@@ -66,10 +66,9 @@ export async function getUserIdFromRequest(request: EnhancedRequest) {
   }
 }
 
-export async function addAuthCookies(
-  user: {id: string},
-  response: EnhancedResponse,
-) {
+export async function addAuthCookies<
+  ResponseType extends Pick<EnhancedResponse, 'cookies'>,
+>(user: {id: string}, response: ResponseType) {
   const token = await createSignedToken(
     {},
     {expiresIn: '7 days', subject: user.id},

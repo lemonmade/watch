@@ -50,6 +50,7 @@ import {
 import {
   User as BaseUser,
   PersonalAccessToken,
+  WebAuthnCredential,
   GithubAccount,
   Query as UsersQuery,
   Mutation as UsersMutation,
@@ -112,4 +113,5 @@ export {
   Watch,
   Watchable,
   WatchThrough,
+  WebAuthnCredential,
 };

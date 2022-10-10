@@ -2,6 +2,9 @@ query Account {
   me {
     id
     email
+    webAuthnCredentials {
+      id
+    }
     githubAccount {
       id
       username

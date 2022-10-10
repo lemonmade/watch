@@ -25,6 +25,7 @@ model User {
   spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
   githubAccount               GithubAccount?
+  webAuthnCredentials         WebAuthnCredential[]
   skips                       Skip[]
   watches                     Watch[]
   watchThroughs               WatchThrough[]
@@ -37,6 +38,19 @@ model User {
   lists        List[]  @relation(name: "user")
   watchLater   List?   @relation(name: "watchLater", fields: [watchLaterId], references: [id])
   watchLaterId String? @unique
+}
+
+model WebAuthnCredential {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  credentialId Bytes
+  publicKey    Bytes
+  counter      Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model GithubAccount {

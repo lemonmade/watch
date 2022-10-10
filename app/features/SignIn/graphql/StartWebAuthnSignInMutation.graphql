@@ -1,0 +1,5 @@
+mutation StartWebAuthnSignIn($email: String!) {
+  startWebAuthnSignIn(email: $email) {
+    result
+  }
+}

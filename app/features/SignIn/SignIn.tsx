@@ -10,13 +10,15 @@ import {
   Banner,
   Action,
 } from '@lemon/zest';
-import {useSignal} from '@watching/react-signals';
+import {useComputed, useSignal} from '@watching/react-signals';
 
 import {SignInErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
 import {useMutation} from '~/shared/graphql';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
+import startWebAuthnSignInMutation from './graphql/StartWebAuthnSignInMutation.graphql';
+import completeWebAuthnSignInMutation from './graphql/CompleteWebAuthnSignInMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
@@ -44,6 +46,10 @@ function SignInForm() {
       {reason && <ErrorBanner reason={reason} />}
 
       <SignInWithEmail />
+
+      <TextBlock>or...</TextBlock>
+
+      <SignInWithWebAuthn />
 
       <TextBlock>or...</TextBlock>
 
@@ -79,6 +85,50 @@ function SignInWithEmail() {
   );
 }
 
+function SignInWithWebAuthn() {
+  const navigate = useNavigate();
+  const startWebAuthnSignIn = useMutation(startWebAuthnSignInMutation);
+  const completeWebAuthnSignIn = useMutation(completeWebAuthnSignInMutation);
+
+  const email = useSignal('');
+  const disabled = useComputed(() => email.value.trim().length === 0);
+
+  return (
+    <Form
+      onSubmit={async () => {
+        const [{startAuthentication}, options] = await Promise.all([
+          import('@simplewebauthn/browser'),
+          startWebAuthnSignIn.mutateAsync({
+            email: email.value,
+          }),
+        ]);
+
+        const authenticationResult = await startAuthentication(
+          JSON.parse(options.startWebAuthnSignIn.result),
+        );
+
+        const result = await completeWebAuthnSignIn.mutateAsync({
+          credential: JSON.stringify(authenticationResult),
+        });
+
+        if (result.completeWebAuthnSignIn.user?.id) {
+          navigate(
+            (currentUrl) =>
+              currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',
+          );
+        }
+      }}
+    >
+      <BlockStack spacing>
+        <TextField label="Email" value={email} changeTiming="input"></TextField>
+        <Action perform="submit" disabled={disabled}>
+          Sign in with WebAuthn
+        </Action>
+      </BlockStack>
+    </Form>
+  );
+}
+
 function SignInWithGithub({
   onError,
 }: {
@@ -89,7 +139,7 @@ function SignInWithGithub({
 
   const open = useGithubOAuthModal(GithubOAuthFlow.SignIn, (event) => {
     if (event.success) {
-      navigate(event.redirectTo);
+      navigate(event.redirectTo, {replace: true});
     } else {
       onError(event.reason ?? SignInErrorReason.Generic);
     }
