@@ -5,6 +5,13 @@ query Account {
     webAuthnCredentials {
       id
     }
+    googleAccount {
+      id
+      email
+      image {
+        source
+      }
+    }
     githubAccount {
       id
       username

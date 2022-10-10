@@ -18,6 +18,7 @@ import {useSignal} from '@watching/react-signals';
 import {SpoilerAvoidance} from '~/shared/spoilers';
 import {Page} from '~/shared/page';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
+import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
 import {useQuery, useMutation} from '~/shared/graphql';
 
 import accountQuery, {
@@ -26,6 +27,7 @@ import accountQuery, {
 import signOutMutation from './graphql/SignOutMutation.graphql';
 import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
+import disconnectGoogleAccountMutation from './graphql/DisconnectGoogleAccountMutation.graphql';
 import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
 import startWebAuthnRegistrationMutation from './graphql/StartWebAuthnRegistrationMutation.graphql';
 import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredentialMutation.graphql';
@@ -38,7 +40,8 @@ export function Account() {
 
   if (data == null) return null;
 
-  const {email, githubAccount, settings, webAuthnCredentials} = data.me;
+  const {email, githubAccount, googleAccount, settings, webAuthnCredentials} =
+    data.me;
 
   return (
     <Page heading="Account">
@@ -60,6 +63,12 @@ export function Account() {
         </BlockStack>
         <WebAuthnSection
           credentials={webAuthnCredentials}
+          onUpdate={async () => {
+            await refetch();
+          }}
+        />
+        <GoogleSection
+          account={googleAccount}
           onUpdate={async () => {
             await refetch();
           }}
@@ -182,6 +191,76 @@ function WebAuthnCredentialManageMenu({
         </Action>
       </Menu>
     </Popover>
+  );
+}
+
+function GoogleSection({
+  account,
+  onUpdate,
+}: {
+  account?: AccountQueryData.Me.GoogleAccount | null;
+  onUpdate(): Promise<void>;
+}) {
+  const disconnectAccount = useMutation(disconnectGoogleAccountMutation);
+
+  if (account == null) {
+    return <ConnectGoogleAccount onUpdate={onUpdate} />;
+  }
+
+  const {email} = account;
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Google account</Heading>
+        <TextBlock>username: {email}</TextBlock>
+        <Action
+          onPress={async () => {
+            await disconnectAccount.mutateAsync({});
+            await onUpdate();
+          }}
+        >
+          Disconnect
+        </Action>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function ConnectGoogleAccount({onUpdate}: {onUpdate(): Promise<void>}) {
+  const currentUrl = useCurrentUrl();
+  const [error, setError] = useState(false);
+
+  const open = useGoogleOAuthModal(GoogleOAuthFlow.Connect, (event) => {
+    setError(!event.success);
+    if (event.success) onUpdate();
+  });
+
+  const errorContent = error ? (
+    <Banner status="error">
+      There was an error connecting your Github account. You’ll need to try
+      again.
+    </Banner>
+  ) : null;
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        {errorContent}
+        <Heading divider>Google account</Heading>
+        <TextBlock>
+          Connecting your Google account lets you sign in with Google.
+        </TextBlock>
+        <Action
+          onPress={() => {
+            setError(false);
+            open({redirectTo: currentUrl.href});
+          }}
+        >
+          Connect Google
+        </Action>
+      </BlockStack>
+    </Section>
   );
 }
 

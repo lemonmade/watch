@@ -1,6 +1,7 @@
 import type {
   User as DatabaseUser,
   GithubAccount as DatabaseGithubAccount,
+  GoogleAccount as DatabaseGoogleAccount,
   PersonalAccessToken as DatabasePersonalAccessToken,
   WebAuthnCredential as DatabaseWebAuthnCredential,
 } from '@prisma/client';
@@ -21,6 +22,7 @@ declare module './types' {
   export interface ValueMap {
     User: DatabaseUser;
     GithubAccount: DatabaseGithubAccount;
+    GoogleAccount: DatabaseGoogleAccount;
     PersonalAccessToken: DatabasePersonalAccessToken;
     WebAuthnCredential: DatabaseWebAuthnCredential;
   }
@@ -45,6 +47,11 @@ export const User: Resolver<'User'> = {
   id: ({id}) => toGid(id, 'User'),
   githubAccount({id}, _, {prisma}) {
     return prisma.githubAccount.findFirst({
+      where: {userId: id},
+    });
+  },
+  googleAccount({id}, _, {prisma}) {
+    return prisma.googleAccount.findFirst({
       where: {userId: id},
     });
   },
@@ -87,6 +94,13 @@ export const GithubAccount: Resolver<'GithubAccount'> = {
   },
 };
 
+export const GoogleAccount: Resolver<'GoogleAccount'> = {
+  id: ({id}) => toGid(id, 'GoogleAccount'),
+  image: ({imageUrl}) => {
+    return imageUrl ? {source: imageUrl} : null;
+  },
+};
+
 const PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH = 12;
 const PERSONAL_ACCESS_TOKEN_PREFIX = 'wlp_';
 
@@ -98,6 +112,7 @@ export const Mutation: Pick<
   | 'signOut'
   | 'updateUserSettings'
   | 'disconnectGithubAccount'
+  | 'disconnectGoogleAccount'
   | 'createPersonalAccessToken'
   | 'deletePersonalAccessToken'
   | 'startWebAuthnRegistration'
@@ -171,6 +186,20 @@ export const Mutation: Pick<
     }
 
     return {deletedAccount: githubAccount};
+  },
+  async disconnectGoogleAccount(_, __, {prisma, user}) {
+    const googleAccount = await prisma.googleAccount.findFirst({
+      where: {userId: user.id},
+    });
+
+    if (googleAccount) {
+      await prisma.googleAccount.delete({where: {id: googleAccount.id}});
+    }
+
+    return {
+      deletedAccountId:
+        googleAccount && toGid(googleAccount.id, 'GoogleAccount'),
+    };
   },
   async updateUserSettings(_, {spoilerAvoidance}, {user: {id}, prisma}) {
     const data: Parameters<typeof prisma['user']['update']>[0]['data'] = {};

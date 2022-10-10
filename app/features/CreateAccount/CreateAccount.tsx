@@ -14,6 +14,7 @@ import {useSignal} from '@watching/react-signals';
 
 import {CreateAccountErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
+import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
 import {useMutation} from '~/shared/graphql';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
@@ -48,6 +49,7 @@ export function CreateAccountForm() {
       <TextBlock>or...</TextBlock>
 
       <CreateAccountWithGithub onError={setReason} />
+      <CreateAccountWithGoogle onError={setReason} />
     </BlockStack>
   );
 }
@@ -114,6 +116,36 @@ function CreateAccountWithGithub({
   );
 }
 
+function CreateAccountWithGoogle({
+  onError,
+}: {
+  onError(reason: CreateAccountErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+
+  const open = useGoogleOAuthModal(GoogleOAuthFlow.CreateAccount, (event) => {
+    if (event.success) {
+      navigate(event.redirectTo);
+    } else {
+      onError(event.reason ?? CreateAccountErrorReason.Generic);
+    }
+  });
+
+  return (
+    <Action
+      onPress={() => {
+        open({
+          redirectTo:
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+        });
+      }}
+    >
+      Create account with Google
+    </Action>
+  );
+}
+
 function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
   switch (reason) {
     case CreateAccountErrorReason.GithubError: {
@@ -122,6 +154,16 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
           There was an error while trying to create your account with Github.
           You can try again, or create an account with your email instead (you
           can always connect your Github account later). Sorry for the
+          inconvenience!
+        </Banner>
+      );
+    }
+    case CreateAccountErrorReason.GoogleError: {
+      return (
+        <Banner status="error">
+          There was an error while trying to create your account with Google.
+          You can try again, or create an account with your email instead (you
+          can always connect your Google account later). Sorry for the
           inconvenience!
         </Banner>
       );

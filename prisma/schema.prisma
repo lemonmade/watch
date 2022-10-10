@@ -25,6 +25,7 @@ model User {
   spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
   githubAccount               GithubAccount?
+  googleAccount               GoogleAccount?
   webAuthnCredentials         WebAuthnCredential[]
   skips                       Skip[]
   watches                     Watch[]
@@ -52,6 +53,18 @@ model WebAuthnCredential {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+}
+
+model GoogleAccount {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String  @unique
+  imageUrl String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model GithubAccount {

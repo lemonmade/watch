@@ -11,6 +11,7 @@ extend type Mutation {
   signIn(email: Email!, redirectTo: Url): SignInPayload!
   signOut: SignOutPayload!
   disconnectGithubAccount: DisconnectGithubAccountPayload!
+  disconnectGoogleAccount: DisconnectGoogleAccountPayload!
   createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
   deletePersonalAccessToken(
     id: ID
@@ -30,8 +31,6 @@ type WebAuthnCredential {
   id: ID!
 }
 
-scalar GithubID
-
 type UserSettings {
   spoilerAvoidance: SpoilerAvoidance!
 }
@@ -40,16 +39,29 @@ type User {
   id: ID!
   email: Email!
   githubAccount: GithubAccount
+  googleAccount: GoogleAccount
   webAuthnCredentials: [WebAuthnCredential!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
 }
+
+scalar GithubID
 
 type GithubAccount {
   id: GithubID!
   username: String!
   profileUrl: Url!
   avatarImage: Image
+}
+
+scalar GoogleID
+
+type GoogleAccount {
+  id: GoogleID!
+  email: Email!
+  image: Image
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type PersonalAccessToken {
@@ -82,6 +94,10 @@ type SignOutPayload {
 
 type DisconnectGithubAccountPayload {
   deletedAccount: GithubAccount
+}
+
+type DisconnectGoogleAccountPayload {
+  deletedAccountId: ID
 }
 
 type CreatePersonalAccessTokenPayload {

@@ -14,6 +14,7 @@ import {useComputed, useSignal} from '@watching/react-signals';
 
 import {SignInErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
+import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
 import {useMutation} from '~/shared/graphql';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
@@ -54,6 +55,7 @@ function SignInForm() {
       <TextBlock>or...</TextBlock>
 
       <SignInWithGithub onError={setReason} />
+      <SignInWithGoogle onError={setReason} />
     </BlockStack>
   );
 }
@@ -197,6 +199,36 @@ function SignInWithGithub({
   );
 }
 
+function SignInWithGoogle({
+  onError,
+}: {
+  onError(reason: SignInErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+
+  const open = useGoogleOAuthModal(GoogleOAuthFlow.SignIn, (event) => {
+    if (event.success) {
+      navigate(event.redirectTo, {replace: true});
+    } else {
+      onError(event.reason ?? SignInErrorReason.Generic);
+    }
+  });
+
+  return (
+    <Action
+      onPress={() => {
+        open({
+          redirectTo:
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+        });
+      }}
+    >
+      Sign in with Google
+    </Action>
+  );
+}
+
 function ErrorBanner({reason}: {reason: SignInErrorReason}) {
   switch (reason) {
     case SignInErrorReason.GithubNoAccount: {
@@ -212,6 +244,24 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
       return (
         <Banner status="error">
           There was an error while trying to sign in with Github. You can try
+          again, or sign in with your email instead. Sorry for the
+          inconvenience!
+        </Banner>
+      );
+    }
+    case SignInErrorReason.GoogleNoAccount: {
+      return (
+        <Banner status="error">
+          You authenticated with Google, but no account is linked with your
+          Google profile. You’ll need to sign in with email, then connect Google
+          from the <Link to="/app/me">account page</Link>.
+        </Banner>
+      );
+    }
+    case SignInErrorReason.GoogleError: {
+      return (
+        <Banner status="error">
+          There was an error while trying to sign in with Google. You can try
           again, or sign in with your email instead. Sorry for the
           inconvenience!
         </Banner>
