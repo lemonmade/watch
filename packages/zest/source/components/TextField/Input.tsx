@@ -66,10 +66,14 @@ export function TextField({
   const finalReadonly = resolvedReadonly || actionScope?.active.value;
 
   let inputMode: HTMLAttributes<HTMLElement>['inputMode'];
+  let autoCorrect: HTMLAttributes<HTMLElement>['autoCorrect'];
+  let autoCapitalize: HTMLAttributes<HTMLElement>['autoCapitalize'];
   const inlineStyles: Record<string, any> = {};
 
   if (type === 'email') {
     inputMode = 'email';
+    autoCorrect = 'off';
+    autoCapitalize = 'none';
   }
 
   if (typeof multiline === 'number') {
@@ -138,6 +142,8 @@ export function TextField({
         disabled={resolvedDisabled}
         readOnly={finalReadonly}
         autoComplete={autocomplete}
+        autoCorrect={autoCorrect}
+        autoCapitalize={autoCapitalize}
       />
       {blockSize === 'fitContent' && (
         <div className={styles.AutoGrowWrap}>{value} </div>
