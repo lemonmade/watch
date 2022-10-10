@@ -102,6 +102,7 @@ export const Mutation: Pick<
   | 'deletePersonalAccessToken'
   | 'startWebAuthnRegistration'
   | 'createWebAuthnCredential'
+  | 'deleteWebAuthnCredential'
   | 'startWebAuthnSignIn'
   | 'completeWebAuthnSignIn'
 > = {
@@ -237,6 +238,10 @@ export const Mutation: Pick<
       userName: 'Name',
       attestationType: 'none',
       excludeCredentials: [],
+      authenticatorSelection: {
+        residentKey: 'required',
+        userVerification: 'required',
+      },
     });
 
     response.cookies.set(WEBAUTHN_CHALLENGE_COOKIE, result.challenge, {
@@ -268,11 +273,14 @@ export const Mutation: Pick<
 
       const {origin, host} = new URL(request.url);
 
+      const parsedCredential = JSON.parse(credential);
+
       const result = await verifyRegistrationResponse({
-        credential: JSON.parse(credential),
+        credential: parsedCredential,
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
+        requireUserVerification: true,
       });
 
       if (!result.verified || result.registrationInfo == null) {
@@ -287,6 +295,7 @@ export const Mutation: Pick<
             counter: registrationInfo.counter,
             credentialId: registrationInfo.credentialID,
             publicKey: registrationInfo.credentialPublicKey,
+            transports: parsedCredential.transports,
             userId: user.id,
           },
           include: {user: true},
@@ -297,21 +306,46 @@ export const Mutation: Pick<
       response.cookies.delete(WEBAUTHN_CHALLENGE_COOKIE);
     }
   },
-  async startWebAuthnSignIn(_, __, {prisma, request, response}) {
+  async deleteWebAuthnCredential(_, {id}, {user, prisma}) {
+    const credential = await prisma.webAuthnCredential.findFirstOrThrow({
+      where: {
+        id: fromGid(id).id,
+        userId: user.id,
+      },
+    });
+
+    const {user: updatedUser} = await prisma.webAuthnCredential.delete({
+      where: {id: credential.id},
+      select: {user: true},
+    });
+
+    return {deletedCredentialId: credential.id, user: updatedUser};
+  },
+  async startWebAuthnSignIn(_, {email}, {prisma, request, response}) {
     const {generateAuthenticationOptions} = await import(
       '@simplewebauthn/server'
     );
 
-    const credentials = await prisma.webAuthnCredential.findMany({
-      take: 5,
-    });
+    const credentials = email
+      ? await prisma.webAuthnCredential.findMany({
+          take: 5,
+          where: {
+            user: {email},
+          },
+        })
+      : [];
 
     const result = generateAuthenticationOptions({
       rpID: new URL(request.url).host,
-      userVerification: 'preferred',
+      userVerification: 'required',
       allowCredentials: credentials.map((credential) => ({
         id: credential.credentialId,
         type: 'public-key',
+        transports:
+          Array.isArray(credential.transports) &&
+          typeof credentials[0] === 'string'
+            ? (credential.transports as any[])
+            : undefined,
       })),
     });
 
@@ -355,6 +389,7 @@ export const Mutation: Pick<
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
+        requireUserVerification: true,
         authenticator: {
           counter: webAuthnCredential.counter,
           credentialID: webAuthnCredential.credentialId,

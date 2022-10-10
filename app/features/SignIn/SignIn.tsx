@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {useRoutes, useNavigate, useCurrentUrl, Link} from '@quilted/quilt';
 import {
   View,
@@ -93,34 +93,66 @@ function SignInWithWebAuthn() {
   const email = useSignal('');
   const disabled = useComputed(() => email.value.trim().length === 0);
 
+  const {authenticate, authenticateForAutocomplete} = useMemo(() => {
+    return {authenticate, authenticateForAutocomplete};
+
+    async function authenticate({email}: {email?: string} = {}) {
+      const [{startAuthentication}, options] = await Promise.all([
+        import('@simplewebauthn/browser'),
+        startWebAuthnSignIn.mutateAsync({
+          email,
+        }),
+      ]);
+
+      const authenticationResult = await startAuthentication(
+        JSON.parse(options.startWebAuthnSignIn.result),
+      );
+
+      const result = await completeWebAuthnSignIn.mutateAsync({
+        credential: JSON.stringify(authenticationResult),
+      });
+
+      if (result.completeWebAuthnSignIn.user?.id) {
+        navigate(
+          (currentUrl) =>
+            currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',
+        );
+      }
+    }
+
+    async function authenticateForAutocomplete() {
+      const {browserSupportsWebAuthnAutofill} = await import(
+        '@simplewebauthn/browser'
+      );
+
+      if (!(await browserSupportsWebAuthnAutofill())) return;
+
+      try {
+        await authenticate();
+      } catch {
+        // intentional noop
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    authenticateForAutocomplete();
+  }, [authenticateForAutocomplete]);
+
   return (
     <Form
       onSubmit={async () => {
-        const [{startAuthentication}, options] = await Promise.all([
-          import('@simplewebauthn/browser'),
-          startWebAuthnSignIn.mutateAsync({
-            email: email.value,
-          }),
-        ]);
-
-        const authenticationResult = await startAuthentication(
-          JSON.parse(options.startWebAuthnSignIn.result),
-        );
-
-        const result = await completeWebAuthnSignIn.mutateAsync({
-          credential: JSON.stringify(authenticationResult),
-        });
-
-        if (result.completeWebAuthnSignIn.user?.id) {
-          navigate(
-            (currentUrl) =>
-              currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',
-          );
-        }
+        await authenticate({email: email.value});
       }}
     >
       <BlockStack spacing>
-        <TextField label="Email" value={email} changeTiming="input"></TextField>
+        <TextField
+          label="Email"
+          value={email}
+          changeTiming="input"
+          autocomplete="webauthn username"
+        />
         <Action perform="submit" disabled={disabled}>
           Sign in with WebAuthn
         </Action>

@@ -14,11 +14,16 @@ import styles from './Input.module.css';
 
 export type ChangeTiming = 'commit' | 'input';
 
+type AutocompleteField = 'username' | 'email' | 'webauthn';
+
 export type TextFieldProps = {
   id?: string;
   multiline?: boolean | number;
   blockSize?: 'fitContent';
   placeholder?: string;
+  autocomplete?:
+    | AutocompleteField
+    | `${AutocompleteField} ${AutocompleteField}`;
   value?: SignalOrValue<string | undefined>;
   disabled?: SignalOrValue<boolean>;
   readonly?: SignalOrValue<boolean>;
@@ -36,6 +41,7 @@ export function TextField({
   blockSize = multiline === true ? 'fitContent' : undefined,
   placeholder,
   changeTiming = 'commit',
+  autocomplete,
   onInput,
   onChange,
 }: TextFieldProps) {
@@ -116,6 +122,7 @@ export function TextField({
         placeholder={placeholder}
         disabled={resolvedDisabled}
         readOnly={finalReadonly}
+        autoComplete={autocomplete}
       />
       {blockSize === 'fitContent' && (
         <div className={styles.AutoGrowWrap}>{value} </div>

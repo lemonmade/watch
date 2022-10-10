@@ -9,7 +9,9 @@ import {
   Section,
   Text,
   Banner,
-  View,
+  Layout,
+  Menu,
+  Popover,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -27,6 +29,7 @@ import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMu
 import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
 import startWebAuthnRegistrationMutation from './graphql/StartWebAuthnRegistrationMutation.graphql';
 import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredentialMutation.graphql';
+import deleteWebAuthnCredentialMutation from './graphql/DeleteWebAuthnCredentialMutation.graphql';
 
 export function Account() {
   const navigate = useNavigate();
@@ -98,8 +101,12 @@ function WebAuthnSection({
 
         {credentials.length > 0 && (
           <BlockStack spacing>
-            {credentials.map(({id}) => (
-              <View key={id}>{id}</View>
+            {credentials.map((credential) => (
+              <WebAuthnCredential
+                key={credential.id}
+                credential={credential}
+                onUpdate={onUpdate}
+              />
             ))}
           </BlockStack>
         )}
@@ -131,6 +138,50 @@ function WebAuthnSection({
         </Action>
       </BlockStack>
     </Section>
+  );
+}
+
+interface WebAuthnCredentialProps {
+  credential: AccountQueryData.Me.WebAuthnCredentials;
+  onUpdate(): Promise<void>;
+}
+
+function WebAuthnCredential(props: WebAuthnCredentialProps) {
+  const {id} = props.credential;
+
+  return (
+    <Layout spacing columns={['fill', 'auto']}>
+      <Text>{id}</Text>
+      <Action popover={<WebAuthnCredentialManageMenu {...props} />}>
+        Manage
+      </Action>
+    </Layout>
+  );
+}
+
+function WebAuthnCredentialManageMenu({
+  credential: {id},
+  onUpdate,
+}: WebAuthnCredentialProps) {
+  const deleteWebAuthnCredential = useMutation(
+    deleteWebAuthnCredentialMutation,
+  );
+
+  return (
+    <Popover>
+      <Menu>
+        <Action
+          icon="delete"
+          role="destructive"
+          onPress={async () => {
+            await deleteWebAuthnCredential.mutateAsync({id});
+            await onUpdate();
+          }}
+        >
+          Delete
+        </Action>
+      </Menu>
+    </Popover>
   );
 }
 

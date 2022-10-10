@@ -21,7 +21,8 @@ extend type Mutation {
   ): UpdateUserSettingsPayload!
   startWebAuthnRegistration: StartRegistrationPayload!
   createWebAuthnCredential(credential: JSON!): CreateWebAuthnCredentialPayload!
-  startWebAuthnSignIn(email: String!): StartWebAuthnSignInPayload!
+  deleteWebAuthnCredential(id: ID!): DeleteWebAuthnCredential!
+  startWebAuthnSignIn(email: String): StartWebAuthnSignInPayload!
   completeWebAuthnSignIn(credential: JSON!): CompleteWebAuthnSignInPayload!
 }
 
@@ -102,6 +103,11 @@ type StartRegistrationPayload {
 
 type CreateWebAuthnCredentialPayload {
   credential: WebAuthnCredential
+  user: User!
+}
+
+type DeleteWebAuthnCredential {
+  deletedCredentialId: ID!
   user: User!
 }
 
