@@ -74,7 +74,12 @@ function CreateAccountWithEmail() {
         );
       }}
     >
-      <TextField type="email" label="Email" value={email} />
+      <TextField
+        type="email"
+        label="Email"
+        value={email}
+        autocomplete="email"
+      />
     </Form>
   );
 }
