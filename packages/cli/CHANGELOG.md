@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.23
+
+### Patch Changes
+
+- [#179](https://github.com/lemonmade/watch/pull/179) [`507675c`](https://github.com/lemonmade/watch/commit/507675cf02c2ac0b8d68c4e663188d2bba79a1ad) Thanks [@lemonmade](https://github.com/lemonmade)! - Many UI improvements
+
+- Updated dependencies [[`2de545d`](https://github.com/lemonmade/watch/commit/2de545d17240518b47a1933336a14f5ca8626f11)]:
+  - @watching/clips@0.2.11
+
 ## 0.4.22
 
 ### Patch Changes
