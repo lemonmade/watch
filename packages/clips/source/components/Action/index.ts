@@ -1,2 +1,1 @@
-export {Action} from './Action';
-export type {ActionProps} from './Action';
+export {Action, type ActionProps} from './Action';

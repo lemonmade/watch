@@ -12,6 +12,7 @@ import type {
 import {
   Popover,
   BlockStack,
+  InlineStack,
   View,
   TextBlock,
   Section,
@@ -77,6 +78,8 @@ const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
   View,
   // TypeScript can’t handle the complex union type :(
   Action: Action as any,
+  BlockStack,
+  InlineStack,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({
