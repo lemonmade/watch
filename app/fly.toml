@@ -9,6 +9,7 @@ processes = []
 [env]
 PORT = "8080"
 GITHUB_CLIENT_ID = "60c6903025bfd274db53"
+GOOGLE_CLIENT_ID = "357202806916-jj8a966am07ea17l39n5gdum61s3qahi.apps.googleusercontent.com"
 GOOGLE_CLOUD_PROJECT_ID = "watch-353105"
 GOOGLE_CLOUD_EMAIL_TOPIC = "Email"
 
