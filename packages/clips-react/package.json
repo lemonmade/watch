@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips-react",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -27,10 +27,10 @@
     "@remote-ui/async-subscription": "^2.1.0",
     "@remote-ui/core": "^2.1.0",
     "@types/react": "^17.0.0",
-    "@watching/clips": "workspace:^0.2.10",
-    "@watching/react-signals": "workspace:^0.1.0",
-    "@watching/remote-react-utilities": "workspace:^0.1.1",
-    "@watching/thread-signals": "workspace:^0.1.2"
+    "@watching/clips": "workspace:^0.2.11",
+    "@watching/react-signals": "workspace:^0.1.1",
+    "@watching/remote-react-utilities": "workspace:^0.1.2",
+    "@watching/thread-signals": "workspace:^0.1.3"
   },
   "peerDependencies": {
     "@watching/remote-react": "^17.0.0",
