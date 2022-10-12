@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.12
+
+### Patch Changes
+
+- [`87692f8`](https://github.com/lemonmade/watch/commit/87692f80d4a20aa62dba086d48501d437f421d35) Thanks [@lemonmade](https://github.com/lemonmade)! - Refactor packages to use Preact
+
 ## 0.2.11
 
 ### Patch Changes
