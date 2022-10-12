@@ -1,4 +1,8 @@
-import type {RemoteRoot, RemoteComponentType} from '@remote-ui/core';
+import type {
+  RemoteRoot,
+  RemoteChannel,
+  RemoteComponentType,
+} from '@remote-ui/core';
 
 import type {AnyComponent} from './components';
 import type {
@@ -7,7 +11,28 @@ import type {
   WatchThroughDetailsApi,
 } from './api';
 
+export interface RenderExtensionRoot<
+  AllowedComponents extends RemoteComponentType<string, any, any>,
+> {
+  readonly channel: RemoteChannel;
+  readonly components: AllowedComponents[];
+}
+
 export interface RenderExtension<
+  Api,
+  AllowedComponents extends RemoteComponentType<
+    string,
+    any,
+    any
+  > = AnyComponent,
+> {
+  (
+    root: RenderExtensionRoot<AllowedComponents>,
+    api: Api,
+  ): void | Promise<void>;
+}
+
+export interface RenderExtensionWithRemoteRoot<
   Api,
   AllowedComponents extends RemoteComponentType<
     string,

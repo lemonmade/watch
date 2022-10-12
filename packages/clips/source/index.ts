@@ -2,6 +2,8 @@ export type {
   ExtensionPoints,
   ExtensionPoint,
   RenderExtension,
+  RenderExtensionRoot,
+  RenderExtensionWithRemoteRoot,
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from './extension-points';

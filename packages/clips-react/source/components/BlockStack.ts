@@ -1,4 +1,4 @@
 import {BlockStack as BaseBlockStack} from '@watching/clips';
-import {createRemoteReactComponent} from '@watching/remote-react-utilities';
+import {createRemoteReactComponent} from './shared';
 
 export const BlockStack = createRemoteReactComponent(BaseBlockStack);

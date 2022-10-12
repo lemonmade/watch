@@ -1,4 +1,4 @@
 import {View as BaseView} from '@watching/clips';
-import {createRemoteReactComponent} from '@watching/remote-react-utilities';
+import {createRemoteReactComponent} from './shared';
 
 export const View = createRemoteReactComponent(BaseView);

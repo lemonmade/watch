@@ -1,4 +1,10 @@
-import {type ExtensionPoints, type RenderExtension} from './extension-points';
+import {createRemoteRoot} from '@remote-ui/core';
+import {
+  type ExtensionPoints,
+  type RenderExtension,
+  type RenderExtensionRoot,
+  type RenderExtensionWithRemoteRoot,
+} from './extension-points';
 import {acceptSignals, WithThreadSignals} from './signals';
 
 export function extension<
@@ -8,13 +14,16 @@ export function extension<
     infer Api,
     infer Components
   >
-    ? RenderExtension<WithThreadSignals<Api>, Components>
+    ? RenderExtensionWithRemoteRoot<WithThreadSignals<Api>, Components>
     : never,
 ): ExtensionPoints[ExtensionPoint] {
-  function extension(...args: any[]) {
-    const normalizedArgs = [...args];
-    normalizedArgs.push(acceptSignals(normalizedArgs.pop()));
-    return (run as any)(...normalizedArgs);
+  async function extension(
+    {channel, components}: RenderExtensionRoot<any>,
+    api: unknown,
+  ) {
+    const root = createRemoteRoot(channel, {strict: true, components});
+    await (run as any)(root, acceptSignals(api));
+    root.mount();
   }
 
   return extension;

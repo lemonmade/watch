@@ -1,16 +1,16 @@
-import type {ReactNode} from 'react';
+import {type ReactNode} from 'react';
+import {render} from 'react-dom';
 
-import type {RemoteRoot} from '@remote-ui/core';
-import {render as renderRemoteUi} from '@watching/remote-react-utilities';
-
-import {extension as vanillaExtension} from '@watching/clips';
+import {acceptSignals} from '@watching/clips';
 import type {
   AnyApi,
+  ExtensionPoints,
+  RenderExtensionRoot,
   ExtensionPoint,
-  WithThreadSignals,
   ApiForExtensionPoint,
 } from '@watching/clips';
 
+import {createElementFromChannel, INTERNAL_REMOTE} from './dom';
 import {ApiContext} from './context';
 
 export function extension<Extends extends ExtensionPoint>(
@@ -19,16 +19,19 @@ export function extension<Extends extends ExtensionPoint>(
   ) => ReactNode | Promise<ReactNode>,
 ) {
   async function reactExtension(
-    root: RemoteRoot<any>,
-    api: WithThreadSignals<AnyApi>,
+    {channel}: RenderExtensionRoot<any>,
+    api: AnyApi,
   ) {
     const rendered = await renderUi(api as any);
+    const element = createElementFromChannel(channel);
 
     await new Promise<void>((resolve, reject) => {
       try {
-        renderRemoteUi(
-          <ApiContext.Provider value={api}>{rendered}</ApiContext.Provider>,
-          root,
+        render(
+          <ApiContext.Provider value={acceptSignals(api)}>
+            {rendered}
+          </ApiContext.Provider>,
+          element as any as HTMLElement,
           () => {
             resolve();
           },
@@ -37,7 +40,9 @@ export function extension<Extends extends ExtensionPoint>(
         reject(error);
       }
     });
+
+    element[INTERNAL_REMOTE].root.mount();
   }
 
-  return vanillaExtension<Extends>(reactExtension as any);
+  return reactExtension as ExtensionPoints[Extends];
 }

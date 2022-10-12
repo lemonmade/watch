@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": "source",
     "outDir": "build/typescript",
-    "lib": ["WebWorker", "esnext"],
+    "lib": ["WebWorker", "DOM", "DOM.Iterable", "esnext"],
     "types": []
   },
   "include": ["source"],
