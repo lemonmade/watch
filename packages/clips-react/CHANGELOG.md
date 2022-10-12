@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.2.14
+
+### Patch Changes
+
+- [`cdde6a3`](https://github.com/lemonmade/watch/commit/cdde6a39ea82c1283b9afdb9fc34668c0426ef78) Thanks [@lemonmade](https://github.com/lemonmade)! - Add clips-dom package
+
+- Updated dependencies [[`cdde6a3`](https://github.com/lemonmade/watch/commit/cdde6a39ea82c1283b9afdb9fc34668c0426ef78)]:
+  - @watching/clips@0.2.13
+
 ## 0.2.13
 
 ### Patch Changes
