@@ -250,30 +250,41 @@ importers:
 
   packages/clips:
     specifiers:
+      '@quilted/react-signals': ^0.1.0
+      '@quilted/react-utilities': ^0.1.6
       '@remote-ui/core': ^2.1.12
       '@watching/thread-signals': ^0.1.0
     dependencies:
+      '@quilted/react-signals': 0.1.0_619eb7192a1e119c6a7483243ef75838
+      '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
       '@remote-ui/core': 2.1.12
       '@watching/thread-signals': link:../thread-signals
 
+  packages/clips-dom:
+    specifiers:
+      '@quilted/testing': ^0.1.0
+      '@remote-ui/core': ^2.1.0
+      '@watching/clips': workspace:^0.2.12
+    dependencies:
+      '@remote-ui/core': 2.1.12
+      '@watching/clips': link:../clips
+    devDependencies:
+      '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
+
   packages/clips-react:
     specifiers:
-      '@remote-ui/async-subscription': ^2.1.0
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@watching/clips': workspace:^0.2.12
-      '@watching/react-signals': workspace:^0.1.1
-      '@watching/remote-react-utilities': workspace:^0.1.2
+      '@watching/clips-dom': workspace:^0.1.0
       '@watching/thread-signals': workspace:^0.1.3
     dependencies:
-      '@remote-ui/async-subscription': 2.1.10
       '@remote-ui/core': 2.1.12
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.17
       '@watching/clips': link:../clips
-      '@watching/react-signals': link:../react-signals
-      '@watching/remote-react-utilities': link:../remote-react-utilities
+      '@watching/clips-dom': link:../clips-dom
       '@watching/thread-signals': link:../thread-signals
 
   packages/css:
@@ -3936,6 +3947,10 @@ packages:
   /@preact/signals-core/1.1.1:
     resolution: {integrity: sha512-otWUXVDAX2qWMBqBELvYBcEehBnta9zWhFZ+PZ3siL6LCu4Rk0u7q1bUgfTKPJjAbMYyPcIMoX/j34kDqcNlLg==}
 
+  /@preact/signals-core/1.2.1:
+    resolution: {integrity: sha512-aqzRMNFU1hoQyP4Kb1ldJrUTCnA9vqPDa7qHEQzHJ3upnBOcC2pjmvjAuTqGuY4AVTtUkCQV0FvOCuIQQ2hSdA==}
+    dev: false
+
   /@preact/signals/1.0.4:
     resolution: {integrity: sha512-x3CCzVFQDj/BPg67R7fBegtF9/R9/AHNSiKI457Wd8YjVtFeemIdXRrDXEt3RDoALpFDJUqdlFBv7adlFIdbNA==}
     peerDependencies:
@@ -3943,6 +3958,15 @@ packages:
     dependencies:
       '@preact/signals-core': 1.1.1
     dev: true
+
+  /@preact/signals/1.1.1_preact@10.11.0:
+    resolution: {integrity: sha512-I1DhYo2d1t9qDkEq1jYDVTQdBGmo4NlqatNEtulsS/87kVdwhZluP6TTDS4/5sc2h86TlBF6UA6LO+tDpIt/Gw==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 1.2.1
+      preact: 10.11.0
+    dev: false
 
   /@prefresh/babel-plugin/0.4.3:
     resolution: {integrity: sha512-fYAWbU1WDSLn108kKY4eDaaeUcnszFqXjgaGKYXNZ5NLulpRTpsrY+Sbfo9q8LDpWrBpqIgzjrwNnvglWI1xNQ==}
@@ -4721,6 +4745,25 @@ packages:
       react-dom: /@quilted/react-dom/17.0.5_@babel+runtime@7.18.9
     dev: true
 
+  /@quilted/react-signals/0.1.0_619eb7192a1e119c6a7483243ef75838:
+    resolution: {integrity: sha512-yJ96Nr2381UVuUUq0NYd5+ty7kssHHsAbOXvGreVZjprMTzX5S/7fLWin5VAWaThNnQMy1lD43hVoAyIdsXr4Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@babel/runtime': '>=7.0.0 <8.0.0'
+      react: ^17.0.0
+    peerDependenciesMeta:
+      '@babel/runtime':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.18.9
+      '@preact/signals': 1.1.1_preact@10.11.0
+      '@types/react': 17.0.50
+      preact: 10.11.0
+      react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
+    dev: false
+
   /@quilted/react-testing/0.5.18_1c625853aff509548f3fa2444a9714e8:
     resolution: {integrity: sha512-wiG0gzrae+0xsBj2RtqaJAWNKbZdsqiNjzK5vh99wILQY1rTN90cMMILr3i69cnD3J2g0P3EFMqL52ovNHEaJw==}
     peerDependencies:
@@ -4941,6 +4984,7 @@ packages:
     resolution: {integrity: sha512-nVWh4QjnKPDDFpis7w6Qu3X47Uff380oWs5qoSis/B2pIXDauqxhg1vneNxkxXlJnHoPKq4tTRJvPG0bmU2IVA==}
     dependencies:
       '@remote-ui/rpc': 1.3.1
+    dev: true
 
   /@remote-ui/core/2.1.12:
     resolution: {integrity: sha512-smjkHOt3lbtod/hU2JPIUqDOFopRt+xkL64eHQ0XrdGn4W1AwWVHfZkyY/02kWiekpdg96VtKh1OW053zdppiA==}

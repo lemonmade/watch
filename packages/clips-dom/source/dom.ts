@@ -27,7 +27,7 @@ export interface ComponentElementRemoteInternals
   readonly [INTERNAL_PROPS]: Record<string, unknown>;
 }
 
-interface ElementForRemote
+export interface ElementForRemote
   extends Pick<
     HTMLElement,
     | 'nodeName'
@@ -359,9 +359,9 @@ function nodeToRemote(
 
     if (node.nodeType === NODE_TYPE_ELEMENT) {
       // TODO: handle missing elements
-      const component = components
-        ? components[node.nodeName]?.component
-        : node.nodeName;
+      const component =
+        (components ? components[node.nodeName]?.component : undefined) ??
+        node.nodeName;
 
       remoteChild = root.createComponent(
         component,

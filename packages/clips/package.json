@@ -24,8 +24,10 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@watching/thread-signals": "^0.1.0",
-    "@remote-ui/core": "^2.1.12"
+    "@quilted/react-signals": "^0.1.0",
+    "@quilted/react-utilities": "^0.1.6",
+    "@remote-ui/core": "^2.1.12",
+    "@watching/thread-signals": "^0.1.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"
