@@ -14,6 +14,15 @@ import {
   type Element,
 } from './dom';
 
+if (typeof globalThis.window === 'undefined') {
+  const window = createWindow();
+
+  Object.defineProperties(globalThis, {
+    ...Object.getOwnPropertyDescriptors(window),
+    window: {value: window},
+  });
+}
+
 export function extension<Extends extends ExtensionPoint>(
   renderUi: (
     element: Element,
@@ -24,15 +33,6 @@ export function extension<Extends extends ExtensionPoint>(
     {channel}: RenderExtensionRoot<any>,
     api: AnyApi,
   ) {
-    if (typeof globalThis.window === 'undefined') {
-      const window = createWindow();
-
-      Object.defineProperties(globalThis, {
-        ...Object.getOwnPropertyDescriptors(window),
-        window: {value: window},
-      });
-    }
-
     const element = createRootElement(channel, globalThis.window as any);
     await renderUi(element, acceptSignals(api) as any);
     getRemoteRootForElement(element)!.mount();

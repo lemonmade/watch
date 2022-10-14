@@ -9,7 +9,7 @@ import {
 import type {AbstractChannel, NodeId} from './protocol';
 import {Window} from './dom/Window';
 import type {Element} from './dom/Element';
-import {CHANNEL, ID} from './dom/constants';
+import {CHANNEL, ID, GENERATE_ID} from './dom/constants';
 
 export type {Document} from './dom/Document';
 export type {Window} from './dom/Window';
@@ -32,14 +32,14 @@ export function createWindow() {
 export function createRootElement(channel: RemoteChannel, {document}: Window) {
   const remoteRoot = createRemoteRoot(channel);
   const root = document.createElement('root');
-  // (root as any)[GENERATE_ID]();
+  (root as any)[GENERATE_ID]();
   rootsById.set((root as any)[ID], remoteRoot);
   document.appendChild(root);
   return root;
 }
 
 export function getRemoteRootForElement(element: Element) {
-  return rootsById.get(element);
+  return rootsById.get(element[ID]);
 }
 
 type NS = string | null;
@@ -78,11 +78,11 @@ class RemoteUiChannel implements AbstractChannel {
 
   setAttribute(node: NodeId, name: string, value: string, _ns?: NS) {
     const parsedValue = value === '' ? true : value;
-    this._element(node).updateProps({[name]: parsedValue});
+    this._element(node)?.updateProps({[name]: parsedValue});
   }
 
   removeAttribute(node: NodeId, name: string, _ns?: NS) {
-    this._element(node).updateProps({[name]: undefined});
+    this._element(node)?.updateProps({[name]: undefined});
   }
 
   createText(node: NodeId, data: string, parent: NodeId) {
@@ -94,7 +94,7 @@ class RemoteUiChannel implements AbstractChannel {
   }
 
   setText(node: NodeId, data: string) {
-    this._text(node).updateText(data);
+    this._text(node)?.updateText(data);
   }
 
   insert(parent: NodeId, node: NodeId, before: NodeId) {
@@ -121,6 +121,8 @@ class RemoteUiChannel implements AbstractChannel {
       element = root;
     }
 
+    if (element == null) return;
+
     const child = this.nodes.get(node)!;
     if (before == null) {
       element.appendChild(child);
@@ -132,14 +134,18 @@ class RemoteUiChannel implements AbstractChannel {
 
   remove(node: NodeId) {
     const element = this._element(node);
-    element.parent?.removeChild(element);
+    element?.parent?.removeChild(element);
   }
 
   setProperty(node: NodeId, name: string, value: any) {
-    this._element(node).updateProps({[name]: value});
+    this._element(node)?.updateProps({[name]: value});
   }
 
   addListener(node: NodeId, _type: string, listener: Listener) {
+    const element = this._element(node);
+
+    if (element == null) return;
+
     const type = _type[0]!.toLowerCase() + _type.slice(1);
     let lists = this.listeners.get(node);
     if (!lists) {
@@ -160,7 +166,7 @@ class RemoteUiChannel implements AbstractChannel {
     }
     const isFirst = events.listeners.push(listener) === 1;
     if (isFirst) {
-      this._element(node).updateProps({
+      element.updateProps({
         [events.name]: events.proxy,
         [events.nameLower]: events.proxy,
       });
@@ -168,6 +174,8 @@ class RemoteUiChannel implements AbstractChannel {
   }
 
   removeListener(node: NodeId, type: string, listener: Listener) {
+    const element = this._element(node);
+    if (!element) return;
     const lists = this.listeners.get(node);
     if (!lists) return;
     const events = lists.get(type);
@@ -176,7 +184,7 @@ class RemoteUiChannel implements AbstractChannel {
     const index = listeners.indexOf(listener);
     if (index !== -1) listeners.splice(index, 1);
     if (listeners.length === 0) {
-      this._element(node).updateProps({
+      element.updateProps({
         [name]: undefined,
         [nameLower]: undefined,
       });
@@ -190,10 +198,10 @@ class RemoteUiChannel implements AbstractChannel {
   // }
 
   private _element(id: NodeId) {
-    return this.nodes.get(id) as RemoteComponent<any, RemoteRoot>;
+    return this.nodes.get(id) as RemoteComponent<any, RemoteRoot> | undefined;
   }
 
   private _text(id: NodeId) {
-    return this.nodes.get(id) as RemoteText<RemoteRoot>;
+    return this.nodes.get(id) as RemoteText<RemoteRoot> | undefined;
   }
 }
