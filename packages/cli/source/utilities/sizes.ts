@@ -2,7 +2,7 @@
 // ends up having an object with all its exports as the `default` export of
 // the package.
 export async function brotliSize(code: string) {
-  const imported = await import('brotli-size');
+  const {default: imported} = await import('brotli-size');
 
   const brotliSize: typeof import('brotli-size').default =
     'default' in imported

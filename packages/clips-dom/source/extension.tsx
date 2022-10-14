@@ -7,11 +7,25 @@ import type {
   ApiForExtensionPoint,
 } from '@watching/clips';
 
-import {createElementFromChannel, INTERNAL_REMOTE} from './dom';
+import {
+  createWindow,
+  getRemoteRootForElement,
+  createRootElement,
+  type Element,
+} from './dom';
+
+if (typeof globalThis.window === 'undefined') {
+  const window = createWindow();
+
+  Object.defineProperties(globalThis, {
+    ...Object.getOwnPropertyDescriptors(window),
+    window: {value: window},
+  });
+}
 
 export function extension<Extends extends ExtensionPoint>(
   renderUi: (
-    element: HTMLElement,
+    element: Element,
     api: WithThreadSignals<ApiForExtensionPoint<Extends>>,
   ) => void | Promise<void>,
 ) {
@@ -19,9 +33,9 @@ export function extension<Extends extends ExtensionPoint>(
     {channel}: RenderExtensionRoot<any>,
     api: AnyApi,
   ) {
-    const element = createElementFromChannel(channel);
-    await renderUi(element as any, acceptSignals(api) as any);
-    element[INTERNAL_REMOTE].root.mount();
+    const element = createRootElement(channel, globalThis.window as any);
+    await renderUi(element, acceptSignals(api) as any);
+    getRemoteRootForElement(element)!.mount();
   }
 
   return domExtension as ExtensionPoints[Extends];
