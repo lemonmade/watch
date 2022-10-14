@@ -1,27 +1,4 @@
-export const enum Op {
-  CREATE_ELEMENT = 'createElement',
-  CREATE_TEXT = 'createText',
-  SET_PROPERTY = 'setProperty',
-  REMOVE = 'remove',
-  INSERT = 'insert',
-  ADD_LISTENER = 'addListener',
-  REMOVE_LISTENER = 'removeListener',
-}
-
-export const enum ClientOp {
-  INIT = 'init',
-  INVOKE = 'invoke',
-}
-
 export type NodeId = number;
-
-export interface ChannelOptions {}
-
-export interface Command {
-  id: number;
-  name: string;
-  params: any[];
-}
 
 export interface AbstractChannel {
   createElement(
