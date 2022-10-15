@@ -1,0 +1,22 @@
+.TextLink {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: inherit;
+  font-size: 1em;
+  text-align: var(--z-internal-inline-alignment, start);
+  text-decoration: underline;
+}
+
+.sizeSmall {
+  font-size: 0.875rem;
+}
+
+.emphasisSubdued {
+  color: var(--z-text-subdued-color);
+  font-weight: var(--z-text-subdued-weight);
+}
+
+.emphasisStrong {
+color: var(--z-text-emphasized-color);
+  font-weight: var(--z-text-emphasized-weight);
+}

@@ -13,6 +13,7 @@ import {
   Choice,
   Pressable,
   Text,
+  TextLink,
   TextBlock,
   DatePicker,
   Divider,
@@ -554,9 +555,16 @@ function TextComponents() {
           Heading (divider, six)
         </Heading>
 
-        <Text>Hello world</Text>
-        <Text emphasis="strong">Hello world</Text>
-        <Text emphasis="subdued">Hello world</Text>
+        <Text>Text</Text>
+        <Text emphasis="strong">Text (emphasis)</Text>
+        <Text emphasis="subdued">Text (subdued)</Text>
+        <TextLink to="#">Text link</TextLink>
+        <TextLink to="#" emphasis="strong">
+          Text link (emphasis)
+        </TextLink>
+        <TextLink to="#" emphasis="subdued">
+          Text link (subdued)
+        </TextLink>
         <TextBlock>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi
           suscipit est dolorum molestiae id facere magni aperiam officiis odit

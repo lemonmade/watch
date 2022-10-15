@@ -12,5 +12,9 @@ fragment InstalledClipExtension on ClipsExtensionInstallation {
   extension {
     id
     name
+    app {
+      id
+      name
+    }
   }
 }

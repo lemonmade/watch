@@ -1,26 +1,31 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import styles from './Text.module.css';
+import {Pressable, type PressableProps} from '../Pressable';
 
-interface Props {
-  className?: string;
+import styles from './TextLink.module.css';
+
+interface Props extends Pick<PressableProps, 'id' | 'target'> {
+  to: NonNullable<PressableProps['to']>;
   size?: 'small' | 'base';
   emphasis?: boolean | 'strong' | 'subdued';
-  accessibilityRole?: 'code';
 }
 
-export function Text({
+export function TextLink({
+  id,
+  to,
+  target,
   size,
-  className,
-  children,
   emphasis,
-  accessibilityRole,
+  children,
 }: PropsWithChildren<Props>) {
   return (
-    <span
+    <Pressable
+      id={id}
+      to={to}
+      target={target}
       className={classes(
-        styles.Text,
+        styles.TextLink,
         size && styles[variation('size', size)],
         emphasis &&
           styles[
@@ -29,11 +34,10 @@ export function Text({
               typeof emphasis === 'boolean' ? 'strong' : emphasis,
             )
           ],
-        accessibilityRole === 'code' && styles.code,
-        className,
+        emphasis === 'strong' && styles.strong,
       )}
     >
       {children}
-    </span>
+    </Pressable>
   );
 }

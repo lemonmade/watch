@@ -9,7 +9,16 @@
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 }
 
-.subdued {
+.sizeSmall {
+  font-size: 0.875rem;
+}
+
+.emphasisSubdued {
   color: var(--z-text-subdued-color);
   font-weight: var(--z-text-subdued-weight);
+}
+
+.emphasisStrong {
+  color: var(--z-text-emphasized-color);
+  font-weight: var(--z-text-emphasized-weight);
 }

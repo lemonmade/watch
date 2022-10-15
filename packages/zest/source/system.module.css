@@ -17,10 +17,12 @@
     --z-internal-display-none,
     var(--z-internal-display-grid, inline-grid)
   );
+  justify-content: var(--z-internal-inline-alignment);
 }
 
 .displayGrid {
   display: var(--z-internal-display-none, var(--z-internal-display-grid, grid));
+  justify-content: var(--z-internal-inline-alignment);
 }
 
 .displayInlineFlex {
@@ -28,10 +30,12 @@
     --z-internal-display-none,
     var(--z-internal-display-flex, inline-flex)
   );
+  justify-content: var(--z-internal-inline-alignment);
 }
 
 .displayFlex {
   display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
+  justify-content: var(--z-internal-inline-alignment);
 }
 
 :where(.contentInlineSizeFill) > * {

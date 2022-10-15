@@ -32,4 +32,5 @@ export {Tag} from './Tag';
 export {Text} from './Text';
 export {TextBlock} from './TextBlock';
 export {TextField} from './TextField';
+export {TextLink} from './TextLink';
 export {View} from './View';

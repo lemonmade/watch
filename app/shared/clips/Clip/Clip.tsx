@@ -17,18 +17,21 @@ import {
   TextBlock,
   Section,
   Text,
+  TextLink,
   Menu,
   Form,
   TextField,
   Select,
   Action,
+  Layout,
+  Icon,
 } from '@lemon/zest';
 
 import type {
   ClipsExtensionApiVersion,
   JSON as GraphQlJSON,
 } from '~/graphql/types';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {useQuery, useMutation, parseGid} from '~/shared/graphql';
 import type {ArrayElement, ThenType} from '~/shared/types';
 
 import {type Sandbox as ExtensionSandbox} from '../sandboxes';
@@ -50,6 +53,8 @@ import localClipQuery, {
   type LocalClipQueryData,
 } from './graphql/LocalClipQuery.graphql';
 
+import styles from './Clip.module.css';
+
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
     AllowedComponentsForExtensionPoint<T>
@@ -68,6 +73,7 @@ export interface Props<T extends ExtensionPoint> {
     Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version' | 'settings'>
   >;
   build?: LocalClipQueryData.App.ClipsExtension.Build;
+  app?: InstalledClipExtensionFragmentData.Extension['app'];
   settings?: GraphQlJSON;
 }
 
@@ -97,6 +103,7 @@ export function InstalledClip<T extends ExtensionPoint>({
       key={id}
       api={api}
       name={extension.name}
+      app={extension.app}
       version={version.apiVersion}
       script={version.assets[0]!.source}
       settings={settings ?? undefined}
@@ -496,6 +503,7 @@ function LocalDevelopmentOverview({build}: LocalDevelopmentOverviewProps) {
 
 interface ClipFrameProps<T extends ExtensionPoint> {
   name: string;
+  app?: InstalledClipExtensionFragmentData.Extension['app'];
   script: string;
   controller: RenderController<T>;
   renderPopoverContent?(): ReactNode;
@@ -504,6 +512,7 @@ interface ClipFrameProps<T extends ExtensionPoint> {
 
 function ClipFrame<T extends ExtensionPoint>({
   name,
+  app,
   controller,
   children,
   renderPopoverContent,
@@ -514,23 +523,54 @@ function ClipFrame<T extends ExtensionPoint>({
 
   return (
     <BlockStack spacing="small">
-      <View>
-        <Action
-          popover={
-            <Popover>
-              <Section padding>
-                <ClipTimings controller={controller} />
-              </Section>
-              {additionalSectionContents && (
-                <Section padding>{additionalSectionContents}</Section>
-              )}
-              {actionContents && <Menu>{actionContents}</Menu>}
-            </Popover>
-          }
+      <Layout columns={['auto', 'fill']} spacing="small">
+        <View
+          display="inlineFlex"
+          background="emphasized"
+          border="subdued"
+          cornerRadius
+          inlineAlignment="center"
+          className={styles.AppIcon}
         >
-          {name}
-        </Action>
-      </View>
+          <Icon source="app" />
+        </View>
+        <BlockStack>
+          <InlineStack spacing="small">
+            <Text emphasis>{name}</Text>
+            <Action
+              icon="more"
+              size="small"
+              accessibilityLabel="More actions…"
+              popover={
+                <Popover>
+                  <Section padding>
+                    <ClipTimings controller={controller} />
+                  </Section>
+                  {additionalSectionContents && (
+                    <Section padding>{additionalSectionContents}</Section>
+                  )}
+                  {actionContents && <Menu>{actionContents}</Menu>}
+                </Popover>
+              }
+            />
+          </InlineStack>
+          {app == null ? (
+            <Text emphasis="subdued" size="small">
+              from{' '}
+              <TextLink to="/app/developer/console" emphasis>
+                local app
+              </TextLink>
+            </Text>
+          ) : (
+            <Text emphasis="subdued" size="small">
+              from app{' '}
+              <TextLink to={`/app/apps/${parseGid(app.id).id}`} emphasis>
+                {app.name}
+              </TextLink>
+            </Text>
+          )}
+        </BlockStack>
+      </Layout>
 
       <View>{children}</View>
     </BlockStack>

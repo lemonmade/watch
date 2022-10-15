@@ -23,7 +23,7 @@
 
   --z-surface-background-base: rgb(26 21 34);
   --z-surface-background-subdued: var(--z-surface-background-base);
-  --z-surface-background-emphasized: var(--z-surface-background-base);
+  --z-surface-background-emphasized: rgb(48 39 63);
 
   --z-overlay-background-base: rgb(18 17 20);
 
@@ -33,8 +33,8 @@
   --z-text-base-weight: 400;
   --z-text-subdued-color: rgb(146 139 159);
   --z-text-subdued-weight: var(--z-text-base-weight);
-  --z-text-emphasized-color: var(--z-text-base-color);
-  --z-text-emphasized-weight: 700;
+  --z-text-emphasized-color: inherit;
+  --z-text-emphasized-weight: 600;
 
   --z-Action-minimum-size: 2.5rem; /* 44px / 16px */
 

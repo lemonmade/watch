@@ -133,24 +133,28 @@ function SeriesWithData({
               onUpdate={onUpdate}
             />
           </Layout>
-
-          {localDevelopmentClips.map((localClip) => (
-            <LocalClip
-              {...localClip}
-              key={localClip.id}
-              api={apiForClips}
-              extensionPoint="Series.Details.RenderAccessory"
-            />
-          ))}
-          {clipsInstallations.map((installedClip) => (
-            <InstalledClip
-              {...installedClip}
-              key={installedClip.id}
-              api={apiForClips}
-              extensionPoint="Series.Details.RenderAccessory"
-            />
-          ))}
         </BlockStack>
+
+        {localDevelopmentClips.length + clipsInstallations.length > 0 ? (
+          <BlockStack spacing="large">
+            {localDevelopmentClips.map((localClip) => (
+              <LocalClip
+                {...localClip}
+                key={localClip.id}
+                api={apiForClips}
+                extensionPoint="Series.Details.RenderAccessory"
+              />
+            ))}
+            {clipsInstallations.map((installedClip) => (
+              <InstalledClip
+                {...installedClip}
+                key={installedClip.id}
+                api={apiForClips}
+                extensionPoint="Series.Details.RenderAccessory"
+              />
+            ))}
+          </BlockStack>
+        ) : null}
 
         <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
 
