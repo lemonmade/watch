@@ -267,19 +267,19 @@
 
   --z-Overlay-backdrop-color: rgb(14 12 18 / 85%);
 
-  --z-Heading-level-1-font-size: 2.5rem;
+  --z-Heading-level-1-font-size: 2rem;
   --z-Heading-level-1-weight: 700;
   --z-Heading-level-1-color: var(--z-text-emphasized-color);
-  --z-Heading-level-2-font-size: 2rem;
+  --z-Heading-level-2-font-size: 1.75rem;
   --z-Heading-level-2-weight: 700;
   --z-Heading-level-2-color: var(--z-text-emphasized-color);
-  --z-Heading-level-3-font-size: 1.75rem;
+  --z-Heading-level-3-font-size: 1.5rem;
   --z-Heading-level-3-weight: 700;
   --z-Heading-level-3-color: var(--z-text-emphasized-color);
-  --z-Heading-level-4-font-size: 1.5rem;
+  --z-Heading-level-4-font-size: 1.25rem;
   --z-Heading-level-4-weight: 700;
   --z-Heading-level-4-color: var(--z-text-emphasized-color);
-  --z-Heading-level-5-font-size: 1.25rem;
+  --z-Heading-level-5-font-size: 1.125rem;
   --z-Heading-level-5-weight: 700;
   --z-Heading-level-5-color: var(--z-text-emphasized-color);
   --z-Heading-level-6-font-size: 1rem;

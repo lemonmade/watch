@@ -17,10 +17,10 @@ import {
   Tag,
   Modal,
   TextBlock,
+  Poster,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
-import {Page} from '~/shared/page';
 import {SpoilerAvoidance} from '~/shared/spoilers';
 
 import {parseGid, useQuery, useMutation} from '~/shared/graphql';
@@ -90,83 +90,132 @@ function SeriesWithData({
 
   const {seasons, watchThroughs, subscription} = series;
 
+  const regularSeasons = series.seasons
+    .filter(({isSpecials}) => !isSpecials)
+    .sort((a, b) => a.number - b.number);
+  const firstAired = regularSeasons.find(
+    ({firstAired}) => firstAired != null,
+  )?.firstAired;
+  const lastAired = regularSeasons
+    .reverse()
+    .find(({firstAired}) => firstAired != null)?.firstAired;
+  const seasonCount = regularSeasons.length;
+
+  const betweenText = firstAired
+    ? lastAired && lastAired !== firstAired
+      ? `${new Date(firstAired).getFullYear()}–${new Date(
+          lastAired,
+        ).getFullYear()}`
+      : String(new Date(firstAired).getFullYear())
+    : undefined;
+
   return (
-    <Page
-      heading={series.name}
-      menu={
-        <>
-          <Menu label="See series in…">
-            <Action to={series.tmdbUrl} target="new" icon="arrowEnd">
-              TMDB
-            </Action>
-            <Action to={series.imdbUrl} target="new" icon="arrowEnd">
-              IMDB
-            </Action>
-          </Menu>
+    <BlockStack spacing="huge" padding>
+      <BlockStack spacing>
+        <Section content="header">
+          <Layout spacing blockAlignment="start" columns={[raw`6rem`, 'fill']}>
+            <Poster source={series.poster?.source as any} />
 
-          <Menu label="Internal…">
-            <SynchronizeSeriesWithTmdbAction
-              seriesId={series.id}
-              onUpdate={onUpdate}
-            />
-            <DeleteSeriesAction seriesId={series.id} />
-          </Menu>
-        </>
-      }
-    >
-      <BlockStack spacing="huge">
-        <BlockStack spacing>
-          {series.overview && <Text>{series.overview}</Text>}
+            <BlockStack spacing>
+              <BlockStack spacing="small">
+                <InlineStack spacing="small">
+                  <Heading>{series.name}</Heading>
+                  <Action
+                    icon="more"
+                    size="small"
+                    accessibilityLabel="More actions…"
+                    popover={
+                      <Popover>
+                        <Menu label="See series in…">
+                          <Action
+                            to={series.tmdbUrl}
+                            target="new"
+                            icon="arrowEnd"
+                          >
+                            TMDB
+                          </Action>
+                          <Action
+                            to={series.imdbUrl}
+                            target="new"
+                            icon="arrowEnd"
+                          >
+                            IMDB
+                          </Action>
+                        </Menu>
 
-          <Layout
-            spacing="small"
-            columns={[
-              {value: ['fill']},
-              {value: ['fill', 'fill'], viewport: {min: 'large'}},
-            ]}
-          >
-            <WatchSeriesAction id={series.id} watchThroughs={watchThroughs} />
+                        <Menu label="Internal…">
+                          <SynchronizeSeriesWithTmdbAction
+                            seriesId={series.id}
+                            onUpdate={onUpdate}
+                          />
+                          <DeleteSeriesAction seriesId={series.id} />
+                        </Menu>
+                      </Popover>
+                    }
+                  />
+                </InlineStack>
+                <Text emphasis="subdued">
+                  {betweenText ? `${betweenText} • ` : ''}
+                  {seasonCount} {seasonCount === 1 ? 'Season' : 'Seasons'}
+                </Text>
+              </BlockStack>
 
-            <WatchlistAction
-              id={series.id}
-              inWatchLater={series.inWatchLater}
-              onUpdate={onUpdate}
-            />
+              <Layout
+                spacing="small"
+                columns={[
+                  {value: ['fill']},
+                  {value: ['fill', 'fill'], viewport: {min: 'large'}},
+                ]}
+              >
+                <WatchSeriesAction
+                  id={series.id}
+                  watchThroughs={watchThroughs}
+                />
+
+                <WatchlistAction
+                  id={series.id}
+                  inWatchLater={series.inWatchLater}
+                  onUpdate={onUpdate}
+                />
+              </Layout>
+            </BlockStack>
           </Layout>
-        </BlockStack>
+        </Section>
 
-        {localDevelopmentClips.length + clipsInstallations.length > 0 ? (
-          <BlockStack spacing="large">
-            {localDevelopmentClips.map((localClip) => (
-              <LocalClip
-                {...localClip}
-                key={localClip.id}
-                api={apiForClips}
-                extensionPoint="Series.Details.RenderAccessory"
-              />
-            ))}
-            {clipsInstallations.map((installedClip) => (
-              <InstalledClip
-                {...installedClip}
-                key={installedClip.id}
-                api={apiForClips}
-                extensionPoint="Series.Details.RenderAccessory"
-              />
-            ))}
-          </BlockStack>
-        ) : null}
-
-        <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
-
-        <WatchThroughsSection watchThroughs={watchThroughs} />
-
-        <SettingsSection
-          id={series.id}
-          subscription={subscription}
-          onUpdate={onUpdate}
-        />
+        {series.overview && <TextBlock>{series.overview}</TextBlock>}
       </BlockStack>
-    </Page>
+
+      {localDevelopmentClips.length + clipsInstallations.length > 0 ? (
+        <BlockStack spacing="large">
+          {localDevelopmentClips.map((localClip) => (
+            <LocalClip
+              {...localClip}
+              key={localClip.id}
+              api={apiForClips}
+              extensionPoint="Series.Details.RenderAccessory"
+            />
+          ))}
+          {clipsInstallations.map((installedClip) => (
+            <InstalledClip
+              {...installedClip}
+              key={installedClip.id}
+              api={apiForClips}
+              extensionPoint="Series.Details.RenderAccessory"
+            />
+          ))}
+        </BlockStack>
+      ) : null}
+
+      <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
+
+      <WatchThroughsSection watchThroughs={watchThroughs} />
+
+      <SettingsSection
+        id={series.id}
+        subscription={subscription}
+        onUpdate={onUpdate}
+      />
+    </BlockStack>
   );
 }
 
