@@ -9,6 +9,7 @@ import {
   AppContext,
   GraphQLContext,
 } from '@quilted/quilt';
+import {HtmlAttributes} from '@quilted/quilt/html';
 import type {GraphQLFetch, PropsWithChildren} from '@quilted/quilt';
 import {Canvas} from '@lemon/zest';
 
@@ -60,6 +61,7 @@ export default function App() {
 
   return (
     <AppContext>
+      <HtmlAttributes lang="en" dir="ltr" />
       <QueryClientProvider client={queryClient}>
         <Router isExternal={urlIsExternal}>
           <GraphQL>
