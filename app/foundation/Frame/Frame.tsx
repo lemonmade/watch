@@ -17,9 +17,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
     <>
       <View display="grid" className={styles.Frame}>
         <View className={styles.Navigation}>
-          <View className={styles.NavigationContent}>
-            <NavigationMenu />
-          </View>
+          <NavigationMenu />
         </View>
         <View className={styles.Content}>{children}</View>
       </View>

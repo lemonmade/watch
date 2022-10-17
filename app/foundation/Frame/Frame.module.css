@@ -10,29 +10,31 @@
   padding-block-end: calc(
     var(--z-Action-minimum-size) + (2 * var(--z-spacing-small))
   );
+  padding-inline-end: env(safe-area-inset-right);
 }
 
 .Navigation {
-  --z-internal-display-none: none;
+  display: none;
   background: var(--z-overlay-background-base);
   border-inline-end: var(--z-border-subdued);
-}
-
-.NavigationContent {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  inline-size: var(--Navigation-inline-size);
+  inline-size: calc(var(--Navigation-inline-size) + env(safe-area-inset-right));
 }
 
 @media screen and (min-width: 32em) {
   .Frame {
-    grid-template-columns: var(--Navigation-inline-size) 1fr;
+    grid-template-columns: calc(var(--Navigation-inline-size) + env(safe-area-inset-right)) 1fr;
+  }
+
+  .Content {
+    grid-column: 2;
   }
 
   .Navigation {
-    --z-internal-display-none: initial;
+    display: block;
   }
 }
 
