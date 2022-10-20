@@ -83,18 +83,3 @@
   transform: translate(-50%, 50%);
   z-index: 20;
 }
-
-.WatchThroughBadge {
-  display: inline-flex;
-  align-items: center;
-  block-size: var(--WatchThrough-badge-size);
-  padding: 0 var(--z-spacing-small);
-  border-radius: var(--z-corner-radius-small);
-  text-transform: uppercase;
-  font-weight: 600;
-  text-align: center;
-  color: black;
-  white-space: nowrap;
-  background-color: var(--z-text-subdued-color);
-  font-size: 0.7rem;
-}

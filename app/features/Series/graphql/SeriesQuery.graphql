@@ -6,6 +6,7 @@ query Series($id: ID, $handle: String) {
     imdbUrl
     tmdbUrl
     inWatchLater
+    status
     poster {
       source
     }

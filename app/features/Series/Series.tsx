@@ -153,10 +153,13 @@ function SeriesWithData({
                 >
                   {series.name}
                 </HeadingAction>
-                <Text emphasis="subdued">
-                  {betweenText ? `${betweenText} • ` : ''}
-                  {seasonCount} {seasonCount === 1 ? 'Season' : 'Seasons'}
-                </Text>
+                <InlineStack spacing="small">
+                  <SeriesStatusTag status={series.status} />
+                  <Text emphasis="subdued">
+                    {betweenText ? `${betweenText} • ` : ''}
+                    {seasonCount} {seasonCount === 1 ? 'Season' : 'Seasons'}
+                  </Text>
+                </InlineStack>
               </BlockStack>
 
               <Layout
@@ -216,6 +219,17 @@ function SeriesWithData({
       />
     </BlockStack>
   );
+}
+
+function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {
+  switch (status) {
+    case 'ENDED':
+      return <Tag>Ended</Tag>;
+    case 'CANCELLED':
+      return <Tag>Cancelled</Tag>;
+    case 'RETURNING':
+      return <Tag>Continuing</Tag>;
+  }
 }
 
 function WatchSeriesAction({

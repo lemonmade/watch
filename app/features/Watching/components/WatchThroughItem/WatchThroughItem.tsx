@@ -1,5 +1,5 @@
 import {classes} from '@lemon/css';
-import {Poster, Pressable} from '@lemon/zest';
+import {Poster, Pressable, Tag} from '@lemon/zest';
 
 import styles from './WatchThroughItem.module.css';
 
@@ -62,9 +62,7 @@ export function WatchThroughItem({
       </div>
       {unfinishedEpisodeCount > 1 && (
         <div className={styles.WatchThroughFootnote}>
-          <span className={styles.WatchThroughBadge}>
-            +{unfinishedEpisodeCount - 1} more
-          </span>
+          <Tag>+{unfinishedEpisodeCount - 1} more</Tag>
         </div>
       )}
     </Pressable>
