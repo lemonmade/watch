@@ -14,7 +14,6 @@ import {
   BlockStack,
   InlineStack,
   View,
-  TextBlock,
   Section,
   Text,
   Menu,
@@ -32,9 +31,7 @@ import type {
   JSON as GraphQlJSON,
 } from '~/graphql/types';
 import {useQuery, useMutation} from '~/shared/graphql';
-import type {ArrayElement, ThenType} from '~/shared/types';
 
-import {type Sandbox as ExtensionSandbox} from '../sandboxes';
 import {useRenderSandbox, type RenderController} from '../render';
 import {
   useLocalDevelopmentServerQuery,
@@ -230,18 +227,27 @@ function InstalledClipFrame<T extends ExtensionPoint>({
       )}
       renderPopoverActions={() => (
         <>
-          <Action onPress={() => alert('App page not implemented yet!')}>
+          <Action
+            icon="arrowEnd"
+            onPress={() => alert('App page not implemented yet!')}
+          >
             View app
           </Action>
-          <Action onPress={() => controller.restart()}>Restart</Action>
+          <Action icon="sync" onPress={() => controller.restart()}>
+            Restart
+          </Action>
           <Action
-            onPress={() => {
-              uninstallClipsExtensionFromClip.mutate({id});
+            icon="delete"
+            onPress={async () => {
+              await uninstallClipsExtensionFromClip.mutateAsync({id});
             }}
           >
             Uninstall
           </Action>
-          <Action onPress={() => alert('Reporting not implemented yet!')}>
+          <Action
+            icon="message"
+            onPress={() => alert('Reporting not implemented yet!')}
+          >
             Report an issue
           </Action>
         </>
@@ -481,9 +487,12 @@ function LocalClipFrame<T extends ExtensionPoint>({
     <ClipFrame<T>
       controller={controller}
       {...rest}
-      renderPopoverContent={() => <LocalDevelopmentOverview build={build} />}
       renderPopoverActions={() => (
-        <Action onPress={() => controller.restart()}>Restart</Action>
+        <>
+          <Action icon="sync" onPress={() => controller.restart()}>
+            Restart
+          </Action>
+        </>
       )}
     >
       <div
@@ -494,14 +503,6 @@ function LocalClipFrame<T extends ExtensionPoint>({
       </div>
     </ClipFrame>
   );
-}
-
-interface LocalDevelopmentOverviewProps {
-  build: LocalClipQueryData.App.ClipsExtension.Build;
-}
-
-function LocalDevelopmentOverview({build}: LocalDevelopmentOverviewProps) {
-  return <Text>{JSON.stringify(build)}</Text>;
 }
 
 interface ClipFrameProps<T extends ExtensionPoint> {
@@ -516,7 +517,6 @@ interface ClipFrameProps<T extends ExtensionPoint> {
 function ClipFrame<T extends ExtensionPoint>({
   name,
   app,
-  controller,
   children,
   renderPopoverContent,
   renderPopoverActions,
@@ -529,9 +529,6 @@ function ClipFrame<T extends ExtensionPoint>({
       <ContentAction
         popover={
           <Popover inlineAttachment="start">
-            <Section padding>
-              <ClipTimings controller={controller} />
-            </Section>
             {additionalSectionContents && (
               <Section padding>{additionalSectionContents}</Section>
             )}
@@ -568,130 +565,4 @@ function ClipFrame<T extends ExtensionPoint>({
       <View>{children}</View>
     </BlockStack>
   );
-}
-
-interface ClipTimingsProps<T extends ExtensionPoint> {
-  controller: RenderController<T>;
-}
-
-function ClipTimings<T extends ExtensionPoint>({
-  controller,
-}: ClipTimingsProps<T>) {
-  const sandboxTimings = controller.sandbox.timings.value;
-  const timings = controller.timings.value;
-  const scripts = useSandboxScripts(controller);
-
-  return (
-    <View>
-      {sandboxTimings.start ? (
-        <TextBlock>
-          sandbox started: {new Date(sandboxTimings.start).toLocaleTimeString()}
-          {sandboxTimings.loadEnd
-            ? ` (finished in ${
-                sandboxTimings.loadEnd - sandboxTimings.start
-              }ms)`
-            : null}
-        </TextBlock>
-      ) : null}
-
-      {timings.renderStart ? (
-        <TextBlock>
-          render started: {new Date(timings.renderStart).toLocaleTimeString()}
-          {timings.renderEnd
-            ? ` (finished in ${timings.renderEnd - timings.renderStart}ms)`
-            : null}
-        </TextBlock>
-      ) : null}
-
-      <View>
-        {scripts.map((script) => (
-          <DownloadedScript key={script.name} script={script} />
-        ))}
-      </View>
-    </View>
-  );
-}
-
-type Script = ArrayElement<
-  ThenType<ReturnType<ExtensionSandbox['getResourceTimingEntries']>>
->;
-
-// @see https://github.com/sindresorhus/pretty-bytes/blob/main/index.js
-const BYTE_UNITS = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-function prettyBytes(bytes: number) {
-  const exponent = Math.min(
-    Math.floor(Math.log10(bytes) / 3),
-    BYTE_UNITS.length - 1,
-  );
-
-  const normalized = bytes / 1000 ** exponent;
-
-  return `${normalized.toLocaleString(undefined, {maximumFractionDigits: 2})} ${
-    BYTE_UNITS[exponent]
-  }`;
-}
-
-function DownloadedScript({
-  script: {name, duration, encodedBodySize},
-}: {
-  script: Script;
-}) {
-  const sizePrefix = encodedBodySize
-    ? `${prettyBytes(encodedBodySize)} `
-    : null;
-  return (
-    <TextBlock>
-      {name} ({sizePrefix}downloaded in{' '}
-      {duration.toLocaleString(undefined, {maximumFractionDigits: 2})}ms)
-    </TextBlock>
-  );
-}
-
-function useSandboxScripts(controller: RenderController<any>) {
-  const [scripts, setScripts] = useState<Script[]>([]);
-
-  useEffect(() => {
-    const abort = new AbortController();
-    let activeIndex = 0;
-
-    controller.on(
-      'start',
-      () => {
-        activeIndex += 1;
-      },
-      {signal: abort.signal},
-    );
-
-    controller.on(
-      'render',
-      () => {
-        loadScripts();
-      },
-      {signal: abort.signal},
-    );
-
-    if (controller.state === 'rendered') {
-      loadScripts();
-    }
-
-    return () => {
-      abort.abort();
-      activeIndex += 1;
-    };
-
-    async function loadScripts() {
-      const startIndex = activeIndex;
-
-      const entries = await controller.sandbox.run(
-        ({getResourceTimingEntries}) => getResourceTimingEntries(),
-      );
-
-      if (startIndex !== activeIndex) return;
-
-      setScripts(entries);
-    }
-  }, [controller]);
-
-  return scripts;
 }
