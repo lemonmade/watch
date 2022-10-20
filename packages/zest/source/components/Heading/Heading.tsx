@@ -1,14 +1,18 @@
 import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {useAutoHeadingLevel, toHeadingLevel} from '../../utilities/headings';
+import {
+  useHeadingDomDetails,
+  type HeadingLevel,
+  type HeadingAccessibilityRole,
+} from './shared';
 
 import styles from './Heading.module.css';
 
-interface Props {
-  level?: 1 | 2 | 3 | 4 | 5 | 6;
+export interface HeadingProps {
+  level?: HeadingLevel;
+  accessibilityRole?: HeadingAccessibilityRole;
   divider?: boolean;
-  accessibilityRole?: 'heading' | 'presentation';
 }
 
 export function Heading({
@@ -16,16 +20,11 @@ export function Heading({
   children,
   divider,
   accessibilityRole,
-}: PropsWithChildren<Props>) {
-  const level = useAutoHeadingLevel();
-  const role =
-    accessibilityRole ??
-    (explicitLevel == null || explicitLevel === level
-      ? 'heading'
-      : 'presentation');
-
-  const Element =
-    role === 'presentation' ? 'p' : (`h${toHeadingLevel(level)}` as const);
+}: PropsWithChildren<HeadingProps>) {
+  const {level, Element} = useHeadingDomDetails({
+    level: explicitLevel,
+    accessibilityRole,
+  });
 
   return (
     <Element

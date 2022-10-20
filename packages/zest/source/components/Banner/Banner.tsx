@@ -1,12 +1,8 @@
 import type {PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {
-  toHeadingLevel,
-  AutoHeadingContext,
-  useAutoHeadingLevel,
-} from '../../utilities/headings';
 import {View} from '../View';
+import {NestedHeadingLevel} from '../Heading';
 
 import styles from './Banner.module.css';
 
@@ -20,10 +16,8 @@ export function Banner({
   padding = true,
   children,
 }: PropsWithChildren<Props>) {
-  const level = useAutoHeadingLevel() ?? 0;
-
   return (
-    <AutoHeadingContext.Provider value={toHeadingLevel(level + 1)}>
+    <NestedHeadingLevel>
       <View
         border
         background
@@ -33,6 +27,6 @@ export function Banner({
       >
         {children}
       </View>
-    </AutoHeadingContext.Provider>
+    </NestedHeadingLevel>
   );
 }

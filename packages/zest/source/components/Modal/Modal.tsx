@@ -1,7 +1,7 @@
 import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {AutoHeadingContext} from '../../utilities/headings';
+import {HeadingLevelReset} from '../Heading';
 import {ActionScopeReset} from '../../utilities/actions';
 
 import systemStyles from '../../system.module.css';
@@ -16,7 +16,7 @@ interface ModalProps {
 
 export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
   return (
-    <AutoHeadingContext.Provider value={2}>
+    <HeadingLevelReset level={2}>
       <ActionScopeReset>
         <Overlay
           modal
@@ -35,6 +35,6 @@ export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
           {children}
         </Overlay>
       </ActionScopeReset>
-    </AutoHeadingContext.Provider>
+    </HeadingLevelReset>
   );
 }

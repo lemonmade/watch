@@ -7,6 +7,7 @@ import {
   InlineStack,
   Text,
   Section,
+  Header,
   Heading,
   Icon,
   Menu,
@@ -112,7 +113,7 @@ function SeriesWithData({
   return (
     <BlockStack spacing="huge" padding>
       <BlockStack spacing>
-        <Section content="header">
+        <Header>
           <Layout spacing blockAlignment="start" columns={[raw`6rem`, 'fill']}>
             <Poster source={series.poster?.source as any} />
 
@@ -180,7 +181,7 @@ function SeriesWithData({
               </Layout>
             </BlockStack>
           </Layout>
-        </Section>
+        </Header>
 
         {series.overview && <TextBlock>{series.overview}</TextBlock>}
       </BlockStack>

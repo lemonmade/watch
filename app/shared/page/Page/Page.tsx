@@ -3,6 +3,7 @@ import type {PropsWithChildren, ReactNode} from 'react';
 import {
   Text,
   Section,
+  Header,
   BlockStack,
   InlineStack,
   Heading,
@@ -50,9 +51,7 @@ export function Page({
 
   return (
     <>
-      <Section content="header" className={styles.Header}>
-        {headerContent}
-      </Section>
+      <Header className={styles.Header}>{headerContent}</Header>
       <Section className={styles.Content}>{children}</Section>
     </>
   );

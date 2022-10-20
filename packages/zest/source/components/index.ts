@@ -24,7 +24,7 @@ export {Poster} from './Poster';
 export {Pressable} from './Pressable';
 export {PrettyDate} from './PrettyDate';
 export {Rating} from './Rating';
-export {Section} from './Section';
+export {Section, Header, Footer} from './Section';
 export {Select} from './Select';
 export {Spacer} from './Spacer';
 export {Sticky} from './Sticky';
