@@ -3,7 +3,7 @@ import {classes, variation} from '@lemon/css';
 
 import styles from './Text.module.css';
 
-interface Props {
+export interface TextProps {
   className?: string;
   size?: 'small' | 'base';
   emphasis?: boolean | 'strong' | 'subdued';
@@ -16,7 +16,7 @@ export function Text({
   children,
   emphasis,
   accessibilityRole,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<TextProps>) {
   return (
     <span
       className={classes(

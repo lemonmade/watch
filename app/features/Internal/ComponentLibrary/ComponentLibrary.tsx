@@ -16,6 +16,7 @@ import {
   Choice,
   Pressable,
   Text,
+  TextAction,
   TextLink,
   TextBlock,
   DatePicker,
@@ -37,8 +38,6 @@ import {
   Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
-
-import {ResourceAction} from './ResourceAction/ResourceAction';
 
 export default function ComponentLibrary() {
   return (
@@ -129,10 +128,22 @@ function ActionComponents() {
         <Divider emphasis="subdued" />
 
         <BlockStack spacing inlineAlignment="start">
-          <ResourceAction>My action</ResourceAction>
-          <ResourceAction>
+          <TextAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My action
+          </TextAction>
+          <TextAction
+            emphasis
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My action (emphasized)
+          </TextAction>
+          <TextAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
             My long action that might have quite a long title
-          </ResourceAction>
+          </TextAction>
           <HeadingAction
             popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
@@ -154,6 +165,12 @@ function ActionComponents() {
             popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action (level 6)
+          </HeadingAction>
+          <HeadingAction
+            level={6}
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My heading action (level 6 that is quite long and will likely wrap)
           </HeadingAction>
         </BlockStack>
 

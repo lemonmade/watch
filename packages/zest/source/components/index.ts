@@ -29,7 +29,7 @@ export {Select} from './Select';
 export {Spacer} from './Spacer';
 export {Sticky} from './Sticky';
 export {Tag} from './Tag';
-export {Text} from './Text';
+export {Text, TextAction} from './Text';
 export {TextBlock} from './TextBlock';
 export {TextField} from './TextField';
 export {TextLink} from './TextLink';

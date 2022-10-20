@@ -6,6 +6,7 @@ import {
   BlockStack,
   InlineStack,
   Text,
+  TextAction,
   Section,
   Header,
   Heading,
@@ -412,11 +413,17 @@ function SeasonsSection({
 
               <BlockStack spacing="tiny">
                 <InlineStack spacing="small">
-                  <Text emphasis>
+                  <TextAction
+                    emphasis
+                    popover={
+                      <SeasonActionPopover
+                        season={season}
+                        onUpdate={onUpdate}
+                      />
+                    }
+                  >
                     {isSpecials ? 'Specials' : `Season ${number}`}
-                  </Text>
-
-                  <SeasonActions season={season} onUpdate={onUpdate} />
+                  </TextAction>
                 </InlineStack>
 
                 <Text emphasis="subdued">
@@ -455,7 +462,7 @@ function SeasonsSection({
   );
 }
 
-function SeasonActions({
+function SeasonActionPopover({
   season,
   onUpdate,
 }: {
@@ -465,39 +472,32 @@ function SeasonActions({
   const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
 
   return (
-    <Action
-      icon="more"
-      size="small"
-      accessibilityLabel="More actions…"
-      popover={
-        <Popover>
-          <Menu label="See season in…">
-            <Action icon="arrowEnd" to={season.tmdbUrl} target="new">
-              TMDB
-            </Action>
-            <Action icon="arrowEnd" to={season.imdbUrl} target="new">
-              IMDB
-            </Action>
-          </Menu>
+    <Popover inlineAttachment="start">
+      <Menu label="See season in…">
+        <Action icon="arrowEnd" to={season.tmdbUrl} target="new">
+          TMDB
+        </Action>
+        <Action icon="arrowEnd" to={season.imdbUrl} target="new">
+          IMDB
+        </Action>
+      </Menu>
 
-          {season.status === 'CONTINUING' && (
-            <Menu label="Internal…">
-              <Action
-                icon="stop"
-                onPress={async () => {
-                  await markSeasonAsFinished.mutateAsync(
-                    {id: season.id},
-                    {onSuccess: onUpdate},
-                  );
-                }}
-              >
-                Mark finished
-              </Action>
-            </Menu>
-          )}
-        </Popover>
-      }
-    />
+      {season.status === 'CONTINUING' && (
+        <Menu label="Internal…">
+          <Action
+            icon="stop"
+            onPress={async () => {
+              await markSeasonAsFinished.mutateAsync(
+                {id: season.id},
+                {onSuccess: onUpdate},
+              );
+            }}
+          >
+            Mark finished
+          </Action>
+        </Menu>
+      )}
+    </Popover>
   );
 }
 
