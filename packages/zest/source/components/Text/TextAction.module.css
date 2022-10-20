@@ -4,7 +4,7 @@
   --z-internal-TextAction-border: var(--z-border-subdued);
   --z-internal-TextAction-background: var(--z-Action-subdued-background);
   --z-internal-TextAction-shadow: var(--z-Action-subdued-shadow);
-  --z-internal-TextAction-minimum-block-size: 1.125rem;
+  --z-internal-TextAction-minimum-block-size: var(--z-text-base-line-height);
   --z-internal-TextAction-block-padding: calc(
     (
         var(--z-Action-minimum-size) -
@@ -82,4 +82,5 @@
       ) / 2
   );
   margin-inline-start: var(--z-internal-TextAction-icon-margin);
+  margin-block-end: calc(var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size));
 }
