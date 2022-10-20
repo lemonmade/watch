@@ -9,6 +9,7 @@ import {
   Section,
   Header,
   Heading,
+  HeadingAction,
   Icon,
   Menu,
   Layout,
@@ -118,43 +119,39 @@ function SeriesWithData({
             <Poster source={series.poster?.source as any} />
 
             <BlockStack spacing>
-              <BlockStack spacing="small">
-                <InlineStack spacing="small">
-                  <Heading>{series.name}</Heading>
-                  <Action
-                    icon="more"
-                    size="small"
-                    accessibilityLabel="More actions…"
-                    popover={
-                      <Popover>
-                        <Menu label="See series in…">
-                          <Action
-                            to={series.tmdbUrl}
-                            target="new"
-                            icon="arrowEnd"
-                          >
-                            TMDB
-                          </Action>
-                          <Action
-                            to={series.imdbUrl}
-                            target="new"
-                            icon="arrowEnd"
-                          >
-                            IMDB
-                          </Action>
-                        </Menu>
+              <BlockStack spacing="small" inlineAlignment="start">
+                <HeadingAction
+                  popover={
+                    <Popover inlineAttachment="start">
+                      <Menu label="See series in…">
+                        <Action
+                          to={series.tmdbUrl}
+                          target="new"
+                          icon="arrowEnd"
+                        >
+                          TMDB
+                        </Action>
+                        <Action
+                          to={series.imdbUrl}
+                          target="new"
+                          icon="arrowEnd"
+                        >
+                          IMDB
+                        </Action>
+                      </Menu>
 
-                        <Menu label="Internal…">
-                          <SynchronizeSeriesWithTmdbAction
-                            seriesId={series.id}
-                            onUpdate={onUpdate}
-                          />
-                          <DeleteSeriesAction seriesId={series.id} />
-                        </Menu>
-                      </Popover>
-                    }
-                  />
-                </InlineStack>
+                      <Menu label="Internal…">
+                        <SynchronizeSeriesWithTmdbAction
+                          seriesId={series.id}
+                          onUpdate={onUpdate}
+                        />
+                        <DeleteSeriesAction seriesId={series.id} />
+                      </Menu>
+                    </Popover>
+                  }
+                >
+                  {series.name}
+                </HeadingAction>
                 <Text emphasis="subdued">
                   {betweenText ? `${betweenText} • ` : ''}
                   {seasonCount} {seasonCount === 1 ? 'Season' : 'Seasons'}

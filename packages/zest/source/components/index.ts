@@ -9,7 +9,7 @@ export {DateField} from './DateField';
 export {DatePicker} from './DatePicker';
 export {Divider} from './Divider';
 export {Form} from './Form';
-export {Heading} from './Heading';
+export {Heading, HeadingAction} from './Heading';
 export {Icon, IconHighlight, type IconSource} from './Icon';
 export {Image} from './Image';
 export {InlineStack} from './InlineStack';

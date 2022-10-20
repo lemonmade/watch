@@ -81,7 +81,7 @@
   --z-Action-selected-icon-color: var(--z-Action-pressed-icon-color);
   --z-Action-selected-shadow: var(--z-Action-pressed-shadow);
 
-  --z-Action-subdued-background: rgb(35 29 46);
+  --z-Action-subdued-background: transparent;
   --z-Action-subdued-divider-color: var(--z-border-subdued-color);
   --z-Action-subdued-border: none;
   --z-Action-subdued-text-color: var(--z-text-base-color);
@@ -91,7 +91,7 @@
   --z-Action-subdued-disabled-divider-color: var(--z-Action-subdued-divider-color);
   --z-Action-subdued-disabled-border: var(--z-Action-subdued-border);
   --z-Action-subdued-disabled-text-color: var(--z-text-subdued-color);
-  --z-Action-subdued-disabled-icon-color: rgb(131 119 155);
+  --z-Action-subdued-disabled-icon-color: var(--z-Action-disabled-icon-color);
   --z-Action-subdued-disabled-shadow: none;
   --z-Action-subdued-inert-background: var(--z-Action-subdued-background);
   --z-Action-subdued-inert-divider-color: var(--z-Action-subdued-divider-color);
@@ -99,7 +99,7 @@
   --z-Action-subdued-inert-text-color: var(--z-Action-subdued-disabled-text-color);
   --z-Action-subdued-inert-icon-color: var(--z-Action-subdued-icon-color);
   --z-Action-subdued-inert-shadow: none;
-  --z-Action-subdued-hovered-background: rgb(48 39 63);
+  --z-Action-subdued-hovered-background: var(--z-Action-background);
   --z-Action-subdued-hovered-divider-color: var(--z-Action-subdued-divider-color);
   --z-Action-subdued-hovered-border: var(--z-Action-subdued-border);
   --z-Action-subdued-hovered-text-color: var(--z-Action-subdued-text-color);
@@ -113,11 +113,11 @@
   --z-Action-subdued-focused-text-color: var(--z-Action-subdued-text-color);
   --z-Action-subdued-focused-icon-color: var(--z-Action-subdued-icon-color);
   --z-Action-subdued-focused-shadow: none;
-  --z-Action-subdued-pressed-background: rgb(82 66 109);
-  --z-Action-subdued-pressed-divider-color: var(--z-Action-subdued-divider-color);
+  --z-Action-subdued-pressed-background: var(--z-Action-hovered-background);
+  --z-Action-subdued-pressed-divider-color: var(--z-Action-hovered-divider-color);
   --z-Action-subdued-pressed-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-pressed-text-color: rgb(227 224 233);
-  --z-Action-subdued-pressed-icon-color: rgb(227 224 233);
+  --z-Action-subdued-pressed-text-color: var(--z-Action-hovered-text-color);
+  --z-Action-subdued-pressed-icon-color: var(--z-Action-hovered-icon-color);
   --z-Action-subdued-pressed-shadow: none;
   --z-Action-subdued-selected-background: var(--z-Action-subdued-pressed-background);
   --z-Action-subdued-selected-divider-color: var(--z-Action-subdued-pressed-divider-color);
@@ -268,21 +268,27 @@
   --z-Overlay-backdrop-color: rgb(14 12 18 / 85%);
 
   --z-Heading-level-1-font-size: 2rem;
+  --z-Heading-level-1-line-height: 2.25rem;
   --z-Heading-level-1-weight: 700;
   --z-Heading-level-1-color: var(--z-text-emphasized-color);
   --z-Heading-level-2-font-size: 1.75rem;
+  --z-Heading-level-2-line-height: 2rem;
   --z-Heading-level-2-weight: 700;
   --z-Heading-level-2-color: var(--z-text-emphasized-color);
   --z-Heading-level-3-font-size: 1.5rem;
+  --z-Heading-level-3-line-height: 1.75rem;
   --z-Heading-level-3-weight: 700;
   --z-Heading-level-3-color: var(--z-text-emphasized-color);
   --z-Heading-level-4-font-size: 1.25rem;
+  --z-Heading-level-4-line-height: 1.5rem;
   --z-Heading-level-4-weight: 700;
   --z-Heading-level-4-color: var(--z-text-emphasized-color);
   --z-Heading-level-5-font-size: 1.125rem;
+  --z-Heading-level-5-line-height: 1.25rem;
   --z-Heading-level-5-weight: 700;
   --z-Heading-level-5-color: var(--z-text-emphasized-color);
   --z-Heading-level-6-font-size: 1rem;
+  --z-Heading-level-6-line-height: 1.125rem;
   --z-Heading-level-6-weight: 700;
   --z-Heading-level-6-color: var(--z-text-emphasized-color);
 

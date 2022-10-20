@@ -7,7 +7,10 @@ import {
   BlockStack,
   TextField,
   Heading,
+  HeadingAction,
   Section,
+  Footer,
+  Header,
   Banner,
   ChoiceList,
   Choice,
@@ -34,6 +37,8 @@ import {
   Tag,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
+
+import {ResourceAction} from './ResourceAction/ResourceAction';
 
 export default function ComponentLibrary() {
   return (
@@ -123,6 +128,37 @@ function ActionComponents() {
 
         <Divider emphasis="subdued" />
 
+        <BlockStack spacing inlineAlignment="start">
+          <ResourceAction>My action</ResourceAction>
+          <ResourceAction>
+            My long action that might have quite a long title
+          </ResourceAction>
+          <HeadingAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My heading action
+          </HeadingAction>
+          <HeadingAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My heading action that is quite long and will likely wrap
+          </HeadingAction>
+          <HeadingAction
+            level={3}
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My heading action (level 3)
+          </HeadingAction>
+          <HeadingAction
+            level={6}
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            My heading action (level 6)
+          </HeadingAction>
+        </BlockStack>
+
+        <Divider emphasis="subdued" />
+
         <Menu>
           <Action>Menu button</Action>
           <Action to="#">Menu link</Action>
@@ -186,25 +222,29 @@ function LoadingActionExample() {
   );
 }
 
+function ActionExamplePopoverMenu(props: ComponentProps<typeof Popover>) {
+  return (
+    <Popover {...props}>
+      <Menu>
+        <Action icon="watchlist">Menu button</Action>
+        <Action icon="arrowEnd" to="#">
+          Menu link
+        </Action>
+        <Action icon="delete" role="destructive">
+          Menu destructive
+        </Action>
+      </Menu>
+    </Popover>
+  );
+}
+
 function ActionAccessoryExampleMenu({disabled = false} = {}) {
   return (
     <Action
       disabled={disabled}
       accessibilityLabel="More actions"
       icon="more"
-      popover={
-        <Popover inlineAttachment="end">
-          <Menu>
-            <Action icon="watchlist">Menu button</Action>
-            <Action icon="arrowEnd" to="#">
-              Menu link
-            </Action>
-            <Action icon="delete" role="destructive">
-              Menu destructive
-            </Action>
-          </Menu>
-        </Popover>
-      }
+      popover={<ActionExamplePopoverMenu inlineAttachment="end" />}
     />
   );
 }
@@ -317,9 +357,9 @@ function DisplayComponents() {
         <Banner>Hello world</Banner>
         <Banner status="error">Hello world</Banner>
         <Banner padding={false} status="information">
-          <Section content="header" padding>
+          <Header>
             <Heading>Banner heading</Heading>
-          </Section>
+          </Header>
 
           <Divider />
 
@@ -341,12 +381,12 @@ function DisplayComponents() {
 
           <Divider />
 
-          <Section content="footer" padding>
+          <Footer padding>
             <InlineStack spacing="small">
               <Action>Banner button</Action>
               <Action>Banner button</Action>
             </InlineStack>
-          </Section>
+          </Footer>
         </Banner>
 
         <Image aspectRatio={1} source="https://placekitten.com/200/200" />

@@ -17,7 +17,6 @@ import {
   TextBlock,
   Section,
   Text,
-  TextLink,
   Menu,
   Form,
   TextField,
@@ -31,7 +30,7 @@ import type {
   ClipsExtensionApiVersion,
   JSON as GraphQlJSON,
 } from '~/graphql/types';
-import {useQuery, useMutation, parseGid} from '~/shared/graphql';
+import {useQuery, useMutation} from '~/shared/graphql';
 import type {ArrayElement, ThenType} from '~/shared/types';
 
 import {type Sandbox as ExtensionSandbox} from '../sandboxes';
@@ -556,17 +555,11 @@ function ClipFrame<T extends ExtensionPoint>({
           </InlineStack>
           {app == null ? (
             <Text emphasis="subdued" size="small">
-              from{' '}
-              <TextLink to="/app/developer/console" emphasis>
-                local app
-              </TextLink>
+              from <Text emphasis>local app</Text>
             </Text>
           ) : (
             <Text emphasis="subdued" size="small">
-              from app{' '}
-              <TextLink to={`/app/apps/${parseGid(app.id).id}`} emphasis>
-                {app.name}
-              </TextLink>
+              from app <Text emphasis>{app.name}</Text>
             </Text>
           )}
         </BlockStack>

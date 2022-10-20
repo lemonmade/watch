@@ -5,9 +5,8 @@ import {
   Section,
   Header,
   BlockStack,
-  InlineStack,
   Heading,
-  Action,
+  HeadingAction,
   Popover,
 } from '@lemon/zest';
 
@@ -26,22 +25,15 @@ export function Page({
   detail,
 }: PropsWithChildren<Props>) {
   const headingContent = menu ? (
-    <InlineStack spacing="small">
-      <Heading>{heading}</Heading>
-
-      <Action
-        size="small"
-        icon="more"
-        accessibilityLabel="More…"
-        popover={<Popover>{menu}</Popover>}
-      />
-    </InlineStack>
+    <HeadingAction popover={<Popover inlineAttachment="start">{menu}</Popover>}>
+      {heading}
+    </HeadingAction>
   ) : (
     <Heading>{heading}</Heading>
   );
 
   const headerContent = detail ? (
-    <BlockStack spacing="tiny">
+    <BlockStack spacing="tiny" inlineAlignment="start">
       {headingContent}
       <Text emphasis="subdued">{detail}</Text>
     </BlockStack>

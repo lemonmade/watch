@@ -1,6 +1,6 @@
 .BlockStack {
-  justify-content: stretch;
   align-items: center;
+  justify-content: var(--z-internal-inline-alignment, stretch);
   justify-items: var(--z-internal-inline-alignment, stretch);
 }
 

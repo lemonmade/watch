@@ -1,11 +1,12 @@
 .Icon {
-  display: inline-block;
+  display: block;
   block-size: var(--z-Icon-base-size);
   pointer-events: none;
   color: var(--z-Icon-base-color);
 }
 
 .Icon > svg {
+  display: block;
   width: var(--z-Icon-base-size);
   height: var(--z-Icon-base-size);
 }

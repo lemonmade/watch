@@ -1,0 +1,122 @@
+.HeadingAction {
+  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+
+  --z-internal-HeadingAction-border: var(--z-border-subdued);
+  --z-internal-HeadingAction-background: var(--z-Action-subdued-background);
+  --z-internal-HeadingAction-shadow: var(--z-Action-subdued-shadow);
+  --z-internal-HeadingAction-block-padding: calc(
+    (
+        var(--z-Action-minimum-size) -
+          var(--z-internal-HeadingAction-minimum-block-size)
+      ) / 2
+  );
+  --z-internal-HeadingAction-visible-block-padding: var(--z-spacing-tiny);
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-small);
+
+  margin: calc(
+      var(--z-internal-HeadingAction-visible-block-padding) -
+        var(--z-internal-HeadingAction-block-padding)
+    )
+    calc(-1 * var(--z-spacing-small));
+}
+
+.level1 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-1-line-height
+  );
+}
+
+.level2 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-2-line-height
+  );
+}
+
+.level3 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-3-line-height
+  );
+}
+
+.level4 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-4-line-height
+  );
+}
+
+.level5 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-5-line-height
+  );
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-tiny);
+}
+
+.level6 {
+  --z-internal-HeadingAction-minimum-block-size: var(
+    --z-Heading-level-6-line-height
+  );
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-tiny);
+}
+
+.Pressable {
+  position: relative;
+  padding: var(--z-internal-HeadingAction-block-padding) var(--z-spacing-small);
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: calc(
+        var(--z-internal-HeadingAction-block-padding) -
+          var(--z-internal-HeadingAction-visible-block-padding)
+      )
+      0;
+
+    border: var(--z-border-subdued);
+    border-radius: var(--z-corner-radius-base);
+    border: var(--z-internal-HeadingAction-border);
+    background: var(--z-internal-HeadingAction-background);
+    box-shadow: var(--z-internal-HeadingAction-shadow);
+
+    transition: background 0.2s ease;
+  }
+
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+
+    --z-internal-HeadingAction-background: var(
+      --z-Action-subdued-hovered-background
+    );
+    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-hovered-shadow);
+  }
+
+  &:where(:focus-visible) {
+    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+
+    --z-internal-HeadingAction-background: var(
+      --z-Action-subdued-focused-background
+    );
+    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-focused-shadow);
+  }
+
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+
+    --z-internal-HeadingAction-background: var(
+      --z-Action-subdued-pressed-background
+    );
+    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-pressed-shadow);
+  }
+}
+
+.Icon {
+  float: right;
+  position: relative;
+  top: calc(
+    (
+        var(--z-internal-HeadingAction-minimum-block-size) -
+          var(--z-Icon-base-size)
+      ) / 2
+  );
+  margin-inline-start: var(--z-internal-HeadingAction-icon-margin);
+}

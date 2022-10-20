@@ -1,0 +1,13 @@
+.ResourceAction {
+  & > :not(.Indicator) {
+    display: inline;
+  }
+
+  border: var(--z-border-subdued);
+  border-radius: var(--z-corner-radius-base);
+}
+
+.Indicator {
+  /* margin-inline-start: var(--z-spacing-small); */
+  color: var(--z-text-subdued-color)
+}
