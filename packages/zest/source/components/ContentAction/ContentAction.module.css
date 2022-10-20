@@ -1,0 +1,54 @@
+.ContentAction {
+  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+
+  --z-internal-ContentAction-border: var(--z-border-subdued);
+  --z-internal-ContentAction-background: var(--z-Action-subdued-background);
+  --z-internal-ContentAction-shadow: var(--z-Action-subdued-shadow);
+  --z-internal-ContentAction-icon-margin: var(--z-spacing-small);
+
+  grid-template-columns: 1fr auto;
+  gap: var(--z-internal-ContentAction-icon-margin);
+  max-inline-size: max-content;
+
+  padding: var(--z-spacing-small);
+  margin: 0 calc(-1 * var(--z-spacing-small));
+  border: var(--z-border-subdued);
+  border-radius: var(--z-corner-radius-base);
+  border: var(--z-internal-ContentAction-border);
+  background: var(--z-internal-ContentAction-background);
+  box-shadow: var(--z-internal-ContentAction-shadow);
+
+  transition: background 0.2s ease;
+
+  &:where(:hover) {
+    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+
+    --z-internal-ContentAction-background: var(
+      --z-Action-subdued-hovered-background
+    );
+    --z-internal-ContentAction-shadow: var(--z-Action-subdued-hovered-shadow);
+  }
+
+  &:where(:focus-visible) {
+    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+
+    --z-internal-ContentAction-background: var(
+      --z-Action-subdued-focused-background
+    );
+    --z-internal-ContentAction-shadow: var(--z-Action-subdued-focused-shadow);
+  }
+
+  &:where(:active) {
+    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+
+    --z-internal-ContentAction-background: var(
+      --z-Action-subdued-pressed-background
+    );
+    --z-internal-ContentAction-shadow: var(--z-Action-subdued-pressed-shadow);
+  }
+}
+
+.Icon {
+  float: right;
+  position: relative;
+}

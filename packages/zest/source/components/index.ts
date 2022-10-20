@@ -5,6 +5,7 @@ export {BlockStack} from './BlockStack';
 export {Canvas} from './Canvas';
 export {Checkbox} from './Checkbox';
 export {Choice, ChoiceList} from './ChoiceList';
+export {ContentAction} from './ContentAction';
 export {DateField} from './DateField';
 export {DatePicker} from './DatePicker';
 export {Divider} from './Divider';

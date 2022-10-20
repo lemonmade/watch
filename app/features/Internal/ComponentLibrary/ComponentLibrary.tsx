@@ -36,6 +36,8 @@ import {
   Modal,
   Icon,
   Tag,
+  IconHighlight,
+  ContentAction,
 } from '@lemon/zest';
 import {useSignal} from '@watching/react-signals';
 
@@ -172,6 +174,38 @@ function ActionComponents() {
           >
             My heading action (level 6 that is quite long and will likely wrap)
           </HeadingAction>
+
+          <ContentAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            <Layout columns={['auto', 'fill']} spacing="small">
+              <IconHighlight>
+                <Icon source="watch" />
+              </IconHighlight>
+
+              <BlockStack>
+                <Text emphasis>Season 10</Text>
+                <Text emphasis="subdued">20 episodes</Text>
+              </BlockStack>
+            </Layout>
+          </ContentAction>
+
+          <ContentAction
+            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+          >
+            <Layout columns={['auto', 'fill']} spacing="small">
+              <IconHighlight>
+                <Icon source="watch" />
+              </IconHighlight>
+
+              <BlockStack>
+                <Text emphasis>Season 10</Text>
+                <Text emphasis="subdued">
+                  An extremely long content action that might wrap
+                </Text>
+              </BlockStack>
+            </Layout>
+          </ContentAction>
         </BlockStack>
 
         <Divider emphasis="subdued" />

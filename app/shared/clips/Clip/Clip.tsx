@@ -22,6 +22,7 @@ import {
   TextField,
   Select,
   Action,
+  ContentAction,
   Layout,
   Icon,
 } from '@lemon/zest';
@@ -162,6 +163,7 @@ export function Clip<T extends ExtensionPoint>({
   script,
   build,
   api,
+  app,
   settings,
 }: Props<T>) {
   const controller = useMemo(
@@ -180,6 +182,7 @@ export function Clip<T extends ExtensionPoint>({
 
   return build ? (
     <LocalClipFrame
+      app={app}
       name={name}
       build={build}
       controller={sandboxController}
@@ -190,6 +193,7 @@ export function Clip<T extends ExtensionPoint>({
   ) : (
     <InstalledClipFrame
       id={id}
+      app={app}
       name={name}
       controller={sandboxController}
       script={script}
@@ -522,48 +526,44 @@ function ClipFrame<T extends ExtensionPoint>({
 
   return (
     <BlockStack spacing="small">
-      <Layout columns={['auto', 'fill']} spacing="small">
-        <View
-          display="inlineFlex"
-          background="emphasized"
-          border="subdued"
-          cornerRadius
-          inlineAlignment="center"
-          className={styles.AppIcon}
-        >
-          <Icon source="app" />
-        </View>
-        <BlockStack>
-          <InlineStack spacing="small">
+      <ContentAction
+        popover={
+          <Popover inlineAttachment="start">
+            <Section padding>
+              <ClipTimings controller={controller} />
+            </Section>
+            {additionalSectionContents && (
+              <Section padding>{additionalSectionContents}</Section>
+            )}
+            {actionContents && <Menu>{actionContents}</Menu>}
+          </Popover>
+        }
+      >
+        <Layout columns={['auto', 'fill']} spacing="small">
+          <View
+            display="inlineFlex"
+            background="emphasized"
+            border="subdued"
+            cornerRadius
+            inlineAlignment="center"
+            className={styles.AppIcon}
+          >
+            <Icon source="app" />
+          </View>
+          <BlockStack>
             <Text emphasis>{name}</Text>
-            <Action
-              icon="more"
-              size="small"
-              accessibilityLabel="More actions…"
-              popover={
-                <Popover>
-                  <Section padding>
-                    <ClipTimings controller={controller} />
-                  </Section>
-                  {additionalSectionContents && (
-                    <Section padding>{additionalSectionContents}</Section>
-                  )}
-                  {actionContents && <Menu>{actionContents}</Menu>}
-                </Popover>
-              }
-            />
-          </InlineStack>
-          {app == null ? (
-            <Text emphasis="subdued" size="small">
-              from <Text emphasis>local app</Text>
-            </Text>
-          ) : (
-            <Text emphasis="subdued" size="small">
-              from app <Text emphasis>{app.name}</Text>
-            </Text>
-          )}
-        </BlockStack>
-      </Layout>
+            {app == null ? (
+              <Text emphasis="subdued" size="small">
+                from <Text emphasis>local app</Text>
+              </Text>
+            ) : (
+              <Text emphasis="subdued" size="small">
+                from app <Text emphasis>{app.name}</Text>
+              </Text>
+            )}
+          </BlockStack>
+        </Layout>
+      </ContentAction>
 
       <View>{children}</View>
     </BlockStack>
