@@ -1,14 +1,26 @@
 .Icon {
+  --z-internal-Icon-size: var(--z-Icon-base-size);
+  --z-internal-Icon-color: var(--z-Icon-base-color);
+
   display: block;
-  block-size: var(--z-Icon-base-size);
+  inline-size: var(--z-internal-Icon-size);
+  aspect-ratio: 1;
   pointer-events: none;
-  color: var(--z-Icon-base-color);
+  color: var(--z-internal-Icon-color);
+
+  &  > svg {
+    display: block;
+    inline-size: var(--z-internal-Icon-size);
+    aspect-ratio: 1;
+  }
 }
 
-.Icon > svg {
-  display: block;
-  width: var(--z-Icon-base-size);
-  height: var(--z-Icon-base-size);
+.sizeFill {
+  --z-internal-Icon-size: 100%;
+}
+
+.emphasisSubdued {
+  --z-internal-Icon-color: var(--z-Icon-subdued-color);
 }
 
 .IconHighlight {

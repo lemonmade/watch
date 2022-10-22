@@ -15,7 +15,6 @@ import {
   Menu,
   Layout,
   Popover,
-  Image,
   raw,
   Tag,
   Modal,
@@ -117,7 +116,7 @@ function SeriesWithData({
       <BlockStack spacing>
         <Header>
           <Layout spacing blockAlignment="start" columns={[raw`6rem`, 'fill']}>
-            <Poster source={series.poster?.source as any} />
+            <Poster source={series.poster?.source} />
 
             <BlockStack spacing>
               <BlockStack spacing="small" inlineAlignment="start">
@@ -416,14 +415,10 @@ function SeasonsSection({
             <Layout
               key={id}
               spacing
-              columns={
-                poster?.source ? [raw`4rem`, 'fill', 'auto'] : ['fill', 'auto']
-              }
+              columns={[raw`4rem`, 'fill', 'auto']}
               blockAlignment="start"
             >
-              {poster?.source ? (
-                <Image source={poster.source} aspectRatio={2 / 3} />
-              ) : null}
+              <Poster source={poster?.source} />
 
               <BlockStack spacing="tiny">
                 <InlineStack spacing="small">

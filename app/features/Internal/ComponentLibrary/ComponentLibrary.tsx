@@ -36,6 +36,7 @@ import {
   Modal,
   Icon,
   Tag,
+  Poster,
   IconHighlight,
   ContentAction,
 } from '@lemon/zest';
@@ -408,7 +409,7 @@ function DisplayComponents() {
         <Banner>Hello world</Banner>
         <Banner status="error">Hello world</Banner>
         <Banner padding={false} status="information">
-          <Header>
+          <Header padding>
             <Heading>Banner heading</Heading>
           </Header>
 
@@ -439,6 +440,12 @@ function DisplayComponents() {
             </InlineStack>
           </Footer>
         </Banner>
+
+        <Layout spacing columns={['fill', 'fill']}>
+          <Poster source="https://image.tmdb.org/t/p/original/oXJ1fGDAIE7NVLlrjktKWzfvlrg.jpg" />
+          <Poster />
+          <Poster label="RuPaul’s Drag Race" />
+        </Layout>
 
         <Image aspectRatio={1} source="https://placekitten.com/200/200" />
       </BlockStack>

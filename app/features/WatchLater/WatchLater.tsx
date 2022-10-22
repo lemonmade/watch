@@ -1,4 +1,4 @@
-import {Poster, Action} from '@lemon/zest';
+import {Poster, Pressable} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
@@ -16,13 +16,14 @@ export function WatchLater() {
       <MediaGrid>
         {watchLater?.items.map(({id, media}) =>
           media.__typename === 'Series' ? (
-            <Action key={id} to={`/app/series/${media.handle}`}>
+            <Pressable key={id} to={`/app/series/${media.handle}`}>
               {media.poster && (
                 <Poster
+                  label={media.name}
                   source={media.poster.source.replace('/original/', '/w342/')}
                 />
               )}
-            </Action>
+            </Pressable>
           ) : null,
         )}
       </MediaGrid>

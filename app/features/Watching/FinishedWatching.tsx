@@ -15,7 +15,7 @@ export function FinishedWatching() {
         {data?.watchThroughs.map(({id, series}) => (
           <WatchThroughItem
             key={id}
-            series={{poster: series.poster?.source}}
+            series={{name: series.name, poster: series.poster?.source}}
             to={`/app/watchthrough/${parseGid(id).id}`}
           />
         ))}

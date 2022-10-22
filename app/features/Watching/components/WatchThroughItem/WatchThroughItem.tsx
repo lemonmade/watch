@@ -4,6 +4,7 @@ import {Poster, Pressable, Tag} from '@lemon/zest';
 import styles from './WatchThroughItem.module.css';
 
 interface Series {
+  name: string;
   poster?: string;
 }
 
@@ -37,7 +38,10 @@ export function WatchThroughItem({
         unfinishedEpisodeCount > 1 && styles.hasFootnotes,
       )}
     >
-      <Poster source={nextEpisode?.poster ?? series.poster!} />
+      <Poster
+        label={series.name}
+        source={nextEpisode?.poster ?? series.poster}
+      />
       <div className={styles.WatchThroughContent}>
         <header className={styles.WatchThroughNextEpisodeMeta}>
           <div className={styles.WatchThroughIndicator} />
