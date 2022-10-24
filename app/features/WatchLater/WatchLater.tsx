@@ -17,12 +17,10 @@ export function WatchLater() {
         {watchLater?.items.map(({id, media}) =>
           media.__typename === 'Series' ? (
             <Pressable key={id} to={`/app/series/${media.handle}`}>
-              {media.poster && (
-                <Poster
-                  label={media.name}
-                  source={media.poster.source.replace('/original/', '/w342/')}
-                />
-              )}
+              <Poster
+                label={media.name}
+                source={media.poster?.source.replace('/original/', '/w342/')}
+              />
             </Pressable>
           ) : null,
         )}
