@@ -18,13 +18,12 @@ export function Subscriptions() {
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
           <Pressable key={id} to={`/app/series/${series.handle}`}>
-            {series.poster?.source && (
-              <Poster
-                source={
-                  series.poster.source.replace('/original/', '/w342/') ?? ''
-                }
-              />
-            )}
+            <Poster
+              label={series.name}
+              source={
+                series.poster?.source.replace('/original/', '/w342/') ?? ''
+              }
+            />
           </Pressable>
         ))}
       </MediaGrid>

@@ -1,6 +1,6 @@
 import {useMemo, ComponentProps} from 'react';
 
-import {Menu, Action, BlockStack} from '@lemon/zest';
+import {Menu, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {parseGid, useQuery} from '~/shared/graphql';
@@ -47,13 +47,11 @@ export function Watching(_: Props) {
         </Menu>
       }
     >
-      <BlockStack spacing>
-        <MediaGrid>
-          {availableWatchThroughs.map(({id, ...props}) => (
-            <WatchThroughItem key={id} {...props} />
-          ))}
-        </MediaGrid>
-      </BlockStack>
+      <MediaGrid blockSpacing="large">
+        {availableWatchThroughs.map(({id, ...props}) => (
+          <WatchThroughItem key={id} {...props} />
+        ))}
+      </MediaGrid>
     </Page>
   );
 }

@@ -1,10 +1,20 @@
-import {ReactNode} from 'react';
+import {type PropsWithChildren} from '@quilted/quilt';
+import {classes, variation} from '@lemon/css';
 import styles from './MediaGrid.module.css';
 
 interface Props {
-  children?: ReactNode;
+  blockSpacing?: 'base' | 'large';
 }
 
-export function MediaGrid({children}: Props) {
-  return <div className={styles.MediaGrid}>{children}</div>;
+export function MediaGrid({children, blockSpacing}: PropsWithChildren<Props>) {
+  return (
+    <div
+      className={classes(
+        styles.MediaGrid,
+        blockSpacing && styles[variation('blockSpacing', blockSpacing)],
+      )}
+    >
+      {children}
+    </div>
+  );
 }
