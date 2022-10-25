@@ -91,16 +91,32 @@ function WatchThroughWithData({
     return {initialActionDate};
   }, []);
 
+  const nextEpisodeDetailContent = nextEpisode
+    ? watchingSingleSeason
+      ? `Watching Season ${to.season}`
+      : `Watching Seasons ${from.season}–${to.season}`
+    : null;
+
+  const statusDetailContent =
+    status === 'FINISHED' ? (
+      <Tag>Finished</Tag>
+    ) : status === 'STOPPED' ? (
+      <Tag>Stopped</Tag>
+    ) : null;
+
   return (
     <PageDetailsContext.Provider value={pageDetails}>
       <Page
         heading={series.name}
         detail={
-          nextEpisode
-            ? watchingSingleSeason
-              ? `Watching Season ${to.season}`
-              : `Watching Seasons ${from.season}–${to.season}`
-            : null
+          nextEpisodeDetailContent && statusDetailContent ? (
+            <InlineStack spacing="small">
+              {statusDetailContent}
+              {nextEpisodeDetailContent}
+            </InlineStack>
+          ) : (
+            nextEpisodeDetailContent ?? statusDetailContent
+          )
         }
         menu={
           <Menu>
