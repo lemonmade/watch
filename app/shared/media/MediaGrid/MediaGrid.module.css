@@ -10,11 +10,7 @@
 }
 
 .blockSpacingLarge {
-  --w-internal-MediaGrid-block-spacing: var(--z-spacing-huge);
-}
-
-.blockSpacingLarge {
-  --w-internal-MediaGrid-block-spacing: var(--z-spacing-huge);
+  --w-internal-MediaGrid-block-spacing: var(--z-spacing-large);
 }
 
 @media (min-width: 40em) {

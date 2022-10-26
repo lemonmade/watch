@@ -25,39 +25,8 @@
   transform: scale(0.95);
 }
 
-.hasFootnotes .WatchThroughContent {
-  padding-bottom: calc(
-    var(--WatchThrough-content-padding) + (var(--WatchThrough-badge-size) / 2)
-  );
-}
-
 .WatchThroughContainer {
   position: relative;
-}
-
-.WatchThroughContent {
-  --WatchThrough-content-padding: var(--z-spacing-small);
-  padding: var(--WatchThrough-content-padding);
-}
-
-.WatchThroughNextEpisodeMeta {
-  display: flex;
-  align-items: center;
-  margin-bottom: var(--z-spacing-small);
-  margin-top: -2px;
-}
-
-.WatchThroughIndicator {
-  --WatchThrough-indicator-size: 0.5em;
-
-  display: block;
-  flex: 0 0 auto;
-  width: var(--WatchThrough-indicator-size);
-  height: var(--WatchThrough-indicator-size);
-  background: rgba(255, 255, 0, 0.8);
-  border-radius: 50%;
-  margin-bottom: -1px;
-  margin-right: calc(0.5 * var(--WatchThrough-indicator-size));
 }
 
 .WatchThroughNextEpisodeTiming {
@@ -67,10 +36,6 @@
   font-size: 0.75rem;
   color: var(--z-text-subdued-color);
   text-transform: uppercase;
-}
-
-.WatchThroughNextEpisodeTitle {
-  margin: 0;
 }
 
 .WatchThroughFootnote {

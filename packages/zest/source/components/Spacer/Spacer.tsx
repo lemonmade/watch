@@ -11,7 +11,7 @@ export interface Props {
 
 export function Spacer({stretch, size}: Props) {
   return (
-    <span
+    <div
       className={classes(
         styles.Spacer,
         stretch && styles.stretch,
