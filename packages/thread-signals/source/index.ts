@@ -3,7 +3,8 @@ export {
   computed,
   batch,
   effect,
-  type Signal,
+  Signal,
+  type ReadonlySignal,
 } from '@preact/signals-core';
 
 export * from './types';

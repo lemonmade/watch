@@ -18,3 +18,4 @@ export type {
 export {extension} from './extension';
 export * from './components';
 export * from './hooks';
+export * from './signals';
