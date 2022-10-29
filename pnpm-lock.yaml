@@ -189,7 +189,7 @@ importers:
       '@types/mime': ^2.0.0
       '@types/prompts': ^2.0.0
       '@types/ws': ^7.0.0
-      '@watching/clips': workspace:^0.2.11
+      '@watching/clips': workspace:^0.2.14
       '@watching/graphql': workspace:^0.0.1
       ansi-escapes: ^4.0.0
       arg: ^5.0.0
@@ -264,7 +264,7 @@ importers:
     specifiers:
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.0
-      '@watching/clips': workspace:^0.2.12
+      '@watching/clips': workspace:^0.2.14
     dependencies:
       '@remote-ui/core': 2.1.12
       '@watching/clips': link:../clips
@@ -277,9 +277,9 @@ importers:
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
-      '@watching/clips': workspace:^0.2.13
-      '@watching/clips-dom': workspace:^0.1.0
-      '@watching/thread-signals': workspace:^0.1.3
+      '@watching/clips': workspace:^0.2.14
+      '@watching/clips-dom': workspace:^0.1.2
+      '@watching/thread-signals': workspace:^0.1.4
       preact: ^10.11.0
     dependencies:
       '@preact/signals-core': 1.2.2
@@ -331,14 +331,14 @@ importers:
       '@quilted/react-utilities': ^0.1.6
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.0
-      '@watching/remote-react': ^0.0.0
+      '@watching/remote-react': ^17.0.3
       react: npm:@quilted/react@^17.0.0
     dependencies:
       '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
       '@remote-ui/core': 2.1.12
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
-      '@watching/remote-react': 0.0.0_53feed688add46baafec66a0a1027ddc
+      '@watching/remote-react': link:../remote-react
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
 
   packages/thread-signals:
@@ -5609,28 +5609,6 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.29.0
       eslint-visitor-keys: 3.3.0
-    dev: true
-
-  /@watching/remote-react/0.0.0_53feed688add46baafec66a0a1027ddc:
-    resolution: {integrity: sha512-Bn4KB34FQsqc3kq0IGV5ede3P2aGfkvW5JJ2a2/InlqSgbv1RU6zQga/oLDplfRGKuRGseuYP8pwJdiobfpBUA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      '@babel/runtime': '>=7.0.0 <8.0.0'
-    peerDependenciesMeta:
-      '@babel/runtime':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.18.9
-      '@quilted/react-testing': 0.5.19_53feed688add46baafec66a0a1027ddc
-      '@remote-ui/core': 2.1.12
-      '@types/react': 17.0.47
-    transitivePeerDependencies:
-      - '@jest/globals'
-      - preact
-      - react
-      - react-dom
     dev: true
 
   /@web3-storage/multipart-parser/1.0.0:

@@ -6,7 +6,7 @@
     "access": "public",
     "@watching/registry": "https://registry.npmjs.org"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -28,7 +28,7 @@
   "sideEffects": false,
   "dependencies": {
     "@remote-ui/core": "^2.1.0",
-    "@watching/clips": "workspace:^0.2.12"
+    "@watching/clips": "workspace:^0.2.14"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"
