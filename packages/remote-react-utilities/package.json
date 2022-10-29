@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0",
-    "@watching/remote-react": "^17.0.2",
+    "@watching/remote-react": "^17.0.3",
     "react": "^17.0.2"
   },
   "peerDependenciesMeta": {
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@quilted/testing": "^0.1.4",
-    "@watching/remote-react": "^0.0.0",
+    "@watching/remote-react": "^17.0.3",
     "react": "npm:@quilted/react@^17.0.0"
   },
   "eslintConfig": {
