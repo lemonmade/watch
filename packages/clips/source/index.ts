@@ -7,15 +7,8 @@ export type {
   ApiForExtensionPoint,
   ComponentsForExtensionPoint,
 } from './extension-points';
-export type {
-  Version,
-  StandardApi,
-  AnyApi,
-  SeasonDetailsApi,
-  SeriesDetailsApi,
-  WatchThroughDetailsApi,
-} from './api';
-export type {ClipsApi, ClipsGlobal} from './globals';
-export {extension} from './extension';
-export {acceptSignals, type Signal, type WithThreadSignals} from './signals';
+export * from './api';
+export * from './globals';
+export * from './extension';
+export * from './signals';
 export * from './components';
