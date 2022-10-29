@@ -21,14 +21,14 @@ export function acceptThreadSignal<T>(
   const signal = createSignal(threadSignal.initial);
   const threadAbortSignal = abortSignal && createThreadAbortSignal(abortSignal);
 
-  const setValue = (value: T) => {
-    signal.value = value;
-  };
-
   const valueDescriptor = Object.getOwnPropertyDescriptor(
     Object.getPrototypeOf(signal),
     'value',
   )!;
+
+  const setValue = (value: T) => {
+    valueDescriptor.set?.call(signal, value);
+  };
 
   Object.defineProperty(signal, 'value', {
     ...valueDescriptor,

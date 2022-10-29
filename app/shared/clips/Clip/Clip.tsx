@@ -118,14 +118,19 @@ function ClipsAction({
 
 function ClipsTextField({label, value}: PropsForClipsComponent<'TextField'>) {
   const signalProps = usePossibleThreadSignals({value});
-  return <TextField {...signalProps} label={label} />;
+  return <TextField {...signalProps} label={label} changeTiming="input" />;
 }
 
 function usePossibleThreadSignals<T extends Record<string, any>>(values: T): T {
   const internals = useRef<{
     signals: WeakMap<
       ThreadSignal<unknown>,
-      {signal: Signal<unknown>; abort: AbortController}
+      {
+        signal: Signal<unknown>;
+        abort: AbortController;
+        started: boolean;
+        set(value: unknown): void;
+      }
     >;
     active: Set<ThreadSignal<unknown>>;
   }>();
@@ -171,6 +176,10 @@ function usePossibleThreadSignals<T extends Record<string, any>>(values: T): T {
         signalDetails = {
           signal: resolvedSignal,
           abort: new AbortController(),
+          started: false,
+          set(value) {
+            valueDescriptor.set?.call(resolvedSignal, value);
+          },
         };
 
         internals.current.signals.set(value, signalDetails);
@@ -192,19 +201,17 @@ function usePossibleThreadSignals<T extends Record<string, any>>(values: T): T {
     for (const threadSignal of threadSignals) {
       const signalDetails = signals.get(threadSignal);
 
-      if (signalDetails == null) continue;
+      if (signalDetails == null || signalDetails.started) continue;
+
+      signalDetails.started = true;
 
       const threadAbortSignal = createThreadAbortSignal(
         signalDetails.abort.signal,
       );
 
-      const setValue = (value: any) => {
-        signalDetails.signal.value = value;
-      };
-
       Promise.resolve(
-        threadSignal.start(setValue, {signal: threadAbortSignal}),
-      ).then(setValue);
+        threadSignal.start(signalDetails.set, {signal: threadAbortSignal}),
+      ).then(signalDetails.set);
     }
 
     return () => {

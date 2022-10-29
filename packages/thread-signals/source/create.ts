@@ -9,11 +9,12 @@ export function createThreadSignal<T>(
 ): ThreadSignal<T> {
   return {
     initial: signal.value,
-    set: writable
-      ? (value) => {
-          signal.value = value;
-        }
-      : undefined,
+    set:
+      writable && !isReadonlySignal(signal)
+        ? (value) => {
+            signal.value = value;
+          }
+        : undefined,
     start(subscriber, {signal: threadAbortSignal} = {}) {
       retain(subscriber);
 
@@ -30,4 +31,11 @@ export function createThreadSignal<T>(
       return signal.value;
     },
   };
+}
+
+function isReadonlySignal<T>(signal: Signal<T>): boolean {
+  return (
+    Object.getOwnPropertyDescriptor(Object.getPrototypeOf(signal), 'value')
+      ?.set == null
+  );
 }
