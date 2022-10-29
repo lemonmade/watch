@@ -1,4 +1,4 @@
-import {type ComponentProps, useMemo} from 'react';
+import {type ComponentProps} from 'react';
 import {useNavigate} from '@quilted/quilt';
 import {
   Action,
@@ -30,7 +30,6 @@ import {
   useLocalDevelopmentClips,
   LocalClip,
   InstalledClip,
-  type ClipProps,
 } from '~/shared/clips';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
@@ -83,12 +82,6 @@ function SeriesWithData({
   const localDevelopmentClips = useLocalDevelopmentClips(
     'Series.Details.RenderAccessory',
   );
-
-  const apiForClips = useMemo<
-    ClipProps<'Series.Details.RenderAccessory'>['api']
-  >(() => {
-    return () => ({series: {id: series.id, name: series.name}});
-  }, [series]);
 
   const {seasons, watchThroughs, subscription} = series;
 
@@ -192,16 +185,16 @@ function SeriesWithData({
             <LocalClip
               {...localClip}
               key={localClip.id}
-              api={apiForClips}
               extensionPoint="Series.Details.RenderAccessory"
+              options={{id: series.id, name: series.name}}
             />
           ))}
           {clipsInstallations.map((installedClip) => (
             <InstalledClip
               {...installedClip}
               key={installedClip.id}
-              api={apiForClips}
               extensionPoint="Series.Details.RenderAccessory"
+              options={{id: series.id, name: series.name}}
             />
           ))}
         </BlockStack>

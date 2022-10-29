@@ -35,7 +35,10 @@ import {
   type Signal,
 } from '@watching/thread-signals';
 
-import {EXTENSION_POINTS} from './extension-points';
+import {
+  EXTENSION_POINTS,
+  type OptionsForExtensionPoint,
+} from './extension-points';
 import {type ReactComponentsForExtensionPoint} from './components';
 import {
   useExtensionSandbox,
@@ -46,6 +49,7 @@ import {
 export interface Options<T extends ExtensionPoint> extends BaseOptions {
   extensionPoint: T;
   settings?: string;
+  options?: OptionsForExtensionPoint<T>;
 }
 
 export interface RenderControllerTiming {
@@ -79,6 +83,7 @@ export interface RenderController<Point extends ExtensionPoint> {
 export function useRenderSandbox<Point extends ExtensionPoint>({
   extensionPoint,
   settings,
+  options: extensionPointOptions,
   ...options
 }: Options<Point>) {
   const sandbox = useExtensionSandbox(options);
@@ -87,13 +92,14 @@ export function useRenderSandbox<Point extends ExtensionPoint>({
   const renderArgumentsRef = useRef<any[]>(undefined as any);
   renderArgumentsRef.current = [extensionPoint, options.version, receiver];
 
-  const renderController = useMemo<RenderController<ExtensionPoint>>(() => {
+  const renderController = useMemo<RenderController<Point>>(() => {
     let api: ApiForExtensionPoint<Point>;
     let internals: RenderControllerInternals<Point>;
     let rendered = false;
     let mounted = false;
     const timings: Signal<RenderControllerTiming> = signal({});
-    const components = EXTENSION_POINTS[extensionPoint].components();
+    const components: ReactComponentsForExtensionPoint<Point> =
+      EXTENSION_POINTS[extensionPoint].components() as any;
 
     const emitter = createEmitter<RenderControllerEventMap>();
 
@@ -162,6 +168,9 @@ export function useRenderSandbox<Point extends ExtensionPoint>({
           version,
           extensionPoint,
           settings: createThreadSignal(settingsSignal),
+          ...EXTENSION_POINTS[extensionPoint as Point].api(
+            extensionPointOptions as never,
+          ),
         } as any;
 
         sandbox.run(({render}) =>

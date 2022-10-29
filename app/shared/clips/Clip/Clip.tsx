@@ -31,6 +31,10 @@ import type {
 } from '~/graphql/types';
 import {useQuery, useMutation} from '~/shared/graphql';
 
+import {
+  type ExtensionPointWithOptions,
+  type OptionsForExtensionPoint,
+} from '../extension-points';
 import {useRenderSandbox, type RenderController} from '../render';
 import {
   useLocalDevelopmentServerQuery,
@@ -51,7 +55,7 @@ import localClipQuery, {
 
 import styles from './Clip.module.css';
 
-export interface Props<T extends ExtensionPoint> {
+interface BaseProps<T extends ExtensionPoint> {
   id: string;
   extensionPoint: T;
   name: string;
@@ -62,13 +66,20 @@ export interface Props<T extends ExtensionPoint> {
   settings?: GraphQlJSON;
 }
 
+type OptionProps<T extends ExtensionPoint> = T extends ExtensionPointWithOptions
+  ? {options: OptionsForExtensionPoint<T>}
+  : {options?: never};
+
+export type Props<T extends ExtensionPoint> = BaseProps<T> & OptionProps<T>;
+
 export function InstalledClip<T extends ExtensionPoint>({
   id,
   extension,
+  options,
   version,
   settings,
   extensionPoint,
-}: InstalledClipExtensionFragmentData & Pick<Props<T>, 'extensionPoint'>) {
+}: InstalledClipExtensionFragmentData & {extensionPoint: T} & OptionProps<T>) {
   return (
     <Clip
       id={id}
@@ -79,6 +90,7 @@ export function InstalledClip<T extends ExtensionPoint>({
       script={version.assets[0]!.source}
       settings={settings ?? undefined}
       extensionPoint={extensionPoint}
+      options={options}
     />
   );
 }
@@ -93,7 +105,8 @@ export function LocalClip<T extends ExtensionPoint>({
   id,
   name,
   extensionPoint,
-}: LocalExtension & Pick<Props<T>, 'extensionPoint'>) {
+  options,
+}: LocalExtension & {extensionPoint: T} & OptionProps<T>) {
   const buildState =
     useLocalDevelopmentServerQuery(localClipQuery, {
       variables: {id},
@@ -119,6 +132,7 @@ export function LocalClip<T extends ExtensionPoint>({
       script={assetRef.current}
       build={buildState}
       extensionPoint={extensionPoint}
+      options={options}
     />
   );
 }
@@ -132,12 +146,14 @@ export function Clip<T extends ExtensionPoint>({
   build,
   app,
   settings,
-}: Props<T>) {
+  options,
+}: BaseProps<T> & {options?: any}) {
   const [receiver, sandboxController] = useRenderSandbox({
     extensionPoint,
     version: version as any,
     script,
     settings,
+    options,
   });
 
   const controller = useMemo(

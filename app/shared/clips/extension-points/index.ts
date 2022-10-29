@@ -1,6 +1,7 @@
-import {type ExtensionPoints} from '@watching/clips';
+import {type ExtensionPoint} from '@watching/clips';
 
 import {type ExtensionPointDefinition} from './shared';
+
 import {SeriesDetailsRenderAccessory} from './series';
 import {WatchThroughDetailsRenderAccessory} from './watchthrough';
 
@@ -9,8 +10,29 @@ export const EXTENSION_POINTS = extensionPoints({
   'WatchThrough.Details.RenderAccessory': WatchThroughDetailsRenderAccessory,
 });
 
-function extensionPoints(points: {
-  [Point in keyof ExtensionPoints]: ExtensionPointDefinition<Point>;
-}) {
+export type ExtensionPointDefinitions = typeof EXTENSION_POINTS;
+export type OptionsForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPointDefinitions[Point] extends ExtensionPointDefinition<
+    any,
+    infer Options
+  >
+    ? Options
+    : never;
+
+export type ExtensionPointDefinitionOptions = {
+  [Point in ExtensionPoint]: OptionsForExtensionPoint<Point>;
+};
+
+export type ExtensionPointWithOptions = {
+  [Point in ExtensionPoint]: ExtensionPointDefinitionOptions[Point] extends never
+    ? never
+    : Point;
+}[ExtensionPoint];
+
+function extensionPoints<
+  Points extends {
+    [Point in ExtensionPoint]: ExtensionPointDefinition<Point, any>;
+  },
+>(points: Points) {
   return points;
 }

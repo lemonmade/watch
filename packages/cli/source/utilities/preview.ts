@@ -7,7 +7,6 @@ const TARGET_MAP: Record<
   ExtensionPoint,
   (support: LocalExtensionPointSupport) => string
 > = {
-  'Season.Details.RenderAccessory': getSeriesForExtensionPointSupport,
   'Series.Details.RenderAccessory': getSeriesForExtensionPointSupport,
   'WatchThrough.Details.RenderAccessory': () => '/app/watchthrough/.random',
 };
