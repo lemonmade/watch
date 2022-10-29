@@ -5,7 +5,7 @@ export type {
   RenderExtensionRoot,
   RenderExtensionWithRemoteRoot,
   ApiForExtensionPoint,
-  AllowedComponentsForExtensionPoint,
+  ComponentsForExtensionPoint,
 } from './extension-points';
 export type {
   Version,

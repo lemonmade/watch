@@ -4,12 +4,8 @@ import type {
   RemoteComponentType,
 } from '@remote-ui/core';
 
-import type {AnyComponent} from './components';
-import type {
-  SeasonDetailsApi,
-  SeriesDetailsApi,
-  WatchThroughDetailsApi,
-} from './api';
+import type {CommonComponents} from './components';
+import type {SeriesDetailsApi, WatchThroughDetailsApi} from './api';
 
 export interface RenderExtensionRoot<
   AllowedComponents extends RemoteComponentType<string, any, any>,
@@ -20,41 +16,39 @@ export interface RenderExtensionRoot<
 
 export interface RenderExtension<
   Api,
-  AllowedComponents extends RemoteComponentType<
-    string,
-    any,
-    any
-  > = AnyComponent,
+  Components extends {
+    [key: string]: RemoteComponentType<string, any, any>;
+  } = CommonComponents,
 > {
   (
-    root: RenderExtensionRoot<AllowedComponents>,
+    root: RenderExtensionRoot<Components[keyof Components]>,
     api: Api,
   ): void | Promise<void>;
 }
 
 export interface RenderExtensionWithRemoteRoot<
   Api,
-  AllowedComponents extends RemoteComponentType<
-    string,
-    any,
-    any
-  > = AnyComponent,
+  Components extends {
+    [key: string]: RemoteComponentType<string, any, any>;
+  } = CommonComponents,
 > {
-  (root: RemoteRoot<AllowedComponents>, api: Api): void | Promise<void>;
+  (
+    root: RemoteRoot<Components[keyof Components]>,
+    api: Api,
+  ): void | Promise<void>;
 }
 
 export interface ExtensionPoints {
-  'Season.Details.RenderAccessory': RenderExtension<SeasonDetailsApi>;
   'Series.Details.RenderAccessory': RenderExtension<SeriesDetailsApi>;
   'WatchThrough.Details.RenderAccessory': RenderExtension<WatchThroughDetailsApi>;
 }
 
 export type ExtensionPoint = keyof ExtensionPoints;
 
-export type ApiForExtensionPoint<T extends ExtensionPoint> =
-  ExtensionPoints[T] extends RenderExtension<infer Api, any> ? Api : never;
+export type ApiForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPoints[Point] extends RenderExtension<infer Api, any> ? Api : never;
 
-export type AllowedComponentsForExtensionPoint<T extends ExtensionPoint> =
-  ExtensionPoints[T] extends RenderExtension<any, infer AllowedComponents>
-    ? AllowedComponents
+export type ComponentsForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPoints[Point] extends RenderExtension<any, infer Components>
+    ? Components
     : never;

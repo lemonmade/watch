@@ -10,4 +10,9 @@ export type Components = {
     : never;
 };
 
+export type CommonComponents = Pick<
+  Components,
+  'Action' | 'BlockStack' | 'InlineStack' | 'Text' | 'TextField' | 'View'
+>;
+
 export type AnyComponent = Components[keyof Components];

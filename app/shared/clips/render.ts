@@ -17,7 +17,6 @@ import type {
   RemoteTextSerialization,
   RemoteComponentSerialization,
   RemoteFragmentSerialization,
-  IdentifierForRemoteComponent,
   RemoteReceiverAttachable,
   RemoteReceiverAttachableRoot,
   RemoteReceiverAttachableComponent,
@@ -26,13 +25,7 @@ import type {
   RemoteReceiverAttachableFragment,
   ActionArgumentMap,
 } from '@remote-ui/core';
-import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
-import type {
-  AnyComponent,
-  ExtensionPoint,
-  ApiForExtensionPoint,
-  AllowedComponentsForExtensionPoint,
-} from '@watching/clips';
+import type {ExtensionPoint, ApiForExtensionPoint} from '@watching/clips';
 import {retain, release} from '@quilted/quilt/threads';
 import {createEmitter} from '@quilted/quilt';
 import type {Emitter} from '@quilted/quilt';
@@ -42,22 +35,18 @@ import {
   type Signal,
 } from '@watching/thread-signals';
 
-import {useExtensionSandbox} from './worker';
-import type {SandboxController, Options as BaseOptions} from './worker';
+import {EXTENSION_POINTS} from './extension-points';
+import {type ReactComponentsForExtensionPoint} from './components';
+import {
+  useExtensionSandbox,
+  type SandboxController,
+  type Options as BaseOptions,
+} from './worker';
 
 export interface Options<T extends ExtensionPoint> extends BaseOptions {
-  api: Omit<ApiForExtensionPoint<T>, 'extensionPoint' | 'version' | 'settings'>;
-  components: ReactComponentsForRuntimeExtension<T>;
   extensionPoint: T;
   settings?: string;
 }
-export type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
-  [Identifier in IdentifierForRemoteComponent<
-    AllowedComponentsForExtensionPoint<T>
-  >]: ReactComponentTypeFromRemoteComponentType<
-    Extract<AnyComponent, Identifier>
-  >;
-};
 
 export interface RenderControllerTiming {
   readonly renderStart?: number;
@@ -75,48 +64,43 @@ export interface RenderControllerEventMap {
   render: void;
 }
 
-export interface RenderController<T extends ExtensionPoint> {
+export interface RenderController<Point extends ExtensionPoint> {
   readonly id: string;
   readonly timings: Signal<RenderControllerTiming>;
   readonly sandbox: SandboxController;
   readonly state: SandboxController['state'] | 'rendering' | 'rendered';
-  readonly internals: RenderControllerInternals<T>;
+  readonly internals: RenderControllerInternals<Point>;
   readonly on: Emitter<RenderControllerEventMap>['on'];
+  readonly components: ReactComponentsForExtensionPoint<Point>;
   render(receiver?: RemoteReceiver): void;
   restart(): Promise<void>;
 }
 
-export function useRenderSandbox<T extends ExtensionPoint>({
-  api: customApi,
-  components,
+export function useRenderSandbox<Point extends ExtensionPoint>({
   extensionPoint,
   settings,
   ...options
-}: Options<T>) {
+}: Options<Point>) {
   const sandbox = useExtensionSandbox(options);
 
   const [receiver, setReceiver] = useState(() => createRemoteReceiver());
   const renderArgumentsRef = useRef<any[]>(undefined as any);
-  renderArgumentsRef.current = [
-    extensionPoint,
-    options.version,
-    receiver,
-    components,
-    customApi,
-  ];
+  renderArgumentsRef.current = [extensionPoint, options.version, receiver];
 
   const renderController = useMemo<RenderController<ExtensionPoint>>(() => {
-    let api: ApiForExtensionPoint<T>;
-    let internals: RenderControllerInternals<T>;
+    let api: ApiForExtensionPoint<Point>;
+    let internals: RenderControllerInternals<Point>;
     let rendered = false;
     let mounted = false;
     const timings: Signal<RenderControllerTiming> = signal({});
+    const components = EXTENSION_POINTS[extensionPoint].components();
 
     const emitter = createEmitter<RenderControllerEventMap>();
 
-    const renderController: RenderController<ExtensionPoint> = {
+    const renderController: RenderController<Point> = {
       sandbox,
       timings,
+      components,
       get id() {
         return sandbox.id;
       },
@@ -137,8 +121,7 @@ export function useRenderSandbox<T extends ExtensionPoint>({
 
         const currentId = sandbox.id;
 
-        const [extensionPoint, version, receiver, components, customApi = {}] =
-          renderArgumentsRef.current;
+        const [extensionPoint, version, receiver] = renderArgumentsRef.current;
 
         if (sandbox.state === 'loaded') {
           timings.value = {renderStart: Date.now()};
@@ -176,11 +159,10 @@ export function useRenderSandbox<T extends ExtensionPoint>({
         };
 
         api = {
-          ...customApi,
           version,
           extensionPoint,
           settings: createThreadSignal(settingsSignal),
-        };
+        } as any;
 
         sandbox.run(({render}) =>
           render(
