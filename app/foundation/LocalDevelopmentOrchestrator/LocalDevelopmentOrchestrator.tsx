@@ -1,8 +1,7 @@
 import {ReactNode, useMemo} from 'react';
 import {useEffect} from 'react';
-import {signal} from '@preact/signals';
 
-import {useInitialUrl} from '@quilted/quilt';
+import {useInitialUrl, signal} from '@quilted/quilt';
 import {
   createThread,
   createThreadAbortSignal,

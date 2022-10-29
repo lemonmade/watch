@@ -43,7 +43,7 @@ export function useExtensionSandbox({script, version}: Options) {
     start();
 
     const sandboxProxy: ExtensionSandbox = {
-      render: (...args) => call('render', ...args),
+      render: (...args) => (call as any)('render', ...args),
       getResourceTimingEntries: (...args) =>
         call('getResourceTimingEntries', ...args),
     };
@@ -71,10 +71,12 @@ export function useExtensionSandbox({script, version}: Options) {
 
     return sandboxController;
 
+    type PromiseType<T> = T extends PromiseLike<infer U> ? U : T;
+
     async function call<K extends keyof Sandbox>(
       key: K,
       ...args: Parameters<Sandbox[K]>
-    ) {
+    ): Promise<PromiseType<ReturnType<Sandbox[K]>>> {
       if (sandbox == null) {
         throw new Error('tried to call a method but no sandbox exists');
       }

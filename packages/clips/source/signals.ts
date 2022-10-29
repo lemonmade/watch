@@ -4,6 +4,8 @@ import {
   type Signal,
 } from '@watching/thread-signals';
 
+export {type Signal};
+
 export type WithThreadSignals<T> = T extends object
   ? {[K in keyof T]: T[K] extends ThreadSignal<infer U> ? Signal<U> : T[K]}
   : never;

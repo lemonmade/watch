@@ -1,10 +1,11 @@
 import {createRemoteComponent} from '@remote-ui/core';
+import {type SignalOrValue} from '../shared';
 
 export interface ActionProps {
   /**
    * Disallows interaction with the action.
    */
-  disabled?: boolean;
+  disabled?: SignalOrValue<boolean>;
 
   /**
    * A URL to open when the action is clicked.

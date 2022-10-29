@@ -17,5 +17,5 @@ export type {
 } from './api';
 export type {ClipsApi, ClipsGlobal} from './globals';
 export {extension} from './extension';
-export {acceptSignals, type WithThreadSignals} from './signals';
+export {acceptSignals, type Signal, type WithThreadSignals} from './signals';
 export * from './components';

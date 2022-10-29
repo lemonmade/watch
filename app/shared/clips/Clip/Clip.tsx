@@ -1,14 +1,34 @@
-import {useMemo, useEffect, useState, useRef, useReducer} from 'react';
-import type {PropsWithChildren, ReactNode} from 'react';
-import type {IdentifierForRemoteComponent} from '@remote-ui/core';
-import {createController, RemoteRenderer} from '@remote-ui/react/host';
-import type {ReactComponentTypeFromRemoteComponentType} from '@remote-ui/react/host';
+import {
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+  type PropsWithChildren,
+  type ReactNode,
+} from 'react';
+import {createThreadAbortSignal} from '@quilted/quilt/threads';
 import type {
-  AnyComponent,
+  RemoteComponentType,
+  IdentifierForRemoteComponent,
+} from '@remote-ui/core';
+import {createController, RemoteRenderer} from '@remote-ui/react/host';
+import type {
+  ReactPropsFromRemoteComponentType,
+  ReactComponentTypeFromRemoteComponentType,
+} from '@remote-ui/react/host';
+import type {
+  Components,
   ExtensionPoint,
   ApiForExtensionPoint,
   AllowedComponentsForExtensionPoint,
 } from '@watching/clips';
+import {
+  isThreadSignal,
+  signal,
+  type Signal,
+  type ThreadSignal,
+} from '@watching/thread-signals';
 import {
   Popover,
   BlockStack,
@@ -55,10 +75,15 @@ import styles from './Clip.module.css';
 type ReactComponentsForRuntimeExtension<T extends ExtensionPoint> = {
   [Identifier in IdentifierForRemoteComponent<
     AllowedComponentsForExtensionPoint<T>
-  >]: ReactComponentTypeFromRemoteComponentType<
-    Extract<AnyComponent, Identifier>
-  >;
+  >]: Identifier extends keyof Components
+    ? Components[Identifier] extends RemoteComponentType<any, any>
+      ? ReactComponentTypeFromRemoteComponentType<Components[Identifier]>
+      : never
+    : never;
 };
+
+type PropsForClipsComponent<Component extends keyof Components> =
+  ReactPropsFromRemoteComponentType<Components[Component]>;
 
 export interface Props<T extends ExtensionPoint> {
   id: string;
@@ -76,13 +101,131 @@ export interface Props<T extends ExtensionPoint> {
 
 type NoInfer<T> = T & {[K in keyof T]: T[K]};
 
+function ClipsAction({
+  to,
+  disabled,
+  onPress,
+  children,
+}: PropsForClipsComponent<'Action'>) {
+  const signalProps = usePossibleThreadSignals({disabled});
+
+  return (
+    <Action {...signalProps} to={to} onPress={onPress}>
+      {children}
+    </Action>
+  );
+}
+
+function ClipsTextField({label, value}: PropsForClipsComponent<'TextField'>) {
+  const signalProps = usePossibleThreadSignals({value});
+  return <TextField {...signalProps} label={label} />;
+}
+
+function usePossibleThreadSignals<T extends Record<string, any>>(values: T): T {
+  const internals = useRef<{
+    signals: WeakMap<
+      ThreadSignal<unknown>,
+      {signal: Signal<unknown>; abort: AbortController}
+    >;
+    active: Set<ThreadSignal<unknown>>;
+  }>();
+
+  internals.current ??= {
+    signals: new WeakMap(),
+    active: new Set(),
+  };
+
+  internals.current.active.clear();
+
+  const newValues: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(values)) {
+    if (isThreadSignal(value)) {
+      let signalDetails = internals.current.signals.get(value);
+
+      if (signalDetails == null) {
+        const resolvedSignal = signal(value.initial);
+
+        const valueDescriptor = Object.getOwnPropertyDescriptor(
+          Object.getPrototypeOf(resolvedSignal),
+          'value',
+        )!;
+
+        Object.defineProperty(resolvedSignal, 'value', {
+          ...valueDescriptor,
+          get() {
+            return valueDescriptor.get?.call(this);
+          },
+          set(updatedValue) {
+            if (value.set == null) {
+              throw new Error(
+                `You can’t set the value of a readonly thread signal.`,
+              );
+            }
+
+            value.set(updatedValue);
+            return valueDescriptor.set?.call(this, updatedValue);
+          },
+        });
+
+        signalDetails = {
+          signal: resolvedSignal,
+          abort: new AbortController(),
+        };
+
+        internals.current.signals.set(value, signalDetails);
+      }
+
+      internals.current.active.add(value);
+      newValues[key] = signalDetails.signal;
+      continue;
+    }
+
+    newValues[key] = value;
+  }
+
+  const threadSignals = [...internals.current.active];
+
+  useEffect(() => {
+    const {signals, active} = internals.current!;
+
+    for (const threadSignal of threadSignals) {
+      const signalDetails = signals.get(threadSignal);
+
+      if (signalDetails == null) continue;
+
+      const threadAbortSignal = createThreadAbortSignal(
+        signalDetails.abort.signal,
+      );
+
+      const setValue = (value: any) => {
+        signalDetails.signal.value = value;
+      };
+
+      Promise.resolve(
+        threadSignal.start(setValue, {signal: threadAbortSignal}),
+      ).then(setValue);
+    }
+
+    return () => {
+      for (const threadSignal of threadSignals) {
+        if (active.has(threadSignal)) continue;
+        signals.get(threadSignal)?.abort.abort();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, threadSignals);
+
+  return newValues as T;
+}
+
 const COMPONENTS: ReactComponentsForRuntimeExtension<ExtensionPoint> = {
-  Text,
   View,
-  // TypeScript can’t handle the complex union type :(
-  Action: Action as any,
+  Action: ClipsAction,
   BlockStack,
   InlineStack,
+  Text,
+  TextField: ClipsTextField,
 };
 
 export function InstalledClip<T extends ExtensionPoint>({

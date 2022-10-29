@@ -47,7 +47,7 @@
     }
   },
   "devDependencies": {
-    "@preact/signals-core": "^1.1.0",
+    "@preact/signals-core": "^1.2.2",
     "@quilted/testing": "^0.1.4",
     "react": "npm:@quilted/react@^17.0.0"
   },

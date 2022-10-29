@@ -39,7 +39,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.0"
+    "@quilted/testing": "^0.1.4"
   },
   "eslintConfig": {
     "extends": [

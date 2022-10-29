@@ -1,4 +1,10 @@
-import {retain} from '@quilted/quilt/threads';
+import {
+  retain,
+  createThread,
+  targetFromWebWorker,
+  createBasicEncoderWithOverrides,
+} from '@quilted/quilt/threads';
+import {createThreadSignal} from '@watching/thread-signals';
 import {type RemoteChannel} from '@remote-ui/core';
 
 import type {
@@ -29,7 +35,32 @@ Reflect.defineProperty(self, 'clips', {
 
 declare const importScripts: (script: string) => void;
 
-export function load(script: string, _: Version) {
+const sandboxApi = {
+  load,
+  render,
+  getResourceTimingEntries,
+};
+
+export type Sandbox = typeof sandboxApi;
+
+const createSignalEncoder = createBasicEncoderWithOverrides({
+  encode(value, {encode}) {
+    if (
+      value != null &&
+      typeof (value as any).peek === 'function' &&
+      typeof (value as any).subscribe === 'function'
+    ) {
+      return encode(createThreadSignal(value as any, {writable: true}));
+    }
+  },
+});
+
+createThread<Sandbox>(targetFromWebWorker(self as any), {
+  encoder: createSignalEncoder,
+  expose: sandboxApi as any,
+});
+
+export async function load(script: string, _: Version) {
   importScripts(script);
 }
 
@@ -61,7 +92,7 @@ function runExtensionPoint<T extends ExtensionPoint>(
   return (registeredExtensions.get(id) as any)?.(...args);
 }
 
-export function getResourceTimingEntries() {
+export async function getResourceTimingEntries() {
   return performance
     .getEntriesByType('resource')
     .filter((entry) => entry.name.endsWith('.js'))

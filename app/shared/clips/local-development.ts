@@ -1,8 +1,9 @@
 import {createContext, useEffect, useMemo} from 'react';
-import {signal, type Signal} from '@preact/signals';
 import {type ExtensionPoint} from '@watching/clips';
 import {
   createUseContextHook,
+  signal,
+  type Signal,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
