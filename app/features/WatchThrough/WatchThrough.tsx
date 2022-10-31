@@ -1,10 +1,12 @@
 import {useMemo, type PropsWithChildren} from 'react';
 import {
+  signal,
+  useSignal,
+  type Signal,
   useNavigate,
   createOptionalContext,
   createUseContextHook,
 } from '@quilted/quilt';
-import {signal, useSignal, type Signal} from '@watching/react-signals';
 
 import {
   raw,

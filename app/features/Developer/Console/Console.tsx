@@ -1,4 +1,4 @@
-import {useCurrentUrl} from '@quilted/quilt';
+import {useCurrentUrl, useSignal} from '@quilted/quilt';
 import {
   BlockStack,
   TextField,
@@ -10,7 +10,6 @@ import {
   Text,
   Icon,
 } from '@lemon/zest';
-import {useSignal} from '@watching/react-signals';
 
 import {Page} from '~/shared/page';
 import {

@@ -1,5 +1,5 @@
 import {type ComponentProps} from 'react';
-import {useNavigate} from '@quilted/quilt';
+import {useNavigate, useSignal} from '@quilted/quilt';
 import {
   Action,
   ActionList,
@@ -21,7 +21,6 @@ import {
   TextBlock,
   Poster,
 } from '@lemon/zest';
-import {useSignal} from '@watching/react-signals';
 
 import {SpoilerAvoidance} from '~/shared/spoilers';
 

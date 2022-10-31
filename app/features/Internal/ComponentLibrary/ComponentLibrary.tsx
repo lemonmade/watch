@@ -1,4 +1,5 @@
 import {type ComponentProps} from 'react';
+import {useSignal} from '@quilted/quilt';
 import {
   raw,
   Action,
@@ -40,7 +41,6 @@ import {
   IconHighlight,
   ContentAction,
 } from '@lemon/zest';
-import {useSignal} from '@watching/react-signals';
 
 export default function ComponentLibrary() {
   return (

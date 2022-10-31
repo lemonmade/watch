@@ -280,7 +280,7 @@ importers:
       '@watching/clips': workspace:^0.2.14
       '@watching/clips-dom': workspace:^0.1.2
       '@watching/thread-signals': workspace:^0.1.4
-      preact: ^10.11.0
+      preact: ^10.11.2
     dependencies:
       '@preact/signals-core': 1.2.2
       '@remote-ui/core': 2.1.12
@@ -302,14 +302,14 @@ importers:
 
   packages/react-signals:
     specifiers:
-      '@preact/signals-core': ^1.2.2
+      '@quilted/react-signals': ^0.1.0
       '@quilted/testing': ^0.1.4
       '@types/react': ^17.0.0
       react: npm:@quilted/react@^17.0.0
     dependencies:
+      '@quilted/react-signals': 0.1.0_619eb7192a1e119c6a7483243ef75838
       '@types/react': 17.0.48
     devDependencies:
-      '@preact/signals-core': 1.2.2
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
 

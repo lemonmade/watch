@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useNavigate, useCurrentUrl} from '@quilted/quilt';
+import {useNavigate, useCurrentUrl, useSignal} from '@quilted/quilt';
 
 import {
   Heading,
@@ -13,7 +13,6 @@ import {
   Menu,
   Popover,
 } from '@lemon/zest';
-import {useSignal} from '@watching/react-signals';
 
 import {SpoilerAvoidance} from '~/shared/spoilers';
 import {Page} from '~/shared/page';

@@ -1,5 +1,12 @@
 import {useEffect, useMemo, useState} from 'react';
-import {useRoutes, useNavigate, useCurrentUrl, Link} from '@quilted/quilt';
+import {
+  useRoutes,
+  useNavigate,
+  useCurrentUrl,
+  useComputed,
+  useSignal,
+  Link,
+} from '@quilted/quilt';
 import {
   View,
   TextField,
@@ -10,7 +17,6 @@ import {
   Banner,
   Action,
 } from '@lemon/zest';
-import {useComputed, useSignal} from '@watching/react-signals';
 
 import {SignInErrorReason} from '~/global/auth';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
