@@ -1,5 +1,6 @@
-query LocalDevelopmentOrchestrator {
+query LocalClipsExtensions {
   app {
+    id
     name
     extensions {
       ... on ClipsExtension {

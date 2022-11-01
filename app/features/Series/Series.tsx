@@ -25,11 +25,7 @@ import {
 import {SpoilerAvoidance} from '~/shared/spoilers';
 
 import {parseGid, useQuery, useMutation} from '~/shared/graphql';
-import {
-  useLocalDevelopmentClips,
-  LocalClip,
-  InstalledClip,
-} from '~/shared/clips';
+import {useClips, Clip} from '~/shared/clips';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
@@ -78,10 +74,6 @@ function SeriesWithData({
   clipsInstallations: SeriesQueryData['clipsInstallations'];
   onUpdate(): Promise<void>;
 }) {
-  const localDevelopmentClips = useLocalDevelopmentClips(
-    'Series.Details.RenderAccessory',
-  );
-
   const {seasons, watchThroughs, subscription} = series;
 
   const regularSeasons = series.seasons
@@ -178,26 +170,11 @@ function SeriesWithData({
         {series.overview && <TextBlock>{series.overview}</TextBlock>}
       </BlockStack>
 
-      {localDevelopmentClips.length + clipsInstallations.length > 0 ? (
-        <BlockStack spacing="large">
-          {localDevelopmentClips.map((localClip) => (
-            <LocalClip
-              {...localClip}
-              key={localClip.id}
-              extensionPoint="Series.Details.RenderAccessory"
-              options={{id: series.id, name: series.name}}
-            />
-          ))}
-          {clipsInstallations.map((installedClip) => (
-            <InstalledClip
-              {...installedClip}
-              key={installedClip.id}
-              extensionPoint="Series.Details.RenderAccessory"
-              options={{id: series.id, name: series.name}}
-            />
-          ))}
-        </BlockStack>
-      ) : null}
+      <AccessoryClips
+        id={series.id}
+        name={series.name}
+        installations={clipsInstallations}
+      />
 
       <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
 
@@ -210,6 +187,29 @@ function SeriesWithData({
       />
     </BlockStack>
   );
+}
+
+function AccessoryClips({
+  id,
+  name,
+  installations,
+}: {
+  id: string;
+  name: string;
+  installations: SeriesQueryData['clipsInstallations'];
+}) {
+  const accessoryClips = useClips(
+    'Series.Details.RenderAccessory',
+    installations,
+  );
+
+  return accessoryClips.length > 0 ? (
+    <BlockStack spacing="large">
+      {accessoryClips.map((clip) => (
+        <Clip key={clip.id} extension={clip} options={{id, name}} />
+      ))}
+    </BlockStack>
+  ) : null;
 }
 
 function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {

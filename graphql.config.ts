@@ -13,8 +13,8 @@ const config: Configuration = {
       ],
       exclude: [
         'app/shared/clips/Clip/graphql/LocalClipQuery.graphql',
+        'app/shared/clips/graphql/LocalClipsExtensionsQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
-        'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
         'app/server/**/*.graphql',
       ],
       extensions: {
@@ -33,8 +33,8 @@ const config: Configuration = {
       schema: 'packages/cli/source/commands/develop/schema.graphql',
       documents: [
         'app/shared/clips/Clip/graphql/LocalClipQuery.graphql',
+        'app/shared/clips/graphql/LocalClipsExtensionsQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
-        'app/foundation/LocalDevelopmentOrchestrator/graphql/LocalDevelopmentOrchestratorQuery.graphql',
       ],
       extensions: {
         quilt: {

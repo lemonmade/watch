@@ -1,4 +1,4 @@
-import {useCurrentUrl, useSignal} from '@quilted/quilt';
+import {useSignal} from '@quilted/quilt';
 import {
   BlockStack,
   TextField,
@@ -13,9 +13,9 @@ import {
 
 import {Page} from '~/shared/page';
 import {
-  useLocalDevelopmentServer,
+  useClipsManager,
   useLocalDevelopmentServerQuery,
-  type LocalDevelopmentServer,
+  type ClipsLocalDevelopmentServer,
 } from '~/shared/clips';
 
 import developerConsoleQuery, {
@@ -23,26 +23,26 @@ import developerConsoleQuery, {
 } from './graphql/DeveloperConsoleQuery.graphql';
 
 export function Console() {
-  const developmentServer = useLocalDevelopmentServer({required: false});
+  const {localDevelopment} = useClipsManager();
 
   return (
     <Page heading="Console">
-      {developmentServer ? (
-        <ConnectedConsole server={developmentServer} />
+      {localDevelopment.connected.value ? (
+        <ConnectedConsole server={localDevelopment} />
       ) : (
-        <ConnectToConsole />
+        <ConnectToConsole server={localDevelopment} />
       )}
     </Page>
   );
 }
 
-function ConnectedConsole({server}: {server: LocalDevelopmentServer}) {
+function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
   const {data} = useLocalDevelopmentServerQuery(developerConsoleQuery);
 
   return (
     <BlockStack spacing="large">
       <TextBlock>
-        <Text accessibilityRole="code">{server.url.href}</Text>
+        <Text accessibilityRole="code">{server.url.value?.href}</Text>
       </TextBlock>
       {data?.app.extensions.map((extension) => {
         if (extension.__typename !== 'ClipsExtension') return null;
@@ -116,20 +116,16 @@ function ExtensionBuildResult({
   }
 }
 
-function ConnectToConsole() {
-  const currentUrl = useCurrentUrl();
+function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServer}) {
   const localUrl = useSignal('');
 
-  const submit = () => {
+  const submit = async () => {
     if (!localUrl.value) return;
 
     const normalizedUrl = new URL('/connect', localUrl.value);
     normalizedUrl.protocol = normalizedUrl.protocol.replace(/^http/, 'ws');
 
-    const targetUrl = new URL(currentUrl);
-    targetUrl.searchParams.set('connect', normalizedUrl.href);
-
-    window.location.assign(targetUrl.href);
+    await server.connect(normalizedUrl);
   };
 
   return (

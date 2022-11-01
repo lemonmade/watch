@@ -1,10 +1,6 @@
-export {
-  useLocalDevelopmentClips,
-  useLocalDevelopmentServer,
-  useLocalDevelopmentServerQuery,
-  LocalDevelopmentServerContext,
-  type LocalExtension,
-  type LocalDevelopmentServer,
-} from './local-development';
-export {type OptionsForExtensionPoint} from './extension-points';
-export {LocalClip, InstalledClip, type Props as ClipProps} from './Clip';
+export * from './extension-points';
+export * from './extension';
+export * from './Clip';
+export * from './react';
+export * from './manager';
+export {type ClipsExtensionFragmentData as InstalledClipsExtensionPointFragment} from './graphql/ClipsExtensionFragment.graphql';

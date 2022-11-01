@@ -35,6 +35,7 @@ export function createQueryResolver(
 
     function createGraphQLApp(app: Omit<LocalApp, 'on'>, context: Context) {
       return object('App', {
+        id: app.id,
         name: app.name,
         handle: app.handle,
         extensions: app.extensions.map((extension) =>

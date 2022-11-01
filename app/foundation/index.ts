@@ -1,4 +1,4 @@
 export {Head} from './Head';
 export {Http} from './Http';
-export {LocalDevelopmentOrchestrator} from './LocalDevelopmentOrchestrator';
+export {Extensions} from './Extensions';
 export {Frame} from './Frame';
