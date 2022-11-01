@@ -1,16 +1,21 @@
-import {useMemo} from 'react';
-import {RemoteRenderer, createController} from '@remote-ui/react/host';
+import {useEffect, useMemo, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
+import {RemoteRenderer, createController} from '@remote-ui/react/host';
 
-import {useClipsManager} from '../react';
+import {useClipsManager, useLocalDevelopmentServerQuery} from '../react';
 import {
   type ClipsExtensionPoint,
+  type ClipsExtensionPointInstance,
   type InstalledClipsExtensionPoint,
 } from '../extension';
 import {
   type ExtensionPointWithOptions,
   type OptionsForExtensionPoint,
 } from '../extension-points';
+
+import {ClipFrame} from './ClipFrame';
+
+import localClipQuery from './graphql/LocalClipQuery.graphql';
 
 type OptionProps<Point extends ExtensionPoint> =
   Point extends ExtensionPointWithOptions
@@ -25,18 +30,75 @@ export function Clip<Point extends ExtensionPoint>({
   extension,
   options,
 }: ClipProps<Point>) {
-  console.log(extension);
+  if (extension.local) {
+    return (
+      <ClipFrame extension={extension}>
+        <LocalClipRenderer
+          extension={extension}
+          options={options as OptionsForExtensionPoint<Point>}
+        />
+      </ClipFrame>
+    );
+  }
+
   if (extension.installed) {
     return (
-      <InstalledClipRenderer
-        extension={extension}
-        options={options as OptionsForExtensionPoint<Point>}
-        installed={extension.installed}
-      />
+      <ClipFrame extension={extension}>
+        <InstalledClipRenderer
+          extension={extension}
+          options={options as OptionsForExtensionPoint<Point>}
+          installed={extension.installed}
+        />
+      </ClipFrame>
     );
   }
 
   return null;
+}
+
+const DEFAULT_BUILD_STATE = {
+  __typename: 'ExtensionBuildInProgress',
+  id: '0',
+  startedAt: new Date().toISOString(),
+} as const;
+
+function LocalClipRenderer<Point extends ExtensionPoint>({
+  extension,
+  options,
+}: {
+  extension: ClipsExtensionPoint<Point>;
+  options?: OptionsForExtensionPoint<Point>;
+}) {
+  const manager = useClipsManager();
+  const {data} = useLocalDevelopmentServerQuery(localClipQuery, {
+    variables: {id: extension.extension.id},
+  });
+
+  const buildState = data?.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
+
+  const instanceDetailsRef = useRef<{script: string}>();
+
+  if (buildState.__typename === 'ExtensionBuildSuccess') {
+    instanceDetailsRef.current = {
+      script: buildState.assets[0]!.source,
+    };
+  }
+
+  if (!instanceDetailsRef.current) return null;
+
+  const instance = manager.fetchInstance(
+    {
+      target: extension.target,
+      version: 'unstable',
+      source: 'local',
+      extension: {id: extension.extension.id},
+      script: {url: instanceDetailsRef.current.script},
+    },
+    // @ts-expect-error Can’t make the types work here :/
+    options,
+  );
+
+  return <ClipInstanceRenderer instance={instance} />;
 }
 
 function InstalledClipRenderer<Point extends ExtensionPoint>({
@@ -48,7 +110,8 @@ function InstalledClipRenderer<Point extends ExtensionPoint>({
   extension: ClipsExtensionPoint<Point>;
   options?: OptionsForExtensionPoint<Point>;
 }) {
-  const instance = useClipsManager().fetchInstance(
+  const manager = useClipsManager();
+  const instance = manager.fetchInstance(
     {
       target: extension.target,
       version: installed.version,
@@ -60,10 +123,28 @@ function InstalledClipRenderer<Point extends ExtensionPoint>({
     options,
   );
 
+  return <ClipInstanceRenderer instance={instance} />;
+}
+
+function ClipInstanceRenderer<Point extends ExtensionPoint>({
+  instance,
+}: {
+  instance: ClipsExtensionPointInstance<Point>;
+}) {
   const controller = useMemo(
     () => createController(instance.components),
     [instance],
   );
+
+  useEffect(() => {
+    const abort = new AbortController();
+
+    instance.render({signal: abort.signal});
+
+    return () => {
+      abort.abort();
+    };
+  }, [instance]);
 
   return (
     <RemoteRenderer

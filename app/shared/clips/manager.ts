@@ -14,7 +14,6 @@ import {
   type Thread,
   type ThreadAbortSignal,
 } from '@quilted/quilt/threads';
-import {createRemoteReceiver} from '@remote-ui/core';
 
 import {createResolvablePromise} from '../promises';
 
@@ -37,6 +36,7 @@ import {
   type OptionsForExtensionPoint,
 } from './extension-points';
 import {createSandbox, type Sandbox} from './sandboxes';
+import {createRemoteReceiver} from './receiver';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
 
 export interface ClipsManager {
@@ -143,6 +143,7 @@ export function createClipsManager(): ClipsManager {
     return instance;
 
     async function render(_: {signal?: AbortSignal} = {}) {
+      await sandbox!.start();
       await sandbox!.run(async (sandbox) => {
         await sandbox.render(
           context.target,
