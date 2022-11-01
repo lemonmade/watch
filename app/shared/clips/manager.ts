@@ -135,12 +135,18 @@ export function createClipsManager(): ClipsManager {
       timings,
       on: emitter.on,
       render,
-      restart: () => sandbox!.restart(),
+      restart,
     };
 
     instances.set(cacheKey, instance);
 
     return instance;
+
+    async function restart() {
+      await sandbox!.restart();
+      receiver.value = createRemoteReceiver();
+      await render();
+    }
 
     async function render(_: {signal?: AbortSignal} = {}) {
       await sandbox!.start();

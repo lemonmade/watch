@@ -8,6 +8,7 @@ import {
   type GraphQLOperation,
   type GraphQLVariableOptions,
   PropsWithChildren,
+  Signal,
 } from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 
@@ -101,18 +102,19 @@ export function useClips<Point extends ExtensionPoint>(
   return allClips.value;
 }
 
-export function useLocalDevelopmentServerQuery<Data, Variables>(
+type ClipsLocalDevelopmentServerGraphQLResult<Data> =
+  | (Pick<GraphQLResult<Data>, 'data' | 'errors'> & {loading: false})
+  | {loading: true; data?: never; errors?: never};
+
+export function useLocalDevelopmentServerQuerySignal<Data, Variables>(
   query: GraphQLOperation<Data, Variables>,
   options?: GraphQLVariableOptions<Variables>,
-) {
+): Signal<ClipsLocalDevelopmentServerGraphQLResult<Data>> {
   const server = useClipsManager().localDevelopment;
 
   const resultSignal = useMemo(
     () =>
-      signal<
-        | (Pick<GraphQLResult<Data>, 'data' | 'errors'> & {loading: false})
-        | {loading: true; data?: never; errors?: never}
-      >({loading: true}),
+      signal<ClipsLocalDevelopmentServerGraphQLResult<Data>>({loading: true}),
     [],
   );
 
@@ -134,5 +136,13 @@ export function useLocalDevelopmentServerQuery<Data, Variables>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [server, resultSignal, query, JSON.stringify(options?.variables)]);
 
-  return resultSignal.value;
+  return resultSignal;
+}
+
+export function useLocalDevelopmentServerQuery<Data, Variables>(
+  query: GraphQLOperation<Data, Variables>,
+  options?: GraphQLVariableOptions<Variables>,
+) {
+  return useLocalDevelopmentServerQuerySignal<Data, Variables>(query, options)
+    .value;
 }

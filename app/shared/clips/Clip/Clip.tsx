@@ -1,8 +1,9 @@
 import {useEffect, useMemo, useRef} from 'react';
+import {useSignalEffect, useSignal} from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRenderer, createController} from '@remote-ui/react/host';
 
-import {useClipsManager, useLocalDevelopmentServerQuery} from '../react';
+import {useClipsManager, useLocalDevelopmentServerQuerySignal} from '../react';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
@@ -15,7 +16,9 @@ import {
 
 import {ClipFrame} from './ClipFrame';
 
-import localClipQuery from './graphql/LocalClipQuery.graphql';
+import localClipQuery, {
+  type LocalClipQueryData,
+} from './graphql/LocalClipQuery.graphql';
 
 type OptionProps<Point extends ExtensionPoint> =
   Point extends ExtensionPointWithOptions
@@ -70,21 +73,40 @@ function LocalClipRenderer<Point extends ExtensionPoint>({
   options?: OptionsForExtensionPoint<Point>;
 }) {
   const manager = useClipsManager();
-  const {data} = useLocalDevelopmentServerQuery(localClipQuery, {
+  const result = useLocalDevelopmentServerQuerySignal(localClipQuery, {
     variables: {id: extension.extension.id},
   });
+  const script = useSignal<string | undefined>(undefined);
+  const instanceDetailsRef = useRef<{
+    lastBuild: LocalClipQueryData.App.ClipsExtension.Build;
+    instance?: ClipsExtensionPointInstance<Point>;
+    lastBuildSuccess?: LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess;
+  }>({lastBuild: DEFAULT_BUILD_STATE});
 
-  const buildState = data?.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
+  useSignalEffect(() => {
+    if (!result.value.data) return;
 
-  const instanceDetailsRef = useRef<{script: string}>();
+    const buildState =
+      result.value.data.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
 
-  if (buildState.__typename === 'ExtensionBuildSuccess') {
-    instanceDetailsRef.current = {
-      script: buildState.assets[0]!.source,
-    };
-  }
+    const isRestart =
+      buildState.__typename === 'ExtensionBuildSuccess' &&
+      instanceDetailsRef.current.lastBuildSuccess != null;
 
-  if (!instanceDetailsRef.current) return null;
+    instanceDetailsRef.current.lastBuild = buildState;
+    if (buildState.__typename === 'ExtensionBuildSuccess') {
+      instanceDetailsRef.current.lastBuildSuccess = buildState;
+      script.value = buildState.assets[0]?.source;
+    }
+
+    if (isRestart) {
+      instanceDetailsRef.current.instance?.restart();
+    }
+  });
+
+  const scriptUrl = script.value;
+
+  if (scriptUrl == null) return null;
 
   const instance = manager.fetchInstance(
     {
@@ -92,11 +114,13 @@ function LocalClipRenderer<Point extends ExtensionPoint>({
       version: 'unstable',
       source: 'local',
       extension: {id: extension.extension.id},
-      script: {url: instanceDetailsRef.current.script},
+      script: {url: scriptUrl},
     },
     // @ts-expect-error Can’t make the types work here :/
     options,
   );
+
+  instanceDetailsRef.current.instance = instance;
 
   return <ClipInstanceRenderer instance={instance} />;
 }
