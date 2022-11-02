@@ -344,7 +344,10 @@ export function useComputed<T>(compute: () => T, dependencies: any[] = []) {
   return useMemo(() => computed<T>(() => $compute.current()), dependencies);
 }
 
-export function useSignalEffect(cb: () => void | (() => void)) {
+export function useSignalEffect(
+  cb: () => void | (() => void),
+  dependencies: any[] = [],
+) {
   const callback = useRef(cb);
   callback.current = cb;
 
@@ -352,7 +355,7 @@ export function useSignalEffect(cb: () => void | (() => void)) {
     return effect(() => {
       callback.current();
     });
-  }, []);
+  }, dependencies);
 }
 
 /**
