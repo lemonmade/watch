@@ -21,8 +21,9 @@ import {
   type Version,
   type ExtensionPoint,
   type ClipsExtension,
-  type ClipsExtensionPointContext,
   type ClipsExtensionPointInstance,
+  type ClipsExtensionPointInstanceOptions,
+  type ClipsExtensionPointInstanceContext,
   type ClipsExtensionPointInstanceEventMap,
   type ClipsExtensionPointInstanceTiming,
   type ClipsExtensionSandbox,
@@ -30,11 +31,7 @@ import {
   type ClipsExtensionSandboxInstanceTiming,
   type ClipsExtensionSandboxInstanceEventMap,
 } from './extension';
-import {
-  EXTENSION_POINTS,
-  type ExtensionPointWithOptions,
-  type OptionsForExtensionPoint,
-} from './extension-points';
+import {EXTENSION_POINTS} from './extension-points';
 import {createSandbox, type Sandbox} from './sandboxes';
 import {createRemoteReceiver} from './receiver';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
@@ -42,10 +39,7 @@ import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graph
 export interface ClipsManager {
   readonly localDevelopment: ClipsLocalDevelopmentServer;
   fetchInstance<Point extends ExtensionPoint>(
-    context: ClipsExtensionPointContext<Point>,
-    ...rest: Point extends ExtensionPointWithOptions
-      ? [OptionsForExtensionPoint<Point>]
-      : [OptionsForExtensionPoint<Point>?]
+    options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point>;
 }
 
@@ -84,20 +78,16 @@ export function createClipsManager(): ClipsManager {
   };
 
   function fetchInstance<Point extends ExtensionPoint>(
-    context: ClipsExtensionPointContext<Point>,
-    ...rest: Point extends ExtensionPointWithOptions
-      ? [OptionsForExtensionPoint<Point>]
-      : [OptionsForExtensionPoint<Point>?]
+    options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
-    const options: OptionsForExtensionPoint<Point> = rest[0] ?? ({} as any);
-    const cacheKey = JSON.stringify({context, options});
+    const cacheKey = JSON.stringify(options);
 
     const cached = instances.get(cacheKey);
     if (cached) return cached;
 
     const sandboxOptions = {
-      version: context.version,
-      script: context.script.url,
+      version: options.version,
+      script: options.script.url,
     };
     const sandboxCacheKey = JSON.stringify(sandboxOptions);
     let sandbox = sandboxes.get(sandboxCacheKey);
@@ -116,9 +106,12 @@ export function createClipsManager(): ClipsManager {
     );
     const emitter = createEmitter<ClipsExtensionPointInstanceEventMap>();
 
-    const extensionPoint = EXTENSION_POINTS[context.target];
+    const context: ClipsExtensionPointInstanceContext<Point> = {
+      settings: signal(JSON.parse(options.settings ?? '{}')),
+    };
+    const extensionPoint = EXTENSION_POINTS[options.target];
     const api: ClipsExtensionPointInstance<any>['api'] = extensionPoint.api(
-      options as never,
+      options.options as never,
     );
     const components: ClipsExtensionPointInstance<any>['components'] =
       extensionPoint.components() as any;
@@ -152,7 +145,7 @@ export function createClipsManager(): ClipsManager {
       await sandbox!.start();
       await sandbox!.run(async (sandbox) => {
         await sandbox.render(
-          context.target,
+          options.target,
           receiver.value.receive,
           Object.keys(instance.components),
           api as any,

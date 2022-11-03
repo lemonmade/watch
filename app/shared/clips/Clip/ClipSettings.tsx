@@ -18,9 +18,9 @@ export function ClipSettings({
 }: {
   instance: ClipsExtensionPointInstance<any>;
 }) {
-  const id = instance.context.extension.id;
+  const id = instance.options.extension.id;
   const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
-    variables: {id: instance.context.extension.id},
+    variables: {id: instance.options.extension.id},
   });
 
   if (data?.clipsInstallation == null) {
@@ -44,14 +44,11 @@ export function ClipSettings({
       settings={settings}
       translations={translations}
       schema={schema}
-      onUpdate={async (_data) => {
+      onUpdate={async (data) => {
+        instance.context.settings.value = JSON.parse(
+          data.updateClipsExtensionInstallation.installation?.settings ?? '{}',
+        );
         await refetch();
-        // instance.context.settings.update(
-        //   JSON.parse(
-        //     data.updateClipsExtensionInstallation.installation?.settings ??
-        //       '{}',
-        //   ),
-        // );
       }}
     />
   );

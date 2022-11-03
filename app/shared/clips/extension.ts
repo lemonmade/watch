@@ -34,6 +34,7 @@ export interface ClipsExtensionPointWithInstalled<Point extends ExtensionPoint>
 export interface InstalledClipsExtensionPoint {
   readonly version: Version;
   readonly script: string;
+  readonly settings?: string;
 }
 
 export interface LocalClipsExtensionPoint {}
@@ -49,18 +50,10 @@ export interface App {
   readonly name: string;
 }
 
-export interface ClipsExtensionPointContext<Point extends ExtensionPoint> {
-  readonly source: 'local' | 'installed';
-  readonly target: Point;
-  readonly version: Version;
-  readonly extension: {readonly id: string};
-  readonly script: {readonly url: string};
-}
-
 export interface ClipsExtensionPointInstance<Point extends ExtensionPoint> {
   readonly id: string;
-  readonly context: ClipsExtensionPointContext<Point>;
-  readonly options: OptionsForExtensionPoint<Point>;
+  readonly context: ClipsExtensionPointInstanceContext<Point>;
+  readonly options: ClipsExtensionPointInstanceOptions<Point>;
   readonly timings: Signal<ClipsExtensionPointInstanceTiming>;
   readonly receiver: Signal<RemoteReceiver>;
   readonly state: Signal<
@@ -72,6 +65,24 @@ export interface ClipsExtensionPointInstance<Point extends ExtensionPoint> {
   readonly on: Emitter<ClipsExtensionPointInstanceEventMap>['on'];
   render(options?: {signal?: AbortSignal}): void;
   restart(): Promise<void>;
+}
+
+export interface ClipsExtensionPointInstanceContext<
+  _Point extends ExtensionPoint,
+> {
+  readonly settings: Signal<Record<string, unknown>>;
+}
+
+export interface ClipsExtensionPointInstanceOptions<
+  Point extends ExtensionPoint,
+> {
+  readonly source: 'local' | 'installed';
+  readonly target: Point;
+  readonly version: Version;
+  readonly settings?: string;
+  readonly extension: {readonly id: string};
+  readonly script: {readonly url: string};
+  readonly options: OptionsForExtensionPoint<Point>;
 }
 
 export interface ClipsExtensionPointInstanceTiming {

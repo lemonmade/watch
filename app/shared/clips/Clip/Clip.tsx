@@ -243,17 +243,16 @@ function useInstalledClipInstance<Point extends ExtensionPoint>(
 
   if (installed == null) return undefined;
 
-  return manager.fetchInstance(
-    {
-      target: extension.target,
-      version: installed.version,
-      source: 'installed',
-      extension: {id: extension.extension.id},
-      script: {url: installed.script},
-    },
+  return manager.fetchInstance({
+    target: extension.target,
+    version: installed.version,
+    source: 'installed',
+    settings: installed.settings,
+    extension: {id: extension.extension.id},
+    script: {url: installed.script},
     // @ts-expect-error Can’t make the types work here :/
     options,
-  );
+  });
 }
 
 const DEFAULT_BUILD_STATE = {
@@ -303,17 +302,15 @@ function useLocalClipInstance<Point extends ExtensionPoint>(
 
   if (scriptUrl == null) return undefined;
 
-  const instance = manager.fetchInstance(
-    {
-      target: extension.target,
-      version: 'unstable',
-      source: 'local',
-      extension: {id: extension.extension.id},
-      script: {url: scriptUrl},
-    },
+  const instance = manager.fetchInstance({
+    target: extension.target,
+    version: 'unstable',
+    source: 'local',
+    extension: {id: extension.extension.id},
+    script: {url: scriptUrl},
     // @ts-expect-error Can’t make the types work here :/
     options,
-  );
+  });
 
   instanceDetailsRef.current.instance = instance;
 
