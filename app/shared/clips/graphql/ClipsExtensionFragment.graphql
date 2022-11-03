@@ -1,0 +1,20 @@
+fragment ClipsExtension on ClipsExtensionInstallation {
+  id
+  target
+  settings
+  version {
+    id
+    apiVersion
+    assets {
+      source
+    }
+  }
+  extension {
+    id
+    name
+    app {
+      id
+      name
+    }
+  }
+}

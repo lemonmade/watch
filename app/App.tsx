@@ -15,7 +15,7 @@ import {Canvas} from '@lemon/zest';
 
 import {SearchParam} from '~/global/auth';
 
-import {Head, Http, LocalDevelopmentOrchestrator, Frame} from './foundation';
+import {Head, Http, Extensions, Frame} from './foundation';
 
 import {Start} from './features/Start';
 import {CreateAccount} from './features/CreateAccount';
@@ -68,9 +68,9 @@ export default function App() {
             <Canvas>
               <Http />
               <Head />
-              <LocalDevelopmentOrchestrator>
+              <Extensions>
                 <Routes />
-              </LocalDevelopmentOrchestrator>
+              </Extensions>
             </Canvas>
           </GraphQL>
         </Router>

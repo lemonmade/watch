@@ -1,521 +1,108 @@
-import {
-  useMemo,
-  useEffect,
-  useState,
-  useRef,
-  useReducer,
-  type PropsWithChildren,
-  type ReactNode,
-} from 'react';
-import {createController, RemoteRenderer} from '@remote-ui/react/host';
+import {useEffect, useMemo, useRef} from 'react';
+import {useSignal, useSignalEffect} from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
+import {RemoteRenderer, createController} from '@remote-ui/react/host';
 import {
   Popover,
   BlockStack,
   View,
-  Section,
   Text,
   Menu,
-  Form,
-  TextField,
-  Select,
-  Action,
   ContentAction,
   Layout,
   Icon,
+  Action,
+  raw,
+  Section,
 } from '@lemon/zest';
 
-import type {
-  ClipsExtensionApiVersion,
-  JSON as GraphQlJSON,
-} from '~/graphql/types';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {useMutation} from '~/shared/graphql';
 
+import {useClipsManager, useLocalDevelopmentServerQuerySignal} from '../react';
+import {
+  type ClipsExtensionPoint,
+  type ClipsExtensionPointWithLocal,
+  type ClipsExtensionPointInstance,
+  type InstalledClipsExtensionPoint,
+  type LocalClipsExtensionPoint,
+} from '../extension';
 import {
   type ExtensionPointWithOptions,
   type OptionsForExtensionPoint,
 } from '../extension-points';
-import {useRenderSandbox, type RenderController} from '../render';
-import {
-  useLocalDevelopmentServerQuery,
-  type LocalExtension,
-} from '../local-development';
 
-import clipsExtensionSettingsQuery, {
-  type ClipExtensionSettingsQueryData,
-} from './graphql/ClipExtensionSettingsQuery.graphql';
-import updateClipsExtensionSettingsMutation, {
-  type UpdateClipsExtensionSettingsMutationData,
-} from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
-import {type InstalledClipExtensionFragmentData} from './graphql/InstalledClipExtensionFragment.graphql';
+import {ClipSettings} from './ClipSettings';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 import localClipQuery, {
   type LocalClipQueryData,
 } from './graphql/LocalClipQuery.graphql';
 
-import styles from './Clip.module.css';
+type OptionProps<Point extends ExtensionPoint> =
+  Point extends ExtensionPointWithOptions
+    ? {options: OptionsForExtensionPoint<Point>}
+    : {options?: never};
 
-interface BaseProps<T extends ExtensionPoint> {
-  id: string;
-  extensionPoint: T;
-  name: string;
-  version: ClipsExtensionApiVersion;
-  script: string;
-  build?: LocalClipQueryData.App.ClipsExtension.Build;
-  app?: InstalledClipExtensionFragmentData.Extension['app'];
-  settings?: GraphQlJSON;
-}
+export type ClipProps<Point extends ExtensionPoint> = {
+  extension: ClipsExtensionPoint<Point>;
+} & OptionProps<Point>;
 
-type OptionProps<T extends ExtensionPoint> = T extends ExtensionPointWithOptions
-  ? {options: OptionsForExtensionPoint<T>}
-  : {options?: never};
-
-export type Props<T extends ExtensionPoint> = BaseProps<T> & OptionProps<T>;
-
-export function InstalledClip<T extends ExtensionPoint>({
-  id,
+export function Clip<Point extends ExtensionPoint>({
   extension,
   options,
-  version,
-  settings,
-  extensionPoint,
-}: InstalledClipExtensionFragmentData & {extensionPoint: T} & OptionProps<T>) {
-  return (
-    <Clip
-      id={id}
-      key={id}
-      name={extension.name}
-      app={extension.app}
-      version={version.apiVersion}
-      script={version.assets[0]!.source}
-      settings={settings ?? undefined}
-      extensionPoint={extensionPoint}
-      options={options}
-    />
-  );
-}
-
-const DEFAULT_BUILD_STATE = {
-  __typename: 'ExtensionBuildInProgress',
-  id: '0',
-  startedAt: new Date().toISOString(),
-} as const;
-
-export function LocalClip<T extends ExtensionPoint>({
-  id,
-  name,
-  extensionPoint,
-  options,
-}: LocalExtension & {extensionPoint: T} & OptionProps<T>) {
-  const buildState =
-    useLocalDevelopmentServerQuery(localClipQuery, {
-      variables: {id},
-    })?.data?.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
-
-  const assetRef = useRef<string>();
-
-  if (
-    assetRef.current == null &&
-    buildState.__typename === 'ExtensionBuildSuccess'
-  ) {
-    assetRef.current = buildState.assets[0]?.source;
-  }
-
-  if (!assetRef.current) return null;
-
-  return (
-    <Clip
-      id={id}
-      key={id}
-      name={name}
-      version="unstable"
-      script={assetRef.current}
-      build={buildState}
-      extensionPoint={extensionPoint}
-      options={options}
-    />
-  );
-}
-
-export function Clip<T extends ExtensionPoint>({
-  id,
-  name,
-  extensionPoint,
-  version,
-  script,
-  build,
-  app,
-  settings,
-  options,
-}: BaseProps<T> & {options?: any}) {
-  const [receiver, sandboxController] = useRenderSandbox({
-    extensionPoint,
-    version: version as any,
-    script,
-    settings,
-    options,
-  });
-
-  const controller = useMemo(
-    () => createController(sandboxController.components),
-    [sandboxController],
+}: ClipProps<Point>) {
+  const installed = useInstalledClipInstance(
+    extension,
+    extension.installed,
+    options as OptionsForExtensionPoint<Point>,
   );
 
-  return build ? (
-    <LocalClipFrame
-      app={app}
-      name={name}
-      build={build}
-      controller={sandboxController}
-      script={script}
-    >
-      <RemoteRenderer controller={controller} receiver={receiver} />
-    </LocalClipFrame>
-  ) : (
-    <InstalledClipFrame
-      id={id}
-      app={app}
-      name={name}
-      controller={sandboxController}
-      script={script}
-    >
-      <RemoteRenderer controller={controller} receiver={receiver} />
-    </InstalledClipFrame>
-  );
-}
-
-interface InstalledClipFrameProps<T extends ExtensionPoint>
-  extends Omit<
-    ClipFrameProps<T>,
-    'renderPopoverContent' | 'renderPopoverActions'
-  > {
-  id: string;
-}
-
-function InstalledClipFrame<T extends ExtensionPoint>({
-  controller,
-  id,
-  ...rest
-}: PropsWithChildren<InstalledClipFrameProps<T>>) {
-  const uninstallClipsExtensionFromClip = useMutation(
-    uninstallClipsExtensionFromClipMutation,
-  );
-
-  return (
-    <ClipFrame
-      {...rest}
-      controller={controller}
-      renderPopoverContent={() => (
-        <InstalledClipSettings id={id} controller={controller} />
-      )}
-      renderPopoverActions={() => (
-        <>
-          <Action
-            icon="arrowEnd"
-            onPress={() => alert('App page not implemented yet!')}
-          >
-            View app
-          </Action>
-          <Action icon="sync" onPress={() => controller.restart()}>
-            Restart
-          </Action>
-          <Action
-            icon="delete"
-            onPress={async () => {
-              await uninstallClipsExtensionFromClip.mutateAsync({id});
-            }}
-          >
-            Uninstall
-          </Action>
-          <Action
-            icon="message"
-            onPress={() => alert('Reporting not implemented yet!')}
-          >
-            Report an issue
-          </Action>
-        </>
-      )}
-    />
-  );
-}
-
-function InstalledClipSettings({
-  id,
-  controller,
-}: {
-  id: string;
-  controller: RenderController<any>;
-}) {
-  const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
-    variables: {id},
-  });
-
-  if (data?.clipsInstallation == null) {
+  if (extension.local) {
     return (
-      <Text>
-        {isFetching ? 'Loading settings...' : 'Something went wrong!'}
-      </Text>
+      <ClipRendererWithLocalVersion
+        extension={extension as ClipsExtensionPointWithLocal<Point>}
+        options={options as OptionsForExtensionPoint<Point>}
+        installed={installed}
+      />
     );
   }
 
-  const {
-    clipsInstallation: {
-      settings,
-      version: {translations, settings: schema},
-    },
-  } = data;
-
-  return (
-    <InstalledClipLoadedSettings
-      id={id}
-      settings={settings}
-      translations={translations}
-      schema={schema}
-      onUpdate={(data) => {
-        refetch();
-        controller.internals.settings.update(
-          JSON.parse(
-            data.updateClipsExtensionInstallation.installation?.settings ??
-              '{}',
-          ),
-        );
-      }}
-    />
-  );
+  return <ClipRenderer extension={extension} installed={installed} />;
 }
 
-function InstalledClipLoadedSettings({
-  id,
-  translations,
-  settings,
-  schema,
-  onUpdate,
-}: Pick<
-  ClipExtensionSettingsQueryData.ClipsInstallation.Version,
-  'translations'
-> &
-  Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'id' | 'settings'> & {
-    schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
-    onUpdate(data: UpdateClipsExtensionSettingsMutationData): void;
-  }) {
-  const updateClipsExtensionSettings = useMutation(
-    updateClipsExtensionSettingsMutation,
-    {onSuccess: onUpdate},
-  );
+function ClipRenderer<Point extends ExtensionPoint>({
+  local,
+  installed,
+  extension,
+}: {
+  extension: ClipsExtensionPoint<Point>;
+  local?: ClipsExtensionPointInstance<Point>;
+  installed?: ClipsExtensionPointInstance<Point>;
+}) {
+  const {name, app} = extension.extension;
 
-  const [values, dispatch] = useReducer(
-    (
-      state: Record<string, unknown>,
-      action: {type: 'set'; field: string; value?: string},
-    ) => {
-      switch (action.type) {
-        case 'set': {
-          return {
-            ...state,
-            [action.field]: action.value,
-          };
-        }
-      }
-
-      return state;
-    },
-    settings,
-    (settings) => {
-      const parsed = {...JSON.parse(settings ?? '{}')};
-
-      return schema.fields.reduce<Record<string, unknown>>(
-        (normalized, field) =>
-          'key' in field
-            ? {
-                ...normalized,
-                [field.key]: parsed[field.key],
-              }
-            : normalized,
-        {},
-      );
-    },
-  );
-
-  const translateLabel = useMemo(() => {
-    const parsedTranslations = JSON.parse(translations ?? '{}');
-
-    return (
-      field: ClipExtensionSettingsQueryData.ClipsInstallation.Version.Settings.Fields_ClipsExtensionSettingsStringField.Label,
-    ) => {
-      switch (field.__typename) {
-        case 'ClipsExtensionSettingsStringStatic': {
-          return field.value;
-        }
-        case 'ClipsExtensionSettingsStringTranslation': {
-          const translated = parsedTranslations[field.key];
-          if (translated == null) {
-            throw new Error(`No translation found for ${field.key}`);
-          }
-
-          return translated;
-        }
-      }
-
-      throw new Error(`Unknown type: ${field.__typename}`);
-    };
-  }, [translations]);
-
-  const handleSubmit = () => {
-    updateClipsExtensionSettings.mutate({
-      id,
-      settings: JSON.stringify(values),
-    });
-  };
-
-  const propsForField = (field: string) => {
-    return {
-      value: values[field] ? String(values[field]) : undefined,
-      onChange(value: string) {
-        dispatch({type: 'set', field, value});
-      },
-    };
-  };
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <BlockStack spacing>
-        {schema.fields.map((field) => {
-          switch (field.__typename) {
-            case 'ClipsExtensionSettingsStringField': {
-              return (
-                <TextField
-                  key={field.key}
-                  label={translateLabel(field.label)}
-                  {...propsForField(field.key)}
-                />
-              );
-            }
-            case 'ClipsExtensionSettingsNumberField': {
-              return (
-                <TextField
-                  key={field.key}
-                  label={translateLabel(field.label)}
-                  {...propsForField(field.key)}
-                />
-              );
-            }
-            case 'ClipsExtensionSettingsOptionsField': {
-              return (
-                <Select
-                  key={field.key}
-                  label={translateLabel(field.label)}
-                  options={field.options.map((option) => ({
-                    value: option.value,
-                    label: translateLabel(option.label),
-                  }))}
-                  {...propsForField(field.key)}
-                />
-              );
-            }
-          }
-
-          throw new Error();
-        })}
-        <Action onPress={handleSubmit}>Update</Action>
-      </BlockStack>
-    </Form>
-  );
-}
-
-interface LocalClipFrameProps<T extends ExtensionPoint>
-  extends Omit<
-    ClipFrameProps<T>,
-    'renderPopoverContent' | 'renderPopoverActions'
-  > {
-  build: LocalClipQueryData.App.ClipsExtension.Build;
-}
-
-function LocalClipFrame<T extends ExtensionPoint>({
-  children,
-  controller,
-  build,
-  ...rest
-}: PropsWithChildren<LocalClipFrameProps<T>>) {
-  const lastBuild = useRef(build);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [forcedHeight, setForcedHeight] = useState<number | undefined>();
-
-  useEffect(() => {
-    const last = lastBuild.current;
-    lastBuild.current = build;
-
-    if (last.__typename === build.__typename) {
-      return;
-    }
-
-    switch (build.__typename) {
-      case 'ExtensionBuildInProgress': {
-        setForcedHeight(containerRef.current?.getBoundingClientRect().height);
-        break;
-      }
-      case 'ExtensionBuildSuccess': {
-        controller.restart();
-        break;
-      }
-    }
-  }, [build, controller]);
-
-  useEffect(() => {
-    return controller.on('render', () => {
-      setForcedHeight(undefined);
-    });
-  }, [controller]);
-
-  return (
-    <ClipFrame<T>
-      controller={controller}
-      {...rest}
-      renderPopoverActions={() => (
-        <>
-          <Action icon="sync" onPress={() => controller.restart()}>
-            Restart
-          </Action>
-        </>
-      )}
-    >
-      <div
-        ref={containerRef}
-        style={forcedHeight ? {minHeight: `${forcedHeight}px`} : undefined}
-      >
-        {children}
-      </div>
-    </ClipFrame>
-  );
-}
-
-interface ClipFrameProps<T extends ExtensionPoint> {
-  name: string;
-  app?: InstalledClipExtensionFragmentData.Extension['app'];
-  script: string;
-  controller: RenderController<T>;
-  renderPopoverContent?(): ReactNode;
-  renderPopoverActions?(): ReactNode;
-}
-
-function ClipFrame<T extends ExtensionPoint>({
-  name,
-  app,
-  children,
-  renderPopoverContent,
-  renderPopoverActions,
-}: PropsWithChildren<ClipFrameProps<T>>) {
-  const additionalSectionContents = renderPopoverContent?.() ?? null;
-  const actionContents = renderPopoverActions?.() ?? null;
+  const instance = local ?? installed;
 
   return (
     <BlockStack spacing="small">
       <ContentAction
         popover={
           <Popover inlineAttachment="start">
-            {additionalSectionContents && (
-              <Section padding>{additionalSectionContents}</Section>
+            {installed && (
+              <Section padding>
+                <ClipSettings instance={installed} />
+              </Section>
             )}
-            {actionContents && <Menu>{actionContents}</Menu>}
+            <Menu>
+              <ViewAppAction />
+              {instance && <RestartClipAction instance={instance} />}
+              {extension.installed && (
+                <UninstallClipAction
+                  extension={extension}
+                  installed={extension.installed}
+                />
+              )}
+              {extension.installed && <ReportIssueAction />}
+            </Menu>
           </Popover>
         }
       >
@@ -525,27 +112,210 @@ function ClipFrame<T extends ExtensionPoint>({
             background="emphasized"
             border="subdued"
             cornerRadius
-            inlineAlignment="center"
-            className={styles.AppIcon}
+            alignment="center"
+            blockSize={raw`2.5rem`}
+            inlineSize={raw`2.5rem`}
           >
             <Icon source="app" />
           </View>
           <BlockStack>
             <Text emphasis>{name}</Text>
-            {app == null ? (
-              <Text emphasis="subdued" size="small">
-                from <Text emphasis>local app</Text>
-              </Text>
-            ) : (
-              <Text emphasis="subdued" size="small">
-                from app <Text emphasis>{app.name}</Text>
-              </Text>
-            )}
+            <Text emphasis="subdued" size="small">
+              from app <Text emphasis>{app.name}</Text>
+            </Text>
           </BlockStack>
         </Layout>
       </ContentAction>
 
-      <View>{children}</View>
+      <View>{instance && <ClipInstanceRenderer instance={instance} />}</View>
     </BlockStack>
   );
+}
+
+function ClipRendererWithLocalVersion<Point extends ExtensionPoint>({
+  options,
+  extension,
+  installed,
+}: {
+  extension: ClipsExtensionPointWithLocal<Point>;
+  options?: OptionsForExtensionPoint<Point>;
+  installed?: ClipsExtensionPointInstance<Point>;
+}) {
+  const local = useLocalClipInstance(extension, extension.local, options);
+
+  return (
+    <ClipRenderer extension={extension} installed={installed} local={local} />
+  );
+}
+
+function ViewAppAction() {
+  return (
+    <Action
+      icon="arrowEnd"
+      onPress={() => alert('App page not implemented yet!')}
+    >
+      View app
+    </Action>
+  );
+}
+
+function RestartClipAction({
+  instance,
+}: {
+  instance: ClipsExtensionPointInstance<any>;
+}) {
+  return (
+    <Action icon="sync" onPress={() => instance.restart()}>
+      Restart
+    </Action>
+  );
+}
+
+function UninstallClipAction({
+  extension,
+}: {
+  extension: ClipsExtensionPoint<any>;
+  installed: InstalledClipsExtensionPoint;
+}) {
+  const uninstallClipsExtensionFromClip = useMutation(
+    uninstallClipsExtensionFromClipMutation,
+  );
+
+  const {id} = extension.extension;
+
+  return (
+    <Action
+      icon="delete"
+      onPress={async () => {
+        await uninstallClipsExtensionFromClip.mutateAsync({id});
+      }}
+    >
+      Uninstall
+    </Action>
+  );
+}
+
+function ReportIssueAction() {
+  return (
+    <Action
+      icon="message"
+      onPress={() => alert('Reporting not implemented yet!')}
+    >
+      Report an issue
+    </Action>
+  );
+}
+
+function ClipInstanceRenderer<Point extends ExtensionPoint>({
+  instance,
+}: {
+  instance: ClipsExtensionPointInstance<Point>;
+}) {
+  const controller = useMemo(
+    () => createController(instance.components),
+    [instance],
+  );
+
+  useEffect(() => {
+    const abort = new AbortController();
+
+    instance.render({signal: abort.signal});
+
+    return () => {
+      abort.abort();
+    };
+  }, [instance]);
+
+  return (
+    <RemoteRenderer
+      controller={controller}
+      receiver={instance.receiver.value}
+    />
+  );
+}
+
+function useInstalledClipInstance<Point extends ExtensionPoint>(
+  extension: ClipsExtensionPoint<Point>,
+  installed?: InstalledClipsExtensionPoint,
+  options?: OptionsForExtensionPoint<Point>,
+) {
+  const manager = useClipsManager();
+
+  if (installed == null) return undefined;
+
+  return manager.fetchInstance(
+    {
+      target: extension.target,
+      version: installed.version,
+      source: 'installed',
+      extension: {id: extension.extension.id},
+      script: {url: installed.script},
+    },
+    // @ts-expect-error Can’t make the types work here :/
+    options,
+  );
+}
+
+const DEFAULT_BUILD_STATE = {
+  __typename: 'ExtensionBuildInProgress',
+  id: '0',
+  startedAt: new Date().toISOString(),
+} as const;
+
+function useLocalClipInstance<Point extends ExtensionPoint>(
+  extension: ClipsExtensionPoint<Point>,
+  _local: LocalClipsExtensionPoint,
+  options?: OptionsForExtensionPoint<Point>,
+) {
+  const manager = useClipsManager();
+  const result = useLocalDevelopmentServerQuerySignal(localClipQuery, {
+    variables: {id: extension.extension.id},
+  });
+  const script = useSignal<string | undefined>(undefined);
+  const instanceDetailsRef = useRef<{
+    lastBuild: LocalClipQueryData.App.ClipsExtension.Build;
+    instance?: ClipsExtensionPointInstance<Point>;
+    lastBuildSuccess?: LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess;
+  }>({lastBuild: DEFAULT_BUILD_STATE});
+
+  useSignalEffect(() => {
+    if (!result.value.data) return;
+
+    const buildState =
+      result.value.data.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
+
+    const isRestart =
+      buildState.__typename === 'ExtensionBuildSuccess' &&
+      instanceDetailsRef.current.lastBuildSuccess != null;
+
+    instanceDetailsRef.current.lastBuild = buildState;
+    if (buildState.__typename === 'ExtensionBuildSuccess') {
+      instanceDetailsRef.current.lastBuildSuccess = buildState;
+      script.value = buildState.assets[0]?.source;
+    }
+
+    if (isRestart) {
+      instanceDetailsRef.current.instance?.restart();
+    }
+  });
+
+  const scriptUrl = script.value;
+
+  if (scriptUrl == null) return undefined;
+
+  const instance = manager.fetchInstance(
+    {
+      target: extension.target,
+      version: 'unstable',
+      source: 'local',
+      extension: {id: extension.extension.id},
+      script: {url: scriptUrl},
+    },
+    // @ts-expect-error Can’t make the types work here :/
+    options,
+  );
+
+  instanceDetailsRef.current.instance = instance;
+
+  return instance;
 }

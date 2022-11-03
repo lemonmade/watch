@@ -1,3 +1,8 @@
+import {
+  isSignal,
+  resolveSignalOrValue,
+  type SignalOrValue,
+} from '@watching/react-signals';
 import {useUniqueId} from '../../utilities/id';
 
 interface Option {
@@ -6,7 +11,7 @@ interface Option {
 }
 
 interface Props {
-  value?: string;
+  value?: SignalOrValue<string>;
   label: string;
   options: Option[];
   onChange?(value: string): void;
@@ -14,14 +19,23 @@ interface Props {
 
 export function Select({value, label, options, onChange}: Props) {
   const id = useUniqueId('Select');
+  const resolvedValue = resolveSignalOrValue(value);
+
+  const handleChange =
+    onChange ??
+    (isSignal(value)
+      ? (newValue) => {
+          value.value = newValue;
+        }
+      : undefined);
 
   return (
     <div>
       <label htmlFor={id}>{label}</label>
       <select
         id={id}
-        value={value}
-        onChange={({currentTarget}) => onChange?.(currentTarget.value)}
+        value={resolvedValue}
+        onChange={({currentTarget}) => handleChange?.(currentTarget.value)}
       >
         {options.map(({value, label}) => (
           <option key={value} value={value}>

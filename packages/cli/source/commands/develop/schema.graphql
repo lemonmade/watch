@@ -71,6 +71,7 @@ type ClipsExtension {
 union Extension = ClipsExtension
 
 type App {
+  id: ID!
   name: String!
   handle: String!
   extensions: [Extension!]!
