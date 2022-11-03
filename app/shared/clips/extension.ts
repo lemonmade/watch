@@ -21,6 +21,16 @@ export interface ClipsExtensionPoint<Point extends ExtensionPoint> {
   readonly installed?: InstalledClipsExtensionPoint;
 }
 
+export interface ClipsExtensionPointWithLocal<Point extends ExtensionPoint>
+  extends Omit<ClipsExtensionPoint<Point>, 'local'> {
+  readonly local: LocalClipsExtensionPoint;
+}
+
+export interface ClipsExtensionPointWithInstalled<Point extends ExtensionPoint>
+  extends Omit<ClipsExtensionPoint<Point>, 'installed'> {
+  readonly installed: InstalledClipsExtensionPoint;
+}
+
 export interface InstalledClipsExtensionPoint {
   readonly version: Version;
   readonly script: string;

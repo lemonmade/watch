@@ -33,7 +33,12 @@ export interface Props {
   background?: boolean | BackgroundKeyword | RawValue;
   cornerRadius?: boolean | CornerRadiusKeyword | RawValue;
 
+  alignment?: BasicAlignmentKeyword | 'reset';
   inlineAlignment?: BasicAlignmentKeyword | 'reset';
+  blockAlignment?: BasicAlignmentKeyword | 'reset';
+
+  inlineSize?: RawValue;
+  blockSize?: RawValue;
 }
 
 const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
@@ -99,7 +104,11 @@ export function useViewProps({
   cornerRadius,
   visibility,
   accessibilityVisibility,
+  inlineSize,
+  blockSize,
+  alignment,
   inlineAlignment,
+  blockAlignment,
 }: Props = {}): DOMPropController {
   let className = classes(systemStyles.resetOrientation, styles.View!);
   let domStyles: DOMPropController['styles'];
@@ -172,6 +181,14 @@ export function useViewProps({
         )
       ],
     );
+  }
+
+  if (inlineSize) {
+    addStyles({width: raw.parse(inlineSize)});
+  }
+
+  if (blockSize) {
+    addStyles({height: raw.parse(blockSize)});
   }
 
   handlePadding(padding);
@@ -253,8 +270,16 @@ export function useViewProps({
     addClassName(systemClassName);
   }
 
+  if (alignment) {
+    addClassName(systemStyles[variation('alignment', alignment)]);
+  }
+
   if (inlineAlignment) {
     addClassName(systemStyles[variation('inlineAlignment', inlineAlignment)]);
+  }
+
+  if (blockAlignment) {
+    addClassName(systemStyles[variation('blockAlignment', blockAlignment)]);
   }
 
   // concentric border radius is handled with a class

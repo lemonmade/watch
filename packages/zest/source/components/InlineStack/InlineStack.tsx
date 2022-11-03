@@ -8,7 +8,8 @@ import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
 import styles from './InlineStack.module.css';
 
-interface Props extends Omit<ViewProps, 'display'> {
+interface Props
+  extends Omit<ViewProps, 'display' | 'alignment' | 'inlineAlignment'> {
   spacing?: boolean | SpacingKeyword;
   alignment?: AlignKeyword;
 }
