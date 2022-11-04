@@ -1,5 +1,86 @@
-import {createProject, quiltPackage} from '@quilted/craft';
+import {createProject, quiltPackage, createProjectPlugin} from '@quilted/craft';
+import {type MangleOptions} from 'terser';
 
-export default createProject((pkg) => {
-  pkg.use(quiltPackage());
+export default createProject((project) => {
+  project.use(
+    quiltPackage(),
+    // @see https://github.com/preactjs/signals/blob/main/mangle.json
+    terser({
+      nameCache: 'config/terser/name-cache.json',
+      mangle: {
+        reserved: ['useSignal', 'useComputed', 'useSignalEffect'],
+        keep_classnames: true,
+        properties: {
+          regex: '^_[^_]',
+          reserved: [
+            '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED',
+            '__REACT_DEVTOOLS_GLOBAL_HOOK__',
+            '__PREACT_DEVTOOLS__',
+            '_renderers',
+            '_',
+          ],
+        },
+      },
+    }),
+  );
 });
+
+function terser({
+  mangle = true,
+  nameCache: nameCacheFile,
+}: {nameCache?: string; mangle?: MangleOptions | boolean} = {}) {
+  return createProjectPlugin({
+    name: 'QuiltInternal.Terser',
+    build({run, project}) {
+      run((step) =>
+        step({
+          name: 'QuiltInternal.Terser',
+          label: `Running terser on ${project.name}`,
+          async run() {
+            const [{minify}, {default: limit}] = await Promise.all([
+              import('terser'),
+              import('p-limit'),
+            ]);
+
+            const files = await project.fs.glob(
+              project.fs.buildPath('{esnext,esm}/signals/**/*.{esnext,mjs}'),
+            );
+            const run = limit(10);
+
+            const nameCache = nameCacheFile
+              ? await (async () => {
+                  try {
+                    return JSON.parse(
+                      await project.fs.read(
+                        project.fs.resolvePath(nameCacheFile),
+                      ),
+                    );
+                  } catch {
+                    return {};
+                  }
+                })()
+              : {};
+
+            await Promise.all(
+              files.map((file) =>
+                run(async () => {
+                  const content = await project.fs.read(file);
+                  const result = await minify(content, {
+                    mangle,
+                    compress: false,
+                    ecma: 2017,
+                    toplevel: true,
+                    module: true,
+                    nameCache,
+                  });
+
+                  await project.fs.write(file, result.code!);
+                }),
+              ),
+            );
+          },
+        }),
+      );
+    },
+  });
+}

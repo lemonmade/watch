@@ -45,6 +45,10 @@
       "optional": true
     }
   },
+  "devDependencies": {
+    "p-limit": "^4.0.0",
+    "terser": "^5.15.1"
+  },
   "eslintConfig": {
     "extends": [
       "@quilted/eslint-config/react",
