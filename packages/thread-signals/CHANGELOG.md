@@ -1,5 +1,11 @@
 # @watching/thread-signals
 
+## 0.1.5
+
+### Patch Changes
+
+- [`5857ad8`](https://github.com/lemonmade/watch/commit/5857ad85812facb4d5c79a5ca4281e187d235d9c) Thanks [@lemonmade](https://github.com/lemonmade)! - Move to "live queries" for clips data
+
 ## 0.1.4
 
 ### Patch Changes

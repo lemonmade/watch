@@ -1,5 +1,20 @@
 # @watching/clips-react
 
+## 0.2.16
+
+### Patch Changes
+
+- [`ba64693`](https://github.com/lemonmade/watch/commit/ba6469340f248c530bdb3daa8c86854c9e091b25) Thanks [@lemonmade](https://github.com/lemonmade)! - Add TextField React component
+
+* [#190](https://github.com/lemonmade/watch/pull/190) [`61bb2f7`](https://github.com/lemonmade/watch/commit/61bb2f7b9c1484dd8315e3a5e87d026206235866) Thanks [@lemonmade](https://github.com/lemonmade)! - Add improved useSignalEffect()
+
+- [`5857ad8`](https://github.com/lemonmade/watch/commit/5857ad85812facb4d5c79a5ca4281e187d235d9c) Thanks [@lemonmade](https://github.com/lemonmade)! - Move to "live queries" for clips data
+
+- Updated dependencies [[`4ace073`](https://github.com/lemonmade/watch/commit/4ace073fbec0a77bc90ec11d0da4affb87ef1012), [`5857ad8`](https://github.com/lemonmade/watch/commit/5857ad85812facb4d5c79a5ca4281e187d235d9c)]:
+  - @watching/clips@0.2.15
+  - @watching/clips-dom@0.1.3
+  - @watching/thread-signals@0.1.5
+
 ## 0.2.15
 
 ### Patch Changes
