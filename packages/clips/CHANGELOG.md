@@ -1,5 +1,13 @@
 # @watching/clips
 
+## 0.2.15
+
+### Patch Changes
+
+- [`4ace073`](https://github.com/lemonmade/watch/commit/4ace073fbec0a77bc90ec11d0da4affb87ef1012) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove Season extension point
+
+* [`5857ad8`](https://github.com/lemonmade/watch/commit/5857ad85812facb4d5c79a5ca4281e187d235d9c) Thanks [@lemonmade](https://github.com/lemonmade)! - Move to "live queries" for clips data
+
 ## 0.2.14
 
 ### Patch Changes
