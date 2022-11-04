@@ -4,11 +4,18 @@ export type {
   ExtensionPoint,
   ExtensionPoints,
   ComponentsForExtensionPoint,
+  SharedGraphQLApi,
+  SeriesDetailsGraphQLApi,
   GraphQLApiForExtensionPoint,
   ClipsApi,
   ClipsGlobal,
   AnyComponent,
   RenderExtension,
+  RenderExtensionRoot,
+  RenderExtensionWithRemoteRoot,
+  Components,
+  CommonComponents,
+  WithThreadSignals,
 } from '@watching/clips';
 
 export {extension} from './extension';
