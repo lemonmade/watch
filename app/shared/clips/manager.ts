@@ -1,15 +1,19 @@
+import {type Api} from '@watching/clips';
 import {
   signal,
   createEmitter,
+  anyAbortSignal,
   type Signal,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
   type Emitter,
 } from '@quilted/quilt';
+import {createThreadSignal, type ThreadSignal} from '@watching/thread-signals';
 import {
   createThread,
   createThreadAbortSignal,
+  acceptThreadAbortSignal,
   targetFromBrowserWebSocket,
   type Thread,
   type ThreadAbortSignal,
@@ -35,6 +39,7 @@ import {EXTENSION_POINTS} from './extension-points';
 import {createSandbox, type Sandbox} from './sandboxes';
 import {createRemoteReceiver} from './receiver';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
+import {createLiveQueryRunner} from './live-query';
 
 export interface ClipsManager {
   readonly localDevelopment: ClipsLocalDevelopmentServer;
@@ -80,7 +85,12 @@ export function createClipsManager(): ClipsManager {
   function fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
-    const cacheKey = JSON.stringify(options);
+    const cacheKey = JSON.stringify({
+      version: options.version,
+      extension: options.extension.id,
+      script: options.script,
+      options: options.options,
+    });
 
     const cached = instances.get(cacheKey);
     if (cached) return cached;
@@ -97,6 +107,7 @@ export function createClipsManager(): ClipsManager {
       sandboxes.set(sandboxCacheKey, sandbox);
     }
 
+    const abort = new AbortController();
     const state: ClipsExtensionPointInstance<any>['state'] = signal('stopped');
     const receiver: ClipsExtensionPointInstance<any>['receiver'] = signal(
       createRemoteReceiver(),
@@ -105,16 +116,29 @@ export function createClipsManager(): ClipsManager {
       {},
     );
     const emitter = createEmitter<ClipsExtensionPointInstanceEventMap>();
+    let currentRender: {abort: AbortController} | undefined;
+
+    const extensionPoint = EXTENSION_POINTS[options.target];
+    const components: ClipsExtensionPointInstance<any>['components'] =
+      extensionPoint.components() as any;
+
+    const liveQuery = createLiveQueryRunner(
+      options.liveQuery,
+      (extensionPoint as any).query(options.options),
+      {signal: abort.signal},
+    );
 
     const context: ClipsExtensionPointInstanceContext<Point> = {
       settings: signal(JSON.parse(options.settings ?? '{}')),
+      liveQuery,
     };
-    const extensionPoint = EXTENSION_POINTS[options.target];
-    const api: ClipsExtensionPointInstance<any>['api'] = extensionPoint.api(
-      options.options as never,
-    );
-    const components: ClipsExtensionPointInstance<any>['components'] =
-      extensionPoint.components() as any;
+
+    const api: Api<Point> = {
+      target: options.target,
+      version: options.version,
+      settings: createInstanceThreadSignal(context.settings),
+      query: createInstanceThreadSignal(context.liveQuery.result),
+    };
 
     const instance: ClipsExtensionPointInstance<any> = {
       id: cacheKey,
@@ -126,8 +150,12 @@ export function createClipsManager(): ClipsManager {
       state,
       receiver,
       timings,
+      signal: abort.signal,
       on: emitter.on,
       render,
+      get rendered() {
+        return currentRender ? {signal: currentRender.abort.signal} : undefined;
+      },
       restart,
     };
 
@@ -135,14 +163,39 @@ export function createClipsManager(): ClipsManager {
 
     return instance;
 
+    function createInstanceThreadSignal<T>(signal: Signal<T>): ThreadSignal<T> {
+      const threadSignal = createThreadSignal(signal);
+
+      return {
+        get initial() {
+          return threadSignal.initial;
+        },
+        set: threadSignal.set,
+        start(subscriber, {signal: threadAbortSignal} = {}) {
+          const abortSignal =
+            threadAbortSignal && acceptThreadAbortSignal(threadAbortSignal);
+
+          const finalAbortSignal =
+            abortSignal && currentRender?.abort.signal
+              ? anyAbortSignal(abortSignal, currentRender.abort.signal)
+              : abortSignal ?? currentRender?.abort.signal;
+
+          return threadSignal.start(subscriber, {signal: finalAbortSignal});
+        },
+      };
+    }
+
     async function restart() {
-      await sandbox!.restart();
+      currentRender?.abort.abort();
+      currentRender = undefined;
       receiver.value = createRemoteReceiver();
+      await sandbox!.restart();
       await render();
     }
 
     async function render(_: {signal?: AbortSignal} = {}) {
-      await sandbox!.start();
+      currentRender = {abort: new AbortController()};
+      await Promise.all([sandbox!.start(), context.liveQuery.run()]);
       await sandbox!.run(async (sandbox) => {
         await sandbox.render(
           options.target,

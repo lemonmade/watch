@@ -1,10 +1,12 @@
 import {CommonComponents} from '../components';
-import {createExtensionPoint} from './shared';
+import {createExtensionPoint, createStandardGraphQLApi} from './shared';
 
 export const WatchThroughDetailsRenderAccessory = createExtensionPoint({
   name: 'WatchThrough.Details.RenderAccessory',
-  api() {
-    return {};
+  query() {
+    return (options) => {
+      return createStandardGraphQLApi(options);
+    };
   },
   components() {
     return CommonComponents;

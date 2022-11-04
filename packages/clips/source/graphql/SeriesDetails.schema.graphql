@@ -1,0 +1,14 @@
+#import "./Shared.schema.graphql"
+
+type Series {
+  id: ID!
+  name: String!
+}
+
+extend type Query {
+  series: Series!
+}
+
+schema {
+  query: Query
+}

@@ -4,6 +4,17 @@ query LocalClip($id: ID!) {
     clipsExtension(id: $id) {
       id
       name
+      extends {
+        target
+        module
+        liveQuery {
+          file
+          query
+        }
+        conditions {
+          __typename
+        }
+      }
       build {
         ... on ExtensionBuildSuccess {
           id

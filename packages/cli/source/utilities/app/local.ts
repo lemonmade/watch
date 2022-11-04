@@ -87,6 +87,7 @@ interface LocalExtensionPointSupportCondition {
 export interface LocalExtensionPointSupport {
   readonly target: ExtensionPoint;
   readonly module: string;
+  readonly query?: string;
   readonly conditions?: LocalExtensionPointSupportCondition[];
 }
 

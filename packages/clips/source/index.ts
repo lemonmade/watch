@@ -4,7 +4,7 @@ export type {
   RenderExtension,
   RenderExtensionRoot,
   RenderExtensionWithRemoteRoot,
-  ApiForExtensionPoint,
+  GraphQLApiForExtensionPoint,
   ComponentsForExtensionPoint,
 } from './extension-points';
 export * from './api';

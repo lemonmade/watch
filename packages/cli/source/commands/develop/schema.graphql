@@ -53,9 +53,15 @@ type ClipsExtensionPointPreview {
   url(connect: Boolean): Url!
 }
 
+type ClipsExtensionPointLiveQuery {
+  file: String!
+  query: String!
+}
+
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
   module: String!
+  liveQuery: ClipsExtensionPointLiveQuery
   preview: ClipsExtensionPointPreview!
   conditions: [ClipsExtensionPointSupportCondition!]!
 }

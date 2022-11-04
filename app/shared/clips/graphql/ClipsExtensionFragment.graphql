@@ -2,6 +2,7 @@ fragment ClipsExtension on ClipsExtensionInstallation {
   id
   target
   settings
+  liveQuery
   version {
     id
     apiVersion

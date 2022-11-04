@@ -1,5 +1,9 @@
+import * as path from 'path';
+import {readFile} from 'fs/promises';
 import {parse} from 'graphql';
+import {watch} from 'chokidar';
 
+import {createEmitter} from '@quilted/events';
 import {
   run,
   createQueryResolver as createQueryResolverForSchema,
@@ -69,6 +73,19 @@ export function createQueryResolver(
           object('ClipsExtensionPointSupport', {
             target: extensionPoint.target,
             module: extensionPoint.module,
+            async *liveQuery(_, __, {signal}) {
+              if (extensionPoint.query == null) return null;
+
+              for await (const {content} of watchFile(
+                path.resolve(extension.root, extensionPoint.query),
+                {signal},
+              )) {
+                yield object('ClipsExtensionPointLiveQuery', {
+                  file: extensionPoint.query,
+                  query: content,
+                });
+              }
+            },
             preview: object('ClipsExtensionPointPreview', {
               url: async ({connect}, {rootUrl}) => {
                 const url = await previewUrl(extension, {
@@ -138,4 +155,30 @@ export function createQueryResolver(
       });
     }
   });
+}
+
+async function* watchFile(file: string, {signal}: {signal: AbortSignal}) {
+  const watcher = watch(file, {ignoreInitial: true});
+
+  const emitter = createEmitter<{change: void}>();
+
+  const handler = () => {
+    emitter.emit('change');
+  };
+
+  watcher.on('change', handler);
+
+  signal.addEventListener(
+    'abort',
+    () => {
+      watcher.off('change', handler);
+    },
+    {once: true},
+  );
+
+  yield {file, content: await readFile(file, 'utf8')};
+
+  for await (const _ of emitter.on('change', {signal})) {
+    yield {file, content: await readFile(file, 'utf8')};
+  }
 }

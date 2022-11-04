@@ -10,7 +10,7 @@
   "dependencies": {
     "@lemon/css": "workspace:*",
     "@preact/signals-core": "^1.2.2",
-    "@quilted/events": "^0.1.10",
+    "@quilted/events": "^0.1.11",
     "@quilted/react-utilities": "^0.1.6",
     "@watching/react-signals": "workspace:*",
     "date-fns": "^2.29.3"

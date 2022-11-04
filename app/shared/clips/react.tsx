@@ -40,7 +40,8 @@ export function useClips<Point extends ExtensionPoint>(
     const installedClips: ClipsExtensionPoint<Point>[] = [];
 
     for (const installation of installations) {
-      const {id, target, extension, version, settings} = installation;
+      const {id, target, extension, version, settings, liveQuery} =
+        installation;
 
       if (target !== point) continue;
 
@@ -59,6 +60,7 @@ export function useClips<Point extends ExtensionPoint>(
           script: version.assets[0]!.source,
           version: version.apiVersion as any,
           settings: settings ?? undefined,
+          liveQuery: liveQuery ?? undefined,
         },
       });
     }

@@ -163,11 +163,22 @@ async function pushExtension(
 
   const {directory, filename} = buildDetailsForExtension(extension, app);
 
-  const [code, translations] = await Promise.all([
+  const [code, translations, extensionPointSupport] = await Promise.all([
     readFile(path.join(directory, filename), {
       encoding: 'utf8',
     }),
     loadTranslationsForExtension(extension),
+    Promise.all(
+      extension.extends.map(async (supported) => {
+        return {
+          target: supported.target,
+          conditions: supported.conditions,
+          liveQuery: supported.query
+            ? await readFile(path.join(extension.root, supported.query), 'utf8')
+            : undefined,
+        };
+      }),
+    ),
   ]);
 
   const buildOptions: Pick<
@@ -177,12 +188,7 @@ async function pushExtension(
     code,
     translations:
       translations && JSON.stringify(flattenTranslations(translations)),
-    extends: extension.extends.map((supported) => {
-      return {
-        target: supported.target,
-        conditions: supported.conditions,
-      };
-    }),
+    extends: extensionPointSupport,
     settings: {
       fields: extension.settings.fields.map(
         (

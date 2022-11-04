@@ -1,9 +1,14 @@
 import {type ExtensionPoint} from '@watching/clips';
 
-import {type ExtensionPointDefinition} from './shared';
+import {
+  type ExtensionPointDefinition,
+  type GraphQLQueryResolverByExtensionPoint,
+} from './shared';
 
 import {SeriesDetailsRenderAccessory} from './series';
 import {WatchThroughDetailsRenderAccessory} from './watchthrough';
+
+export {type GraphQLQueryResolverByExtensionPoint};
 
 export const EXTENSION_POINTS = extensionPoints({
   'Series.Details.RenderAccessory': SeriesDetailsRenderAccessory,

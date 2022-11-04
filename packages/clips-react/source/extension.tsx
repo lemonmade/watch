@@ -1,21 +1,17 @@
 import {type ReactNode} from 'react';
 import {render} from 'react-dom';
 
-import type {
-  ExtensionPoint,
-  ApiForExtensionPoint,
-  WithThreadSignals,
-} from '@watching/clips';
+import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 import {extension as domExtension} from '@watching/clips-dom';
 
 import {ApiContext} from './context';
 
-export function extension<Extends extends ExtensionPoint>(
+export function extension<Point extends ExtensionPoint>(
   renderUi: (
-    api: WithThreadSignals<ApiForExtensionPoint<Extends>>,
+    api: WithThreadSignals<Api<Point>>,
   ) => ReactNode | Promise<ReactNode>,
 ) {
-  return domExtension<Extends>(async (element, api) => {
+  return domExtension<Point>(async (element, api) => {
     const rendered = await renderUi(api as any);
 
     await new Promise<void>((resolve, reject) => {

@@ -1,15 +1,12 @@
 import {type RemoteReceiver} from '@remote-ui/core';
-import {
-  type Version,
-  type ExtensionPoint,
-  ApiForExtensionPoint,
-} from '@watching/clips';
+import {type Api, type Version, type ExtensionPoint} from '@watching/clips';
 import {type Emitter} from '@quilted/quilt';
 import {type Signal} from '@watching/thread-signals';
 
 import {type OptionsForExtensionPoint} from './extension-points';
 import {type ReactComponentsForExtensionPoint} from './components';
 import {type Sandbox} from './sandboxes';
+import {type LiveQueryRunner} from './live-query';
 
 export type {Version, ExtensionPoint};
 
@@ -35,6 +32,7 @@ export interface InstalledClipsExtensionPoint {
   readonly version: Version;
   readonly script: string;
   readonly settings?: string;
+  readonly liveQuery?: string;
 }
 
 export interface LocalClipsExtensionPoint {}
@@ -59,18 +57,21 @@ export interface ClipsExtensionPointInstance<Point extends ExtensionPoint> {
   readonly state: Signal<
     'stopped' | 'loading' | 'loaded' | 'rendering' | 'rendered'
   >;
-  readonly api: ApiForExtensionPoint<Point>;
+  readonly api: Api<Point>;
   readonly components: ReactComponentsForExtensionPoint<Point>;
   readonly sandbox: ClipsExtensionSandboxInstance;
+  readonly signal: AbortSignal;
+  readonly rendered?: {readonly signal: AbortSignal};
   readonly on: Emitter<ClipsExtensionPointInstanceEventMap>['on'];
   render(options?: {signal?: AbortSignal}): void;
   restart(): Promise<void>;
 }
 
 export interface ClipsExtensionPointInstanceContext<
-  _Point extends ExtensionPoint,
+  Point extends ExtensionPoint,
 > {
   readonly settings: Signal<Record<string, unknown>>;
+  readonly liveQuery: LiveQueryRunner<Point>;
 }
 
 export interface ClipsExtensionPointInstanceOptions<
@@ -80,7 +81,8 @@ export interface ClipsExtensionPointInstanceOptions<
   readonly target: Point;
   readonly version: Version;
   readonly settings?: string;
-  readonly extension: {readonly id: string};
+  readonly liveQuery?: string;
+  readonly extension: ClipsExtensionPoint<Point>;
   readonly script: {readonly url: string};
   readonly options: OptionsForExtensionPoint<Point>;
 }

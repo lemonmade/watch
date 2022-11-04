@@ -12,6 +12,7 @@ export function extension<
 >(
   run: ExtensionPoints[ExtensionPoint] extends RenderExtension<
     infer Api,
+    any,
     infer Components
   >
     ? RenderExtensionWithRemoteRoot<WithThreadSignals<Api>, Components>

@@ -1,19 +1,12 @@
 import {useContext} from 'react';
 
-import type {
-  AnyApi,
-  ExtensionPoint,
-  ApiForExtensionPoint,
-  WithThreadSignals,
-} from '@watching/clips';
+import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 
 import {ApiContext} from '../context';
 
 export function useApi<
-  T extends ExtensionPoint = ExtensionPoint,
->(): WithThreadSignals<
-  ExtensionPoint extends T ? AnyApi : ApiForExtensionPoint<T>
-> {
+  Point extends ExtensionPoint = ExtensionPoint,
+>(): WithThreadSignals<Api<Point>> {
   const api = useContext(ApiContext);
 
   if (api == null) {

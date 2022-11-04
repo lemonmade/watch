@@ -48,6 +48,32 @@ const config: Configuration = {
         },
       },
     },
+    clipsStandard: {
+      schema: 'packages/clips/source/graphql/Shared.schema.graphql',
+      extensions: {
+        quilt: {
+          schema: [
+            {
+              kind: 'definitions',
+              outputPath: 'packages/clips/source/graphql/Shared.ts',
+            },
+          ],
+        },
+      },
+    },
+    clipsSeries: {
+      schema: 'packages/clips/source/graphql/SeriesDetails.schema.graphql',
+      extensions: {
+        quilt: {
+          schema: [
+            {
+              kind: 'definitions',
+              outputPath: 'packages/clips/source/graphql/SeriesDetails.ts',
+            },
+          ],
+        },
+      },
+    },
     github: {
       schema: 'graphql/github/schema.graphql',
       documents: 'app/server/auth/github/**/*.graphql',

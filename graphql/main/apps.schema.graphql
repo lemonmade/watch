@@ -55,6 +55,7 @@ extend type User {
 scalar TranslationKey
 scalar ClipsExtensionPoint
 scalar ClipsExtensionApiVersion
+scalar ClipsLiveQuery
 
 type Icon {
   source: Url!
@@ -116,6 +117,7 @@ type ClipsExtensionPointSupportCondition {
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
   conditions: [ClipsExtensionPointSupportCondition!]!
+  liveQuery: ClipsLiveQuery
 }
 
 input ClipsExtensionPointSupportSeriesConditionInput {
@@ -129,6 +131,7 @@ input ClipsExtensionPointSupportConditionInput {
 
 input ClipsExtensionPointSupportInput {
   target: ClipsExtensionPoint!
+  liveQuery: ClipsLiveQuery
   conditions: [ClipsExtensionPointSupportConditionInput!]
 }
 
@@ -241,6 +244,7 @@ type ClipsExtensionInstallation {
   target: ClipsExtensionPoint!
   appInstallation: AppInstallation!
   settings: JSON
+  liveQuery: ClipsLiveQuery
 }
 
 union AppExtensionInstallation = ClipsExtensionInstallation

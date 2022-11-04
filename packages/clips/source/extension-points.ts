@@ -4,25 +4,39 @@ import type {
   RemoteComponentType,
 } from '@remote-ui/core';
 
+import type {Api, StandardGraphQLApi, SeriesDetailsGraphQLApi} from './api';
 import type {CommonComponents} from './components';
-import type {SeriesDetailsApi, WatchThroughDetailsApi} from './api';
 
-export interface RenderExtensionRoot<
-  AllowedComponents extends RemoteComponentType<string, any, any>,
-> {
-  readonly channel: RemoteChannel;
-  readonly components: AllowedComponents[];
+export interface ExtensionPoints {
+  'Series.Details.RenderAccessory': RenderExtension<
+    'Series.Details.RenderAccessory',
+    SeriesDetailsGraphQLApi
+  >;
+  'WatchThrough.Details.RenderAccessory': RenderExtension<'WatchThrough.Details.RenderAccessory'>;
 }
 
+export type ExtensionPoint = keyof ExtensionPoints;
+
+export type GraphQLApiForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPoints[Point] extends RenderExtension<any, infer GraphQLApi, any>
+    ? GraphQLApi
+    : never;
+
+export type ComponentsForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPoints[Point] extends RenderExtension<any, any, infer Components>
+    ? Components
+    : never;
+
 export interface RenderExtension<
-  Api,
+  Point extends ExtensionPoint,
+  _GraphQLApi = StandardGraphQLApi,
   Components extends {
     [key: string]: RemoteComponentType<string, any, any>;
   } = CommonComponents,
 > {
   (
     root: RenderExtensionRoot<Components[keyof Components]>,
-    api: Api,
+    api: Api<Point>,
   ): void | Promise<void>;
 }
 
@@ -38,17 +52,9 @@ export interface RenderExtensionWithRemoteRoot<
   ): void | Promise<void>;
 }
 
-export interface ExtensionPoints {
-  'Series.Details.RenderAccessory': RenderExtension<SeriesDetailsApi>;
-  'WatchThrough.Details.RenderAccessory': RenderExtension<WatchThroughDetailsApi>;
+export interface RenderExtensionRoot<
+  AllowedComponents extends RemoteComponentType<string, any, any>,
+> {
+  readonly channel: RemoteChannel;
+  readonly components: AllowedComponents[];
 }
-
-export type ExtensionPoint = keyof ExtensionPoints;
-
-export type ApiForExtensionPoint<Point extends ExtensionPoint> =
-  ExtensionPoints[Point] extends RenderExtension<infer Api, any> ? Api : never;
-
-export type ComponentsForExtensionPoint<Point extends ExtensionPoint> =
-  ExtensionPoints[Point] extends RenderExtension<any, infer Components>
-    ? Components
-    : never;

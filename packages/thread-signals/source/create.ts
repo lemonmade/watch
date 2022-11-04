@@ -8,7 +8,9 @@ export function createThreadSignal<T>(
   {writable = false} = {},
 ): ThreadSignal<T> {
   return {
-    initial: signal.value,
+    get initial() {
+      return signal.peek();
+    },
     set:
       writable && !isReadonlySignal(signal)
         ? (value) => {
@@ -28,7 +30,7 @@ export function createThreadSignal<T>(
         release(subscriber);
       });
 
-      return signal.value;
+      return signal.peek();
     },
   };
 }

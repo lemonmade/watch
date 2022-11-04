@@ -8,11 +8,11 @@ import {createThreadSignal} from '@watching/thread-signals';
 import {type RemoteChannel} from '@remote-ui/core';
 
 import type {
+  Api,
   ClipsApi,
   Version,
   ExtensionPoint,
   ExtensionPoints,
-  ApiForExtensionPoint,
 } from '@watching/clips';
 
 const registeredExtensions = new Map<
@@ -68,7 +68,7 @@ export async function render<T extends ExtensionPoint>(
   id: T,
   channel: RemoteChannel,
   components: string[],
-  api: ApiForExtensionPoint<T>,
+  api: Api<T>,
 ) {
   retain(channel);
   retain(api);

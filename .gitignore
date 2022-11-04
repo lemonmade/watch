@@ -9,5 +9,6 @@ app/graphql/types*
 **/*.graphql.ts
 packages/cli/source/commands/develop/schema.ts
 !packages/cli/source/commands/build/
+packages/clips/source/graphql/**/*.ts
 .env
 packages/*/bin

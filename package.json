@@ -15,10 +15,10 @@
     "@quilted/aws": "^0.3.40",
     "@quilted/browserslist-config": "^0.1.9",
     "@quilted/cloudflare": "^0.1.41",
-    "@quilted/craft": "^0.1.157",
+    "@quilted/craft": "^0.1.158",
     "@quilted/eslint-config": "^0.1.15",
     "@quilted/prettier": "^0.2.11",
-    "@quilted/quilt": "^0.5.114",
+    "@quilted/quilt": "^0.5.115",
     "@quilted/typescript": "^0.2.18",
     "@types/node": "^16.11.0",
     "dotenv": "^16.0.0",
@@ -44,7 +44,8 @@
       "app/server/graphql/schema.ts",
       "*.d.ts",
       "**/*.graphql.ts",
-      "packages/cli/source/commands/develop/schema.ts"
+      "packages/cli/source/commands/develop/schema.ts",
+      "packages/clips/source/graphql/**/*.ts"
     ],
     "rules": {
       "@typescript-eslint/ban-type": "off"

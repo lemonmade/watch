@@ -1,0 +1,5 @@
+scalar ApiVersion
+
+type Query {
+  version: ApiVersion!
+}

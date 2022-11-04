@@ -247,8 +247,9 @@ function useInstalledClipInstance<Point extends ExtensionPoint>(
     target: extension.target,
     version: installed.version,
     source: 'installed',
+    extension,
     settings: installed.settings,
-    extension: {id: extension.extension.id},
+    liveQuery: installed.liveQuery,
     script: {url: installed.script},
     // @ts-expect-error Can’t make the types work here :/
     options,
@@ -274,23 +275,46 @@ function useLocalClipInstance<Point extends ExtensionPoint>(
   const instanceDetailsRef = useRef<{
     lastBuild: LocalClipQueryData.App.ClipsExtension.Build;
     instance?: ClipsExtensionPointInstance<Point>;
+    initialLiveQuery?: LocalClipQueryData.App.ClipsExtension.Extends.LiveQuery;
+    lastLiveQuery?: LocalClipQueryData.App.ClipsExtension.Extends.LiveQuery;
     lastBuildSuccess?: LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess;
   }>({lastBuild: DEFAULT_BUILD_STATE});
 
   useSignalEffect(() => {
     if (!result.value.data) return;
 
-    const buildState =
-      result.value.data.app?.clipsExtension?.build ?? DEFAULT_BUILD_STATE;
+    const clipExtension = result.value.data.app?.clipsExtension;
+
+    const buildState = clipExtension?.build ?? DEFAULT_BUILD_STATE;
 
     const isRestart =
       buildState.__typename === 'ExtensionBuildSuccess' &&
-      instanceDetailsRef.current.lastBuildSuccess != null;
+      instanceDetailsRef.current.lastBuildSuccess != null &&
+      instanceDetailsRef.current.lastBuildSuccess.id !== buildState.id;
 
     instanceDetailsRef.current.lastBuild = buildState;
     if (buildState.__typename === 'ExtensionBuildSuccess') {
       instanceDetailsRef.current.lastBuildSuccess = buildState;
       script.value = buildState.assets[0]?.source;
+    }
+
+    const liveQuery =
+      clipExtension?.extends.find(
+        (extend) => extend.target === extension.target,
+      )?.liveQuery ?? undefined;
+
+    if (
+      liveQuery != null &&
+      instanceDetailsRef.current.initialLiveQuery == null
+    ) {
+      instanceDetailsRef.current.initialLiveQuery = liveQuery;
+    }
+
+    if (liveQuery?.query !== instanceDetailsRef.current.lastLiveQuery?.query) {
+      instanceDetailsRef.current.lastLiveQuery = liveQuery;
+      instanceDetailsRef.current.instance?.context.liveQuery.update(
+        liveQuery?.query,
+      );
     }
 
     if (isRestart) {
@@ -306,8 +330,9 @@ function useLocalClipInstance<Point extends ExtensionPoint>(
     target: extension.target,
     version: 'unstable',
     source: 'local',
-    extension: {id: extension.extension.id},
+    extension,
     script: {url: scriptUrl},
+    liveQuery: instanceDetailsRef.current.lastLiveQuery?.query,
     // @ts-expect-error Can’t make the types work here :/
     options,
   });

@@ -1,10 +1,9 @@
 import {acceptSignals, WithThreadSignals} from '@watching/clips';
 import type {
-  AnyApi,
+  Api,
   ExtensionPoints,
   RenderExtensionRoot,
   ExtensionPoint,
-  ApiForExtensionPoint,
 } from '@watching/clips';
 
 import {
@@ -26,12 +25,12 @@ if (typeof globalThis.window === 'undefined') {
 export function extension<Extends extends ExtensionPoint>(
   renderUi: (
     element: Element,
-    api: WithThreadSignals<ApiForExtensionPoint<Extends>>,
+    api: WithThreadSignals<Api<Extends>>,
   ) => void | Promise<void>,
 ) {
   async function domExtension(
     {channel}: RenderExtensionRoot<any>,
-    api: AnyApi,
+    api: Api<Extends>,
   ) {
     const element = createRootElement(channel, globalThis.window as any);
     await renderUi(element, acceptSignals(api) as any);

@@ -567,13 +567,22 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
         rejectOnNotFound: true,
       }),
     async version({extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findFirst({
+      const extension = await prisma.clipsExtension.findFirstOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
-        rejectOnNotFound: true,
       });
 
       return extension.activeVersion!;
+    },
+    async liveQuery({target, extensionId}, _, {prisma}) {
+      const extension = await prisma.clipsExtension.findFirstOrThrow({
+        where: {id: extensionId},
+        select: {activeVersion: true},
+      });
+
+      const extend = (extension.activeVersion?.extends ?? []) as any[];
+
+      return extend.find((extend) => extend.target === target)?.liveQuery;
     },
     settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   };
@@ -628,9 +637,10 @@ async function createStagedClipsVersion({
     translations: translations && JSON.parse(translations),
     extends:
       supports &&
-      (supports.map(({target, conditions}) => {
+      (supports.map(({target, liveQuery, conditions}) => {
         return {
           target,
+          liveQuery,
           conditions: conditions?.map((condition) => {
             if (condition?.series?.handle == null) {
               throw new Error(`Unknown condition: ${condition}`);
