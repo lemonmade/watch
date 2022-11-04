@@ -1,7 +1,7 @@
 import type {
   ExtensionPoint,
   ComponentsForExtensionPoint,
-  StandardGraphQLApi,
+  SharedGraphQLApi,
   GraphQLApiForExtensionPoint,
 } from '@watching/clips';
 import {
@@ -54,10 +54,10 @@ export function createExtensionPoint<
   return extensionPoint;
 }
 
-export function createStandardGraphQLApi(
-  _helpers: GraphQLLiveResolverCreateHelper<StandardGraphQLApi>,
+export function createSharedGraphQLApi(
+  _helpers: GraphQLLiveResolverCreateHelper<SharedGraphQLApi>,
 ): Omit<
-  GraphQLLiveResolverObject<StandardGraphQLApi['Query']>,
+  GraphQLLiveResolverObject<SharedGraphQLApi['Query']>,
   '__typename' | '__context'
 > {
   return {

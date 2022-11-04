@@ -48,7 +48,7 @@ const config: Configuration = {
         },
       },
     },
-    clipsStandard: {
+    clipsShared: {
       schema: 'packages/clips/source/graphql/Shared.schema.graphql',
       extensions: {
         quilt: {
@@ -61,7 +61,7 @@ const config: Configuration = {
         },
       },
     },
-    clipsSeries: {
+    clipsSeriesDetails: {
       schema: 'packages/clips/source/graphql/SeriesDetails.schema.graphql',
       extensions: {
         quilt: {

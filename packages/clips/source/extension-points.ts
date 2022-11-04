@@ -4,7 +4,7 @@ import type {
   RemoteComponentType,
 } from '@remote-ui/core';
 
-import type {Api, StandardGraphQLApi, SeriesDetailsGraphQLApi} from './api';
+import type {Api, SharedGraphQLApi, SeriesDetailsGraphQLApi} from './api';
 import type {CommonComponents} from './components';
 
 export interface ExtensionPoints {
@@ -29,7 +29,7 @@ export type ComponentsForExtensionPoint<Point extends ExtensionPoint> =
 
 export interface RenderExtension<
   Point extends ExtensionPoint,
-  _GraphQLApi = StandardGraphQLApi,
+  _GraphQLApi = SharedGraphQLApi,
   Components extends {
     [key: string]: RemoteComponentType<string, any, any>;
   } = CommonComponents,

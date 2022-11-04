@@ -1,5 +1,5 @@
 import {CommonComponents} from '../components';
-import {createExtensionPoint, createStandardGraphQLApi} from './shared';
+import {createExtensionPoint, createSharedGraphQLApi} from './shared';
 
 export interface SeriesDetailsRenderAccessoryOptions {
   readonly id: string;
@@ -11,7 +11,7 @@ export const SeriesDetailsRenderAccessory = createExtensionPoint({
   query({id, name}: SeriesDetailsRenderAccessoryOptions) {
     return ({object}) => {
       return {
-        ...createStandardGraphQLApi({object}),
+        ...createSharedGraphQLApi({object}),
         series: object('Series', {
           id,
           async *name(_, __, {signal}) {
