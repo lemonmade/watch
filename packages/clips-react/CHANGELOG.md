@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.17
+
+### Patch Changes
+
+- [`a24a9b3`](https://github.com/lemonmade/watch/commit/a24a9b3cd60c76319dcfce9f5a9a04f682b1facf) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix signals minification
+
 ## 0.2.16
 
 ### Patch Changes
