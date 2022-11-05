@@ -1,5 +1,17 @@
 # @watching/clips-react
 
+## 0.2.18
+
+### Patch Changes
+
+- [`51cb254`](https://github.com/lemonmade/watch/commit/51cb2545703caa9a9fd38ba453b0aee2756f7e6e) Thanks [@lemonmade](https://github.com/lemonmade)! - Re-export necessary clips types
+
+* [`b3f4937`](https://github.com/lemonmade/watch/commit/b3f4937024b99bd9e6933172389e6048b4b293c4) Thanks [@lemonmade](https://github.com/lemonmade)! - Add improved TextField props and support for fragment props
+
+* Updated dependencies [[`b3f4937`](https://github.com/lemonmade/watch/commit/b3f4937024b99bd9e6933172389e6048b4b293c4)]:
+  - @watching/clips@0.2.16
+  - @watching/clips-dom@0.1.4
+
 ## 0.2.17
 
 ### Patch Changes

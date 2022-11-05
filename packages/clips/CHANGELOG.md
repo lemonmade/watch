@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.16
+
+### Patch Changes
+
+- [`b3f4937`](https://github.com/lemonmade/watch/commit/b3f4937024b99bd9e6933172389e6048b4b293c4) Thanks [@lemonmade](https://github.com/lemonmade)! - Add improved TextField props and support for fragment props
+
 ## 0.2.15
 
 ### Patch Changes
