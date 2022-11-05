@@ -3,7 +3,9 @@ import {
   type RemoteRoot,
   type RemoteChannel,
   type RemoteComponent,
+  type RemoteFragment,
   type RemoteText,
+  KIND_FRAGMENT,
 } from '@remote-ui/core';
 
 import type {AbstractChannel, NodeId} from './protocol';
@@ -15,7 +17,7 @@ export type {Document} from './dom/Document';
 export type {Window} from './dom/Window';
 export type {Element} from './dom/Element';
 
-const rootsById = new Map();
+const rootsById = new Map<number, RemoteRoot<any, any>>();
 
 export function createWindow() {
   const channel = new RemoteUiChannel();
@@ -31,15 +33,32 @@ export function createWindow() {
 
 export function createRootElement(channel: RemoteChannel, {document}: Window) {
   const remoteRoot = createRemoteRoot(channel);
-  const root = document.createElement('root');
+  const root = document.createElement('#root');
   (root as any)[GENERATE_ID]();
   rootsById.set((root as any)[ID], remoteRoot);
   document.appendChild(root);
   return root;
 }
 
-export function getRemoteRootForElement(element: Element) {
-  return rootsById.get(element[ID]);
+export function createFragmentElement(remoteRoot: RemoteRoot<any, any>) {
+  const fragment = document.createElement('#fragment');
+  (fragment as any)[GENERATE_ID]();
+  rootsById.set((fragment as any)[ID], remoteRoot);
+  return fragment;
+}
+
+export function getRemoteNodeForElement(
+  element: HTMLElement,
+):
+  | RemoteComponent<any, any>
+  | RemoteText<any>
+  | RemoteFragment<any>
+  | undefined {
+  return (document as any)[CHANNEL].nodes.get((element as any as Element)[ID]);
+}
+
+export function getRemoteRootForElement(element: HTMLElement) {
+  return rootsById.get((element as any as Element)[ID]!);
 }
 
 type NS = string | null;
@@ -55,9 +74,11 @@ interface ListenerEntry {
 class RemoteUiChannel implements AbstractChannel {
   ready = Promise.resolve();
 
-  private nodes = new Map<
+  readonly nodes = new Map<
     NodeId,
-    RemoteComponent<any, RemoteRoot> | RemoteText<RemoteRoot>
+    | RemoteComponent<any, RemoteRoot>
+    | RemoteText<RemoteRoot>
+    | RemoteFragment<RemoteRoot>
   >();
 
   private listeners = new Map<NodeId, Map<string, ListenerEntry>>();
@@ -72,8 +93,12 @@ class RemoteUiChannel implements AbstractChannel {
     if (!remoteRoot) {
       throw Error('Cannot create RemoteComponent, no ancestor RemoteRoot.');
     }
-    const component = remoteRoot.createComponent(localName);
-    this.nodes.set(node, component);
+    const remoteNode =
+      localName === '#fragment'
+        ? remoteRoot.createFragment()
+        : remoteRoot.createComponent(localName);
+
+    this.nodes.set(node, remoteNode);
   }
 
   setAttribute(node: NodeId, name: string, value: string, _ns?: NS) {
@@ -88,7 +113,7 @@ class RemoteUiChannel implements AbstractChannel {
   createText(node: NodeId, data: string, parent: NodeId) {
     const root = this.roots.get(parent)!;
     this.roots.set(node, root);
-    const remoteRoot = rootsById.get(root);
+    const remoteRoot = rootsById.get(root)!;
     const text = remoteRoot.createText(data);
     this.nodes.set(node, text);
   }
@@ -98,7 +123,11 @@ class RemoteUiChannel implements AbstractChannel {
   }
 
   insert(parent: NodeId, node: NodeId, before: NodeId) {
-    let element = this._element(parent);
+    let element:
+      | RemoteComponent<any, any>
+      | RemoteRoot<any, any>
+      | RemoteFragment<any>
+      | undefined = this._element(parent);
 
     // Don't attempt to append roots, just mark them as the root:
     let root = rootsById.get(node);
@@ -110,7 +139,7 @@ class RemoteUiChannel implements AbstractChannel {
     // if (parent === 0) return;
 
     // Inherit root from parent:
-    const parentRoot = this.roots.get(parent);
+    const parentRoot = this.roots.get(parent)!;
     root = rootsById.get(parentRoot);
     if (root !== undefined) {
       this.roots.set(node, parentRoot!);
@@ -124,10 +153,13 @@ class RemoteUiChannel implements AbstractChannel {
     if (element == null) return;
 
     const child = this.nodes.get(node)!;
+    if (child.kind === KIND_FRAGMENT) return;
+
     if (before == null) {
       element.appendChild(child);
     } else {
       const sibling = this.nodes.get(before)!;
+      if (sibling.kind === KIND_FRAGMENT) return;
       element.insertChildBefore(child, sibling);
     }
   }

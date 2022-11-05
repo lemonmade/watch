@@ -2,9 +2,12 @@ import {type ReactNode} from 'react';
 import {render} from 'react-dom';
 
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
-import {extension as domExtension} from '@watching/clips-dom';
+import {
+  extension as domExtension,
+  getRemoteRootForElement,
+} from '@watching/clips-dom';
 
-import {ApiContext} from './context';
+import {type RenderContext, ReactRenderContext} from './context';
 
 export function extension<Point extends ExtensionPoint>(
   renderUi: (
@@ -12,15 +15,21 @@ export function extension<Point extends ExtensionPoint>(
   ) => ReactNode | Promise<ReactNode>,
 ) {
   return domExtension<Point>(async (element, api) => {
-    const rendered = await renderUi(api as any);
+    const rendered = await renderUi(api);
+
+    const context: RenderContext<Point> = {
+      api,
+      element: element as any as HTMLElement,
+      root: getRemoteRootForElement(element as any)!,
+    };
 
     await new Promise<void>((resolve, reject) => {
       try {
         render(
-          <ApiContext.Provider value={api as any}>
+          <ReactRenderContext.Provider value={context}>
             {rendered}
-          </ApiContext.Provider>,
-          element as any as HTMLElement,
+          </ReactRenderContext.Provider>,
+          context.element,
           () => {
             resolve();
           },

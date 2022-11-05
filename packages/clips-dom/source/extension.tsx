@@ -34,7 +34,7 @@ export function extension<Extends extends ExtensionPoint>(
   ) {
     const element = createRootElement(channel, globalThis.window as any);
     await renderUi(element, acceptSignals(api) as any);
-    getRemoteRootForElement(element)!.mount();
+    getRemoteRootForElement(element as any)!.mount();
   }
 
   return domExtension as ExtensionPoints[Extends];

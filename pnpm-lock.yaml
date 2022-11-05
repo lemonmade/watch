@@ -276,6 +276,7 @@ importers:
   packages/clips-react:
     specifiers:
       '@preact/signals-core': ^1.2.2
+      '@quilted/react-utilities': ^0.1.6
       '@remote-ui/core': ^2.1.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
@@ -287,6 +288,7 @@ importers:
       terser: ^5.15.1
     dependencies:
       '@preact/signals-core': 1.2.2
+      '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
       '@remote-ui/core': 2.1.12
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.17
