@@ -1,5 +1,11 @@
 # @watching/remote-react
 
+## 17.0.4
+
+### Patch Changes
+
+- [`9b1394c`](https://github.com/lemonmade/watch/commit/9b1394cfeff9e32afad1988d6cde0f87902dc50f) Thanks [@lemonmade](https://github.com/lemonmade)! - More clips components
+
 ## 17.0.3
 
 ### Patch Changes
