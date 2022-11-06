@@ -281,7 +281,7 @@ importers:
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@watching/clips': workspace:^0.2.16
-      '@watching/clips-dom': workspace:^0.1.4
+      '@watching/clips-dom': workspace:^0.1.5
       '@watching/thread-signals': workspace:^0.1.5
       p-limit: ^4.0.0
       preact: ^10.11.2
