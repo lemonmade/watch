@@ -64,7 +64,7 @@
   "sideEffects": false,
   "dependencies": {
     "@quilted/react-testing": "^0.5.19",
-    "@remote-ui/core": "^2.1.0",
+    "@remote-ui/core": "^2.1.16",
     "@types/react": ">=17.0.0 <18.0.0"
   },
   "peerDependencies": {

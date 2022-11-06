@@ -253,7 +253,7 @@ function NextEpisode({
                 <Action
                   icon="more"
                   accessibilityLabel="More actions"
-                  popover={
+                  overlay={
                     <Popover inlineAttachment="end">
                       <Menu>
                         <SkipEpisodeAction
@@ -441,7 +441,7 @@ interface SkipEpisodeWithNotesActionProps
 
 function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
   return (
-    <Action icon="skip" modal={<SkipEpisodeModal {...props} />}>
+    <Action icon="skip" overlay={<SkipEpisodeModal {...props} />}>
       Skip with note…
     </Action>
   );
@@ -552,7 +552,7 @@ function DeleteWatchThroughAction(props: DeleteWatchThroughActionProps) {
     <Action
       role="destructive"
       icon="delete"
-      modal={<DeleteWatchThroughModal {...props} />}
+      overlay={<DeleteWatchThroughModal {...props} />}
     >
       Delete…
     </Action>
@@ -673,7 +673,7 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
       }
       iconAlignment="start"
       detail={<Icon source="disclosureInlineEnd" />}
-      modal={<PreviousActionWatchEditModal action={action} />}
+      overlay={<PreviousActionWatchEditModal action={action} />}
     >
       <BlockStack spacing="tiny">
         <Text emphasis>{media.title}</Text>
@@ -711,7 +711,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       }
       iconAlignment="start"
       detail={<Icon source="disclosureInlineEnd" />}
-      modal={<PreviousActionSkipEditModal action={action} />}
+      overlay={<PreviousActionSkipEditModal action={action} />}
     >
       <BlockStack spacing="small">
         <Text emphasis>{media.title}</Text>

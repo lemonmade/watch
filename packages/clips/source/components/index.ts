@@ -12,7 +12,13 @@ export type Components = {
 
 export type CommonComponents = Pick<
   Components,
-  'Action' | 'BlockStack' | 'InlineStack' | 'Text' | 'TextField' | 'View'
+  | 'Action'
+  | 'BlockStack'
+  | 'InlineStack'
+  | 'Popover'
+  | 'Text'
+  | 'TextField'
+  | 'View'
 >;
 
 export type AnyComponent = Components[keyof Components];

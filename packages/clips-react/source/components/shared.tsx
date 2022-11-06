@@ -34,7 +34,7 @@ export type ReactComponentTypeFromRemoteComponentType<
 };
 
 export type FragmentProps<Props> = {
-  [Prop in keyof Props]-?: Required<Props[Prop]> extends
+  [Prop in keyof Props]-?: NonNullable<Props[Prop]> extends
     | string
     | RemoteFragment<any>
     ? Prop

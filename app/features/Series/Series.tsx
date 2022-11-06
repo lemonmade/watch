@@ -105,7 +105,7 @@ function SeriesWithData({
             <BlockStack spacing>
               <BlockStack spacing="small" inlineAlignment="start">
                 <HeadingAction
-                  popover={
+                  overlay={
                     <Popover inlineAttachment="start">
                       <Menu label="See series in…">
                         <Action
@@ -335,7 +335,7 @@ function DeleteSeriesAction(props: ComponentProps<typeof DeleteSeriesModal>) {
     <Action
       icon="delete"
       role="destructive"
-      modal={<DeleteSeriesModal {...props} />}
+      overlay={<DeleteSeriesModal {...props} />}
     >
       Delete…
     </Action>
@@ -416,7 +416,7 @@ function SeasonsSection({
                 <InlineStack spacing="small">
                   <TextAction
                     emphasis
-                    popover={
+                    overlay={
                       <SeasonActionPopover
                         season={season}
                         onUpdate={onUpdate}
@@ -519,7 +519,7 @@ function SeasonWatchThroughAction({
       <Action
         icon="more"
         accessibilityLabel="More actions…"
-        popover={
+        overlay={
           <Popover>
             <Menu>
               <Action

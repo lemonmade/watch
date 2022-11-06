@@ -85,7 +85,7 @@ function ClipRenderer<Point extends ExtensionPoint>({
   return (
     <BlockStack spacing="small">
       <ContentAction
-        popover={
+        overlay={
           <Popover inlineAttachment="start">
             {installed && (
               <Section padding>

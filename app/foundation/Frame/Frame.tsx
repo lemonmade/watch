@@ -23,7 +23,7 @@ export function Frame({children}: PropsWithChildren<Props>) {
       </View>
 
       <View className={styles.GoMenu}>
-        <Action emphasis detail={<Icon source="go" />} modal={<GoModal />}>
+        <Action emphasis detail={<Icon source="go" />} overlay={<GoModal />}>
           Go
         </Action>
       </View>

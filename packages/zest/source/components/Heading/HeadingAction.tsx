@@ -15,7 +15,7 @@ export interface HeadingActionProps
   extends Pick<HeadingProps, 'level' | 'accessibilityRole'>,
     Pick<
       PressableProps,
-      'to' | 'onPress' | 'perform' | 'postPerform' | 'modal' | 'popover'
+      'to' | 'onPress' | 'perform' | 'postPerform' | 'overlay'
     > {}
 
 export function HeadingAction({

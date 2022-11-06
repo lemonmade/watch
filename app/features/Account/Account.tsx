@@ -160,7 +160,7 @@ function WebAuthnCredential(props: WebAuthnCredentialProps) {
   return (
     <Layout spacing columns={['fill', 'auto']}>
       <Text>{id}</Text>
-      <Action popover={<WebAuthnCredentialManageMenu {...props} />}>
+      <Action overlay={<WebAuthnCredentialManageMenu {...props} />}>
         Manage
       </Action>
     </Layout>

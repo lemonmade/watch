@@ -25,7 +25,7 @@ export function Page({
   detail,
 }: PropsWithChildren<Props>) {
   const headingContent = menu ? (
-    <HeadingAction popover={<Popover inlineAttachment="start">{menu}</Popover>}>
+    <HeadingAction overlay={<Popover inlineAttachment="start">{menu}</Popover>}>
       {heading}
     </HeadingAction>
   ) : (

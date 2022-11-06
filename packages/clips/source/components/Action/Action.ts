@@ -1,4 +1,4 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteComponent, type RemoteFragment} from '@remote-ui/core';
 import {type SignalOrValue} from '../shared';
 
 export interface ActionProps {
@@ -16,6 +16,12 @@ export interface ActionProps {
    * A callback that is run when the action is pressed.
    */
   onPress?(): void | Promise<void>;
+
+  /**
+   * An overlay component to render when this button is pressed. Typically,
+   * you will render either a `Popover` or a `Modal` here.
+   */
+  overlay?: RemoteFragment<any>;
 }
 
 /**

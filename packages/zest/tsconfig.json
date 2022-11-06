@@ -6,5 +6,9 @@
   },
   "include": ["source"],
   "exclude": ["quilt.project.ts"],
-  "references": [{"path": "../css"}, {"path": "../react-signals"}]
+  "references": [
+    {"path": "../clips"},
+    {"path": "../css"},
+    {"path": "../react-signals"}
+  ]
 }

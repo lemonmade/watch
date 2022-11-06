@@ -68,9 +68,9 @@ importers:
       '@lemonmade/graphql-live': ^0.1.10
       '@prisma/client': ^4.4.0
       '@quilted/react-query': ^0.1.11
-      '@remote-ui/async-subscription': ^2.1.10
-      '@remote-ui/core': ^2.1.12
-      '@remote-ui/react': ^4.5.4
+      '@remote-ui/async-subscription': ^2.1.13
+      '@remote-ui/core': ^2.1.16
+      '@remote-ui/react': ^4.5.12
       '@simplewebauthn/browser': ^6.2.0
       '@simplewebauthn/server': ^6.2.0
       '@types/common-tags': ^1.8.0
@@ -100,9 +100,9 @@ importers:
       '@lemon/zest': link:../packages/zest
       '@lemonmade/graphql-live': 0.1.10_@babel+runtime@7.18.9
       '@quilted/react-query': 0.1.11_14612a2a96c3e726f00dd421e0da541f
-      '@remote-ui/async-subscription': 2.1.10
-      '@remote-ui/core': 2.1.12
-      '@remote-ui/react': 4.5.4_@quilted+react@17.0.5
+      '@remote-ui/async-subscription': 2.1.13
+      '@remote-ui/core': 2.1.16
+      '@remote-ui/react': 4.5.12_@quilted+react@17.0.5
       '@simplewebauthn/browser': 6.2.1
       '@simplewebauthn/server': 6.2.1
       '@types/common-tags': 1.8.1
@@ -254,21 +254,21 @@ importers:
     specifiers:
       '@quilted/react-signals': ^0.1.1
       '@quilted/react-utilities': ^0.1.6
-      '@remote-ui/core': ^2.1.12
+      '@remote-ui/core': ^2.1.16
       '@watching/thread-signals': ^0.1.0
     dependencies:
       '@quilted/react-signals': 0.1.1_619eb7192a1e119c6a7483243ef75838
       '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
-      '@remote-ui/core': 2.1.12
+      '@remote-ui/core': 2.1.16
       '@watching/thread-signals': link:../thread-signals
 
   packages/clips-dom:
     specifiers:
       '@quilted/testing': ^0.1.4
-      '@remote-ui/core': ^2.1.0
+      '@remote-ui/core': ^2.1.16
       '@watching/clips': workspace:^0.2.16
     dependencies:
-      '@remote-ui/core': 2.1.12
+      '@remote-ui/core': 2.1.16
       '@watching/clips': link:../clips
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
@@ -277,7 +277,7 @@ importers:
     specifiers:
       '@preact/signals-core': ^1.2.2
       '@quilted/react-utilities': ^0.1.6
-      '@remote-ui/core': ^2.1.0
+      '@remote-ui/core': ^2.1.16
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@watching/clips': workspace:^0.2.16
@@ -289,7 +289,7 @@ importers:
     dependencies:
       '@preact/signals-core': 1.2.2
       '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
-      '@remote-ui/core': 2.1.12
+      '@remote-ui/core': 2.1.16
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.17
       '@watching/clips': link:../clips
@@ -326,11 +326,11 @@ importers:
     specifiers:
       '@quilted/react-testing': ^0.5.19
       '@quilted/testing': ^0.1.4
-      '@remote-ui/core': ^2.1.0
+      '@remote-ui/core': ^2.1.16
       '@types/react': '>=17.0.0 <18.0.0'
     dependencies:
       '@quilted/react-testing': 0.5.19_53feed688add46baafec66a0a1027ddc
-      '@remote-ui/core': 2.1.12
+      '@remote-ui/core': 2.1.16
       '@types/react': 17.0.47
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
@@ -339,12 +339,12 @@ importers:
     specifiers:
       '@quilted/react-utilities': ^0.1.6
       '@quilted/testing': ^0.1.4
-      '@remote-ui/core': ^2.1.0
+      '@remote-ui/core': ^2.1.16
       '@watching/remote-react': ^17.0.3
       react: npm:@quilted/react@^17.0.0
     dependencies:
       '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
-      '@remote-ui/core': 2.1.12
+      '@remote-ui/core': 2.1.16
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
       '@watching/remote-react': link:../remote-react
@@ -367,14 +367,20 @@ importers:
       '@preact/signals-core': ^1.2.2
       '@quilted/events': ^0.1.11
       '@quilted/react-utilities': ^0.1.6
+      '@remote-ui/core': ^2.1.16
+      '@watching/clips': workspace:*
       '@watching/react-signals': workspace:*
+      '@watching/thread-signals': workspace:*
       date-fns: ^2.29.3
     dependencies:
       '@lemon/css': link:../css
       '@preact/signals-core': 1.2.2
       '@quilted/events': 0.1.11_@babel+runtime@7.18.9
       '@quilted/react-utilities': 0.1.6_619eb7192a1e119c6a7483243ef75838
+      '@remote-ui/core': 2.1.16
+      '@watching/clips': link:../clips
       '@watching/react-signals': link:../react-signals
+      '@watching/thread-signals': link:../thread-signals
       date-fns: 2.29.3
 
   scripts/docker:
@@ -4987,24 +4993,24 @@ packages:
     dependencies:
       web-streams-polyfill: 3.2.1
 
-  /@remote-ui/async-subscription/2.1.10:
-    resolution: {integrity: sha512-nVWh4QjnKPDDFpis7w6Qu3X47Uff380oWs5qoSis/B2pIXDauqxhg1vneNxkxXlJnHoPKq4tTRJvPG0bmU2IVA==}
+  /@remote-ui/async-subscription/2.1.13:
+    resolution: {integrity: sha512-Mc7iZ4nCIizdG/UWTW31HdtdmGpmjTah6Im+NJgwmmXZ8cnfFjxHFgpKc+kIhJTVKdmuN4KFHmNIXVSmeMTZdA==}
     dependencies:
-      '@remote-ui/rpc': 1.3.1
+      '@remote-ui/rpc': 1.3.4
     dev: true
 
-  /@remote-ui/core/2.1.12:
-    resolution: {integrity: sha512-smjkHOt3lbtod/hU2JPIUqDOFopRt+xkL64eHQ0XrdGn4W1AwWVHfZkyY/02kWiekpdg96VtKh1OW053zdppiA==}
+  /@remote-ui/core/2.1.16:
+    resolution: {integrity: sha512-PcaljPmv0Ra8PeRT+M/vKPTYSkU1KssjwB2gjcE+TK2zM2SBbJwB5K18MjJhNlb9n6LTFE99fDqYxc5DbCyMIg==}
     dependencies:
-      '@remote-ui/rpc': 1.3.1
+      '@remote-ui/rpc': 1.3.4
       '@remote-ui/types': 1.1.2
 
-  /@remote-ui/react/4.5.4_@quilted+react@17.0.5:
-    resolution: {integrity: sha512-cBa5OzXwGH40czjh7gmPPVNKarbo9KCbFmxn9XVmeIIbMJtxYWtuCRXXdRcauoWeRfx5qOThf0zLdX4JyuT+PA==}
+  /@remote-ui/react/4.5.12_@quilted+react@17.0.5:
+    resolution: {integrity: sha512-EMdnjmrvofBkDjHiFppHFnrpjLnD3xAVXArxq03IQGAQzTcF86Y633lous5ZFkqQaqSzHiwnGUPJtgJHYWW0iw==}
     dependencies:
-      '@remote-ui/async-subscription': 2.1.10
-      '@remote-ui/core': 2.1.12
-      '@remote-ui/rpc': 1.3.1
+      '@remote-ui/async-subscription': 2.1.13
+      '@remote-ui/core': 2.1.16
+      '@remote-ui/rpc': 1.3.4
       '@types/react': 17.0.45
       '@types/react-reconciler': 0.26.7
       react-reconciler: 0.26.2_@quilted+react@17.0.5
@@ -5012,8 +5018,8 @@ packages:
       - react
     dev: true
 
-  /@remote-ui/rpc/1.3.1:
-    resolution: {integrity: sha512-mdz1jQf5UPBOpSJaFF4XhCotBwVTVeUV01Pf6wZmIoEbHn/2m6g2b44qT3qHLOsEWTKF8LVpNtEQqS9yKCLxZQ==}
+  /@remote-ui/rpc/1.3.4:
+    resolution: {integrity: sha512-KwZ2egbGQqO+DjgwoZlQ4QedMZHeFuGY/2FiGUrqvyhp4bGheSLr5bm3jF23+2tQVywUHB2gDPqzUgR/47Lb2g==}
 
   /@remote-ui/types/1.1.2:
     resolution: {integrity: sha512-F2u6McqvHj2c89FHeozQ0O8qbqhOFMMNYR2HqF33mHCMNTEXzUVheCj7laNO1/dGNXwcJHpoWIBNwfChbEfVyA==}

@@ -64,7 +64,7 @@ export function DatePicker({id, label, value, onChange}: Props) {
   return (
     <Action
       id={id}
-      popover={
+      overlay={
         handleChange ? <DatePickerPopover onChange={handleChange} /> : null
       }
       accessory={

@@ -10,7 +10,7 @@ import styles from './ContentAction.module.css';
 export interface ContentActionProps
   extends Pick<
     PressableProps,
-    'to' | 'onPress' | 'perform' | 'postPerform' | 'modal' | 'popover'
+    'to' | 'onPress' | 'perform' | 'postPerform' | 'overlay'
   > {}
 
 export function ContentAction({

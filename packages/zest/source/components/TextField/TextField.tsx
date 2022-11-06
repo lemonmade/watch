@@ -1,16 +1,12 @@
-import type {ComponentProps, ReactNode} from 'react';
 import {useUniqueId} from '../../utilities/id';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 
 import {Label} from '../Label';
 import {BlockStack} from '../BlockStack';
 
-import {TextField as TextFieldInput} from './Input';
+import {Input} from './Input';
 
-type Props = ComponentProps<typeof TextFieldInput> & {
-  label: ReactNode;
-  labelStyle?: 'default' | 'placeholder';
-  placeholder?: string;
-};
+type Props = PropsForClipsComponent<'TextField'>;
 
 export function TextField({
   id: explicitId,
@@ -29,7 +25,7 @@ export function TextField({
       >
         {label}
       </Label>
-      <TextFieldInput
+      <Input
         id={id}
         {...(baseProps as any)}
         placeholder={

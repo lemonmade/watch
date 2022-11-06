@@ -13,7 +13,7 @@ export interface TextActionProps
   extends Pick<TextProps, 'emphasis' | 'accessibilityRole'>,
     Pick<
       PressableProps,
-      'to' | 'onPress' | 'perform' | 'postPerform' | 'modal' | 'popover'
+      'to' | 'onPress' | 'perform' | 'postPerform' | 'overlay'
     > {}
 
 export function TextAction({

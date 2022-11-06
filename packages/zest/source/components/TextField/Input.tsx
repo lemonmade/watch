@@ -15,32 +15,16 @@ import {useUniqueId} from '../../utilities/id';
 import {useContainingForm} from '../../utilities/forms';
 import {useMenuController} from '../../utilities/menus';
 import {useActionScope} from '../../utilities/actions';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 
 import styles from './Input.module.css';
 
-export type ChangeTiming = 'commit' | 'input';
+export type InputProps = Omit<
+  PropsForClipsComponent<'TextField'>,
+  'label' | 'labelStyle'
+>;
 
-export type AutocompleteField = 'username' | 'email' | 'webauthn';
-export type TextFieldType = 'text' | 'email';
-
-export type TextFieldProps = {
-  id?: string;
-  type?: TextFieldType;
-  multiline?: boolean | number;
-  blockSize?: 'fit';
-  placeholder?: string;
-  autocomplete?:
-    | AutocompleteField
-    | `${AutocompleteField} ${AutocompleteField}`;
-  value?: SignalOrValue<string | undefined>;
-  disabled?: SignalOrValue<boolean>;
-  readonly?: SignalOrValue<boolean>;
-  changeTiming?: ChangeTiming;
-  onChange?(value: string): void;
-  onInput?(value: string): void;
-};
-
-export function TextField({
+export function Input({
   id: explicitId,
   value: currentValue,
   type,
@@ -53,7 +37,7 @@ export function TextField({
   autocomplete,
   onInput,
   onChange,
-}: TextFieldProps) {
+}: InputProps) {
   const id = useUniqueId('Input', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
@@ -77,7 +61,7 @@ export function TextField({
   }
 
   if (typeof multiline === 'number') {
-    inlineStyles['--x-TextField-lines'] = multiline;
+    inlineStyles['--x-Input-lines'] = multiline;
   }
 
   const InputElement = multiline ? 'textarea' : 'input';

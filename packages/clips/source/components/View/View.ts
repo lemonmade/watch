@@ -1,6 +1,13 @@
 import {createRemoteComponent} from '@remote-ui/core';
+import {type SpacingValue} from '../shared';
 
-export interface ViewProps {}
+export interface ViewProps {
+  padding?: boolean | SpacingValue;
+  paddingInlineStart?: boolean | SpacingValue;
+  paddingInlineEnd?: boolean | SpacingValue;
+  paddingBlockStart?: boolean | SpacingValue;
+  paddingBlockEnd?: boolean | SpacingValue;
+}
 
 /**
  * A View is a generic container component. Its contents will always be their

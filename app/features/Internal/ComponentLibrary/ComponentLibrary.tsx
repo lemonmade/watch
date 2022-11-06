@@ -88,7 +88,7 @@ function ActionComponents() {
             Action (destructive disabled)
           </Action>
 
-          <Action modal={<ActionExampleModal />}>Action (modal)</Action>
+          <Action overlay={<ActionExampleModal />}>Action (modal)</Action>
           <Action size="small">Action (small)</Action>
           <Action detail={<Icon source="arrowEnd" />}>Action (detail)</Action>
           <Pressable>Pressable</Pressable>
@@ -132,52 +132,52 @@ function ActionComponents() {
 
         <BlockStack spacing inlineAlignment="start">
           <TextAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My action
           </TextAction>
           <TextAction
             emphasis
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My action (emphasized)
           </TextAction>
           <TextAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My long action that might have quite a long title
           </TextAction>
           <HeadingAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action
           </HeadingAction>
           <HeadingAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action that is quite long and will likely wrap
           </HeadingAction>
           <HeadingAction
             level={3}
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action (level 3)
           </HeadingAction>
           <HeadingAction
             level={6}
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action (level 6)
           </HeadingAction>
           <HeadingAction
             level={6}
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             My heading action (level 6 that is quite long and will likely wrap)
           </HeadingAction>
 
           <ContentAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             <Layout columns={['auto', 'fill']} spacing="small">
               <IconHighlight>
@@ -192,7 +192,7 @@ function ActionComponents() {
           </ContentAction>
 
           <ContentAction
-            popover={<ActionExamplePopoverMenu inlineAttachment="start" />}
+            overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
             <Layout columns={['auto', 'fill']} spacing="small">
               <IconHighlight>
@@ -296,7 +296,7 @@ function ActionAccessoryExampleMenu({disabled = false} = {}) {
       disabled={disabled}
       accessibilityLabel="More actions"
       icon="more"
-      popover={<ActionExamplePopoverMenu inlineAttachment="end" />}
+      overlay={<ActionExamplePopoverMenu inlineAttachment="end" />}
     />
   );
 }
@@ -318,7 +318,7 @@ function ActionExampleModal() {
               <Action
                 icon="more"
                 accessibilityLabel="More actions"
-                popover={
+                overlay={
                   <Popover>
                     <Menu>
                       <Action>Nice!</Action>
@@ -385,7 +385,7 @@ function PopoverExample({
 }: ComponentProps<typeof Popover>) {
   return (
     <Action
-      popover={
+      overlay={
         <Popover
           inlineAttachment={inlineAttachment}
           blockAttachment={blockAttachment}
