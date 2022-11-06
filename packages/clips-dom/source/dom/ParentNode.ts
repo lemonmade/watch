@@ -2,7 +2,6 @@ import {
   CHILD,
   NEXT,
   PREV,
-  ID,
   CHANNEL,
   PARENT,
   OWNER_DOCUMENT,
@@ -13,7 +12,6 @@ import type {Node} from './Node';
 // import type {Element} from './Element';
 import {ChildNode, toNode} from './ChildNode';
 import {NodeList} from './NodeList';
-import {materializeTree} from './materialization';
 
 export class ParentNode extends ChildNode {
   private _children?: NodeList;
@@ -26,7 +24,10 @@ export class ParentNode extends ChildNode {
       children = new NodeList();
       let child = this[CHILD];
       while (child) {
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) {
+          child = child[NEXT];
+          continue;
+        }
         children.push(child);
         child = child[NEXT];
       }
@@ -95,9 +96,8 @@ export class ParentNode extends ChildNode {
       if (children) children.splice(children.indexOf(child), 1);
     }
 
-    const id = child[ID];
     const channel = this[CHANNEL];
-    if (id !== undefined && channel) channel.remove(id);
+    channel?.remove(this as any, child as any);
   }
 
   replaceChild(newChild: Node, oldChild: Node) {
@@ -126,7 +126,6 @@ export class ParentNode extends ChildNode {
     }
 
     const isElement = child.nodeType === NodeType.ELEMENT_NODE;
-    const isText = child.nodeType === NodeType.TEXT_NODE;
 
     if (before) {
       if (before.parentNode !== this) {
@@ -180,13 +179,7 @@ export class ParentNode extends ChildNode {
     child[OWNER_DOCUMENT] = ownerDocument;
     child[CHANNEL] = channel;
 
-    const id = this[ID];
-    const isRenderedNode = isElement || isText;
-    // if (id && !channel) throw Error('no channel');
-    if (id !== undefined && isRenderedNode && channel) {
-      materializeTree(child, this);
-      channel.insert(id, child[ID]!, before ? before[ID] : undefined);
-    }
+    channel?.insert(this as any, child as any, before as any);
   }
 }
 

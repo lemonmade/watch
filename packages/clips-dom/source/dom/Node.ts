@@ -1,4 +1,4 @@
-import type {AbstractChannel} from '../protocol';
+import type {Adaptor} from '../protocol';
 
 import {
   CHANNEL,
@@ -37,7 +37,7 @@ function isParentNode(node: Node): node is ParentNode {
 
 export class Node extends EventTarget {
   nodeType = NodeType.NODE;
-  [CHANNEL]?: AbstractChannel;
+  [CHANNEL]?: Adaptor;
   [OWNER_DOCUMENT]!: Document;
   [NAME] = '';
   [PARENT]: ParentNode | null = null;

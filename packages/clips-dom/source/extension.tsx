@@ -1,3 +1,4 @@
+import {createRemoteRoot, type RemoteRoot} from '@remote-ui/core';
 import {acceptSignals, WithThreadSignals} from '@watching/clips';
 import type {
   Api,
@@ -6,35 +7,41 @@ import type {
   ExtensionPoint,
 } from '@watching/clips';
 
-import {
-  createWindow,
-  getRemoteRootForElement,
-  createRootElement,
-  type Element,
-} from './dom';
+import {createWindow, createRemoteDOM, type RemoteDOM} from './dom';
+
+const REMOTE_DOM = Symbol.for('RemoteUi.DOM');
 
 if (typeof globalThis.window === 'undefined') {
-  const window = createWindow();
+  const remoteDOM = createRemoteDOM();
+  const window = createWindow(remoteDOM);
 
   Object.defineProperties(globalThis, {
     ...Object.getOwnPropertyDescriptors(window),
     window: {value: window},
+    [REMOTE_DOM]: {value: remoteDOM, enumerable: false},
   });
+}
+
+export function getRemoteDOM() {
+  return (globalThis as any)[REMOTE_DOM] as RemoteDOM;
 }
 
 export function extension<Extends extends ExtensionPoint>(
   renderUi: (
     element: Element,
     api: WithThreadSignals<Api<Extends>>,
+    context: {root: RemoteRoot<any, any>; dom: RemoteDOM},
   ) => void | Promise<void>,
 ) {
   async function domExtension(
-    {channel}: RenderExtensionRoot<any>,
+    {channel, components}: RenderExtensionRoot<any>,
     api: Api<Extends>,
   ) {
-    const element = createRootElement(channel, globalThis.window as any);
-    await renderUi(element, acceptSignals(api) as any);
-    getRemoteRootForElement(element as any)!.mount();
+    const root = createRemoteRoot(channel, {components});
+    const remoteDOM = getRemoteDOM();
+    const element = remoteDOM.createRootElement(root);
+    await renderUi(element as any, acceptSignals(api), {root, dom: remoteDOM});
+    root.mount();
   }
 
   return domExtension as ExtensionPoints[Extends];

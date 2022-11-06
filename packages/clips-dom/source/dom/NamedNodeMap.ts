@@ -64,18 +64,14 @@ export class NamedNodeMap {
     if (!attr) return null;
     if (attr.name === name && attr[NS] == namespaceURI) {
       this[CHILD] = attr[NEXT];
-      if (owner !== undefined && channel) {
-        channel.removeAttribute(owner, name, namespaceURI);
-      }
+      channel?.removeAttribute(owner as any, name, namespaceURI);
       return attr;
     }
     let prev = attr;
     while ((attr = attr[NEXT])) {
       if (attr.name === name && attr[NS] == namespaceURI) {
         prev[NEXT] = attr[NEXT];
-        if (owner !== undefined && channel) {
-          channel.removeAttribute(owner, name, namespaceURI);
-        }
+        channel?.removeAttribute(owner as any, name, namespaceURI);
         return attr;
       }
       prev = attr;
@@ -111,10 +107,14 @@ export class NamedNodeMap {
       // return null;
     }
     // only invoke the protocol if the value changed
-    const owner = ownerElement[ID];
     const channel = ownerElement[CHANNEL];
-    if (owner !== undefined && channel && (!old || old.value !== attr.value)) {
-      channel.setAttribute(owner, attr.name, attr.value, attr[NS]);
+    if (channel && (!old || old.value !== attr.value)) {
+      channel.setAttribute(
+        ownerElement as any,
+        attr.name,
+        attr.value,
+        attr[NS],
+      );
     }
     return old;
   }

@@ -27,7 +27,7 @@ export type TextFieldProps = {
   id?: string;
   type?: TextFieldType;
   multiline?: boolean | number;
-  blockSize?: 'fitContent';
+  blockSize?: 'fit';
   placeholder?: string;
   autocomplete?:
     | AutocompleteField
@@ -47,7 +47,7 @@ export function TextField({
   disabled,
   readonly,
   multiline = false,
-  blockSize = multiline === true ? 'fitContent' : undefined,
+  blockSize = multiline === true ? 'fit' : undefined,
   placeholder,
   changeTiming = 'commit',
   autocomplete,
@@ -145,7 +145,7 @@ export function TextField({
         autoCorrect={autoCorrect}
         autoCapitalize={autoCapitalize}
       />
-      {blockSize === 'fitContent' && (
+      {blockSize === 'fit' && (
         <div className={styles.AutoGrowWrap}>{value} </div>
       )}
     </div>

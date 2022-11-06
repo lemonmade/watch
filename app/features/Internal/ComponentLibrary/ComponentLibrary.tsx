@@ -464,7 +464,7 @@ function FormComponents() {
         <TextField
           label="Text field (multiline, lines)"
           multiline={5}
-          blockSize="fitContent"
+          blockSize="fit"
         />
         <TextFieldExample label="Controlled text field" />
         <TextFieldExample

@@ -7,10 +7,6 @@ import type {
   ReactPortal,
 } from 'react';
 import type {RemoteComponentType, RemoteFragment} from '@remote-ui/core';
-import {
-  createFragmentElement,
-  getRemoteNodeForElement,
-} from '@watching/clips-dom';
 
 import {useRenderContext} from '../context';
 
@@ -108,10 +104,10 @@ function usePropsWithFragments<Props>(
     let currentFragment = fragmentsByProp.current.get(key);
 
     if (currentFragment == null) {
-      const element = createFragmentElement(context.root);
-      const fragment = getRemoteNodeForElement(element) as any;
-      currentFragment = {fragment, element};
+      const fragment = context.root.createFragment();
+      const element = context.dom.createFragmentElement(fragment);
       document.append(element);
+      currentFragment = {fragment, element};
       fragmentsByProp.current.set(key, currentFragment);
     }
 

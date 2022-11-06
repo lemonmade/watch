@@ -1,4 +1,4 @@
-import type {AbstractChannel} from '../protocol';
+import type {Adaptor} from '../protocol';
 
 import {CHANNEL, ID, LISTENERS} from './constants';
 import {fireEvent, dispatchEvent, EventPhase} from './Event';
@@ -22,7 +22,7 @@ export type EventListenerOrEventListenerObject =
   | EventListenerObject;
 
 export class EventTarget {
-  [CHANNEL]?: AbstractChannel;
+  [CHANNEL]?: Adaptor;
   [ID]?: number;
   [LISTENERS]?: Map<
     string,
@@ -48,11 +48,8 @@ export class EventTarget {
     }
     if (list.proxy === undefined) {
       list.proxy = dispatchEvent.bind(this, type);
-      const id = this[ID];
       const channel = this[CHANNEL];
-      if (id !== undefined && channel) {
-        channel.addListener(id, type, list.proxy);
-      }
+      channel?.addListener(this as any, type, list.proxy);
     }
     list.add(listener);
   }
@@ -68,10 +65,9 @@ export class EventTarget {
     const list = listeners && listeners.get(key);
     if (list) {
       list.delete(listener);
-      const id = this[ID];
       const channel = this[CHANNEL];
-      if (id !== undefined && list.proxy !== undefined && channel) {
-        channel.removeListener(id, type, list.proxy);
+      if (list.proxy !== undefined && channel) {
+        channel.removeListener(this as any, type, list.proxy);
         list.proxy = undefined;
       }
     }

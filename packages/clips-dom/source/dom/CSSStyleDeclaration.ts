@@ -1,4 +1,4 @@
-import type {AbstractChannel} from '../protocol';
+import type {Adaptor} from '../protocol';
 
 import {PROPERTIES, CHANNEL, OWNER_ELEMENT, ID} from './constants';
 import type {Element} from './Element';
@@ -39,7 +39,7 @@ StyleProto.prototype = Object.create(
 );
 
 export class CSSStyleDeclaration extends StyleProto {
-  [CHANNEL]!: AbstractChannel;
+  [CHANNEL]?: Adaptor;
   [OWNER_ELEMENT]?: number;
   [PROPERTIES]!: Record<string, string | null | undefined>;
   constructor(owner: Element) {
@@ -60,8 +60,9 @@ export class CSSStyleDeclaration extends StyleProto {
   setProperty(key: string, value?: string | null) {
     this[PROPERTIES][key] = value;
     const owner = this[OWNER_ELEMENT];
+
     if (owner !== undefined) {
-      this[CHANNEL].setProperty(owner, 'style', this.cssText);
+      this[CHANNEL]?.setProperty(owner as any, 'style', this.cssText);
     }
   }
 
@@ -89,8 +90,9 @@ export class CSSStyleDeclaration extends StyleProto {
     }
     this[PROPERTIES] = properties;
     const owner = this[OWNER_ELEMENT];
+
     if (owner !== undefined) {
-      this[CHANNEL].setProperty(owner, 'style', this.cssText);
+      this[CHANNEL]?.setProperty(owner as any, 'style', this.cssText);
     }
   }
 }

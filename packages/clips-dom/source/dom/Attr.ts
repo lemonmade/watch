@@ -49,7 +49,7 @@ export class Attr extends Node {
     const owner = ownerElement[ID];
     const channel = ownerElement[CHANNEL];
     if (owner !== undefined && channel) {
-      channel.setAttribute(owner, this[NAME], str, this[NS]);
+      channel.setAttribute(owner as any, this[NAME], str, this[NS]);
     }
   }
 

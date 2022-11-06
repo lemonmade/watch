@@ -6,11 +6,11 @@ import {BlockStack} from '../BlockStack';
 
 import {TextField as TextFieldInput} from './Input';
 
-type Props = Omit<ComponentProps<typeof TextFieldInput>, 'placeholder'> &
-  (
-    | {label: string; labelStyle: 'placeholder'; placeholder?: never}
-    | {label: ReactNode; labelStyle?: 'default'; placeholder?: string}
-  );
+type Props = ComponentProps<typeof TextFieldInput> & {
+  label: ReactNode;
+  labelStyle?: 'default' | 'placeholder';
+  placeholder?: string;
+};
 
 export function TextField({
   id: explicitId,

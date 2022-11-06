@@ -1,4 +1,4 @@
-import {CHANNEL, DATA, ID} from './constants';
+import {CHANNEL, DATA} from './constants';
 import type {Document} from './Document';
 import {ChildNode} from './ChildNode';
 
@@ -16,12 +16,7 @@ export class CharacterData extends ChildNode {
       str = typeof data === 'string' ? data : String(data);
     }
     this[DATA] = str;
-
-    const id = this[ID];
-    const channel = this[CHANNEL];
-    if (id !== undefined && channel) {
-      channel.setText(id, str);
-    }
+    this[CHANNEL]?.setText(this as any, str);
   }
 
   get data() {

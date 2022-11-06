@@ -100,11 +100,8 @@ function accessor(name: string, initialValue: any) {
     set(this: Element, newValue: any) {
       if (newValue !== value) {
         value = newValue;
-        const id = this[ID];
         const channel = this[CHANNEL];
-        if (id !== undefined && channel) {
-          channel.setProperty(id, name, value);
-        }
+        channel?.setProperty(this as any, name, value);
       }
     },
   };

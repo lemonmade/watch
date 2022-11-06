@@ -1,27 +1,24 @@
-export type NodeId = number;
-
-export interface AbstractChannel {
-  createElement(
-    node: NodeId,
-    localName: string,
-    ns?: string | null,
-    parent?: NodeId,
-  ): void;
+export interface Adaptor {
+  createElement(element: Element, ns?: string | null): void;
   setAttribute(
-    node: NodeId,
+    element: Element,
     name: string,
     value: string,
     ns?: string | null,
   ): void;
-  removeAttribute(node: NodeId, name: string, ns?: string | null): void;
-  createText(node: NodeId, data: string, parent?: NodeId): void;
-  setText(node: NodeId, data: string): void;
-  insert(parent: NodeId, node: NodeId, before?: NodeId): void;
-  remove(node: NodeId): void;
-  setProperty(node: NodeId, name: string, value: any): void;
-  addListener(node: NodeId, type: string, listener: (event: any) => void): void;
+  removeAttribute(element: Element, name: string, ns?: string | null): void;
+  createText(text: Text, data: string): void;
+  setText(text: Text, data: string): void;
+  insert(parent: Element, node: Element | Text, before?: Element | Text): void;
+  remove(parent: Element, node: Element | Text): void;
+  setProperty(element: Element, name: string, value: any): void;
+  addListener(
+    element: Element,
+    type: string,
+    listener: (event: any) => void,
+  ): void;
   removeListener(
-    node: NodeId,
+    element: Element,
     type: string,
     listener: (event: any) => void,
   ): void;
