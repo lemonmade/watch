@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.2.19
+
+### Patch Changes
+
+- [`1a189ec`](https://github.com/lemonmade/watch/commit/1a189ecd8e0ae4d64b8db5352e3bfa795153fa2f) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix clips fragments
+
+- Updated dependencies [[`1a189ec`](https://github.com/lemonmade/watch/commit/1a189ecd8e0ae4d64b8db5352e3bfa795153fa2f)]:
+  - @watching/clips-dom@0.1.5
+
 ## 0.2.18
 
 ### Patch Changes
