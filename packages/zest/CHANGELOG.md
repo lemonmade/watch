@@ -1,5 +1,12 @@
 # @lemon/zest
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`9b1394c`](https://github.com/lemonmade/watch/commit/9b1394cfeff9e32afad1988d6cde0f87902dc50f)]:
+  - @watching/clips@0.2.17
+
 ## 0.0.2
 
 ### Patch Changes
