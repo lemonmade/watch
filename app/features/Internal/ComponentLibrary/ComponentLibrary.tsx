@@ -460,11 +460,15 @@ function FormComponents() {
         <Heading>Forms</Heading>
 
         <TextField label="Text field" />
-        <TextField label="Text field (multiline)" multiline />
         <TextField
-          label="Text field (multiline, lines)"
-          multiline={5}
-          blockSize="fit"
+          label="Text field (multiline)"
+          minimumLines={3}
+          maximumLines={6}
+        />
+        <TextField
+          label="Text field (multiline, unbounded)"
+          minimumLines={5}
+          maximumLines={false}
         />
         <TextFieldExample label="Controlled text field" />
         <TextFieldExample

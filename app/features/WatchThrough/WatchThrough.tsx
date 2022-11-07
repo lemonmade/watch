@@ -411,8 +411,8 @@ function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
   return (
     <TextField
       label="Notes"
-      multiline={4}
-      blockSize="fit"
+      minimumLines={4}
+      maximumLines={10}
       value={notes}
       changeTiming="input"
     />

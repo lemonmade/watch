@@ -5,7 +5,7 @@ import {
   type KeyboardEvent,
   type HTMLAttributes,
 } from 'react';
-import {classes, variation} from '@lemon/css';
+import {classes} from '@lemon/css';
 import {
   resolveSignalOrValue,
   type SignalOrValue,
@@ -30,10 +30,11 @@ export function Input({
   type,
   disabled,
   readonly,
-  multiline = false,
-  blockSize = multiline === true ? 'fit' : undefined,
+  minimumLines = 1,
+  maximumLines = minimumLines,
   placeholder,
   changeTiming = 'commit',
+  resize,
   autocomplete,
   onInput,
   onChange,
@@ -49,6 +50,11 @@ export function Input({
 
   const finalReadonly = resolvedReadonly || actionScope?.active.value;
 
+  const normalizedMaximumLines =
+    typeof maximumLines === 'number' ? maximumLines : Infinity;
+  const isMultiline = minimumLines > 1 || normalizedMaximumLines > 1;
+  const needsAutogrow = minimumLines !== normalizedMaximumLines;
+
   let inputMode: HTMLAttributes<HTMLElement>['inputMode'];
   let autoCorrect: HTMLAttributes<HTMLElement>['autoCorrect'];
   let autoCapitalize: HTMLAttributes<HTMLElement>['autoCapitalize'];
@@ -60,11 +66,16 @@ export function Input({
     autoCapitalize = 'none';
   }
 
-  if (typeof multiline === 'number') {
-    inlineStyles['--x-Input-lines'] = multiline;
+  if (isMultiline) {
+    inlineStyles['--z-internal-TextField-minimum-lines'] = minimumLines;
+
+    if (Number.isFinite(normalizedMaximumLines)) {
+      inlineStyles['--z-internal-TextField-maximum-lines'] =
+        normalizedMaximumLines;
+    }
   }
 
-  const InputElement = multiline ? 'textarea' : 'input';
+  const InputElement = isMultiline ? 'textarea' : 'input';
 
   const handleChange =
     onChange ??
@@ -81,14 +92,15 @@ export function Input({
     <div
       className={classes(
         styles.TextField,
-        multiline && styles.multiline,
-        blockSize && styles[variation('blockSize', blockSize)],
+        isMultiline && styles.multiline,
+        resize && styles.resize,
+        !Number.isFinite(normalizedMaximumLines) && styles.growUnbounded,
       )}
       style={inlineStyles}
     >
       <InputElement
         id={id}
-        type={multiline ? undefined : 'text'}
+        type={isMultiline ? undefined : 'text'}
         className={styles.Input}
         value={value}
         inputMode={inputMode}
@@ -102,7 +114,7 @@ export function Input({
         }}
         onKeyDown={menu?.keypress}
         onKeyPress={
-          multiline || changeTiming !== 'commit'
+          isMultiline || changeTiming !== 'commit'
             ? undefined
             : (
                 event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -129,9 +141,7 @@ export function Input({
         autoCorrect={autoCorrect}
         autoCapitalize={autoCapitalize}
       />
-      {blockSize === 'fit' && (
-        <div className={styles.AutoGrowWrap}>{value} </div>
-      )}
+      {needsAutogrow && <div className={styles.AutoGrowWrap}>{value} </div>}
     </div>
   );
 }

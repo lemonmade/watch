@@ -2,6 +2,15 @@
   --z-internal-TextField-corner-radius: var(--z-corner-radius-base);
   --z-internal-TextField-focus-ring-inset: 0.125rem;
   --z-internal-TextField-focus-ring-opacity: 0;
+  --z-internal-TextField-resize: none;
+  --z-internal-TextField-maximum-block-size: calc(
+    var(--z-internal-TextField-maximum-lines, 1) *
+      var(--z-text-base-line-height) + var(--z-spacing-small) * 2
+  );
+  --z-internal-TextField-minimum-block-size: calc(
+    var(--z-internal-TextField-minimum-lines, 1) *
+      var(--z-text-base-line-height) + var(--z-spacing-small) * 2
+  );
 
   position: relative;
 
@@ -15,27 +24,25 @@
     position: absolute;
     inset: calc(-1 * var(--z-internal-TextField-focus-ring-inset));
     box-shadow: 0 0 0 0.125rem var(--z-input-focused-border-color);
-    border-radius: calc(var(--z-internal-TextField-corner-radius) + var(--z-internal-TextField-focus-ring-inset));
+    border-radius: calc(
+      var(--z-internal-TextField-corner-radius) +
+        var(--z-internal-TextField-focus-ring-inset)
+    );
     opacity: var(--z-internal-TextField-focus-ring-opacity);
     transition: opacity 0.2s ease;
   }
 }
 
-.blockSizeFitContent {
+.resize {
+  --z-internal-TextField-resize: vertical;
+}
+
+.multiline {
   display: grid;
 }
 
-/* @see https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
-.blockSizeFitContent > .Input {
-  resize: none;
-  overflow: hidden;
-}
-
-.multiline > .Input {
-  display: grid;
-  min-height: calc(
-    var(--x-TextField-lines, 2) * 1em + var(--z-spacing-small) * 2
-  );
+.growUnbounded {
+  --z-internal-TextField-maximum-block-size: none;
 }
 
 .Input {
@@ -47,6 +54,8 @@
   width: 100%;
   resize: vertical;
   color: inherit;
+  resize: var(--z-internal-TextField-resize);
+  overflow: hidden;
 
   &::placeholder {
     color: var(--z-TextField-placeholder-color);
@@ -64,8 +73,11 @@
   line-height: var(--z-text-base-line-height);
   font-family: inherit;
   padding: var(--z-spacing-small) var(--z-spacing-base);
+  min-block-size: var(--z-internal-TextField-minimum-block-size);
+  max-block-size: var(--z-internal-TextField-maximum-block-size);
 }
 
+/* @see https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
 .AutoGrowWrap {
   white-space: pre-wrap;
   visibility: hidden;
