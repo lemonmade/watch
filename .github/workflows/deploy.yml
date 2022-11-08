@@ -21,7 +21,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - uses: quilt-framework/action-build@v2
         with:
-          cache-key: v14
+          cache-key: ${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Save build artifacts
         uses: actions/upload-artifact@v2
