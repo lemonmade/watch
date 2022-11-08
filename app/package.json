@@ -20,6 +20,7 @@
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@lemonmade/graphql-live": "^0.1.10",
+    "@quilted/quilt": "^0.5.116",
     "@quilted/react-query": "^0.1.11",
     "@remote-ui/async-subscription": "^2.1.13",
     "@remote-ui/core": "^2.1.16",
@@ -37,6 +38,8 @@
     "graphql": "^15.0.0",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
+    "react": "npm:@quilted/react@^17.0.0",
+    "react-dom": "npm:@quilted/react-dom@^17.0.0",
     "react-query": "^3.39.0"
   },
   "eslintConfig": {

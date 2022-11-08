@@ -67,6 +67,7 @@ importers:
       '@lemon/zest': workspace:*
       '@lemonmade/graphql-live': ^0.1.10
       '@prisma/client': ^4.4.0
+      '@quilted/quilt': ^0.5.116
       '@quilted/react-query': ^0.1.11
       '@remote-ui/async-subscription': ^2.1.13
       '@remote-ui/core': ^2.1.16
@@ -86,6 +87,8 @@ importers:
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
       prisma: ^4.4.0
+      react: npm:@quilted/react@^17.0.0
+      react-dom: npm:@quilted/react-dom@^17.0.0
       react-query: ^3.39.0
     dependencies:
       '@aws-sdk/client-s3': 3.107.0
@@ -99,6 +102,7 @@ importers:
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
       '@lemonmade/graphql-live': 0.1.10_@babel+runtime@7.18.9
+      '@quilted/quilt': 0.5.116_05abb1a0267857047ffeb61a99b72b6f
       '@quilted/react-query': 0.1.11_0ffaf707380f6c9e7550d2889ef013de
       '@remote-ui/async-subscription': 2.1.13
       '@remote-ui/core': 2.1.16
@@ -116,6 +120,8 @@ importers:
       graphql: 15.8.0
       jsonwebtoken: 8.5.1
       mime: 2.6.0
+      react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
+      react-dom: /@quilted/react-dom/17.0.5_@babel+runtime@7.18.9
       react-query: 3.39.1_a0196d1569fcdc26bd98f3e4bc6c31fd
 
   functions/clips-upload:
@@ -9370,7 +9376,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
