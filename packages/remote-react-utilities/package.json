@@ -28,7 +28,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@quilted/react-utilities": "^0.1.6",
+    "@quilted/react-utilities": "^0.1.7",
     "@remote-ui/core": "^2.1.16"
   },
   "peerDependencies": {

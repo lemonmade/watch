@@ -35,7 +35,10 @@ import {
   type ClipsExtensionSandboxInstanceTiming,
   type ClipsExtensionSandboxInstanceEventMap,
 } from './extension';
-import {EXTENSION_POINTS} from './extension-points';
+import {
+  EXTENSION_POINTS,
+  type ExtensionPointDefinitionContext,
+} from './extension-points';
 import {createSandbox, type Sandbox} from './sandboxes';
 import {createRemoteReceiver} from './receiver';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
@@ -72,7 +75,9 @@ export interface ClipsLocalDevelopmentServerEventMap {
 
 type Writable<T> = {-readonly [K in keyof T]: T[K]};
 
-export function createClipsManager(): ClipsManager {
+export function createClipsManager(
+  appContext: ExtensionPointDefinitionContext,
+): ClipsManager {
   const instances = new Map<string, ClipsExtensionPointInstance<any>>();
   const sandboxes = new Map<string, ClipsExtensionSandboxInstance>();
   const localDevelopment = createLocalDevelopmentServer();
@@ -124,8 +129,8 @@ export function createClipsManager(): ClipsManager {
 
     const liveQuery = createLiveQueryRunner(
       options.liveQuery,
-      (extensionPoint as any).query(options.options),
-      {signal: abort.signal},
+      (helpers) => extensionPoint.query(options.options as never, helpers),
+      {context: appContext, signal: abort.signal},
     );
 
     const context: ClipsExtensionPointInstanceContext<Point> = {

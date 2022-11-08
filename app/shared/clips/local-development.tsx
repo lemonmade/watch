@@ -1,17 +1,20 @@
-import {useMemo, useEffect} from 'react';
-import {useInitialUrl, type PropsWithChildren} from '@quilted/quilt';
-import {createClipsManager, ClipsManagerContext} from '~/shared/clips';
+import {useEffect} from 'react';
+import {useInitialUrl} from '@quilted/quilt';
+
+import {type ClipsManager} from './manager';
 
 const LOCAL_STORAGE_KEY = 'localDevelopment';
 
-export function Extensions({children}: PropsWithChildren) {
-  const manager = useMemo(() => createClipsManager(), []);
+export function ClipsLocalDevelopment({manager}: {manager: ClipsManager}) {
+  useClipsLocalDevelopment(manager);
+  return null;
+}
+
+function useClipsLocalDevelopment(manager: ClipsManager) {
   const initialUrl = useInitialUrl();
 
   useEffect(() => {
     const localDevelopmentConnectUrl = getDevelopmentServerUrl(initialUrl);
-
-    if (localDevelopmentConnectUrl == null) return;
 
     const abort = new AbortController();
 
@@ -23,16 +26,14 @@ export function Extensions({children}: PropsWithChildren) {
       {signal: abort.signal},
     );
 
-    manager.localDevelopment.connect(localDevelopmentConnectUrl);
+    if (localDevelopmentConnectUrl) {
+      manager.localDevelopment.connect(localDevelopmentConnectUrl);
+    }
 
     return () => {
       abort.abort();
     };
   }, [initialUrl, manager]);
-
-  return (
-    <ClipsManagerContext manager={manager}>{children}</ClipsManagerContext>
-  );
 }
 
 const VALID_PROTOCOLS = new Set(['ws:', 'wss:']);

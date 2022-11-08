@@ -8,22 +8,20 @@ export interface SeriesDetailsRenderAccessoryOptions {
 
 export const SeriesDetailsRenderAccessory = createExtensionPoint({
   name: 'Series.Details.RenderAccessory',
-  query({id, name}: SeriesDetailsRenderAccessoryOptions) {
-    return ({object}) => {
-      return {
-        ...createSharedGraphQLApi({object}),
-        series: object('Series', {
-          id,
-          async *name(_, __, {signal}) {
-            let index = 0;
+  query({id, name}: SeriesDetailsRenderAccessoryOptions, {object}) {
+    return {
+      ...createSharedGraphQLApi({object}),
+      series: object('Series', {
+        id,
+        async *name(_, __, {signal}) {
+          let index = 0;
 
-            while (!signal.aborted) {
-              yield `${name} ${index++}`;
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-            }
-          },
-        }),
-      };
+          while (!signal.aborted) {
+            yield `${name} ${index++}`;
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        },
+      }),
     };
   },
   components() {

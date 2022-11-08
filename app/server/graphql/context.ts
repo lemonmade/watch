@@ -3,7 +3,8 @@ import type {
   EnhancedResponse,
 } from '@quilted/quilt/http-handlers';
 
-import type {Prisma} from '../shared/database';
+import {type Prisma} from '../shared/database';
+import {type Authentication} from '../shared/auth';
 
 export interface Context {
   readonly user: {id: string};
@@ -18,14 +19,6 @@ interface MutableResponse {
   readonly cookies: EnhancedResponse['cookies'];
 }
 
-export type Authentication =
-  | {
-      type: 'unauthenticated';
-      userId?: never;
-    }
-  | {type: 'cookie'; userId: string}
-  | {type: 'accessToken'; userId: string};
-
 export function createContext(
   auth: Authentication,
   prisma: Prisma,
@@ -35,12 +28,12 @@ export function createContext(
   return {
     prisma,
     get user() {
-      if (auth.userId == null) {
+      if (auth.user == null) {
         response.status = 401;
         throw new Error('No user exists for this request!');
       }
 
-      return {id: auth.userId};
+      return {id: auth.user.id};
     },
     request,
     response,

@@ -22,26 +22,35 @@ export type GraphQLApiByExtensionPoint = {
 
 export type GraphQLQueryResolverByExtensionPoint = {
   [Point in ExtensionPoint]: GraphQLQueryResolver<
-    GraphQLApiByExtensionPoint[Point]
+    GraphQLApiByExtensionPoint[Point],
+    ExtensionPointDefinitionContext
   >;
 };
 
 type GraphQLQueryResolver<
   Types extends {Query: any},
   Context = Record<string, never>,
-> = (
-  helpers: GraphQLLiveResolverCreateHelper<Types, Context>,
-) => Omit<
+> = Omit<
   GraphQLLiveResolverObject<Types['Query'], Context>,
   '__typename' | '__context'
 >;
+
+export interface ExtensionPointDefinitionContext {
+  readonly user: {readonly id: string};
+}
 
 export interface ExtensionPointDefinition<
   Point extends ExtensionPoint,
   Options = never,
 > {
   name: Point;
-  query(options: Options): GraphQLQueryResolverByExtensionPoint[Point];
+  query(
+    options: Options,
+    helpers: GraphQLLiveResolverCreateHelper<
+      GraphQLApiByExtensionPoint[Point],
+      ExtensionPointDefinitionContext
+    >,
+  ): GraphQLQueryResolverByExtensionPoint[Point];
   components(): ReactComponentsForExtensionPoint<Point>;
 }
 
@@ -54,13 +63,22 @@ export function createExtensionPoint<
   return extensionPoint;
 }
 
-export function createSharedGraphQLApi(
-  _helpers: GraphQLLiveResolverCreateHelper<SharedGraphQLApi>,
-): Omit<
-  GraphQLLiveResolverObject<SharedGraphQLApi['Query']>,
+export function createSharedGraphQLApi({
+  object,
+}: GraphQLLiveResolverCreateHelper<
+  SharedGraphQLApi,
+  ExtensionPointDefinitionContext
+>): Omit<
+  GraphQLLiveResolverObject<
+    SharedGraphQLApi['Query'],
+    ExtensionPointDefinitionContext
+  >,
   '__typename' | '__context'
 > {
   return {
     version: 'unstable',
+    user: object('User', {
+      id: (_, {user}) => user.id,
+    }),
   };
 }

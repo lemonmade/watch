@@ -1,5 +1,10 @@
 scalar ApiVersion
 
+type User {
+  id: ID!
+}
+
 type Query {
+  user: User!
   version: ApiVersion!
 }

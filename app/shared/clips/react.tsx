@@ -2,33 +2,28 @@ import {useMemo, useEffect} from 'react';
 import {
   signal,
   useComputed,
-  createOptionalContext,
-  createUseContextHook,
+  type Signal,
   type GraphQLResult,
   type GraphQLOperation,
   type GraphQLVariableOptions,
-  PropsWithChildren,
-  Signal,
 } from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
+
+import {createUseAppContextHook} from '~/shared/context';
 
 import {type ClipsManager} from './manager';
 import {type ClipsExtensionPoint} from './extension';
 import {type ClipsExtensionFragmentData} from './graphql/ClipsExtensionFragment.graphql';
 
-const ClipsManagerReactContext = createOptionalContext<ClipsManager>();
-export const useClipsManager = createUseContextHook(ClipsManagerReactContext);
-
-export function ClipsManagerContext({
-  children,
-  manager,
-}: PropsWithChildren<{manager: ClipsManager}>) {
-  return (
-    <ClipsManagerReactContext.Provider value={manager}>
-      {children}
-    </ClipsManagerReactContext.Provider>
-  );
+declare module '~/shared/context' {
+  interface AppContext {
+    readonly clipsManager?: ClipsManager;
+  }
 }
+
+export const useClipsManager = createUseAppContextHook(
+  ({clipsManager}) => clipsManager,
+);
 
 export function useClips<Point extends ExtensionPoint>(
   point: Point,

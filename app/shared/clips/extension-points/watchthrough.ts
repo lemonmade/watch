@@ -3,10 +3,8 @@ import {createExtensionPoint, createSharedGraphQLApi} from './shared';
 
 export const WatchThroughDetailsRenderAccessory = createExtensionPoint({
   name: 'WatchThrough.Details.RenderAccessory',
-  query() {
-    return (options) => {
-      return createSharedGraphQLApi(options);
-    };
+  query(_, options) {
+    return createSharedGraphQLApi(options);
   },
   components() {
     return CommonComponents;

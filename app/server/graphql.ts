@@ -3,16 +3,11 @@ import {
   html,
   json,
   noContent,
-  type EnhancedRequest,
 } from '@quilted/quilt/http-handlers';
 import {stripIndent} from 'common-tags';
 
-import {getUserIdFromRequest} from './shared/auth';
-import {createPrisma, type Prisma} from './shared/database';
-
-import type {Authentication} from './graphql/context';
-
-const ACCESS_TOKEN_HEADER = 'X-Access-Token';
+import {authenticate} from './shared/auth';
+import {createPrisma} from './shared/database';
 
 const handler = createHttpHandler();
 
@@ -108,38 +103,6 @@ function loadSchema() {
   })();
 
   return schemaPromise;
-}
-
-async function authenticate(
-  request: EnhancedRequest,
-  prisma: Prisma,
-): Promise<Authentication> {
-  const cookieAuthUserId = await getUserIdFromRequest(request);
-
-  if (cookieAuthUserId) {
-    return {type: 'cookie', userId: cookieAuthUserId};
-  }
-
-  const accessToken = request.headers.get(ACCESS_TOKEN_HEADER);
-
-  if (accessToken == null) {
-    return {type: 'unauthenticated'};
-  }
-
-  const token = await prisma.personalAccessToken.findFirst({
-    where: {token: accessToken},
-  });
-
-  if (token == null) {
-    throw new Error('Invalid token');
-  }
-
-  await prisma.personalAccessToken.update({
-    where: {id: token.id},
-    data: {lastUsedAt: new Date()},
-  });
-
-  return {type: 'accessToken', userId: token.userId};
 }
 
 handler.get(() => {

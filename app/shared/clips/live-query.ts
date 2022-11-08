@@ -3,7 +3,7 @@ import {signal, type Signal, anyAbortSignal} from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 import {run, createQueryResolver} from '@lemonmade/graphql-live';
 
-import {type GraphQLQueryResolverByExtensionPoint} from './extension-points';
+import {type ExtensionPointDefinitionContext} from './extension-points';
 
 export interface LiveQueryRunner<_Point extends ExtensionPoint> {
   readonly query: Signal<string | undefined>;
@@ -14,8 +14,11 @@ export interface LiveQueryRunner<_Point extends ExtensionPoint> {
 
 export function createLiveQueryRunner<Point extends ExtensionPoint>(
   initialQuery: string | undefined,
-  resolver: GraphQLQueryResolverByExtensionPoint[Point],
-  {signal: abortSignal}: {signal: AbortSignal},
+  resolver: (helpers: any) => any,
+  {
+    context,
+    signal: abortSignal,
+  }: {signal: AbortSignal; context: ExtensionPointDefinitionContext},
 ): LiveQueryRunner<Point> {
   const result = signal<any>({});
   const query = signal(initialQuery);
@@ -48,6 +51,8 @@ export function createLiveQueryRunner<Point extends ExtensionPoint>(
 
       const runner = run(parse(currentQuery) as any, queryResolver, {
         signal,
+        // @ts-expect-error can’t make the types work here...
+        context,
       });
 
       // eslint-disable-next-line no-async-promise-executor

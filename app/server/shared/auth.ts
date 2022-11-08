@@ -5,6 +5,8 @@ import type {
 } from '@quilted/quilt/http-handlers';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
+import {createPrisma, type Prisma} from './database';
+
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
     JWT_DEFAULT_SECRET: string;
@@ -13,6 +15,61 @@ declare module '@quilted/quilt/env' {
 
 export enum Cookie {
   Auth = 'Auth',
+}
+
+export type Authentication =
+  | {
+      type: 'unauthenticated';
+      user?: never;
+    }
+  | {type: 'cookie'; user: {readonly id: string}}
+  | {
+      type: 'accessToken';
+      token: {readonly id: string};
+      user: {readonly id: string};
+    };
+
+export const ACCESS_TOKEN_HEADER = 'X-Access-Token';
+
+export async function authenticate(
+  request: EnhancedRequest,
+  explicitPrisma?: Prisma,
+): Promise<Authentication> {
+  const cookieAuthUserId = await getUserIdFromRequest(request);
+  const accessToken = request.headers.get(ACCESS_TOKEN_HEADER);
+
+  if (cookieAuthUserId == null && accessToken == null) {
+    return {type: 'unauthenticated'};
+  }
+
+  const prisma = explicitPrisma ?? (await createPrisma());
+
+  if (cookieAuthUserId) {
+    return {type: 'cookie', user: {id: cookieAuthUserId}};
+  }
+
+  if (accessToken == null) {
+    return {type: 'unauthenticated'};
+  }
+
+  const token = await prisma.personalAccessToken.findFirst({
+    where: {token: accessToken},
+  });
+
+  if (token == null) {
+    throw new Error('Invalid token');
+  }
+
+  await prisma.personalAccessToken.update({
+    where: {id: token.id},
+    data: {lastUsedAt: new Date()},
+  });
+
+  return {
+    type: 'accessToken',
+    user: {id: token.userId},
+    token: {id: token.id},
+  };
 }
 
 export async function createSignedToken(
