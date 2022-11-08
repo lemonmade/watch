@@ -4468,7 +4468,7 @@ packages:
       '@quilted/react-dom': 17.0.5_@babel+runtime@7.18.9
       '@quilted/react-email': 0.2.29_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-graphql': 0.4.48_1c625853aff509548f3fa2444a9714e8
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-http': 0.3.23_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-idle': 0.3.17_619eb7192a1e119c6a7483243ef75838
       '@quilted/react-localize': 0.1.8_e64b408ac9306d648892833fab544f4d
@@ -4508,7 +4508,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.18.9
       '@quilted/async': 0.3.28_@babel+runtime@7.18.9
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-server-render': 0.3.24_1c625853aff509548f3fa2444a9714e8
       '@quilted/use-subscription': 0.2.17_619eb7192a1e119c6a7483243ef75838
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
@@ -4547,7 +4547,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-server-render': 0.3.24_1c625853aff509548f3fa2444a9714e8
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
     transitivePeerDependencies:
@@ -4583,8 +4583,8 @@ packages:
       - react-dom
     dev: true
 
-  /@quilted/react-html/0.3.37_1c625853aff509548f3fa2444a9714e8:
-    resolution: {integrity: sha512-KrrBC8DAH0KTTRmgSmaqrmpI/LPnhVkk54fmCQmKzRBkmZpwiETcUE2ZYr3DC75XKiFSromsFXf/nuheCWiTDw==}
+  /@quilted/react-html/0.3.38_1c625853aff509548f3fa2444a9714e8:
+    resolution: {integrity: sha512-vKPH6KC0rkiLgr9Zi4N5OV6O2TkK0MCiCznwWW5O6QHCIZI89UDSMvAUKyt6ox618EPAgv54DbP6fEbVy0pDbg==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       '@types/react': ^17.0.0
@@ -4619,7 +4619,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.18.9
       '@quilted/http': 0.2.27_@babel+runtime@7.18.9
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-server-render': 0.3.24_1c625853aff509548f3fa2444a9714e8
       js-cookie: 3.0.1
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
@@ -4664,7 +4664,7 @@ packages:
       '@babel/runtime': 7.18.9
       '@quilted/http-handlers': 0.2.43_@babel+runtime@7.18.9
       '@quilted/localize': 0.1.5_@babel+runtime@7.18.9
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-http': 0.3.23_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-router': 0.3.47_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-utilities': 0.1.7_619eb7192a1e119c6a7483243ef75838
@@ -4731,7 +4731,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@quilted/react-html': 0.3.37_1c625853aff509548f3fa2444a9714e8
+      '@quilted/react-html': 0.3.38_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-http': 0.3.23_1c625853aff509548f3fa2444a9714e8
       '@quilted/react-server-render': 0.3.24_1c625853aff509548f3fa2444a9714e8
       '@quilted/routing': 0.2.23_@babel+runtime@7.18.9
@@ -9376,7 +9376,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken/8.5.1:
