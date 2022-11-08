@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "build/typescript",
     "lib": ["ESNext", "DOM"],
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
     "paths": {
       "~/graphql/*": ["./graphql/*"],
       "~/shared/*": ["./shared/*"],
