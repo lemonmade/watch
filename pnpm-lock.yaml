@@ -376,10 +376,12 @@ importers:
   packages/thread-signals:
     specifiers:
       '@preact/signals-core': ^1.2.2
+      '@quilted/events': ^0.1.12
       '@quilted/testing': ^0.1.4
       '@quilted/threads': ^0.1.10
     dependencies:
       '@preact/signals-core': 1.2.2
+      '@quilted/events': 0.1.12_@babel+runtime@7.18.9
       '@quilted/threads': 0.1.10_@babel+runtime@7.18.9
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9

@@ -4,18 +4,16 @@ import {type Api} from '@watching/clips';
 import {
   signal,
   createEmitter,
-  anyAbortSignal,
   type Signal,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
   type Emitter,
 } from '@quilted/quilt';
-import {createThreadSignal, type ThreadSignal} from '@watching/thread-signals';
+import {createThreadSignal} from '@watching/thread-signals';
 import {
   createThread,
   createThreadAbortSignal,
-  acceptThreadAbortSignal,
   targetFromBrowserWebSocket,
   type Thread,
   type ThreadCallable,
@@ -122,14 +120,12 @@ export function createClipsManager(
         const api: Api<Point> = {
           target: options.target,
           version: options.version,
-          settings: createAbortableThreadSignal(
-            context.settings,
-            instance.signal,
-          ),
-          query: createAbortableThreadSignal(
-            context.liveQuery.result,
-            instance.signal,
-          ),
+          settings: createThreadSignal(context.settings, {
+            signal: instance.signal,
+          }),
+          query: createThreadSignal(context.liveQuery.result, {
+            signal: instance.signal,
+          }),
         };
 
         return api;
@@ -161,30 +157,6 @@ export function createClipsManager(
     instances.set(cacheKey, renderer);
 
     return renderer;
-
-    function createAbortableThreadSignal<T>(
-      signal: Signal<T>,
-      abortSignal: AbortSignal,
-    ): ThreadSignal<T> {
-      const threadSignal = createThreadSignal(signal);
-
-      return {
-        get initial() {
-          return threadSignal.initial;
-        },
-        set: threadSignal.set,
-        start(subscriber, {signal: threadAbortSignal} = {}) {
-          const startAbortSignal =
-            threadAbortSignal && acceptThreadAbortSignal(threadAbortSignal);
-
-          const finalAbortSignal = startAbortSignal
-            ? anyAbortSignal(startAbortSignal, abortSignal)
-            : startAbortSignal ?? abortSignal;
-
-          return threadSignal.start(subscriber, {signal: finalAbortSignal});
-        },
-      };
-    }
   }
 }
 interface ClipsLocalDevelopmentServerThreadApi {
