@@ -31,6 +31,7 @@
     {"path": "./packages/react-signals"},
     {"path": "./packages/remote-react"},
     {"path": "./packages/remote-react-utilities"},
+    {"path": "./packages/thread-render"},
     {"path": "./packages/thread-signals"},
     {"path": "./packages/zest"}
   ]

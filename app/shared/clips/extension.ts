@@ -1,6 +1,6 @@
-import {type RemoteReceiver} from '@remote-ui/core';
+import {type ThreadRenderer} from '@watching/thread-render';
+
 import {type Api, type Version, type ExtensionPoint} from '@watching/clips';
-import {type Emitter} from '@quilted/quilt';
 import {type Signal} from '@watching/thread-signals';
 
 import {type OptionsForExtensionPoint} from './extension-points';
@@ -48,24 +48,14 @@ export interface App {
   readonly name: string;
 }
 
-export interface ClipsExtensionPointInstance<Point extends ExtensionPoint> {
-  readonly id: string;
-  readonly context: ClipsExtensionPointInstanceContext<Point>;
-  readonly options: ClipsExtensionPointInstanceOptions<Point>;
-  readonly timings: Signal<ClipsExtensionPointInstanceTiming>;
-  readonly receiver: Signal<RemoteReceiver>;
-  readonly state: Signal<
-    'stopped' | 'loading' | 'loaded' | 'rendering' | 'rendered'
-  >;
-  readonly api: Api<Point>;
-  readonly components: ReactComponentsForExtensionPoint<Point>;
-  readonly sandbox: ClipsExtensionSandboxInstance;
-  readonly signal: AbortSignal;
-  readonly rendered?: {readonly signal: AbortSignal};
-  readonly on: Emitter<ClipsExtensionPointInstanceEventMap>['on'];
-  render(options?: {signal?: AbortSignal}): void;
-  restart(): Promise<void>;
-}
+export interface ClipsExtensionPointInstance<Point extends ExtensionPoint>
+  extends ThreadRenderer<
+    Api<Point>,
+    ReactComponentsForExtensionPoint<Point>,
+    ClipsExtensionSandbox,
+    ClipsExtensionPointInstanceOptions<Point>,
+    ClipsExtensionPointInstanceContext<Point>
+  > {}
 
 export interface ClipsExtensionPointInstanceContext<
   Point extends ExtensionPoint,
@@ -87,45 +77,4 @@ export interface ClipsExtensionPointInstanceOptions<
   readonly options: OptionsForExtensionPoint<Point>;
 }
 
-export interface ClipsExtensionPointInstanceTiming {
-  readonly loadStart?: number;
-  readonly loadEnd?: number;
-  readonly renderStart?: number;
-  readonly renderEnd?: number;
-}
-
-export interface ClipsExtensionPointInstanceEventMap {
-  start: void;
-  stop: void;
-  load: void;
-  render: void;
-  mount: void;
-}
-
 export type ClipsExtensionSandbox = Omit<Sandbox, 'load'>;
-
-export interface ClipsExtensionSandboxInstance {
-  readonly id: string;
-  readonly state: Signal<'stopped' | 'starting' | 'loading' | 'loaded'>;
-  readonly timings: Signal<ClipsExtensionSandboxInstanceTiming>;
-  readonly on: Emitter<ClipsExtensionSandboxInstanceEventMap>['on'];
-  start(): Promise<void>;
-  stop(): void;
-  restart(): Promise<void>;
-  run<T>(
-    runner: (sandbox: ClipsExtensionSandbox) => T | Promise<T>,
-  ): Promise<T>;
-}
-
-export interface ClipsExtensionSandboxInstanceTiming {
-  readonly start?: number;
-  readonly loadStart?: number;
-  readonly loadEnd?: number;
-}
-
-export interface ClipsExtensionSandboxInstanceEventMap {
-  start: void;
-  stop: void;
-  'load:start': void;
-  'load:end': void;
-}

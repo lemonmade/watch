@@ -80,7 +80,7 @@ function ClipRenderer<Point extends ExtensionPoint>({
 }) {
   const {name, app} = extension.extension;
 
-  const instance = local ?? installed;
+  const renderer = local ?? installed;
 
   return (
     <BlockStack spacing="small">
@@ -94,7 +94,7 @@ function ClipRenderer<Point extends ExtensionPoint>({
             )}
             <Menu>
               <ViewAppAction />
-              {instance && <RestartClipAction instance={instance} />}
+              {renderer && <RestartClipAction instance={renderer} />}
               {extension.installed && (
                 <UninstallClipAction
                   extension={extension}
@@ -127,7 +127,7 @@ function ClipRenderer<Point extends ExtensionPoint>({
         </Layout>
       </ContentAction>
 
-      <View>{instance && <ClipInstanceRenderer instance={instance} />}</View>
+      <View>{renderer && <ClipInstanceRenderer renderer={renderer} />}</View>
     </BlockStack>
   );
 }
@@ -207,31 +207,28 @@ function ReportIssueAction() {
 }
 
 function ClipInstanceRenderer<Point extends ExtensionPoint>({
-  instance,
+  renderer,
 }: {
-  instance: ClipsExtensionPointInstance<Point>;
+  renderer: ClipsExtensionPointInstance<Point>;
 }) {
+  const instance = renderer.instance.value;
+
+  useEffect(() => {
+    renderer.start();
+
+    return () => {
+      renderer.stop();
+    };
+  }, [renderer]);
+
   const controller = useMemo(
-    () => createController(instance.components),
+    () => instance && createController(instance.components),
     [instance],
   );
 
-  useEffect(() => {
-    const abort = new AbortController();
-
-    instance.render({signal: abort.signal});
-
-    return () => {
-      abort.abort();
-    };
-  }, [instance]);
-
-  return (
-    <RemoteRenderer
-      controller={controller}
-      receiver={instance.receiver.value}
-    />
-  );
+  return controller && instance ? (
+    <RemoteRenderer controller={controller} receiver={instance.receiver} />
+  ) : null;
 }
 
 function useInstalledClipInstance<Point extends ExtensionPoint>(

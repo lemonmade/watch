@@ -25,6 +25,8 @@ import type {
   ActionArgumentMap,
 } from '@remote-ui/core';
 
+export {type RemoteReceiver};
+
 const ROOT_ID = Symbol.for('RemoteUi.Root') as any;
 
 export function createRemoteReceiver(): RemoteReceiver {

@@ -32,6 +32,7 @@
     "@watching/clips": "workspace:*",
     "@watching/graphql": "workspace:*",
     "@watching/react-signals": "workspace:*",
+    "@watching/thread-render": "workspace:*",
     "@watching/thread-signals": "workspace:*",
     "base64url": "^3.0.1",
     "common-tags": "^1.8.0",

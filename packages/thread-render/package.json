@@ -1,0 +1,51 @@
+{
+  "name": "@watching/thread-render",
+  "description": "<YOUR DESCRIPTION HERE>",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<USER>/<REPOSITORY>",
+    "directory": "packages/thread-render"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/typescript/index.d.ts",
+      "quilt:source": "./source/index.ts",
+      "quilt:esnext": "./build/esnext/index.esnext",
+      "import": "./build/esm/index.mjs",
+      "require": "./build/cjs/index.cjs"
+    }
+  },
+  "types": "./build/typescript/index.d.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "@preact/signals-core": "^1.2.2",
+    "@quilted/events": "^0.1.12",
+    "@remote-ui/core": "^2.1.16"
+  },
+  "peerDependencies": {
+    "@babel/runtime": ">=7.0.0 <8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@babel/runtime": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@quilted/testing": "^0.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/project"
+    ]
+  },
+  "browserslist": [
+    "extends @quilted/browserslist-config/defaults"
+  ]
+}

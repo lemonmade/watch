@@ -79,6 +79,7 @@ importers:
       '@watching/clips': workspace:*
       '@watching/graphql': workspace:*
       '@watching/react-signals': workspace:*
+      '@watching/thread-render': workspace:*
       '@watching/thread-signals': workspace:*
       aws-sdk: ^2.935.0
       base64url: ^3.0.1
@@ -114,6 +115,7 @@ importers:
       '@watching/clips': link:../packages/clips
       '@watching/graphql': link:../packages/graphql
       '@watching/react-signals': link:../packages/react-signals
+      '@watching/thread-render': link:../packages/thread-render
       '@watching/thread-signals': link:../packages/thread-signals
       base64url: 3.0.1
       common-tags: 1.8.2
@@ -355,6 +357,19 @@ importers:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
       '@watching/remote-react': link:../remote-react
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
+
+  packages/thread-render:
+    specifiers:
+      '@preact/signals-core': ^1.2.2
+      '@quilted/events': ^0.1.12
+      '@quilted/testing': ^0.1.0
+      '@remote-ui/core': ^2.1.16
+    dependencies:
+      '@preact/signals-core': 1.2.2
+      '@quilted/events': 0.1.12_@babel+runtime@7.18.9
+      '@remote-ui/core': 2.1.16
+    devDependencies:
+      '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
 
   packages/thread-signals:
     specifiers:
@@ -9376,7 +9391,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
