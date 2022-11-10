@@ -363,10 +363,12 @@ importers:
       '@preact/signals-core': ^1.2.2
       '@quilted/events': ^0.1.12
       '@quilted/testing': ^0.1.0
+      '@quilted/threads': ^0.1.10
       '@remote-ui/core': ^2.1.16
     dependencies:
       '@preact/signals-core': 1.2.2
       '@quilted/events': 0.1.12_@babel+runtime@7.18.9
+      '@quilted/threads': 0.1.10_@babel+runtime@7.18.9
       '@remote-ui/core': 2.1.16
     devDependencies:
       '@quilted/testing': 0.1.4_@babel+runtime@7.18.9
