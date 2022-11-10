@@ -1,4 +1,4 @@
-import {createEmitter, anyAbortSignal, AbortError} from '@quilted/events';
+import {createEmitter, AbortError} from '@quilted/events';
 import {signal, computed} from '@preact/signals-core';
 import {createRemoteReceiver} from './receiver';
 
@@ -212,16 +212,21 @@ export function createRenderer<
 
     async function abortRacer() {
       await new Promise<void>((resolve, reject) => {
-        anyAbortSignal(signal, raceAbort.signal).addEventListener(
+        signal.addEventListener(
           'abort',
           () => {
-            if (signal.aborted) {
-              ifAborted();
-              reject(new AbortError());
-            } else {
-              resolve();
-            }
+            ifAborted();
+            reject(new AbortError());
           },
+          {signal: raceAbort.signal},
+        );
+
+        raceAbort.signal.addEventListener(
+          'abort',
+          () => {
+            resolve();
+          },
+          {signal},
         );
       });
     }
