@@ -42,6 +42,8 @@ import {
 } from './features/Developer';
 import {ComponentLibrary} from './features/Internal';
 
+import {EXTENSION_POINTS} from './clips';
+
 import {
   useAppContext,
   AppContextReact,
@@ -187,7 +189,9 @@ export function AppContext({
       },
     });
 
-    const clipsManager = user ? createClipsManager({user}) : undefined;
+    const clipsManager = user
+      ? createClipsManager({user}, EXTENSION_POINTS)
+      : undefined;
 
     return {
       ...serializedContext,

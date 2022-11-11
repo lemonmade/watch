@@ -30,7 +30,7 @@ import {
   type ClipsExtensionPointInstanceContext,
 } from './extension';
 import {
-  EXTENSION_POINTS,
+  type ExtensionPointDefinitions,
   type ExtensionPointDefinitionContext,
 } from './extension-points';
 import {createSandbox, type Sandbox} from './sandboxes';
@@ -39,6 +39,7 @@ import {createLiveQueryRunner} from './live-query';
 import {ReactComponentsForExtensionPoint} from './components';
 
 export interface ClipsManager {
+  readonly extensionPoints: ExtensionPointDefinitions;
   readonly localDevelopment: ClipsLocalDevelopmentServer;
   fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
@@ -69,11 +70,13 @@ export interface ClipsLocalDevelopmentServerEventMap {
 
 export function createClipsManager(
   appContext: ExtensionPointDefinitionContext,
+  extensionPoints: ExtensionPointDefinitions,
 ): ClipsManager {
   const instances = new Map<string, ClipsExtensionPointInstance<any>>();
   const localDevelopment = createLocalDevelopmentServer();
 
   return {
+    extensionPoints,
     localDevelopment,
     fetchInstance,
   };
@@ -91,7 +94,7 @@ export function createClipsManager(
     const cached = instances.get(cacheKey);
     if (cached) return cached;
 
-    const extensionPoint = EXTENSION_POINTS[options.target];
+    const extensionPoint = extensionPoints[options.target];
 
     const liveQuery = createLiveQueryRunner(
       options.liveQuery,

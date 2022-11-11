@@ -173,21 +173,21 @@ export function createRenderer<
   }
 
   async function stop() {
-    emitter.emit('stop');
     instanceInternals.value?.abort.abort();
     instanceInternals.value = undefined;
+    emitter.emit('stop');
   }
 
   async function destroy() {
-    emitter.emit('destroy');
     await stop();
     abort.abort();
+    emitter.emit('destroy');
   }
 
   async function restart() {
-    emitter.emit('restart');
     await stop();
     await start();
+    emitter.emit('restart');
   }
 
   async function raceAgainstInstance<T>(

@@ -1,12 +1,15 @@
-import {CommonComponents} from '../components';
-import {createExtensionPoint, createSharedGraphQLApi} from './shared';
+import {
+  CommonComponents,
+  createExtensionPoint,
+  createSharedGraphQLApi,
+} from '~/shared/clips';
 
 export interface SeriesDetailsRenderAccessoryOptions {
   readonly id: string;
   readonly name: string;
 }
 
-export const SeriesDetailsRenderAccessory = createExtensionPoint({
+export const SeriesDetailsRenderAccessoryExtensionPoint = createExtensionPoint({
   name: 'Series.Details.RenderAccessory',
   query({id, name}: SeriesDetailsRenderAccessoryOptions, {object}) {
     return {
