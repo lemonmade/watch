@@ -15,28 +15,9 @@ export interface ClipsExtensionPoint<Point extends ExtensionPoint> {
   readonly id: string;
   readonly target: Point;
   readonly extension: ClipsExtension;
-  readonly local?: LocalClipsExtensionPoint;
-  readonly installed?: InstalledClipsExtensionPoint;
+  readonly local?: ClipsExtensionPointLocalInstanceOptions<Point>;
+  readonly installed?: ClipsExtensionPointInstalledInstanceOptions<Point>;
 }
-
-export interface ClipsExtensionPointWithLocal<Point extends ExtensionPoint>
-  extends Omit<ClipsExtensionPoint<Point>, 'local'> {
-  readonly local: LocalClipsExtensionPoint;
-}
-
-export interface ClipsExtensionPointWithInstalled<Point extends ExtensionPoint>
-  extends Omit<ClipsExtensionPoint<Point>, 'installed'> {
-  readonly installed: InstalledClipsExtensionPoint;
-}
-
-export interface InstalledClipsExtensionPoint {
-  readonly version: Version;
-  readonly script: string;
-  readonly settings?: string;
-  readonly liveQuery?: string;
-}
-
-export interface LocalClipsExtensionPoint {}
 
 export interface ClipsExtension {
   readonly id: string;
@@ -61,16 +42,29 @@ export interface ClipsExtensionPointInstanceContext<
   readonly sandbox: ThreadCallable<Sandbox>;
 }
 
-export interface ClipsExtensionPointInstanceOptions<
+export type ClipsExtensionPointInstanceOptions<Point extends ExtensionPoint> =
+  | ClipsExtensionPointInstalledInstanceOptions<Point>
+  | ClipsExtensionPointLocalInstanceOptions<Point>;
+
+export interface ClipsExtensionPointInstalledInstanceOptions<
   Point extends ExtensionPoint,
 > {
-  readonly source: 'local' | 'installed';
+  readonly source: 'installed';
   readonly target: Point;
   readonly version: Version;
   readonly settings?: string;
   readonly liveQuery?: string;
-  readonly extension: ClipsExtensionPoint<Point>;
+  readonly extension: {readonly id: string};
   readonly script: {readonly url: string};
+  readonly options: OptionsForExtensionPoint<Point>;
+}
+
+export interface ClipsExtensionPointLocalInstanceOptions<
+  Point extends ExtensionPoint,
+> {
+  readonly source: 'local';
+  readonly target: Point;
+  readonly extension: {readonly id: string};
   readonly options: OptionsForExtensionPoint<Point>;
 }
 

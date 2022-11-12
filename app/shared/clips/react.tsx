@@ -13,6 +13,10 @@ import {createUseAppContextHook} from '~/shared/context';
 
 import {type ClipsManager} from './manager';
 import {type ClipsExtensionPoint} from './extension';
+import {
+  type ExtensionPointWithOptions,
+  type OptionsForExtensionPoint,
+} from './extension-points';
 import {type ClipsExtensionFragmentData} from './graphql/ClipsExtensionFragment.graphql';
 
 declare module '~/shared/context' {
@@ -28,7 +32,11 @@ export const useClipsManager = createUseAppContextHook(
 export function useClips<Point extends ExtensionPoint>(
   point: Point,
   installations: readonly ClipsExtensionFragmentData[] | null | undefined,
+  ...optionsArg: Point extends ExtensionPointWithOptions
+    ? [OptionsForExtensionPoint<Point>]
+    : [never?]
 ): readonly ClipsExtensionPoint<Point>[] {
+  const [options] = optionsArg;
   const installedClips = useMemo(() => {
     if (installations == null) return [];
 
@@ -52,16 +60,20 @@ export function useClips<Point extends ExtensionPoint>(
           },
         },
         installed: {
-          script: version.assets[0]!.source,
+          source: 'installed',
+          target: point,
+          extension: {id: extension.id},
+          script: {url: version.assets[0]!.source},
           version: version.apiVersion as any,
           settings: settings ?? undefined,
           liveQuery: liveQuery ?? undefined,
+          options: options as any,
         },
       });
     }
 
     return installedClips;
-  }, [installations, point]);
+  }, [installations, point, options]);
 
   const server = useClipsManager().localDevelopment;
 
@@ -90,9 +102,16 @@ export function useClips<Point extends ExtensionPoint>(
             name: app.name,
           },
         },
-        local: {},
+        local: {
+          source: 'local',
+          target: point,
+          extension: {id},
+          options: options as any,
+        },
       });
     }
+
+    if (localClips.length === 0) return installedClips;
 
     return [...localClips, ...installedClips];
   }, [server, point, installedClips]);

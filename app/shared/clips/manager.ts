@@ -25,8 +25,10 @@ import {
   type ExtensionPoint,
   type ClipsExtension,
   type ClipsExtensionPointInstance,
-  type ClipsExtensionPointInstanceOptions,
   type ClipsExtensionPointInstanceContext,
+  type ClipsExtensionPointInstanceOptions,
+  type ClipsExtensionPointLocalInstanceOptions,
+  type ClipsExtensionPointInstalledInstanceOptions,
 } from './extension';
 import {
   type ExtensionPointDefinitions,
@@ -34,6 +36,9 @@ import {
 } from './extension-points';
 import {createSandbox} from './sandboxes';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
+import localClipQuery, {
+  type LocalClipQueryData,
+} from './graphql/LocalClipQuery.graphql';
 import {createLiveQueryRunner} from './live-query';
 
 export interface ClipsManager {
@@ -70,7 +75,7 @@ export function createClipsManager(
   appContext: ExtensionPointDefinitionContext,
   extensionPoints: ExtensionPointDefinitions,
 ): ClipsManager {
-  const instances = new Map<string, ClipsExtensionPointInstance<any>>();
+  const renderers = new Map<string, ClipsExtensionPointInstance<any>>();
   const localDevelopment = createLocalDevelopmentServer();
 
   return {
@@ -82,16 +87,42 @@ export function createClipsManager(
   function fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
+    if (options.source === 'local') {
+      const cacheKey = JSON.stringify({
+        source: 'local',
+        extension: options.extension.id,
+        target: options.target,
+        options: options.options,
+      });
+
+      const cached = renderers.get(cacheKey);
+      if (cached) return cached;
+
+      const renderer = createLocalInstance(options);
+      renderers.set(cacheKey, renderer);
+
+      return renderer;
+    }
+
     const cacheKey = JSON.stringify({
-      version: options.version,
+      source: 'installed',
       extension: options.extension.id,
-      script: options.script,
+      target: options.target,
       options: options.options,
     });
 
-    const cached = instances.get(cacheKey);
+    const cached = renderers.get(cacheKey);
     if (cached) return cached;
 
+    const renderer = createInstalledInstance(options);
+    renderers.set(cacheKey, renderer);
+
+    return renderer;
+  }
+
+  function createInstalledInstance<Point extends ExtensionPoint>(
+    options: ClipsExtensionPointInstalledInstanceOptions<Point>,
+  ) {
     const extensionPoint = extensionPoints[options.target];
 
     const settings = signal(JSON.parse(options.settings ?? '{}'));
@@ -138,7 +169,110 @@ export function createClipsManager(
       },
     });
 
-    instances.set(cacheKey, renderer);
+    return renderer;
+  }
+
+  function createLocalInstance<Point extends ExtensionPoint>(
+    options: ClipsExtensionPointLocalInstanceOptions<Point>,
+  ) {
+    const extensionPoint = extensionPoints[options.target];
+
+    const emitter = createEmitter<{script: string}>();
+    const script = signal<string | undefined>(undefined);
+    const settings = signal({});
+    const liveQuery = createLiveQueryRunner(
+      undefined,
+      (helpers) => extensionPoint.query(options.options as never, helpers),
+      {
+        context: appContext,
+        signal: new AbortController().signal,
+      },
+    );
+
+    const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
+      context({signal}) {
+        return {
+          settings,
+          liveQuery,
+          sandbox: createSandbox({signal}),
+          components: extensionPoint.components() as any,
+        };
+      },
+      async prepare({context: {sandbox, liveQuery}}) {
+        const localScript =
+          script.value ?? (await emitter.on('script', {once: true}));
+
+        await Promise.all([
+          sandbox.load(localScript, 'unstable'),
+          liveQuery.run(),
+        ]);
+      },
+      async render({signal, receiver, context}) {
+        const {settings, liveQuery, components, sandbox} = context;
+
+        const api: Api<Point> = {
+          target: options.target,
+          version: 'unstable',
+          settings: createThreadSignal(settings, {signal}),
+          query: createThreadSignal(liveQuery.result, {signal}),
+        };
+
+        await sandbox.render(
+          options.target,
+          receiver.receive,
+          Object.keys(components),
+          api as any,
+        );
+      },
+    });
+
+    pollForUpdates();
+
+    async function pollForUpdates() {
+      let lastSuccessfulBuild:
+        | LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess
+        | undefined;
+
+      for await (const result of localDevelopment.query(localClipQuery, {
+        signal: renderer.signal,
+        variables: {id: options.extension.id},
+      })) {
+        const clipsExtension = result.data?.app?.clipsExtension;
+
+        if (clipsExtension == null) {
+          await renderer.destroy();
+          return;
+        }
+
+        const build = clipsExtension?.build;
+        const extensionPoint = clipsExtension?.extends.find((extend) => {
+          return extend.target === options.target;
+        });
+
+        let needsRestart = false;
+
+        if (
+          build?.__typename === 'ExtensionBuildSuccess' &&
+          build.id !== lastSuccessfulBuild?.id
+        ) {
+          const newScript = build.assets[0]!.source;
+
+          script.value = newScript;
+          needsRestart = lastSuccessfulBuild != null;
+          lastSuccessfulBuild = build;
+
+          emitter.emit('script', newScript);
+        }
+
+        if (needsRestart) {
+          renderer.restart();
+        }
+
+        if (extensionPoint) {
+          liveQuery.update(extensionPoint.liveQuery?.query ?? undefined);
+        }
+      }
+    }
 
     return renderer;
   }
