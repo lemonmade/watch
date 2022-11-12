@@ -18,7 +18,7 @@
     "@quilted/craft": "^0.1.158",
     "@quilted/eslint-config": "^0.1.15",
     "@quilted/prettier": "^0.2.11",
-    "@quilted/quilt": "^0.5.116",
+    "@quilted/quilt": "^0.5.117",
     "@quilted/typescript": "^0.2.18",
     "@types/node": "^16.11.0",
     "dotenv": "^16.0.0",

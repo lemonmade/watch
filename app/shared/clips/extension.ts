@@ -1,6 +1,7 @@
+import {type ThreadCallable} from '@quilted/quilt/threads';
 import {type ThreadRenderer} from '@watching/thread-render';
 
-import {type Api, type Version, type ExtensionPoint} from '@watching/clips';
+import {type Version, type ExtensionPoint} from '@watching/clips';
 import {type Signal} from '@watching/thread-signals';
 
 import {type OptionsForExtensionPoint} from './extension-points';
@@ -49,19 +50,15 @@ export interface App {
 }
 
 export interface ClipsExtensionPointInstance<Point extends ExtensionPoint>
-  extends ThreadRenderer<
-    Api<Point>,
-    ReactComponentsForExtensionPoint<Point>,
-    ClipsExtensionSandbox,
-    ClipsExtensionPointInstanceOptions<Point>,
-    ClipsExtensionPointInstanceContext<Point>
-  > {}
+  extends ThreadRenderer<ClipsExtensionPointInstanceContext<Point>> {}
 
 export interface ClipsExtensionPointInstanceContext<
   Point extends ExtensionPoint,
 > {
   readonly settings: Signal<Record<string, unknown>>;
   readonly liveQuery: LiveQueryRunner<Point>;
+  readonly components: ReactComponentsForExtensionPoint<Point>;
+  readonly sandbox: ThreadCallable<Sandbox>;
 }
 
 export interface ClipsExtensionPointInstanceOptions<

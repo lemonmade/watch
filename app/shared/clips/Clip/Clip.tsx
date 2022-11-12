@@ -221,9 +221,11 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     };
   }, [renderer]);
 
+  const components = instance?.context.components;
+
   const controller = useMemo(
-    () => instance && createController(instance.components),
-    [instance],
+    () => components && createController(components),
+    [components],
   );
 
   return controller && instance ? (
@@ -309,7 +311,7 @@ function useLocalClipInstance<Point extends ExtensionPoint>(
 
     if (liveQuery?.query !== instanceDetailsRef.current.lastLiveQuery?.query) {
       instanceDetailsRef.current.lastLiveQuery = liveQuery;
-      instanceDetailsRef.current.instance?.context.liveQuery.update(
+      instanceDetailsRef.current.instance?.instance.value?.context.liveQuery.update(
         liveQuery?.query,
       );
     }

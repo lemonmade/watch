@@ -26,7 +26,7 @@
   "sideEffects": false,
   "dependencies": {
     "@preact/signals-core": "^1.2.2",
-    "@quilted/events": "^0.1.12",
+    "@quilted/events": "^0.1.13",
     "@quilted/threads": "^0.1.10",
     "@remote-ui/core": "^2.1.16"
   },
@@ -39,7 +39,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.0"
+    "@quilted/testing": "^0.1.4"
   },
   "eslintConfig": {
     "extends": [

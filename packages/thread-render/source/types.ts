@@ -2,18 +2,10 @@ import {type ReadonlySignal} from '@preact/signals-core';
 import {type Emitter} from '@quilted/events';
 import {type RemoteReceiver} from '@remote-ui/core';
 
-export interface ThreadRenderer<
-  Api = Record<string, never>,
-  Components = Record<string, never>,
-  Thread = Record<string, never>,
-  Options = Record<string, never>,
-  Context = Record<string, never>,
-> {
-  readonly context: Context;
-  readonly options: Options;
+export interface ThreadRenderer<Context = Record<string, never>> {
   readonly signal: AbortSignal;
   readonly instance: ReadonlySignal<
-    ThreadRendererInstance<Api, Components, Thread> | undefined
+    ThreadRendererInstance<Context> | undefined
   >;
   readonly on: Emitter<ThreadRendererEventMap>['on'];
   start(): Promise<void>;
@@ -29,17 +21,11 @@ export interface ThreadRendererEventMap {
   destroy: void;
 }
 
-export interface ThreadRendererInstance<
-  Api = Record<string, never>,
-  Components = Record<string, never>,
-  Thread = Record<string, never>,
-> {
-  readonly thread: Thread;
+export interface ThreadRendererInstance<Context = Record<string, never>> {
   readonly signal: AbortSignal;
   readonly timings: ReadonlySignal<ThreadRendererInstanceTimings>;
   readonly receiver: RemoteReceiver;
-  readonly api: Api;
-  readonly components: Components;
+  readonly context: Context;
   readonly state: ReadonlySignal<ThreadRendererInstanceState>;
   readonly on: Emitter<ThreadRendererInstanceEventMap>['on'];
 }
@@ -52,7 +38,7 @@ export type ThreadRendererInstanceState =
   | 'stopped';
 
 export interface ThreadRendererInstanceTimings {
-  readonly prepareStart: number;
+  readonly prepareStart?: number;
   readonly prepareEnd?: number;
   readonly renderStart?: number;
   readonly renderEnd?: number;

@@ -21,7 +21,7 @@
     "@graphql-tools/schema": "^7.0.0",
     "@iarna/toml": "^3.0.0",
     "@lemonmade/graphql-live": "^0.1.10",
-    "@quilted/events": "^0.1.12",
+    "@quilted/events": "^0.1.13",
     "@quilted/graphql": "^0.4.47",
     "@quilted/http-handlers": "^0.2.43",
     "@quilted/polyfills": "^0.2.30",

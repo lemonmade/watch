@@ -16,7 +16,6 @@ import {
   createThreadAbortSignal,
   targetFromBrowserWebSocket,
   type Thread,
-  type ThreadCallable,
   type ThreadAbortSignal,
 } from '@quilted/quilt/threads';
 
@@ -33,10 +32,9 @@ import {
   type ExtensionPointDefinitions,
   type ExtensionPointDefinitionContext,
 } from './extension-points';
-import {createSandbox, type Sandbox} from './sandboxes';
+import {createSandbox} from './sandboxes';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
 import {createLiveQueryRunner} from './live-query';
-import {ReactComponentsForExtensionPoint} from './components';
 
 export interface ClipsManager {
   readonly extensionPoints: ExtensionPointDefinitions;
@@ -96,6 +94,7 @@ export function createClipsManager(
 
     const extensionPoint = extensionPoints[options.target];
 
+    const settings = signal(JSON.parse(options.settings ?? '{}'));
     const liveQuery = createLiveQueryRunner(
       options.liveQuery,
       (helpers) => extensionPoint.query(options.options as never, helpers),
@@ -105,57 +104,39 @@ export function createClipsManager(
       },
     );
 
-    const context: ClipsExtensionPointInstanceContext<Point> = {
-      settings: signal(JSON.parse(options.settings ?? '{}')),
-      liveQuery,
-    };
+    const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
+      context({signal}) {
+        return {
+          settings,
+          liveQuery,
+          sandbox: createSandbox({signal}),
+          components: extensionPoint.components() as any,
+        };
+      },
+      async prepare({context: {sandbox, liveQuery}}) {
+        await Promise.all([
+          sandbox.load(options.script.url, options.version),
+          liveQuery.run(),
+        ]);
+      },
+      async render({signal, receiver, context}) {
+        const {settings, liveQuery, components, sandbox} = context;
 
-    const renderer = createRenderer<
-      Api<Point>,
-      ReactComponentsForExtensionPoint<Point>,
-      ThreadCallable<Sandbox>,
-      ClipsExtensionPointInstanceOptions<Point>,
-      ClipsExtensionPointInstanceContext<Point>
-    >({
-      options,
-      context,
-      createApi(instance) {
         const api: Api<Point> = {
           target: options.target,
           version: options.version,
-          settings: createThreadSignal(context.settings, {
-            signal: instance.signal,
-          }),
-          query: createThreadSignal(context.liveQuery.result, {
-            signal: instance.signal,
-          }),
+          settings: createThreadSignal(settings, {signal}),
+          query: createThreadSignal(liveQuery.result, {signal}),
         };
 
-        return api;
-      },
-      createComponents() {
-        return extensionPoint.components() as any;
-      },
-      createThread(instance) {
-        return createSandbox({
-          signal: instance.signal,
-        });
-      },
-      async prepare({thread}, {context}) {
-        await Promise.all([
-          thread.load(options.script.url, options.version),
-          context.liveQuery.run(),
-        ]);
-      },
-      async render({thread, receiver, components, api}, {options}) {
-        await thread.render(
+        await sandbox.render(
           options.target,
           receiver.receive,
           Object.keys(components),
           api as any,
         );
       },
-    }) as any;
+    });
 
     instances.set(cacheKey, renderer);
 
