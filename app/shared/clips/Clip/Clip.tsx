@@ -47,9 +47,12 @@ export function Clip<Point extends ExtensionPoint>({
       <ContentAction
         overlay={
           <Popover inlineAttachment="start">
-            {installed && (
+            {installed?.instance.value && (
               <Section padding>
-                <ClipSettings instance={installed} />
+                <ClipSettings
+                  id={extension.id}
+                  instance={installed.instance.value}
+                />
               </Section>
             )}
             <Menu>

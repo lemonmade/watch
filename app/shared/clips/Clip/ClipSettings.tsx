@@ -14,13 +14,14 @@ import updateClipsExtensionSettingsMutation, {
 } from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
 
 export function ClipSettings({
+  id,
   instance,
 }: {
-  instance: ClipsExtensionPointInstance<any>;
+  id: string;
+  instance: NonNullable<ClipsExtensionPointInstance<any>['instance']['value']>;
 }) {
-  const id = instance.options.extension.id;
   const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
-    variables: {id: instance.options.extension.id},
+    variables: {id},
   });
 
   if (data?.clipsInstallation == null) {
