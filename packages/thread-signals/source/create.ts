@@ -1,11 +1,15 @@
 import {type Signal} from '@preact/signals-core';
+import {anyAbortSignal} from '@quilted/events';
 import {retain, release, acceptThreadAbortSignal} from '@quilted/threads';
 
 import {type ThreadSignal} from './types';
 
 export function createThreadSignal<T>(
   signal: Signal<T>,
-  {writable = false} = {},
+  {
+    writable = false,
+    signal: teardownAbortSignal,
+  }: {writable?: boolean; signal?: AbortSignal} = {},
 ): ThreadSignal<T> {
   return {
     get initial() {
@@ -23,9 +27,14 @@ export function createThreadSignal<T>(
       const abortSignal =
         threadAbortSignal && acceptThreadAbortSignal(threadAbortSignal);
 
+      const finalAbortSignal =
+        abortSignal && teardownAbortSignal
+          ? anyAbortSignal(abortSignal, teardownAbortSignal)
+          : abortSignal ?? teardownAbortSignal;
+
       const teardown = signal.subscribe(subscriber);
 
-      abortSignal?.addEventListener('abort', () => {
+      finalAbortSignal?.addEventListener('abort', () => {
         teardown();
         release(subscriber);
       });

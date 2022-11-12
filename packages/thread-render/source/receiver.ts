@@ -1,4 +1,4 @@
-import {retain, release} from '@quilted/quilt/threads';
+import {retain, release} from '@quilted/threads';
 import {
   KIND_COMPONENT,
   KIND_FRAGMENT,

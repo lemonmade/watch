@@ -201,12 +201,13 @@ function AccessoryClips({
   const accessoryClips = useClips(
     'Series.Details.RenderAccessory',
     installations,
+    {id, name},
   );
 
   return accessoryClips.length > 0 ? (
     <BlockStack spacing="large">
       {accessoryClips.map((clip) => (
-        <Clip key={clip.id} extension={clip} options={{id, name}} />
+        <Clip key={clip.id} extension={clip} />
       ))}
     </BlockStack>
   ) : null;

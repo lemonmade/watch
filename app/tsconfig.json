@@ -18,6 +18,7 @@
     {"path": "../packages/css"},
     {"path": "../packages/graphql"},
     {"path": "../packages/react-signals"},
+    {"path": "../packages/thread-render"},
     {"path": "../packages/thread-signals"},
     {"path": "../packages/zest"}
   ]

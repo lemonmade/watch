@@ -1,8 +1,8 @@
-import type {
-  ExtensionPoint,
-  ComponentsForExtensionPoint,
-  SharedGraphQLApi,
-  GraphQLApiForExtensionPoint,
+import {
+  type ExtensionPoint,
+  type SharedGraphQLApi,
+  type ComponentsForExtensionPoint,
+  type GraphQLApiForExtensionPoint,
 } from '@watching/clips';
 import {
   type GraphQLLiveResolverCreateHelper,
@@ -53,6 +53,26 @@ export interface ExtensionPointDefinition<
   ): GraphQLQueryResolverByExtensionPoint[Point];
   components(): ReactComponentsForExtensionPoint<Point>;
 }
+
+export type ExtensionPointDefinitions =
+  typeof import('../../clips').EXTENSION_POINTS;
+export type OptionsForExtensionPoint<Point extends ExtensionPoint> =
+  ExtensionPointDefinitions[Point] extends ExtensionPointDefinition<
+    any,
+    infer Options
+  >
+    ? Options
+    : never;
+
+export type ExtensionPointDefinitionOptions = {
+  [Point in ExtensionPoint]: OptionsForExtensionPoint<Point>;
+};
+
+export type ExtensionPointWithOptions = {
+  [Point in ExtensionPoint]: ExtensionPointDefinitionOptions[Point] extends never
+    ? never
+    : Point;
+}[ExtensionPoint];
 
 export function createExtensionPoint<
   Point extends ExtensionPoint,

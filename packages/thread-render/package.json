@@ -1,20 +1,17 @@
 {
-  "name": "@watching/thread-signals",
-  "description": "Transfer Preact threads over a thread",
+  "name": "@watching/thread-render",
+  "description": "<YOUR DESCRIPTION HERE>",
   "type": "module",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public",
-    "@watching/registry": "https://registry.npmjs.org"
-  },
-  "version": "0.1.5",
+  "private": true,
+  "version": "0.0.0",
   "engines": {
     "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lemonmade/watch",
-    "directory": "packages/thread-signals"
+    "url": "https://github.com/<USER>/<REPOSITORY>",
+    "directory": "packages/thread-render"
   },
   "exports": {
     ".": {
@@ -30,7 +27,8 @@
   "dependencies": {
     "@preact/signals-core": "^1.2.2",
     "@quilted/events": "^0.1.14",
-    "@quilted/threads": "^0.1.10"
+    "@quilted/threads": "^0.1.10",
+    "@remote-ui/core": "^2.1.16"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"
@@ -41,8 +39,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.4",
-    "@quilted/threads": "^0.1.0"
+    "@quilted/testing": "^0.1.4"
   },
   "eslintConfig": {
     "extends": [

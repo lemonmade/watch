@@ -1,19 +1,19 @@
+import {createRenderer} from '@watching/thread-render';
+
 import {type Api} from '@watching/clips';
 import {
   signal,
   createEmitter,
-  anyAbortSignal,
   type Signal,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
   type Emitter,
 } from '@quilted/quilt';
-import {createThreadSignal, type ThreadSignal} from '@watching/thread-signals';
+import {createThreadSignal} from '@watching/thread-signals';
 import {
   createThread,
   createThreadAbortSignal,
-  acceptThreadAbortSignal,
   targetFromBrowserWebSocket,
   type Thread,
   type ThreadAbortSignal,
@@ -22,29 +22,27 @@ import {
 import {createResolvablePromise} from '../promises';
 
 import {
-  type Version,
   type ExtensionPoint,
   type ClipsExtension,
   type ClipsExtensionPointInstance,
-  type ClipsExtensionPointInstanceOptions,
   type ClipsExtensionPointInstanceContext,
-  type ClipsExtensionPointInstanceEventMap,
-  type ClipsExtensionPointInstanceTiming,
-  type ClipsExtensionSandbox,
-  type ClipsExtensionSandboxInstance,
-  type ClipsExtensionSandboxInstanceTiming,
-  type ClipsExtensionSandboxInstanceEventMap,
+  type ClipsExtensionPointInstanceOptions,
+  type ClipsExtensionPointLocalInstanceOptions,
+  type ClipsExtensionPointInstalledInstanceOptions,
 } from './extension';
 import {
-  EXTENSION_POINTS,
+  type ExtensionPointDefinitions,
   type ExtensionPointDefinitionContext,
 } from './extension-points';
-import {createSandbox, type Sandbox} from './sandboxes';
-import {createRemoteReceiver} from './receiver';
+import {createSandbox} from './sandboxes';
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
+import localClipQuery, {
+  type LocalClipQueryData,
+} from './graphql/LocalClipQuery.graphql';
 import {createLiveQueryRunner} from './live-query';
 
 export interface ClipsManager {
+  readonly extensionPoints: ExtensionPointDefinitions;
   readonly localDevelopment: ClipsLocalDevelopmentServer;
   fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
@@ -73,16 +71,15 @@ export interface ClipsLocalDevelopmentServerEventMap {
   'connect:error': void;
 }
 
-type Writable<T> = {-readonly [K in keyof T]: T[K]};
-
 export function createClipsManager(
   appContext: ExtensionPointDefinitionContext,
+  extensionPoints: ExtensionPointDefinitions,
 ): ClipsManager {
-  const instances = new Map<string, ClipsExtensionPointInstance<any>>();
-  const sandboxes = new Map<string, ClipsExtensionSandboxInstance>();
+  const renderers = new Map<string, ClipsExtensionPointInstance<any>>();
   const localDevelopment = createLocalDevelopmentServer();
 
   return {
+    extensionPoints,
     localDevelopment,
     fetchInstance,
   };
@@ -90,228 +87,196 @@ export function createClipsManager(
   function fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
+    if (options.source === 'local') {
+      const cacheKey = JSON.stringify({
+        source: 'local',
+        extension: options.extension.id,
+        target: options.target,
+        options: options.options,
+      });
+
+      const cached = renderers.get(cacheKey);
+      if (cached) return cached;
+
+      const renderer = createLocalInstance(options);
+      renderers.set(cacheKey, renderer);
+
+      return renderer;
+    }
+
     const cacheKey = JSON.stringify({
-      version: options.version,
+      source: 'installed',
       extension: options.extension.id,
-      script: options.script,
+      target: options.target,
       options: options.options,
     });
 
-    const cached = instances.get(cacheKey);
+    const cached = renderers.get(cacheKey);
     if (cached) return cached;
 
-    const sandboxOptions = {
-      version: options.version,
-      script: options.script.url,
-    };
-    const sandboxCacheKey = JSON.stringify(sandboxOptions);
-    let sandbox = sandboxes.get(sandboxCacheKey);
+    const renderer = createInstalledInstance(options);
+    renderers.set(cacheKey, renderer);
 
-    if (sandbox == null) {
-      sandbox = createClipsExtensionSandboxInstance(sandboxOptions);
-      sandboxes.set(sandboxCacheKey, sandbox);
-    }
+    return renderer;
+  }
 
-    const abort = new AbortController();
-    const state: ClipsExtensionPointInstance<any>['state'] = signal('stopped');
-    const receiver: ClipsExtensionPointInstance<any>['receiver'] = signal(
-      createRemoteReceiver(),
-    );
-    const timings: Signal<Writable<ClipsExtensionPointInstanceTiming>> = signal(
-      {},
-    );
-    const emitter = createEmitter<ClipsExtensionPointInstanceEventMap>();
-    let currentRender: {abort: AbortController} | undefined;
+  function createInstalledInstance<Point extends ExtensionPoint>(
+    options: ClipsExtensionPointInstalledInstanceOptions<Point>,
+  ) {
+    const extensionPoint = extensionPoints[options.target];
 
-    const extensionPoint = EXTENSION_POINTS[options.target];
-    const components: ClipsExtensionPointInstance<any>['components'] =
-      extensionPoint.components() as any;
-
+    const settings = signal(JSON.parse(options.settings ?? '{}'));
     const liveQuery = createLiveQueryRunner(
       options.liveQuery,
       (helpers) => extensionPoint.query(options.options as never, helpers),
-      {context: appContext, signal: abort.signal},
+      {
+        context: appContext,
+        signal: new AbortController().signal,
+      },
     );
 
-    const context: ClipsExtensionPointInstanceContext<Point> = {
-      settings: signal(JSON.parse(options.settings ?? '{}')),
-      liveQuery,
-    };
-
-    const api: Api<Point> = {
-      target: options.target,
-      version: options.version,
-      settings: createInstanceThreadSignal(context.settings),
-      query: createInstanceThreadSignal(context.liveQuery.result),
-    };
-
-    const instance: ClipsExtensionPointInstance<any> = {
-      id: cacheKey,
-      options,
-      context,
-      api,
-      components,
-      sandbox,
-      state,
-      receiver,
-      timings,
-      signal: abort.signal,
-      on: emitter.on,
-      render,
-      get rendered() {
-        return currentRender ? {signal: currentRender.abort.signal} : undefined;
+    const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
+      context({signal}) {
+        return {
+          settings,
+          liveQuery,
+          sandbox: createSandbox({signal}),
+          components: extensionPoint.components() as any,
+        };
       },
-      restart,
-    };
+      async prepare({context: {sandbox, liveQuery}}) {
+        await Promise.all([
+          sandbox.load(options.script.url, options.version),
+          liveQuery.run(),
+        ]);
+      },
+      async render({signal, receiver, context}) {
+        const {settings, liveQuery, components, sandbox} = context;
 
-    instances.set(cacheKey, instance);
+        const api: Api<Point> = {
+          target: options.target,
+          version: options.version,
+          settings: createThreadSignal(settings, {signal}),
+          query: createThreadSignal(liveQuery.result, {signal}),
+        };
 
-    return instance;
-
-    function createInstanceThreadSignal<T>(signal: Signal<T>): ThreadSignal<T> {
-      const threadSignal = createThreadSignal(signal);
-
-      return {
-        get initial() {
-          return threadSignal.initial;
-        },
-        set: threadSignal.set,
-        start(subscriber, {signal: threadAbortSignal} = {}) {
-          const abortSignal =
-            threadAbortSignal && acceptThreadAbortSignal(threadAbortSignal);
-
-          const finalAbortSignal =
-            abortSignal && currentRender?.abort.signal
-              ? anyAbortSignal(abortSignal, currentRender.abort.signal)
-              : abortSignal ?? currentRender?.abort.signal;
-
-          return threadSignal.start(subscriber, {signal: finalAbortSignal});
-        },
-      };
-    }
-
-    async function restart() {
-      currentRender?.abort.abort();
-      currentRender = undefined;
-      receiver.value = createRemoteReceiver();
-      await sandbox!.restart();
-      await render();
-    }
-
-    async function render(_: {signal?: AbortSignal} = {}) {
-      currentRender = {abort: new AbortController()};
-      await Promise.all([sandbox!.start(), context.liveQuery.run()]);
-      await sandbox!.run(async (sandbox) => {
         await sandbox.render(
           options.target,
-          receiver.value.receive,
-          Object.keys(instance.components),
+          receiver.receive,
+          Object.keys(components),
           api as any,
         );
-      });
+      },
+    });
+
+    return renderer;
+  }
+
+  function createLocalInstance<Point extends ExtensionPoint>(
+    options: ClipsExtensionPointLocalInstanceOptions<Point>,
+  ) {
+    const extensionPoint = extensionPoints[options.target];
+
+    const emitter = createEmitter<{script: string}>();
+    const script = signal<string | undefined>(undefined);
+    const settings = signal({});
+    const liveQuery = createLiveQueryRunner(
+      undefined,
+      (helpers) => extensionPoint.query(options.options as never, helpers),
+      {
+        context: appContext,
+        signal: new AbortController().signal,
+      },
+    );
+
+    const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
+      context({signal}) {
+        return {
+          settings,
+          liveQuery,
+          sandbox: createSandbox({signal}),
+          components: extensionPoint.components() as any,
+        };
+      },
+      async prepare({context: {sandbox, liveQuery}}) {
+        const localScript =
+          script.value ?? (await emitter.on('script', {once: true}));
+
+        await Promise.all([
+          sandbox.load(localScript, 'unstable'),
+          liveQuery.run(),
+        ]);
+      },
+      async render({signal, receiver, context}) {
+        const {settings, liveQuery, components, sandbox} = context;
+
+        const api: Api<Point> = {
+          target: options.target,
+          version: 'unstable',
+          settings: createThreadSignal(settings, {signal}),
+          query: createThreadSignal(liveQuery.result, {signal}),
+        };
+
+        await sandbox.render(
+          options.target,
+          receiver.receive,
+          Object.keys(components),
+          api as any,
+        );
+      },
+    });
+
+    pollForUpdates();
+
+    async function pollForUpdates() {
+      let lastSuccessfulBuild:
+        | LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess
+        | undefined;
+
+      for await (const result of localDevelopment.query(localClipQuery, {
+        signal: renderer.signal,
+        variables: {id: options.extension.id},
+      })) {
+        const clipsExtension = result.data?.app?.clipsExtension;
+
+        if (clipsExtension == null) {
+          await renderer.destroy();
+          return;
+        }
+
+        const build = clipsExtension?.build;
+        const extensionPoint = clipsExtension?.extends.find((extend) => {
+          return extend.target === options.target;
+        });
+
+        let needsRestart = false;
+
+        if (
+          build?.__typename === 'ExtensionBuildSuccess' &&
+          build.id !== lastSuccessfulBuild?.id
+        ) {
+          const newScript = build.assets[0]!.source;
+
+          script.value = newScript;
+          needsRestart = lastSuccessfulBuild != null;
+          lastSuccessfulBuild = build;
+
+          emitter.emit('script', newScript);
+        }
+
+        if (needsRestart) {
+          renderer.restart();
+        }
+
+        if (extensionPoint) {
+          liveQuery.update(extensionPoint.liveQuery?.query ?? undefined);
+        }
+      }
     }
+
+    return renderer;
   }
 }
-
-function createClipsExtensionSandboxInstance({
-  script,
-  version,
-}: {
-  script: string;
-  version: Version;
-}): ClipsExtensionSandboxInstance {
-  let startId = 0;
-  let loadPromise: Promise<void> | undefined;
-  let sandbox: Sandbox | undefined;
-  let abort: AbortController;
-
-  const state: ClipsExtensionSandboxInstance['state'] = signal('stopped');
-  const timings: Signal<Writable<ClipsExtensionSandboxInstanceTiming>> = signal(
-    {},
-  );
-  const emitter = createEmitter<ClipsExtensionSandboxInstanceEventMap>();
-
-  const sandboxProxy: ClipsExtensionSandbox = {
-    render: (...args) => (call as any)('render', ...args),
-    getResourceTimingEntries: (...args) =>
-      call('getResourceTimingEntries', ...args),
-  };
-
-  const sandboxController: ClipsExtensionSandboxInstance = {
-    timings,
-    get id() {
-      return String(startId);
-    },
-    state,
-    start,
-    stop,
-    restart,
-    on: emitter.on,
-    run: async (runner) => runner(sandboxProxy),
-  };
-
-  return sandboxController;
-
-  type PromiseType<T> = T extends PromiseLike<infer U> ? U : T;
-
-  async function call<K extends keyof Sandbox>(
-    key: K,
-    ...args: Parameters<Sandbox[K]>
-  ): Promise<PromiseType<ReturnType<Sandbox[K]>>> {
-    if (sandbox == null) {
-      throw new Error('tried to call a method but no sandbox exists');
-    }
-
-    if (loadPromise) {
-      await loadPromise;
-    }
-
-    const result = await (sandbox[key] as any)(...args);
-    return result;
-  }
-
-  async function start() {
-    if (sandbox) return;
-
-    const currentStartId = startId;
-
-    abort = new AbortController();
-    state.value = 'starting';
-    timings.value = {start: Date.now()};
-    sandbox = createSandbox({
-      signal: abort.signal,
-    }) as any;
-
-    state.value = 'loading';
-    timings.value = {...timings.peek(), loadStart: Date.now()};
-    emitter.emit('load:start');
-    loadPromise = sandbox!.load(script, version);
-
-    await loadPromise;
-
-    if (currentStartId === startId) {
-      loadPromise = undefined;
-      timings.value = {...timings.peek(), loadStart: Date.now()};
-      emitter.emit('load:end');
-    }
-  }
-
-  function stop() {
-    sandbox = undefined;
-    loadPromise = undefined;
-    startId += 1;
-    timings.value = {};
-    state.value = 'stopped';
-    abort.abort();
-    emitter.emit('stop');
-  }
-
-  function restart() {
-    stop();
-    return start();
-  }
-}
-
 interface ClipsLocalDevelopmentServerThreadApi {
   query<Data, Variables>(
     query: string,

@@ -1,5 +1,4 @@
-import {useEffect, useMemo, useRef} from 'react';
-import {useSignal, useSignalEffect} from '@quilted/quilt';
+import {useEffect, useMemo} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRenderer, createController} from '@remote-ui/react/host';
 import {
@@ -18,88 +17,49 @@ import {
 
 import {useMutation} from '~/shared/graphql';
 
-import {useClipsManager, useLocalDevelopmentServerQuerySignal} from '../react';
+import {useClipsManager} from '../react';
 import {
   type ClipsExtensionPoint,
-  type ClipsExtensionPointWithLocal,
   type ClipsExtensionPointInstance,
-  type InstalledClipsExtensionPoint,
-  type LocalClipsExtensionPoint,
 } from '../extension';
-import {
-  type ExtensionPointWithOptions,
-  type OptionsForExtensionPoint,
-} from '../extension-points';
 
 import {ClipSettings} from './ClipSettings';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
-import localClipQuery, {
-  type LocalClipQueryData,
-} from './graphql/LocalClipQuery.graphql';
 
-type OptionProps<Point extends ExtensionPoint> =
-  Point extends ExtensionPointWithOptions
-    ? {options: OptionsForExtensionPoint<Point>}
-    : {options?: never};
-
-export type ClipProps<Point extends ExtensionPoint> = {
+export interface ClipProps<Point extends ExtensionPoint> {
   extension: ClipsExtensionPoint<Point>;
-} & OptionProps<Point>;
+}
 
 export function Clip<Point extends ExtensionPoint>({
   extension,
-  options,
 }: ClipProps<Point>) {
-  const installed = useInstalledClipInstance(
-    extension,
-    extension.installed,
-    options as OptionsForExtensionPoint<Point>,
-  );
-
-  if (extension.local) {
-    return (
-      <ClipRendererWithLocalVersion
-        extension={extension as ClipsExtensionPointWithLocal<Point>}
-        options={options as OptionsForExtensionPoint<Point>}
-        installed={installed}
-      />
-    );
-  }
-
-  return <ClipRenderer extension={extension} installed={installed} />;
-}
-
-function ClipRenderer<Point extends ExtensionPoint>({
-  local,
-  installed,
-  extension,
-}: {
-  extension: ClipsExtensionPoint<Point>;
-  local?: ClipsExtensionPointInstance<Point>;
-  installed?: ClipsExtensionPointInstance<Point>;
-}) {
   const {name, app} = extension.extension;
 
-  const instance = local ?? installed;
+  const manager = useClipsManager();
+  const installed =
+    extension.installed && manager.fetchInstance(extension.installed);
+  const local = extension.local && manager.fetchInstance(extension.local);
+
+  const renderer = local ?? installed;
 
   return (
     <BlockStack spacing="small">
       <ContentAction
         overlay={
           <Popover inlineAttachment="start">
-            {installed && (
+            {installed?.instance.value && (
               <Section padding>
-                <ClipSettings instance={installed} />
+                <ClipSettings
+                  id={extension.id}
+                  instance={installed.instance.value}
+                />
               </Section>
             )}
             <Menu>
               <ViewAppAction />
-              {instance && <RestartClipAction instance={instance} />}
+              {renderer && <RestartClipAction instance={renderer} />}
               {extension.installed && (
-                <UninstallClipAction
-                  extension={extension}
-                  installed={extension.installed}
-                />
+                <UninstallClipAction extension={extension} />
               )}
               {extension.installed && <ReportIssueAction />}
             </Menu>
@@ -127,24 +87,8 @@ function ClipRenderer<Point extends ExtensionPoint>({
         </Layout>
       </ContentAction>
 
-      <View>{instance && <ClipInstanceRenderer instance={instance} />}</View>
+      <View>{renderer && <ClipInstanceRenderer renderer={renderer} />}</View>
     </BlockStack>
-  );
-}
-
-function ClipRendererWithLocalVersion<Point extends ExtensionPoint>({
-  options,
-  extension,
-  installed,
-}: {
-  extension: ClipsExtensionPointWithLocal<Point>;
-  options?: OptionsForExtensionPoint<Point>;
-  installed?: ClipsExtensionPointInstance<Point>;
-}) {
-  const local = useLocalClipInstance(extension, extension.local, options);
-
-  return (
-    <ClipRenderer extension={extension} installed={installed} local={local} />
   );
 }
 
@@ -175,7 +119,6 @@ function UninstallClipAction({
   extension,
 }: {
   extension: ClipsExtensionPoint<any>;
-  installed: InstalledClipsExtensionPoint;
 }) {
   const uninstallClipsExtensionFromClip = useMutation(
     uninstallClipsExtensionFromClipMutation,
@@ -207,137 +150,28 @@ function ReportIssueAction() {
 }
 
 function ClipInstanceRenderer<Point extends ExtensionPoint>({
-  instance,
+  renderer,
 }: {
-  instance: ClipsExtensionPointInstance<Point>;
+  renderer: ClipsExtensionPointInstance<Point>;
 }) {
-  const controller = useMemo(
-    () => createController(instance.components),
-    [instance],
-  );
+  const instance = renderer.instance.value;
 
   useEffect(() => {
-    const abort = new AbortController();
-
-    instance.render({signal: abort.signal});
+    renderer.start();
 
     return () => {
-      abort.abort();
+      renderer.stop();
     };
-  }, [instance]);
+  }, [renderer]);
 
-  return (
-    <RemoteRenderer
-      controller={controller}
-      receiver={instance.receiver.value}
-    />
+  const components = instance?.context.components;
+
+  const controller = useMemo(
+    () => components && createController(components),
+    [components],
   );
-}
 
-function useInstalledClipInstance<Point extends ExtensionPoint>(
-  extension: ClipsExtensionPoint<Point>,
-  installed?: InstalledClipsExtensionPoint,
-  options?: OptionsForExtensionPoint<Point>,
-) {
-  const manager = useClipsManager();
-
-  if (installed == null) return undefined;
-
-  return manager.fetchInstance({
-    target: extension.target,
-    version: installed.version,
-    source: 'installed',
-    extension,
-    settings: installed.settings,
-    liveQuery: installed.liveQuery,
-    script: {url: installed.script},
-    // @ts-expect-error Can’t make the types work here :/
-    options,
-  });
-}
-
-const DEFAULT_BUILD_STATE = {
-  __typename: 'ExtensionBuildInProgress',
-  id: '0',
-  startedAt: new Date().toISOString(),
-} as const;
-
-function useLocalClipInstance<Point extends ExtensionPoint>(
-  extension: ClipsExtensionPoint<Point>,
-  _local: LocalClipsExtensionPoint,
-  options?: OptionsForExtensionPoint<Point>,
-) {
-  const manager = useClipsManager();
-  const result = useLocalDevelopmentServerQuerySignal(localClipQuery, {
-    variables: {id: extension.extension.id},
-  });
-  const script = useSignal<string | undefined>(undefined);
-  const instanceDetailsRef = useRef<{
-    lastBuild: LocalClipQueryData.App.ClipsExtension.Build;
-    instance?: ClipsExtensionPointInstance<Point>;
-    initialLiveQuery?: LocalClipQueryData.App.ClipsExtension.Extends.LiveQuery;
-    lastLiveQuery?: LocalClipQueryData.App.ClipsExtension.Extends.LiveQuery;
-    lastBuildSuccess?: LocalClipQueryData.App.ClipsExtension.Build_ExtensionBuildSuccess;
-  }>({lastBuild: DEFAULT_BUILD_STATE});
-
-  useSignalEffect(() => {
-    if (!result.value.data) return;
-
-    const clipExtension = result.value.data.app?.clipsExtension;
-
-    const buildState = clipExtension?.build ?? DEFAULT_BUILD_STATE;
-
-    const isRestart =
-      buildState.__typename === 'ExtensionBuildSuccess' &&
-      instanceDetailsRef.current.lastBuildSuccess != null &&
-      instanceDetailsRef.current.lastBuildSuccess.id !== buildState.id;
-
-    instanceDetailsRef.current.lastBuild = buildState;
-    if (buildState.__typename === 'ExtensionBuildSuccess') {
-      instanceDetailsRef.current.lastBuildSuccess = buildState;
-      script.value = buildState.assets[0]?.source;
-    }
-
-    const liveQuery =
-      clipExtension?.extends.find(
-        (extend) => extend.target === extension.target,
-      )?.liveQuery ?? undefined;
-
-    if (
-      liveQuery != null &&
-      instanceDetailsRef.current.initialLiveQuery == null
-    ) {
-      instanceDetailsRef.current.initialLiveQuery = liveQuery;
-    }
-
-    if (liveQuery?.query !== instanceDetailsRef.current.lastLiveQuery?.query) {
-      instanceDetailsRef.current.lastLiveQuery = liveQuery;
-      instanceDetailsRef.current.instance?.context.liveQuery.update(
-        liveQuery?.query,
-      );
-    }
-
-    if (isRestart) {
-      instanceDetailsRef.current.instance?.restart();
-    }
-  });
-
-  const scriptUrl = script.value;
-
-  if (scriptUrl == null) return undefined;
-
-  const instance = manager.fetchInstance({
-    target: extension.target,
-    version: 'unstable',
-    source: 'local',
-    extension,
-    script: {url: scriptUrl},
-    liveQuery: instanceDetailsRef.current.lastLiveQuery?.query,
-    // @ts-expect-error Can’t make the types work here :/
-    options,
-  });
-
-  instanceDetailsRef.current.instance = instance;
-
-  return instance;
+  return controller && instance ? (
+    <RemoteRenderer controller={controller} receiver={instance.receiver} />
+  ) : null;
 }
