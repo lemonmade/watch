@@ -75,7 +75,10 @@ export function createClipsManager(
   appContext: ExtensionPointDefinitionContext,
   extensionPoints: ExtensionPointDefinitions,
 ): ClipsManager {
-  const renderers = new Map<string, ClipsExtensionPointInstance<any>>();
+  const renderers = new Map<
+    Map<string, unknown>,
+    ClipsExtensionPointInstance<any>
+  >();
   const localDevelopment = createLocalDevelopmentServer();
 
   return {
@@ -84,18 +87,34 @@ export function createClipsManager(
     fetchInstance,
   };
 
+  function getFromCache<Point extends ExtensionPoint>(
+    options: ClipsExtensionPointInstanceOptions<Point> & {_id: string},
+  ) {
+    const entries = Object.entries(options);
+
+    for (const [cacheKey, instance] of renderers.entries()) {
+      if (cacheKey.size !== entries.length) continue;
+
+      if (entries.every(([key, value]) => cacheKey.get(key) === value)) {
+        return instance as ClipsExtensionPointInstance<Point>;
+      }
+
+      for (const [key, value] of entries) {
+        if (cacheKey.get(key) !== value) break;
+      }
+    }
+  }
+
   function fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
-    if (options.source === 'local') {
-      const cacheKey = JSON.stringify({
-        source: 'local',
-        extension: options.extension.id,
-        target: options.target,
-        options: options.options,
-      });
+    const cacheKey = {
+      _id: `${options.source}:${options.extension.id}:${options.target}`,
+      ...(options.options as any),
+    };
 
-      const cached = renderers.get(cacheKey);
+    if (options.source === 'local') {
+      const cached = getFromCache(cacheKey);
       if (cached) return cached;
 
       const renderer = createLocalInstance(options);
@@ -103,13 +122,6 @@ export function createClipsManager(
 
       return renderer;
     }
-
-    const cacheKey = JSON.stringify({
-      source: 'installed',
-      extension: options.extension.id,
-      target: options.target,
-      options: options.options,
-    });
 
     const cached = renderers.get(cacheKey);
     if (cached) return cached;
