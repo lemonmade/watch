@@ -1,7 +1,7 @@
 .Choice {
   --z-internal-Choice-border-color: var(--z-Choice-border-color);
   --z-internal-Choice-corner-radius: 50%;
-  --z-internal-Choice-text-line-block-size: calc(var(--z-text-base-line-height) * var(--z-text-base-font-size));
+  --z-internal-Choice-text-line-block-size: var(--z-text-base-line-height);
   --z-internal-Choice-block-inset: calc(
     (var(--z-Action-minimum-size) - var(--z-internal-Choice-text-line-block-size)) * -0.5
   );
