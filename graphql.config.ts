@@ -17,6 +17,7 @@ const config: Configuration = {
         'app/shared/clips/graphql/LocalClipQuery.graphql',
         'app/features/Developer/Console/graphql/DeveloperConsoleQuery.graphql',
         'app/server/**/*.graphql',
+        '**/*.schema.graphql',
       ],
       extensions: {
         quilt: {
@@ -71,6 +72,21 @@ const config: Configuration = {
             {
               kind: 'definitions',
               outputPath: 'packages/clips/source/graphql/SeriesDetails.ts',
+            },
+          ],
+        },
+      },
+    },
+    clipsWatchThroughDetails: {
+      schema:
+        'packages/clips/source/graphql/WatchThroughDetails.schema.graphql',
+      extensions: {
+        quilt: {
+          schema: [
+            {
+              kind: 'definitions',
+              outputPath:
+                'packages/clips/source/graphql/WatchThroughDetails.ts',
             },
           ],
         },

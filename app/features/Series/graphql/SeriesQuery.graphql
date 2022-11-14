@@ -53,11 +53,8 @@ query Series($id: ID, $handle: String) {
         episode
       }
     }
-  }
-  clipsInstallations(
-    target: "Series.Details.RenderAccessory"
-    conditions: [{series: {id: $id, handle: $handle}}]
-  ) {
-    ...ClipsExtension
+    clipsInstallations(target: "Series.Details.RenderAccessory") {
+      ...ClipsExtension
+    }
   }
 }

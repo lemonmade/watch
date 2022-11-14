@@ -41,7 +41,8 @@
     "mime": "^2.5.0",
     "react": "npm:@quilted/react@^17.0.0",
     "react-dom": "npm:@quilted/react-dom@^17.0.0",
-    "react-query": "^3.39.0"
+    "react-query": "^3.39.0",
+    "zod": "^3.19.1"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/app",

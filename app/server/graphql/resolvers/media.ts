@@ -16,6 +16,7 @@ import {
   Episode as EpisodeLists,
 } from './lists';
 import {Series as SeriesSubscription} from './subscriptions';
+import {Series as SeriesApp} from './apps';
 import {Series as SeriesWatchLater} from './watch-later';
 import {
   Series as SeriesWatches,
@@ -93,6 +94,7 @@ export const Series: SeriesResolver = {
   ...SeriesWatches,
   ...SeriesWatchLater,
   ...SeriesSubscription,
+  ...SeriesApp,
 };
 
 export const Season: SeasonResolver = {

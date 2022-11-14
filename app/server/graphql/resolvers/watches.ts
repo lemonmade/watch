@@ -18,6 +18,7 @@ import {
 import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists';
 import {addSeriesToWatchLater} from './watch-later';
+import {WatchThrough as WatchThroughApp} from './apps';
 
 declare module './types' {
   export interface ValueMap {
@@ -174,6 +175,7 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
       spoilerAvoidance,
     };
   },
+  ...WatchThroughApp,
 };
 
 export const Watch: Resolver<'Watch'> = {

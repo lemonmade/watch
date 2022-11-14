@@ -37,6 +37,7 @@ import {
 import {Page} from '~/shared/page';
 import {SpoilerAvoidance} from '~/shared/spoilers';
 import {useQuery, useMutation, type PickTypename} from '~/shared/graphql';
+import {Clip, useClips} from '~/shared/clips';
 
 import watchThroughQuery, {
   type WatchThroughQueryData,
@@ -61,6 +62,16 @@ interface PageDetails {
   initialActionDate: Signal<Date | undefined>;
 }
 
+export interface WatchForm {
+  readonly media: NonNullable<WatchThrough['nextEpisode']>;
+  readonly at: Signal<Date | undefined>;
+  readonly rating: Signal<number | undefined>;
+  readonly notes: {
+    readonly content: Signal<string | undefined>;
+    readonly containsSpoilers: Signal<boolean>;
+  };
+}
+
 const PageDetailsContext = createOptionalContext<PageDetails>();
 const usePageDetails = createUseContextHook(PageDetailsContext);
 
@@ -83,8 +94,17 @@ function WatchThroughWithData({
   watchThrough: WatchThroughQueryData.WatchThrough;
   onUpdate(): Promise<any>;
 }) {
-  const {id, nextEpisode, status, series, actions, settings, from, to} =
-    watchThrough;
+  const {
+    id,
+    nextEpisode,
+    status,
+    series,
+    actions,
+    settings,
+    from,
+    to,
+    clipsInstallations,
+  } = watchThrough;
 
   const watchingSingleSeason = from.season === to.season;
 
@@ -92,6 +112,22 @@ function WatchThroughWithData({
     const initialActionDate = signal(new Date());
     return {initialActionDate};
   }, []);
+
+  const nextEpisodeForm = useMemo(
+    () =>
+      signal<WatchForm | undefined>(
+        watchFormFromNextEpisode(nextEpisode, pageDetails.initialActionDate),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  if (nextEpisodeForm.peek()?.media.id !== nextEpisode?.id) {
+    nextEpisodeForm.value = watchFormFromNextEpisode(
+      nextEpisode,
+      pageDetails.initialActionDate,
+    );
+  }
 
   const nextEpisodeDetailContent = nextEpisode
     ? watchingSingleSeason
@@ -133,24 +169,21 @@ function WatchThroughWithData({
         <BlockStack spacing="huge">
           {nextEpisode != null && nextEpisode.hasAired ? (
             <NextEpisode
-              id={nextEpisode.id}
-              title={nextEpisode.title}
-              episodeNumber={nextEpisode.number}
-              seasonNumber={nextEpisode.season.number}
-              firstAired={
-                nextEpisode.firstAired
-                  ? new Date(nextEpisode.firstAired)
-                  : undefined
-              }
+              form={nextEpisodeForm}
               watchThroughId={id}
-              image={nextEpisode.still?.source ?? undefined}
-              overview={nextEpisode.overview ?? undefined}
               watchingSingleSeason={watchingSingleSeason}
               onUpdate={() => onUpdate()}
             />
           ) : nextEpisode != null || status === 'ONGOING' ? (
             <UpToDate nextEpisode={nextEpisode} />
           ) : null}
+
+          <AccessoryClips
+            id={id}
+            series={series}
+            installations={clipsInstallations}
+            currentWatch={nextEpisodeForm}
+          />
 
           {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
 
@@ -159,6 +192,23 @@ function WatchThroughWithData({
       </Page>
     </PageDetailsContext.Provider>
   );
+}
+
+function watchFormFromNextEpisode(
+  nextEpisode: WatchThrough['nextEpisode'],
+  initialActionDate: Signal<Date | undefined>,
+): WatchForm | undefined {
+  return nextEpisode && nextEpisode.hasAired
+    ? {
+        media: nextEpisode,
+        at: signal(initialActionDate.peek()),
+        rating: signal(undefined),
+        notes: {
+          content: signal(undefined),
+          containsSpoilers: signal(false),
+        },
+      }
+    : undefined;
 }
 
 function UpToDate({nextEpisode}: {nextEpisode?: WatchThrough['nextEpisode']}) {
@@ -184,42 +234,27 @@ function UpToDate({nextEpisode}: {nextEpisode?: WatchThrough['nextEpisode']}) {
 }
 
 function NextEpisode({
-  id,
-  title,
-  image,
-  firstAired,
+  form: {value: form},
   watchThroughId,
-  episodeNumber,
-  seasonNumber,
   watchingSingleSeason,
   onUpdate,
 }: {
-  id: string;
-  title: string;
-  image?: string;
-  overview?: string;
-  firstAired?: Date;
+  form: Signal<WatchForm | undefined>;
   watchThroughId: string;
-  episodeNumber: number;
-  seasonNumber: number;
   watchingSingleSeason: boolean;
   onUpdate(): void | Promise<void>;
 }) {
-  const {initialActionDate} = usePageDetails();
+  if (form == null) return null;
 
-  const rating = useSignal<number | undefined>(undefined, [id]);
-  const notes = useSignal<string | undefined>(undefined, [id]);
-  const containsSpoilers = useSignal(false, [id]);
-  const at = useSignal<Date | undefined>(initialActionDate.value, [id]);
+  const {id, title, number, season, firstAired, still} = form.media;
+
+  const image = still?.source;
 
   return (
     <WatchEpisodeForm
       id={id}
+      form={form}
       watchThroughId={watchThroughId}
-      at={at}
-      rating={rating}
-      notes={notes}
-      containsSpoilers={containsSpoilers}
       onUpdate={onUpdate}
     >
       <BlockStack spacing>
@@ -231,10 +266,10 @@ function NextEpisode({
 
               <BlockStack spacing="tiny">
                 {watchingSingleSeason ? (
-                  <Text emphasis="subdued">Episode {episodeNumber}</Text>
+                  <Text emphasis="subdued">Episode {number}</Text>
                 ) : (
                   <Text emphasis="subdued">
-                    Season {seasonNumber}, Episode {episodeNumber}
+                    Season {season.number}, Episode {number}
                   </Text>
                 )}
                 {firstAired && (
@@ -257,19 +292,12 @@ function NextEpisode({
                     <Popover inlineAttachment="end">
                       <Menu>
                         <SkipEpisodeAction
-                          id={id}
-                          at={at}
-                          notes={notes}
-                          containsSpoilers={containsSpoilers}
+                          form={form}
                           watchThroughId={watchThroughId}
                           onUpdate={onUpdate}
                         />
                         <SkipEpisodeWithNotesAction
-                          id={id}
-                          episodeNumber={episodeNumber}
-                          seasonNumber={seasonNumber}
-                          title={title}
-                          image={image}
+                          form={form}
                           watchThroughId={watchThroughId}
                           onUpdate={onUpdate}
                         />
@@ -284,11 +312,11 @@ function NextEpisode({
           </Layout>
 
           <InlineStack spacing>
-            <EpisodeRating value={rating} />
-            <EpisodeDatePicker action="watch" value={at} />
+            <EpisodeRating value={form.rating} />
+            <EpisodeDatePicker action="watch" value={form.at} />
           </InlineStack>
 
-          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
+          <DetailedReview notes={form.notes} />
         </BlockStack>
       </BlockStack>
     </WatchEpisodeForm>
@@ -297,25 +325,21 @@ function NextEpisode({
 
 interface WatchEpisodeFormProps {
   id: string;
-  at: Signal<Date | undefined>;
-  rating: Signal<number | undefined>;
-  notes: Signal<string | undefined>;
-  containsSpoilers: Signal<boolean>;
+  form: WatchForm;
   watchThroughId: string;
   onUpdate(): void | Promise<void>;
 }
 
 function WatchEpisodeForm({
   id,
-  at,
-  notes,
-  rating,
-  containsSpoilers,
+  form,
   watchThroughId,
   children,
   onUpdate,
 }: PropsWithChildren<WatchEpisodeFormProps>) {
   const {mutateAsync} = useMutation(watchNextEpisodeMutation);
+
+  const {at, notes, rating} = form;
 
   const watchEpisode = async () => {
     const optionalArguments: Omit<
@@ -325,10 +349,10 @@ function WatchEpisodeForm({
       finishedAt: at.value?.toISOString(),
     };
 
-    if (notes.value) {
+    if (notes.content.value) {
       optionalArguments.notes = {
-        content: notes.value,
-        containsSpoilers: containsSpoilers.value,
+        content: notes.content.value,
+        containsSpoilers: notes.containsSpoilers.value,
       };
     }
 
@@ -348,11 +372,11 @@ function WatchEpisodeForm({
   return <Form onSubmit={watchEpisode}>{children}</Form>;
 }
 
-function EpisodeRating({value: rating}: {value: Signal<number | undefined>}) {
+function EpisodeRating({value: rating}: {value: WatchForm['rating']}) {
   return (
     <Rating
       size="large"
-      value={rating.value ?? undefined}
+      value={rating.value}
       onChange={(newRating) => {
         rating.value = newRating === 0 ? undefined : newRating;
       }}
@@ -365,7 +389,7 @@ function EpisodeDatePicker({
   value: at,
 }: {
   action: 'watch' | 'skip';
-  value: Signal<Date | undefined>;
+  value: WatchForm['at'];
 }) {
   const {initialActionDate} = usePageDetails();
 
@@ -388,19 +412,16 @@ function EpisodeDatePicker({
     />
   );
 }
-function DetailedReview({
-  notes,
-  containsSpoilers,
-}: {
-  notes: Signal<string | undefined>;
-  containsSpoilers: Signal<boolean>;
-}) {
-  const hasNotes = Boolean(notes.value);
+function DetailedReview({notes}: {notes: WatchForm['notes']}) {
+  const hasNotes = Boolean(notes.content.value);
 
   return (
     <>
-      <NotesTextField value={notes} />
-      <Checkbox disabled={!hasNotes} checked={hasNotes && containsSpoilers}>
+      <NotesTextField value={notes.content} />
+      <Checkbox
+        disabled={!hasNotes}
+        checked={hasNotes && notes.containsSpoilers}
+      >
         These notes contain spoilers
       </Checkbox>
     </>
@@ -431,13 +452,7 @@ function SkipEpisodeAction(options: SkipEpisodeActionProps) {
   );
 }
 
-interface SkipEpisodeWithNotesActionProps
-  extends Omit<SkipEpisodeOptions, 'at' | 'notes' | 'containsSpoilers'> {
-  title: string;
-  image?: string;
-  seasonNumber: number;
-  episodeNumber: number;
-}
+interface SkipEpisodeWithNotesActionProps extends SkipEpisodeOptions {}
 
 function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
   return (
@@ -448,19 +463,20 @@ function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
 }
 
 function SkipEpisodeModal({
-  title,
-  image,
-  episodeNumber,
-  seasonNumber,
+  form: watchForm,
   ...options
 }: SkipEpisodeWithNotesActionProps) {
   const {initialActionDate} = usePageDetails();
 
-  const at = useSignal<Date | undefined>(initialActionDate.value);
-  const notes = useSignal<string | undefined>(undefined);
-  const containsSpoilers = useSignal(false);
+  const form = useMemo(
+    () => watchFormFromNextEpisode(watchForm.media, initialActionDate)!,
+    [watchForm.media, initialActionDate],
+  );
 
-  const skipEpisode = useSkipEpisode({...options, at, notes, containsSpoilers});
+  const skipEpisode = useSkipEpisode({...options, form});
+
+  const {title, number, season, still} = form.media;
+  const image = still?.source;
 
   return (
     <Modal padding>
@@ -479,15 +495,15 @@ function SkipEpisodeModal({
             <BlockStack spacing="small" padding>
               <Text>{title}</Text>
               <Text emphasis="subdued">
-                Season {seasonNumber}, Episode {episodeNumber}
+                Season {season.number}, Episode {number}
               </Text>
             </BlockStack>
           </Layout>
 
-          <DetailedReview notes={notes} containsSpoilers={containsSpoilers} />
+          <DetailedReview notes={form.notes} />
 
           <InlineStack alignment="spaceBetween" spacing="small">
-            <EpisodeDatePicker action="skip" value={at} />
+            <EpisodeDatePicker action="skip" value={form.at} />
             <Action emphasis perform="submit">
               Skip Episode
             </Action>
@@ -499,23 +515,15 @@ function SkipEpisodeModal({
 }
 
 interface SkipEpisodeOptions {
-  id: string;
+  form: WatchForm;
   watchThroughId: string;
-  at?: Signal<Date | undefined>;
-  notes?: Signal<string | undefined>;
-  containsSpoilers?: Signal<boolean>;
   onUpdate(): void | Promise<void>;
 }
 
-function useSkipEpisode({
-  id,
-  watchThroughId,
-  at,
-  notes,
-  containsSpoilers,
-  onUpdate,
-}: SkipEpisodeOptions) {
+function useSkipEpisode({form, watchThroughId, onUpdate}: SkipEpisodeOptions) {
   const {mutateAsync} = useMutation(skipNextEpisodeMutation);
+
+  const {at, notes} = form;
 
   const skipEpisode = async () => {
     const optionalArguments: Omit<
@@ -523,16 +531,16 @@ function useSkipEpisode({
       'episode' | 'watchThrough'
     > = {at: at?.value?.toISOString()};
 
-    if (notes?.value) {
+    if (notes.content.value) {
       optionalArguments.notes = {
-        content: notes.value,
-        containsSpoilers: containsSpoilers?.value ?? false,
+        content: notes.content.value,
+        containsSpoilers: notes.containsSpoilers.value,
       };
     }
 
     await mutateAsync({
       ...optionalArguments,
-      episode: id,
+      episode: form.media.id,
       watchThrough: watchThroughId,
     });
 
@@ -767,5 +775,31 @@ function SettingsSection({
         />
       </BlockStack>
     </Section>
+  );
+}
+
+function AccessoryClips({
+  id,
+  series,
+  installations,
+  currentWatch,
+}: Pick<WatchThroughQueryData.WatchThrough, 'id' | 'series'> & {
+  installations: WatchThroughQueryData.WatchThrough['clipsInstallations'];
+  currentWatch: Signal<WatchForm | undefined>;
+}) {
+  const accessoryClips = useClips(
+    'WatchThrough.Details.RenderAccessory',
+    installations,
+    {id, seriesId: series.id, seriesName: series.name, currentWatch},
+  );
+
+  if (accessoryClips.length === 0) return null;
+
+  return (
+    <BlockStack spacing="large">
+      {accessoryClips.map((clip) => (
+        <Clip key={clip.id} extension={clip} />
+      ))}
+    </BlockStack>
   );
 }

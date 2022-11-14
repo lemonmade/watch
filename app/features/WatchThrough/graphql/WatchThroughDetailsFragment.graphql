@@ -1,3 +1,5 @@
+#import "../../../shared/clips/graphql/ClipsExtensionFragment.graphql"
+
 fragment WatchThroughDetails on WatchThrough {
   id
   from {
@@ -78,5 +80,8 @@ fragment WatchThroughDetails on WatchThrough {
   }
   settings {
     spoilerAvoidance
+  }
+  clipsInstallations(target: "WatchThrough.Details.RenderAccessory") {
+    ...ClipsExtension
   }
 }

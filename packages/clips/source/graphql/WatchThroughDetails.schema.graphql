@@ -1,0 +1,24 @@
+#import "./Shared.schema.graphql"
+
+extend type Query {
+  watchThrough: WatchThrough!
+}
+
+extend type WatchThrough {
+  currentWatch: WatchThroughCurrentWatch
+}
+
+schema {
+  query: Query
+}
+
+type Notes {
+  content: FormattedText!
+  containsSpoilers: Boolean!
+}
+
+type WatchThroughCurrentWatch {
+  finishedAt: Date
+  rating: Int
+  notes: Notes
+}

@@ -4,7 +4,12 @@ import type {
   RemoteComponentType,
 } from '@remote-ui/core';
 
-import type {Api, SharedGraphQLApi, SeriesDetailsGraphQLApi} from './api';
+import type {
+  Api,
+  SharedGraphQLApi,
+  SeriesDetailsGraphQLApi,
+  WatchThroughDetailsGraphQLApi,
+} from './api';
 import type {CommonComponents} from './components';
 
 export interface ExtensionPoints {
@@ -12,7 +17,10 @@ export interface ExtensionPoints {
     'Series.Details.RenderAccessory',
     SeriesDetailsGraphQLApi
   >;
-  'WatchThrough.Details.RenderAccessory': RenderExtension<'WatchThrough.Details.RenderAccessory'>;
+  'WatchThrough.Details.RenderAccessory': RenderExtension<
+    'WatchThrough.Details.RenderAccessory',
+    WatchThroughDetailsGraphQLApi
+  >;
 }
 
 export type ExtensionPoint = keyof ExtensionPoints;

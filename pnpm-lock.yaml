@@ -91,6 +91,7 @@ importers:
       react: npm:@quilted/react@^17.0.0
       react-dom: npm:@quilted/react-dom@^17.0.0
       react-query: ^3.39.0
+      zod: ^3.19.1
     dependencies:
       '@aws-sdk/client-s3': 3.107.0
       '@aws-sdk/s3-request-presigner': 3.107.0
@@ -125,6 +126,7 @@ importers:
       react: /@quilted/react/17.0.5_@babel+runtime@7.18.9
       react-dom: /@quilted/react-dom/17.0.5_@babel+runtime@7.18.9
       react-query: 3.39.1_a0196d1569fcdc26bd98f3e4bc6c31fd
+      zod: 3.19.1
 
   functions/clips-upload:
     specifiers:
@@ -9395,7 +9397,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
@@ -12730,4 +12732,8 @@ packages:
       cookie: 0.4.2
       mustache: 4.2.0
       stack-trace: 0.0.10
+    dev: true
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
     dev: true

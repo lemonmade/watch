@@ -7,6 +7,8 @@ import type {
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
 import Env from '@quilted/quilt/env';
+import {type ExtensionPoint} from '@watching/clips';
+import {z} from 'zod';
 
 import type {
   ClipsExtensionPointSupportInput,
@@ -141,6 +143,105 @@ export const User: Pick<Resolver<'User'>, 'app' | 'apps'> = {
   },
   apps(_, __, {prisma, user}) {
     return prisma.app.findMany({take: 50, where: {userId: user.id}});
+  },
+};
+
+const SeriesExtensionPoint = z.enum([
+  'Series.Details.RenderAccessory',
+] as readonly [ExtensionPoint, ...ExtensionPoint[]]);
+
+export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
+  async clipsInstallations({handle}, {target}, {user, prisma}) {
+    if (!SeriesExtensionPoint.safeParse(target).success) {
+      throw new Error(`Invalid target: ${target}`);
+    }
+
+    const installations = await prisma.clipsExtensionInstallation.findMany({
+      where: {
+        userId: user.id,
+        target,
+        extension: {activeVersion: {status: 'PUBLISHED'}},
+      },
+      include: {
+        extension: {
+          select: {activeVersion: {select: {status: true, extends: true}}},
+        },
+      },
+      take: 50,
+    });
+
+    return installations.filter((installation) => {
+      const version = installation.extension.activeVersion;
+
+      if (version == null || version.status !== 'PUBLISHED') {
+        return false;
+      }
+
+      return (version.extends as any[]).some((supports) => {
+        return (
+          target === supports.target &&
+          supports.conditions.some(
+            (supportCondition: any) =>
+              supportCondition.series == null ||
+              supportCondition.series.handle === handle,
+          )
+        );
+      });
+    });
+  },
+};
+
+const WatchThroughExtensionPoint = z.enum([
+  'WatchThrough.Details.RenderAccessory',
+] as readonly [ExtensionPoint, ...ExtensionPoint[]]);
+
+export const WatchThrough: Pick<
+  Resolver<'WatchThrough'>,
+  'clipsInstallations'
+> = {
+  async clipsInstallations({seriesId}, {target}, {user, prisma}) {
+    if (!WatchThroughExtensionPoint.safeParse(target).success) {
+      throw new Error(`Invalid target: ${target}`);
+    }
+
+    const [series, installations] = await Promise.all([
+      prisma.series.findFirstOrThrow({
+        where: {id: seriesId},
+        select: {handle: true},
+      }),
+      prisma.clipsExtensionInstallation.findMany({
+        where: {
+          userId: user.id,
+          target,
+          extension: {activeVersion: {status: 'PUBLISHED'}},
+        },
+        include: {
+          extension: {
+            select: {activeVersion: {select: {status: true, extends: true}}},
+          },
+        },
+        take: 50,
+      }),
+    ]);
+
+    return installations.filter((installation) => {
+      const version = installation.extension.activeVersion;
+
+      if (version == null || version.status !== 'PUBLISHED') {
+        return false;
+      }
+
+      return (version.extends as any[]).some((supports) => {
+        return (
+          target === supports.target &&
+          supports.conditions.some(
+            (supportCondition: any) =>
+              supportCondition.series == null ||
+              supportCondition.series.handle === series.handle,
+          )
+        );
+      });
+    });
   },
 };
 

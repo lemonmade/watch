@@ -52,12 +52,11 @@ export default function Series({id, handle}: Props) {
     return null;
   }
 
-  const {series, clipsInstallations} = data;
+  const {series} = data;
 
   return (
     <SeriesWithData
       series={series}
-      clipsInstallations={clipsInstallations}
       onUpdate={async () => {
         await refetch();
       }}
@@ -67,11 +66,9 @@ export default function Series({id, handle}: Props) {
 
 function SeriesWithData({
   series,
-  clipsInstallations,
   onUpdate,
 }: {
   series: NonNullable<SeriesQueryData['series']>;
-  clipsInstallations: SeriesQueryData['clipsInstallations'];
   onUpdate(): Promise<void>;
 }) {
   const {seasons, watchThroughs, subscription} = series;
@@ -173,7 +170,7 @@ function SeriesWithData({
       <AccessoryClips
         id={series.id}
         name={series.name}
-        installations={clipsInstallations}
+        installations={series.clipsInstallations}
       />
 
       <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
@@ -196,7 +193,7 @@ function AccessoryClips({
 }: {
   id: string;
   name: string;
-  installations: SeriesQueryData['clipsInstallations'];
+  installations: SeriesQueryData.Series['clipsInstallations'];
 }) {
   const accessoryClips = useClips(
     'Series.Details.RenderAccessory',
@@ -204,13 +201,15 @@ function AccessoryClips({
     {id, name},
   );
 
-  return accessoryClips.length > 0 ? (
+  if (accessoryClips.length === 0) return null;
+
+  return (
     <BlockStack spacing="large">
       {accessoryClips.map((clip) => (
         <Clip key={clip.id} extension={clip} />
       ))}
     </BlockStack>
-  ) : null;
+  );
 }
 
 function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {

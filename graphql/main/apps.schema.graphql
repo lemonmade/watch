@@ -1,5 +1,6 @@
 #import "./shared.schema.graphql"
 #import "./users.schema.graphql"
+#import "./media.schema.graphql"
 
 extend type Query {
   apps: [App!]!
@@ -50,6 +51,18 @@ extend type Mutation {
 extend type User {
   apps: [App!]!
   app(id: ID, handle: String): App
+}
+
+extend type Series {
+  clipsInstallations(
+    target: ClipsExtensionPoint!
+  ): [ClipsExtensionInstallation!]!
+}
+
+extend type WatchThrough {
+  clipsInstallations(
+    target: ClipsExtensionPoint!
+  ): [ClipsExtensionInstallation!]!
 }
 
 scalar TranslationKey
