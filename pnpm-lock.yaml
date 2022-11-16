@@ -65,7 +65,7 @@ importers:
       '@graphql-tools/schema': ^7.0.0
       '@lemon/css': workspace:*
       '@lemon/zest': workspace:*
-      '@lemonmade/graphql-live': ^0.1.10
+      '@lemonmade/graphql-live': ^0.1.11
       '@prisma/client': ^4.4.0
       '@quilted/quilt': ^0.5.117
       '@quilted/react-query': ^0.1.11
@@ -103,7 +103,7 @@ importers:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
-      '@lemonmade/graphql-live': 0.1.10_@babel+runtime@7.18.9
+      '@lemonmade/graphql-live': 0.1.11_@babel+runtime@7.18.9
       '@quilted/quilt': 0.5.117_05abb1a0267857047ffeb61a99b72b6f
       '@quilted/react-query': 0.1.11_68e2e6d6d3dabc9aa2e59255d217e4b9
       '@remote-ui/async-subscription': 2.1.13
@@ -187,7 +187,7 @@ importers:
     specifiers:
       '@graphql-tools/schema': ^7.0.0
       '@iarna/toml': ^3.0.0
-      '@lemonmade/graphql-live': ^0.1.10
+      '@lemonmade/graphql-live': ^0.1.11
       '@quilted/events': ^0.1.14
       '@quilted/graphql': ^0.4.47
       '@quilted/http-handlers': ^0.2.43
@@ -224,7 +224,7 @@ importers:
     dependencies:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@iarna/toml': 3.0.0
-      '@lemonmade/graphql-live': 0.1.10_@babel+runtime@7.18.9
+      '@lemonmade/graphql-live': 0.1.11_@babel+runtime@7.18.9
       '@quilted/events': 0.1.14_@babel+runtime@7.18.9
       '@quilted/graphql': 0.4.47_@babel+runtime@7.18.9
       '@quilted/http-handlers': 0.2.43_@babel+runtime@7.18.9
@@ -3588,8 +3588,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.11
     dev: true
 
-  /@lemonmade/graphql-live/0.1.10_@babel+runtime@7.18.9:
-    resolution: {integrity: sha512-cPNrQsBIZSzvaCGaZRGZRoYvebcarV1kIPxfwqBNCx7sWsGIqd/9dTVbXiPgTA4zxvVuVz909fG6aXy38MR6kw==}
+  /@lemonmade/graphql-live/0.1.11_@babel+runtime@7.18.9:
+    resolution: {integrity: sha512-9KgoXfFdN11eu95VoQlMtluiNNNR9Lc0qLPsGyLyIIL9OoTnaifmy40j3lyu+IhGxlCPe50RkBE93b7f0F5Mfg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4446,7 +4446,7 @@ packages:
       regenerator-runtime: 0.13.9
       whatwg-fetch: 3.6.2
 
-  /@quilted/preact-mini-compat/0.2.20_5bb31a250d90a06fca868ef880d03ebb:
+  /@quilted/preact-mini-compat/0.2.20_7d9d0f804b6d065b151e310f62df1d0e:
     resolution: {integrity: sha512-NfOxKRnWU+RHc0FEzWX8JMiNtQGcDSas5Txv6YJIq2yHG+JP0RVz95o8KRcB2KQv+AlS8OM4mBPoIDrLBLrA6A==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4456,7 +4456,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      preact: 10.11.2
+      preact: 10.11.3
 
   /@quilted/prettier/0.2.11:
     resolution: {integrity: sha512-OGkhMYoOmy+9udbMFfT2WtGWzYOCRO1hslAyYSJhGTMUQf9mXUyve6ceOfA+to8WKESAJ9LMYJ93LFg8YOIfmQ==}
@@ -4551,10 +4551,10 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@quilted/preact-mini-compat': 0.2.20_5bb31a250d90a06fca868ef880d03ebb
+      '@quilted/preact-mini-compat': 0.2.20_7d9d0f804b6d065b151e310f62df1d0e
       '@types/react-dom': 17.0.18
-      preact: 10.11.2
-      preact-render-to-string: 5.2.3_preact@10.11.2
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3_preact@10.11.3
 
   /@quilted/react-email/0.2.29_1c625853aff509548f3fa2444a9714e8:
     resolution: {integrity: sha512-rDLHT/U59iuSeXyIh3pGTI6b3Z6B5rz8xWMhcVv/BII/6bzhKKa6voDxbKqI9DBIksfAAQo6Ibi9dx1Hx40ngg==}
@@ -4869,9 +4869,9 @@ packages:
   /@quilted/react/17.0.5_@babel+runtime@7.18.9:
     resolution: {integrity: sha512-lG+LFAcPptop1NlCzODn9rO7RXyGiJd7yhKa25vqWhgC0UJxr5jExu8tzOKymbVkKjnBNB7jG2WpIkRp0mmcbQ==}
     dependencies:
-      '@quilted/preact-mini-compat': 0.2.20_5bb31a250d90a06fca868ef880d03ebb
+      '@quilted/preact-mini-compat': 0.2.20_7d9d0f804b6d065b151e310f62df1d0e
       '@types/react': 17.0.52
-      preact: 10.11.2
+      preact: 10.11.3
     transitivePeerDependencies:
       - '@babel/runtime'
 
@@ -9397,7 +9397,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken/8.5.1:
@@ -10800,16 +10800,19 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-render-to-string/5.2.3_preact@10.11.2:
+  /preact-render-to-string/5.2.3_preact@10.11.3:
     resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.11.2
+      preact: 10.11.3
       pretty-format: 3.8.0
 
   /preact/10.11.2:
     resolution: {integrity: sha512-skAwGDFmgxhq1DCBHke/9e12ewkhc7WYwjuhHB8HHS8zkdtITXLRmUMTeol2ldxvLwYtwbFeifZ9uDDWuyL4Iw==}
+
+  /preact/10.11.3:
+    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
 
   /preferred-pm/3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}

@@ -19,7 +19,7 @@
     "@graphql-tools/schema": "^7.0.0",
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
-    "@lemonmade/graphql-live": "^0.1.10",
+    "@lemonmade/graphql-live": "^0.1.11",
     "@quilted/quilt": "^0.5.117",
     "@quilted/react-query": "^0.1.11",
     "@remote-ui/async-subscription": "^2.1.13",
