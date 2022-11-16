@@ -95,12 +95,12 @@ export function createClipsManager(
     for (const [cacheKey, instance] of renderers.entries()) {
       if (cacheKey.size !== entries.length) continue;
 
-      if (entries.every(([key, value]) => cacheKey.get(key) === value)) {
+      if (
+        entries.every(([key, value]) =>
+          defaultIsEqual(cacheKey.get(key), value),
+        )
+      ) {
         return instance as ClipsExtensionPointInstance<Point>;
-      }
-
-      for (const [key, value] of entries) {
-        if (cacheKey.get(key) !== value) break;
       }
     }
   }
@@ -398,4 +398,39 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
       extensions.value = newExtensions;
     }
   }
+}
+
+function defaultIsEqual(one: unknown, two: unknown): boolean {
+  if (one == null || typeof one !== 'object') return one === two;
+
+  if (two == null || typeof two !== 'object') return false;
+
+  if (Array.isArray(one)) {
+    if (!Array.isArray(two)) return false;
+
+    return (
+      one.length === two.length &&
+      one.every((item, index) => defaultIsEqual(item, two[index]))
+    );
+  }
+
+  const prototypeOne = Object.getPrototypeOf(one);
+
+  if (prototypeOne !== Object.prototype && prototypeOne != null) {
+    return one === two;
+  }
+
+  const prototypeTwo = Object.getPrototypeOf(two);
+
+  if (prototypeTwo !== Object.prototype && prototypeTwo != null) {
+    return false;
+  }
+
+  const entriesOne = Object.entries(one);
+  const mapTwo = new Map(Object.entries(two));
+
+  return (
+    entriesOne.length === mapTwo.size &&
+    entriesOne.every(([key, value]) => defaultIsEqual(value, mapTwo.get(key)))
+  );
 }
