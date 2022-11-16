@@ -10,3 +10,4 @@ export {
 export * from './types';
 export * from './create';
 export * from './accept';
+export * from './iterator';
