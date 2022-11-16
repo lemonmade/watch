@@ -64,7 +64,7 @@ export function useClips<Point extends ExtensionPoint>(
           target: point,
           extension: {id: extension.id},
           script: {url: version.assets[0]!.source},
-          version: version.apiVersion as any,
+          version: version.apiVersion.toLowerCase() as any,
           settings: settings ?? undefined,
           liveQuery: liveQuery ?? undefined,
           options: options as any,
