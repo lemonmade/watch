@@ -108,26 +108,21 @@ export function createClipsManager(
   function fetchInstance<Point extends ExtensionPoint>(
     options: ClipsExtensionPointInstanceOptions<Point>,
   ): ClipsExtensionPointInstance<Point> {
-    const cacheKey = {
-      _id: `${options.source}:${options.extension.id}:${options.target}`,
-      ...(options.options as any),
-    };
+    const cacheKey: ClipsExtensionPointInstanceOptions<Point> & {_id: string} =
+      {
+        _id: `${options.source}:${options.extension.id}:${options.target}`,
+        ...(options.options as any),
+      };
 
-    if (options.source === 'local') {
-      const cached = getFromCache(cacheKey);
-      if (cached) return cached;
-
-      const renderer = createLocalInstance(options);
-      renderers.set(cacheKey, renderer);
-
-      return renderer;
-    }
-
-    const cached = renderers.get(cacheKey);
+    const cached = getFromCache(cacheKey);
     if (cached) return cached;
 
-    const renderer = createInstalledInstance(options);
-    renderers.set(cacheKey, renderer);
+    const renderer =
+      options.source === 'local'
+        ? createLocalInstance(options)
+        : createInstalledInstance(options);
+
+    renderers.set(new Map(Object.entries(cacheKey)), renderer);
 
     return renderer;
   }
