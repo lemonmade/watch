@@ -65,7 +65,7 @@ importers:
       '@graphql-tools/schema': ^7.0.0
       '@lemon/css': workspace:*
       '@lemon/zest': workspace:*
-      '@lemonmade/graphql-live': ^0.1.11
+      '@lemonmade/graphql-live': ^0.1.12
       '@prisma/client': ^4.4.0
       '@quilted/quilt': ^0.5.117
       '@quilted/react-query': ^0.1.11
@@ -103,7 +103,7 @@ importers:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
-      '@lemonmade/graphql-live': 0.1.11_@babel+runtime@7.18.9
+      '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
       '@quilted/quilt': 0.5.117_05abb1a0267857047ffeb61a99b72b6f
       '@quilted/react-query': 0.1.11_68e2e6d6d3dabc9aa2e59255d217e4b9
       '@remote-ui/async-subscription': 2.1.13
@@ -187,7 +187,7 @@ importers:
     specifiers:
       '@graphql-tools/schema': ^7.0.0
       '@iarna/toml': ^3.0.0
-      '@lemonmade/graphql-live': ^0.1.11
+      '@lemonmade/graphql-live': ^0.1.12
       '@quilted/events': ^0.1.14
       '@quilted/graphql': ^0.4.47
       '@quilted/http-handlers': ^0.2.43
@@ -224,7 +224,7 @@ importers:
     dependencies:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@iarna/toml': 3.0.0
-      '@lemonmade/graphql-live': 0.1.11_@babel+runtime@7.18.9
+      '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
       '@quilted/events': 0.1.14_@babel+runtime@7.18.9
       '@quilted/graphql': 0.4.47_@babel+runtime@7.18.9
       '@quilted/http-handlers': 0.2.43_@babel+runtime@7.18.9
@@ -3588,8 +3588,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.11
     dev: true
 
-  /@lemonmade/graphql-live/0.1.11_@babel+runtime@7.18.9:
-    resolution: {integrity: sha512-9KgoXfFdN11eu95VoQlMtluiNNNR9Lc0qLPsGyLyIIL9OoTnaifmy40j3lyu+IhGxlCPe50RkBE93b7f0F5Mfg==}
+  /@lemonmade/graphql-live/0.1.12_@babel+runtime@7.18.9:
+    resolution: {integrity: sha512-l1eHACqYGpAw+Ds+Tx6YBuArwDvKS0e6h4/Ux5j74+qVIxSWkspS+K7plQs+f+sjJN/r0TPLWg02/o6XUZI2NQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
