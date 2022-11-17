@@ -3,6 +3,7 @@ import {type CommonComponents} from '@watching/clips';
 import {Action} from './Action';
 import {BlockStack} from './BlockStack';
 import {InlineStack} from './InlineStack';
+import {Image} from './Image';
 import {Popover} from './Popover';
 import {Text} from './Text';
 import {TextField} from './TextField';
@@ -25,6 +26,7 @@ const Common: ReactComponentsForRemoteComponents<CommonComponents> =
   Object.freeze({
     Action,
     BlockStack,
+    Image,
     InlineStack,
     Popover,
     Text,

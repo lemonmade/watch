@@ -9,3 +9,5 @@ export type SpacingValue =
   | 'base'
   | 'large'
   | 'huge';
+
+export type ViewportSize = 'small' | 'medium' | 'large';

@@ -4,43 +4,19 @@ import {PropsWithChildren, ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import {View} from '../View';
+import {type PropsForClipsComponent} from '../../utilities/clips';
+
 import styles from './Image.module.css';
 
-type ViewportSize = 'small' | 'medium' | 'large';
-type Fit = 'cover' | 'contain';
-type Resolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
-type Loading = 'immediate' | 'in-viewport';
-
-interface Props {
-  source: string;
-  sources?: Source[];
-  description?: string;
-  loading?: Loading;
-  bordered?: boolean;
-  aspectRatio?: number;
-  fit?: Fit;
-  decorative?: boolean;
-}
-
-interface Source {
-  source: string;
-  viewportSize?: ViewportSize;
-  resolution?: Resolution;
-}
-
-interface SourceProps {
-  media?: string;
-  srcSet: string;
-}
+type Props = PropsForClipsComponent<'Image'>;
 
 export enum Media {
-  Small = '(max-width: 600px)',
-  Medium = '(max-width: 1200px)',
+  Medium = '(min-width: 601px)',
   Large = '(min-width: 1201px)',
 }
 
 const MEDIA_MAP = {
-  small: Media.Small,
+  small: undefined,
   medium: Media.Medium,
   large: Media.Large,
 };
@@ -49,44 +25,43 @@ export function Image({
   source,
   sources,
   description = '',
+  accessibilityRole,
   fit,
-  bordered,
   loading,
   aspectRatio,
-  decorative,
 }: Props) {
-  const initialValue: SourceProps[] = [];
-
   const sourcesMarkup =
     sources &&
     sources
-      .reduce((sourcesProps, {source, viewportSize, resolution}) => {
-        const media = viewportSize && MEDIA_MAP[viewportSize];
-        const maybeSourceProps = sourcesProps.find(
-          ({media: mediaValue}) => media === mediaValue,
-        );
-        const srcSet = [source, resolution && `${resolution}x`]
-          .join(' ')
-          .trim();
+      .reduce<{srcSet: string; media?: string}[]>(
+        (sourcesProps, {source, viewport, resolution}) => {
+          const media = viewport && MEDIA_MAP[viewport];
+          const maybeSourceProps = sourcesProps.find(
+            ({media: mediaValue}) => media === mediaValue,
+          );
+          const srcSet = [source, resolution && `${resolution}x`]
+            .join(' ')
+            .trim();
 
-        if (maybeSourceProps) {
-          maybeSourceProps.srcSet += `, ${srcSet}`;
-          return sourcesProps;
-        } else {
-          return [...sourcesProps, {media, srcSet}];
-        }
-      }, initialValue)
-      // eslint-disable-next-line react/jsx-key
-      .map((props) => <source {...props} />);
+          if (maybeSourceProps) {
+            maybeSourceProps.srcSet += `, ${srcSet}`;
+            return sourcesProps;
+          } else {
+            return [...sourcesProps, {media, srcSet}];
+          }
+        },
+        [],
+      )
 
-  const className = classes(
-    styles.Image,
-    bordered && styles.bordered,
-    fit && styles[variation('fit', fit)],
-  );
+      .map((props, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <source key={`${props.srcSet}${index}`} {...props} />
+      ));
+
+  const className = classes(styles.Image, fit && styles[variation('fit', fit)]);
 
   return (
-    <MaybeHiddenForA11y condition={decorative === true}>
+    <MaybeHiddenForA11y condition={accessibilityRole === 'decorative'}>
       <MaybeAspectRatio
         condition={aspectRatio != null}
         aspectRatio={aspectRatio}

@@ -2,10 +2,6 @@
   max-width: 100%;
 }
 
-.bordered {
-  border: 1px solid var(--z-default-color-border);
-}
-
 .AspectRatio {
   position: relative;
 }

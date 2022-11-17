@@ -1,5 +1,13 @@
 export {Action, type ActionProps} from './Action';
 export {BlockStack, type BlockStackProps} from './BlockStack';
+export {
+  Image,
+  type ImageProps,
+  type ImageFit,
+  type ImageLoading,
+  type ImageSource,
+  type ViewportResolution,
+} from './Image';
 export {InlineStack, type InlineStackProps} from './InlineStack';
 export {
   Popover,
@@ -17,3 +25,4 @@ export {
   type TextFieldAutocompleteTarget,
 } from './TextField';
 export {View, type ViewProps} from './View';
+export * from './shared';
