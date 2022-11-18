@@ -16,6 +16,7 @@ export type CommonComponents = Pick<
   | 'BlockStack'
   | 'Image'
   | 'InlineStack'
+  | 'Modal'
   | 'Popover'
   | 'Text'
   | 'TextField'

@@ -2,6 +2,7 @@ export {Action} from './Action';
 export {BlockStack} from './BlockStack';
 export {Image} from './Image';
 export {InlineStack} from './InlineStack';
+export {Modal} from './Modal';
 export {Popover} from './Popover';
 export {Text} from './Text';
 export {TextField} from './TextField';

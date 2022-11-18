@@ -3,6 +3,7 @@ import {classes} from '@lemon/css';
 
 import {HeadingLevelReset} from '../Heading';
 import {ActionScopeReset} from '../../utilities/actions';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 
 import systemStyles from '../../system.module.css';
 
@@ -10,9 +11,7 @@ import {Overlay} from '../Overlay';
 
 import styles from './Modal.module.css';
 
-interface ModalProps {
-  padding?: boolean;
-}
+type ModalProps = PropsForClipsComponent<'Modal'>;
 
 export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
   return (

@@ -9,6 +9,7 @@ export {
   type ViewportResolution,
 } from './Image';
 export {InlineStack, type InlineStackProps} from './InlineStack';
+export {Modal, type ModalProps} from './Modal';
 export {
   Popover,
   type PopoverProps,
