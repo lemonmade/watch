@@ -1,4 +1,3 @@
-import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
 import {HeadingLevelReset} from '../Heading';
@@ -13,7 +12,7 @@ import styles from './Modal.module.css';
 
 type ModalProps = PropsForClipsComponent<'Modal'>;
 
-export function Modal({children, padding}: PropsWithChildren<ModalProps>) {
+export function Modal({children, padding}: ModalProps) {
   return (
     <HeadingLevelReset level={2}>
       <ActionScopeReset>
