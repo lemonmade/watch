@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.22
+
+### Patch Changes
+
+- [`3e487f7`](https://github.com/lemonmade/watch/commit/3e487f7eed9dfb253b282a1879a81e016d853c7e) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing React clips components
+
 ## 0.2.21
 
 ### Patch Changes
