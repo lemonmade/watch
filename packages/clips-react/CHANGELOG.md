@@ -1,5 +1,22 @@
 # @watching/clips-react
 
+## 0.2.21
+
+### Patch Changes
+
+- [`4af1c1a`](https://github.com/lemonmade/watch/commit/4af1c1a8ea612777f85e96e2853cfc6f6cb46ba3) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Image to Clips
+
+* [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Section, Header, and Footer components
+
+- [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Modal component
+
+* [`c8f360e`](https://github.com/lemonmade/watch/commit/c8f360ec384d868663d940ae19d29a1351150e75) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Modal component
+
+- [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Heading component
+
+- Updated dependencies [[`4af1c1a`](https://github.com/lemonmade/watch/commit/4af1c1a8ea612777f85e96e2853cfc6f6cb46ba3), [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c), [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c), [`01991ab`](https://github.com/lemonmade/watch/commit/01991ab6ae592caa212e01bd7a6514227ecca76e), [`c8f360e`](https://github.com/lemonmade/watch/commit/c8f360ec384d868663d940ae19d29a1351150e75), [`48acdb5`](https://github.com/lemonmade/watch/commit/48acdb55dc5fafe26d1d642b3e0b73a73fad7a6d), [`59a7a1c`](https://github.com/lemonmade/watch/commit/59a7a1c7e62df7c137b4d405efcc302bf884948c)]:
+  - @watching/clips@0.2.18
+
 ## 0.2.20
 
 ### Patch Changes
