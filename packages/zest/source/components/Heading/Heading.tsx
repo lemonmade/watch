@@ -1,26 +1,19 @@
-import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {
-  useHeadingDomDetails,
-  type HeadingLevel,
-  type HeadingAccessibilityRole,
-} from './shared';
+import {useHeadingDomDetails} from './shared';
+
+import {type PropsForClipsComponent} from '../../utilities/clips';
 
 import styles from './Heading.module.css';
 
-export interface HeadingProps {
-  level?: HeadingLevel;
-  accessibilityRole?: HeadingAccessibilityRole;
-  divider?: boolean;
-}
+export type HeadingProps = PropsForClipsComponent<'Heading'>;
 
 export function Heading({
   level: explicitLevel,
   children,
   divider,
   accessibilityRole,
-}: PropsWithChildren<HeadingProps>) {
+}: HeadingProps) {
   const {level, Element} = useHeadingDomDetails({
     level: explicitLevel,
     accessibilityRole,

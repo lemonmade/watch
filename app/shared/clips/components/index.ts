@@ -2,6 +2,7 @@ import {type CommonComponents} from '@watching/clips';
 
 import {Action} from './Action';
 import {BlockStack} from './BlockStack';
+import {Heading} from './Heading';
 import {Image} from './Image';
 import {InlineStack} from './InlineStack';
 import {Modal} from './Modal';
@@ -28,6 +29,7 @@ const Common: ReactComponentsForRemoteComponents<CommonComponents> =
     Action,
     BlockStack,
     Image,
+    Heading,
     InlineStack,
     Modal,
     Popover,

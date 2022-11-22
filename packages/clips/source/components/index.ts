@@ -14,6 +14,7 @@ export type CommonComponents = Pick<
   Components,
   | 'Action'
   | 'BlockStack'
+  | 'Heading'
   | 'Image'
   | 'InlineStack'
   | 'Modal'

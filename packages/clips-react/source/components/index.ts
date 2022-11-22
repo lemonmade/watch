@@ -1,6 +1,7 @@
 export {Action} from './Action';
 export {BlockStack} from './BlockStack';
 export {Image} from './Image';
+export {Heading} from './Heading';
 export {InlineStack} from './InlineStack';
 export {Modal} from './Modal';
 export {Popover} from './Popover';

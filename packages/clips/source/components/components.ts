@@ -1,6 +1,12 @@
 export {Action, type ActionProps} from './Action';
 export {BlockStack, type BlockStackProps} from './BlockStack';
 export {
+  Heading,
+  type HeadingProps,
+  type HeadingLevel,
+  type HeadingAccessibilityRole,
+} from './Heading';
+export {
   Image,
   type ImageProps,
   type ImageFit,

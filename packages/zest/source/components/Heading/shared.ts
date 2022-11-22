@@ -1,7 +1,8 @@
 import {createContext, useContext} from 'react';
 
-export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-export type HeadingAccessibilityRole = 'heading' | 'presentation';
+import type {HeadingLevel, HeadingAccessibilityRole} from '@watching/clips';
+
+export type {HeadingLevel, HeadingAccessibilityRole};
 
 export const HeadingLevelContext = createContext<HeadingLevel>(1);
 
