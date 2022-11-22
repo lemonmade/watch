@@ -1,11 +1,11 @@
-import {type PropsWithChildren} from 'react';
 import {NestedHeadingLevel} from '../Heading';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
-interface Props extends ViewProps {}
+export type SectionProps = PropsForClipsComponent<'Section'> & ViewProps;
 
-export function Section({children, ...viewProps}: PropsWithChildren<Props>) {
+export function Section({children, ...viewProps}: SectionProps) {
   const view = useViewProps(viewProps);
 
   return (

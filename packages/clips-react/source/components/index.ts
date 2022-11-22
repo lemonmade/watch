@@ -5,6 +5,7 @@ export {Heading} from './Heading';
 export {InlineStack} from './InlineStack';
 export {Modal} from './Modal';
 export {Popover} from './Popover';
+export {Section} from './Section';
 export {Text} from './Text';
 export {TextField} from './TextField';
 export {View} from './View';

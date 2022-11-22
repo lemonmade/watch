@@ -1,12 +1,9 @@
-import {type PropsWithChildren} from 'react';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
-interface HeaderProps extends ViewProps {}
+export type HeaderProps = PropsForClipsComponent<'Header'> & ViewProps;
 
-export function Header({
-  children,
-  ...viewProps
-}: PropsWithChildren<HeaderProps>) {
+export function Header({children, ...viewProps}: HeaderProps) {
   const view = useViewProps(viewProps);
   return <header {...resolveViewProps(view)}>{children}</header>;
 }

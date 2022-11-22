@@ -1,5 +1,7 @@
 export {Action, type ActionProps} from './Action';
 export {BlockStack, type BlockStackProps} from './BlockStack';
+export {Footer, type FooterProps} from './Footer';
+export {Header, type HeaderProps} from './Header';
 export {
   Heading,
   type HeadingProps,
@@ -22,6 +24,7 @@ export {
   type PopoverBlockAttachment,
   type PopoverInlineAttachment,
 } from './Popover';
+export {Section, type SectionProps} from './Section';
 export {Text, type TextProps} from './Text';
 export {
   TextField,

@@ -2,11 +2,14 @@ import {type CommonComponents} from '@watching/clips';
 
 import {Action} from './Action';
 import {BlockStack} from './BlockStack';
+import {Header} from './Header';
+import {Footer} from './Footer';
 import {Heading} from './Heading';
 import {Image} from './Image';
 import {InlineStack} from './InlineStack';
 import {Modal} from './Modal';
 import {Popover} from './Popover';
+import {Section} from './Section';
 import {Text} from './Text';
 import {TextField} from './TextField';
 import {View} from './View';
@@ -29,10 +32,13 @@ const Common: ReactComponentsForRemoteComponents<CommonComponents> =
     Action,
     BlockStack,
     Image,
+    Footer,
+    Header,
     Heading,
     InlineStack,
     Modal,
     Popover,
+    Section,
     Text,
     TextField,
     View,

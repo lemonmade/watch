@@ -1,12 +1,9 @@
-import {type PropsWithChildren} from 'react';
+import {type PropsForClipsComponent} from '../../utilities/clips';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
-interface FooterProps extends ViewProps {}
+export type FooterProps = PropsForClipsComponent<'Footer'> & ViewProps;
 
-export function Footer({
-  children,
-  ...viewProps
-}: PropsWithChildren<FooterProps>) {
+export function Footer({children, ...viewProps}: FooterProps) {
   const view = useViewProps(viewProps);
   return <footer {...resolveViewProps(view)}>{children}</footer>;
 }
