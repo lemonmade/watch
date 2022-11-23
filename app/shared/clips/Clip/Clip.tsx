@@ -43,52 +43,58 @@ export function Clip<Point extends ExtensionPoint>({
   const renderer = local ?? installed;
 
   return (
-    <BlockStack spacing="small">
-      <ContentAction
-        overlay={
-          <Popover inlineAttachment="start">
-            {installed?.instance.value && (
-              <Section padding>
-                <ClipSettings
-                  id={extension.id}
-                  instance={installed.instance.value}
-                />
-              </Section>
-            )}
-            <Menu>
-              <ViewAppAction />
-              {renderer && <RestartClipAction instance={renderer} />}
-              {extension.installed && (
-                <UninstallClipAction extension={extension} />
+    <Section>
+      <BlockStack spacing="small">
+        <ContentAction
+          overlay={
+            <Popover inlineAttachment="start">
+              {installed?.instance.value && (
+                <Section padding>
+                  <ClipSettings
+                    id={extension.id}
+                    instance={installed.instance.value}
+                  />
+                </Section>
               )}
-              {extension.installed && <ReportIssueAction />}
-            </Menu>
-          </Popover>
-        }
-      >
-        <Layout columns={['auto', 'fill']} spacing="small">
-          <View
-            display="inlineFlex"
-            background="emphasized"
-            border="subdued"
-            cornerRadius
-            alignment="center"
-            blockSize={raw`2.5rem`}
-            inlineSize={raw`2.5rem`}
-          >
-            <Icon source="app" />
-          </View>
-          <BlockStack>
-            <Text emphasis>{name}</Text>
-            <Text emphasis="subdued" size="small">
-              from app <Text emphasis>{app.name}</Text>
-            </Text>
-          </BlockStack>
-        </Layout>
-      </ContentAction>
+              <Menu>
+                <ViewAppAction />
+                {renderer && <RestartClipAction instance={renderer} />}
+                {extension.installed && (
+                  <UninstallClipAction extension={extension} />
+                )}
+                {extension.installed && <ReportIssueAction />}
+              </Menu>
+            </Popover>
+          }
+        >
+          <Layout columns={['auto', 'fill']} spacing="small">
+            <View
+              display="inlineFlex"
+              background="emphasized"
+              border="subdued"
+              cornerRadius
+              alignment="center"
+              blockSize={raw`2.5rem`}
+              inlineSize={raw`2.5rem`}
+            >
+              <Icon source="app" />
+            </View>
+            <BlockStack>
+              <Text emphasis accessibilityRole="heading">
+                {name}
+              </Text>
+              <Text emphasis="subdued" size="small">
+                from app <Text emphasis>{app.name}</Text>
+              </Text>
+            </BlockStack>
+          </Layout>
+        </ContentAction>
 
-      <View>{renderer && <ClipInstanceRenderer renderer={renderer} />}</View>
-    </BlockStack>
+        <Section>
+          {renderer && <ClipInstanceRenderer renderer={renderer} />}
+        </Section>
+      </BlockStack>
+    </Section>
   );
 }
 

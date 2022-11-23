@@ -1,6 +1,7 @@
 .Text {
   margin: 0;
   overflow-wrap: anywhere;
+  font-size: 1em;
 }
 
 .code {
@@ -10,7 +11,7 @@
 }
 
 .sizeSmall {
-  font-size: 0.875rem;
+  font-size: 0.875em;
 }
 
 .emphasisSubdued {

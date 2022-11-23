@@ -20,7 +20,7 @@ export function useHeadingDomDetails({
 }: {
   level?: HeadingLevel;
   accessibilityRole?: HeadingAccessibilityRole;
-}) {
+} = {}) {
   const level = useHeadingLevel();
   const role =
     accessibilityRole ??
