@@ -276,7 +276,7 @@ importers:
     specifiers:
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.16
-      '@watching/clips': workspace:^0.2.19
+      '@watching/clips': workspace:^0.2.20
     dependencies:
       '@remote-ui/core': 2.1.16
       '@watching/clips': link:../clips
@@ -290,8 +290,8 @@ importers:
       '@remote-ui/core': ^2.1.16
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
-      '@watching/clips': workspace:^0.2.19
-      '@watching/clips-dom': workspace:^0.1.6
+      '@watching/clips': workspace:^0.2.20
+      '@watching/clips-dom': workspace:^0.1.7
       '@watching/thread-signals': workspace:^0.1.5
       p-limit: ^4.0.0
       preact: ^10.11.3
@@ -5421,7 +5421,7 @@ packages:
   /@types/react-test-renderer/17.0.2:
     resolution: {integrity: sha512-+F1KONQTBHDBBhbHuT2GNydeMpPuviduXIVJRB7Y4nma4NR5DrTJfMMZ+jbhEHbpwL+Uqhs1WXh4KHiyrtYTPg==}
     dependencies:
-      '@types/react': 17.0.47
+      '@types/react': 17.0.52
     dev: true
 
   /@types/react/17.0.45:
@@ -5430,14 +5430,6 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.0
-
-  /@types/react/17.0.47:
-    resolution: {integrity: sha512-mk0BL8zBinf2ozNr3qPnlu1oyVTYq+4V7WA76RgxUAtf0Em/Wbid38KN6n4abEkvO4xMTBWmnP1FtQzgkEiJoA==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.2
-      csstype: 3.1.0
-    dev: true
 
   /@types/react/17.0.48:
     resolution: {integrity: sha512-zJ6IYlJ8cYYxiJfUaZOQee4lh99mFihBoqkOSEGV+dFi9leROW6+PgstzQ+w3gWTnUfskALtQPGHK6dYmPj+2A==}
