@@ -214,6 +214,7 @@ importers:
       mime: ^2.5.0
       open: ^8.0.0
       pkg-dir: ^6.0.0
+      prettier: ^2.8.0
       pretty-bytes: ^5.6.0
       prompts: ^2.4.0
       rollup: ^2.0.0
@@ -247,6 +248,7 @@ importers:
       mime: 2.6.0
       open: 8.4.0
       pkg-dir: 6.0.1
+      prettier: 2.8.0
       pretty-bytes: 5.6.0
       prompts: 2.4.2
       rollup: 2.70.1
@@ -10823,6 +10825,12 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
+
+  /prettier/2.8.0:
+    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: false
 
   /pretty-bytes/5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
