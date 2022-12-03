@@ -47,7 +47,6 @@ export async function create(_: {ui: Ui}) {
 
   const template = loadTemplate('SeriesAccessory', format as any);
   const output = createOutputTarget(directory);
-  console.log(output.root);
 
   await template.copy(output.root);
 }
