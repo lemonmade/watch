@@ -18,6 +18,7 @@ jobs:
         with:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
+          token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
 
       - uses: ./.github/workflows/actions/prepare
       # @see https://github.com/changesets/action
