@@ -13,8 +13,9 @@
   },
   "sideEffects": false,
   "files": [
+    "source",
+    "templates",
     "build",
-    "src",
     "bin"
   ],
   "dependencies": {
