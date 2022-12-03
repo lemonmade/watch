@@ -109,8 +109,7 @@ export function dispatchEvent<T extends object = Record<string, unknown>>(
     Reflect.set(ev, i, eventInit[i]);
     // ev[i] = event[i];
   }
-  this.dispatchEvent(ev);
-  return ev;
+  return this.dispatchEvent(ev);
 }
 
 export function fireEvent(

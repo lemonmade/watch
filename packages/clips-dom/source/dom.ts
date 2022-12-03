@@ -119,17 +119,16 @@ export function createRemoteDOM({
       }
 
       const wrappedListener = (...args: any[]) => {
-        const result = listener({detail: args.length <= 1 ? args[0] : args});
-        return result.returnValue;
+        return listener({detail: args.length <= 1 ? args[0] : args});
       };
 
-      props[name] = listener;
-      props[nameLower] = listener;
+      props[name] = wrappedListener;
+      props[nameLower] = wrappedListener;
 
       for (const component of eachComponent(element as HTMLElement)) {
         component.updateProps({
-          [name]: listener,
-          [nameLower]: listener,
+          [name]: wrappedListener,
+          [nameLower]: wrappedListener,
         });
       }
     },

@@ -18,7 +18,11 @@ export function createRemoteHTMLAdaptor<
   type: Type,
   {
     properties = [],
-  }: {properties?: (keyof PropsForRemoteComponent<Type>)[]} = {},
+    allowPrivateListeners = true,
+  }: {
+    properties?: (keyof PropsForRemoteComponent<Type>)[];
+    allowPrivateListeners?: boolean;
+  } = {},
 ): HTMLAdaptorForRemoteComponent<Type> {
   let Element: HTMLConstructorForRemoteComponent<Type>;
 
@@ -46,10 +50,31 @@ export function createRemoteHTMLAdaptor<
                 if (newValue !== value) {
                   value = newValue;
                   const channel = (this as any)[CHANNEL];
-                  channel?.setProperty(this as any, name, value);
+                  channel?.setProperty(this as any, property, value);
                 }
               },
             });
+
+            if (
+              allowPrivateListeners &&
+              (property as string)[0] === 'o' &&
+              (property as string)[1] === 'n'
+            ) {
+              Reflect.defineProperty(this, `_${property as string}`, {
+                enumerable: true,
+                configurable: true,
+                get() {
+                  return value;
+                },
+                set(this: RemoteElement, newValue: any) {
+                  if (newValue !== value) {
+                    value = newValue;
+                    const channel = (this as any)[CHANNEL];
+                    channel?.setProperty(this as any, property, value);
+                  }
+                },
+              });
+            }
           }
         }
       } as any;

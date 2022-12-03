@@ -16,12 +16,12 @@ export interface Adaptor {
     element: EventTarget,
     type: string,
     // eslint-disable-next-line @typescript-eslint/ban-types
-    listener: <T = {}>(eventInit?: T) => Event & T,
+    listener: <T = {}>(eventInit?: T) => boolean,
   ): void;
   removeListener(
     element: EventTarget,
     type: string,
     // eslint-disable-next-line @typescript-eslint/ban-types
-    listener: <T = {}>(eventInit?: T) => Event & T,
+    listener: <T = {}>(eventInit?: T) => boolean,
   ): void;
 }

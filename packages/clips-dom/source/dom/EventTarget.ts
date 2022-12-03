@@ -26,7 +26,7 @@ export class EventTarget {
   [ID]?: number;
   [LISTENERS]?: Map<
     string,
-    Set<EventListenerOrEventListenerObject> & {proxy?: (event: any) => void}
+    Set<EventListenerOrEventListenerObject> & {proxy?: (event: any) => boolean}
   >;
 
   addEventListener(
