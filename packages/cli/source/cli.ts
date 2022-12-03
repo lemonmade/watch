@@ -1,5 +1,7 @@
 import arg from 'arg';
 import {bold, magenta, red, blue, dim} from 'colorette';
+import {AbortError} from '@quilted/events';
+
 import {createUi, PrintableError} from './ui';
 
 const KNOWN_COMMANDS = new Set([
@@ -7,6 +9,7 @@ const KNOWN_COMMANDS = new Set([
   'sign-out',
   'develop',
   'build',
+  'create',
   'push',
   'publish',
 ]);
@@ -48,6 +51,11 @@ async function run() {
       case 'sign-out': {
         const {signOut} = await import('./commands/sign-out');
         await signOut({ui});
+        break;
+      }
+      case 'create': {
+        const {create} = await import('./commands/create');
+        await create({ui});
         break;
       }
       case 'develop': {
@@ -92,6 +100,10 @@ async function run() {
     // eslint-disable-next-line no-console
     console.log();
   } catch (error) {
+    if (error instanceof AbortError) {
+      return;
+    }
+
     if (error instanceof PrintableError) {
       error.print(ui);
     } else {

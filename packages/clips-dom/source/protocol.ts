@@ -13,13 +13,15 @@ export interface Adaptor {
   remove(parent: Element, node: Element | Text): void;
   setProperty(element: Element, name: string, value: any): void;
   addListener(
-    element: Element,
+    element: EventTarget,
     type: string,
-    listener: (event: any) => void,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    listener: <T = {}>(eventInit?: T) => boolean,
   ): void;
   removeListener(
-    element: Element,
+    element: EventTarget,
     type: string,
-    listener: (event: any) => void,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    listener: <T = {}>(eventInit?: T) => boolean,
   ): void;
 }

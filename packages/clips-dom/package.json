@@ -28,7 +28,7 @@
   "sideEffects": false,
   "dependencies": {
     "@remote-ui/core": "^2.1.16",
-    "@watching/clips": "workspace:^0.2.17"
+    "@watching/clips": "workspace:^0.2.19"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"

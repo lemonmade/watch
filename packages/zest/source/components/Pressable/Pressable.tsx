@@ -210,5 +210,7 @@ function runWithMaybePromise<T, R>(
     return run(value as any) as any;
   }
 
-  return (value as Promise<T>).then(run) as any;
+  return (value as Promise<T>).then((value) => {
+    return run(value);
+  }) as any;
 }

@@ -5,12 +5,14 @@ import {Node} from './Node';
 import {ParentNode} from './ParentNode';
 import {ChildNode} from './ChildNode';
 import {Element} from './Element';
+import {HTMLElement} from './HTMLElement';
 import {SVGElement} from './SVGElement';
 import {CharacterData} from './CharacterData';
 import {Text} from './Text';
 import {Comment} from './Comment';
 import {DocumentFragment} from './DocumentFragment';
 import {HTMLTemplateElement} from './HTMLTemplateElement';
+import {CustomElementRegistryImplementation} from './CustomElementRegistry';
 
 export class Window extends EventTarget {
   name = '';
@@ -18,6 +20,7 @@ export class Window extends EventTarget {
   self = this;
   top = this;
   document = new Document(this);
+  customElements = new CustomElementRegistryImplementation();
   Event = Event;
   Node = Node;
   ParentNode = ParentNode;
@@ -29,6 +32,7 @@ export class Window extends EventTarget {
   Comment = Comment;
   Text = Text;
   Element = Element;
+  HTMLElement = HTMLElement;
   SVGElement = SVGElement;
   HTMLTemplateElement = HTMLTemplateElement;
 }

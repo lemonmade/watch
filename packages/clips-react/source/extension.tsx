@@ -6,15 +6,15 @@ import {extension as domExtension} from '@watching/clips-dom';
 
 import {type RenderContext, ReactRenderContext} from './context';
 
-export function extension<Point extends ExtensionPoint>(
-  renderUi: (
-    api: WithThreadSignals<Api<Point>>,
+export function extension<Target extends ExtensionPoint>(
+  renderReact: (
+    api: WithThreadSignals<Api<Target>>,
   ) => ReactNode | Promise<ReactNode>,
 ) {
-  return domExtension<Point>(async (element, api, {dom, root}) => {
-    const rendered = await renderUi(api);
+  return domExtension<Target>(async (element, api, {dom, root}) => {
+    const rendered = await renderReact(api);
 
-    const context: RenderContext<Point> = {
+    const context: RenderContext<Target> = {
       api,
       dom,
       root,
@@ -27,7 +27,7 @@ export function extension<Point extends ExtensionPoint>(
           <ReactRenderContext.Provider value={context}>
             {rendered}
           </ReactRenderContext.Provider>,
-          context.element,
+          element,
           () => {
             resolve();
           },

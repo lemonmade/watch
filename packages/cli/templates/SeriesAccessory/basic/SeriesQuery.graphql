@@ -1,0 +1,6 @@
+query Series {
+  series {
+    id
+    name
+  }
+}

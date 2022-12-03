@@ -9,6 +9,7 @@ export type {
 } from './extension-points';
 export * from './api';
 export * from './globals';
+export * from './query';
 export * from './extension';
 export * from './signals';
 export * from './components';

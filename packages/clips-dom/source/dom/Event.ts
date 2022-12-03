@@ -94,22 +94,22 @@ export class Event {
 export function dispatchEvent<T extends object = Record<string, unknown>>(
   this: EventTarget,
   type: string,
-  event?: T,
+  eventInit?: T,
 ) {
-  const ev = new Event(type, event) as Event & T;
+  const ev = new Event(type, eventInit) as Event & T;
   ev[IS_TRUSTED] = true;
   // Copy host event properties except `type`. This is important
   // because the local `type` can have different casing from the host.
   // Object.assign(ev, event);
   // ev.type = type;
-  for (const i in event) {
+  for (const i in eventInit) {
     // if (i in ev) continue;
     if (i === 'isTrusted' || i === 'type') continue;
     // just to make TS happy:
-    Reflect.set(ev, i, event[i]);
+    Reflect.set(ev, i, eventInit[i]);
     // ev[i] = event[i];
   }
-  this.dispatchEvent(ev);
+  return this.dispatchEvent(ev);
 }
 
 export function fireEvent(

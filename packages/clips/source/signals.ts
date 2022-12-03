@@ -6,9 +6,9 @@ import {
 
 export {type Signal};
 
-export type WithThreadSignals<T> = T extends object
-  ? {[K in keyof T]: T[K] extends ThreadSignal<infer U> ? Signal<U> : T[K]}
-  : never;
+export type WithThreadSignals<T> = {
+  [K in keyof T]: T[K] extends ThreadSignal<infer U> ? Signal<U> : T[K];
+};
 
 export function acceptSignals<T>(value: T): WithThreadSignals<T> {
   const acceptedValue: Record<string, any> = {};

@@ -41,6 +41,8 @@ export type FragmentProps<Props> = {
     : never;
 }[keyof Props];
 
+const EMPTY_SET = new Set<any>();
+
 // TODO: implement fragment props, like @remote-ui/react
 export function createRemoteReactComponent<
   Type extends string,
@@ -51,20 +53,26 @@ export function createRemoteReactComponent<
   ComponentType: Type | RemoteComponentType<Type, Props, AllowedChildren>,
   {
     fragmentProps: providedFragmentProps,
-  }: {fragmentProps?: readonly FragmentProps<Props>[]} = {},
+    privateListeners = true,
+  }: {
+    fragmentProps?: readonly FragmentProps<Props>[];
+    privateListeners?: boolean;
+  } = {},
 ): ReactComponentTypeFromRemoteComponentType<
   RemoteComponentType<Type, Props, AllowedChildren>
 > {
-  const fragmentProps =
-    providedFragmentProps && providedFragmentProps.length > 0
-      ? new Set(providedFragmentProps)
-      : undefined;
+  const hasFragmentProps =
+    providedFragmentProps && providedFragmentProps.length > 0;
+  const fragmentProps = hasFragmentProps
+    ? new Set(providedFragmentProps)
+    : EMPTY_SET;
 
   function Component(props: Props) {
-    const normalizedProps = fragmentProps
-      ? // eslint-disable-next-line react-hooks/rules-of-hooks
-        usePropsWithFragments(props, fragmentProps as Set<string>)
-      : props;
+    const normalizedProps =
+      hasFragmentProps || privateListeners
+        ? // eslint-disable-next-line react-hooks/rules-of-hooks
+          useNormalizedProps(props, fragmentProps, privateListeners)
+        : props;
 
     // @ts-expect-error we fake this component as being a "native" component.
     return <ComponentType {...normalizedProps} />;
@@ -76,21 +84,26 @@ export function createRemoteReactComponent<
   return Component as any;
 }
 
-function usePropsWithFragments<Props>(
+function useNormalizedProps<Props>(
   props: Props,
   fragmentProps: Set<string>,
+  privateListeners: boolean,
 ): Props {
   const context = useRenderContext();
 
   const fragmentsByProp =
     useRef<Map<string, {element: Element; fragment: RemoteFragment<any>}>>();
-  fragmentsByProp.current ??= new Map();
 
   const newProps: Record<string, unknown> = {};
   const portals: ReactPortal[] = [];
 
   for (const [key, value] of Object.entries(props)) {
     if (key === 'children') continue;
+
+    if (key[0] === 'o' && key[1] === 'n' && privateListeners) {
+      newProps[`_${key}`] = value;
+      continue;
+    }
 
     if (
       !fragmentProps.has(key) ||
@@ -101,13 +114,14 @@ function usePropsWithFragments<Props>(
       continue;
     }
 
-    let currentFragment = fragmentsByProp.current.get(key);
+    let currentFragment = fragmentsByProp.current?.get(key);
 
     if (currentFragment == null) {
       const fragment = context.root.createFragment();
       const element = context.dom.createFragmentElement(fragment);
       document.append(element);
       currentFragment = {fragment, element};
+      fragmentsByProp.current ??= new Map();
       fragmentsByProp.current.set(key, currentFragment);
     }
 

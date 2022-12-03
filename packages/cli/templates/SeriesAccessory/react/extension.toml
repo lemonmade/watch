@@ -1,0 +1,10 @@
+name = "{{ name }}"
+handle = "{{ handle }}"
+
+[[extends]]
+target = "Series.Details.RenderAccessory"
+module = "./SeriesAccessory.tsx"
+query = "./SeriesQuery.graphql"
+
+# [[extends.conditions]]
+# series.handle = "survivor"

@@ -1,3 +1,33 @@
 export * from '@watching/clips';
+export {
+  Action,
+  type UIActionElement,
+  BlockStack,
+  type UIBlockStackElement,
+  Footer,
+  type UIFooterElement,
+  Header,
+  type UIHeaderElement,
+  Heading,
+  type UIHeadingElement,
+  Image,
+  type UIImageElement,
+  InlineStack,
+  type UIInlineStackElement,
+  Modal,
+  type UIModalElement,
+  Popover,
+  type UIPopoverElement,
+  Section,
+  type UISectionElement,
+  Text,
+  type UITextElement,
+  TextField,
+  type UITextFieldElement,
+  View,
+  type UIViewElement,
+  type HTMLElementForRemoteComponent,
+  type HTMLConstructorForRemoteComponent,
+} from './components';
 export {extension} from './extension';
 export {type RemoteDOM} from './dom';
