@@ -25,7 +25,7 @@
   "sideEffects": false,
   "dependencies": {
     "@remote-ui/core": "^2.1.16",
-    "@watching/thread-signals": "^0.1.0"
+    "@watching/thread-signals": "workspace:^0.1.5"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"

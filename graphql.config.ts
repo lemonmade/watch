@@ -66,6 +66,7 @@ const config: Configuration = {
     },
     clipsSeriesDetails: {
       schema: 'packages/clips/source/graphql/SeriesDetails.schema.graphql',
+      documents: ['packages/cli/templates/SeriesAccessory/**/*.graphql'],
       extensions: {
         quilt: {
           schema: [
@@ -80,6 +81,7 @@ const config: Configuration = {
     clipsWatchThroughDetails: {
       schema:
         'packages/clips/source/graphql/WatchThroughDetails.schema.graphql',
+      documents: ['packages/cli/templates/WatchThroughAccessory/**/*.graphql'],
       extensions: {
         quilt: {
           schema: [

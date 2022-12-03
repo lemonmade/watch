@@ -11,9 +11,6 @@ import {brotliSize} from '../../utilities/sizes';
 const BUNDLE_SIZE_GOOD = 10_000;
 const BUNDLE_SIZE_OKAY = 40_000;
 
-
-
-
 export async function build({ui}: {ui: Ui}) {
   const app = await loadLocalApp();
 

@@ -23,6 +23,7 @@
     {"path": "./functions/tmdb-refresher-scheduler"},
     {"path": "./global"},
     {"path": "./packages/cli"},
+    {"path": "./packages/cli/templates"},
     {"path": "./packages/clips"},
     {"path": "./packages/clips-dom"},
     {"path": "./packages/clips-react"},

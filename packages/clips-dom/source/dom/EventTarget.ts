@@ -31,9 +31,11 @@ export class EventTarget {
 
   addEventListener(
     type: string,
-    listener: EventListenerOrEventListenerObject,
+    listener: EventListenerOrEventListenerObject | null,
     options?: boolean | EventListenerOptions,
   ) {
+    if (listener == null) return;
+
     const capture = options === true || (options && options.capture === true);
     const key = type + (capture ? '@' : '');
     let listeners = this[LISTENERS];
@@ -49,16 +51,18 @@ export class EventTarget {
     if (list.proxy === undefined) {
       list.proxy = dispatchEvent.bind(this, type);
       const channel = this[CHANNEL];
-      channel?.addListener(this as any, type, list.proxy);
+      channel?.addListener(this as any, type, list.proxy!);
     }
     list.add(listener);
   }
 
   removeEventListener(
     type: string,
-    listener: EventListenerOrEventListenerObject,
+    listener: EventListenerOrEventListenerObject | null,
     options?: boolean | EventListenerOptions,
   ) {
+    if (listener == null) return;
+
     const capture = options === true || (options && options.capture === true);
     const key = `${type}${capture}`;
     const listeners = this[LISTENERS];
@@ -67,7 +71,7 @@ export class EventTarget {
       list.delete(listener);
       const channel = this[CHANNEL];
       if (list.proxy !== undefined && channel) {
-        channel.removeListener(this as any, type, list.proxy);
+        channel.removeListener(this as any, type, list.proxy!);
         list.proxy = undefined;
       }
     }

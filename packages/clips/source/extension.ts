@@ -5,18 +5,26 @@ import {
   type RenderExtensionRoot,
   type RenderExtensionWithRemoteRoot,
 } from './extension-points';
-import {acceptSignals, WithThreadSignals} from './signals';
+import {acceptSignals, type WithThreadSignals} from './signals';
+import {type Api} from './api';
+
+export type ExtensionPointsWithWrapper = {
+  [ExtensionPoint in keyof ExtensionPoints]: ExtensionPoints[ExtensionPoint] extends RenderExtension<
+    ExtensionPoint,
+    any,
+    infer Components
+  >
+    ? RenderExtensionWithRemoteRoot<
+        WithThreadSignals<Api<ExtensionPoint>>,
+        Components
+      >
+    : never;
+};
 
 export function extension<
   ExtensionPoint extends keyof ExtensionPoints = keyof ExtensionPoints,
 >(
-  run: ExtensionPoints[ExtensionPoint] extends RenderExtension<
-    infer Api,
-    any,
-    infer Components
-  >
-    ? RenderExtensionWithRemoteRoot<WithThreadSignals<Api>, Components>
-    : never,
+  run: ExtensionPointsWithWrapper[ExtensionPoint],
 ): ExtensionPoints[ExtensionPoint] {
   async function extension(
     {channel, components}: RenderExtensionRoot<any>,

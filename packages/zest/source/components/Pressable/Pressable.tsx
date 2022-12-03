@@ -128,11 +128,14 @@ export const PressableInternal = forwardRef<
 
       const onPressResult = onPress();
 
+      console.log({postPerform, onPressResult, containingOverlay});
+
       if (
         postPerform === 'closeContainingOverlay' &&
         containingOverlay != null
       ) {
         runWithMaybePromise(onPressResult, () => {
+          console.log('CLOSING OVERLAY');
           containingOverlay.close();
         });
       }
@@ -210,5 +213,9 @@ function runWithMaybePromise<T, R>(
     return run(value as any) as any;
   }
 
-  return (value as Promise<T>).then(run) as any;
+  return (value as Promise<T>).then((value) => {
+    console.log('PROMISE RESULT', value);
+
+    return run(value);
+  }) as any;
 }

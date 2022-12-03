@@ -1,12 +1,11 @@
 import {CHANNEL, DATA} from './constants';
-import type {Document} from './Document';
 import {ChildNode} from './ChildNode';
 
 export class CharacterData extends ChildNode {
   [DATA] = '';
 
-  constructor(data: any, ownerDocument?: Document) {
-    super(ownerDocument);
+  constructor(data: any) {
+    super();
     this.setData(data);
   }
 

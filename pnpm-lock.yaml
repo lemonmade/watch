@@ -22,7 +22,6 @@ importers:
       '@types/node': ^16.11.0
       dotenv: ^16.0.0
       esbuild: ^0.15.0
-      esbuild-register: ^3.3.2
       nodemon: ^2.0.0
       preact: ^10.11.3
       prisma: ^4.4.0
@@ -47,7 +46,6 @@ importers:
       '@types/node': 16.11.26
       dotenv: 16.0.0
       esbuild: 0.15.3
-      esbuild-register: 3.3.2_esbuild@0.15.3
       nodemon: 2.0.20
       preact: 10.11.3
       prisma: 4.4.0
@@ -201,7 +199,9 @@ importers:
       '@types/mime': ^2.0.0
       '@types/prompts': ^2.0.0
       '@types/ws': ^7.0.0
-      '@watching/clips': workspace:^0.2.15
+      '@watching/clips': workspace:*
+      '@watching/clips-dom': workspace:*
+      '@watching/clips-react': workspace:*
       '@watching/graphql': workspace:^0.0.1
       ansi-escapes: ^4.0.0
       arg: ^5.0.0
@@ -259,11 +259,13 @@ importers:
       '@types/prompts': 2.0.14
       '@types/ws': 7.4.7
       '@watching/clips': link:../clips
+      '@watching/clips-dom': link:../clips-dom
+      '@watching/clips-react': link:../clips-react
 
   packages/clips:
     specifiers:
       '@remote-ui/core': ^2.1.16
-      '@watching/thread-signals': ^0.1.0
+      '@watching/thread-signals': workspace:^0.1.5
     dependencies:
       '@remote-ui/core': 2.1.16
       '@watching/thread-signals': link:../thread-signals
@@ -272,7 +274,7 @@ importers:
     specifiers:
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.16
-      '@watching/clips': workspace:^0.2.17
+      '@watching/clips': workspace:^0.2.19
     dependencies:
       '@remote-ui/core': 2.1.16
       '@watching/clips': link:../clips
@@ -346,7 +348,7 @@ importers:
       '@quilted/react-utilities': ^0.1.7
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.16
-      '@watching/remote-react': ^17.0.3
+      '@watching/remote-react': workspace:^17.0.4
       react: npm:@quilted/react@^17.0.0
     dependencies:
       '@quilted/react-utilities': 0.1.7_619eb7192a1e119c6a7483243ef75838
@@ -7269,14 +7271,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-register/3.3.2_esbuild@0.15.3:
-    resolution: {integrity: sha512-jceAtTO6zxPmCfSD5cBb3rgIK1vmuqCKYwgylHiS1BF4pq0jJiJb4K2QMuqF4BEw7XDBRatYzip0upyTzfkgsQ==}
-    peerDependencies:
-      esbuild: '>=0.12 <1'
-    dependencies:
-      esbuild: 0.15.3
-    dev: true
-
   /esbuild-sunos-64/0.14.34:
     resolution: {integrity: sha512-eNPVatNET1F7tRMhii7goL/eptfxc0ALRjrj9SPFNqp0zmxrehBFD6BaP3R4LjMn6DbMO0jOAnTLFKr8NqcJAA==}
     engines: {node: '>=12'}
@@ -9393,7 +9387,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken/8.5.1:

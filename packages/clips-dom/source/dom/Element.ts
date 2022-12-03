@@ -3,13 +3,11 @@ import {
   ATTRIBUTES,
   USER_PROPERTIES,
   STYLE,
-  NAME,
   CHANNEL,
   ID,
   NamespaceURI,
   NodeType,
 } from './constants';
-import type {Document} from './Document';
 import {ParentNode} from './ParentNode';
 import {NamedNodeMap} from './NamedNodeMap';
 import {Attr} from './Attr';
@@ -17,15 +15,12 @@ import {CSSStyleDeclaration} from './CSSStyleDeclaration';
 import {querySelectorAll, querySelector} from './selectors';
 import {serializeNode, serializeChildren, parseHtml} from './serialization';
 
-let lock = false;
-
 // Intercept initial property assignment on Element instances to install a
 // getter/setter pair that forwards assigned values to the backing channel.
 const elementProxy: ProxyHandler<Element> = {
   set(target, name, value, receiver) {
     let props = receiver[USER_PROPERTIES];
     if (
-      lock === false &&
       typeof name === 'string' &&
       name[0] !== '_' &&
       name.length > 1 &&
@@ -129,22 +124,6 @@ export class Element extends ParentNode {
   [STYLE]?: CSSStyleDeclaration;
 
   [anyProperty: string]: any;
-
-  constructor(
-    ownerDocument: Document,
-    localName: string,
-    namespaceURI?: NamespaceURI,
-  ) {
-    super(((lock = true), ownerDocument));
-    this[NAME] = localName;
-    if (namespaceURI) this[NS] = namespaceURI;
-    lock = false;
-
-    // const proxy = new Proxy(this, elementProxy);
-    // this[PROXY] = proxy;
-    // \eslint-disable-next-line no-constructor-return
-    // return proxy;
-  }
 
   get attributes() {
     let attributes = this[ATTRIBUTES];

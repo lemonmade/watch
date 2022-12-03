@@ -45,16 +45,6 @@ export class Node extends EventTarget {
   [PREV]: Node | null = null;
   [NEXT]: Node | null = null;
 
-  constructor(ownerDocument?: Document) {
-    super();
-    Object.defineProperty(this, OWNER_DOCUMENT, {
-      value: ownerDocument,
-      writable: true,
-    });
-    const channel = ownerDocument?.[CHANNEL];
-    Object.defineProperty(this, CHANNEL, {value: channel, writable: true});
-  }
-
   [GENERATE_ID]() {
     this[ID] = ++nodeId;
     return nodeId;

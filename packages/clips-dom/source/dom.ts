@@ -11,6 +11,7 @@ import {
 import {type Adaptor} from './protocol';
 import {Window} from './dom/Window';
 import {CHANNEL, ID, NodeType} from './dom/constants';
+import {type HTMLAdaptorForRemoteComponent} from './adaptor';
 
 export function createWindow({adaptor}: RemoteDOM) {
   const window = new Window();
@@ -25,19 +26,16 @@ export function createWindow({adaptor}: RemoteDOM) {
 
 export interface RemoteDOM {
   readonly adaptor: Adaptor;
+  defineElements(): void;
   createRootElement(root: RemoteRoot<any, any>): Element;
   createFragmentElement(fragment: RemoteFragment<any>): Element;
 }
 
-type Listener = (event: any) => void;
-interface ListenerEntry {
-  name: string;
-  nameLower: string;
-  listeners: Set<Listener>;
-  proxy: (e: any) => void;
-}
-
-export function createRemoteDOM(): RemoteDOM {
+export function createRemoteDOM({
+  elements,
+}: {
+  elements: {[Key: string]: HTMLAdaptorForRemoteComponent<any>};
+}): RemoteDOM {
   const rootsByNode = new WeakMap<
     Element | Text,
     Map<
@@ -48,8 +46,12 @@ export function createRemoteDOM(): RemoteDOM {
       | RemoteFragment<any>
     >
   >();
-  const listeners = new WeakMap<Element, Map<string, ListenerEntry>>();
   const propsByNode = new WeakMap<Element, Record<string, unknown>>();
+  const localNameToComponents = new Map<string, string>();
+
+  for (const [element, elementAdaptor] of Object.entries(elements)) {
+    localNameToComponents.set(element, elementAdaptor.type);
+  }
 
   const adaptor: Adaptor = {
     createElement() {
@@ -106,74 +108,48 @@ export function createRemoteDOM(): RemoteDOM {
     },
     addListener(element, eventType, listener) {
       const type = eventType[0]!.toLowerCase() + eventType.slice(1);
+      const name = `on${type[0]!.toUpperCase()}${type.slice(1)}`;
+      const nameLower = `on${type}`;
 
-      let lists = listeners.get(element);
-      if (!lists) {
-        lists = new Map();
-        listeners.set(element, lists);
+      let props = propsByNode.get(element as HTMLElement);
+
+      if (props == null) {
+        props = {};
+        propsByNode.set(element as HTMLElement, props);
       }
 
-      let events = lists.get(type);
-      if (!events) {
-        events = {
-          name: `on${type[0]!.toUpperCase()}${type.slice(1)}`,
-          nameLower: `on${type}`,
-          listeners: new Set(),
-          proxy(ev: any) {
-            for (const fn of events!.listeners) fn(ev);
-          },
-        };
+      const wrappedListener = (...args: any[]) => {
+        const result = listener({detail: args.length <= 1 ? args[0] : args});
+        return result.returnValue;
+      };
 
-        lists.set(type, events);
-      }
+      props[name] = listener;
+      props[nameLower] = listener;
 
-      events.listeners.add(listener);
-
-      if (events.listeners.size === 1) {
-        let props = propsByNode.get(element);
-
-        if (props == null) {
-          props = {};
-          propsByNode.set(element, props);
-        }
-
-        props[events.name] = events.proxy;
-        props[events.nameLower] = events.proxy;
-
-        for (const component of eachComponent(element)) {
-          component.updateProps({
-            [events.name]: events.proxy,
-            [events.nameLower]: events.proxy,
-          });
-        }
+      for (const component of eachComponent(element as HTMLElement)) {
+        component.updateProps({
+          [name]: listener,
+          [nameLower]: listener,
+        });
       }
     },
-    removeListener(element, eventType, listener) {
+    removeListener(element, eventType) {
       const type = eventType[0]!.toLowerCase() + eventType.slice(1);
+      const name = `on${type[0]!.toUpperCase()}${type.slice(1)}`;
+      const nameLower = `on${type}`;
 
-      const lists = listeners.get(element);
-      if (!lists) return;
+      const props = propsByNode.get(element as HTMLElement);
 
-      const events = lists.get(type);
-      if (!events) return;
+      if (props != null) {
+        delete props[name];
+        delete props[nameLower];
+      }
 
-      const {name, nameLower, listeners: listenerFunctions} = events;
-      listenerFunctions.delete(listener);
-
-      if (listenerFunctions.size === 0) {
-        const props = propsByNode.get(element) || {};
-
-        if (props) {
-          delete props[name];
-          delete props[nameLower];
-        }
-
-        for (const component of eachComponent(element)) {
-          component.updateProps({
-            [name]: undefined,
-            [nameLower]: undefined,
-          });
-        }
+      for (const component of eachComponent(element as HTMLElement)) {
+        component.updateProps({
+          [name]: undefined,
+          [nameLower]: undefined,
+        });
       }
     },
     insert(parent, node, before) {
@@ -209,6 +185,13 @@ export function createRemoteDOM(): RemoteDOM {
 
   return {
     adaptor,
+    defineElements() {
+      for (const [name, elementAdaptor] of Object.entries(elements)) {
+        const Constructor = elementAdaptor.getElementConstructor();
+        customElements.define(name, elementAdaptor.getElementConstructor());
+        customElements.define(elementAdaptor.type, Constructor);
+      }
+    },
     createRootElement(root) {
       const element = document.createElement('#root');
       document.append(element);
@@ -239,11 +222,7 @@ export function createRemoteDOM(): RemoteDOM {
   function* eachNode(node: Element | Text) {
     const roots = rootsByNode.get(node);
 
-    if (roots) {
-      for (const element of roots.values()) {
-        yield element;
-      }
-    }
+    if (roots) yield* roots.values();
   }
 
   function* eachComponent(element: Element) {
@@ -272,8 +251,10 @@ export function createRemoteDOM(): RemoteDOM {
     if (existing) return existing as any;
 
     if (node.nodeType === NodeType.ELEMENT_NODE) {
+      const localName = (node as Element).localName;
+
       const child = root.createComponent(
-        (node as Element).localName,
+        localNameToComponents.get(localName) ?? localName,
         {...propsByNode.get(node as Element)},
         Array.from((node as Element).childNodes).map((child) =>
           nodeToRemote(child as any, root),
