@@ -1,5 +1,14 @@
 # @watching/clips-dom
 
+## 0.1.7
+
+### Patch Changes
+
+- [#200](https://github.com/lemonmade/watch/pull/200) [`912e1c1`](https://github.com/lemonmade/watch/commit/912e1c1f0fa5c6bf2b61ad667fd5072206aeb531) Thanks [@lemonmade](https://github.com/lemonmade)! - Improved DOM bindings
+
+- Updated dependencies [[`912e1c1`](https://github.com/lemonmade/watch/commit/912e1c1f0fa5c6bf2b61ad667fd5072206aeb531)]:
+  - @watching/clips@0.2.20
+
 ## 0.1.6
 
 ### Patch Changes
