@@ -67,8 +67,8 @@ export async function create(_: {ui: Ui}) {
 
 function replace(content: string, replacements: Record<string, string>) {
   return content.replace(
-    new RegExp(Object.keys(replacements).join('|'), 'g'),
-    (match) => replacements[match]!,
+    new RegExp(`{{\\s*${Object.keys(replacements).join('|')}\\s*}}`, 'g'),
+    (_, match) => replacements[match]!,
   );
 }
 
