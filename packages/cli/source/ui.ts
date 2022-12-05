@@ -3,10 +3,10 @@
 import stripAnsi from 'strip-ansi';
 import ansiEscapes from 'ansi-escapes';
 
-import * as Style from 'colorette';
+import {color} from '@quilted/cli-kit';
 
 interface StyleProp {
-  (content: string, style: typeof Style): string;
+  (content: string, style: typeof color): string;
 }
 
 export interface Ui {
@@ -56,7 +56,7 @@ export class PrintableError {
 
       if (this.original.stack) {
         console.log(
-          Style.dim(
+          color.dim(
             this.original.stack
               .replace(this.original.message, '')
               .replace(/^\s/, ''),
@@ -89,33 +89,33 @@ export function createUi(): Ui {
       )}`;
 
       console.log(
-        Style.bold(
-          style?.(contentWithSeparator, Style) ?? contentWithSeparator,
+        color.bold(
+          style?.(contentWithSeparator, color) ?? contentWithSeparator,
         ),
       );
     },
     TextBlock(content, {style, spacing = true} = {}) {
       if (spacing) newline();
-      console.log(prettyFormat(style ? style(content, Style) : content));
+      console.log(prettyFormat(style ? style(content, color) : content));
     },
     Spacer() {
       newline();
     },
     Text(content, {style, emphasized = false} = {}) {
-      const formattedContent = style ? style(content, Style) : content;
-      return emphasized ? Style.bold(formattedContent) : formattedContent;
+      const formattedContent = style ? style(content, color) : content;
+      return emphasized ? color.bold(formattedContent) : formattedContent;
     },
     Code(content) {
-      return Style.bold(content);
+      return color.bold(content);
     },
     Link(url) {
       const href = url.toString();
       const wrappedUrl =
-        !Style.options.enabled || process.env.CI || !process.stdout.isTTY
+        process.env.CI || !process.stdout.isTTY
           ? href
           : ansiEscapes.link(href, href);
 
-      return Style.underline(Style.magenta(wrappedUrl));
+      return color.underline(color.magenta(wrappedUrl));
     },
     List(content) {
       newline();

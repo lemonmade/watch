@@ -1,6 +1,6 @@
 import arg from 'arg';
 import {bold, magenta, red, blue, dim} from 'colorette';
-import {AbortError} from '@quilted/events';
+import {AbortError} from '@quilted/cli-kit';
 
 import {createUi, PrintableError} from './ui';
 

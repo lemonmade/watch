@@ -4,15 +4,15 @@ import * as fs from 'fs/promises';
 
 import type {Ui} from '../../ui';
 
-import {prompt} from './prompts';
-import {
-  emptyDirectory,
-  isEmpty,
-  loadTemplate,
-  createOutputTarget,
-} from './files';
+import {prompt, createPackageTemplates} from '@quilted/cli-kit';
+import {emptyDirectory, isEmpty, createOutputTarget} from './files';
 
 export async function create(_: {ui: Ui}) {
+  const templates = await createPackageTemplates({
+    from: import.meta.url,
+    directory: 'templates',
+  });
+
   const name = await prompt({
     type: 'text',
     message: 'What would you like to name your extension?',
@@ -48,11 +48,11 @@ export async function create(_: {ui: Ui}) {
     await fs.mkdir(directory, {recursive: true});
   }
 
-  const template = loadTemplate('SeriesAccessory', format as any);
+  const template = await templates.load(`SeriesAccessory/${format}`);
   const output = createOutputTarget(directory);
 
   await template.copy(output.root, {
-    async handleFile(file, read) {
+    async handleFile(file, {read}) {
       if (file === 'extension.toml' || file === 'package.json') {
         return replace(await read(), {
           name,

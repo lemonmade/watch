@@ -3,7 +3,7 @@ import {readFile} from 'fs/promises';
 import {parse} from 'graphql';
 import {watch} from 'chokidar';
 
-import {createEmitter} from '@quilted/events';
+import {createEmitter} from '@quilted/cli-kit';
 import {
   run,
   createQueryResolver as createQueryResolverForSchema,

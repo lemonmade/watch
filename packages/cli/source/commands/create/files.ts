@@ -1,67 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import glob from 'glob';
-import {fileURLToPath} from 'url';
 import type {BuiltInParserName} from 'prettier';
-
-export {prompt} from './prompts';
-
-export type TemplateName = 'SeriesAccessory';
-export type TemplateFormat = 'react' | 'dom' | 'core';
-
-export function loadTemplate(name: TemplateName, format: TemplateFormat) {
-  let templateRootPromise: Promise<string> | undefined;
-
-  return {
-    async copy(
-      to: string,
-      {
-        handleFile,
-      }: {
-        handleFile?(
-          file: string,
-          read: () => Promise<string>,
-        ): boolean | string | Promise<boolean | string>;
-      } = {},
-    ) {
-      templateRootPromise ??= templateDirectory(name, format);
-      const templateRoot = await templateRootPromise;
-      const targetRoot = path.resolve(to);
-
-      const files = glob.sync('**/*', {
-        cwd: templateRoot,
-        absolute: false,
-      });
-
-      await Promise.all(
-        files.map(async (file) => {
-          const read = () =>
-            fs.promises.readFile(path.resolve(templateRoot, file), 'utf-8');
-          const content = await handleFile?.(file, read);
-
-          if (!content) return;
-
-          const targetPath = path.join(
-            targetRoot,
-            file.startsWith('_') ? `.${file.slice(1)}` : file,
-          );
-
-          const resolvedContent =
-            typeof content === 'string' ? content : await read();
-
-          await fs.promises.mkdir(path.dirname(targetPath), {recursive: true});
-          await fs.promises.writeFile(targetPath, resolvedContent);
-        }),
-      );
-    },
-    async read(file: string) {
-      templateRootPromise ??= templateDirectory(name, format);
-      const templateRoot = await templateRootPromise;
-
-      return fs.readFileSync(path.join(templateRoot, file), {encoding: 'utf8'});
-    },
-  };
-}
+export {prompt} from '@quilted/cli-kit';
 
 export interface OutputTarget {
   readonly root: string;
@@ -80,51 +20,9 @@ export function createOutputTarget(target: string): OutputTarget {
       });
     },
     async write(file: string, content: string) {
-      await writeFile(path.resolve(resolvedTarget, file), content);
+      await fs.promises.writeFile(path.resolve(resolvedTarget, file), content);
     },
   };
-}
-
-let packageRootPromise: Promise<string> | undefined;
-
-async function templateDirectory(name: TemplateName, format: TemplateFormat) {
-  return path.join(await getPackageRoot(), 'templates', name, format);
-}
-
-async function getPackageRoot(): Promise<string> {
-  if (!packageRootPromise) {
-    packageRootPromise = (async () => {
-      const {packageDirectory} = await import('pkg-dir');
-
-      return packageDirectory({
-        cwd: path.dirname(fileURLToPath(import.meta.url)),
-      });
-    })();
-  }
-
-  return packageRootPromise;
-}
-
-function copy(source: string, destination: string) {
-  const stat = fs.statSync(source);
-  if (stat.isDirectory()) {
-    copyDirectory(source, destination);
-  } else {
-    fs.copyFileSync(source, destination);
-  }
-}
-
-async function copyDirectory(source: string, destination: string) {
-  fs.mkdirSync(destination, {recursive: true});
-  for (const file of fs.readdirSync(source)) {
-    const srcFile = path.resolve(source, file);
-    const destFile = path.resolve(destination, file);
-    copy(srcFile, destFile);
-  }
-}
-
-export async function writeFile(file: string, content: string) {
-  await fs.promises.writeFile(file, content);
 }
 
 export async function isEmpty(path: string) {

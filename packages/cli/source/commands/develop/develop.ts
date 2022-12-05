@@ -9,7 +9,7 @@ import {
   createEmitter,
   AbortError,
   NestedAbortController,
-} from '@quilted/events';
+} from '@quilted/cli-kit';
 import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
 import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
 

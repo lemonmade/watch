@@ -2,8 +2,7 @@ import * as path from 'path';
 import {readFile, access} from 'fs/promises';
 import {watch} from 'chokidar';
 import type {FSWatcher} from 'chokidar';
-import {createEmitter} from '@quilted/events';
-import type {Emitter} from '@quilted/events';
+import {createEmitter, type Emitter} from '@quilted/cli-kit';
 
 import glob from 'glob';
 import {parse} from '@iarna/toml';
