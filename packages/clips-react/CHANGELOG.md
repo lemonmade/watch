@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.2.26
+
+### Patch Changes
+
+- [`9dea324`](https://github.com/lemonmade/watch/commit/9dea324e2e7ed46829bfbaf45845ae904f381bc5) Thanks [@lemonmade](https://github.com/lemonmade)! - Only install hooks once
+
 ## 0.2.25
 
 ### Patch Changes
