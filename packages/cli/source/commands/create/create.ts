@@ -30,7 +30,7 @@ export async function create(_: {ui: Ui}) {
     ],
   });
 
-  const directory = path.resolve('extensions', handle);
+  const directory = path.resolve('extensions', toPascalCase(handle));
 
   if (!(await isEmpty(directory))) {
     const overwrite = await prompt({
@@ -67,7 +67,7 @@ export async function create(_: {ui: Ui}) {
 
 function replace(content: string, replacements: Record<string, string>) {
   return content.replace(
-    new RegExp(`{{\\s*${Object.keys(replacements).join('|')}\\s*}}`, 'g'),
+    new RegExp(`{{\\s*(${Object.keys(replacements).join('|')})\\s*}}`, 'g'),
     (_, match) => replacements[match]!,
   );
 }
@@ -79,4 +79,11 @@ function toHandle(projectName: string) {
     .replace(/\s+/g, '-')
     .replace(/^[._]/, '')
     .replace(/[^a-z0-9-~@/]+/g, '-');
+}
+
+function toPascalCase(value: string) {
+  return (
+    value[0]!.toUpperCase() +
+    value.slice(1).replace(/[_.\- ]+(\w|$)/g, (_, x) => x.toUpperCase())
+  );
 }
