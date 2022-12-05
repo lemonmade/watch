@@ -35,7 +35,10 @@ export async function create(_: {ui: Ui}) {
   if (!(await isEmpty(directory))) {
     const overwrite = await prompt({
       type: 'confirm',
-      message: `The directory ${directory} already exists. Would you like to overwrite it?`,
+      message: `The directory ${path.relative(
+        process.cwd(),
+        directory,
+      )} already exists. Would you like to overwrite it?`,
     });
 
     if (!overwrite) return;
@@ -48,7 +51,25 @@ export async function create(_: {ui: Ui}) {
   const template = loadTemplate('SeriesAccessory', format as any);
   const output = createOutputTarget(directory);
 
-  await template.copy(output.root);
+  await template.copy(output.root, {
+    async handleFile(file, read) {
+      if (file === 'extension.toml' || file === 'package.json') {
+        return replace(await read(), {
+          name,
+          handle,
+        });
+      }
+
+      return true;
+    },
+  });
+}
+
+function replace(content: string, replacements: Record<string, string>) {
+  return content.replace(
+    new RegExp(Object.keys(replacements).join('|'), 'g'),
+    (match) => replacements[match]!,
+  );
 }
 
 function toHandle(projectName: string) {

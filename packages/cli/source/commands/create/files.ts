@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import glob from 'glob';
 import {fileURLToPath} from 'url';
 import type {BuiltInParserName} from 'prettier';
 
@@ -12,29 +13,46 @@ export function loadTemplate(name: TemplateName, format: TemplateFormat) {
   let templateRootPromise: Promise<string> | undefined;
 
   return {
-    async copy(to: string, handleFile?: (file: string) => boolean) {
+    async copy(
+      to: string,
+      {
+        handleFile,
+      }: {
+        handleFile?(
+          file: string,
+          read: () => Promise<string>,
+        ): boolean | string | Promise<boolean | string>;
+      } = {},
+    ) {
       templateRootPromise ??= templateDirectory(name, format);
       const templateRoot = await templateRootPromise;
       const targetRoot = path.resolve(to);
 
-      const files = fs
-        .readdirSync(templateRoot)
-        .filter((file) => !path.basename(file).startsWith('.'));
+      const files = glob.sync('**/*', {
+        cwd: templateRoot,
+        absolute: false,
+      });
 
-      for (const file of files) {
-        if (handleFile) {
-          if (!handleFile(file)) {
-            continue;
-          }
-        }
+      await Promise.all(
+        files.map(async (file) => {
+          const read = () =>
+            fs.promises.readFile(path.resolve(templateRoot, file), 'utf-8');
+          const content = await handleFile?.(file, read);
 
-        const targetPath = path.join(
-          targetRoot,
-          file.startsWith('_') ? `.${file.slice(1)}` : file,
-        );
+          if (!content) return;
 
-        copy(path.join(templateRoot, file), targetPath);
-      }
+          const targetPath = path.join(
+            targetRoot,
+            file.startsWith('_') ? `.${file.slice(1)}` : file,
+          );
+
+          const resolvedContent =
+            typeof content === 'string' ? content : await read();
+
+          await fs.promises.mkdir(path.dirname(targetPath), {recursive: true});
+          await fs.promises.writeFile(targetPath, resolvedContent);
+        }),
+      );
     },
     async read(file: string) {
       templateRootPromise ??= templateDirectory(name, format);
