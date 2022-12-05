@@ -54,7 +54,13 @@ export function useSignalEffect(
   }, dependencies);
 }
 
+let hasInstalledHooks = false;
+
 export function installHooks() {
+  if (hasInstalledHooks) return;
+
+  hasInstalledHooks = true;
+
   Object.defineProperties(Signal.prototype, {
     constructor: {configurable: true},
     type: {configurable: true, value: Text},
