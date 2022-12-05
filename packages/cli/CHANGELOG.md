@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 0.4.29
+
+### Patch Changes
+
+- [`7010ec0`](https://github.com/lemonmade/watch/commit/7010ec0c08bd1c55bd42b0427ca4f3a1ef588e20) Thanks [@lemonmade](https://github.com/lemonmade)! - Use quilt CLI kit
+
 ## 0.4.28
 
 ### Patch Changes
