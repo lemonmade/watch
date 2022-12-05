@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 0.4.28
+
+### Patch Changes
+
+- [`a3500be`](https://github.com/lemonmade/watch/commit/a3500bef9353f5479ab7feaca91fb19ef39c6366) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing changeset templates
+
+* [`c8c570d`](https://github.com/lemonmade/watch/commit/c8c570d71577f83b9ee2e11de1fc9b372df70ff2) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix create command creating invalid configuration files
+
 ## 0.4.27
 
 ### Patch Changes
