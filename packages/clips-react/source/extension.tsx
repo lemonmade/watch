@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 import {extension as domExtension} from '@watching/clips-dom';
 
+import {installHooks} from './signals';
 import {type RenderContext, ReactRenderContext} from './context';
 
 export function extension<Target extends ExtensionPoint>(
@@ -11,6 +12,8 @@ export function extension<Target extends ExtensionPoint>(
     api: WithThreadSignals<Api<Target>>,
   ) => ReactNode | Promise<ReactNode>,
 ) {
+  installHooks();
+
   return domExtension<Target>(async (element, api, {dom, root}) => {
     const rendered = await renderReact(api);
 

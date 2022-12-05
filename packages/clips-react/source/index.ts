@@ -1,4 +1,5 @@
 export * from '@watching/clips';
+export * from '@preact/signals-core';
 
 export {extension} from './extension';
 export {
@@ -17,4 +18,4 @@ export {
   View,
 } from './components';
 export * from './hooks';
-export * from './signals';
+export {useSignal, useSignalEffect, useComputed} from './signals';
