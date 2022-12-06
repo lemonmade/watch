@@ -1,5 +1,11 @@
 # @watching/clips-dom
 
+## 0.1.8
+
+### Patch Changes
+
+- [`1a645ae`](https://github.com/lemonmade/watch/commit/1a645ae42165e6dd360c09cc3aa5d70948e0d45f) Thanks [@lemonmade](https://github.com/lemonmade)! - Clean up DOM package
+
 ## 0.1.7
 
 ### Patch Changes
