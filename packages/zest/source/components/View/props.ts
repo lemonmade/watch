@@ -19,6 +19,8 @@ import styles from './View.module.css';
 export interface Props {
   id?: string;
   className?: string;
+  style?: CSSProperties;
+  inert?: boolean;
   display?: 'block' | 'inline' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
   padding?: boolean | SpacingKeyword | RawValue;
   paddingInlineStart?: boolean | SpacingKeyword | RawValue;
@@ -91,7 +93,9 @@ export function resolveViewProps({
 
 export function useViewProps({
   id,
+  style: explicitStyle,
   className: explicitClassName,
+  inert,
   display,
   position,
   padding,
@@ -111,7 +115,7 @@ export function useViewProps({
   blockAlignment,
 }: Props = {}): DOMPropController {
   let className = classes(systemStyles.resetOrientation, styles.View!);
-  let domStyles: DOMPropController['styles'];
+  let domStyles: DOMPropController['styles'] = explicitStyle;
   let attributes: DOMPropController['attributes'];
 
   const addStyles: DOMPropController['addStyles'] = (newStyles) => {
@@ -163,6 +167,10 @@ export function useViewProps({
       );
     }
   };
+
+  if (inert) {
+    addAttributes({inert: true} as any);
+  }
 
   if (id) {
     addAttributes({id});

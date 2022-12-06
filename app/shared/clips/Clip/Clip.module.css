@@ -1,0 +1,7 @@
+.Content {
+  transition: opacity 0.15s 0.2s ease;
+}
+
+.restarting {
+  opacity: 0.4;
+}

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRenderer, createController} from '@remote-ui/react/host';
 import {
@@ -14,6 +14,7 @@ import {
   raw,
   Section,
 } from '@lemon/zest';
+import {classes} from '@lemon/css';
 
 import {useMutation} from '~/shared/graphql';
 
@@ -23,6 +24,7 @@ import {
   type ClipsExtensionPointInstance,
 } from '../extension';
 
+import styles from './Clip.module.css';
 import {ClipSettings} from './ClipSettings';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 
@@ -90,9 +92,7 @@ export function Clip<Point extends ExtensionPoint>({
           </Layout>
         </ContentAction>
 
-        <Section>
-          {renderer && <ClipInstanceRenderer renderer={renderer} />}
-        </Section>
+        {renderer && <ClipInstanceRenderer renderer={renderer} />}
       </BlockStack>
     </Section>
   );
@@ -170,6 +170,7 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     };
   }, [renderer]);
 
+  const receiver = instance?.receiver;
   const components = instance?.context.components;
 
   const controller = useMemo(
@@ -177,7 +178,40 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     [components],
   );
 
-  return controller && instance ? (
-    <RemoteRenderer controller={controller} receiver={instance.receiver} />
+  const instanceState = instance?.state.value;
+  const isRendered = instanceState === 'rendered';
+
+  const lastRendered = useRef<{
+    receiver?: NonNullable<typeof instance>['receiver'];
+    controller?: NonNullable<typeof controller>;
+  }>({});
+
+  if (isRendered) {
+    lastRendered.current.receiver = receiver;
+    lastRendered.current.controller = controller;
+  }
+
+  const {receiver: lastRenderedReceiver, controller: lastRenderedController} =
+    lastRendered.current;
+
+  const resolvedController = isRendered
+    ? controller
+    : lastRenderedController ?? controller;
+
+  const resolvedReceiver = isRendered
+    ? receiver
+    : lastRenderedReceiver ?? receiver;
+
+  const restarting = receiver !== resolvedReceiver;
+
+  return resolvedController && resolvedReceiver ? (
+    <Section
+      className={classes(styles.Content, restarting && styles.restarting)}
+    >
+      <RemoteRenderer
+        controller={resolvedController}
+        receiver={resolvedReceiver}
+      />
+    </Section>
   ) : null;
 }

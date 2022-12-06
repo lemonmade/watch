@@ -105,6 +105,7 @@ export function createRenderer<Context = Record<string, never>>({
     const currentInstance = instance.value!;
 
     if (prepare) {
+      state.value = 'preparing';
       timings.value = {...timings.value, prepareStart: Date.now()};
 
       instanceEmitter.emit('prepare:start');
@@ -122,6 +123,7 @@ export function createRenderer<Context = Record<string, never>>({
       timings.value = {...timings.value, prepareEnd: Date.now()};
     }
 
+    state.value = 'rendering';
     timings.value = {...timings.value, renderStart: Date.now()};
 
     instanceEmitter.emit('render:start');
@@ -136,14 +138,22 @@ export function createRenderer<Context = Record<string, never>>({
       },
     );
 
-    instanceEmitter.emit('render:end');
-
+    state.value = 'rendered';
     timings.value = {...timings.value, renderEnd: Date.now()};
+
+    instanceEmitter.emit('render:end');
   }
 
   async function stop() {
-    instanceInternals.value?.abort.abort();
-    instanceInternals.value = undefined;
+    const instance = instanceInternals.value;
+
+    if (instance) {
+      instance.abort.abort();
+      (instance.state as any).value = 'stopped';
+
+      instanceInternals.value = undefined;
+    }
+
     emitter.emit('stop');
   }
 
