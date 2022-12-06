@@ -20,7 +20,7 @@ jobs:
         with:
           command: pnpm build
       - name: Deploy preview versions to NPM
-        run: pnpm deploy:preview
+        run: pnpm packages:deploy:preview
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

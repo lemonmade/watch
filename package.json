@@ -60,8 +60,8 @@
     "develop": "quilt develop",
     "build": "quilt build",
     "packages:version": "changeset version && pnpm install --no-frozen-lockfile",
-    "packages:snapshot": "changeset version --snapshot",
     "packages:deploy": "pnpm -r publish",
+    "packages:deploy:preview": "changeset version --snapshot preview && changeset publish --tag preview --no-git-tag",
     "run:typescript": "node --no-warnings --experimental-specifier-resolution=node --experimental-vm-modules --loader \"./scripts/esbuild-module-loader.js\" --conditions quilt:source",
     "watch:typescript": "nodemon --ext json,js,ts,tsx --no-warnings --experimental-specifier-resolution=node --experimental-vm-modules --loader \"./scripts/esbuild-module-loader.js\" --conditions quilt:source",
     "deploy:wrangler": "wrangler"
