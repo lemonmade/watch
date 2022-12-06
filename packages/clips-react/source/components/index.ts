@@ -9,5 +9,6 @@ export {Modal} from './Modal';
 export {Popover} from './Popover';
 export {Section} from './Section';
 export {Text} from './Text';
+export {TextBlock} from './TextBlock';
 export {TextField} from './TextField';
 export {View} from './View';

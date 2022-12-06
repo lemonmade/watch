@@ -22,6 +22,8 @@ export {
   type UISectionElement,
   Text,
   type UITextElement,
+  TextBlock,
+  type UITextBlockElement,
   TextField,
   type UITextFieldElement,
   View,

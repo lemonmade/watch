@@ -23,6 +23,7 @@ export type CommonComponents = Pick<
   | 'Popover'
   | 'Section'
   | 'Text'
+  | 'TextBlock'
   | 'TextField'
   | 'View'
 >;

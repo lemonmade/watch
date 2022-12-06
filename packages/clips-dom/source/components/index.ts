@@ -18,6 +18,11 @@ import {Popover, PopoverComponent, type UIPopoverElement} from './Popover';
 import {Section, SectionComponent, type UISectionElement} from './Section';
 import {Text, TextComponent, type UITextElement} from './Text';
 import {
+  TextBlock,
+  TextBlockComponent,
+  type UITextBlockElement,
+} from './TextBlock';
+import {
   TextField,
   TextFieldComponent,
   type UITextFieldElement,
@@ -43,6 +48,7 @@ declare global {
     [Popover]: UIPopoverElement;
     [Section]: UISectionElement;
     [Text]: UITextElement;
+    [TextBlock]: UITextBlockElement;
     [TextField]: UITextFieldElement;
     [View]: UIViewElement;
   }
@@ -60,6 +66,7 @@ export const CUSTOM_ELEMENTS = {
   [Popover]: PopoverComponent,
   [Section]: SectionComponent,
   [Text]: TextComponent,
+  [TextBlock]: TextBlockComponent,
   [TextField]: TextFieldComponent,
   [View]: ViewComponent,
 };
@@ -87,6 +94,8 @@ export {
   type UISectionElement,
   Text,
   type UITextElement,
+  TextBlock,
+  type UITextBlockElement,
   TextField,
   type UITextFieldElement,
   View,

@@ -26,6 +26,7 @@ export {
 } from './Popover';
 export {Section, type SectionProps} from './Section';
 export {Text, type TextProps} from './Text';
+export {TextBlock, type TextBlockProps} from './TextBlock';
 export {
   TextField,
   type TextFieldProps,

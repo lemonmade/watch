@@ -14,6 +14,7 @@ export {
   Popover,
   Section,
   Text,
+  TextBlock,
   TextField,
   View,
 } from './components';

@@ -11,6 +11,7 @@ import {Modal} from './Modal';
 import {Popover} from './Popover';
 import {Section} from './Section';
 import {Text} from './Text';
+import {TextBlock} from './TextBlock';
 import {TextField} from './TextField';
 import {View} from './View';
 
@@ -40,6 +41,7 @@ const Common: ReactComponentsForRemoteComponents<CommonComponents> =
     Popover,
     Section,
     Text,
+    TextBlock,
     TextField,
     View,
   });
