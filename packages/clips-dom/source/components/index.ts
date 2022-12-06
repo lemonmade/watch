@@ -1,18 +1,34 @@
-import {Action, type UIActionElement} from './Action';
-import {BlockStack, type UIBlockStackElement} from './BlockStack';
-import {Footer, type UIFooterElement} from './Footer';
-import {Header, type UIHeaderElement} from './Header';
-import {Heading, type UIHeadingElement} from './Heading';
-import {Image, type UIImageElement} from './Image';
-import {InlineStack, type UIInlineStackElement} from './InlineStack';
-import {Modal, type UIModalElement} from './Modal';
-import {Popover, type UIPopoverElement} from './Popover';
-import {Section, type UISectionElement} from './Section';
-import {Text, type UITextElement} from './Text';
-import {TextField, type UITextFieldElement} from './TextField';
-import {View, type UIViewElement} from './View';
+import {Action, ActionComponent, type UIActionElement} from './Action';
+import {
+  BlockStack,
+  BlockStackComponent,
+  type UIBlockStackElement,
+} from './BlockStack';
+import {Footer, FooterComponent, type UIFooterElement} from './Footer';
+import {Header, HeaderComponent, type UIHeaderElement} from './Header';
+import {Heading, HeadingComponent, type UIHeadingElement} from './Heading';
+import {Image, ImageComponent, type UIImageElement} from './Image';
+import {
+  InlineStack,
+  InlineStackComponent,
+  type UIInlineStackElement,
+} from './InlineStack';
+import {Modal, ModalComponent, type UIModalElement} from './Modal';
+import {Popover, PopoverComponent, type UIPopoverElement} from './Popover';
+import {Section, SectionComponent, type UISectionElement} from './Section';
+import {Text, TextComponent, type UITextElement} from './Text';
+import {
+  TextField,
+  TextFieldComponent,
+  type UITextFieldElement,
+} from './TextField';
+import {View, ViewComponent, type UIViewElement} from './View';
 
-export * from './shared';
+export {
+  type RemoteDOMComponent,
+  type HTMLConstructorForRemoteComponent,
+  type HTMLElementForRemoteComponent,
+} from './shared';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -31,6 +47,22 @@ declare global {
     [View]: UIViewElement;
   }
 }
+
+export const CUSTOM_ELEMENTS = {
+  [Action]: ActionComponent,
+  [BlockStack]: BlockStackComponent,
+  [Footer]: FooterComponent,
+  [Header]: HeaderComponent,
+  [Heading]: HeadingComponent,
+  [Image]: ImageComponent,
+  [InlineStack]: InlineStackComponent,
+  [Modal]: ModalComponent,
+  [Popover]: PopoverComponent,
+  [Section]: SectionComponent,
+  [Text]: TextComponent,
+  [TextField]: TextFieldComponent,
+  [View]: ViewComponent,
+};
 
 export {
   Action,

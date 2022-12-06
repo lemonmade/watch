@@ -1,21 +1,5 @@
 import {createRemoteRoot, type RemoteRoot} from '@remote-ui/core';
 import {acceptSignals, WithThreadSignals} from '@watching/clips';
-import {
-  Action,
-  BlockStack,
-  Footer,
-  Header,
-  Heading,
-  Image,
-  InlineStack,
-  Modal,
-  Popover,
-  Section,
-  Text,
-  TextField,
-  View,
-  type ViewProps,
-} from '@watching/clips';
 import type {
   Api,
   ExtensionPoints,
@@ -24,27 +8,15 @@ import type {
 } from '@watching/clips';
 
 import {createWindow, createRemoteDOM, type RemoteDOM} from './dom';
-import {
-  Action as ActionElement,
-  BlockStack as BlockStackElement,
-  Footer as FooterElement,
-  Header as HeaderElement,
-  Heading as HeadingElement,
-  Image as ImageElement,
-  InlineStack as InlineStackElement,
-  Modal as ModalElement,
-  Popover as PopoverElement,
-  Section as SectionElement,
-  Text as TextElement,
-  TextField as TextFieldElement,
-  View as ViewElement,
-} from './components';
-import {createRemoteHTMLAdaptor} from './adaptor';
+import {CUSTOM_ELEMENTS} from './components';
 
 const REMOTE_DOM = Symbol.for('RemoteUi.DOM');
 
 if (typeof globalThis.window === 'undefined') {
-  const remoteDOM = createRemoteDOMAdaptor();
+  const remoteDOM = createRemoteDOM({
+    elements: CUSTOM_ELEMENTS,
+  });
+
   const window = createWindow(remoteDOM);
 
   Object.defineProperties(globalThis, {
@@ -79,83 +51,4 @@ export function extension<Target extends ExtensionPoint>(
   }
 
   return domExtension as ExtensionPoints[Target];
-}
-
-function createRemoteDOMAdaptor() {
-  const VIEW_PROPERTIES: (keyof ViewProps)[] = [
-    'padding',
-    'paddingBlockEnd',
-    'paddingBlockStart',
-    'paddingInlineEnd',
-    'paddingInlineStart',
-  ];
-
-  return createRemoteDOM({
-    elements: {
-      [ActionElement]: createRemoteHTMLAdaptor(Action, {
-        properties: ['to', 'disabled', 'overlay', 'onPress'],
-      }),
-      [BlockStackElement]: createRemoteHTMLAdaptor(BlockStack, {
-        properties: ['spacing'],
-      }),
-      [FooterElement]: createRemoteHTMLAdaptor(Footer, {
-        properties: VIEW_PROPERTIES,
-      }),
-      [HeaderElement]: createRemoteHTMLAdaptor(Header, {
-        properties: VIEW_PROPERTIES,
-      }),
-      [HeadingElement]: createRemoteHTMLAdaptor(Heading, {
-        properties: ['accessibilityRole', 'divider', 'level'],
-      }),
-      [ImageElement]: createRemoteHTMLAdaptor(Image, {
-        properties: [
-          'accessibilityRole',
-          'aspectRatio',
-          'description',
-          'fit',
-          'loading',
-          'source',
-          'sources',
-        ],
-      }),
-      [InlineStackElement]: createRemoteHTMLAdaptor(InlineStack, {
-        properties: ['spacing'],
-      }),
-      [ModalElement]: createRemoteHTMLAdaptor(Modal, {
-        properties: ['padding'],
-      }),
-      [PopoverElement]: createRemoteHTMLAdaptor(Popover, {
-        properties: ['blockAttachment', 'inlineAttachment'],
-      }),
-      [SectionElement]: createRemoteHTMLAdaptor(Section, {
-        properties: VIEW_PROPERTIES,
-      }),
-      [TextElement]: createRemoteHTMLAdaptor(Text, {
-        properties: ['emphasis'],
-      }),
-      [TextFieldElement]: createRemoteHTMLAdaptor(TextField, {
-        properties: [
-          'autocomplete',
-          'changeTiming',
-          'disabled',
-          'id',
-          'label',
-          'label',
-          'labelStyle',
-          'maximumLines',
-          'minimumLines',
-          'onChange',
-          'onInput',
-          'placeholder',
-          'readonly',
-          'resize',
-          'type',
-          'value',
-        ],
-      }),
-      [ViewElement]: createRemoteHTMLAdaptor(View, {
-        properties: VIEW_PROPERTIES,
-      }),
-    },
-  });
 }

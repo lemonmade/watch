@@ -9,9 +9,9 @@ import {
 } from '@remote-ui/core';
 
 import {type Adaptor} from './protocol';
+import {type RemoteDOMComponent} from './components';
 import {Window} from './dom/Window';
 import {CHANNEL, ID, NodeType} from './dom/constants';
-import {type HTMLAdaptorForRemoteComponent} from './adaptor';
 
 export function createWindow({adaptor}: RemoteDOM) {
   const window = new Window();
@@ -34,7 +34,7 @@ export interface RemoteDOM {
 export function createRemoteDOM({
   elements,
 }: {
-  elements: {[Key: string]: HTMLAdaptorForRemoteComponent<any>};
+  elements: {[Key: string]: RemoteDOMComponent<any>};
 }): RemoteDOM {
   const rootsByNode = new WeakMap<
     Element | Text,
@@ -186,8 +186,8 @@ export function createRemoteDOM({
     adaptor,
     defineElements() {
       for (const [name, elementAdaptor] of Object.entries(elements)) {
-        const Constructor = elementAdaptor.getElementConstructor();
-        customElements.define(name, elementAdaptor.getElementConstructor());
+        const Constructor = elementAdaptor.elementConstructor;
+        customElements.define(name, Constructor);
         customElements.define(elementAdaptor.type, Constructor);
       }
     },
