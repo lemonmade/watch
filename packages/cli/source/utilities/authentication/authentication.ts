@@ -65,6 +65,8 @@ export async function deleteAuthentication() {
     await mutate(deleteAccessTokenForCliMutation, {
       variables: {token: accessToken},
     });
+
+    await remove(USER_CACHE_DIRECTORY, {recursive: true, force: true});
   }
 }
 
