@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useRoutes, useNavigate, useCurrentUrl, useSignal} from '@quilted/quilt';
+import {useNavigate, useCurrentUrl, useSignal} from '@quilted/quilt';
 import {
   Action,
   View,
@@ -24,13 +24,6 @@ enum SearchParam {
 }
 
 export function CreateAccount() {
-  return useRoutes([
-    {match: '/', render: () => <CreateAccountForm />},
-    {match: 'check-your-email', render: () => <CheckYourEmail />},
-  ]);
-}
-
-export function CreateAccountForm() {
   const currentUrl = useCurrentUrl();
 
   const [reason, setReason] = useState<CreateAccountErrorReason | undefined>(
@@ -186,7 +179,7 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
   }
 }
 
-function CheckYourEmail() {
+export function CheckYourEmail() {
   return (
     <View padding="base">
       <TextBlock>Check your email!</TextBlock>

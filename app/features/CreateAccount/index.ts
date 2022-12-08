@@ -1,1 +1,1 @@
-export {CreateAccount} from './CreateAccount';
+export {CreateAccount, CheckYourEmail} from './CreateAccount';

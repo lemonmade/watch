@@ -127,11 +127,45 @@ async function userFromAccessToken(
     : {graphql, id: data.my.id, email: data.my.email, accessToken};
 }
 
-async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
-  let resolve!: (value: string) => void;
+function watchUrlWithCliConnection(path: string, localServerUrl: string) {
+  const url = watchUrl(path);
+  url.searchParams.set('connect', localServerUrl);
+  return url;
+}
+
+export async function getAccessTokenFromWebAuthentication({
+  to = '/app/developer/cli/authenticate',
+  ...rest
+}: Omit<PerformWebAuthenticationOptions, 'to'> & {
+  to?: PerformWebAuthenticationOptions['to'];
+}) {
+  const {token} = await performWebAuthentication<{token: string}>({
+    to,
+    ...rest,
+  });
+
+  return token;
+}
+
+interface PerformWebAuthenticationOptions {
+  ui: Ui;
+  to:
+    | string
+    | URL
+    | ((details: {
+        localServerUrl: string;
+        urlWithConnect(path: string): URL;
+      }) => string | URL);
+}
+
+async function performWebAuthentication<Result = unknown>({
+  ui,
+  to,
+}: PerformWebAuthenticationOptions) {
+  let resolve!: (value: Result) => void;
   let reject!: (value?: any) => void;
 
-  const promise = new Promise<string>((resolvePromise, rejectPromise) => {
+  const promise = new Promise<Result>((resolvePromise, rejectPromise) => {
     resolve = resolvePromise;
     reject = rejectPromise;
   });
@@ -153,13 +187,13 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   );
 
   handler.post('/', async (request) => {
-    const {token} = await request.json();
+    const result = await request.json();
 
     setTimeout(async () => {
       await stopListening();
 
-      if (token) {
-        resolve(token);
+      if (result) {
+        resolve(result);
       } else {
         reject();
       }
@@ -172,10 +206,21 @@ async function getAccessTokenFromWebAuthentication({ui}: {ui: Ui}) {
   const stopListening = makeStoppableServer(server);
 
   const port = await findPortAndListen(server, 3211);
+  const localServerUrl = `http://localhost:${port}`;
 
-  const url = watchUrl(
-    `/app/developer/cli/authenticate?redirect=http://localhost:${port}`,
-  );
+  let url: URL;
+
+  if (typeof to === 'function') {
+    url = watchUrl(
+      to({
+        localServerUrl,
+        urlWithConnect: (path) =>
+          watchUrlWithCliConnection(path, localServerUrl),
+      }).toString(),
+    );
+  } else {
+    url = watchUrlWithCliConnection(to.toString(), localServerUrl);
+  }
 
   ui.TextBlock(
     `We need to authenticate you in the Watch web app. We’ll try to open it in a second, or you can manually authenticate by visiting ${ui.Link(

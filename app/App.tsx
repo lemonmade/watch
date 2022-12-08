@@ -21,7 +21,7 @@ import {SearchParam} from '~/global/auth';
 import {Head, Http, Frame} from './foundation';
 
 import {Start} from './features/Start';
-import {CreateAccount} from './features/CreateAccount';
+import {CheckYourEmail, CreateAccount} from './features/CreateAccount';
 import {Goodbye} from './features/Goodbye';
 import {Watching, FinishedWatching} from './features/Watching';
 import {Series, RandomSeries} from './features/Series';
@@ -38,6 +38,7 @@ import {
   Apps as DevelopedApps,
   AccessTokens,
   AuthenticateCli,
+  CreatedAccountFromCli,
   Console,
 } from './features/Developer';
 import {ComponentLibrary} from './features/Internal';
@@ -77,7 +78,13 @@ const routes: RouteDefinition[] = [
   {match: '/', render: () => <Start />},
   {match: 'sign-in', render: () => <SignIn />},
   {match: 'signed-out', render: () => <SignedOut />},
-  {match: 'create-account', render: () => <CreateAccount />},
+  {
+    match: 'create-account',
+    children: [
+      {match: '/', render: () => <CreateAccount />},
+      {match: 'check-your-email', render: () => <CheckYourEmail />},
+    ],
+  },
   {match: 'goodbye', render: () => <Goodbye />},
   {
     match: 'app',
@@ -97,7 +104,16 @@ const routes: RouteDefinition[] = [
           {match: '/', render: () => <Developer />},
           {match: 'apps', render: () => <DevelopedApps />},
           {match: 'access-tokens', render: () => <AccessTokens />},
-          {match: 'cli/authenticate', render: () => <AuthenticateCli />},
+          {
+            match: 'cli',
+            children: [
+              {match: 'authenticate', render: () => <AuthenticateCli />},
+              {
+                match: 'created-account',
+                render: () => <CreatedAccountFromCli />,
+              },
+            ],
+          },
           {match: 'console', render: () => <Console />},
         ],
       },

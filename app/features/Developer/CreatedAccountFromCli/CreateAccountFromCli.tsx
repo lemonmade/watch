@@ -5,7 +5,7 @@ import {Page} from '~/shared/page';
 
 import {useAuthenticateCliWithAccessToken} from '../shared/cli';
 
-export function AuthenticateCli() {
+export function CreatedAccountFromCli() {
   const authenticateCliWithAccessToken = useAuthenticateCliWithAccessToken();
 
   let content: ReactNode;
