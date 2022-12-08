@@ -52,20 +52,7 @@ export async function authenticate({ui}: {ui: Ui}): Promise<User> {
 
   if (alreadyAuthenticatedUser) return alreadyAuthenticatedUser;
 
-  const user = await userFromAccessToken(
-    await getAccessTokenFromWebAuthentication({ui}),
-  );
-
-  if (user == null) {
-    throw new PrintableError(
-      `Something went wrong while trying to authenticate you. Please try this command again, and sorry for the inconvenience!`,
-    );
-  }
-
-  const {graphql, ...serializableUser} = user;
-
-  await mkdir(USER_CACHE_DIRECTORY);
-  await writeFile(CREDENTIALS_FILE, JSON.stringify(serializableUser));
+  const user = await authenticateFromWebAuthentication({ui});
 
   return user;
 }
@@ -95,6 +82,10 @@ export async function userFromLocalAuthentication() {
   } else {
     return userFromRootAccessToken;
   }
+}
+
+export async function hasLocalAuthentication() {
+  return (await accessTokenFromCacheDirectory()) != null;
 }
 
 async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
@@ -127,13 +118,7 @@ async function userFromAccessToken(
     : {graphql, id: data.my.id, email: data.my.email, accessToken};
 }
 
-function watchUrlWithCliConnection(path: string, localServerUrl: string) {
-  const url = watchUrl(path);
-  url.searchParams.set('connect', localServerUrl);
-  return url;
-}
-
-export async function getAccessTokenFromWebAuthentication({
+export async function authenticateFromWebAuthentication({
   to = '/app/developer/cli/authenticate',
   ...rest
 }: Omit<PerformWebAuthenticationOptions, 'to'> & {
@@ -144,7 +129,26 @@ export async function getAccessTokenFromWebAuthentication({
     ...rest,
   });
 
-  return token;
+  const user = await userFromAccessToken(token);
+
+  if (user == null) {
+    throw new PrintableError(
+      `Something went wrong while trying to authenticate you. Please try this command again, and sorry for the inconvenience!`,
+    );
+  }
+
+  const {graphql, ...serializableUser} = user;
+
+  await mkdir(USER_CACHE_DIRECTORY, {recursive: true});
+  await writeFile(CREDENTIALS_FILE, JSON.stringify(serializableUser));
+
+  return user;
+}
+
+function watchUrlWithCliConnection(path: string, localServerUrl: string) {
+  const url = watchUrl(path);
+  url.searchParams.set('connect', localServerUrl);
+  return url;
 }
 
 interface PerformWebAuthenticationOptions {
@@ -170,7 +174,7 @@ async function performWebAuthentication<Result = unknown>({
     reject = rejectPromise;
   });
 
-  const [{createHttpHandler, noContent}, {createHttpServer}] =
+  const [{createHttpHandler, json, noContent}, {createHttpServer}] =
     await Promise.all([
       import('@quilted/http-handlers'),
       import('@quilted/http-handlers/node'),
@@ -182,6 +186,7 @@ async function performWebAuthentication<Result = unknown>({
     noContent({
       headers: {
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
       },
     }),
   );
@@ -199,7 +204,15 @@ async function performWebAuthentication<Result = unknown>({
       }
     }, 0);
 
-    return noContent({headers: {'Access-Control-Allow-Origin': '*'}});
+    return json(
+      {},
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      },
+    );
   });
 
   const server = createHttpServer(handler);

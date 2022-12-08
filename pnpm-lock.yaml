@@ -186,7 +186,7 @@ importers:
       '@graphql-tools/schema': ^7.0.0
       '@iarna/toml': ^3.0.0
       '@lemonmade/graphql-live': ^0.1.12
-      '@quilted/cli-kit': ^0.1.4
+      '@quilted/cli-kit': ^0.1.6
       '@quilted/graphql': ^0.4.47
       '@quilted/http-handlers': ^0.2.43
       '@quilted/polyfills': ^0.2.31
@@ -226,7 +226,7 @@ importers:
       '@graphql-tools/schema': 7.1.5_graphql@15.8.0
       '@iarna/toml': 3.0.0
       '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
-      '@quilted/cli-kit': 0.1.4_@babel+runtime@7.18.9
+      '@quilted/cli-kit': 0.1.6_@babel+runtime@7.18.9
       '@quilted/graphql': 0.4.47_@babel+runtime@7.18.9
       '@quilted/http-handlers': 0.2.43_@babel+runtime@7.18.9
       '@quilted/polyfills': 0.2.31_@babel+runtime@7.18.9
@@ -4149,8 +4149,8 @@ packages:
     resolution: {integrity: sha512-7FZjc1Vn5dPvGfF+zE2GvYnTkbpWmxB400hWeWm2dWjkKJlpTcl5zUPD9VsJAjRisakqUZa7/s7jkTMg/PQQbQ==}
     dev: true
 
-  /@quilted/cli-kit/0.1.4_@babel+runtime@7.18.9:
-    resolution: {integrity: sha512-KcwA3h5SNfvrqCZ8Zq0j1y4ECT+SneZtJTqjVloWqChw/6oDU6UfVzGwJaDkzq1nddnhq0N97jo1aalJUbN7jA==}
+  /@quilted/cli-kit/0.1.6_@babel+runtime@7.18.9:
+    resolution: {integrity: sha512-y62JBoqSo/K5yXtbvM/vAhSG0xmcKdR14ogP7lCxcmVF2IM1L0yQmov9vZao8nUWodV2qEGVFsVdosEeu1Ugow==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -9420,7 +9420,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken/8.5.1:

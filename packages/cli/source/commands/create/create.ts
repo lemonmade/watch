@@ -2,8 +2,6 @@ import '@quilted/polyfills/fetch';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-import type {Ui} from '../../ui';
-
 import {
   prompt,
   parseArguments,
@@ -11,9 +9,15 @@ import {
   getPackageManager,
   createPackageManagerRunner,
 } from '@quilted/cli-kit';
+
+import type {Ui} from '../../ui';
+
 import {emptyDirectory, isEmpty, createOutputTarget} from './files';
+import {checkForAccount} from './account-check';
 
 export async function create({ui}: {ui: Ui}) {
+  await checkForAccount({ui});
+
   const args = parseArguments(
     {
       '--name': String,

@@ -1,7 +1,8 @@
 export {
   authenticate,
   deleteAuthentication,
+  hasLocalAuthentication,
   userFromLocalAuthentication,
-  getAccessTokenFromWebAuthentication,
+  authenticateFromWebAuthentication,
 } from './authentication';
 export type {GraphQLFetch} from './authentication';
