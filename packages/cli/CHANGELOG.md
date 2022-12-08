@@ -1,5 +1,16 @@
 # @watching/cli
 
+## 0.4.30
+
+### Patch Changes
+
+- [`4088e8f`](https://github.com/lemonmade/watch/commit/4088e8f36d75fa4175f7743905709b77dccd1244) Thanks [@lemonmade](https://github.com/lemonmade)! - Add initial create account from CLI flow
+
+* [`bc1082b`](https://github.com/lemonmade/watch/commit/bc1082b9019056c4ea31a161ad99f5bb3a1f7d64) Thanks [@lemonmade](https://github.com/lemonmade)! - More create templates
+
+* Updated dependencies [[`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec)]:
+  - @watching/clips@0.2.21
+
 ## 0.4.29
 
 ### Patch Changes

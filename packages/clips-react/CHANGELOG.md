@@ -1,5 +1,17 @@
 # @watching/clips-react
 
+## 0.2.27
+
+### Patch Changes
+
+- [`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec) Thanks [@lemonmade](https://github.com/lemonmade)! - Add TextBlock component
+
+* [`bc1082b`](https://github.com/lemonmade/watch/commit/bc1082b9019056c4ea31a161ad99f5bb3a1f7d64) Thanks [@lemonmade](https://github.com/lemonmade)! - More create templates
+
+* Updated dependencies [[`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec)]:
+  - @watching/clips@0.2.21
+  - @watching/clips-dom@0.1.9
+
 ## 0.2.26
 
 ### Patch Changes
