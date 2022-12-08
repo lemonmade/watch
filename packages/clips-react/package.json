@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips-react",
-  "version": "0.2.27",
+  "version": "0.2.28",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -29,8 +29,8 @@
     "@remote-ui/core": "^2.1.16",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@watching/clips": "workspace:^0.2.21",
-    "@watching/clips-dom": "workspace:^0.1.9",
+    "@watching/clips": "workspace:^0.2.22",
+    "@watching/clips-dom": "workspace:^0.1.10",
     "@watching/thread-signals": "workspace:^0.1.5",
     "preact": "^10.11.3"
   },
