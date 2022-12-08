@@ -1,4 +1,4 @@
-import {extension, getQuery, Text} from '@watching/clips-dom';
+import {extension, getQuery, TextBlock, Text} from '@watching/clips-dom';
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension((root, {query, target}) => {
@@ -19,8 +19,8 @@ export default extension((root, {query, target}) => {
   targetText.emphasis = true;
   targetText.append(target);
 
-  const text = document.createElement(Text);
-  text.append(
+  const textBlock = document.createElement(TextBlock);
+  textBlock.append(
     'You are rendering in the ',
     targetText,
     ' extension point, on a series named ',
@@ -28,5 +28,5 @@ export default extension((root, {query, target}) => {
     '!',
   );
 
-  root.append(text);
+  root.append(textBlock);
 });

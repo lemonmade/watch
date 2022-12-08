@@ -1,0 +1,9 @@
+{
+  "name": "{{ handle }}",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@watching/clips-dom": "^0.1.0"
+  }
+}

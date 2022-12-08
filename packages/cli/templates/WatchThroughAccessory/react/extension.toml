@@ -1,0 +1,10 @@
+name = "{{ name }}"
+handle = "{{ handle }}"
+
+[[extends]]
+target = "WatchThrough.Details.RenderAccessory"
+module = "./WatchThroughAccessory.tsx"
+query = "./WatchThroughQuery.graphql"
+
+# [[extends.conditions]]
+# series.handle = "survivor"

@@ -30,7 +30,7 @@ yarn watchapp create extension
 
 When you create an extension, you will first be asked to give it a name. You should use a short, friendly name that describes what the extension does, as this name will be shown to users anytime your extension is rendered. The name will also be used as the basis for the directory name of the extension. If you want to provide a name without a manual prompt, you can do so by passing the `--name` flag to the `create` command (for example, `pnpm watchapp create extension --name "Season rankings"`).
 
-Extensions are created in an `extensions` directory by default. You can configure a different glob pattern to match for extension directories in your app’s `app.toml` settings file, and we will attempt to guess the right directory to put your new extension in. If you want to force the create command to choose a particular directory, you can pass the `--directory` flag to the `create` command. This should be the **full** directory name you want to use, relative to the directory in which you ran the create command. For example, `pnpm watchapp create extension --directory app/extensions/season-rankings` would output the new extension in the `app/extensions/season-rankings` directory of your project.
+Extensions are created in an `extensions` directory by default. If you want to force the create command to choose a particular directory, you can pass the `--directory` flag to the `create` command. This should be the **full** directory name you want to use, relative to the directory in which you ran the create command. For example, `pnpm watchapp create extension --directory app/extensions/season-rankings` would output the new extension in the `app/extensions/season-rankings` directory of your project, regardless of the name you choose for the extension.
 
 ## Templates
 
@@ -40,7 +40,7 @@ When you create a new extension, you will be asked what template you’d like to
 
   You can use this extension point to render additional content about the series. For example, you might render content that references a public wiki about the series, or provide details about the people involved with the series.
 
-- **Watch-through accessory**: your new extension will target the [`WatchThrough.Details.RenderAccessory` extension point](TODO). This extension point appears directly below the section on a series watch-through where the user records the the episodes of the series they are watching.
+- **Watch-through accessory**: your new extension will target the [`WatchThrough.Details.RenderAccessory` extension point](TODO). This extension point renders directly below the section on a series watch-through where the user records the the episodes of the series they are watching.
 
   You can use this extension to render additional content about a series that is actively being watched. For example, you could provide a UI that shows theories about a season with a juicy mystery, allow users to draft contestants for a reality show, or link to additional information about the series.
 
@@ -129,8 +129,16 @@ export default extension((root, {target}) => {
 
 > **Tip:** When running the create command, you can pass the `--format` flag to pre-select one of these formats. For example, `pnpm watchapp create extension --format react` will create a React extension, and `pnpm watchapp create extension --format dom` will create an a DOM one.
 
-## Languages
+## Package installation
 
-You can write an extension in both [TypeScript](https://www.typescriptlang.org) and “vanilla” JavaScript. We recommend using TypeScript, as we provide strong types for all extension APIs. However, if you want to use JavaScript, you can choose it when prompted by the `create` command.
+Each extension gets its own `package.json` so that they can have their own dependencies. This makes it easy for you to try out new tools in just one or two projects, before committing to them for all of the extensions in your app.
 
-> **Tip:** When running the create command, you can pass the `--language` flag to pre-select the extension’s programming language. `pnpm watchapp create extension --language typescript` will create a TypeScript, and `pnpm watchapp create extension --language javascript` will create an a JavaScript one.
+In order to support a multi-`package.json` project, the app repository is expected to use one of these JavaScript package managers:
+
+- [npm](https://www.npmjs.com)
+- [pnpm](https://pnpm.io)
+- [Yarn](https://yarnpkg.com)
+
+Each of these package manager has some concept of “workspaces” ([npm](https://docs.npmjs.com/cli/v7/using-npm/workspaces), [pnpm](https://pnpm.io/workspaces), [Yarn](https://classic.yarnpkg.com/lang/en/docs/workspaces/)), where you can manage dependencies for multiple projects in a single repository. The app containing your extensions should be using the workspace feature of your preferred package manager.
+
+When you create a new extension, the `create` command will default to installing dependencies in your project. This ensures that your package manager knows about the newly-created, and incorporates its dependencies into your dependency manifest. If you want to disable this step, you can pass the `--no-install` flag to the `create` command.

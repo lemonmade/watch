@@ -1,4 +1,4 @@
-import {extension, Text, getQuery} from '@watching/clips';
+import {extension, TextBlock, Text, getQuery} from '@watching/clips';
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension((root, {query, target}) => {
@@ -12,7 +12,7 @@ export default extension((root, {query, target}) => {
   });
 
   root.appendChild(
-    root.createComponent(Text, {}, [
+    root.createComponent(TextBlock, {}, [
       'You are rendering in the ',
       root.createComponent(Text, {emphasis: true}, target),
       ' extension point, on a series named ',

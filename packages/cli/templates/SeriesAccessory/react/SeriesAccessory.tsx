@@ -1,4 +1,10 @@
-import {extension, useQuery, Text, useApi} from '@watching/clips-react';
+import {
+  extension,
+  useQuery,
+  useApi,
+  Text,
+  TextBlock,
+} from '@watching/clips-react';
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export function Extension() {
@@ -6,10 +12,10 @@ export function Extension() {
   const {series} = useQuery<SeriesQueryData>();
 
   return (
-    <Text>
+    <TextBlock>
       You are rendering in the <Text emphasis>{target}</Text> extension point,
       on a series named <Text emphasis>{series.name}</Text>!
-    </Text>
+    </TextBlock>
   );
 }
 
