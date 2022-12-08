@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 0.4.31
+
+### Patch Changes
+
+- [`00aeed9`](https://github.com/lemonmade/watch/commit/00aeed9ebb65e73d045428f465ce037b4642b2fa) Thanks [@lemonmade](https://github.com/lemonmade)! - Bump some versions
+
+- Updated dependencies [[`00aeed9`](https://github.com/lemonmade/watch/commit/00aeed9ebb65e73d045428f465ce037b4642b2fa)]:
+  - @watching/clips@0.2.22
+
 ## 0.4.30
 
 ### Patch Changes

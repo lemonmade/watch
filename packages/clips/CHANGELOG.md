@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.22
+
+### Patch Changes
+
+- [`00aeed9`](https://github.com/lemonmade/watch/commit/00aeed9ebb65e73d045428f465ce037b4642b2fa) Thanks [@lemonmade](https://github.com/lemonmade)! - Bump some versions
+
 ## 0.2.21
 
 ### Patch Changes
