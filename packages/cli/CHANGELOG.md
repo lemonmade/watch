@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 0.4.32
+
+### Patch Changes
+
+- [`e7240ec`](https://github.com/lemonmade/watch/commit/e7240ec6916fc29293c01ee5fe1363432fcc5f17) Thanks [@lemonmade](https://github.com/lemonmade)! - Add better account creation flow
+
+* [`2c77fdb`](https://github.com/lemonmade/watch/commit/2c77fdba23b396b14fc4d8e66b882479f234936a) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove cached authentication on CLI sign-out
+
 ## 0.4.31
 
 ### Patch Changes
