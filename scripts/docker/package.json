@@ -1,6 +1,8 @@
 {
   "type": "module",
   "name": "scripts",
+  "version": "0.0.0",
+  "private": true,
   "devDependencies": {
     "globby": "^13.1.0"
   },
