@@ -276,7 +276,7 @@ importers:
     specifiers:
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.1.16
-      '@watching/clips': workspace:^0.2.20
+      '@watching/clips': workspace:^0.2.21
     dependencies:
       '@remote-ui/core': 2.1.16
       '@watching/clips': link:../clips
@@ -290,8 +290,8 @@ importers:
       '@remote-ui/core': ^2.1.16
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
-      '@watching/clips': workspace:^0.2.20
-      '@watching/clips-dom': workspace:^0.1.8
+      '@watching/clips': workspace:^0.2.21
+      '@watching/clips-dom': workspace:^0.1.9
       '@watching/thread-signals': workspace:^0.1.5
       p-limit: ^4.0.0
       preact: ^10.11.3

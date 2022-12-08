@@ -1,5 +1,14 @@
 # @watching/clips-dom
 
+## 0.1.9
+
+### Patch Changes
+
+- [`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec) Thanks [@lemonmade](https://github.com/lemonmade)! - Add TextBlock component
+
+- Updated dependencies [[`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec)]:
+  - @watching/clips@0.2.21
+
 ## 0.1.8
 
 ### Patch Changes

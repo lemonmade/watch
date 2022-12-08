@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.21
+
+### Patch Changes
+
+- [`b880855`](https://github.com/lemonmade/watch/commit/b88085566033c235acab53ea19805102f60d9eec) Thanks [@lemonmade](https://github.com/lemonmade)! - Add TextBlock component
+
 ## 0.2.20
 
 ### Patch Changes
