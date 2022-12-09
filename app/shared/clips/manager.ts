@@ -340,6 +340,8 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
       >(target);
 
       threadPromise.resolve({thread});
+      connected.value = true;
+
       emitter.emit('connect:end');
 
       queryLocalExtensions();
