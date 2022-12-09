@@ -8,10 +8,10 @@ export default extension((root, {query, target}) => {
 
   query.subscribe(() => {
     const {series} = getQuery<SeriesQueryData>(query);
-    seriesNameText.updateText(series.name);
+    seriesNameText.update(series.name);
   });
 
-  root.appendChild(
+  root.append(
     root.createComponent(TextBlock, {}, [
       'You are rendering in the ',
       root.createComponent(Text, {emphasis: true}, target),

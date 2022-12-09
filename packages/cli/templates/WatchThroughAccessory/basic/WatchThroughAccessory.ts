@@ -15,7 +15,7 @@ export default extension((root, {query, target}) => {
   const seriesNameText = root.createText(series.name);
   const blockStack = root.createComponent(BlockStack, {spacing: true});
 
-  blockStack.appendChild(
+  blockStack.append(
     root.createComponent(TextBlock, {}, [
       'You are rendering in the ',
       root.createComponent(Text, {emphasis: true}, target),
@@ -26,21 +26,21 @@ export default extension((root, {query, target}) => {
   );
 
   if (currentWatchContent != null) {
-    blockStack.appendChild(currentWatchContent);
+    blockStack.append(currentWatchContent);
   }
 
   query.subscribe(() => {
     const {watchThrough} = getQuery<WatchThroughQueryData>(query);
     const {series, currentWatch} = watchThrough;
 
-    currentWatchContent?.parent?.removeChild(currentWatchContent);
+    currentWatchContent?.remove();
     currentWatchContent = contentForCurrentWatch(currentWatch);
 
     if (currentWatchContent != null) {
-      blockStack.appendChild(currentWatchContent);
+      blockStack.append(currentWatchContent);
     }
 
-    seriesNameText.updateText(series.name);
+    seriesNameText.update(series.name);
   });
 
   function contentForCurrentWatch(
@@ -61,6 +61,7 @@ export default extension((root, {query, target}) => {
     return root.createComponent(TextBlock, {}, [
       'You’ve rated this episode ',
       root.createComponent(Text, {emphasis: true}, String(currentWatch.rating)),
+      '.',
     ]);
   }
 });

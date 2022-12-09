@@ -74,7 +74,7 @@ export default extension((root, {query, target}) => {
     ratingText.append(String(currentWatch.rating));
 
     const textBlock = document.createElement(TextBlock);
-    textBlock.append('You’ve rated this episode ', ratingText);
+    textBlock.append('You’ve rated this episode ', ratingText, '.');
 
     return textBlock;
   }

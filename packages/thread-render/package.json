@@ -1,6 +1,6 @@
 {
   "name": "@watching/thread-render",
-  "description": "<YOUR DESCRIPTION HERE>",
+  "description": "Utilities for rendering remote-ui-controlled UI",
   "type": "module",
   "license": "MIT",
   "private": true,
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<USER>/<REPOSITORY>",
+    "url": "https://github.com/lemonmade/watch",
     "directory": "packages/thread-render"
   },
   "exports": {
@@ -28,7 +28,7 @@
     "@preact/signals-core": "^1.2.2",
     "@quilted/events": "^0.1.14",
     "@quilted/threads": "^0.1.10",
-    "@remote-ui/core": "^2.1.16"
+    "@remote-ui/core": "^2.2.0"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"

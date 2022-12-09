@@ -43,7 +43,6 @@ export type FragmentProps<Props> = {
 
 const EMPTY_SET = new Set<any>();
 
-// TODO: implement fragment props, like @remote-ui/react
 export function createRemoteReactComponent<
   Type extends string,
   // eslint-disable-next-line @typescript-eslint/ban-types

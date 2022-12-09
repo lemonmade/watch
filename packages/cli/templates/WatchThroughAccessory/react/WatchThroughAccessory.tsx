@@ -21,7 +21,7 @@ export function Extension() {
         <TextBlock>You haven’t rated this episode yet.</TextBlock>
       ) : (
         <TextBlock>
-          You’ve rated this episode <Text emphasis>{currentWatch.rating}</Text>
+          You’ve rated this episode <Text emphasis>{currentWatch.rating}</Text>.
         </TextBlock>
       );
   }

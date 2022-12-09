@@ -27,7 +27,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^2.1.16",
+    "@remote-ui/core": "^2.2.0",
     "@watching/clips": "workspace:^0.2.22"
   },
   "peerDependencies": {
