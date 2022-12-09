@@ -4,7 +4,7 @@ import {
   type HTMLElementForRemoteComponent,
 } from './shared';
 
-export const TextField = 'ui-textField';
+export const TextField = 'ui-text-field';
 
 export const TextFieldComponent = createRemoteDOMComponent(BaseTextField, {
   properties: [
