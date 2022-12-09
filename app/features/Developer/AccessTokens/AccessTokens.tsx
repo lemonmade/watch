@@ -72,8 +72,8 @@ export function AccessTokens() {
             </Text>
           </BlockStack>
           <Action
-            onPress={() => {
-              deleteAccessToken.mutate({id: accessToken.id});
+            onPress={async () => {
+              await deleteAccessToken.mutateAsync({id: accessToken.id});
             }}
           >
             Delete
