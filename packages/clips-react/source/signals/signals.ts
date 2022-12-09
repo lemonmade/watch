@@ -15,9 +15,9 @@ import type {
   VNode,
   HookFn,
   Effect,
-  PropertyUpdater,
+  // PropertyUpdater,
   AugmentedComponent,
-  AugmentedElement as Element,
+  // AugmentedElement as Element,
 } from './internal';
 
 export {signal, computed, batch, effect, Signal, type ReadonlySignal};
@@ -132,25 +132,25 @@ export function installHooks() {
   };
 
   /** Inject low-level property/attribute bindings for Signals into Preact's diff */
-  hook(OptionsTypes.DIFF, (old, vnode) => {
-    if (typeof vnode.type === 'string') {
-      let signalProps: Record<string, any> | undefined;
+  // hook(OptionsTypes.DIFF, (old, vnode) => {
+  //   if (typeof vnode.type === 'string') {
+  //     let signalProps: Record<string, any> | undefined;
 
-      let props = vnode.props;
-      for (let i in props) {
-        if (i === 'children') continue;
+  //     let props = vnode.props;
+  //     for (let i in props) {
+  //       if (i === 'children') continue;
 
-        let value = props[i];
-        if (value instanceof Signal) {
-          if (!signalProps) vnode.__np = signalProps = {};
-          signalProps[i] = value;
-          // props[i] = value.peek();
-        }
-      }
-    }
+  //       let value = props[i];
+  //       if (value instanceof Signal) {
+  //         if (!signalProps) vnode.__np = signalProps = {};
+  //         signalProps[i] = value;
+  //         // props[i] = value.peek();
+  //       }
+  //     }
+  //   }
 
-    old(vnode);
-  });
+  //   old(vnode);
+  // });
 
   /** Set up Updater before rendering a component */
   hook(OptionsTypes.RENDER, (old, vnode) => {
@@ -188,58 +188,59 @@ export function installHooks() {
     setCurrentUpdater();
     currentComponent = undefined;
 
-    let dom: Element;
+    // let dom: Element;
 
-    // vnode._dom is undefined during string rendering,
-    // so we use this to skip prop subscriptions during SSR.
-    if (typeof vnode.type === 'string' && (dom = vnode.__e as Element)) {
-      let props = vnode.__np;
-      let renderedProps = vnode.props;
-      if (props) {
-        let updaters = dom._updaters;
-        if (updaters) {
-          for (let prop in updaters) {
-            let updater = updaters[prop];
-            if (updater !== undefined && !(prop in props)) {
-              updater._dispose();
-              // @todo we could just always invoke _dispose() here
-              updaters[prop] = undefined;
-            }
-          }
-        } else {
-          updaters = {};
-          dom._updaters = updaters;
-        }
-        for (let prop in props) {
-          let updater = updaters[prop];
-          let signal = props[prop];
-          if (updater === undefined) {
-            updater = createPropUpdater(dom, prop, signal, renderedProps);
-            updaters[prop] = updater;
-          } else {
-            updater._update(signal, renderedProps);
-          }
-        }
-      }
-    }
+    // // vnode._dom is undefined during string rendering,
+    // // so we use this to skip prop subscriptions during SSR.
+    // if (typeof vnode.type === 'string' && (dom = vnode.__e as Element)) {
+    //   let props = vnode.__np;
+    //   let renderedProps = vnode.props;
+    //   if (props) {
+    //     let updaters = dom._updaters;
+    //     if (updaters) {
+    //       for (let prop in updaters) {
+    //         let updater = updaters[prop];
+    //         if (updater !== undefined && !(prop in props)) {
+    //           updater._dispose();
+    //           // @todo we could just always invoke _dispose() here
+    //           updaters[prop] = undefined;
+    //         }
+    //       }
+    //     } else {
+    //       updaters = {};
+    //       dom._updaters = updaters;
+    //     }
+    //     for (let prop in props) {
+    //       let updater = updaters[prop];
+    //       let signal = props[prop];
+    //       if (updater === undefined) {
+    //         updater = createPropUpdater(dom, prop, signal, renderedProps);
+    //         updaters[prop] = updater;
+    //       } else {
+    //         updater._update(signal, renderedProps);
+    //       }
+    //     }
+    //   }
+    // }
+
     old(vnode);
   });
 
   /** Unsubscribe from Signals when unmounting components/vnodes */
   hook(OptionsTypes.UNMOUNT, (old, vnode: VNode) => {
     if (typeof vnode.type === 'string') {
-      let dom = vnode.__e as Element | undefined;
-      // vnode._dom is undefined during string rendering
-      if (dom) {
-        const updaters = dom._updaters;
-        if (updaters) {
-          dom._updaters = undefined;
-          for (let prop in updaters) {
-            let updater = updaters[prop];
-            if (updater) updater._dispose();
-          }
-        }
-      }
+      // let dom = vnode.__e as Element | undefined;
+      // // vnode._dom is undefined during string rendering
+      // if (dom) {
+      //   const updaters = dom._updaters;
+      //   if (updaters) {
+      //     dom._updaters = undefined;
+      //     for (let prop in updaters) {
+      //       let updater = updaters[prop];
+      //       if (updater) updater._dispose();
+      //     }
+      //   }
+      // }
     } else {
       let component = vnode.__c;
       if (component) {
@@ -283,41 +284,41 @@ function createUpdater(update: () => void) {
   return updater;
 }
 
-function createPropUpdater(
-  dom: Element,
-  prop: string,
-  propSignal: Signal,
-  props: Record<string, any>,
-): PropertyUpdater {
-  const setAsProperty =
-    prop in dom &&
-    // SVG elements need to go through `setAttribute` because they
-    // expect things like SVGAnimatedTransformList instead of strings.
-    // @ts-ignore
-    dom.ownerSVGElement === undefined;
+// function createPropUpdater(
+//   dom: Element,
+//   prop: string,
+//   propSignal: Signal,
+//   props: Record<string, any>,
+// ): PropertyUpdater {
+//   const setAsProperty =
+//     prop in dom &&
+//     // SVG elements need to go through `setAttribute` because they
+//     // expect things like SVGAnimatedTransformList instead of strings.
+//     // @ts-ignore
+//     dom.ownerSVGElement === undefined;
 
-  const changeSignal = signal(propSignal);
-  return {
-    _update: (newSignal: Signal, newProps: typeof props) => {
-      changeSignal.value = newSignal;
-      props = newProps;
-    },
-    _dispose: effect(() => {
-      const value = changeSignal.value.value;
-      // If Preact just rendered this value, don't render it again:
-      if (props[prop] === value) return;
-      props[prop] = value;
-      if (setAsProperty) {
-        // @ts-ignore-next-line silly
-        dom[prop] = value;
-      } else if (value) {
-        dom.setAttribute(prop, value);
-      } else {
-        dom.removeAttribute(prop);
-      }
-    }),
-  };
-}
+//   const changeSignal = signal(propSignal);
+//   return {
+//     _update: (newSignal: Signal, newProps: typeof props) => {
+//       changeSignal.value = newSignal;
+//       props = newProps;
+//     },
+//     _dispose: effect(() => {
+//       const value = changeSignal.value.value;
+//       // If Preact just rendered this value, don't render it again:
+//       if (props[prop] === value) return;
+//       props[prop] = value;
+//       if (setAsProperty) {
+//         // @ts-ignore-next-line silly
+//         dom[prop] = value;
+//       } else if (value) {
+//         dom.setAttribute(prop, value);
+//       } else {
+//         dom.removeAttribute(prop);
+//       }
+//     }),
+//   };
+// }
 
 /**
  * @todo Determine which Reactive implementation we'll be using.

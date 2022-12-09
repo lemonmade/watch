@@ -1,5 +1,5 @@
 import {Component} from 'preact';
-import {Signal} from '@preact/signals-core';
+// import {Signal} from '@preact/signals-core';
 
 export interface Effect {
   _sources: object | undefined;
@@ -8,14 +8,14 @@ export interface Effect {
   _dispose(): void;
 }
 
-export interface PropertyUpdater {
-  _update: (newSignal: Signal, newProps: Record<string, any>) => void;
-  _dispose: () => void;
-}
+// export interface PropertyUpdater {
+//   _update: (newSignal: Signal, newProps: Record<string, any>) => void;
+//   _dispose: () => void;
+// }
 
-export interface AugmentedElement extends HTMLElement {
-  _updaters?: Record<string, PropertyUpdater | undefined> | null;
-}
+// export interface AugmentedElement extends HTMLElement {
+//   _updaters?: Record<string, PropertyUpdater | undefined> | null;
+// }
 
 export interface AugmentedComponent extends Component<any, any> {
   __v: VNode;
