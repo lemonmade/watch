@@ -1,5 +1,17 @@
 # @watching/clips-react
 
+## 0.2.29
+
+### Patch Changes
+
+- [`ba5bca0`](https://github.com/lemonmade/watch/commit/ba5bca007a7665195dff7b42d6460234a284431c) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix reliability of signal props
+
+* [`90df205`](https://github.com/lemonmade/watch/commit/90df205a6b3d460c10dc7aca6f419e44b7ee0d2b) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
+* Updated dependencies [[`90df205`](https://github.com/lemonmade/watch/commit/90df205a6b3d460c10dc7aca6f419e44b7ee0d2b), [`75cd2c9`](https://github.com/lemonmade/watch/commit/75cd2c9c284e8c55f678e496f0b2735b169692f0)]:
+  - @watching/clips@0.2.23
+  - @watching/clips-dom@0.1.11
+
 ## 0.2.28
 
 ### Patch Changes
