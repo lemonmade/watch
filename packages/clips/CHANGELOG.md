@@ -1,5 +1,13 @@
 # @watching/clips
 
+## 0.2.24
+
+### Patch Changes
+
+- [`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083) Thanks [@lemonmade](https://github.com/lemonmade)! - Update dependencies
+
+* [`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083) Thanks [@lemonmade](https://github.com/lemonmade)! - Move GraphQL schemas to shared location and output in CLI
+
 ## 0.2.23
 
 ### Patch Changes
