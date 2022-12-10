@@ -1,5 +1,18 @@
 # @watching/cli
 
+## 0.4.34
+
+### Patch Changes
+
+- [`eea154e`](https://github.com/lemonmade/watch/commit/eea154e84f36d4e4103a06baf752f2c64390efa7) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Google account creation flow
+
+* [`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083) Thanks [@lemonmade](https://github.com/lemonmade)! - Update dependencies
+
+- [`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083) Thanks [@lemonmade](https://github.com/lemonmade)! - Move GraphQL schemas to shared location and output in CLI
+
+- Updated dependencies [[`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083), [`455f371`](https://github.com/lemonmade/watch/commit/455f371bd7a172693dfb5c5d49165723afb41083)]:
+  - @watching/clips@0.2.24
+
 ## 0.4.33
 
 ### Patch Changes
