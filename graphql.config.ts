@@ -52,7 +52,7 @@ const config: Configuration = {
       },
     },
     clipsShared: {
-      schema: 'packages/clips/source/graphql/Shared.schema.graphql',
+      schema: 'graphql/clips/Shared.schema.graphql',
       extensions: {
         quilt: {
           schema: [
@@ -60,12 +60,16 @@ const config: Configuration = {
               kind: 'definitions',
               outputPath: 'packages/clips/source/graphql/Shared.ts',
             },
+            {
+              kind: 'graphql',
+              outputPath: 'packages/cli/graphql/Shared.schema.graphql',
+            },
           ],
         },
       },
     },
     clipsSeriesDetails: {
-      schema: 'packages/clips/source/graphql/SeriesDetails.schema.graphql',
+      schema: 'graphql/clips/SeriesDetails.schema.graphql',
       documents: ['packages/cli/templates/SeriesAccessory/**/*.graphql'],
       extensions: {
         quilt: {
@@ -74,13 +78,16 @@ const config: Configuration = {
               kind: 'definitions',
               outputPath: 'packages/clips/source/graphql/SeriesDetails.ts',
             },
+            {
+              kind: 'graphql',
+              outputPath: 'packages/cli/graphql/SeriesDetails.schema.graphql',
+            },
           ],
         },
       },
     },
     clipsWatchThroughDetails: {
-      schema:
-        'packages/clips/source/graphql/WatchThroughDetails.schema.graphql',
+      schema: 'graphql/clips/WatchThroughDetails.schema.graphql',
       documents: ['packages/cli/templates/WatchThroughAccessory/**/*.graphql'],
       extensions: {
         quilt: {
@@ -89,6 +96,11 @@ const config: Configuration = {
               kind: 'definitions',
               outputPath:
                 'packages/clips/source/graphql/WatchThroughDetails.ts',
+            },
+            {
+              kind: 'graphql',
+              outputPath:
+                'packages/cli/graphql/WatchThroughDetails.schema.graphql',
             },
           ],
         },

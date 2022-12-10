@@ -22,7 +22,7 @@
     "@lemonmade/graphql-live": "^0.1.12",
     "@quilted/quilt": "^0.5.117",
     "@quilted/react-query": "^0.1.11",
-    "@remote-ui/core": "^2.2.0",
+    "@remote-ui/core": "^2.2.1",
     "@remote-ui/react": "^5.0.0",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",
