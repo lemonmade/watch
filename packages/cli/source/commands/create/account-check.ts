@@ -30,21 +30,45 @@ export async function checkForAccount({ui}: {ui: Ui}) {
   );
   ui.Spacer();
 
-  await prompt({
+  const createMethod = await prompt({
     type: 'select',
     message: `How would you like to create your account?`,
-    choices: [{title: 'Github', value: 'github'}],
+    choices: [
+      {title: 'Github', value: 'github'},
+      {title: 'Google', value: 'google'},
+    ],
   });
 
-  await authenticateFromWebAuthentication({
-    ui,
-    to({urlWithConnect}) {
-      const redirectUrl = urlWithConnect('/app/developer/cli/created-account');
-      const url = watchUrl('/internal/auth/github/create-account');
-      url.searchParams.set('redirect', redirectUrl.href);
-      return url;
-    },
-  });
+  switch (createMethod) {
+    case 'github': {
+      await authenticateFromWebAuthentication({
+        ui,
+        to({urlWithConnect}) {
+          const redirectUrl = urlWithConnect(
+            '/app/developer/cli/created-account',
+          );
+          const url = watchUrl('/internal/auth/github/create-account');
+          url.searchParams.set('redirect', redirectUrl.href);
+          return url;
+        },
+      });
+      break;
+    }
+    case 'google': {
+      await authenticateFromWebAuthentication({
+        ui,
+        to({urlWithConnect}) {
+          const redirectUrl = urlWithConnect(
+            '/app/developer/cli/created-account',
+          );
+          const url = watchUrl('/internal/auth/google/create-account');
+          url.searchParams.set('redirect', redirectUrl.href);
+          return url;
+        },
+      });
+      break;
+    }
+  }
 
   ui.Spacer();
 }
