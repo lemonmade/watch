@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.25
+
+### Patch Changes
+
+- [`3c8d755`](https://github.com/lemonmade/watch/commit/3c8d75522738af1f68f276bbe4fc5af0427da266) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix GraphQL outputs caching
+
 ## 0.2.24
 
 ### Patch Changes
