@@ -1,5 +1,6 @@
 import {createRemoteRoot} from '@remote-ui/core';
 import {
+  type ExtensionPoint,
   type ExtensionPoints,
   type RenderExtension,
   type RenderExtensionRoot,
@@ -9,29 +10,24 @@ import {acceptSignals, type WithThreadSignals} from './signals';
 import {type Api} from './api';
 
 export type ExtensionPointsWithWrapper = {
-  [ExtensionPoint in keyof ExtensionPoints]: ExtensionPoints[ExtensionPoint] extends RenderExtension<
-    ExtensionPoint,
+  [Target in ExtensionPoint]: ExtensionPoints[Target] extends RenderExtension<
+    Target,
     any,
     infer Components
   >
-    ? RenderExtensionWithRemoteRoot<
-        WithThreadSignals<Api<ExtensionPoint>>,
-        Components
-      >
+    ? RenderExtensionWithRemoteRoot<WithThreadSignals<Api<Target>>, Components>
     : never;
 };
 
-export function extension<
-  ExtensionPoint extends keyof ExtensionPoints = keyof ExtensionPoints,
->(
-  run: ExtensionPointsWithWrapper[ExtensionPoint],
-): ExtensionPoints[ExtensionPoint] {
+export function extension<Target extends ExtensionPoint>(
+  run: ExtensionPointsWithWrapper[Target],
+): ExtensionPoints[Target] {
   async function extension(
     {channel, components}: RenderExtensionRoot<any>,
     api: unknown,
   ) {
     const root = createRemoteRoot(channel, {strict: true, components});
-    await (run as any)(root, acceptSignals(api));
+    await (run as any)(root, acceptSignals(api as any));
     root.mount();
   }
 

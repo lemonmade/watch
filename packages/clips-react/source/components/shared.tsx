@@ -45,8 +45,7 @@ const EMPTY_SET = new Set<any>();
 
 export function createRemoteReactComponent<
   Type extends string,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Props = {},
+  Props extends {} = {},
   AllowedChildren extends RemoteComponentType<string, any> | boolean = true,
 >(
   ComponentType: Type | RemoteComponentType<Type, Props, AllowedChildren>,
@@ -83,7 +82,7 @@ export function createRemoteReactComponent<
   return Component as any;
 }
 
-function useNormalizedProps<Props>(
+function useNormalizedProps<Props extends {}>(
   props: Props,
   fragmentProps: Set<string>,
   privateListeners: boolean,

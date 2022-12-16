@@ -236,7 +236,7 @@ function sizesToSelectors(root: string, sizes: Size[]) {
       rules.push(
         `:where(${root}) > :where(:nth-child(${
           index + 1
-        }) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }`,
+        })) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }`,
       );
     } else if (size === 'fill') {
       columns.push('minmax(0, 1fr)');

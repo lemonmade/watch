@@ -1,4 +1,4 @@
-import {useMutation as useBasicMutation} from 'react-query';
+import {useMutation as useBasicMutation} from '@tanstack/react-query';
 
 import {useCurrentUrl} from '@quilted/quilt';
 

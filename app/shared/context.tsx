@@ -4,7 +4,7 @@ import {
   createUseOptionalValueHook,
   type GraphQLFetch,
 } from '@quilted/quilt';
-import {type QueryClient} from 'react-query';
+import {type QueryClient} from '@tanstack/react-query';
 
 export interface AppContext {
   readonly queryClient: QueryClient;
