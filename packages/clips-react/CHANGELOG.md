@@ -1,5 +1,16 @@
 # @watching/clips-react
 
+## 0.2.31
+
+### Patch Changes
+
+- [`58e6646`](https://github.com/lemonmade/watch/commit/58e664658378424779f2cc9700f6565deb48de08) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt dependencies
+
+- Updated dependencies [[`58e6646`](https://github.com/lemonmade/watch/commit/58e664658378424779f2cc9700f6565deb48de08)]:
+  - @watching/clips@0.2.26
+  - @watching/clips-dom@0.1.13
+  - @watching/thread-signals@0.1.6
+
 ## 0.2.30
 
 ### Patch Changes
