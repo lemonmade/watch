@@ -40,7 +40,6 @@ export function RootLayer({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function StackedLayer({children}: PropsWithChildren<{}>) {
   const ancestors = useContext(LayerContext);
 

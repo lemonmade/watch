@@ -47,7 +47,6 @@ export function OverlayContext({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function OverlayContextReset({children}: PropsWithChildren<{}>) {
   return (
     <OverlayControllerContext.Provider value={undefined}>

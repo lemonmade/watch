@@ -17,7 +17,6 @@ export function HeadingLevelReset({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function NestedHeadingLevel({children}: PropsWithChildren<{}>) {
   return (
     <HeadingLevelContext.Provider value={toHeadingLevel(useHeadingLevel() + 1)}>

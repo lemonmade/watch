@@ -71,7 +71,6 @@ export function ActionScopeContext({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function ActionScopeReset({children}: PropsWithChildren<{}>) {
   return (
     <ScopeContext.Provider value={undefined}>{children}</ScopeContext.Provider>
@@ -88,7 +87,6 @@ const ActionConnectedAccessoryContext = createContext<
   ActionConnectedAccessory | false
 >(false);
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function ConnectedAccessoryReset({children}: PropsWithChildren<{}>) {
   return (
     <ActionConnectedAccessoryContext.Provider value={false}>

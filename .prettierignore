@@ -2,6 +2,7 @@ build/
 node_modules/
 .quilt/
 packages/*/bin/
+packages/cli/graphql/**/*.graphql
 cdk.context.json
 cdk.out/
 pnpm-lock.yaml

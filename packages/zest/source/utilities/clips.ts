@@ -12,8 +12,7 @@ type PropsForRemoteComponent<T> = T extends RemoteComponentType<
   any
 >
   ? Props extends Record<string, never>
-    ? // eslint-disable-next-line @typescript-eslint/ban-types
-      {}
+    ? {}
     : {
         [K in keyof Props]: RemotePropToHostProp<Exclude<Props[K], undefined>>;
       }
