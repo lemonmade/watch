@@ -265,7 +265,7 @@ importers:
   packages/clips:
     specifiers:
       '@remote-ui/core': ^2.2.1
-      '@watching/thread-signals': workspace:^0.1.5
+      '@watching/thread-signals': workspace:^0.1.6
     dependencies:
       '@remote-ui/core': 2.2.1
       '@watching/thread-signals': link:../thread-signals
@@ -274,7 +274,7 @@ importers:
     specifiers:
       '@quilted/testing': ^0.1.4
       '@remote-ui/core': ^2.2.1
-      '@watching/clips': workspace:^0.2.25
+      '@watching/clips': workspace:^0.2.26
     dependencies:
       '@remote-ui/core': 2.2.1
       '@watching/clips': link:../clips
@@ -288,9 +288,9 @@ importers:
       '@remote-ui/core': ^2.2.1
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
-      '@watching/clips': workspace:^0.2.25
-      '@watching/clips-dom': workspace:^0.1.12
-      '@watching/thread-signals': workspace:^0.1.5
+      '@watching/clips': workspace:^0.2.26
+      '@watching/clips-dom': workspace:^0.1.13
+      '@watching/thread-signals': workspace:^0.1.6
       p-limit: ^4.0.0
       preact: ^10.11.3
       terser: ^5.15.1
@@ -9774,7 +9774,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
