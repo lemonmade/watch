@@ -46,7 +46,7 @@ export function Clip<Point extends ExtensionPoint>({
 
   return (
     <Section>
-      <BlockStack spacing="small">
+      <BlockStack spacing>
         <ContentAction
           overlay={
             <Popover inlineAttachment="start">
