@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -25,7 +25,7 @@
   "sideEffects": false,
   "dependencies": {
     "@remote-ui/core": "^2.2.1",
-    "@watching/thread-signals": "workspace:^0.1.5"
+    "@watching/thread-signals": "workspace:^0.1.6"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"

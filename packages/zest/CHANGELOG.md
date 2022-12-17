@@ -1,5 +1,14 @@
 # @lemon/zest
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`58e6646`](https://github.com/lemonmade/watch/commit/58e664658378424779f2cc9700f6565deb48de08)]:
+  - @watching/clips@0.2.26
+  - @watching/react-signals@0.1.3
+  - @watching/thread-signals@0.1.6
+
 ## 0.0.11
 
 ### Patch Changes
