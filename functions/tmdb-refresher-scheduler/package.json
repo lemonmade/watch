@@ -3,15 +3,8 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "main": "./build/runtime/index.js",
-  "scripts": {
-    "prisma": "prisma",
-    "start": "node ./build/runtime/index.js"
-  },
-  "dependencies": {
-    "@google-cloud/pubsub": "^3.0.0",
-    "@prisma/client": "^4.4.0",
-    "prisma": "^4.4.0"
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20221111.1"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"

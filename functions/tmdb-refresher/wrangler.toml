@@ -1,0 +1,18 @@
+name = "watch-tmdb-refresher"
+main = "./build/runtime/index.mjs"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+workers_dev = false
+
+# @see https://developers.cloudflare.com/queues/configuration/
+[[queues.consumers]]
+queue = "watch-tmdb-refresher"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 10
+
+# Needs the following environment variables:
+# DATABASE_URL
+# TMDB_ACCESS_TOKEN

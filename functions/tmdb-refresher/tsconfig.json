@@ -8,6 +8,6 @@
     }
   },
   "include": ["**/*"],
-  "exclude": ["quilt.project.ts", "infrastructure", "build"],
+  "exclude": ["quilt.project.ts", "build"],
   "references": [{"path": "../shared"}, {"path": "../../global"}]
 }

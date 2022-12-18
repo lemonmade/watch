@@ -1,39 +1,47 @@
 /* eslint no-console: off */
 
-import {PubSub} from '@google-cloud/pubsub';
-import {PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client/edge';
+import {
+  type Queue,
+  type ExportedHandlerScheduledHandler,
+} from '@cloudflare/workers-types';
 
-import Env from '@quilted/quilt/env';
+import {type Message} from '../tmdb-refresher';
 
-import {createPubSubHandler} from '~/shared/utilities/pubsub';
-
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    TMDB_REFRESHER_TOPIC: string;
-  }
+interface Environment {
+  DATABASE_URL: string;
+  TMDB_REFRESHER_QUEUE: Queue<Message>;
 }
 
-const pubsub = new PubSub();
-const prisma = new PrismaClient();
+const scheduled: ExportedHandlerScheduledHandler<Environment> =
+  async function scheduled(event, env) {
+    const prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: env.DATABASE_URL,
+        },
+      },
+    });
 
-export default createPubSubHandler(async () => {
-  const series = await prisma.series.findMany({
-    where: {status: 'RETURNING'},
-  });
+    console.log(event);
 
-  console.log(series);
+    const series = await prisma.series.findMany({
+      where: {status: 'RETURNING'},
+    });
 
-  const topic = pubsub.topic(Env.TMDB_REFRESHER_TOPIC);
+    console.log(series);
 
-  await Promise.all(
-    series.map((series) => {
-      return topic.publishMessage({
-        json: {
+    await Promise.all(
+      series.map(async (series) => {
+        await env.TMDB_REFRESHER_QUEUE.send({
           id: series.id,
           name: series.name,
           tmdbId: series.tmdbId,
-        },
-      });
-    }),
-  );
-});
+        });
+      }),
+    );
+  };
+
+export default {
+  scheduled,
+};

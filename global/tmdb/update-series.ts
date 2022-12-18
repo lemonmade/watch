@@ -2,7 +2,7 @@
 
 import type {PrismaClient} from '@prisma/client';
 
-import {tmdbFetch} from './fetch';
+import {tmdbFetch as baseTmdbFetch} from './fetch';
 import type {TmdbEpisode, TmdbSeries, TmdbSeason} from './types';
 
 export async function updateSeries({
@@ -10,13 +10,16 @@ export async function updateSeries({
   tmdbId,
   name,
   prisma,
+  accessToken,
 }: {
   id: string;
   tmdbId: string;
   name: string;
   prisma: PrismaClient;
+  accessToken?: string;
 }) {
   const log = (message: string) => console.log(`[${name}] ${message}`);
+  const tmdbFetch = (path: string) => baseTmdbFetch(path, {accessToken});
 
   log(`Updating series`);
 
@@ -61,12 +64,17 @@ export async function updateSeries({
 
   const results: string[] = [];
 
-  console.log(seasonsToUpdate, seasonNumbers, seriesResult.number_of_seasons);
+  console.log('SEASONS TO UPDATE:');
+  console.log(
+    [...seasonsToUpdate],
+    [...seasonNumbers],
+    seriesResult.number_of_seasons,
+  );
 
   const updateSeasons: import('@prisma/client').Prisma.SeasonUpdateArgs[] = [];
   const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] =
     [];
-  const completedWatchthroughs: import('@prisma/client').Prisma.WatchThroughWhereInput[] =
+  const completedWatchthroughs: import('@prisma/client/edge').Prisma.WatchThroughWhereInput[] =
     [];
 
   const lastSeasonWithAirDate = seasonResults
@@ -74,6 +82,11 @@ export async function updateSeries({
     .find((season) => season.air_date != null);
 
   for (const season of seasonResults) {
+    console.log('UPDATING SEASON:');
+    console.log(season);
+
+    if (season.season_number == null) continue;
+
     const id = seasonToId.get(season.season_number);
     const isEnded =
       season.season_number === lastSeasonWithAirDate?.season_number &&
@@ -86,7 +99,7 @@ export async function updateSeries({
         completedWatchthroughs.push({
           current: bufferFromSlice({
             season: season.season_number,
-            episode: season.episodes.length + 1,
+            episode: (season.episodes?.length ?? 0) + 1,
           }),
           to: bufferFromSlice({season: season.season_number}),
         });
@@ -97,7 +110,7 @@ export async function updateSeries({
         data: {
           ...tmdbSeasonToSeasonInput(season, seriesResult),
           episodes: {
-            upsert: season.episodes.map((episode) => {
+            upsert: season.episodes?.map((episode) => {
               const episodeInput = tmdbEpisodeToCreateInput(episode);
 
               return {
@@ -141,18 +154,13 @@ export async function updateSeries({
         name: seriesResult.name,
         firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
         status: tmdbStatusToEnum(seriesResult.status),
-        overview: seriesResult.overview || null,
+        overview: seriesResult.overview?.slice(0, 900) || null,
         posterUrl: seriesResult.poster_path
           ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
           : null,
         seasons: {
           create: createSeasons,
         },
-        // seasons: {
-        //   upsert: [
-
-        //   ]
-        // }
       },
     }),
     ...updateSeasons.map((update) => prisma.season.update(update)),
@@ -217,12 +225,12 @@ function tmdbSeasonToSeasonInput(
   return {
     number: season.season_number,
     firstAired: tmdbAirDateToDate(season.air_date),
-    overview: season.overview ?? null,
+    overview: season.overview?.slice(0, 900) ?? null,
     status: isEnded ? 'ENDED' : 'CONTINUING',
     posterUrl: season.poster_path
       ? `https://image.tmdb.org/t/p/original${season.poster_path}`
       : null,
-    episodeCount: season.episodes.length,
+    episodeCount: season.episodes?.length ?? 0,
   };
 }
 
@@ -233,7 +241,7 @@ function tmdbEpisodeToCreateInput(
     number: episode.episode_number,
     title: episode.name,
     firstAired: tmdbAirDateToDate(episode.air_date),
-    overview: episode.overview || null,
+    overview: episode.overview?.slice(0, 900) || null,
     stillUrl: episode.still_path
       ? `https://image.tmdb.org/t/p/original${episode.still_path}`
       : null,

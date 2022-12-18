@@ -3,14 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "scripts": {
-    "prisma": "prisma",
-    "start": "node ./build/runtime/index.js"
-  },
-  "dependencies": {
-    "@google-cloud/pubsub": "^3.0.0",
-    "@prisma/client": "^4.4.0",
-    "prisma": "^4.4.0"
+  "types": "./tmdb-refresher.ts",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20221111.1",
+    "buffer-polyfill": "npm:buffer@^6.0.0"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"
