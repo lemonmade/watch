@@ -22,5 +22,5 @@ export interface TmdbSeason {
   air_date: string;
   overview: string;
   poster_path?: string;
-  episodes: TmdbEpisode[];
+  episodes?: TmdbEpisode[];
 }

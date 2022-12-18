@@ -6,11 +6,14 @@ declare module '@quilted/quilt/env' {
   }
 }
 
-export async function tmdbFetch(path: string) {
+export async function tmdbFetch(
+  path: string,
+  {accessToken = Env.TMDB_ACCESS_TOKEN}: {accessToken?: string} = {},
+) {
   const fetched = await fetch(`https://api.themoviedb.org/3${path}`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${Env.TMDB_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 

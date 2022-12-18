@@ -1,39 +1,68 @@
 /* eslint no-console: off */
 
+import {Buffer} from 'buffer-polyfill';
+
+import {PrismaClient} from '@prisma/client/edge';
+import {type ExportedHandlerQueueHandler} from '@cloudflare/workers-types';
+
 import {updateSeries} from '~/global/tmdb';
-import {createPrisma} from '~/shared/utilities/database';
-import {createPubSubHandler} from '~/shared/utilities/pubsub';
 
-const prismaPromise = createPrisma();
+interface Environment {
+  DATABASE_URL: string;
+  TMDB_ACCESS_TOKEN: string;
+}
 
-export default createPubSubHandler<{id: string; name: string; tmdbId: string}>(
-  async ({id, name, tmdbId}) => {
-    try {
-      const {results} = await updateSeries({
-        id,
-        name,
-        tmdbId,
-        prisma: await prismaPromise,
-      });
+export interface Message {
+  id: string;
+  name: string;
+  tmdbId: string;
+}
 
-      const result = results.join('\n\n');
-      console.log(result);
+// Need this for Prisma...
+Reflect.defineProperty(globalThis, 'Buffer', {value: Buffer});
 
-      const fetchResult = await fetch(
-        'https://discordapp.com/api/webhooks/656640833063223325/1ofugrkDFpqaSAWvD6mLlg5EN3UDOfBdib4WKNE17Q5YxUoz8wpwuLoKCeaZJqCHyfeC',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            content: result,
-          }),
-          headers: {'Content-Type': 'application/json'},
+const queue: ExportedHandlerQueueHandler<Environment, Message> =
+  async function queue(batch, env) {
+    const prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: env.DATABASE_URL,
         },
-      );
+      },
+    });
 
-      console.log(fetchResult);
+    try {
+      await Promise.all(
+        batch.messages.map(async ({body: {id, name, tmdbId}}) => {
+          const {results} = await updateSeries({
+            id,
+            name,
+            tmdbId,
+            prisma,
+            accessToken: env.TMDB_ACCESS_TOKEN,
+          });
+
+          const result = results.join('\n\n');
+          console.log(result);
+
+          const fetchResult = await fetch(
+            'https://discordapp.com/api/webhooks/656640833063223325/1ofugrkDFpqaSAWvD6mLlg5EN3UDOfBdib4WKNE17Q5YxUoz8wpwuLoKCeaZJqCHyfeC',
+            {
+              method: 'POST',
+              body: JSON.stringify({
+                content: result,
+              }),
+              headers: {'Content-Type': 'application/json'},
+            },
+          );
+
+          console.log(fetchResult);
+        }),
+      );
     } catch (error) {
-      console.log(error);
+      console.log((error as any)?.stack);
       throw error;
     }
-  },
-);
+  };
+
+export default {queue};
