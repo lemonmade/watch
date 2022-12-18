@@ -220,7 +220,7 @@ jobs:
     needs:
       - deploy-fly
       - deploy-cloudflare-assets
-      - deploy-cloudflare-upload-clips
+      - deploy-cloudflare-workers
     runs-on: ubuntu-latest
 
     steps:
