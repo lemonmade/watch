@@ -151,7 +151,7 @@ jobs:
           name: build
 
       - name: Deploy worker to Cloudflare
-        run: pnpm run deploy:wrangler publish -- --config functions/{{ matrix.worker }}/wrangler.toml
+        run: pnpm run deploy:wrangler publish -- --config functions/${{ matrix.worker }}/wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
