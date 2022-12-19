@@ -2,7 +2,8 @@
 
 Important links:
 
-- [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/watch-cloudflare-test.com/workers) ([router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-test-worker/production))
+- [Architecture overview](https://www.figma.com/file/PoOBLPhMxCdc9S5rqk36tC/Watch-Architecture?node-id=0%3A1&t=l2ffxk1U8HUibXVo-1)
+- [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/lemon.tools/workers) ([router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-router/production), [tmdb-refresher worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher/production), [tmdb-refresher-scheduler worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher-scheduler/production))
 - [Fly.io dashboard](https://fly.io/apps/watch-test-app)
 - [PlanetScale dashboard](https://app.planetscale.com/chris-sauve/watch-test-db)
 - [Google Cloud dashboard](https://console.cloud.google.com/welcome?project=watch-353105&_ga=2.12737845.383552117.1655603476-570853528.1655012838) ([Dev OAuth app](https://console.cloud.google.com/apis/credentials/oauthclient/357202806916-9ed7sce9ddqkb5hia8tvkl0pshleih2h.apps.googleusercontent.com?project=watch-353105))
