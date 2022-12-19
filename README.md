@@ -62,13 +62,3 @@ You can get a visual UI for the database by running Prisma Studio:
 ```sh
 pnpm exec prisma studio
 ```
-
-## Google Cloud stuff
-
-I run a bunch of background stuff on Google Cloud, mostly for pubsub. Here were some guides I needed to set things up (there were a lot of manual CLI commands to run):
-
-https://cloud.google.com/build/docs/build-push-docker-image
-https://cloud.google.com/build/docs/deploy-containerized-application-cloud-run
-https://cloud.google.com/build/docs/deploying-builds/deploy-cloud-run#gcloud
-https://cloud.google.com/run/docs/configuring/secrets#command-line
-https://cloud.google.com/run/docs/triggering/pubsub-push

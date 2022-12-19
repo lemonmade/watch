@@ -1,77 +1,141 @@
-import Env from '@quilted/quilt/env';
-import {renderEmail} from '@quilted/quilt/server';
 import type {Sender} from '@quilted/quilt/email';
-
-import {createPubSubHandler} from '~/shared/utilities/pubsub';
-
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    SENDGRID_API_KEY: string;
-  }
-}
-
-import {Email} from './Email';
+import type {
+  Queue,
+  ExportedHandlerQueueHandler,
+} from '@cloudflare/workers-types';
+import {json, noContent} from '@quilted/http-handlers';
+import jwt from '@tsndr/cloudflare-worker-jwt';
 
 import type {EmailType, PropsForEmail} from './types';
 
 export type {EmailType, PropsForEmail};
 
+export interface Message<Type extends EmailType = EmailType> {
+  readonly type: Type;
+  readonly props: PropsForEmail<Type>;
+}
+
+interface Environment {
+  JWT_SECRET: string;
+  SENDGRID_API_KEY: string;
+}
+
+interface FetchEnvironment extends Environment {
+  EMAIL_QUEUE: Queue<Message>;
+}
+
+const DEFAULT_HEADERS = {
+  Allow: 'PUT',
+  'Cache-Control': 'no-store',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'PUT',
+  'Timing-Allow-Origin': '*',
+};
+
+async function handleRequest(request: Request, env: FetchEnvironment) {
+  if (request.method === 'OPTIONS') {
+    return noContent({headers: DEFAULT_HEADERS});
+  }
+
+  if (request.method !== 'PUT') {
+    return json(
+      {error: 'Must use PUT'},
+      {status: 405, headers: DEFAULT_HEADERS},
+    );
+  }
+
+  const valid = await jwt.verify(
+    request.headers.get('Watch-Token') ?? '',
+    env.JWT_SECRET,
+    {throwError: true},
+  );
+
+  if (!valid) {
+    return json(
+      {error: 'Invalid token'},
+      {status: 401, headers: DEFAULT_HEADERS},
+    );
+  }
+
+  try {
+    const message = await request.json<Message>();
+
+    await env.EMAIL_QUEUE.send(message);
+
+    return json({success: true}, {headers: DEFAULT_HEADERS});
+  } catch {
+    return json(
+      {error: 'Invalid queue message'},
+      {status: 422, headers: DEFAULT_HEADERS},
+    );
+  }
+}
+
 const DEFAULT_SENDER: Sender = {
   email: 'no-reply@lemon.tools',
 };
 
-export default createPubSubHandler<{
-  type: EmailType;
-  props: PropsForEmail<EmailType>;
-}>(async ({type, props}) => {
-  const {
-    subject,
-    to,
-    cc,
-    bcc,
-    html,
-    plainText,
-    sender = DEFAULT_SENDER,
-  } = await renderEmail(<Email type={type} props={props} />);
+const handleQueue: ExportedHandlerQueueHandler<Environment, Message> =
+  async function handleQueue({messages}, env) {
+    const [{renderEmail}, {Email}] = await Promise.all([
+      import('@quilted/react-email/server'),
+      import('./Email'),
+    ]);
 
-  if (to == null || to.length === 0 || subject == null) {
-    throw new Error();
-  }
+    await Promise.all(
+      messages.map(async ({body: {type, props}}) => {
+        const {
+          subject,
+          to,
+          cc,
+          bcc,
+          html,
+          plainText,
+          sender = DEFAULT_SENDER,
+        } = await renderEmail(<Email type={type} props={props} />);
 
-  // eslint-disable-next-line no-console
-  console.log(`Sending ${type} email:`);
-  // eslint-disable-next-line no-console
-  console.log({sender, subject, to, cc, bcc});
+        if (to == null || to.length === 0 || subject == null) {
+          throw new Error();
+        }
 
-  const content = [{type: 'text/html', value: html}];
+        // eslint-disable-next-line no-console
+        console.log(`Sending ${type} email:`);
+        // eslint-disable-next-line no-console
+        console.log({sender, subject, to, cc, bcc});
 
-  if (plainText != null) {
-    content.unshift({type: 'text/plain', value: plainText});
-  }
+        const content = [{type: 'text/html', value: html}];
 
-  const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Env.SENDGRID_API_KEY}`,
-    },
-    body: JSON.stringify({
-      from: sender,
-      subject,
-      content,
-      personalizations: [
-        {
-          to: to.map((email) => ({email})),
-          cc: cc?.map((email) => ({email})),
-          bcc: bcc?.map((email) => ({email})),
-        },
-      ],
-    }),
-  });
+        if (plainText != null) {
+          content.unshift({type: 'text/plain', value: plainText});
+        }
 
-  if (!response.ok) {
-    // eslint-disable-next-line no-console
-    console.log(await response.json());
-    throw new Error('Sendgrid error');
-  }
-});
+        const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${env.SENDGRID_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: sender,
+            subject,
+            content,
+            personalizations: [
+              {
+                to: to.map((email) => ({email})),
+                cc: cc?.map((email) => ({email})),
+                bcc: bcc?.map((email) => ({email})),
+              },
+            ],
+          }),
+        });
+
+        if (!response.ok) {
+          // eslint-disable-next-line no-console
+          console.log(await response.json());
+          throw new Error('Sendgrid error');
+        }
+      }),
+    );
+  };
+
+export default {queue: handleQueue, fetch: handleRequest};

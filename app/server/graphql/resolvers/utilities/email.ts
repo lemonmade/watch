@@ -1,30 +1,32 @@
-import Env from '@quilted/quilt/env';
-import type {EmailType, PropsForEmail} from '../../../../../functions/email';
+import {createSignedToken, Header} from '../../../shared/auth';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    GOOGLE_CLOUD_PROJECT_ID: string;
-    GOOGLE_CLOUD_CREDENTIALS: string;
-    GOOGLE_CLOUD_EMAIL_TOPIC: string;
-  }
-}
+import type {
+  Message,
+  EmailType,
+  PropsForEmail,
+} from '../../../../../functions/email';
 
 // TODO
 export async function enqueueSendEmail<T extends EmailType>(
   type: T,
   props: PropsForEmail<T>,
+  {request}: {request: Request},
 ) {
-  const {PubSub} = await import('@google-cloud/pubsub');
+  const message: Message = {
+    type,
+    props,
+  };
 
-  const pubsub = new PubSub({
-    projectId: Env.GOOGLE_CLOUD_PROJECT_ID,
-    credentials: JSON.parse(Env.GOOGLE_CLOUD_CREDENTIALS),
-  });
-
-  await pubsub.topic(Env.GOOGLE_CLOUD_EMAIL_TOPIC).publishMessage({
-    json: {
-      type,
-      props,
+  const response = await fetch(new URL('/internal/email/queue', request.url), {
+    method: 'PUT',
+    body: JSON.stringify(message),
+    headers: {
+      [Header.Token]: await createSignedToken({}, {expiresIn: '5 minutes'}),
+      'Content-Type': 'application/json',
     },
   });
+
+  if (!response.ok) {
+    throw new Error(`Failed to enqueue email: ${await response.text()}`);
+  }
 }

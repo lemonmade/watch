@@ -1,4 +1,4 @@
-name = "watch-tmdb-refresher-scheduler"
+name = "watch-email"
 main = "./build/runtime/index.mjs"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
@@ -6,15 +6,16 @@ compatibility_date = "2022-06-04"
 
 workers_dev = false
 
-# @see https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
-[triggers]
-# Every 12 hours
-crons = ["0 */12 * * *"]
-
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
-queue = "watch-tmdb-refresher"
-binding = "TMDB_REFRESHER_QUEUE"
+queue = "watch-email"
+binding = "EMAIL_QUEUE"
+
+[[queues.consumers]]
+queue = "watch-email"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 10
 
 # Needs the following environment variables:
-# - DATABASE_URL
+# - JWT_SECRET

@@ -1,23 +1,46 @@
-import type {} from '@quilted/cloudflare/http-handlers';
-import {createHttpHandler, json} from '@quilted/quilt/http-handlers';
+import type {R2Bucket} from '@cloudflare/workers-types';
+import {json, noContent} from '@quilted/http-handlers';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
-const handler = createHttpHandler();
+interface Environment {
+  JWT_SECRET: string;
+  CLIPS_ASSETS: R2Bucket;
+}
 
-handler.put(async (request, context) => {
+const DEFAULT_HEADERS = {
+  Allow: 'PUT',
+  'Cache-Control': 'no-store',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'PUT',
+  'Timing-Allow-Origin': '*',
+};
+
+async function handleRequest(request: Request, env: Environment) {
+  if (request.method === 'OPTIONS') {
+    return noContent({
+      headers: DEFAULT_HEADERS,
+    });
+  }
+
+  if (request.method !== 'PUT') {
+    return json(
+      {error: 'You must call this API with a PUT method'},
+      {
+        status: 405,
+        headers: DEFAULT_HEADERS,
+      },
+    );
+  }
+
   const token = await request.text();
-  const valid = await jwt.verify(token, context.env.JWT_SECRET);
+  const valid = await jwt.verify(token, env.JWT_SECRET);
 
   if (!valid) {
     return json(
       {error: 'Invalid token'},
       {
         status: 401,
-        headers: {
-          Allow: 'PUT',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'PUT',
-        },
+        headers: DEFAULT_HEADERS,
       },
     );
   }
@@ -35,48 +58,19 @@ handler.put(async (request, context) => {
       },
       {
         status: 400,
-        headers: {
-          Allow: 'PUT',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'PUT',
-        },
+        headers: DEFAULT_HEADERS,
       },
     );
   }
 
-  const bucket: R2Bucket = context.env.CLIPS_ASSETS;
-
-  await bucket.put(path, code, {
+  await env.CLIPS_ASSETS.put(path, code, {
     httpMetadata: {
       contentType: 'text/javascript',
       cacheControl: 'public, max-age=31536000, immutable',
     },
   });
 
-  return json(
-    {path},
-    {
-      headers: {
-        Allow: 'PUT',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'PUT',
-      },
-    },
-  );
-});
+  return json({path}, {headers: DEFAULT_HEADERS});
+}
 
-handler.any(() =>
-  json(
-    {error: 'You must call this API with a PUT method'},
-    {
-      status: 405,
-      headers: {
-        Allow: 'PUT',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'PUT',
-      },
-    },
-  ),
-);
-
-export default handler;
+export default {fetch: handleRequest};

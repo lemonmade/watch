@@ -1,4 +1,5 @@
 import {createProject, quiltService} from '@quilted/craft';
+import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
 export default createProject((project) => {
   project.use(
@@ -6,9 +7,13 @@ export default createProject((project) => {
       entry: './index.tsx',
       react: true,
       develop: false,
+      httpHandler: false,
       polyfill: {
         features: ['fetch'],
       },
+    }),
+    cloudflareWorkers({
+      cache: false,
     }),
   );
 });
