@@ -137,7 +137,7 @@ jobs:
     strategy:
       matrix:
         worker:
-          - upload-clips
+          - clips-upload
           - tmdb-refresher
           - tmdb-refresher-scheduler
 
