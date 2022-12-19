@@ -83,7 +83,14 @@ const handleQueue: ExportedHandlerQueueHandler<Environment, Message> =
     ]);
 
     await Promise.all(
-      messages.map(async ({body: {type, props}}) => {
+      messages.map(async (message) => {
+        // eslint-disable-next-line no-console
+        console.log(message);
+
+        const {
+          body: {type, props},
+        } = message;
+
         const {
           subject,
           to,
