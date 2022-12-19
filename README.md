@@ -3,7 +3,11 @@
 Important links:
 
 - [Architecture overview](https://www.figma.com/file/PoOBLPhMxCdc9S5rqk36tC/Watch-Architecture?node-id=0%3A1&t=l2ffxk1U8HUibXVo-1)
-- [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/lemon.tools/workers) ([router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-router/production), [tmdb-refresher worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher/production), [tmdb-refresher-scheduler worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher-scheduler/production))
+- [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/lemon.tools/workers)
+  - [router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-router/production)
+  - [email worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-email/production)
+  - [tmdb-refresher worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher/production)
+  - [tmdb-refresher-scheduler worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher-scheduler/production)
 - [Fly.io dashboard](https://fly.io/apps/watch-test-app)
 - [PlanetScale dashboard](https://app.planetscale.com/chris-sauve/watch-test-db)
 - [Google Cloud dashboard](https://console.cloud.google.com/welcome?project=watch-353105&_ga=2.12737845.383552117.1655603476-570853528.1655012838) ([Dev OAuth app](https://console.cloud.google.com/apis/credentials/oauthclient/357202806916-9ed7sce9ddqkb5hia8tvkl0pshleih2h.apps.googleusercontent.com?project=watch-353105))
@@ -62,13 +66,3 @@ You can get a visual UI for the database by running Prisma Studio:
 ```sh
 pnpm exec prisma studio
 ```
-
-## Google Cloud stuff
-
-I run a bunch of background stuff on Google Cloud, mostly for pubsub. Here were some guides I needed to set things up (there were a lot of manual CLI commands to run):
-
-https://cloud.google.com/build/docs/build-push-docker-image
-https://cloud.google.com/build/docs/deploy-containerized-application-cloud-run
-https://cloud.google.com/build/docs/deploying-builds/deploy-cloud-run#gcloud
-https://cloud.google.com/run/docs/configuring/secrets#command-line
-https://cloud.google.com/run/docs/triggering/pubsub-push

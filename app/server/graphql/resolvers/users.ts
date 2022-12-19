@@ -121,7 +121,7 @@ export const Mutation: Pick<
   | 'startWebAuthnSignIn'
   | 'completeWebAuthnSignIn'
 > = {
-  async signIn(_, {email, redirectTo}, {prisma}) {
+  async signIn(_, {email, redirectTo}, {prisma, request}) {
     const user = await prisma.user.findFirst({where: {email}});
 
     if (user == null) {
@@ -130,13 +130,17 @@ export const Mutation: Pick<
       return {email};
     }
 
-    await enqueueSendEmail('signIn', {
-      token: await createSignedToken(
-        {redirectTo},
-        {subject: email, expiresIn: '15 minutes'},
-      ),
-      userEmail: email,
-    });
+    await enqueueSendEmail(
+      'signIn',
+      {
+        token: await createSignedToken(
+          {redirectTo},
+          {subject: email, expiresIn: '15 minutes'},
+        ),
+        userEmail: email,
+      },
+      {request},
+    );
 
     return {email};
   },
@@ -144,31 +148,39 @@ export const Mutation: Pick<
     removeAuthCookies(response, {request});
     return {userId: toGid(user.id, 'User')};
   },
-  async createAccount(_, {email, redirectTo}, {prisma}) {
+  async createAccount(_, {email, redirectTo}, {prisma, request}) {
     const user = await prisma.user.findFirst({
       where: {email},
       select: {id: true},
     });
 
     if (user != null) {
-      await enqueueSendEmail('signIn', {
+      await enqueueSendEmail(
+        'signIn',
+        {
+          token: await createSignedToken(
+            {redirectTo},
+            {subject: email, expiresIn: '15 minutes'},
+          ),
+          userEmail: email,
+        },
+        {request},
+      );
+
+      return {email};
+    }
+
+    await enqueueSendEmail(
+      'welcome',
+      {
         token: await createSignedToken(
           {redirectTo},
           {subject: email, expiresIn: '15 minutes'},
         ),
         userEmail: email,
-      });
-
-      return {email};
-    }
-
-    await enqueueSendEmail('welcome', {
-      token: await createSignedToken(
-        {redirectTo},
-        {subject: email, expiresIn: '15 minutes'},
-      ),
-      userEmail: email,
-    });
+      },
+      {request},
+    );
 
     return {email};
   },

@@ -3,7 +3,7 @@ import {
   useSender,
   useSendTo,
   usePlainTextContent,
-} from '@quilted/quilt/email';
+} from '@quilted/react-email';
 
 interface Props {
   token: string;

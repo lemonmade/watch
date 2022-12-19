@@ -14,5 +14,5 @@ max_batch_timeout = 30
 max_retries = 10
 
 # Needs the following environment variables:
-# DATABASE_URL
-# TMDB_ACCESS_TOKEN
+# - DATABASE_URL
+# - TMDB_ACCESS_TOKEN

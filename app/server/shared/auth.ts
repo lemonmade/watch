@@ -17,6 +17,10 @@ export enum Cookie {
   Auth = 'Auth',
 }
 
+export enum Header {
+  Token = 'Watch-Token',
+}
+
 export type Authentication =
   | {
       type: 'unauthenticated';
@@ -73,14 +77,14 @@ export async function authenticate(
 }
 
 export async function createSignedToken(
-  data: Record<string, any>,
+  data?: Record<string, any>,
   {
     secret = Env.JWT_DEFAULT_SECRET,
     ...options
   }: SignOptions & {secret?: string} = {},
 ) {
   const {default: jwt} = await import('jsonwebtoken');
-  return jwt.sign(data, secret, options);
+  return jwt.sign(data ?? {}, secret, options);
 }
 
 interface SignedTokenResult<T> {

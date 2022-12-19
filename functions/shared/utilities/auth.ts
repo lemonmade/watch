@@ -16,6 +16,10 @@ export enum Cookie {
   Auth = 'Auth',
 }
 
+export enum Header {
+  Token = 'Watch-Token',
+}
+
 export function createSignedToken(
   data: Record<string, any>,
   {

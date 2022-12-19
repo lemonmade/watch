@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "scripts": {
-    "start": "node ./build/runtime/index.js"
-  },
-  "dependencies": {
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20221111.1",
+    "@quilted/http-handlers": "^0.2.45",
+    "@quilted/react-email": "^0.2.29",
+    "@tsndr/cloudflare-worker-jwt": "^2.1.0",
     "react": "npm:@quilted/react@^17.0.0",
     "react-dom": "npm:@quilted/react-dom@^17.0.0"
   },

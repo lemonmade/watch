@@ -9,6 +9,11 @@ binding = "SERVICE_UPLOAD_CLIPS"
 service = "watch-internal-upload-clips"
 environment = "production"
 
+[[services]]
+binding = "SERVICE_EMAIL_QUEUE"
+service = "watch-email"
+environment = "production"
+
 [[r2_buckets]]
 binding = "APP_ASSETS"
 bucket_name = "watch-assets"

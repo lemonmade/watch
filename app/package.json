@@ -10,7 +10,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
-    "@google-cloud/pubsub": "^3.0.0",
     "@prisma/client": "^4.7.0",
     "aws-sdk": "^2.935.0",
     "prisma": "^4.7.0"
