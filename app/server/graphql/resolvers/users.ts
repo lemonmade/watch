@@ -241,21 +241,21 @@ export const Mutation: Pick<
       // eslint-disable-next-line no-console
       console.log(`Could not find gift code ${code} for user ${user.id}`);
 
-      return {code: null};
+      return {giftCode: null};
     }
 
     if (giftCode.redeemedById != null) {
       // eslint-disable-next-line no-console
       console.log(`Gift code ${code} has already been used`);
 
-      return {code: null};
+      return {giftCode: null};
     }
 
     if (existingCodeForUser != null) {
       // eslint-disable-next-line no-console
       console.log(`User ${user.id} already has applied a gift code`);
 
-      return {code: null};
+      return {giftCode: null};
     }
 
     const [updatedGiftCode] = await prisma.$transaction([
