@@ -66,8 +66,6 @@ model AccountGiftCode {
   redeemedBy   User?     @relation(fields: [redeemedById], references: [id])
   redeemedById String?
   redeemedAt   DateTime?
-
-  @@index([code])
 }
 
 model WebAuthnCredential {
