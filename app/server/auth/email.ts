@@ -11,6 +11,7 @@ import {
   verifySignedToken,
   addAuthCookies,
 } from '../shared/auth';
+import {createAccountWithGiftCode} from '../shared/create-account';
 import {validateRedirectTo, createPrisma} from './shared';
 
 export async function signInFromEmail(request: Request) {
@@ -77,15 +78,17 @@ export async function createAccountFromEmail(request: Request) {
   try {
     const {
       subject: email,
-      data: {redirectTo},
+      data: {giftCode, redirectTo},
       expired,
     } = await verifySignedToken<{
+      giftCode?: string;
       redirectTo?: string | null;
     }>(token);
 
     if (email == null) {
       return restartCreateAccount({
         request,
+        giftCode,
         redirectTo: redirectTo ?? undefined,
       });
     }
@@ -94,17 +97,18 @@ export async function createAccountFromEmail(request: Request) {
       return restartCreateAccount({
         request,
         reason: CreateAccountErrorReason.Expired,
+        giftCode,
         redirectTo: redirectTo ?? undefined,
       });
     }
 
     const prisma = await createPrisma();
-    const user = await prisma.user.upsert({
-      create: {email},
-      update: {email},
-      where: {email},
-      select: {id: true},
-    });
+
+    const user = giftCode
+      ? await createAccountWithGiftCode({email}, {giftCode, prisma})
+      : await prisma.user.create({
+          data: {email},
+        });
 
     // eslint-disable-next-line no-console
     console.log(
@@ -168,10 +172,12 @@ export function restartSignIn({
 export function restartCreateAccount({
   request,
   reason = CreateAccountErrorReason.Generic,
+  giftCode,
   redirectTo,
 }: {
   request: Request;
   reason?: CreateAccountErrorReason;
+  giftCode?: string;
   redirectTo?: string;
 }) {
   const createAccountUrl = new URL('/create-account', request.url);
@@ -187,6 +193,10 @@ export function restartCreateAccount({
       SearchParam.RedirectTo,
       normalizedRedirectTo,
     );
+  }
+
+  if (giftCode) {
+    createAccountUrl.searchParams.set('gift-code', giftCode);
   }
 
   return redirect(createAccountUrl, {

@@ -1,0 +1,8 @@
+mutation RedeemAccountGiftCode($code: String!) {
+  redeemAccountGiftCode(code: $code) {
+    giftCode {
+      code
+      redeemedAt
+    }
+  }
+}

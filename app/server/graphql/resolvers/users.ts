@@ -5,6 +5,7 @@ import type {
   PersonalAccessToken as DatabasePersonalAccessToken,
   WebAuthnCredential as DatabaseWebAuthnCredential,
 } from '@prisma/client';
+import {customAlphabet} from 'nanoid';
 
 import {
   createSignedToken,
@@ -45,6 +46,8 @@ export const Query: Pick<QueryResolver, 'me' | 'my'> = {
 
 export const User: Resolver<'User'> = {
   id: ({id}) => toGid(id, 'User'),
+  role: ({role}) => role,
+  level: ({level}) => level,
   githubAccount({id}, _, {prisma}) {
     return prisma.githubAccount.findFirst({
       where: {userId: id},
@@ -75,6 +78,18 @@ export const User: Resolver<'User'> = {
       where: {userId: id},
     });
   },
+  async giftCode({id}, _, {prisma}) {
+    const giftCode = await prisma.accountGiftCode.findFirst({
+      where: {redeemedById: id},
+    });
+
+    if (giftCode == null) return null;
+
+    return {
+      code: giftCode.code,
+      redeemedAt: giftCode.redeemedAt!.toISOString(),
+    };
+  },
 };
 
 export const WebAuthnCredential: Resolver<'WebAuthnCredential'> = {
@@ -104,10 +119,15 @@ export const GoogleAccount: Resolver<'GoogleAccount'> = {
 const PERSONAL_ACCESS_TOKEN_RANDOM_LENGTH = 12;
 const PERSONAL_ACCESS_TOKEN_PREFIX = 'wlp_';
 
+// @see https://github.com/CyberAP/nanoid-dictionary#nolookalikes
+const createCode = customAlphabet('346789ABCDEFGHJKLMNPQRTUVWXY', 8);
+
 export const Mutation: Pick<
   MutationResolver,
   | 'createAccount'
   | 'deleteAccount'
+  | 'createAccountGiftCode'
+  | 'redeemAccountGiftCode'
   | 'signIn'
   | 'signOut'
   | 'updateUserSettings'
@@ -148,7 +168,7 @@ export const Mutation: Pick<
     removeAuthCookies(response, {request});
     return {userId: toGid(user.id, 'User')};
   },
-  async createAccount(_, {email, redirectTo}, {prisma, request}) {
+  async createAccount(_, {email, code, redirectTo}, {prisma, request}) {
     const user = await prisma.user.findFirst({
       where: {email},
       select: {id: true},
@@ -159,7 +179,7 @@ export const Mutation: Pick<
         'signIn',
         {
           token: await createSignedToken(
-            {redirectTo},
+            {code, redirectTo},
             {subject: email, expiresIn: '15 minutes'},
           ),
           userEmail: email,
@@ -174,7 +194,7 @@ export const Mutation: Pick<
       'welcome',
       {
         token: await createSignedToken(
-          {redirectTo},
+          {code, redirectTo},
           {subject: email, expiresIn: '15 minutes'},
         ),
         userEmail: email,
@@ -187,6 +207,71 @@ export const Mutation: Pick<
   async deleteAccount(_, __, {prisma, user}) {
     const deleted = await prisma.user.delete({where: {id: user.id}});
     return {deletedId: toGid(deleted.id, 'User')};
+  },
+  async createAccountGiftCode(_, __, {prisma, user}) {
+    const {role} = await prisma.user.findFirstOrThrow({
+      where: {id: user.id},
+    });
+
+    if (role !== 'ADMIN') {
+      throw new Error(`Can’t create an account gift code`);
+    }
+
+    const {code} = await prisma.accountGiftCode.create({
+      data: {
+        code: createCode(),
+      },
+    });
+
+    return {
+      code,
+    };
+  },
+  async redeemAccountGiftCode(_, {code}, {prisma, user}) {
+    const [giftCode, existingCodeForUser] = await Promise.all([
+      prisma.accountGiftCode.findFirst({
+        where: {code},
+      }),
+      prisma.accountGiftCode.findFirst({
+        where: {redeemedById: user.id},
+      }),
+    ]);
+
+    if (giftCode == null) {
+      // eslint-disable-next-line no-console
+      console.log(`Could not find gift code ${code} for user ${user.id}`);
+
+      return {code: null};
+    }
+
+    if (giftCode.redeemedById != null) {
+      // eslint-disable-next-line no-console
+      console.log(`Gift code ${code} has already been used`);
+
+      return {code: null};
+    }
+
+    if (existingCodeForUser != null) {
+      // eslint-disable-next-line no-console
+      console.log(`User ${user.id} already has applied a gift code`);
+
+      return {code: null};
+    }
+
+    const [updatedGiftCode] = await prisma.$transaction([
+      prisma.accountGiftCode.update({
+        where: {id: giftCode.id},
+        data: {redeemedById: user.id, redeemedAt: new Date()},
+      }),
+      prisma.user.update({where: {id: user.id}, data: {level: 'PATRON'}}),
+    ]);
+
+    return {
+      giftCode: {
+        code: updatedGiftCode.code,
+        redeemedAt: updatedGiftCode.redeemedAt!.toISOString(),
+      },
+    };
   },
   async disconnectGithubAccount(_, __, {prisma, user}) {
     const githubAccount = await prisma.githubAccount.findFirst({

@@ -31,7 +31,10 @@ export function useGithubOAuthModal<Flow extends GithubOAuthFlow>(
   const eventHandlerRef = useRef<(...args: any[]) => any>();
 
   const open = useCallback(
-    ({redirectTo}: {redirectTo?: string} = {}) => {
+    ({
+      resolveUrl,
+      redirectTo,
+    }: {redirectTo?: string; resolveUrl?(url: URL): URL | void} = {}) => {
       const options = {
         height: HEIGHT,
         width: WIDTH,
@@ -47,8 +50,10 @@ export function useGithubOAuthModal<Flow extends GithubOAuthFlow>(
         oauthUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
       }
 
+      const finalUrl = resolveUrl?.(oauthUrl) ?? oauthUrl;
+
       const opened = window.open(
-        oauthUrl.href,
+        finalUrl.href,
         'GithubOAuthModal',
         Object.entries(options)
           .map(([key, value]) => `${key}=${value}`)

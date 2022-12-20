@@ -2,6 +2,8 @@ query Account {
   me {
     id
     email
+    role
+    level
     webAuthnCredentials {
       id
     }
@@ -19,6 +21,10 @@ query Account {
       avatarImage {
         source
       }
+    }
+    giftCode {
+      code
+      redeemedAt
     }
     settings {
       spoilerAvoidance

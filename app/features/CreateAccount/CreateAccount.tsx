@@ -9,6 +9,7 @@ import {
   BlockStack,
   TextBlock,
   Heading,
+  Text,
 } from '@lemon/zest';
 
 import {CreateAccountErrorReason} from '~/global/auth';
@@ -20,11 +21,14 @@ import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMuta
 
 enum SearchParam {
   Reason = 'reason',
+  GiftCode = 'gift-code',
   RedirectTo = 'redirect',
 }
 
 export function CreateAccount() {
   const currentUrl = useCurrentUrl();
+
+  const giftCode = currentUrl.searchParams.get(SearchParam.GiftCode);
 
   const [reason, setReason] = useState<CreateAccountErrorReason | undefined>(
     (currentUrl.searchParams.get(SearchParam.Reason) as any) ?? undefined,
@@ -35,6 +39,12 @@ export function CreateAccount() {
       <Heading>Create account</Heading>
 
       {reason && <ErrorBanner reason={reason} />}
+
+      {giftCode ? (
+        <Banner>
+          Using gift code <Text emphasis>{giftCode}</Text>
+        </Banner>
+      ) : null}
 
       <CreateAccountWithEmail />
 
@@ -58,6 +68,7 @@ function CreateAccountWithEmail() {
         createAccountWithEmail.mutate(
           {
             email: email.value,
+            code: currentUrl.searchParams.get(SearchParam.GiftCode),
             redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
           },
           {
@@ -100,6 +111,15 @@ function CreateAccountWithGithub({
         open({
           redirectTo:
             currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+          resolveUrl(url) {
+            const code = currentUrl.searchParams.get(SearchParam.GiftCode);
+
+            if (code) {
+              url.searchParams.set(SearchParam.GiftCode, code);
+            }
+
+            return url;
+          },
         });
       }}
     >

@@ -3,6 +3,7 @@ export enum SearchParam {
   Reason = 'reason',
   Strategy = 'strategy',
   RedirectTo = 'redirect',
+  GiftCode = 'gift-code',
 }
 
 export enum SignInErrorReason {

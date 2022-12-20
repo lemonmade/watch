@@ -12,6 +12,11 @@ import {
   Layout,
   Menu,
   Popover,
+  Modal,
+  TextField,
+  Form,
+  Tag,
+  InlineStack,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers';
@@ -31,47 +36,43 @@ import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoile
 import startWebAuthnRegistrationMutation from './graphql/StartWebAuthnRegistrationMutation.graphql';
 import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredentialMutation.graphql';
 import deleteWebAuthnCredentialMutation from './graphql/DeleteWebAuthnCredentialMutation.graphql';
+import redeemAccountGiftCardMutation from './graphql/RedeemAccountGiftCodeMutation.graphql';
+import createAccountGiftCardMutation from './graphql/CreateAccountGiftCodeMutation.graphql';
 
 export function Account() {
-  const navigate = useNavigate();
   const {data, refetch} = useQuery(accountQuery);
-  const signOut = useMutation(signOutMutation);
 
   if (data == null) return null;
 
-  const {email, githubAccount, googleAccount, settings, webAuthnCredentials} =
-    data.me;
+  const {
+    email,
+    level,
+    role,
+    giftCode,
+    githubAccount,
+    googleAccount,
+    settings,
+    webAuthnCredentials,
+  } = data.me;
+
+  const handleUpdate = async () => {
+    await refetch();
+  };
 
   return (
     <Page heading="Account">
       <BlockStack spacing="huge">
-        <BlockStack spacing>
-          <TextBlock>Email: {email}</TextBlock>
-          <Action
-            onPress={() => {
-              signOut.mutate(
-                {},
-                {
-                  onSettled: () => navigate('/signed-out'),
-                },
-              );
-            }}
-          >
-            Sign out
-          </Action>
-        </BlockStack>
+        <AccountSection
+          email={email}
+          level={level}
+          giftCode={giftCode}
+          onUpdate={handleUpdate}
+        />
         <WebAuthnSection
           credentials={webAuthnCredentials}
-          onUpdate={async () => {
-            await refetch();
-          }}
+          onUpdate={handleUpdate}
         />
-        <GoogleSection
-          account={googleAccount}
-          onUpdate={async () => {
-            await refetch();
-          }}
-        />
+        <GoogleSection account={googleAccount} onUpdate={handleUpdate} />
         <GithubSection
           account={githubAccount ?? undefined}
           onConnectionChange={() => {
@@ -83,8 +84,89 @@ export function Account() {
           refetch={refetch}
         />
         <DangerZone />
+        {role === 'ADMIN' && <AdminZone />}
       </BlockStack>
     </Page>
+  );
+}
+
+const ACCOUNT_LEVEL_MAP = new Map<AccountQueryData.Me['level'], string>([
+  ['FREE', 'Free'],
+  ['MEMBER', 'Member'],
+  ['PATRON', 'Patron'],
+]);
+
+function AccountSection({
+  email,
+  level,
+  giftCode,
+  onUpdate,
+}: {
+  email: string;
+  level: AccountQueryData.Me['level'];
+  giftCode: AccountQueryData.Me['giftCode'];
+  onUpdate(): Promise<void>;
+}) {
+  const navigate = useNavigate();
+  const signOut = useMutation(signOutMutation);
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <TextBlock>Email: {email}</TextBlock>
+        <TextBlock>Account: {ACCOUNT_LEVEL_MAP.get(level)}</TextBlock>
+        {giftCode && (
+          <InlineStack spacing="small">
+            <Text>Gift code:</Text> <Tag>{giftCode.code}</Tag>
+          </InlineStack>
+        )}
+        <Action
+          onPress={async () => {
+            signOut.mutateAsync(
+              {},
+              {
+                onSettled: () => navigate('/signed-out'),
+              },
+            );
+          }}
+        >
+          Sign out
+        </Action>
+        {giftCode == null && (
+          <Action
+            emphasis="subdued"
+            overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}
+          >
+            Redeem gift code
+          </Action>
+        )}
+      </BlockStack>
+    </Section>
+  );
+}
+
+function AccountGiftCodeModal({onUpdate}: {onUpdate(): Promise<void>}) {
+  const code = useSignal('');
+  const redeemAccountGiftCard = useMutation(redeemAccountGiftCardMutation);
+
+  return (
+    <Modal padding>
+      <Form
+        onSubmit={async () => {
+          await redeemAccountGiftCard.mutateAsync({
+            code: code.value,
+          });
+
+          await onUpdate();
+        }}
+      >
+        <BlockStack spacing>
+          <TextField label="Code" value={code} />
+
+          <Action perform="submit">Redeem</Action>
+        </BlockStack>
+      </Form>
+    </Modal>
   );
 }
 
@@ -393,7 +475,7 @@ function DangerZone() {
         <Action
           role="destructive"
           onPress={async () => {
-            deleteAccount.mutate(
+            await deleteAccount.mutateAsync(
               {},
               {
                 onSuccess: () => navigate('/goodbye'),
@@ -405,5 +487,40 @@ function DangerZone() {
         </Action>
       </BlockStack>
     </Section>
+  );
+}
+
+function AdminZone() {
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Admin zone</Heading>
+        <CreateGiftCodeSection />
+      </BlockStack>
+    </Section>
+  );
+}
+
+function CreateGiftCodeSection() {
+  const createAccountGiftCard = useMutation(createAccountGiftCardMutation);
+
+  return (
+    <BlockStack spacing>
+      {createAccountGiftCard.isSuccess && (
+        <Banner>
+          Code:{' '}
+          <Text emphasis>
+            {createAccountGiftCard.data.createAccountGiftCode.code}
+          </Text>
+        </Banner>
+      )}
+      <Action
+        onPress={async () => {
+          await createAccountGiftCard.mutateAsync({});
+        }}
+      >
+        Create gift code
+      </Action>
+    </BlockStack>
   );
 }

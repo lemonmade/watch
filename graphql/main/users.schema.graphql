@@ -6,8 +6,14 @@ extend type Query {
 }
 
 extend type Mutation {
-  createAccount(email: Email!, redirectTo: Url): CreateAccountPayload!
+  createAccount(
+    email: Email!
+    code: String
+    redirectTo: Url
+  ): CreateAccountPayload!
   deleteAccount: DeleteAccountPayload!
+  createAccountGiftCode: CreateAccountGiftCodePayload!
+  redeemAccountGiftCode(code: String!): RedeemAccountCodePayload!
   signIn(email: Email!, redirectTo: Url): SignInPayload!
   signOut: SignOutPayload!
   disconnectGithubAccount: DisconnectGithubAccountPayload!
@@ -31,18 +37,32 @@ type WebAuthnCredential {
   id: ID!
 }
 
+enum UserRole {
+  REGULAR
+  ADMIN
+}
+
+enum UserLevel {
+  FREE
+  MEMBER
+  PATRON
+}
+
 type UserSettings {
   spoilerAvoidance: SpoilerAvoidance!
 }
 
 type User {
   id: ID!
+  role: UserRole!
+  level: UserLevel!
   email: Email!
   githubAccount: GithubAccount
   googleAccount: GoogleAccount
   webAuthnCredentials: [WebAuthnCredential!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
+  giftCode: RedeemedAccountGiftCode
 }
 
 scalar GithubID
@@ -74,6 +94,11 @@ type PersonalAccessToken {
   lastFourCharacters: String!
 }
 
+type RedeemedAccountGiftCode {
+  code: String!
+  redeemedAt: Date!
+}
+
 # Mutation
 
 type CreateAccountPayload {
@@ -82,6 +107,14 @@ type CreateAccountPayload {
 
 type DeleteAccountPayload {
   deletedId: ID!
+}
+
+type CreateAccountGiftCodePayload {
+  code: String!
+}
+
+type RedeemAccountCodePayload {
+  giftCode: RedeemedAccountGiftCode
 }
 
 type SignInPayload {

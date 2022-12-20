@@ -17,15 +17,32 @@ enum SpoilerAvoidance {
   EVERYTHING
 }
 
+enum UserRole {
+  REGULAR
+  ADMIN
+}
+
+enum UserLevel {
+  FREE
+  MEMBER
+  PATRON
+}
+
 model User {
-  id               String           @id @default(uuid())
-  email            String           @unique
-  createdAt        DateTime         @default(now())
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  role      UserRole @default(REGULAR)
+
+  level     UserLevel         @default(FREE)
+  giftCodes AccountGiftCode[]
+
   spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
-  githubAccount               GithubAccount?
-  googleAccount               GoogleAccount?
-  webAuthnCredentials         WebAuthnCredential[]
+  githubAccount       GithubAccount?
+  googleAccount       GoogleAccount?
+  webAuthnCredentials WebAuthnCredential[]
+
   skips                       Skip[]
   watches                     Watch[]
   watchThroughs               WatchThrough[]
@@ -38,6 +55,19 @@ model User {
   lists        List[]  @relation(name: "user")
   watchLater   List?   @relation(name: "watchLater", fields: [watchLaterId], references: [id])
   watchLaterId String? @unique
+}
+
+model AccountGiftCode {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  redeemedBy   User?     @relation(fields: [redeemedById], references: [id])
+  redeemedById String?
+  redeemedAt   DateTime?
+
+  @@index([code])
 }
 
 model WebAuthnCredential {
