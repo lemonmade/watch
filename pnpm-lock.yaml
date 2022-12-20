@@ -86,6 +86,7 @@ importers:
       graphql: ^15.0.0
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
+      nanoid: ^4.0.0
       prisma: ^4.7.0
       react: npm:@quilted/react@^17.0.0
       react-dom: npm:@quilted/react-dom@^17.0.0
@@ -120,6 +121,7 @@ importers:
       graphql: 15.8.0
       jsonwebtoken: 8.5.1
       mime: 2.6.0
+      nanoid: 4.0.0
       react: /@quilted/react/17.0.7
       react-dom: /@quilted/react-dom/17.0.7_@babel+runtime@7.18.9
       zod: 3.19.1
@@ -10298,6 +10300,12 @@ packages:
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: true
+
+  /nanoid/4.0.0:
+    resolution: {integrity: sha512-IgBP8piMxe/gf73RTQx7hmnhwz0aaEXYakvqZyE302IXW3HyVNhdNGC+O2MwMAVhLEnvXlvKtGbtJf6wvHihCg==}
+    engines: {node: ^14 || ^16 || >=18}
     hasBin: true
     dev: true
 

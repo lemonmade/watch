@@ -38,6 +38,7 @@
     "graphql": "^15.0.0",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
+    "nanoid": "^4.0.0",
     "react": "npm:@quilted/react@^17.0.0",
     "react-dom": "npm:@quilted/react-dom@^17.0.0",
     "zod": "^3.19.1"

@@ -7,6 +7,7 @@ import type {
 } from '@quilted/quilt/http-handlers';
 import {createGraphQLHttpFetch} from '@quilted/quilt';
 import {stripIndent} from 'common-tags';
+import type {Prisma as PrismaData} from '@prisma/client';
 
 import {
   SearchParam,
@@ -18,6 +19,7 @@ import {
 import type {GithubOAuthMessage} from '~/global/auth';
 
 import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth';
+import {createAccountWithGiftCode} from '../../shared/create-account';
 import {validateRedirectTo, createPrisma} from '../shared';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
@@ -51,7 +53,10 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-export function startGithubOAuth(request: EnhancedRequest) {
+export function startGithubOAuth(
+  request: EnhancedRequest,
+  {resolveUrl}: {resolveUrl?(url: URL): URL | void} = {},
+) {
   const state = crypto
     .randomBytes(15)
     .map((byte) => byte % 10)
@@ -74,7 +79,12 @@ export function startGithubOAuth(request: EnhancedRequest) {
     callbackUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
   }
 
-  githubOAuthUrl.searchParams.set(GithubSearchParam.Redirect, callbackUrl.href);
+  const finalCallbackUrl = resolveUrl?.(callbackUrl) ?? callbackUrl;
+
+  githubOAuthUrl.searchParams.set(
+    GithubSearchParam.Redirect,
+    finalCallbackUrl.href,
+  );
 
   const response = redirect(githubOAuthUrl, {
     headers: {
@@ -140,12 +150,30 @@ function completeSignIn(
   );
 }
 
+export function startGithubOAuthCreateAccount(request: EnhancedRequest) {
+  return startGithubOAuth(request, {
+    resolveUrl(url) {
+      const code = new URL(request.url).searchParams.get(SearchParam.GiftCode);
+
+      if (code) {
+        url.searchParams.set(SearchParam.GiftCode, code);
+      }
+
+      return url;
+    },
+  });
+}
+
 export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
+  const giftCode =
+    new URL(request.url).searchParams.get(SearchParam.GiftCode) ?? undefined;
+
   return handleGithubOAuthCallback(request, {
     onFailure({request, redirectTo}) {
       return restartCreateAccount({
         redirectTo,
         request,
+        giftCode,
         reason: CreateAccountErrorReason.GithubError,
       });
     },
@@ -173,23 +201,31 @@ export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
       try {
         const prisma = await createPrisma();
 
+        const githubAccount: PrismaData.GithubAccountCreateWithoutUserInput = {
+          id: githubUserId,
+          username: login,
+          profileUrl: githubUserUrl,
+          avatarUrl,
+        };
+
         // Don’t try to be clever here and give feedback to the user if
         // this failed because their email already exists. It’s tempting
         // to just log them in or tell them they have an account already,
         // but that feedback could be used to probe for emails.
-        const {id: updatedUserId} = await prisma.user.create({
-          data: {
-            email,
-            githubAccount: {
-              create: {
-                id: githubUserId,
-                username: login,
-                profileUrl: githubUserUrl,
-                avatarUrl,
+        const {id: updatedUserId} = giftCode
+          ? await createAccountWithGiftCode(
+              {
+                email,
+                githubAccount: {create: githubAccount},
               },
-            },
-          },
-        });
+              {giftCode, prisma},
+            )
+          : await prisma.user.create({
+              data: {
+                email,
+                githubAccount: {create: githubAccount},
+              },
+            });
 
         // eslint-disable-next-line no-console
         console.log(`Created new user during sign-up: ${updatedUserId}`);
@@ -444,10 +480,12 @@ function restartSignIn({
 function restartCreateAccount({
   request,
   reason = CreateAccountErrorReason.Generic,
+  giftCode,
   redirectTo,
 }: {
   request: EnhancedRequest;
   reason?: CreateAccountErrorReason;
+  giftCode?: string;
   redirectTo?: string;
 }) {
   const createAccountUrl = new URL('/create-account', request.url);
@@ -463,6 +501,10 @@ function restartCreateAccount({
       SearchParam.RedirectTo,
       normalizedRedirectTo,
     );
+  }
+
+  if (giftCode) {
+    createAccountUrl.searchParams.set(SearchParam.GiftCode, giftCode);
   }
 
   return modalAuthResponse({

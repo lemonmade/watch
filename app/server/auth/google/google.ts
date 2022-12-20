@@ -23,6 +23,7 @@ import {
   verifySignedToken,
 } from '../../shared/auth';
 import {validateRedirectTo, createPrisma} from '../shared';
+import {createAccountWithGiftCode} from '../../shared/create-account';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
@@ -58,7 +59,10 @@ interface GoogleOAuthStateToken {
   redirectTo?: string;
 }
 
-export async function startGoogleOAuth(request: EnhancedRequest) {
+export async function startGoogleOAuth<State extends {} = {}>(
+  request: EnhancedRequest,
+  {getState}: {getState?(): void | State | Promise<void | State>} = {},
+) {
   const url = new URL(request.url);
   const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
   const state = await createSignedToken(
@@ -68,6 +72,7 @@ export async function startGoogleOAuth(request: EnhancedRequest) {
         .map((byte) => byte % 10)
         .join(''),
       redirectTo,
+      ...(getState ? (await getState()) ?? {} : {}),
     },
     {secret: Env.GOOGLE_CLIENT_SECRET, expiresIn: '15 minutes'},
   );
@@ -151,16 +156,38 @@ function completeSignIn(
   );
 }
 
+interface CreateAccountState {
+  giftCode?: string;
+}
+
+export function startGoogleOAuthCreateAccount(request: EnhancedRequest) {
+  return startGoogleOAuth<CreateAccountState>(request, {
+    getState() {
+      const giftCode = new URL(request.url).searchParams.get(
+        SearchParam.GiftCode,
+      );
+
+      return giftCode ? {giftCode} : {};
+    },
+  });
+}
+
 export function handleGoogleOAuthCreateAccount(request: EnhancedRequest) {
-  return handleGoogleOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
+  return handleGoogleOAuthCallback<CreateAccountState>(request, {
+    onFailure({request, state, redirectTo}) {
       return restartCreateAccount({
-        redirectTo,
         request,
+        redirectTo,
+        giftCode: state?.giftCode,
         reason: CreateAccountErrorReason.GoogleError,
       });
     },
-    async onSuccess({userIdFromExistingAccount, redirectTo, googleAccount}) {
+    async onSuccess({
+      state,
+      redirectTo,
+      googleAccount,
+      userIdFromExistingAccount,
+    }) {
       if (userIdFromExistingAccount) {
         // eslint-disable-next-line no-console
         console.log(
@@ -178,22 +205,30 @@ export function handleGoogleOAuthCreateAccount(request: EnhancedRequest) {
       try {
         const prisma = await createPrisma();
 
+        const googleAccount = {
+          id: googleUserId,
+          email,
+          imageUrl,
+        };
+
         // Don’t try to be clever here and give feedback to the user if
         // this failed because their email already exists. It’s tempting
         // to just log them in or tell them they have an account already,
         // but that feedback could be used to probe for emails.
-        const {id: updatedUserId} = await prisma.user.create({
-          data: {
-            email,
-            googleAccount: {
-              create: {
-                id: googleUserId,
+        const {id: updatedUserId} = state.giftCode
+          ? await createAccountWithGiftCode(
+              {
                 email,
-                imageUrl,
+                googleAccount: {create: googleAccount},
               },
-            },
-          },
-        });
+              {giftCode: state.giftCode, prisma},
+            )
+          : await prisma.user.create({
+              data: {
+                email,
+                googleAccount: {create: googleAccount},
+              },
+            });
 
         // eslint-disable-next-line no-console
         console.log(`Created new user during sign-up: ${updatedUserId}`);
@@ -314,8 +349,9 @@ interface GoogleTokenInfoResponse {
   picture?: string;
 }
 
-interface GoogleCallbackResult {
+interface GoogleCallbackResult<State extends {} = {}> {
   readonly googleAccount: GoogleAccount;
+  readonly state: State;
   readonly redirectTo?: string;
   readonly userIdFromExistingAccount?: string;
 }
@@ -325,20 +361,23 @@ enum GoogleCallbackFailureReason {
   FailedToFetchUser,
 }
 
-interface GoogleCallbackFailureResult {
+interface GoogleCallbackFailureResult<State extends {} = {}> {
   readonly request: EnhancedRequest;
   readonly reason: GoogleCallbackFailureReason;
+  readonly state?: State;
   readonly redirectTo?: string;
 }
 
-async function handleGoogleOAuthCallback(
+async function handleGoogleOAuthCallback<State extends {} = {}>(
   request: EnhancedRequest,
   {
     onSuccess,
     onFailure,
   }: {
-    onSuccess(result: GoogleCallbackResult): Response | Promise<Response>;
-    onFailure(result: GoogleCallbackFailureResult): EnhancedResponse;
+    onSuccess(
+      result: GoogleCallbackResult<State>,
+    ): Response | Promise<Response>;
+    onFailure(result: GoogleCallbackFailureResult<State>): EnhancedResponse;
   },
 ) {
   const url = new URL(request.url);
@@ -355,18 +394,18 @@ async function handleGoogleOAuthCallback(
     });
   }
 
-  const {expired, data} = await verifySignedToken<GoogleOAuthStateToken>(
-    state,
-    {
-      secret: Env.GOOGLE_CLIENT_SECRET,
-    },
-  );
+  const {expired, data} = await verifySignedToken<
+    GoogleOAuthStateToken & State
+  >(state, {
+    secret: Env.GOOGLE_CLIENT_SECRET,
+  });
 
   const redirectTo = data?.redirectTo;
 
   if (expired || data == null) {
     return onFailure({
       reason: GoogleCallbackFailureReason.StateMismatch,
+      state: data ?? undefined,
       request,
       redirectTo,
     });
@@ -413,6 +452,7 @@ async function handleGoogleOAuthCallback(
     console.log('No result fetched from Google!');
     return onFailure({
       request,
+      state: data,
       redirectTo,
       reason: GoogleCallbackFailureReason.FailedToFetchUser,
     });
@@ -430,6 +470,7 @@ async function handleGoogleOAuthCallback(
   });
 
   const response = await onSuccess({
+    state: data,
     googleAccount,
     redirectTo,
     userIdFromExistingAccount: account?.userId,
@@ -469,10 +510,12 @@ function restartSignIn({
 function restartCreateAccount({
   request,
   reason = CreateAccountErrorReason.Generic,
+  giftCode,
   redirectTo,
 }: {
   request: EnhancedRequest;
   reason?: CreateAccountErrorReason;
+  giftCode?: string;
   redirectTo?: string;
 }) {
   const createAccountUrl = new URL('/create-account', request.url);
@@ -488,6 +531,10 @@ function restartCreateAccount({
       SearchParam.RedirectTo,
       normalizedRedirectTo,
     );
+  }
+
+  if (giftCode) {
+    createAccountUrl.searchParams.set(SearchParam.GiftCode, giftCode);
   }
 
   return modalAuthResponse({
