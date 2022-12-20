@@ -179,7 +179,7 @@ export const Mutation: Pick<
         'signIn',
         {
           token: await createSignedToken(
-            {code, redirectTo},
+            {giftCode: code, redirectTo},
             {subject: email, expiresIn: '15 minutes'},
           ),
           userEmail: email,
@@ -194,7 +194,7 @@ export const Mutation: Pick<
       'welcome',
       {
         token: await createSignedToken(
-          {code, redirectTo},
+          {giftCode: code, redirectTo},
           {subject: email, expiresIn: '15 minutes'},
         ),
         userEmail: email,

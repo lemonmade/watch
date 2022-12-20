@@ -150,6 +150,15 @@ function CreateAccountWithGoogle({
         open({
           redirectTo:
             currentUrl.searchParams.get(SearchParam.RedirectTo) ?? undefined,
+          resolveUrl(url) {
+            const code = currentUrl.searchParams.get(SearchParam.GiftCode);
+
+            if (code) {
+              url.searchParams.set(SearchParam.GiftCode, code);
+            }
+
+            return url;
+          },
         });
       }}
     >

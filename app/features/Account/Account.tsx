@@ -117,7 +117,8 @@ function AccountSection({
         <TextBlock>Account: {ACCOUNT_LEVEL_MAP.get(level)}</TextBlock>
         {giftCode && (
           <InlineStack spacing="small">
-            <Text>Gift code:</Text> <Tag>{giftCode.code}</Tag>
+            <Text>Gift code:</Text>
+            <Tag>{giftCode.code}</Tag>
           </InlineStack>
         )}
         <Action

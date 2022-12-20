@@ -31,7 +31,10 @@ export function useGoogleOAuthModal<Flow extends GoogleOAuthFlow>(
   const eventHandlerRef = useRef<(...args: any[]) => any>();
 
   const open = useCallback(
-    ({redirectTo}: {redirectTo?: string} = {}) => {
+    ({
+      redirectTo,
+      resolveUrl,
+    }: {redirectTo?: string; resolveUrl?(url: URL): URL | void} = {}) => {
       const options = {
         height: HEIGHT,
         width: WIDTH,
@@ -47,8 +50,10 @@ export function useGoogleOAuthModal<Flow extends GoogleOAuthFlow>(
         oauthUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
       }
 
+      const finalOAuthUrl = resolveUrl?.(oauthUrl) ?? oauthUrl;
+
       const opened = window.open(
-        oauthUrl.href,
+        finalOAuthUrl.href,
         'GoogleOAuthModal',
         Object.entries(options)
           .map(([key, value]) => `${key}=${value}`)
