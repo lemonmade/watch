@@ -176,15 +176,15 @@ async function performWebAuthentication<Result = unknown>({
     reject = rejectPromise;
   });
 
-  const [{createHttpHandler, json, noContent}, {createHttpServer}] =
+  const [{createRequestRouter, json, noContent}, {createHttpServer}] =
     await Promise.all([
-      import('@quilted/http-handlers'),
-      import('@quilted/http-handlers/node'),
+      import('@quilted/request-router'),
+      import('@quilted/request-router/node'),
     ]);
 
-  const handler = createHttpHandler();
+  const router = createRequestRouter();
 
-  handler.options('/', () =>
+  router.options('/', () =>
     noContent({
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -193,7 +193,7 @@ async function performWebAuthentication<Result = unknown>({
     }),
   );
 
-  handler.post('/', async (request) => {
+  router.post('/', async (request) => {
     const result = await request.json();
 
     setTimeout(async () => {
@@ -217,7 +217,7 @@ async function performWebAuthentication<Result = unknown>({
     );
   });
 
-  const server = createHttpServer(handler);
+  const server = createHttpServer(router);
   const stopListening = makeStoppableServer(server);
 
   const port = await findPortAndListen(server, 3211);

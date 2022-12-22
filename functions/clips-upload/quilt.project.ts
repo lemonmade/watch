@@ -5,11 +5,9 @@ export default createProject((project) => {
   project.use(
     quiltService({
       entry: './clips-upload.ts',
+      format: 'custom',
       develop: false,
-      httpHandler: false,
     }),
-    cloudflareWorkers({
-      cache: false,
-    }),
+    cloudflareWorkers(),
   );
 });

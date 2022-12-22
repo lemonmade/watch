@@ -1,9 +1,9 @@
-import type {Sender} from '@quilted/quilt/email';
+import type {Sender} from '@quilted/react-email';
 import type {
   Queue,
   ExportedHandlerQueueHandler,
 } from '@cloudflare/workers-types';
-import {json, noContent} from '@quilted/http-handlers';
+import {json, noContent} from '@quilted/request-router';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
 import type {EmailType, PropsForEmail} from './types';

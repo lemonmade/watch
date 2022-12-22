@@ -1,4 +1,4 @@
-import {createHttpHandler, redirect} from '@quilted/quilt/http-handlers';
+import {createRequestRouter, redirect} from '@quilted/quilt/request-router';
 
 import {SearchParam} from '~/global/auth';
 
@@ -18,26 +18,26 @@ import {
   handleGoogleOAuthConnect,
 } from './auth/google';
 
-const handler = createHttpHandler();
+const router = createRequestRouter();
 
-handler.get('/email/sign-in', signInFromEmail);
-handler.get('/email/create-account', createAccountFromEmail);
+router.get('/email/sign-in', signInFromEmail);
+router.get('/email/create-account', createAccountFromEmail);
 
-handler.get('/github/sign-in', startGithubOAuth);
-handler.get('/github/sign-in/callback', handleGithubOAuthSignIn);
-handler.get('/github/create-account', startGithubOAuthCreateAccount);
-handler.get('/github/create-account/callback', handleGithubOAuthCreateAccount);
-handler.get('/github/connect', startGithubOAuth);
-handler.get('/github/connect/callback', handleGithubOAuthConnect);
+router.get('/github/sign-in', startGithubOAuth);
+router.get('/github/sign-in/callback', handleGithubOAuthSignIn);
+router.get('/github/create-account', startGithubOAuthCreateAccount);
+router.get('/github/create-account/callback', handleGithubOAuthCreateAccount);
+router.get('/github/connect', startGithubOAuth);
+router.get('/github/connect/callback', handleGithubOAuthConnect);
 
-handler.get('/google/sign-in', startGoogleOAuth);
-handler.get('/google/sign-in/callback', handleGoogleOAuthSignIn);
-handler.get('/google/create-account', startGoogleOAuthCreateAccount);
-handler.get('/google/create-account/callback', handleGoogleOAuthCreateAccount);
-handler.get('/google/connect', startGoogleOAuth);
-handler.get('/google/connect/callback', handleGoogleOAuthConnect);
+router.get('/google/sign-in', startGoogleOAuth);
+router.get('/google/sign-in/callback', handleGoogleOAuthSignIn);
+router.get('/google/create-account', startGoogleOAuthCreateAccount);
+router.get('/google/create-account/callback', handleGoogleOAuthCreateAccount);
+router.get('/google/connect', startGoogleOAuth);
+router.get('/google/connect/callback', handleGoogleOAuthConnect);
 
-handler.get((request) => {
+router.get((request) => {
   const url = new URL(request.url);
 
   // eslint-disable-next-line no-console
@@ -53,4 +53,4 @@ handler.get((request) => {
   return redirect(loginUrl);
 });
 
-export default handler;
+export default router;

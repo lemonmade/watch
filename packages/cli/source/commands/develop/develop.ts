@@ -14,12 +14,12 @@ import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
 import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
 
 import {
-  createHttpHandler,
-  noContent,
   json,
+  noContent,
   notFound,
-} from '@quilted/http-handlers';
-import {createHttpServer} from '@quilted/http-handlers/node';
+  createRequestRouter,
+} from '@quilted/request-router';
+import {createHttpServer} from '@quilted/request-router/node';
 
 import WebSocket from 'ws';
 import mime from 'mime';
@@ -237,13 +237,13 @@ async function prompt(prompt: Omit<PromptObject, 'name'>) {
 }
 
 async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
-  const handler = createHttpHandler();
+  const router = createRequestRouter();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
   const builder = await createBuilder(app, {ui, outputRoot});
   const resolver = createQueryResolver(app, {builder});
 
-  handler.get('/', () =>
+  router.get('/', () =>
     json(app, {
       headers: {
         'Cache-Control': 'no-store',
@@ -252,7 +252,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     }),
   );
 
-  handler.options('/graphql', () =>
+  router.options('/graphql', () =>
     noContent({
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -262,7 +262,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     }),
   );
 
-  handler.post('/graphql', async (request) => {
+  router.post('/graphql', async (request) => {
     try {
       const {query, variables} = await request.json();
 
@@ -294,7 +294,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     }
   });
 
-  handler.get(
+  router.get(
     '/assets',
     async (request) => {
       const assetPath = path.join(
@@ -323,7 +323,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
     {exact: false},
   );
 
-  const httpServer = createHttpServer(handler);
+  const httpServer = createHttpServer(router);
   const stopListening = makeStoppableServer(httpServer);
   let webSocketServer: WebSocket.Server | undefined;
 

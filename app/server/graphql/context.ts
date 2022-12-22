@@ -1,7 +1,7 @@
 import type {
   EnhancedRequest,
   EnhancedResponse,
-} from '@quilted/quilt/http-handlers';
+} from '@quilted/quilt/request-router';
 
 import {type Prisma} from '../shared/database';
 import {type Authentication} from '../shared/auth';

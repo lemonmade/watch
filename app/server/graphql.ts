@@ -1,17 +1,17 @@
 import {
-  createHttpHandler,
   html,
   json,
   noContent,
-} from '@quilted/quilt/http-handlers';
+  createRequestRouter,
+} from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
 
 import {authenticate} from './shared/auth';
 import {createPrisma} from './shared/database';
 
-const handler = createHttpHandler();
+const router = createRequestRouter();
 
-handler.options(() =>
+router.options(() =>
   noContent({
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -21,7 +21,7 @@ handler.options(() =>
   }),
 );
 
-handler.post(async (request) => {
+router.post(async (request) => {
   const {operationName, query, variables} = await request.json();
 
   /* eslint-disable no-console */
@@ -81,7 +81,7 @@ handler.post(async (request) => {
   }
 });
 
-export default handler;
+export default router;
 
 let schemaPromise: Promise<any>;
 
@@ -105,7 +105,7 @@ function loadSchema() {
   return schemaPromise;
 }
 
-handler.get(() => {
+router.get(() => {
   return html(
     stripIndent`
       <!DOCTYPE html>

@@ -1,10 +1,12 @@
 import crypto from 'crypto';
 import Env from '@quilted/quilt/env';
-import {redirect, html, EnhancedResponse} from '@quilted/quilt/http-handlers';
-import type {
-  EnhancedRequest,
-  CookieOptions,
-} from '@quilted/quilt/http-handlers';
+import {
+  redirect,
+  html,
+  EnhancedResponse,
+  type EnhancedRequest,
+  type CookieOptions,
+} from '@quilted/quilt/request-router';
 import {createGraphQLHttpFetch} from '@quilted/quilt';
 import {stripIndent} from 'common-tags';
 import type {Prisma as PrismaData} from '@prisma/client';

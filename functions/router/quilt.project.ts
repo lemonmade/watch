@@ -5,7 +5,7 @@ export default createProject((project) => {
   project.use(
     quiltService({
       entry: './router.ts',
-      httpHandler: false,
+      format: 'custom',
       develop: false,
     }),
     cloudflareWorkers(),

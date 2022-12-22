@@ -5,7 +5,7 @@ export default createProject((service) => {
   service.use(
     quiltService({
       entry: './tmdb-refresher.ts',
-      httpHandler: false,
+      format: 'custom',
       develop: false,
       polyfill: {features: ['fetch', 'abort-controller']},
     }),

@@ -1,5 +1,5 @@
 import type {R2Bucket} from '@cloudflare/workers-types';
-import {json, noContent} from '@quilted/http-handlers';
+import {json, noContent} from '@quilted/request-router';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
 interface Environment {

@@ -2,7 +2,7 @@ import Env from '@quilted/quilt/env';
 import type {
   EnhancedRequest,
   EnhancedResponse,
-} from '@quilted/quilt/http-handlers';
+} from '@quilted/quilt/request-router';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
 import {createPrisma, type Prisma} from './database';

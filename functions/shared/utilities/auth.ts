@@ -4,7 +4,7 @@ import Env from '@quilted/quilt/env';
 import type {
   EnhancedResponse,
   EnhancedRequest,
-} from '@quilted/quilt/http-handlers';
+} from '@quilted/quilt/request-router';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

@@ -1,4 +1,4 @@
-import {redirect} from '@quilted/quilt/http-handlers';
+import {redirect} from '@quilted/quilt/request-router';
 
 import {
   SearchParam,

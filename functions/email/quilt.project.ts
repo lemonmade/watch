@@ -5,15 +5,13 @@ export default createProject((project) => {
   project.use(
     quiltService({
       entry: './index.tsx',
+      format: 'custom',
       react: true,
       develop: false,
-      httpHandler: false,
       polyfill: {
         features: ['fetch'],
       },
     }),
-    cloudflareWorkers({
-      cache: false,
-    }),
+    cloudflareWorkers(),
   );
 });

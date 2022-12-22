@@ -5,7 +5,7 @@ export default createProject((service) => {
   service.use(
     quiltService({
       entry: './tmdb-refresher-scheduler.ts',
-      httpHandler: false,
+      format: 'custom',
       develop: false,
     }),
     cloudflareWorkers(),

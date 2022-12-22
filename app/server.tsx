@@ -1,15 +1,15 @@
 import '@quilted/quilt/global';
 
-import {createHttpHandler} from '@quilted/quilt/server';
+import {createRequestRouter} from '@quilted/quilt/server';
 
-import appHandler from './server/app';
-import authHandler from './server/auth';
-import graphqlHandler from './server/graphql';
+import app from './server/app';
+import auth from './server/auth';
+import graphql from './server/graphql';
 
-const httpHandler = createHttpHandler();
+const router = createRequestRouter();
 
-httpHandler.any('/api/graphql', graphqlHandler);
-httpHandler.any('/internal/auth', authHandler);
-httpHandler.get(appHandler);
+router.any('/api/graphql', graphql);
+router.any('/internal/auth', auth);
+router.get(app);
 
-export default httpHandler;
+export default router;
