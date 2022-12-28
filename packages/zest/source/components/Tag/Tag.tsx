@@ -1,10 +1,18 @@
 import {type PropsWithChildren} from 'react';
-import {classes} from '@lemon/css';
+import {classes, variation} from '@lemon/css';
 
 import styles from './Tag.module.css';
 
-export interface TagProps {}
+export interface TagProps {
+  size?: 'default' | 'large';
+}
 
-export function Tag({children}: PropsWithChildren<TagProps>) {
-  return <span className={classes(styles.Tag)}>{children}</span>;
+export function Tag({size, children}: PropsWithChildren<TagProps>) {
+  return (
+    <span
+      className={classes(styles.Tag, size && styles[variation('size', size)])}
+    >
+      {children}
+    </span>
+  );
 }

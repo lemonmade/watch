@@ -16,7 +16,7 @@ export {Image} from './Image';
 export {InlineStack} from './InlineStack';
 export {Label} from './Label';
 export {Layout} from './Layout';
-export {List, Item} from './List';
+export {List, ListItem} from './List';
 export {Menu} from './Menu';
 export {Modal} from './Modal';
 export {Popover} from './Popover';

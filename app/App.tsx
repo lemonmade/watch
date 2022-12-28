@@ -9,6 +9,7 @@ import {
   AppContext as QuiltContext,
   Redirect,
   GraphQLContext,
+  Localization,
   type RouteDefinition,
   type GraphQLFetch,
   type PropsWithChildren,
@@ -31,7 +32,7 @@ import {Apps} from './features/Apps';
 import {Search} from './features/Search';
 import {SignIn} from './features/SignIn';
 import {SignedOut} from './features/SignedOut';
-import {Account} from './features/Account';
+import {Account, Payment} from './features/Account';
 import {WatchLater} from './features/WatchLater';
 import {
   Developer,
@@ -60,16 +61,18 @@ const fetch = createGraphQLHttpFetch({
 export default function App(props: AppContextProps) {
   return (
     <QuiltContext>
-      <Router isExternal={urlIsExternal}>
-        <AppContext {...props}>
-          <Http />
-          <Head />
-          <HtmlAttributes lang="en" dir="ltr" />
-          <Canvas>
-            <Routes />
-          </Canvas>
-        </AppContext>
-      </Router>
+      <Localization locale="en-CA">
+        <Router isExternal={urlIsExternal}>
+          <AppContext {...props}>
+            <Http />
+            <Head />
+            <HtmlAttributes lang="en" dir="ltr" />
+            <Canvas>
+              <Routes />
+            </Canvas>
+          </AppContext>
+        </Router>
+      </Localization>
     </QuiltContext>
   );
 }
@@ -97,7 +100,13 @@ const routes: RouteDefinition[] = [
       {match: '/', render: () => <Watching />},
       {match: 'finished', render: () => <FinishedWatching />},
       {match: 'watch-later', render: () => <WatchLater />},
-      {match: 'me', render: () => <Account />},
+      {
+        match: ['me', 'my'],
+        children: [
+          {match: '/', render: () => <Account />},
+          {match: 'payment', render: () => <Payment />},
+        ],
+      },
       {
         match: 'developer',
         children: [

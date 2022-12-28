@@ -1,0 +1,17 @@
+{
+  "extends": "@quilted/typescript/project.json",
+  "compilerOptions": {
+    "outDir": "build/typescript",
+    "paths": {
+      "~/shared/*": ["../shared/*"],
+      "~/global/*": ["../../global/*"]
+    }
+  },
+  "include": ["**/*"],
+  "exclude": ["quilt.project.ts", "build"],
+  "references": [
+    {"path": "../email"},
+    {"path": "../shared"},
+    {"path": "../../global"}
+  ]
+}

@@ -4,6 +4,7 @@ import {createContext, useContext} from 'react';
 export interface FormDetails {
   readonly id: string;
   readonly nested: boolean;
+  readonly disabled: Signal<boolean>;
   readonly submitting: Signal<boolean>;
 }
 

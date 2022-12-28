@@ -1,0 +1,12 @@
+query Subscription {
+  my {
+    subscription {
+      id
+      status
+      paymentFlow {
+        apiKey
+        clientSecret
+      }
+    }
+  }
+}

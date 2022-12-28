@@ -23,6 +23,7 @@ export function Http() {
         // blob: needed for the Quilt worker libraries; Safari does not
         // support worker-src, so we need to set child-src for it.
         childSources={["'self'", 'blob:']}
+        frameSources={["'self'", 'https://js.stripe.com']}
         workerSources={["'self'", 'blob:']}
         // Allow a wide array of connection URLs to allow for local development
         // of extensions.

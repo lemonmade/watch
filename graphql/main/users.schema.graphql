@@ -14,6 +14,8 @@ extend type Mutation {
   deleteAccount: DeleteAccountPayload!
   createAccountGiftCode: CreateAccountGiftCodePayload!
   redeemAccountGiftCode(code: String!): RedeemAccountCodePayload!
+  prepareSubscription(level: SubscriptionLevel!): PrepareSubscriptionPayload!
+  cancelSubscription: CancelSubscriptionPayload!
   signIn(email: Email!, redirectTo: Url): SignInPayload!
   signOut: SignOutPayload!
   disconnectGithubAccount: DisconnectGithubAccountPayload!
@@ -48,6 +50,11 @@ enum UserLevel {
   PATRON
 }
 
+enum SubscriptionLevel {
+  MEMBER
+  PATRON
+}
+
 type UserSettings {
   spoilerAvoidance: SpoilerAvoidance!
 }
@@ -63,6 +70,27 @@ type User {
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
   giftCode: RedeemedAccountGiftCode
+  subscription: Subscription
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type Subscription {
+  id: ID!
+  level: SubscriptionLevel!
+  status: SubscriptionStatus!
+  startedAt: Date
+  endedAt: Date
+  paymentFlow: SubscriptionPaymentFlow
+}
+
+type SubscriptionPaymentFlow {
+  apiKey: String!
+  level: SubscriptionLevel!
+  clientSecret: String!
 }
 
 scalar GithubID
@@ -115,6 +143,14 @@ type CreateAccountGiftCodePayload {
 
 type RedeemAccountCodePayload {
   giftCode: RedeemedAccountGiftCode
+}
+
+type PrepareSubscriptionPayload {
+  subscription: Subscription
+}
+
+type CancelSubscriptionPayload {
+  subscription: Subscription
 }
 
 type SignInPayload {

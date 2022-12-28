@@ -1,12 +1,15 @@
 import {createProject, quiltService} from '@quilted/craft';
 import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
-export default createProject((project) => {
-  project.use(
+export default createProject((service) => {
+  service.use(
     quiltService({
-      entry: './router.ts',
+      entry: './stripe.ts',
       develop: false,
+      polyfill: {features: ['fetch']},
     }),
-    cloudflareWorkers(),
+    cloudflareWorkers({
+      cache: false,
+    }),
   );
 });

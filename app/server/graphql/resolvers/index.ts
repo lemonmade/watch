@@ -52,6 +52,7 @@ import {
   PersonalAccessToken,
   WebAuthnCredential,
   GithubAccount,
+  Subscription,
   Query as UsersQuery,
   Mutation as UsersMutation,
 } from './users';
@@ -109,6 +110,7 @@ export {
   SeriesSubscription,
   Skip,
   Skippable,
+  Subscription,
   User,
   Watch,
   Watchable,

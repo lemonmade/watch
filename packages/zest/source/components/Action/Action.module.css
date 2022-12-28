@@ -510,6 +510,10 @@
   --z-internal-Action-inline-padding: var(--z-spacing-small);
 }
 
+.inlineSizeFill {
+  justify-self: stretch;
+}
+
 .spacing {
   gap: var(--z-spacing-small);
 }

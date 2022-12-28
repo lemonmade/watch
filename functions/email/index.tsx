@@ -6,13 +6,17 @@ import type {
 import {json, noContent} from '@quilted/request-router';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
-import type {EmailType, PropsForEmail} from './types';
+import type {EmailType, PropsForEmail} from './Email';
 
 export type {EmailType, PropsForEmail};
 
 export interface Message<Type extends EmailType = EmailType> {
   readonly type: Type;
   readonly props: PropsForEmail<Type>;
+}
+
+export interface EmailQueue extends Queue<Message> {
+  send<Type extends EmailType>(message: Message<Type>): Promise<void>;
 }
 
 interface Environment {
