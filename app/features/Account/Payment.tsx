@@ -25,12 +25,12 @@ import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
 import {SearchParam, PaymentStatus} from '~/global/subscriptions';
 
-import subscriptionQuery from './graphql/SubscriptionQuery.graphql';
+import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql';
 
 export function Payment() {
   const router = useRouter();
   const currentUrl = useCurrentUrl();
-  const {data, isLoading, refetch} = useQuery(subscriptionQuery);
+  const {data, isLoading, refetch} = useQuery(subscriptionPaymentQuery);
 
   const error = useSignal(
     currentUrl.searchParams.get(SearchParam.PaymentStatus) ===

@@ -1,9 +1,10 @@
-query Subscription {
+query SubscriptionPayment {
   my {
     subscription {
       id
       status
       paymentFlow {
+        level
         apiKey
         clientSecret
       }
