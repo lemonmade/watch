@@ -10,8 +10,10 @@ workers_dev = false
 
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
-queue = "watch-email"
-binding = "EMAIL_QUEUE"
+queue = "watch-stripe"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 10
 
 # Needs the following environment variables:
 # - DATABASE_URL
