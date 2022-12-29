@@ -545,16 +545,20 @@ export const Mutation: Pick<
 
     return {deletedPersonalAccessTokenId: token?.id ?? null};
   },
-  async startWebAuthnRegistration(_, __, {request, user, response}) {
+  async startWebAuthnRegistration(_, __, {prisma, user, request, response}) {
     const {generateRegistrationOptions} = await import(
       '@simplewebauthn/server'
     );
+
+    const {email} = await prisma.user.findFirstOrThrow({
+      where: {id: user.id},
+    });
 
     const result = generateRegistrationOptions({
       rpID: new URL(request.url).host,
       rpName: 'Watch',
       userID: user.id,
-      userName: 'Name',
+      userName: email,
       attestationType: 'none',
       excludeCredentials: [],
       authenticatorSelection: {

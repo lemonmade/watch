@@ -6,6 +6,7 @@ import {
   useComputed,
   useSignal,
   Link,
+  useRouter,
 } from '@quilted/quilt';
 import {
   View,
@@ -99,7 +100,7 @@ function SignInWithEmail() {
 }
 
 function SignInWithWebAuthn() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const startWebAuthnSignIn = useMutation(startWebAuthnSignInMutation);
   const completeWebAuthnSignIn = useMutation(completeWebAuthnSignInMutation);
 
@@ -126,10 +127,12 @@ function SignInWithWebAuthn() {
       });
 
       if (result.completeWebAuthnSignIn.user?.id) {
-        navigate(
+        const {url} = router.resolve(
           (currentUrl) =>
             currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',
         );
+
+        window.location.replace(url.href);
       }
     }
 
@@ -180,12 +183,12 @@ function SignInWithGithub({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
 
   const open = useGithubOAuthModal(GithubOAuthFlow.SignIn, (event) => {
     if (event.success) {
-      navigate(event.redirectTo, {replace: true});
+      // TODO: update app context with new user
+      window.location.replace(event.redirectTo);
     } else {
       onError(event.reason ?? SignInErrorReason.Generic);
     }
@@ -210,12 +213,12 @@ function SignInWithGoogle({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.SignIn, (event) => {
     if (event.success) {
-      navigate(event.redirectTo, {replace: true});
+      // TODO: update app context with new user
+      window.location.replace(event.redirectTo);
     } else {
       onError(event.reason ?? SignInErrorReason.Generic);
     }
