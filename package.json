@@ -14,7 +14,7 @@
     "@prisma/client": "^4.7.0",
     "@quilted/aws": "^0.3.42",
     "@quilted/browserslist-config": "^0.1.9",
-    "@quilted/cloudflare": "^0.1.44",
+    "@quilted/cloudflare": "^0.1.45",
     "@quilted/craft": "^0.1.166",
     "@quilted/eslint-config": "^0.1.16",
     "@quilted/prettier": "^0.2.11",

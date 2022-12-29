@@ -1,0 +1,16 @@
+name = "watch-stripe"
+main = "./build/runtime/index.mjs"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+workers_dev = false
+
+# @see https://developers.cloudflare.com/queues/configuration/
+[[queues.producers]]
+queue = "watch-email"
+binding = "EMAIL_QUEUE"
+
+# Needs the following environment variables:
+# - DATABASE_URL
+# - STRIPE_SECRET

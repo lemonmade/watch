@@ -1,4 +1,6 @@
+import {createRequestRouter} from '@quilted/request-router';
 import type {R2Bucket, Fetcher} from '@cloudflare/workers-types';
+import type {} from '@quilted/cloudflare';
 
 const APP_HOST = 'watch-test-app.fly.dev';
 
@@ -7,35 +9,59 @@ interface Environment {
   CLIPS_ASSETS: R2Bucket;
   SERVICE_UPLOAD_CLIPS: Fetcher;
   SERVICE_EMAIL_QUEUE: Fetcher;
+  SERVICE_STRIPE: Fetcher;
+}
+
+declare module '@quilted/cloudflare' {
+  interface CloudflareRequestEnvironment extends Environment {}
 }
 
 // TODO: caching
-async function handleRequest(request: Request, env: Environment) {
-  const url = new URL(request.url);
-  const {pathname} = url;
+const router = createRequestRouter();
 
-  if (pathname.startsWith('/assets/app/')) {
-    return assetFromBucket(url, env.APP_ASSETS);
-  }
+router.any(
+  'assets/app',
+  (request, {env}) => assetFromBucket(request.URL, env.APP_ASSETS),
+  {exact: false},
+);
 
-  if (pathname.startsWith('/assets/clips/')) {
-    return assetFromBucket(url, env.CLIPS_ASSETS);
-  }
+router.any(
+  'assets/clips',
+  (request, {env}) => assetFromBucket(request.URL, env.CLIPS_ASSETS),
+  {exact: false},
+);
 
-  if (pathname === '/internal/upload/clips') {
-    return env.SERVICE_UPLOAD_CLIPS.fetch(new URL('/', url), request as any);
-  }
+router.any(
+  'internal/stripe',
+  (request, {env}) => env.SERVICE_STRIPE.fetch(request as any) as any,
+  {exact: false},
+);
 
-  if (pathname === '/internal/email/queue') {
-    return env.SERVICE_EMAIL_QUEUE.fetch(new URL('/', url), request as any);
-  }
+router.any(
+  'internal/upload/clips',
+  (request, {env}) =>
+    env.SERVICE_UPLOAD_CLIPS.fetch(
+      new URL('/', request.url),
+      request as any,
+    ) as any,
+);
 
+router.any(
+  'internal/email/queue',
+  (request, {env}) =>
+    env.SERVICE_EMAIL_QUEUE.fetch(
+      new URL('/', request.url),
+      request as any,
+    ) as any,
+);
+
+router.any((request) => {
   return rewriteAndFetch(request, (url) => {
     url.host = APP_HOST;
   });
-}
+});
 
-export default {fetch: handleRequest};
+export default router;
 
 function rewriteAndFetch(request: Request, rewrite: (url: URL) => URL | void) {
   const url = new URL(request.url);

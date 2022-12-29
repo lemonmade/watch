@@ -10,7 +10,7 @@ import {
   type BackgroundKeyword,
   type BorderKeyword,
   type CornerRadiusKeyword,
-  type BasicAlignmentKeyword,
+  type AlignKeyword,
 } from '../../system';
 import systemStyles from '../../system.module.css';
 
@@ -35,9 +35,9 @@ export interface Props {
   background?: boolean | BackgroundKeyword | RawValue;
   cornerRadius?: boolean | CornerRadiusKeyword | RawValue;
 
-  alignment?: BasicAlignmentKeyword | 'reset';
-  inlineAlignment?: BasicAlignmentKeyword | 'reset';
-  blockAlignment?: BasicAlignmentKeyword | 'reset';
+  alignment?: AlignKeyword | 'reset';
+  inlineAlignment?: AlignKeyword | 'reset';
+  blockAlignment?: AlignKeyword | 'reset';
 
   inlineSize?: RawValue;
   blockSize?: RawValue;

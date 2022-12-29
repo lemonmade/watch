@@ -1,0 +1,7 @@
+mutation PrepareSubscription($level: SubscriptionLevel!) {
+  prepareSubscription(level: $level) {
+    subscription {
+      id
+    }
+  }
+}

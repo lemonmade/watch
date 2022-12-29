@@ -1,5 +1,11 @@
-import {useState} from 'react';
-import {useNavigate, useCurrentUrl, useSignal} from '@quilted/quilt';
+import {ReactNode, useState} from 'react';
+import {
+  useNavigate,
+  useCurrentUrl,
+  useSignal,
+  PropsWithChildren,
+  useLocalizedFormatting,
+} from '@quilted/quilt';
 
 import {
   Heading,
@@ -17,6 +23,10 @@ import {
   Form,
   Tag,
   InlineStack,
+  View,
+  List,
+  ListItem,
+  Icon,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers';
@@ -24,6 +34,8 @@ import {Page} from '~/shared/page';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
 import {useQuery, useMutation} from '~/shared/graphql';
+
+import {SearchParam, PaymentStatus} from '~/global/subscriptions';
 
 import accountQuery, {
   type AccountQueryData,
@@ -38,6 +50,13 @@ import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredential
 import deleteWebAuthnCredentialMutation from './graphql/DeleteWebAuthnCredentialMutation.graphql';
 import redeemAccountGiftCardMutation from './graphql/RedeemAccountGiftCodeMutation.graphql';
 import createAccountGiftCardMutation from './graphql/CreateAccountGiftCodeMutation.graphql';
+import cancelSubscriptionMutation from './graphql/CancelSubscriptionMutation.graphql';
+import prepareSubscriptionMutation, {
+  type PrepareSubscriptionMutationVariables,
+} from './graphql/PrepareSubscriptionMutation.graphql';
+
+const MEMBER_COST = {amount: 3, currency: 'CAD'};
+const PATRON_COST = {amount: 5, currency: 'CAD'};
 
 export function Account() {
   const {data, refetch} = useQuery(accountQuery);
@@ -49,6 +68,7 @@ export function Account() {
     level,
     role,
     giftCode,
+    subscription,
     githubAccount,
     googleAccount,
     settings,
@@ -66,6 +86,7 @@ export function Account() {
           email={email}
           level={level}
           giftCode={giftCode}
+          subscription={subscription}
           onUpdate={handleUpdate}
         />
         <WebAuthnSection
@@ -83,44 +104,71 @@ export function Account() {
           spoilerAvoidance={settings.spoilerAvoidance}
           refetch={refetch}
         />
-        <DangerZone />
         {role === 'ADMIN' && <AdminZone />}
       </BlockStack>
     </Page>
   );
 }
 
-const ACCOUNT_LEVEL_MAP = new Map<AccountQueryData.Me['level'], string>([
-  ['FREE', 'Free'],
-  ['MEMBER', 'Member'],
-  ['PATRON', 'Patron'],
-]);
-
 function AccountSection({
   email,
   level,
   giftCode,
+  subscription,
   onUpdate,
-}: {
-  email: string;
-  level: AccountQueryData.Me['level'];
-  giftCode: AccountQueryData.Me['giftCode'];
+}: Pick<
+  AccountQueryData.Me,
+  'email' | 'level' | 'giftCode' | 'subscription'
+> & {
   onUpdate(): Promise<void>;
 }) {
   const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
   const signOut = useMutation(signOutMutation);
+
+  const paymentStatus = currentUrl.searchParams.get(SearchParam.PaymentStatus);
+
+  let paymentBanner: ReactNode = null;
+
+  switch (paymentStatus) {
+    case PaymentStatus.Success: {
+      paymentBanner = (
+        <Banner status="success">Your payment was successful!</Banner>
+      );
+      break;
+    }
+    case PaymentStatus.Pending: {
+      paymentBanner = (
+        <Banner status="information">Your payment is pending…</Banner>
+      );
+      break;
+    }
+    case PaymentStatus.Failed: {
+      paymentBanner = (
+        <Banner status="error">Your payment failed. Please try again</Banner>
+      );
+    }
+  }
+
+  let accountContent: ReactNode = null;
+
+  if (level === 'FREE') {
+    accountContent = <FreeAccountSection onUpdate={onUpdate} />;
+  } else {
+    accountContent = (
+      <MemberAccountSection
+        level={level}
+        giftCode={giftCode}
+        subscription={subscription}
+        onUpdate={onUpdate}
+      />
+    );
+  }
 
   return (
     <Section>
       <BlockStack spacing>
         <TextBlock>Email: {email}</TextBlock>
-        <TextBlock>Account: {ACCOUNT_LEVEL_MAP.get(level)}</TextBlock>
-        {giftCode && (
-          <InlineStack spacing="small">
-            <Text>Gift code:</Text>
-            <Tag>{giftCode.code}</Tag>
-          </InlineStack>
-        )}
         <Action
           onPress={async () => {
             signOut.mutateAsync(
@@ -133,16 +181,290 @@ function AccountSection({
         >
           Sign out
         </Action>
-        {giftCode == null && (
-          <Action
-            emphasis="subdued"
-            overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}
-          >
-            Redeem gift code
-          </Action>
-        )}
+
+        {paymentBanner}
+
+        {accountContent}
       </BlockStack>
     </Section>
+  );
+}
+
+function FreeAccountSection({onUpdate}: {onUpdate(): Promise<void>}) {
+  return (
+    <BlockStack spacing>
+      <BlockStack border cornerRadius padding spacing>
+        <BlockStack spacing="small">
+          <View>
+            <Tag size="large">Free</Tag>
+          </View>
+
+          <TextBlock>
+            You have a free account. You can use all the features of the app,
+            with a few limits:
+          </TextBlock>
+        </BlockStack>
+
+        <List>
+          <ListItem>
+            Track up to <Text emphasis>two seasons</Text> at a time
+          </ListItem>
+
+          <ListItem>
+            Add up to <Text emphasis>five series</Text> on your watchlist
+          </ListItem>
+
+          <ListItem>
+            Install up to <Text emphasis>three apps</Text>
+          </ListItem>
+        </List>
+
+        <InlineStack spacing="small">
+          <Action overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
+            Use gift code…
+          </Action>
+          <DeleteAccountAction />
+        </InlineStack>
+      </BlockStack>
+
+      <SubscribeAsMember />
+    </BlockStack>
+  );
+}
+
+function MemberAccountSection({
+  level,
+  giftCode,
+  subscription,
+  onUpdate,
+}: Pick<AccountQueryData.Me, 'level' | 'giftCode' | 'subscription'> & {
+  onUpdate(): Promise<void>;
+}) {
+  const {formatDate, formatCurrency} = useLocalizedFormatting();
+
+  const isPatron = level === 'PATRON';
+  const cost = isPatron ? PATRON_COST : MEMBER_COST;
+
+  return (
+    <BlockStack border cornerRadius padding spacing>
+      <BlockStack spacing="small">
+        <InlineStack spacing="small">
+          <Tag size="large">{isPatron ? 'Patron' : 'Member'}</Tag>
+          {giftCode == null && (
+            <Text emphasis>
+              {formatCurrency(cost.amount, {
+                currency: cost.currency,
+              })}{' '}
+              / month
+            </Text>
+          )}
+        </InlineStack>
+
+        {giftCode != null && (
+          <InlineStack spacing="tiny">
+            <Icon emphasis="subdued" source="gift" />
+
+            <Text emphasis="subdued">
+              Gift code <Text emphasis>{giftCode.code}</Text> redeemed on{' '}
+              {formatDate(new Date(giftCode.redeemedAt), {dateStyle: 'short'})}
+            </Text>
+          </InlineStack>
+        )}
+
+        {giftCode == null && subscription?.startedAt && (
+          <InlineStack spacing="tiny">
+            <Icon emphasis="subdued" source="success" />
+
+            <Text emphasis="subdued">
+              Subscribed since{' '}
+              {formatDate(new Date(subscription.startedAt), {
+                dateStyle: 'short',
+              })}
+            </Text>
+          </InlineStack>
+        )}
+
+        <TextBlock>
+          Thank you for being a {isPatron ? 'patron' : 'member'}!
+        </TextBlock>
+      </BlockStack>
+
+      <MemberBenefitsList />
+
+      <InlineStack spacing="small">
+        {giftCode == null && (
+          <Action overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
+            Use gift code…
+          </Action>
+        )}
+
+        {subscription?.status === 'ACTIVE' && (
+          <CancelSubscriptionAction onUpdate={onUpdate} />
+        )}
+
+        <DeleteAccountAction />
+      </InlineStack>
+    </BlockStack>
+  );
+}
+
+function DeleteAccountAction() {
+  return (
+    <Action role="destructive" overlay={<DeleteAccountModal />}>
+      Delete…
+    </Action>
+  );
+}
+
+function DeleteAccountModal() {
+  const navigate = useNavigate();
+  const deleteAccount = useMutation(deleteAccountMutation);
+
+  return (
+    <Modal padding>
+      <BlockStack spacing>
+        <TextBlock>
+          You won’t be able to get any of your data back once you delete your
+          account.
+        </TextBlock>
+        <Action
+          role="destructive"
+          onPress={async () => {
+            await deleteAccount.mutateAsync(
+              {},
+              {
+                onSuccess: () => navigate('/goodbye'),
+              },
+            );
+          }}
+        >
+          Delete account
+        </Action>
+      </BlockStack>
+    </Modal>
+  );
+}
+
+function CancelSubscriptionAction({onUpdate}: {onUpdate(): Promise<void>}) {
+  return (
+    <Action overlay={<CancelSubscriptionModal onUpdate={onUpdate} />}>
+      Cancel…
+    </Action>
+  );
+}
+
+function CancelSubscriptionModal({onUpdate}: {onUpdate(): Promise<void>}) {
+  const cancelSubscription = useMutation(cancelSubscriptionMutation);
+
+  return (
+    <Modal padding>
+      <BlockStack spacing>
+        <TextBlock>
+          You will lose all membership benefits immediately. However, your
+          current season watchthroughs will not be interrupted, and all your
+          watch activity will be preserved.
+        </TextBlock>
+        <Action
+          role="destructive"
+          onPress={async () => {
+            await cancelSubscription.mutateAsync({});
+            await onUpdate();
+          }}
+        >
+          Cancel subscription
+        </Action>
+      </BlockStack>
+    </Modal>
+  );
+}
+
+function SubscribeAsMember() {
+  return (
+    <SubscribeSection heading="Member" level="MEMBER" cost={MEMBER_COST}>
+      <MemberBenefitsList />
+    </SubscribeSection>
+  );
+}
+
+function MemberBenefitsList() {
+  return (
+    <List>
+      <ListItem>
+        <Text emphasis>No limit</Text> on number of series watched
+      </ListItem>
+
+      <ListItem>
+        <Text emphasis>Subscribe to series</Text> to be notified of new seasons
+      </ListItem>
+
+      <ListItem>
+        <Text emphasis>Publish apps</Text> for others to use
+      </ListItem>
+    </List>
+  );
+}
+
+function SubscribeSection({
+  heading,
+  cost,
+  level,
+  children,
+}: PropsWithChildren<{
+  heading: string;
+  cost: {amount: number; currency: string};
+  level: PrepareSubscriptionMutationVariables['level'];
+}>) {
+  const {formatCurrency} = useLocalizedFormatting();
+
+  return (
+    <BlockStack
+      spacing
+      padding
+      border
+      cornerRadius
+      background="subdued"
+      blockAlignment="spaceBetween"
+    >
+      <BlockStack spacing>
+        <InlineStack spacing="small">
+          <Tag size="large">{heading}</Tag>
+
+          <Text emphasis>
+            {formatCurrency(cost.amount, {currency: cost.currency})} / month
+          </Text>
+        </InlineStack>
+
+        {children}
+      </BlockStack>
+
+      <SubscribeAction level={level}>Subscribe…</SubscribeAction>
+    </BlockStack>
+  );
+}
+
+function SubscribeAction({
+  level,
+  children,
+}: PropsWithChildren<{
+  level: PrepareSubscriptionMutationVariables['level'];
+}>) {
+  const navigate = useNavigate();
+  const prepareSubscription = useMutation(prepareSubscriptionMutation);
+
+  return (
+    <Action
+      to="../my/payment"
+      inlineSize="fill"
+      onPress={async () => {
+        await prepareSubscription.mutateAsync({
+          level,
+        });
+
+        navigate('../my/payment');
+      }}
+    >
+      {children}
+    </Action>
   );
 }
 
@@ -162,7 +484,7 @@ function AccountGiftCodeModal({onUpdate}: {onUpdate(): Promise<void>}) {
         }}
       >
         <BlockStack spacing>
-          <TextField label="Code" value={code} />
+          <TextField label="Gift code" value={code} />
 
           <Action perform="submit">Redeem</Action>
         </BlockStack>
@@ -460,32 +782,6 @@ function SpoilerAvoidanceSection({
             );
           }}
         />
-      </BlockStack>
-    </Section>
-  );
-}
-
-function DangerZone() {
-  const navigate = useNavigate();
-  const deleteAccount = useMutation(deleteAccountMutation);
-
-  return (
-    <Section>
-      <BlockStack spacing>
-        <Heading divider>Danger zone</Heading>
-        <Action
-          role="destructive"
-          onPress={async () => {
-            await deleteAccount.mutateAsync(
-              {},
-              {
-                onSuccess: () => navigate('/goodbye'),
-              },
-            );
-          }}
-        >
-          Delete account
-        </Action>
       </BlockStack>
     </Section>
   );

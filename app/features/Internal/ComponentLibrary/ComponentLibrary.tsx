@@ -28,7 +28,7 @@ import {
   Rating,
   Menu,
   List,
-  Item,
+  ListItem,
   Popover,
   Label,
   Select,
@@ -408,6 +408,7 @@ function DisplayComponents() {
         <Heading>Display</Heading>
         <Banner>Hello world</Banner>
         <Banner status="error">Hello world</Banner>
+        <Banner status="success">Hello world</Banner>
         <Banner padding={false} status="information">
           <Header padding>
             <Heading>Banner heading</Heading>
@@ -675,12 +676,13 @@ function TextComponents() {
         </TextBlock>
         <Label target="SomeId">Label text</Label>
         <List>
-          <Item>List item 1</Item>
-          <Item>List item 2</Item>
-          <Item>List item 3</Item>
+          <ListItem>List item 1</ListItem>
+          <ListItem>List item 2</ListItem>
+          <ListItem>List item 3</ListItem>
         </List>
-        <InlineStack>
+        <InlineStack spacing blockAlignment="center">
           <Tag>Tag</Tag>
+          <Tag size="large">Tag (large)</Tag>
         </InlineStack>
       </BlockStack>
     </Section>

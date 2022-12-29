@@ -14,6 +14,11 @@ binding = "SERVICE_EMAIL_QUEUE"
 service = "watch-email"
 environment = "production"
 
+[[services]]
+binding = "SERVICE_STRIPE"
+service = "watch-stripe"
+environment = "production"
+
 [[r2_buckets]]
 binding = "APP_ASSETS"
 bucket_name = "watch-assets"

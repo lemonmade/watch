@@ -13,7 +13,7 @@
   --z-Action-pressed-background: rgb(97 119 194);
 }
 
-.error {
+.statusError {
   --z-surface-background-base: rgb(105, 10, 10);
   --z-border-base-color: rgb(208 33 33);
 
@@ -21,4 +21,14 @@
   --z-Action-hovered-background: rgb(185 60 61);
   --z-Action-focused-background: rgb(185 60 61);
   --z-Action-pressed-background: rgb(212 44 45);
+}
+
+.statusSuccess {
+  --z-surface-background-base: rgb(25 70 55);
+  --z-border-base-color: rgb(46 160 127);
+
+  --z-Action-background: rgb(25 102 77);
+  --z-Action-hovered-background: rgb(24 112 85);
+  --z-Action-focused-background: rgb(24 112 85);
+  --z-Action-pressed-background: rgb(21 138 102);
 }

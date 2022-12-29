@@ -94,6 +94,7 @@ jobs:
         worker:
           - email
           - clips-upload
+          - stripe
           - tmdb-refresher
           - tmdb-refresher-scheduler
 

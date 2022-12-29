@@ -31,7 +31,10 @@ export type PerformAction =
   | 'toggleOverlay'
   | 'closeContainingOverlay'
   | 'none';
-export type PostPerformAction = 'closeContainingOverlay' | 'none';
+export type PostPerformAction =
+  | 'toggleOverlay'
+  | 'closeContainingOverlay'
+  | 'none';
 
 export interface Props {
   id?: string;
@@ -100,15 +103,16 @@ export const PressableInternal = forwardRef<
     onPress,
     accessibilityLabel,
     overlay,
-    perform = 'toggleOverlay',
-    postPerform = 'closeContainingOverlay',
+    perform,
+    postPerform,
     ...rest
   },
   ref,
 ) {
   const form = useContainingForm();
   const containingOverlay = useContainingOverlay({required: false});
-  const resolvedDisabled = resolveSignalOrValue(disabled);
+  const resolvedDisabled =
+    (form != null && form.disabled.value) || resolveSignalOrValue(disabled);
   const resolvedSelected = resolveSignalOrValue(selected);
 
   const className = classes(
@@ -129,21 +133,31 @@ export const PressableInternal = forwardRef<
       const onPressResult = onPress();
 
       if (
-        postPerform === 'closeContainingOverlay' &&
+        (postPerform == null || postPerform === 'closeContainingOverlay') &&
         containingOverlay != null
       ) {
         runWithMaybePromise(onPressResult, () => {
           containingOverlay.close();
         });
+      } else if (
+        (postPerform == null || postPerform === 'toggleOverlay') &&
+        overlay != null
+      ) {
+        runWithMaybePromise(onPressResult, () => {
+          overlay.toggle();
+        });
       }
-    } else if (perform === 'toggleOverlay' && overlay != null) {
+    } else if (
+      (perform == null || perform === 'toggleOverlay') &&
+      overlay != null
+    ) {
       event.preventDefault();
       overlay.toggle();
     } else if (
-      perform === 'closeContainingOverlay' &&
+      (perform == null || perform === 'closeContainingOverlay') &&
       containingOverlay != null
     ) {
-      event.preventDefault();
+      if (to == null) event.preventDefault();
       containingOverlay.close();
     }
   };

@@ -2,7 +2,13 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--z-spacing-tiny);
 }
 
-.Item {
+.ListItem {
+  padding: var(--z-spacing-tiny) var(--z-spacing-small);
+  background: var(--z-surface-background-emphasized);
+  border-radius: var(--z-corner-radius-base);
 }

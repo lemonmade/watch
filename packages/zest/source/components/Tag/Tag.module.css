@@ -1,17 +1,25 @@
 .Tag {
+  --z-internal-Tag-font-size: 0.7rem;
+  --z-internal-Tag-block-size: 1.1rem;
+
   display: inline-flex;
   align-items: center;
-  block-size: 1.1rem;
+  block-size: var(--z-internal-Tag-block-size);
   border: 1px solid var(--z-border-subdued-color);
   padding: 0 var(--z-spacing-tiny);
   border-radius: var(--z-corner-radius-small);
   background-color: var(--z-text-subdued-color);
   color: var(--z-text-subdued-color);
-  font-size: 0.7rem;
+  font-size: var(--z-internal-Tag-font-size);
   line-height: 1;
   text-transform: uppercase;
   font-weight: 600;
   text-align: center;
   color: black;
   white-space: nowrap;
+}
+
+.sizeLarge {
+  --z-internal-Tag-font-size: 1rem;
+  --z-internal-Tag-block-size: 1.5rem;
 }

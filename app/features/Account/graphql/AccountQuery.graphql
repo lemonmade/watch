@@ -26,6 +26,12 @@ query Account {
       code
       redeemedAt
     }
+    subscription {
+      level
+      status
+      startedAt
+      endedAt
+    }
     settings {
       spoilerAvoidance
     }

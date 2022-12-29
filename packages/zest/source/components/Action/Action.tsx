@@ -192,6 +192,7 @@ export const Action = forwardRef<
         resolvedLoading && styles.loading,
         Boolean(icon) && styles.hasIcon,
         iconAlignment && styles[variation('iconAlignment', iconAlignment)],
+        inlineSize && styles[variation('inlineSize', inlineSize)],
         Boolean(detail) && styles.hasDetail,
         needsGrid && styles.spacing,
         size && styles[variation('size', size)],

@@ -1,0 +1,10 @@
+mutation CancelSubscription {
+  cancelSubscription {
+    subscription {
+      id
+      status
+      startedAt
+      endedAt
+    }
+  }
+}
