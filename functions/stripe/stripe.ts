@@ -1,13 +1,14 @@
-import Stripe from 'stripe';
+import {type Stripe} from 'stripe';
 import {redirect, createRequestRouter} from '@quilted/request-router';
-import {PrismaClient} from '@prisma/client';
 import type {} from '@quilted/cloudflare';
 
-import {SearchParam, PaymentStatus} from '~/global/subscriptions';
+import {
+  SearchParam,
+  PaymentStatus,
+  SUBSCRIPTION_LEVELS,
+} from '~/global/subscriptions';
 
 import type {EmailQueue} from '../email';
-
-import {SUBSCRIPTION_LEVELS} from '~/global/subscriptions';
 
 interface Environment {
   STRIPE_SECRET: string;
@@ -30,7 +31,7 @@ router.get('internal/stripe/return', async (request, {env}) => {
     return redirectWithStatus('/app/me', PaymentStatus.Failed);
   }
 
-  const stripe = createStripe(env);
+  const stripe = await createStripe(env);
 
   const foundPaymentIntent = await stripe.paymentIntents.retrieve(
     paymentIntent,
@@ -56,7 +57,7 @@ router.get('internal/stripe/return', async (request, {env}) => {
 });
 
 router.post('internal/stripe/webhooks', async (request, {env}) => {
-  const stripe = createStripe(env);
+  const stripe = await createStripe(env);
 
   let event: Stripe.Event;
 
@@ -74,6 +75,8 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
 
   // eslint-disable-next-line no-console
   console.log(event);
+
+  const {PrismaClient} = await import('@prisma/client/edge');
 
   try {
     const prisma = new PrismaClient({
@@ -208,7 +211,9 @@ router.any('internal/stripe/webhooks', () => {
 
 export default router;
 
-function createStripe(env: Environment) {
+async function createStripe(env: Environment) {
+  const {Stripe} = await import('stripe');
+
   const stripe = new Stripe(env.STRIPE_API_KEY, {
     apiVersion: '2022-11-15',
     httpClient: Stripe.createFetchHttpClient(),

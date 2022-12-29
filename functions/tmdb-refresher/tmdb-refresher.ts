@@ -2,7 +2,6 @@
 
 import {Buffer} from 'buffer-polyfill';
 
-import {PrismaClient} from '@prisma/client/edge';
 import {type ExportedHandlerQueueHandler} from '@cloudflare/workers-types';
 
 import {updateSeries} from '~/global/tmdb';
@@ -23,6 +22,8 @@ Reflect.defineProperty(globalThis, 'Buffer', {value: Buffer});
 
 const queue: ExportedHandlerQueueHandler<Environment, Message> =
   async function queue(batch, env) {
+    const {PrismaClient} = await import('@prisma/client/edge');
+
     const prisma = new PrismaClient({
       datasources: {
         db: {

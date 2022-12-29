@@ -1,6 +1,5 @@
 /* eslint no-console: off */
 
-import {PrismaClient} from '@prisma/client/edge';
 import {
   type Queue,
   type ExportedHandlerScheduledHandler,
@@ -15,6 +14,8 @@ interface Environment {
 
 const scheduled: ExportedHandlerScheduledHandler<Environment> =
   async function scheduled(event, env) {
+    const {PrismaClient} = await import('@prisma/client/edge');
+
     const prisma = new PrismaClient({
       datasources: {
         db: {
