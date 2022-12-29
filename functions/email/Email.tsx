@@ -1,9 +1,9 @@
+import {type ComponentProps} from 'react';
+
 import {Welcome} from './emails/Welcome';
 import {SignIn} from './emails/SignIn';
 import {SubscriptionConfirmation} from './emails/SubscriptionConfirmation';
 import {SubscriptionCancellation} from './emails/SubscriptionCancellation';
-
-import {ComponentProps} from 'react';
 
 interface Props<T extends EmailType> {
   type: T;

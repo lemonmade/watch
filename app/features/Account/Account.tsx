@@ -35,6 +35,8 @@ import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
 import {useQuery, useMutation} from '~/shared/graphql';
 
+import {SearchParam, PaymentStatus} from '~/global/subscriptions';
+
 import accountQuery, {
   type AccountQueryData,
 } from './graphql/AccountQuery.graphql';
@@ -121,18 +123,34 @@ function AccountSection({
   onUpdate(): Promise<void>;
 }) {
   const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
   const signOut = useMutation(signOutMutation);
 
-  let accountContent: ReactNode = null;
+  const paymentStatus = currentUrl.searchParams.get(SearchParam.PaymentStatus);
 
-  accountContent = (
-    <MemberAccountSection
-      level="PATRON"
-      onUpdate={onUpdate}
-      giftCode={giftCode}
-      subscription={subscription}
-    />
-  );
+  let paymentBanner: ReactNode = null;
+
+  switch (paymentStatus) {
+    case PaymentStatus.Success: {
+      paymentBanner = (
+        <Banner status="success">Your payment was successful!</Banner>
+      );
+      break;
+    }
+    case PaymentStatus.Pending: {
+      paymentBanner = (
+        <Banner status="information">Your payment is pending…</Banner>
+      );
+      break;
+    }
+    case PaymentStatus.Failed: {
+      paymentBanner = (
+        <Banner status="error">Your payment failed. Please try again</Banner>
+      );
+    }
+  }
+
+  let accountContent: ReactNode = null;
 
   if (level === 'FREE') {
     accountContent = <FreeAccountSection onUpdate={onUpdate} />;
@@ -163,6 +181,8 @@ function AccountSection({
         >
           Sign out
         </Action>
+
+        {paymentBanner}
 
         {accountContent}
       </BlockStack>

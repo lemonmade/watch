@@ -1,5 +1,5 @@
 import type {PropsWithChildren} from 'react';
-import {classes} from '@lemon/css';
+import {classes, variation} from '@lemon/css';
 
 import {View} from '../View';
 import {NestedHeadingLevel} from '../Heading';
@@ -7,7 +7,7 @@ import {NestedHeadingLevel} from '../Heading';
 import styles from './Banner.module.css';
 
 interface Props {
-  status?: 'information' | 'error';
+  status?: 'information' | 'error' | 'success';
   padding?: boolean;
 }
 
@@ -23,7 +23,10 @@ export function Banner({
         background
         cornerRadius
         padding={padding}
-        className={classes(styles.Banner, status === 'error' && styles.error)}
+        className={classes(
+          styles.Banner,
+          status && styles[variation('status', status)],
+        )}
       >
         {children}
       </View>

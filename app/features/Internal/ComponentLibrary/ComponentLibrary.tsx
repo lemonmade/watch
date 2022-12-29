@@ -408,6 +408,7 @@ function DisplayComponents() {
         <Heading>Display</Heading>
         <Banner>Hello world</Banner>
         <Banner status="error">Hello world</Banner>
+        <Banner status="success">Hello world</Banner>
         <Banner padding={false} status="information">
           <Header padding>
             <Heading>Banner heading</Heading>

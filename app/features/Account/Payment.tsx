@@ -16,17 +16,26 @@ import {
   Signal,
   signal,
   createUseContextHook,
+  useCurrentUrl,
+  useSignal,
 } from '@quilted/quilt';
-import {Action, BlockStack, Form} from '@lemon/zest';
+import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 import {useQuery} from '~/shared/graphql';
+import {SearchParam, PaymentStatus} from '~/global/subscriptions';
 
 import subscriptionQuery from './graphql/SubscriptionQuery.graphql';
 
 export function Payment() {
   const router = useRouter();
-  const {data, isLoading} = useQuery(subscriptionQuery);
+  const currentUrl = useCurrentUrl();
+  const {data, isLoading, refetch} = useQuery(subscriptionQuery);
+
+  const error = useSignal(
+    currentUrl.searchParams.get(SearchParam.PaymentStatus) ===
+      PaymentStatus.Failed,
+  );
 
   const subscription = data?.my.subscription;
   const paymentFlow = subscription?.paymentFlow;
@@ -50,11 +59,34 @@ export function Payment() {
             },
           });
 
-          console.log(result);
+          if (result.error) {
+            error.value = true;
+            await refetch();
+          } else {
+            router.navigate(
+              (url) => {
+                const newUrl = new URL('../me', url);
+                newUrl.searchParams.set(
+                  SearchParam.PaymentStatus,
+                  PaymentStatus.Success,
+                );
+
+                return newUrl;
+              },
+              {replace: true},
+            );
+          }
         }}
       >
         <BlockStack spacing>
+          {error.value && (
+            <Banner status="error">
+              There was an error processing your payment. Please try again.
+            </Banner>
+          )}
+
           <StripeContent />
+
           <Action perform="submit" emphasis>
             Subscribe
           </Action>

@@ -157,7 +157,7 @@ export const PressableInternal = forwardRef<
       (perform == null || perform === 'closeContainingOverlay') &&
       containingOverlay != null
     ) {
-      event.preventDefault();
+      if (to == null) event.preventDefault();
       containingOverlay.close();
     }
   };

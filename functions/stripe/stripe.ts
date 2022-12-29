@@ -84,6 +84,8 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
       },
     });
 
+    // @see https://stripe.com/docs/webhooks/stripe-events
+    // @see https://stripe.com/docs/api/subscriptions
     // @see https://stripe.com/docs/billing/subscriptions/build-subscriptions
     // @see https://stripe.com/docs/billing/subscriptions/overview#subscription-events
     switch (event.type) {
