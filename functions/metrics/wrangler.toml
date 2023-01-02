@@ -7,7 +7,7 @@ compatibility_date = "2022-06-04"
 usage_model = "unbound"
 workers_dev = false
 
-[[kv_bindings]]
+[[kv_namespaces]]
 id = "98a34d39702d4f9796004553484d299e"
 binding = "PERFORMANCE_NAVIGATIONS"
 
