@@ -13,11 +13,11 @@ importers:
       '@prisma/client': ^4.7.0
       '@quilted/aws': ^0.3.42
       '@quilted/browserslist-config': ^0.1.9
-      '@quilted/cloudflare': ^0.1.45
-      '@quilted/craft': ^0.1.166
+      '@quilted/cloudflare': ^0.1.47
+      '@quilted/craft': ^0.1.168
       '@quilted/eslint-config': ^0.1.16
       '@quilted/prettier': ^0.2.11
-      '@quilted/quilt': ^0.5.119
+      '@quilted/quilt': ^0.5.120
       '@quilted/typescript': ^0.2.18
       '@types/common-tags': ^1.8.1
       '@types/node': ^16.11.0
@@ -36,13 +36,13 @@ importers:
       '@changesets/changelog-github': 0.4.3
       '@changesets/cli': 2.21.1
       '@prisma/client': 4.7.1_prisma@4.7.1
-      '@quilted/aws': 0.3.42_0b2a795748f91917b51f8d1ca715e9c8
+      '@quilted/aws': 0.3.42_cdc3e2370d515ad8c469e92058daae13
       '@quilted/browserslist-config': 0.1.9
-      '@quilted/cloudflare': 0.1.45_0b2a795748f91917b51f8d1ca715e9c8
-      '@quilted/craft': 0.1.166_7ab24bb725ec745d8e1e28d4fd2c7fac
+      '@quilted/cloudflare': 0.1.47_cdc3e2370d515ad8c469e92058daae13
+      '@quilted/craft': 0.1.168_cfaf9a2867a6eac21740007fd9eb7c45
       '@quilted/eslint-config': 0.1.16_typescript@4.9.4
       '@quilted/prettier': 0.2.11
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
       '@quilted/typescript': 0.2.18_typescript@4.9.4
       '@types/common-tags': 1.8.1
       '@types/node': 16.11.26
@@ -66,7 +66,7 @@ importers:
       '@lemon/zest': workspace:*
       '@lemonmade/graphql-live': ^0.1.12
       '@prisma/client': ^4.7.0
-      '@quilted/quilt': ^0.5.119
+      '@quilted/quilt': ^0.5.120
       '@quilted/react-query': ^0.1.12
       '@remote-ui/core': ^2.2.1
       '@remote-ui/react': ^5.0.0
@@ -105,8 +105,8 @@ importers:
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
       '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
-      '@quilted/react-query': 0.1.12_2c1f42c62491e72c2af072c7f778e5f2
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
+      '@quilted/react-query': 0.1.12_8a6bb81fce2e35043cbe7e469d35d039
       '@remote-ui/core': 2.2.1
       '@remote-ui/react': 5.0.0_@quilted+react@17.0.7
       '@simplewebauthn/browser': 6.2.1
@@ -133,45 +133,53 @@ importers:
   functions/clips-upload:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
       '@tsndr/cloudflare-worker-jwt': ^2.1.0
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
       '@tsndr/cloudflare-worker-jwt': 2.1.4
 
   functions/email:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
       '@quilted/react-email': ^0.2.29
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
       '@tsndr/cloudflare-worker-jwt': ^2.1.0
       react: npm:@quilted/react@^17.0.0
       react-dom: npm:@quilted/react-dom@^17.0.0
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
       '@quilted/react-email': 0.2.29_90676433754317df686cb5a4957000e8
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
       '@tsndr/cloudflare-worker-jwt': 2.1.4
       react: /@quilted/react/17.0.7
       react-dom: /@quilted/react-dom/17.0.7_@babel+runtime@7.18.9
 
+  functions/metrics:
+    specifiers:
+      '@cloudflare/workers-types': ^4.20221111.1
+      '@quilted/request-router': ^0.1.2
+    devDependencies:
+      '@cloudflare/workers-types': 4.20221111.1
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
+
   functions/router:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
 
   functions/shared:
     specifiers:
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
       '@types/jsonwebtoken': ^8.5.2
       aws-sdk: ^2.1096.0
       jsonwebtoken: ^8.0.0
     dependencies:
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
       aws-sdk: 2.1151.0
       jsonwebtoken: 8.5.1
     devDependencies:
@@ -180,11 +188,11 @@ importers:
   functions/stripe:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
       stripe: ^11.4.0
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
       stripe: 11.4.0
 
   functions/tmdb-refresher:
@@ -209,7 +217,7 @@ importers:
       '@quilted/cli-kit': ^0.1.6
       '@quilted/graphql': ^0.4.49
       '@quilted/polyfills': ^0.2.31
-      '@quilted/request-router': ^0.1.1
+      '@quilted/request-router': ^0.1.2
       '@quilted/threads': ^0.1.10
       '@rollup/plugin-alias': ^3.0.0
       '@rollup/plugin-commonjs': ^22.0.0
@@ -249,7 +257,7 @@ importers:
       '@quilted/cli-kit': 0.1.6_@babel+runtime@7.18.9
       '@quilted/graphql': 0.4.49_@babel+runtime@7.18.9
       '@quilted/polyfills': 0.2.31_@babel+runtime@7.18.9
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.18.9
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
       '@quilted/threads': 0.1.10_@babel+runtime@7.18.9
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
       '@rollup/plugin-commonjs': 22.0.2_rollup@2.70.1
@@ -305,7 +313,7 @@ importers:
 
   packages/clips-react:
     specifiers:
-      '@preact/signals-core': ^1.2.2
+      '@preact/signals-core': ^1.2.3
       '@quilted/react-utilities': ^0.1.7
       '@remote-ui/core': ^2.2.1
       '@types/react': ^17.0.0
@@ -317,7 +325,7 @@ importers:
       preact: ^10.11.3
       terser: ^5.15.1
     dependencies:
-      '@preact/signals-core': 1.2.2
+      '@preact/signals-core': 1.2.3
       '@quilted/react-utilities': 0.1.7_21d644a1c2f3c161c394578993b8feec
       '@remote-ui/core': 2.2.1
       '@types/react': 17.0.45
@@ -354,13 +362,13 @@ importers:
 
   packages/thread-render:
     specifiers:
-      '@preact/signals-core': ^1.2.2
+      '@preact/signals-core': ^1.2.3
       '@quilted/events': ^0.1.15
       '@quilted/testing': ^0.1.4
       '@quilted/threads': ^0.1.10
       '@remote-ui/core': ^2.2.1
     dependencies:
-      '@preact/signals-core': 1.2.2
+      '@preact/signals-core': 1.2.3
       '@quilted/events': 0.1.15_@babel+runtime@7.18.9
       '@quilted/threads': 0.1.10_@babel+runtime@7.18.9
       '@remote-ui/core': 2.2.1
@@ -369,12 +377,12 @@ importers:
 
   packages/thread-signals:
     specifiers:
-      '@preact/signals-core': ^1.2.2
+      '@preact/signals-core': ^1.2.3
       '@quilted/events': ^0.1.15
       '@quilted/testing': ^0.1.4
       '@quilted/threads': ^0.1.10
     dependencies:
-      '@preact/signals-core': 1.2.2
+      '@preact/signals-core': 1.2.3
       '@quilted/events': 0.1.15_@babel+runtime@7.18.9
       '@quilted/threads': 0.1.10_@babel+runtime@7.18.9
     devDependencies:
@@ -383,7 +391,7 @@ importers:
   packages/zest:
     specifiers:
       '@lemon/css': workspace:*
-      '@preact/signals-core': ^1.2.2
+      '@preact/signals-core': ^1.2.3
       '@quilted/events': ^0.1.15
       '@quilted/react-utilities': ^0.1.7
       '@remote-ui/core': ^2.2.1
@@ -393,7 +401,7 @@ importers:
       date-fns: ^2.29.3
     dependencies:
       '@lemon/css': link:../css
-      '@preact/signals-core': 1.2.2
+      '@preact/signals-core': 1.2.3
       '@quilted/events': 0.1.15_@babel+runtime@7.18.9
       '@quilted/react-utilities': 0.1.7_21d644a1c2f3c161c394578993b8feec
       '@remote-ui/core': 2.2.1
@@ -2837,8 +2845,10 @@ packages:
       mime: 3.0.0
     dev: true
 
-  /@cloudflare/workers-types/3.11.0:
-    resolution: {integrity: sha512-XmKgZZHrCdPsoVQkdd365R7GvwTwDVJsMyEG3Dq/Tgxz6vgrps2c8PXBqEutguwvl0zDAF0AL0e2Z8WG9Dffjw==}
+  /@cloudflare/kv-asset-handler/0.3.0:
+    resolution: {integrity: sha512-9CB/MKf/wdvbfkUdfrj+OkEwZ5b7rws0eogJ4293h+7b6KX5toPwym+VQKmILafNB9YiehqY0DlNrDcDhdWHSQ==}
+    dependencies:
+      mime: 3.0.0
     dev: true
 
   /@cloudflare/workers-types/4.20221111.1:
@@ -3911,15 +3921,15 @@ packages:
       tslib: 2.3.1
       webcrypto-core: 1.7.1
 
-  /@preact/signals-core/1.2.2:
-    resolution: {integrity: sha512-z3/bCj7rRA21RJb4FeJ4guCrD1CQbaURHkCTunUWQpxUMAFOPXCD8tSFqERyGrrcSb4T3Hrmdc1OAl0LXBHwiw==}
+  /@preact/signals-core/1.2.3:
+    resolution: {integrity: sha512-Kui4p7PMcEQevBgsTO0JBo3gyQ88Q3qzEvsVCuSp11t0JcN4DmGCTJcGRVSCq7Bn7lGxJBO+57jNSzDoDJ+QmA==}
 
-  /@preact/signals/1.1.2_preact@10.11.3:
-    resolution: {integrity: sha512-MLNNrICSllHBhpXBvXbl7K5L1HmIjuTzgBw+zdODqjM/cLGPXdYiAWt4lqXlrxNavYdoU4eljb+TLE+DRL+6yw==}
+  /@preact/signals/1.1.3_preact@10.11.3:
+    resolution: {integrity: sha512-N09DuAVvc90bBZVRwD+aFhtGyHAmJLhS3IFoawO/bYJRcil4k83nBOchpCEoS0s5+BXBpahgp0Mjf+IOqP57Og==}
     peerDependencies:
       preact: 10.x
     dependencies:
-      '@preact/signals-core': 1.2.2
+      '@preact/signals-core': 1.2.3
       preact: 10.11.3
 
   /@prefresh/babel-plugin/0.4.4:
@@ -4024,7 +4034,7 @@ packages:
       magic-string: 0.25.9
     dev: true
 
-  /@quilted/aws/0.3.42_0b2a795748f91917b51f8d1ca715e9c8:
+  /@quilted/aws/0.3.42_cdc3e2370d515ad8c469e92058daae13:
     resolution: {integrity: sha512-e5oHJusUSO5RxS2ybQER0QmOv+jaKl6aK2ZtAUmWD3EnJ02X3+Jn0M/huIvkXSym14FqGRcNe5kWg8GwtVVHEQ==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4039,8 +4049,8 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@quilted/craft': 0.1.166_7ab24bb725ec745d8e1e28d4fd2c7fac
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
+      '@quilted/craft': 0.1.168_cfaf9a2867a6eac21740007fd9eb7c45
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
     dev: true
@@ -4071,11 +4081,11 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare/0.1.45_0b2a795748f91917b51f8d1ca715e9c8:
-    resolution: {integrity: sha512-SVGx21eMZ0t2xDUKhSX8Bi07ofgKPx1cXBVET/cEMPJiGqpkRZ0RUdXcydc0uR0qLHIPFoD1rWGUwNp8Lsgp7Q==}
+  /@quilted/cloudflare/0.1.47_cdc3e2370d515ad8c469e92058daae13:
+    resolution: {integrity: sha512-egyfKegRjZRPjONTtSkY6J4hl16ZJtVRhTa6jQCHtB1te3l8s6F8DApNhYOMjRukU5yANYq2SlsXU6Q+7SIdxQ==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
-      '@quilted/craft': ^0.1.166
+      '@quilted/craft': ^0.1.168
       '@quilted/quilt': ^0.5.119
     peerDependenciesMeta:
       '@babel/runtime':
@@ -4086,10 +4096,10 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@cloudflare/kv-asset-handler': 0.2.0
-      '@cloudflare/workers-types': 3.11.0
-      '@quilted/craft': 0.1.166_7ab24bb725ec745d8e1e28d4fd2c7fac
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
+      '@cloudflare/kv-asset-handler': 0.3.0
+      '@cloudflare/workers-types': 4.20221111.1
+      '@quilted/craft': 0.1.168_cfaf9a2867a6eac21740007fd9eb7c45
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
       common-tags: 1.8.2
       mime: 2.6.0
       miniflare: 2.10.0
@@ -4101,8 +4111,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@quilted/craft/0.1.166_7ab24bb725ec745d8e1e28d4fd2c7fac:
-    resolution: {integrity: sha512-hyrp4LqCnkLJMefyM3OQGbmwiflj9xHxga1SxjRDX+3pgwaCLrKQc1iLWCvqRkqYpdC1/dlInAccLw2DtHj7yw==}
+  /@quilted/craft/0.1.168_cfaf9a2867a6eac21740007fd9eb7c45:
+    resolution: {integrity: sha512-Lowu5oArSd0W28Fnct+G6hbyB90eHTTt4Qlh4imuJ47tVKxPuPgUS4U99faaVLavJE2zPI3tDtFuZYivV+02tw==}
     hasBin: true
     peerDependencies:
       '@quilted/quilt': ^0.5.119
@@ -4131,7 +4141,7 @@ packages:
       '@quilted/graphql': 0.4.49_@babel+runtime@7.20.6
       '@quilted/polyfills': 0.2.31_@babel+runtime@7.20.6
       '@quilted/prettier': 0.2.11
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
       '@quilted/rollup-plugin-fix-commonjs-preserve-modules': 0.1.13_rollup@3.7.4
       '@quilted/sewing-kit': 0.2.35_@babel+runtime@7.20.6
       '@quilted/typescript': 0.2.18_typescript@4.9.4
@@ -4355,8 +4365,8 @@ packages:
       '@babel/runtime': 7.20.6
     dev: true
 
-  /@quilted/performance/0.1.11_a4297777d8d2cc8959cae56a0292de85:
-    resolution: {integrity: sha512-5uuMYjFxmRvcEpucCWCY5975lvB856LCjz/BestiIGb5EF+D7EWbE8FiVvpM8W6hH3sFuwIzqzL2PylmqeyjpQ==}
+  /@quilted/performance/0.1.13_a4297777d8d2cc8959cae56a0292de85:
+    resolution: {integrity: sha512-mgE8O1rkfSxq184OdzRevr4lDrpklpJmOvM0bOm7VxDSeRTVz6VcgEYVzxtFM7GEWU9oLyHebb2eUJva0XXxIg==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       react: '>=17.0.0 <18.0.0'
@@ -4367,6 +4377,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.20.6
+      '@quilted/events': 0.1.15_@babel+runtime@7.20.6
       react: /@quilted/react/17.0.7
     dev: true
 
@@ -4414,8 +4425,8 @@ packages:
     resolution: {integrity: sha512-OGkhMYoOmy+9udbMFfT2WtGWzYOCRO1hslAyYSJhGTMUQf9mXUyve6ceOfA+to8WKESAJ9LMYJ93LFg8YOIfmQ==}
     dev: true
 
-  /@quilted/quilt/0.5.119_98ad30ad967ca46bd6505d9395e95264:
-    resolution: {integrity: sha512-6IltT+VAvLq9g+5kHU7xbpGVK9Kw+D7vyc+V3/7yFbn4jYB/li9fuzCzoHewwetwaDu4W6twzR6YTJ2dzPowXA==}
+  /@quilted/quilt/0.5.120_98ad30ad967ca46bd6505d9395e95264:
+    resolution: {integrity: sha512-CltuP5sgb6gfeNjjC63ilV6eWaaieUS8jVZP8k3P1TsXR1Xu7dS+GOL1BiwTNd9DRVAiFHt2FB+6cxy867XFnQ==}
     peerDependencies:
       prettier: ^2.0.0
       react: '>=17.0.0 <18.0.0'
@@ -4442,15 +4453,15 @@ packages:
       '@quilted/react-html': 0.3.39_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-http': 0.3.24_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-idle': 0.3.18_a4297777d8d2cc8959cae56a0292de85
-      '@quilted/react-localize': 0.1.9_de241e14af36240552f4515ad4facca4
-      '@quilted/react-performance': 0.1.11_5fa863987a28e9fc630b3b29809e18fe
+      '@quilted/react-localize': 0.1.9_3e9f7e32f265e380d6bd9ba9e3bf8de4
+      '@quilted/react-performance': 0.1.12_5fa863987a28e9fc630b3b29809e18fe
       '@quilted/react-router': 0.3.50_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-server-render': 0.3.24_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-signals': 0.1.2_a4297777d8d2cc8959cae56a0292de85
       '@quilted/react-testing': 0.5.20_f214a81a6cf0fdf41a650dc8f8c8bdf1
       '@quilted/react-utilities': 0.1.7_a4297777d8d2cc8959cae56a0292de85
       '@quilted/react-workers': 0.2.26_a4297777d8d2cc8959cae56a0292de85
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.20.6
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.20.6
       '@quilted/testing': 0.1.4_@babel+runtime@7.20.6
       '@quilted/threads': 0.1.10_@babel+runtime@7.20.6
       '@quilted/useful-react-types': 0.1.11
@@ -4653,7 +4664,7 @@ packages:
       react: /@quilted/react/17.0.7
     dev: true
 
-  /@quilted/react-localize/0.1.9_de241e14af36240552f4515ad4facca4:
+  /@quilted/react-localize/0.1.9_3e9f7e32f265e380d6bd9ba9e3bf8de4:
     resolution: {integrity: sha512-N0wE0bFZgIGi9LD6nMRgGkhIu+ucbQjq76IJVLEgP6/h/VAYfksdrkfrkP6swSiGJxul1K9ouCftdGNmQN4s5w==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4677,7 +4688,7 @@ packages:
       '@quilted/react-http': 0.3.24_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-router': 0.3.50_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-utilities': 0.1.7_a4297777d8d2cc8959cae56a0292de85
-      '@quilted/request-router': 0.1.1_@babel+runtime@7.20.6
+      '@quilted/request-router': 0.1.2_@babel+runtime@7.20.6
       '@quilted/useful-react-types': 0.1.11
       react: /@quilted/react/17.0.7
     transitivePeerDependencies:
@@ -4685,8 +4696,8 @@ packages:
       - react-dom
     dev: true
 
-  /@quilted/react-performance/0.1.11_5fa863987a28e9fc630b3b29809e18fe:
-    resolution: {integrity: sha512-rhjh1TsFaa2hPkWzsXXpRNO9bJA936JV0OivTstj2a6SFgZaPBqi0b4B6HB1KtIEHbHowqqb0gqug0Oxlhje6A==}
+  /@quilted/react-performance/0.1.12_5fa863987a28e9fc630b3b29809e18fe:
+    resolution: {integrity: sha512-eQsd0Kcx4v6zV3B2ScwhAtPvsGTybBsoSkkDs9FYQwMfxFx3dX7XByKMf5LbScJixm1CIhXE3nHTzmaeR88wNQ==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       '@quilted/react-router': ^0.3.46
@@ -4698,12 +4709,13 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.20.6
-      '@quilted/performance': 0.1.11_a4297777d8d2cc8959cae56a0292de85
+      '@quilted/performance': 0.1.13_a4297777d8d2cc8959cae56a0292de85
       '@quilted/react-router': 0.3.50_fee5d75aca468a7cbb84d6e5d189bcc1
+      '@quilted/react-utilities': 0.1.7_a4297777d8d2cc8959cae56a0292de85
       react: /@quilted/react/17.0.7
     dev: true
 
-  /@quilted/react-query/0.1.12_2c1f42c62491e72c2af072c7f778e5f2:
+  /@quilted/react-query/0.1.12_8a6bb81fce2e35043cbe7e469d35d039:
     resolution: {integrity: sha512-zAKFiNj0aX4uPWrj8nD21xHyXXWXEChqW+MzDM/tDGxzg02s1GrjwG9dL1OBWWVWXh1SWx1eIN1aLxoGidXDUQ==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
@@ -4722,8 +4734,8 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@quilted/craft': 0.1.166_7ab24bb725ec745d8e1e28d4fd2c7fac
-      '@quilted/quilt': 0.5.119_98ad30ad967ca46bd6505d9395e95264
+      '@quilted/craft': 0.1.168_cfaf9a2867a6eac21740007fd9eb7c45
+      '@quilted/quilt': 0.5.120_98ad30ad967ca46bd6505d9395e95264
       '@quilted/useful-types': 0.2.17
       '@tanstack/react-query': 4.20.4_9f6ecbcc824f4f7dcb812dfd94da6bc6
       react: /@quilted/react/17.0.7
@@ -4810,7 +4822,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.18.9
-      '@preact/signals': 1.1.2_preact@10.11.3
+      '@preact/signals': 1.1.3_preact@10.11.3
       '@types/react': 17.0.50
       preact: 10.11.3
       react: /@quilted/react/17.0.7
@@ -4829,7 +4841,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.20.6
-      '@preact/signals': 1.1.2_preact@10.11.3
+      '@preact/signals': 1.1.3_preact@10.11.3
       '@types/react': 17.0.50
       preact: 10.11.3
       react: /@quilted/react/17.0.7
@@ -4923,8 +4935,8 @@ packages:
       preact: 10.11.3
     dev: true
 
-  /@quilted/request-router/0.1.1_@babel+runtime@7.18.9:
-    resolution: {integrity: sha512-e/h6b96XInfQDrgFPkpvW5HtAU1ahLobUcYkEyYPbG08lKtE5TQLzIsMMc3WaK3Yh7NsQbHd+ddJ28mMZ4SqVA==}
+  /@quilted/request-router/0.1.2_@babel+runtime@7.18.9:
+    resolution: {integrity: sha512-4rR0T5ddXlW2TpDofe+pgmdLrw7iLmIi7LJro8vZRD/7ij84SQxypXMKjJ+AgDsGY/GXI2JipznSxZfKrxPuPA==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
     peerDependenciesMeta:
@@ -4936,8 +4948,8 @@ packages:
       '@quilted/routing': 0.2.23_@babel+runtime@7.18.9
       send: 0.17.2
 
-  /@quilted/request-router/0.1.1_@babel+runtime@7.20.6:
-    resolution: {integrity: sha512-e/h6b96XInfQDrgFPkpvW5HtAU1ahLobUcYkEyYPbG08lKtE5TQLzIsMMc3WaK3Yh7NsQbHd+ddJ28mMZ4SqVA==}
+  /@quilted/request-router/0.1.2_@babel+runtime@7.20.6:
+    resolution: {integrity: sha512-4rR0T5ddXlW2TpDofe+pgmdLrw7iLmIi7LJro8vZRD/7ij84SQxypXMKjJ+AgDsGY/GXI2JipznSxZfKrxPuPA==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
     peerDependenciesMeta:

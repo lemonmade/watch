@@ -18,6 +18,11 @@ service = "watch-email"
 environment = "production"
 
 [[services]]
+binding = "SERVICE_METRICS"
+service = "watch-metrics"
+environment = "production"
+
+[[services]]
 binding = "SERVICE_STRIPE"
 service = "watch-stripe"
 environment = "production"

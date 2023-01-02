@@ -1,0 +1,23 @@
+name = "watch-metrics"
+main = "./build/runtime/index.mjs"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+usage_model = "unbound"
+workers_dev = false
+
+[[kv_bindings]]
+id = "98a34d39702d4f9796004553484d299e"
+binding = "PERFORMANCE_NAVIGATIONS"
+
+# @see https://developers.cloudflare.com/queues/configuration/
+[[queues.producers]]
+queue = "watch-metrics"
+binding = "METRICS_QUEUE"
+
+[[queues.consumers]]
+queue = "watch-metrics"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 10

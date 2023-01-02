@@ -26,7 +26,7 @@
     "@quilted/cli-kit": "^0.1.6",
     "@quilted/graphql": "^0.4.49",
     "@quilted/polyfills": "^0.2.31",
-    "@quilted/request-router": "^0.1.1",
+    "@quilted/request-router": "^0.1.2",
     "@quilted/threads": "^0.1.10",
     "@rollup/plugin-alias": "^3.0.0",
     "@rollup/plugin-commonjs": "^22.0.0",

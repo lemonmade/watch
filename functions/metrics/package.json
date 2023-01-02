@@ -1,13 +1,11 @@
 {
-  "name": "stripe",
+  "name": "metrics",
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "types": "./tmdb-refresher.ts",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
-    "@quilted/request-router": "^0.1.2",
-    "stripe": "^11.4.0"
+    "@quilted/request-router": "^0.1.2"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"

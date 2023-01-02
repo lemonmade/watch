@@ -28,7 +28,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@preact/signals-core": "^1.2.2",
+    "@preact/signals-core": "^1.2.3",
     "@quilted/events": "^0.1.15",
     "@quilted/threads": "^0.1.10"
   },

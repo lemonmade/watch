@@ -24,7 +24,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@preact/signals-core": "^1.2.2",
+    "@preact/signals-core": "^1.2.3",
     "@quilted/react-utilities": "^0.1.7",
     "@remote-ui/core": "^2.2.1",
     "@types/react": "^17.0.0",

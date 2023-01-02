@@ -20,7 +20,7 @@
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@lemonmade/graphql-live": "^0.1.12",
-    "@quilted/quilt": "^0.5.119",
+    "@quilted/quilt": "^0.5.120",
     "@quilted/react-query": "^0.1.12",
     "@remote-ui/core": "^2.2.1",
     "@remote-ui/react": "^5.0.0",

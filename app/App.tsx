@@ -10,6 +10,7 @@ import {
   Redirect,
   GraphQLContext,
   Localization,
+  PerformanceContext,
   type RouteDefinition,
   type GraphQLFetch,
   type PropsWithChildren,
@@ -19,7 +20,7 @@ import {Canvas} from '@lemon/zest';
 
 import {SearchParam} from '~/global/auth';
 
-import {Head, Http, Frame} from './foundation';
+import {Head, Http, Metrics, Frame} from './foundation';
 
 import {Start} from './features/Start';
 import {CheckYourEmail, CreateAccount} from './features/CreateAccount';
@@ -63,14 +64,16 @@ export default function App(props: AppContextProps) {
     <QuiltContext>
       <Localization locale="en-CA">
         <Router isExternal={urlIsExternal}>
-          <AppContext {...props}>
-            <Http />
-            <Head />
-            <HtmlAttributes lang="en" dir="ltr" />
-            <Canvas>
-              <Routes />
-            </Canvas>
-          </AppContext>
+          <PerformanceContext>
+            <AppContext {...props}>
+              <Http />
+              <Head />
+              <HtmlAttributes lang="en" dir="ltr" />
+              <Canvas>
+                <Routes />
+              </Canvas>
+            </AppContext>
+          </PerformanceContext>
         </Router>
       </Localization>
     </QuiltContext>
@@ -229,14 +232,18 @@ export function AppContext({
   }, [serializedContext, navigate, explicitUser]);
 
   return (
-    <AppContextReact.Provider value={context}>
-      <QueryClientProvider client={context.queryClient}>
-        <GraphQLContext fetch={context.fetchGraphQL}>{children}</GraphQLContext>
-      </QueryClientProvider>
-      {context.clipsManager && (
-        <ClipsLocalDevelopment manager={context.clipsManager} />
-      )}
-    </AppContextReact.Provider>
+    <Metrics>
+      <AppContextReact.Provider value={context}>
+        <QueryClientProvider client={context.queryClient}>
+          <GraphQLContext fetch={context.fetchGraphQL}>
+            {children}
+          </GraphQLContext>
+        </QueryClientProvider>
+        {context.clipsManager && (
+          <ClipsLocalDevelopment manager={context.clipsManager} />
+        )}
+      </AppContextReact.Provider>
+    </Metrics>
   );
 }
 

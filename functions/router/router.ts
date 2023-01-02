@@ -10,6 +10,7 @@ interface Environment {
   SERVICE_UPLOAD_CLIPS: Fetcher;
   SERVICE_EMAIL_QUEUE: Fetcher;
   SERVICE_STRIPE: Fetcher;
+  SERVICE_METRICS: Fetcher;
 }
 
 declare module '@quilted/cloudflare' {
@@ -28,6 +29,12 @@ router.any(
 router.any(
   'assets/clips',
   (request, {env}) => assetFromBucket(request.URL, env.CLIPS_ASSETS),
+  {exact: false},
+);
+
+router.any(
+  'internal/metrics',
+  (request, {env}) => env.SERVICE_METRICS.fetch(request as any) as any,
   {exact: false},
 );
 

@@ -9,7 +9,7 @@
   ],
   "dependencies": {
     "@lemon/css": "workspace:*",
-    "@preact/signals-core": "^1.2.2",
+    "@preact/signals-core": "^1.2.3",
     "@quilted/events": "^0.1.15",
     "@quilted/react-utilities": "^0.1.7",
     "@remote-ui/core": "^2.2.1",

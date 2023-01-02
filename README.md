@@ -6,6 +6,7 @@ Important links:
 - [Cloudflare dashboard](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/lemon.tools/workers)
   - [router worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-router/production)
   - [email worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-email/production)
+  - [metrics worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-metrics/production)
   - [stripe worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-stripe/production)
   - [tmdb-refresher worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher/production)
   - [tmdb-refresher-scheduler worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher-scheduler/production)
