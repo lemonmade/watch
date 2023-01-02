@@ -1,5 +1,4 @@
 import {createRequestRouter, noContent} from '@quilted/request-router';
-import {factory, detectPrng} from 'ulid';
 import type {
   Queue,
   KVNamespace,
@@ -8,6 +7,8 @@ import type {
 
 import type {} from '@quilted/cloudflare';
 import {createFetchHandler} from '@quilted/cloudflare/request-router';
+
+import {ulid} from './ulid';
 
 export interface MetricMap {
   navigation: {id: string; target: string};
@@ -39,8 +40,6 @@ interface Navigation {
 declare module '@quilted/cloudflare' {
   interface CloudflareRequestEnvironment extends Environment {}
 }
-
-const ulid = factory(detectPrng(true, globalThis));
 
 const handleMessage: ExportedHandlerQueueHandler<
   Environment,
