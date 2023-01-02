@@ -160,9 +160,11 @@ importers:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
       '@quilted/request-router': ^0.1.2
+      ulid: ^2.3.0
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
       '@quilted/request-router': 0.1.2_@babel+runtime@7.18.9
+      ulid: 2.3.0
 
   functions/router:
     specifiers:
@@ -4365,8 +4367,8 @@ packages:
       '@babel/runtime': 7.20.6
     dev: true
 
-  /@quilted/performance/0.1.13_a4297777d8d2cc8959cae56a0292de85:
-    resolution: {integrity: sha512-mgE8O1rkfSxq184OdzRevr4lDrpklpJmOvM0bOm7VxDSeRTVz6VcgEYVzxtFM7GEWU9oLyHebb2eUJva0XXxIg==}
+  /@quilted/performance/0.1.14_a4297777d8d2cc8959cae56a0292de85:
+    resolution: {integrity: sha512-Ev3aaas2voCU5GNnpBOEzLUNXiSutPG+p7k6Ig9SF5VxsHtD9Avm5dxb4+09I6mqWnK9KaYBvJc/Sq/qhXcGXg==}
     peerDependencies:
       '@babel/runtime': '>=7.0.0 <8.0.0'
       react: '>=17.0.0 <18.0.0'
@@ -4709,7 +4711,7 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.20.6
-      '@quilted/performance': 0.1.13_a4297777d8d2cc8959cae56a0292de85
+      '@quilted/performance': 0.1.14_a4297777d8d2cc8959cae56a0292de85
       '@quilted/react-router': 0.3.50_fee5d75aca468a7cbb84d6e5d189bcc1
       '@quilted/react-utilities': 0.1.7_a4297777d8d2cc8959cae56a0292de85
       react: /@quilted/react/17.0.7
@@ -12323,6 +12325,11 @@ packages:
   /ua-regexes-lite/1.1.3:
     resolution: {integrity: sha512-wVCKEDwt+pkG4Utsh9lR/wPtZvl3m/2LHzaj7+xwl7Kb4OaG871yLOpKg4k59RaTUGdKKHdyGDA+DyT98yLpJA==}
     engines: {node: '>=14'}
+    dev: true
+
+  /ulid/2.3.0:
+    resolution: {integrity: sha512-keqHubrlpvT6G2wH0OEfSW4mquYRcbe/J8NMmveoQOjUqmo+hXtO+ORCpWhdbZ7k72UtY61BL7haGxW6enBnjw==}
+    hasBin: true
     dev: true
 
   /unbox-primitive/1.0.1:

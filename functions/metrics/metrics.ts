@@ -1,4 +1,5 @@
 import {createRequestRouter, noContent} from '@quilted/request-router';
+import {factory, detectPrng} from 'ulid';
 import type {
   Queue,
   KVNamespace,
@@ -39,6 +40,8 @@ declare module '@quilted/cloudflare' {
   interface CloudflareRequestEnvironment extends Environment {}
 }
 
+const ulid = factory(detectPrng(true, globalThis));
+
 const handleMessage: ExportedHandlerQueueHandler<
   Environment,
   MetricMessage
@@ -48,7 +51,7 @@ const handleMessage: ExportedHandlerQueueHandler<
       switch (body.type) {
         case 'navigation': {
           await env.PERFORMANCE_NAVIGATIONS.put(
-            body.data.id,
+            ulid(),
             JSON.stringify(body.data),
           );
           break;
@@ -67,7 +70,7 @@ router.post('internal/metrics/navigation', async (request, {env}) => {
     navigations.map(async (navigation) => {
       await env.METRICS_QUEUE.send({
         type: 'navigation',
-        data: {id: navigation.id, target: navigation.target},
+        data: navigation,
       });
     }),
   );
