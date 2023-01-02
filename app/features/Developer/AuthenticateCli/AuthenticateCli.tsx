@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -6,6 +7,8 @@ import {Page} from '~/shared/page';
 import {useAuthenticateCliWithAccessToken} from '../shared/cli';
 
 export function AuthenticateCli() {
+  usePerformanceNavigation({state: 'complete'});
+
   const authenticateCliWithAccessToken = useAuthenticateCliWithAccessToken();
 
   let content: ReactNode;

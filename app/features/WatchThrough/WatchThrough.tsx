@@ -6,6 +6,7 @@ import {
   useNavigate,
   createOptionalContext,
   createUseContextHook,
+  usePerformanceNavigation,
 } from '@quilted/quilt';
 
 import {
@@ -76,9 +77,11 @@ const PageDetailsContext = createOptionalContext<PageDetails>();
 const usePageDetails = createUseContextHook(PageDetailsContext);
 
 export default function WatchThroughDetails({id}: Props) {
-  const {data, refetch} = useQuery(watchThroughQuery, {
+  const {data, refetch, isLoading} = useQuery(watchThroughQuery, {
     variables: {id},
   });
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   if (data?.watchThrough == null) return null;
 

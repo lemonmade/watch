@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from 'react';
+import {usePerformanceNavigation} from '@quilted/quilt';
 
 import {BlockStack, TextField, Action} from '@lemon/zest';
 
@@ -12,10 +13,12 @@ export function Search() {
   const [committedSearch, setCommittedSearch] = useState(search);
   const searchTimeout = useRef<null | number>(null);
 
-  const {data} = useQuery(searchQuery, {
+  const {data, isLoading} = useQuery(searchQuery, {
     enabled: committedSearch.length > 0,
     variables: {query: committedSearch},
   });
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   useEffect(
     () => () => {

@@ -1,5 +1,5 @@
 import {type ComponentProps} from 'react';
-import {useSignal} from '@quilted/quilt';
+import {usePerformanceNavigation, useSignal} from '@quilted/quilt';
 import {
   raw,
   Action,
@@ -43,6 +43,8 @@ import {
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
+  usePerformanceNavigation({state: 'complete'});
+
   return (
     <BlockStack spacing padding="base">
       <ActionComponents />

@@ -18,6 +18,7 @@ import {
   createUseContextHook,
   useCurrentUrl,
   useSignal,
+  usePerformanceNavigation,
 } from '@quilted/quilt';
 import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
@@ -31,6 +32,8 @@ export function Payment() {
   const router = useRouter();
   const currentUrl = useCurrentUrl();
   const {data, isLoading, refetch} = useQuery(subscriptionPaymentQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   const error = useSignal(
     currentUrl.searchParams.get(SearchParam.PaymentStatus) ===

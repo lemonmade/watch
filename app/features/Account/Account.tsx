@@ -5,6 +5,7 @@ import {
   useSignal,
   PropsWithChildren,
   useLocalizedFormatting,
+  usePerformanceNavigation,
 } from '@quilted/quilt';
 
 import {
@@ -59,7 +60,9 @@ const MEMBER_COST = {amount: 3, currency: 'CAD'};
 const PATRON_COST = {amount: 5, currency: 'CAD'};
 
 export function Account() {
-  const {data, refetch} = useQuery(accountQuery);
+  const {data, refetch, isLoading} = useQuery(accountQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   if (data == null) return null;
 

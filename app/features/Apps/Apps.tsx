@@ -1,3 +1,4 @@
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -8,7 +9,10 @@ import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
 
 export function Apps() {
-  const {data, refetch} = useQuery(appsQuery);
+  const {data, refetch, isLoading} = useQuery(appsQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+
   const installApp = useMutation(installAppMutation, {
     onSettled: () => refetch(),
   });

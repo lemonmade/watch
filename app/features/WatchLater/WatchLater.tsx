@@ -1,3 +1,4 @@
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {Poster, Pressable} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -7,7 +8,9 @@ import {MediaGrid} from '~/shared/media';
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 
 export function WatchLater() {
-  const {data} = useQuery(watchLaterQuery);
+  const {data, isLoading} = useQuery(watchLaterQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   const watchLater = data?.watchLater;
 

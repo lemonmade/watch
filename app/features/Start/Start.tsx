@@ -1,6 +1,9 @@
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {Heading, TextBlock, Text, BlockStack, Action} from '@lemon/zest';
 
 export function Start() {
+  usePerformanceNavigation({state: 'complete'});
+
   return (
     <BlockStack spacing padding>
       <Heading>What are we watching next?</Heading>

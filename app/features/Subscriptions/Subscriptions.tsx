@@ -1,3 +1,4 @@
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {Poster, Pressable} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -7,7 +8,9 @@ import {useQuery} from '~/shared/graphql';
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
 export function Subscriptions() {
-  const {data} = useQuery(subscriptionsQuery);
+  const {data, isLoading} = useQuery(subscriptionsQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   if (data == null) {
     return null;

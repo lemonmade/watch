@@ -7,6 +7,7 @@ import {
   useSignal,
   Link,
   useRouter,
+  usePerformanceNavigation,
 } from '@quilted/quilt';
 import {
   View,
@@ -41,6 +42,8 @@ export default function SignIn() {
 }
 
 function SignInForm() {
+  usePerformanceNavigation({state: 'complete'});
+
   const currentUrl = useCurrentUrl();
 
   const [reason, setReason] = useState<SignInErrorReason | undefined>(
@@ -296,6 +299,8 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
 }
 
 function CheckYourEmail() {
+  usePerformanceNavigation({state: 'complete'});
+
   return (
     <View padding="base">
       <TextBlock>Check your email!</TextBlock>

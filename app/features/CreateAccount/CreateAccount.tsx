@@ -1,5 +1,10 @@
 import {useState} from 'react';
-import {useNavigate, useCurrentUrl, useSignal} from '@quilted/quilt';
+import {
+  useNavigate,
+  useCurrentUrl,
+  useSignal,
+  usePerformanceNavigation,
+} from '@quilted/quilt';
 import {
   Action,
   View,
@@ -26,6 +31,8 @@ enum SearchParam {
 }
 
 export function CreateAccount() {
+  usePerformanceNavigation({state: 'complete'});
+
   const currentUrl = useCurrentUrl();
 
   const giftCode = currentUrl.searchParams.get(SearchParam.GiftCode);
@@ -209,6 +216,8 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
 }
 
 export function CheckYourEmail() {
+  usePerformanceNavigation({state: 'complete'});
+
   return (
     <View padding="base">
       <TextBlock>Check your email!</TextBlock>

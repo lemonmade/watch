@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import {usePerformanceNavigation} from '@quilted/quilt';
 
 import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
 
@@ -10,6 +11,9 @@ import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';
 
 export function Apps() {
   const {data, isLoading, refetch} = useQuery(myAppsQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+
   const apps = data?.my.apps ?? [];
 
   const deleteApp = useMutation(deleteMyAppMutation, {

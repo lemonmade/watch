@@ -1,4 +1,4 @@
-import {useSignal} from '@quilted/quilt';
+import {usePerformanceNavigation, useSignal} from '@quilted/quilt';
 import {
   BlockStack,
   TextField,
@@ -37,7 +37,9 @@ export function Console() {
 }
 
 function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
-  const {data} = useLocalDevelopmentServerQuery(developerConsoleQuery);
+  const {data, loading} = useLocalDevelopmentServerQuery(developerConsoleQuery);
+
+  usePerformanceNavigation({state: loading ? 'loading' : 'complete'});
 
   return (
     <BlockStack spacing="large">
@@ -117,6 +119,8 @@ function ExtensionBuildResult({
 }
 
 function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServer}) {
+  usePerformanceNavigation({state: 'complete'});
+
   const localUrl = useSignal('');
 
   const submit = async () => {

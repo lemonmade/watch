@@ -1,8 +1,11 @@
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, InlineStack, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 
 export function Developer() {
+  usePerformanceNavigation({state: 'complete'});
+
   return (
     <Page heading="Developer">
       <BlockStack spacing>

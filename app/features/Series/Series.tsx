@@ -1,5 +1,5 @@
 import {type ComponentProps} from 'react';
-import {useNavigate, useSignal} from '@quilted/quilt';
+import {useNavigate, usePerformanceNavigation, useSignal} from '@quilted/quilt';
 import {
   Action,
   ActionList,
@@ -44,9 +44,11 @@ export interface Props {
 }
 
 export default function Series({id, handle}: Props) {
-  const {data, refetch} = useQuery(seriesQuery, {
+  const {data, refetch, isLoading} = useQuery(seriesQuery, {
     variables: {id, handle},
   });
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   if (data?.series == null) {
     return null;

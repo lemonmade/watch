@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import type {ReactNode} from 'react';
+import {useState, type ReactNode} from 'react';
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, TextBlock, Action, Banner, Text, Layout} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -15,7 +15,10 @@ export function AccessTokens() {
     message: ReactNode;
   }>();
 
-  const {data, refetch} = useQuery(accessTokensQuery);
+  const {data, refetch, isLoading} = useQuery(accessTokensQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+
   const createAccessToken = useMutation(createAccessTokenMutation, {
     onSettled: () => refetch(),
     onMutate: () => setCreateResult(undefined),

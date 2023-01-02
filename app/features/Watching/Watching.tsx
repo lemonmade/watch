@@ -1,5 +1,6 @@
 import {useMemo, ComponentProps} from 'react';
 
+import {usePerformanceNavigation} from '@quilted/quilt';
 import {Menu, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
@@ -16,7 +17,9 @@ interface Props {}
 type WatchThrough = WatchingQueryData.WatchThroughs;
 
 export function Watching(_: Props) {
-  const {data} = useQuery(watchingQuery);
+  const {data, isLoading} = useQuery(watchingQuery);
+
+  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
   const [availableWatchThroughs] = useMemo(() => {
     const [available, unavailable] = (data?.watchThroughs ?? []).reduce<
