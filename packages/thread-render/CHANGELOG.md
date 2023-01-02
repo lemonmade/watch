@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.0.4
+
+### Patch Changes
+
+- [`d3ae636`](https://github.com/lemonmade/watch/commit/d3ae63658c191a2b23a5f10ea01e70a9756829f9) Thanks [@lemonmade](https://github.com/lemonmade)! - Update some quilt libraries
+
 ## 0.0.3
 
 ### Patch Changes
