@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 0.4.37
+
+### Patch Changes
+
+- [`d3ae636`](https://github.com/lemonmade/watch/commit/d3ae63658c191a2b23a5f10ea01e70a9756829f9) Thanks [@lemonmade](https://github.com/lemonmade)! - Update some quilt libraries
+
+* [`8b070cf`](https://github.com/lemonmade/watch/commit/8b070cf8b03cb07f6d1923770752cccb0eb937db) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade to @quilted/request-router
+
 ## 0.4.36
 
 ### Patch Changes

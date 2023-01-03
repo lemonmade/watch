@@ -320,7 +320,7 @@ importers:
       '@types/react-dom': ^17.0.0
       '@watching/clips': workspace:^0.2.26
       '@watching/clips-dom': workspace:^0.1.13
-      '@watching/thread-signals': workspace:^0.1.6
+      '@watching/thread-signals': workspace:^0.1.7
       p-limit: ^4.0.0
       preact: ^10.11.3
       terser: ^5.15.1
