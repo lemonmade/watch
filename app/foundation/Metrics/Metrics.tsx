@@ -6,18 +6,16 @@ import Env from '@quilted/quilt/env';
 
 export function Metrics({children}: PropsWithChildren) {
   usePerformanceNavigationEvent(async (navigation) => {
-    const data = navigation.toJSON();
-
     if (Env.MODE === 'development') {
       // eslint-disable-next-line no-console
       console.log('Navigation');
       // eslint-disable-next-line no-console
-      console.log(data);
+      console.log(navigation);
       return;
     }
 
     const requestData = JSON.stringify({
-      navigations: [data],
+      navigations: [navigation.toJSON()],
     });
 
     if (typeof navigator.sendBeacon === 'function') {

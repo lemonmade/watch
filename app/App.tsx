@@ -15,7 +15,7 @@ import {
   type GraphQLFetch,
   type PropsWithChildren,
 } from '@quilted/quilt';
-import {HtmlAttributes, useSerialized} from '@quilted/quilt/html';
+import {useSerialized} from '@quilted/quilt/html';
 import {Canvas} from '@lemon/zest';
 
 import {SearchParam} from '~/global/auth';
@@ -68,7 +68,6 @@ export default function App(props: AppContextProps) {
             <AppContext {...props}>
               <Http />
               <Head />
-              <HtmlAttributes lang="en" dir="ltr" />
               <Canvas>
                 <Routes />
               </Canvas>
