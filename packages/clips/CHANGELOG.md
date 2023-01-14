@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.2.27
+
+### Patch Changes
+
+- [`4b1a621`](https://github.com/lemonmade/watch/commit/4b1a62199c4595cc5c9a781e0151808f2332f472) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade to React 18
+
 ## 0.2.26
 
 ### Patch Changes

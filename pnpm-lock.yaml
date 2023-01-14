@@ -318,7 +318,7 @@ importers:
       '@remote-ui/core': ^2.2.1
       '@types/react': ^18.0.26
       '@types/react-dom': ^18.0.0
-      '@watching/clips': workspace:^0.2.26
+      '@watching/clips': workspace:^0.2.27
       '@watching/clips-dom': workspace:^0.1.13
       '@watching/thread-signals': workspace:^0.1.7
       p-limit: ^4.0.0
@@ -9466,7 +9466,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
