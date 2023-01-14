@@ -5,12 +5,9 @@ import {
   useRoutes,
   useNavigate,
   createGraphQLHttpFetch,
-  Router,
-  AppContext as QuiltContext,
+  QuiltApp,
   Redirect,
   GraphQLContext,
-  Localization,
-  PerformanceContext,
   type RouteDefinition,
   type GraphQLFetch,
   type PropsWithChildren,
@@ -61,21 +58,18 @@ const fetch = createGraphQLHttpFetch({
 
 export default function App(props: AppContextProps) {
   return (
-    <QuiltContext>
-      <Localization locale="en-CA">
-        <Router isExternal={urlIsExternal}>
-          <PerformanceContext>
-            <AppContext {...props}>
-              <Http />
-              <Head />
-              <Canvas>
-                <Routes />
-              </Canvas>
-            </AppContext>
-          </PerformanceContext>
-        </Router>
-      </Localization>
-    </QuiltContext>
+    <QuiltApp
+      http={<Http />}
+      html={<Head />}
+      localization="en-CA"
+      routing={{isExternal: urlIsExternal}}
+    >
+      <AppContext {...props}>
+        <Canvas>
+          <Routes />
+        </Canvas>
+      </AppContext>
+    </QuiltApp>
   );
 }
 

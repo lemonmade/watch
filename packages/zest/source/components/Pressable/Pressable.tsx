@@ -89,7 +89,7 @@ export const Pressable = forwardRef<
 
 export const PressableInternal = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  Props & {overlay?: OverlayController}
+  PropsWithChildren<Omit<Props, 'overlay'> & {overlay?: OverlayController}>
 >(function PressableInternal(
   {
     to,

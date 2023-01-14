@@ -11,7 +11,7 @@
     "@lemon/css": "workspace:*",
     "@preact/signals-core": "^1.2.3",
     "@quilted/events": "^0.1.15",
-    "@quilted/react-utilities": "^0.1.7",
+    "@quilted/react-utilities": "^0.1.8",
     "@remote-ui/core": "^2.2.1",
     "@watching/clips": "workspace:*",
     "@watching/react-signals": "workspace:*",
@@ -19,7 +19,7 @@
     "date-fns": "^2.29.3"
   },
   "peerDependencies": {
-    "react": ">=16.8.0 <18.0.0"
+    "react": "^18.0.0"
   },
   "peerDependenciesMeta": {
     "react": {

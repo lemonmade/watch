@@ -1,14 +1,16 @@
-import {useRef, useEffect} from 'react';
+import {
+  useRef,
+  useEffect,
+  type ReactElement,
+  type ReactNode,
+  type ComponentType,
+} from 'react';
 import {
   type Components,
   type ExtensionPoint,
   type ComponentsForExtensionPoint,
 } from '@watching/clips';
-import {type RemoteComponentType} from '@remote-ui/core';
-import {
-  type ReactPropsFromRemoteComponentType,
-  type ReactComponentTypeFromRemoteComponentType,
-} from '@remote-ui/react/host';
+import {type RemoteComponentType, type RemoteFragment} from '@remote-ui/core';
 import {createThreadAbortSignal} from '@quilted/quilt/threads';
 import {
   isThreadSignal,
@@ -16,6 +18,30 @@ import {
   type Signal,
   type ThreadSignal,
 } from '@watching/thread-signals';
+
+type PropsForRemoteComponent<T> = T extends RemoteComponentType<
+  string,
+  infer Props,
+  any
+>
+  ? Props extends Record<string, never>
+    ? {}
+    : {[K in keyof Props]: RemoteFragmentToReactElement<Props[K]>}
+  : never;
+
+type RemoteFragmentToReactElement<T> = T extends RemoteFragment<any>
+  ? ReactElement
+  : T;
+
+export type ReactPropsFromRemoteComponentType<
+  Type extends RemoteComponentType<string, any, any>,
+> = PropsForRemoteComponent<Type> & {
+  children?: ReactNode;
+};
+
+export type ReactComponentTypeFromRemoteComponentType<
+  Type extends RemoteComponentType<string, any, any>,
+> = ComponentType<ReactPropsFromRemoteComponentType<Type>>;
 
 export type PropsForClipsComponent<Component extends keyof Components> =
   ReactPropsFromRemoteComponentType<Components[Component]>;

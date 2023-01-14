@@ -108,7 +108,7 @@ function ExtensionBuildResult({
     case 'ExtensionBuildError': {
       return (
         <TextBlock>
-          Build failed in {build.duration}ms: {build.error}
+          Build failed in {build.duration}ms: {String(build.error)}
         </TextBlock>
       );
     }

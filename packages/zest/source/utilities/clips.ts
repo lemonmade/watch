@@ -27,5 +27,5 @@ type RemotePropToHostProp<T> = T extends ThreadSignal<infer R>
 export type ReactPropsFromRemoteComponentType<
   Type extends RemoteComponentType<string, any, any>,
 > = PropsForRemoteComponent<Type> & {
-  children?: ReactNode;
+  children?: ReactNode | ReactNode[];
 };

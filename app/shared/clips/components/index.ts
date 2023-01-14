@@ -19,6 +19,8 @@ import {
   type PropsForClipsComponent,
   type ReactComponentsForExtensionPoint,
   type ReactComponentsForRemoteComponents,
+  type ReactPropsFromRemoteComponentType,
+  type ReactComponentTypeFromRemoteComponentType,
 } from './shared';
 
 export {
@@ -26,6 +28,8 @@ export {
   type PropsForClipsComponent,
   type ReactComponentsForExtensionPoint,
   type ReactComponentsForRemoteComponents,
+  type ReactPropsFromRemoteComponentType,
+  type ReactComponentTypeFromRemoteComponentType,
 };
 
 const Common: ReactComponentsForRemoteComponents<CommonComponents> =
