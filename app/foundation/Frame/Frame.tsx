@@ -6,13 +6,13 @@ import {Navigation, NavigationItem} from './components/Navigation';
 
 import styles from './Frame.module.css';
 
-interface Props {}
+export interface Props {}
 
 const ROOT_NAVIGATION_ITEM_MATCHES = [
   /[/]app[/]?($|finished[/]?$|watchthrough[/])/,
 ];
 
-export function Frame({children}: PropsWithChildren<Props>) {
+export default function Frame({children}: PropsWithChildren<Props>) {
   return (
     <>
       <View display="grid" className={styles.Frame}>

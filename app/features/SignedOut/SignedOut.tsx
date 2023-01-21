@@ -1,7 +1,7 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {TextBlock, BlockStack, Action} from '@lemon/zest';
 
-export function SignedOut() {
+export default function SignedOut() {
   usePerformanceNavigation({state: 'complete'});
 
   return (

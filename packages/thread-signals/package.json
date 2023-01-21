@@ -29,8 +29,8 @@
   "sideEffects": false,
   "dependencies": {
     "@preact/signals-core": "^1.2.3",
-    "@quilted/events": "^0.1.15",
-    "@quilted/threads": "^0.1.10"
+    "@quilted/events": "^0.1.16",
+    "@quilted/threads": "^0.1.11"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"
@@ -41,7 +41,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.4",
+    "@quilted/testing": "^0.1.5",
     "@quilted/threads": "^0.1.0"
   },
   "eslintConfig": {

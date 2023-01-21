@@ -9,7 +9,7 @@ import {useQuery, useMutation} from '~/shared/graphql';
 import myAppsQuery from './graphql/MyAppsQuery.graphql';
 import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';
 
-export function Apps() {
+export default function Apps() {
   const {data, isLoading, refetch} = useQuery(myAppsQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

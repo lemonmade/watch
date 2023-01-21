@@ -8,7 +8,7 @@ import appsQuery, {type AppsQueryData} from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
 
-export function Apps() {
+export default function Apps() {
   const {data, refetch, isLoading} = useQuery(appsQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

@@ -7,7 +7,7 @@ import {useQuery} from '~/shared/graphql';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
-export function Subscriptions() {
+export default function Subscriptions() {
   const {data, isLoading} = useQuery(subscriptionsQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

@@ -1,5 +1,3 @@
-// import {createAsyncComponent} from '@quilted/quilt';
+import {createAsyncComponent} from '@quilted/quilt';
 
-// export const SignIn = createAsyncComponent(() => import('./SignIn'));
-
-export {default as SignIn} from './SignIn';
+export const SignIn = createAsyncComponent(() => import('./SignIn'));

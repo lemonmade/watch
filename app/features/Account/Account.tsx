@@ -59,7 +59,7 @@ import prepareSubscriptionMutation, {
 const MEMBER_COST = {amount: 3, currency: 'CAD'};
 const PATRON_COST = {amount: 5, currency: 'CAD'};
 
-export function Account() {
+export default function Account() {
   const {data, refetch, isLoading} = useQuery(accountQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

@@ -1,7 +1,7 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {Heading, TextBlock, Text, BlockStack, Action} from '@lemon/zest';
 
-export function Start() {
+export default function Start() {
   usePerformanceNavigation({state: 'complete'});
 
   return (

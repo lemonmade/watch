@@ -6,7 +6,7 @@
   "types": "./tmdb-refresher.ts",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
-    "@quilted/request-router": "^0.1.2",
+    "@quilted/request-router": "^0.1.3",
     "stripe": "^11.4.0"
   },
   "eslintConfig": {

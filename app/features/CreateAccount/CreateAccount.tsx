@@ -7,7 +7,6 @@ import {
 } from '@quilted/quilt';
 import {
   Action,
-  View,
   Banner,
   TextField,
   Form,
@@ -30,7 +29,7 @@ enum SearchParam {
   RedirectTo = 'redirect',
 }
 
-export function CreateAccount() {
+export default function CreateAccount() {
   usePerformanceNavigation({state: 'complete'});
 
   const currentUrl = useCurrentUrl();
@@ -213,14 +212,4 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
       );
     }
   }
-}
-
-export function CheckYourEmail() {
-  usePerformanceNavigation({state: 'complete'});
-
-  return (
-    <View padding="base">
-      <TextBlock>Check your email!</TextBlock>
-    </View>
-  );
 }

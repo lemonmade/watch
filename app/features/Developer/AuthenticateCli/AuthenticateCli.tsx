@@ -6,7 +6,7 @@ import {Page} from '~/shared/page';
 
 import {useAuthenticateCliWithAccessToken} from '../shared/cli';
 
-export function AuthenticateCli() {
+export default function AuthenticateCli() {
   usePerformanceNavigation({state: 'complete'});
 
   const authenticateCliWithAccessToken = useAuthenticateCliWithAccessToken();
