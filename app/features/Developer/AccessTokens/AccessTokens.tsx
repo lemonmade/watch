@@ -9,7 +9,7 @@ import accessTokensQuery from './graphql/AccessTokensQuery.graphql';
 import createAccessTokenMutation from './graphql/CreateAccessTokenMutation.graphql';
 import deleteAccessTokenMutation from './graphql/DeleteAccessTokenMutation.graphql';
 
-export function AccessTokens() {
+export default function AccessTokens() {
   const [createResult, setCreateResult] = useState<{
     type: 'error' | 'success';
     message: ReactNode;

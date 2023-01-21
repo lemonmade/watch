@@ -3,7 +3,7 @@ import {BlockStack, InlineStack, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 
-export function Developer() {
+export default function Developer() {
   usePerformanceNavigation({state: 'complete'});
 
   return (

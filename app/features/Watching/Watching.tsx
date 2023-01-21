@@ -12,11 +12,11 @@ import watchingQuery, {
 } from './graphql/WatchingQuery.graphql';
 import {WatchThroughItem} from './components';
 
-interface Props {}
+export interface Props {}
 
 type WatchThrough = WatchingQueryData.WatchThroughs;
 
-export function Watching(_: Props) {
+export default function Watching(_: Props) {
   const {data, isLoading} = useQuery(watchingQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

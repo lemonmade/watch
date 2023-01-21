@@ -8,7 +8,7 @@ import {useQuery} from '~/shared/graphql';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 
-export function Search() {
+export default function Search() {
   const [search, setSearch] = useState('');
   const [committedSearch, setCommittedSearch] = useState(search);
   const searchTimeout = useRef<null | number>(null);

@@ -1,2 +1,6 @@
-export {FinishedWatching} from './FinishedWatching';
-export {Watching} from './Watching';
+import {createAsyncComponent} from '@quilted/quilt';
+
+export const Watching = createAsyncComponent(() => import('./Watching'));
+export const FinishedWatching = createAsyncComponent(
+  () => import('./FinishedWatching'),
+);

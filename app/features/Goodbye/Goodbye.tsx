@@ -1,7 +1,7 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {TextBlock, BlockStack, Action} from '@lemon/zest';
 
-export function Goodbye() {
+export default function Goodbye() {
   usePerformanceNavigation({state: 'complete'});
 
   return (

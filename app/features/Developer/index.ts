@@ -1,6 +1,19 @@
-export {AccessTokens} from './AccessTokens';
-export {Apps} from './Apps';
-export {AuthenticateCli} from './AuthenticateCli';
-export {CreatedAccountFromCli} from './CreatedAccountFromCli';
-export {Console} from './Console';
-export {Developer} from './Developer';
+import {createAsyncComponent} from '@quilted/quilt';
+
+export const AccessTokens = createAsyncComponent(
+  () => import('./AccessTokens/AccessTokens'),
+);
+
+export const Apps = createAsyncComponent(() => import('./Apps/Apps'));
+
+export const AuthenticateCli = createAsyncComponent(
+  () => import('./AuthenticateCli/AuthenticateCli'),
+);
+
+export const CreatedAccountFromCli = createAsyncComponent(
+  () => import('./CreatedAccountFromCli/CreatedAccountFromCli'),
+);
+
+export const Console = createAsyncComponent(() => import('./Console/Console'));
+
+export const Developer = createAsyncComponent(() => import('./Developer'));

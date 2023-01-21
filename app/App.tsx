@@ -8,6 +8,7 @@ import {
   QuiltApp,
   Redirect,
   GraphQLContext,
+  RoutePreloading,
   type RouteDefinition,
   type GraphQLFetch,
   type PropsWithChildren,
@@ -64,24 +65,44 @@ export default function App(props: AppContextProps) {
       localization="en-CA"
       routing={{isExternal: urlIsExternal}}
     >
-      <AppContext {...props}>
-        <Canvas>
-          <Routes />
-        </Canvas>
-      </AppContext>
+      <RoutePreloading>
+        <AppContext {...props}>
+          <Canvas>
+            <Routes />
+          </Canvas>
+        </AppContext>
+      </RoutePreloading>
     </QuiltApp>
   );
 }
 
 const routes: RouteDefinition[] = [
-  {match: '/', render: () => <Start />},
-  {match: 'sign-in', render: () => <SignIn />},
-  {match: 'signed-out', render: () => <SignedOut />},
+  {
+    match: '/',
+    render: () => <Start />,
+    renderPreload: () => <Start.Preload />,
+  },
+  {
+    match: 'sign-in',
+    render: () => <SignIn />,
+    renderPreload: () => <SignIn.Preload />,
+  },
+  {
+    match: 'signed-out',
+    render: () => <SignedOut />,
+  },
   {
     match: 'create-account',
     children: [
-      {match: '/', render: () => <CreateAccount />},
-      {match: 'check-your-email', render: () => <CheckYourEmail />},
+      {
+        match: '/',
+        render: () => <CreateAccount />,
+        renderPreload: () => <CreateAccount.Preload />,
+      },
+      {
+        match: 'check-your-email',
+        render: () => <CheckYourEmail />,
+      },
     ],
   },
   {match: 'goodbye', render: () => <Goodbye />},
@@ -92,42 +113,93 @@ const routes: RouteDefinition[] = [
         <Frame>{children}</Frame>
       </Authenticated>
     ),
+    renderPreload: () => <Frame.Preload />,
     children: [
-      {match: '/', render: () => <Watching />},
-      {match: 'finished', render: () => <FinishedWatching />},
-      {match: 'watch-later', render: () => <WatchLater />},
+      {
+        match: '/',
+        render: () => <Watching />,
+        renderPreload: () => <Watching.Preload />,
+      },
+      {
+        match: 'finished',
+        render: () => <FinishedWatching />,
+        renderPreload: () => <FinishedWatching.Preload />,
+      },
+      {
+        match: 'watch-later',
+        render: () => <WatchLater />,
+        renderPreload: () => <WatchLater.Preload />,
+      },
       {
         match: ['me', 'my'],
         children: [
-          {match: '/', render: () => <Account />},
-          {match: 'payment', render: () => <Payment />},
+          {
+            match: '/',
+            render: () => <Account />,
+            renderPreload: () => <Account.Preload />,
+          },
+          {
+            match: 'payment',
+            render: () => <Payment />,
+            renderPreload: () => <Payment.Preload />,
+          },
         ],
       },
       {
         match: 'developer',
         children: [
-          {match: '/', render: () => <Developer />},
-          {match: 'apps', render: () => <DevelopedApps />},
-          {match: 'access-tokens', render: () => <AccessTokens />},
+          {
+            match: '/',
+            render: () => <Developer />,
+            renderPreload: () => <Developer.Preload />,
+          },
+          {
+            match: 'apps',
+            render: () => <DevelopedApps />,
+            renderPreload: () => <DevelopedApps.Preload />,
+          },
+          {
+            match: 'access-tokens',
+            render: () => <AccessTokens />,
+            renderPreload: () => <AccessTokens.Preload />,
+          },
           {
             match: 'cli',
             children: [
-              {match: 'authenticate', render: () => <AuthenticateCli />},
+              {
+                match: 'authenticate',
+                render: () => <AuthenticateCli />,
+                renderPreload: () => <AuthenticateCli.Preload />,
+              },
               {
                 match: 'created-account',
                 render: () => <CreatedAccountFromCli />,
+                renderPreload: () => <CreatedAccountFromCli.Preload />,
               },
             ],
           },
-          {match: 'console', render: () => <Console />},
+          {
+            match: 'console',
+            render: () => <Console />,
+            renderPreload: () => <Console.Preload />,
+          },
         ],
       },
-      {match: 'apps', render: () => <Apps />},
+      {
+        match: 'apps',
+        render: () => <Apps />,
+        renderPreload: () => <Apps.Preload />,
+      },
       {
         match: 'subscriptions',
         render: () => <Subscriptions />,
+        renderPreload: () => <Subscriptions.Preload />,
       },
-      {match: 'search', render: () => <Search />},
+      {
+        match: 'search',
+        render: () => <Search />,
+        renderPreload: () => <Search.Preload />,
+      },
       {
         match: 'series',
         children: [
@@ -140,10 +212,12 @@ const routes: RouteDefinition[] = [
             render: ({matched}) => (
               <Series id={`gid://watch/Series/${matched}`} />
             ),
+            renderPreload: () => <Series.Preload />,
           },
           {
             match: /[\w-]+/,
             render: ({matched}) => <Series handle={matched} />,
+            renderPreload: () => <Series.Preload />,
           },
         ],
       },
@@ -156,10 +230,10 @@ const routes: RouteDefinition[] = [
           },
           {
             match: /[\w-]+/,
-            renderPreload: () => <WatchThrough.Preload />,
             render: ({matched}) => (
               <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
             ),
+            renderPreload: () => <WatchThrough.Preload />,
           },
         ],
       },

@@ -28,7 +28,7 @@ import {SearchParam, PaymentStatus} from '~/global/subscriptions';
 
 import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql';
 
-export function Payment() {
+export default function Payment() {
   const router = useRouter();
   const currentUrl = useCurrentUrl();
   const {data, isLoading, refetch} = useQuery(subscriptionPaymentQuery);

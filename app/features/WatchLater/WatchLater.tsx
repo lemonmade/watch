@@ -7,7 +7,7 @@ import {MediaGrid} from '~/shared/media';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 
-export function WatchLater() {
+export default function WatchLater() {
   const {data, isLoading} = useQuery(watchLaterQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

@@ -22,7 +22,7 @@ import developerConsoleQuery, {
   type DeveloperConsoleQueryData,
 } from './graphql/DeveloperConsoleQuery.graphql';
 
-export function Console() {
+export default function Console() {
   const {localDevelopment} = useClipsManager();
 
   return (

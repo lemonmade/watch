@@ -8,7 +8,7 @@ import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 
 import {WatchThroughItem} from './components';
 
-export function FinishedWatching() {
+export default function FinishedWatching() {
   const {data, isLoading} = useQuery(finishedWatchingQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});

@@ -28,8 +28,8 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@quilted/react-signals": "^0.1.4",
-    "@types/react": "^18.0.26"
+    "@quilted/react-signals": "^0.1.5",
+    "@types/react": "^18.0.27"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0",
@@ -44,7 +44,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.4",
+    "@quilted/testing": "^0.1.5",
     "react": "npm:@quilted/react@^17.0.0"
   },
   "eslintConfig": {
