@@ -1,9 +1,9 @@
-import {createServerRenderingRequestHandler} from '@quilted/quilt/server';
-import createAssetManifest from '@quilted/quilt/magic/app/asset-manifest';
+import {createServerRender} from '@quilted/quilt/server';
+import {createAssetManifest} from '@quilted/quilt/magic/asset-manifest';
 
 import {authenticate} from './shared/auth';
 
-const appHandler = createServerRenderingRequestHandler(
+const appHandler = createServerRender(
   async (request) => {
     const [{default: App}, authentication] = await Promise.all([
       import('../App'),

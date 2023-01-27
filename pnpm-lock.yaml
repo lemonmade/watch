@@ -14,10 +14,10 @@ importers:
       '@quilted/aws': ^0.3.43
       '@quilted/browserslist-config': ^0.1.9
       '@quilted/cloudflare': ^0.1.48
-      '@quilted/craft': ^0.1.178
+      '@quilted/craft': ^0.1.183
       '@quilted/eslint-config': ^0.1.16
       '@quilted/prettier': ^0.2.11
-      '@quilted/quilt': ^0.5.127
+      '@quilted/quilt': ^0.5.129
       '@quilted/typescript': ^0.2.18
       '@types/common-tags': ^1.8.1
       '@types/node': ^16.11.0
@@ -36,13 +36,13 @@ importers:
       '@changesets/changelog-github': 0.4.3
       '@changesets/cli': 2.21.1
       '@prisma/client': 4.7.1_prisma@4.7.1
-      '@quilted/aws': 0.3.43_8d202ec301402fdad71ee46ed5076355
+      '@quilted/aws': 0.3.43_644816d660e09142ceff0176c467c5f3
       '@quilted/browserslist-config': 0.1.9
-      '@quilted/cloudflare': 0.1.48_8d202ec301402fdad71ee46ed5076355
-      '@quilted/craft': 0.1.178_c373fd44778ef36bf50aee7a5532f8ed
+      '@quilted/cloudflare': 0.1.48_644816d660e09142ceff0176c467c5f3
+      '@quilted/craft': 0.1.183_a3dd2550ffe61b318ad9f2929768832a
       '@quilted/eslint-config': 0.1.16_typescript@4.9.4
       '@quilted/prettier': 0.2.11
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
       '@quilted/typescript': 0.2.18_typescript@4.9.4
       '@types/common-tags': 1.8.1
       '@types/node': 16.11.26
@@ -66,7 +66,7 @@ importers:
       '@lemon/zest': workspace:*
       '@lemonmade/graphql-live': ^0.1.12
       '@prisma/client': ^4.7.0
-      '@quilted/quilt': ^0.5.127
+      '@quilted/quilt': ^0.5.129
       '@quilted/react-query': ^0.1.15
       '@remote-ui/core': ^2.2.1
       '@remote-ui/react': ^5.0.0
@@ -105,8 +105,8 @@ importers:
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
       '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
-      '@quilted/react-query': 0.1.15_5e1f016f9322b33ad9511486459d233b
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
+      '@quilted/react-query': 0.1.15_d8ac9d60464a1a2c442ab5d9746d6f8a
       '@remote-ui/core': 2.2.1
       '@remote-ui/react': 5.0.0_@quilted+react@18.2.0
       '@simplewebauthn/browser': 6.2.1
@@ -143,14 +143,14 @@ importers:
   functions/email:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
-      '@quilted/react-email': ^0.2.31
+      '@quilted/react-email': ^0.2.32
       '@quilted/request-router': ^0.1.3
       '@tsndr/cloudflare-worker-jwt': ^2.1.0
       react: npm:@quilted/react@^18.2.0
       react-dom: npm:@quilted/react-dom@^18.2.0
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/react-email': 0.2.31_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-email': 0.2.32_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/request-router': 0.1.3
       '@tsndr/cloudflare-worker-jwt': 2.1.4
       react: /@quilted/react/18.2.0
@@ -215,8 +215,8 @@ importers:
       '@iarna/toml': ^3.0.0
       '@lemonmade/graphql-live': ^0.1.12
       '@quilted/cli-kit': ^0.1.8
-      '@quilted/graphql': ^0.4.51
-      '@quilted/polyfills': ^0.2.32
+      '@quilted/graphql': ^0.4.54
+      '@quilted/polyfills': ^0.2.33
       '@quilted/request-router': ^0.1.3
       '@quilted/threads': ^0.1.11
       '@rollup/plugin-alias': ^3.0.0
@@ -255,8 +255,8 @@ importers:
       '@iarna/toml': 3.0.0
       '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
       '@quilted/cli-kit': 0.1.8
-      '@quilted/graphql': 0.4.51
-      '@quilted/polyfills': 0.2.32
+      '@quilted/graphql': 0.4.54
+      '@quilted/polyfills': 0.2.33
       '@quilted/request-router': 0.1.3
       '@quilted/threads': 0.1.11
       '@rollup/plugin-alias': 3.1.9_rollup@2.70.1
@@ -3278,7 +3278,7 @@ packages:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       globby: 11.1.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
       unixify: 1.0.0
 
   /@graphql-tools/import/6.7.15_graphql@16.6.0:
@@ -3289,7 +3289,7 @@ packages:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
       resolve-from: 5.0.0
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@graphql-tools/json-file-loader/7.4.15_graphql@16.6.0:
     resolution: {integrity: sha512-pH+hbsDetcEpj+Tmi7ZRUkxzJez2DLdSQuvK5Qi38FX/Nz/5nZKRfW9nqIptGYbuS9+2JPrt9WWNn1aGtegIFQ==}
@@ -3299,28 +3299,28 @@ packages:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       globby: 11.1.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
       unixify: 1.0.0
 
-  /@graphql-tools/load/7.8.9_graphql@16.6.0:
-    resolution: {integrity: sha512-/eHRv6OCTI/Ir5XcbtSx0XbW3zOQVscp2MZQFGZKDzqCcGD+NVy4mLCoBwR/OsOUpvWAwMnc+Llb4SDKAYGmjQ==}
+  /@graphql-tools/load/7.8.10_graphql@16.6.0:
+    resolution: {integrity: sha512-Mc1p7ZSxrW5yGG3BLQnhiL8RPG0HdxFVoHV7fpx2adp4o1V7BzDjKRSbCnAxShA1wA4n8wbA+n7NTC0edi4eNA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/schema': 9.0.13_graphql@16.6.0
+      '@graphql-tools/schema': 9.0.14_graphql@16.6.0
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
       p-limit: 3.1.0
-      tslib: 2.4.1
+      tslib: 2.5.0
 
-  /@graphql-tools/merge/8.3.15_graphql@16.6.0:
-    resolution: {integrity: sha512-hYYOlsqkUlL6oOo7zzuk6hIv7xQzy+x21sgK84d5FWaiWYkLYh9As8myuDd9SD5xovWWQ9m/iRhIOVDEMSyEKA==}
+  /@graphql-tools/merge/8.3.16_graphql@16.6.0:
+    resolution: {integrity: sha512-In0kcOZcPIpYOKaqdrJ3thdLPE7TutFnL9tbrHUy2zCinR2O/blpRC48jPckcs0HHrUQ0pGT4HqvzMkZUeEBAw==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@graphql-tools/schema/7.1.5_graphql@15.8.0:
     resolution: {integrity: sha512-uyn3HSNSckf4mvQSq0Q07CPaVZMNFCYEVxroApOaw802m9DcZPgf9XVPy/gda5GWj9AhbijfRYVTZQgHnJ4CXA==}
@@ -3332,15 +3332,15 @@ packages:
       tslib: 2.2.0
       value-or-promise: 1.0.6
 
-  /@graphql-tools/schema/9.0.13_graphql@16.6.0:
-    resolution: {integrity: sha512-guRA3fwAtv+M1Kh930P4ydH9aKJTWscIkhVFcWpj/cnjYYxj88jkEJ15ZNiJX/2breNY+sbVgmlgLKb6aXi/Jg==}
+  /@graphql-tools/schema/9.0.14_graphql@16.6.0:
+    resolution: {integrity: sha512-U6k+HY3Git+dsOEhq+dtWQwYg2CAgue8qBvnBXoKu5eEeH284wymMUoNm0e4IycOgMCJANVhClGEBIkLRu3FQQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/merge': 8.3.15_graphql@16.6.0
+      '@graphql-tools/merge': 8.3.16_graphql@16.6.0
       '@graphql-tools/utils': 9.1.4_graphql@16.6.0
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
       value-or-promise: 1.0.12
 
   /@graphql-tools/utils/7.10.0_graphql@15.8.0:
@@ -3359,7 +3359,7 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 16.6.0
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@humanwhocodes/config-array/0.9.5:
     resolution: {integrity: sha512-ObyMyWxZiCu/yTisA7uzx81s40xR2fD5Cg/2Kq7G02ajkNubJf6BopgDTmDyc3U7sXpNKM8cYOw7s7Tyr+DnCw==}
@@ -3670,7 +3670,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.18.9
       '@quilted/events': 0.1.16
-      '@quilted/graphql': 0.4.51
+      '@quilted/graphql': 0.4.54
       graphql: 16.4.0
     transitivePeerDependencies:
       - '@jest/globals'
@@ -3910,7 +3910,7 @@ packages:
     dependencies:
       asn1js: 3.0.5
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@peculiar/asn1-x509/2.3.2:
     resolution: {integrity: sha512-o8cWyU8py1D8fhrg4z0fRB1k++q2c6YOjoBw7huDRrMK2SdG/sRahWGKDFSuxW+dC/2U4bRslWvDNPkBDSxyEg==}
@@ -3926,7 +3926,7 @@ packages:
     resolution: {integrity: sha512-coUfuoMeIB7B8/NMekxaDzLhaYmp0HZNPEjYRm9goRou8UZIC3z21s0sL9AWoCw4EG876QyO3kYrc61WNF9B/w==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /@peculiar/webcrypto/1.4.1:
     resolution: {integrity: sha512-eK4C6WTNYxoI7JOabMoZICiyqRRtJB220bh0Mbj5RwRycleZf9BPyZoxsTvpP0FpmVS2aS13NKOuh5/tN3sIRw==}
@@ -3935,7 +3935,7 @@ packages:
       '@peculiar/asn1-schema': 2.3.3
       '@peculiar/json-schema': 1.1.12
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.5.0
       webcrypto-core: 1.7.5
 
   /@preact/signals-core/1.2.3:
@@ -4043,7 +4043,7 @@ packages:
       magic-string: 0.25.9
     dev: true
 
-  /@quilted/aws/0.3.43_8d202ec301402fdad71ee46ed5076355:
+  /@quilted/aws/0.3.43_644816d660e09142ceff0176c467c5f3:
     resolution: {integrity: sha512-OezJ5TQdjsx2IwUvvTFGbr+jGMB5CJ2WcCBT0Twr5sRaeriwe7ON42jjWjf3KCkCUrAmV2FJ0FKJTZkFsbOO0g==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4054,8 +4054,8 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.178_c373fd44778ef36bf50aee7a5532f8ed
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
+      '@quilted/craft': 0.1.183_a3dd2550ffe61b318ad9f2929768832a
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
     dev: true
@@ -4080,7 +4080,7 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare/0.1.48_8d202ec301402fdad71ee46ed5076355:
+  /@quilted/cloudflare/0.1.48_644816d660e09142ceff0176c467c5f3:
     resolution: {integrity: sha512-tREvbwfl5xXTFjANznBRHXxcrMgJsi1oA6D5IA6TmxB++OtAOjQ02ZixTcZDW82P/uNDVWP2dYyRhXsQsSbAwg==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4093,8 +4093,8 @@ packages:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/craft': 0.1.178_c373fd44778ef36bf50aee7a5532f8ed
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
+      '@quilted/craft': 0.1.183_a3dd2550ffe61b318ad9f2929768832a
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
       common-tags: 1.8.2
       mime: 2.6.0
       miniflare: 2.10.0
@@ -4106,11 +4106,11 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@quilted/craft/0.1.178_c373fd44778ef36bf50aee7a5532f8ed:
-    resolution: {integrity: sha512-QZ9j5PEPtZQG7p53jUNX4fv+AOasruqp8ZCXn1tTYrTy5Bg7uExC5AGE3LlyPniVR6QjmI9z3GRJeZtucjuTkQ==}
+  /@quilted/craft/0.1.183_a3dd2550ffe61b318ad9f2929768832a:
+    resolution: {integrity: sha512-WPLOjoPDvM9i4ioQuxSu4giJhLBhvhOnTxwxJZv2zIaF+v3UPncVmJQcsVPAITkRFA38xB2CHuH3GZmtXVq1mg==}
     hasBin: true
     peerDependencies:
-      '@quilted/quilt': ^0.5.126
+      '@quilted/quilt': ^0.5.129
       react: ^18.0.0
       typescript: ^4.9.0
     peerDependenciesMeta:
@@ -4131,12 +4131,12 @@ packages:
       '@quilted/async': 0.3.32_@babel+core@7.20.5
       '@quilted/browserslist-config': 0.1.9
       '@quilted/eslint-config': 0.1.16_typescript@4.9.4
-      '@quilted/graphql': 0.4.51
-      '@quilted/polyfills': 0.2.32
+      '@quilted/graphql': 0.4.54
+      '@quilted/polyfills': 0.2.33
       '@quilted/prettier': 0.2.11
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
       '@quilted/rollup-plugin-fix-commonjs-preserve-modules': 0.1.13_rollup@3.7.4
-      '@quilted/sewing-kit': 0.2.37
+      '@quilted/sewing-kit': 0.2.38
       '@quilted/typescript': 0.2.18_typescript@4.9.4
       '@quilted/workers': 0.2.33_@babel+core@7.20.5
       '@rollup/plugin-alias': 4.0.2_rollup@3.7.4
@@ -4234,8 +4234,8 @@ packages:
     resolution: {integrity: sha512-siIgbz+qn/LiT5vZPNioKENWZG6zGTrOgsLNsCTk/BzhcqDZ1IpxFSnxC2V0P5S8VQa2FBPuj+C+WlXtLaPAmw==}
     engines: {node: '>=14.0.0'}
 
-  /@quilted/graphql/0.4.51:
-    resolution: {integrity: sha512-JynAYvasX511PWv3l/9pPPQ02m3QzuoxAGapKRKJnkPCmSRFMk53RkqKYOKA9FgmuDQgB9vxKcgnNN9AqRYZeA==}
+  /@quilted/graphql/0.4.54:
+    resolution: {integrity: sha512-Fpy8DUIP8dXZ9BzmE4E6K9ZZtux709dPv8rof8LqoWJ7aQZ0hVAcazkNXQ3eBOHXkyrHeLJZElxbYk4kxo6zKw==}
     hasBin: true
     peerDependencies:
       '@jest/globals': ^27.0.0
@@ -4250,8 +4250,8 @@ packages:
       '@babel/types': 7.20.7
       '@graphql-tools/graphql-file-loader': 7.5.14_graphql@16.6.0
       '@graphql-tools/json-file-loader': 7.4.15_graphql@16.6.0
-      '@graphql-tools/load': 7.8.9_graphql@16.6.0
-      '@graphql-tools/schema': 9.0.13_graphql@16.6.0
+      '@graphql-tools/load': 7.8.10_graphql@16.6.0
+      '@graphql-tools/schema': 9.0.14_graphql@16.6.0
       '@quilted/useful-types': 0.2.17
       '@types/chance': 1.1.3
       arg: 4.1.3
@@ -4286,8 +4286,8 @@ packages:
       react: /@quilted/react/18.2.0
     dev: true
 
-  /@quilted/polyfills/0.2.32:
-    resolution: {integrity: sha512-yMVvtKkkCoLpi8VhSODOmyWg8Fot0Oz8mQ0I34RUbBpzrMzjGA4hKmszZFfDx0+kSVHZPbcSJrKWg7eUatPLlQ==}
+  /@quilted/polyfills/0.2.33:
+    resolution: {integrity: sha512-0jdmZcxqDf7l6iG8tdEFu5buZS2hflJhjBLNEF0Ghkr8q58kW44R/ELVg8ehZW49o/ySDan2Woh1JR0bv8l7VA==}
     dependencies:
       '@peculiar/webcrypto': 1.4.1
       '@remix-run/web-fetch': 4.3.2
@@ -4303,8 +4303,8 @@ packages:
     resolution: {integrity: sha512-OGkhMYoOmy+9udbMFfT2WtGWzYOCRO1hslAyYSJhGTMUQf9mXUyve6ceOfA+to8WKESAJ9LMYJ93LFg8YOIfmQ==}
     dev: true
 
-  /@quilted/quilt/0.5.127_f855ab86e273f1d734a79d802e66c066:
-    resolution: {integrity: sha512-5nGnAmlRkvLb2XrjH0OdLINc86lleDzjTGl87O6U84sC4qa7ZzTj3Db37kM/oLW35oLj4p2jAXgdOlQJwLt/7w==}
+  /@quilted/quilt/0.5.129_f855ab86e273f1d734a79d802e66c066:
+    resolution: {integrity: sha512-SbUPLG63ad1PZ5cAqzGXH8ogKnqaZcY3n5inyQ7KXnjblRD094YM/SQ1qU009dRKu3PsPr+ple+mP//TSG5moA==}
     peerDependencies:
       prettier: ^2.0.0
       react: ^18.0.0
@@ -4319,13 +4319,13 @@ packages:
     dependencies:
       '@quilted/async': 0.3.32
       '@quilted/events': 0.1.16
-      '@quilted/graphql': 0.4.51
-      '@quilted/polyfills': 0.2.32
+      '@quilted/graphql': 0.4.54
+      '@quilted/polyfills': 0.2.33
       '@quilted/react': 18.2.0
       '@quilted/react-async': 0.3.41_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-dom': 18.2.1
-      '@quilted/react-graphql': 0.4.51_@quilted+react@18.2.0
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-graphql': 0.4.52_@quilted+react@18.2.0
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-http': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-idle': 0.3.21_@quilted+react@18.2.0
       '@quilted/react-localize': 0.1.13_be43597407ad18e0a9290e233ba663c5
@@ -4362,7 +4362,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/async': 0.3.32
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-server-render': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       react: /@quilted/react/18.2.0
     transitivePeerDependencies:
@@ -4381,23 +4381,23 @@ packages:
       preact-render-to-string: 5.2.3_preact@10.11.3
     dev: true
 
-  /@quilted/react-email/0.2.31_e9cae1e08d7374508de5817ff2da6f36:
-    resolution: {integrity: sha512-7IO7XOdpY3W/MC4wQ+UNZe+1xddqaN631GtpRVuha/ozjZOyWYty45TOOQQCYl4RGkZa6iZZV8f6jFjYuyWCmQ==}
+  /@quilted/react-email/0.2.32_e9cae1e08d7374508de5817ff2da6f36:
+    resolution: {integrity: sha512-akhJd4GtFJ3YBMab+zYEiLY+QyoJQpK18wIBRs6vfikWf8ZTdlBws7P1TiaWH73PG4G/7Z5jvWwMG85dNa690A==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
     peerDependenciesMeta:
       react:
         optional: true
     dependencies:
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-server-render': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       react: /@quilted/react/18.2.0
     transitivePeerDependencies:
       - react-dom
     dev: true
 
-  /@quilted/react-graphql/0.4.51_@quilted+react@18.2.0:
-    resolution: {integrity: sha512-x7G3AFuYo0KBfyZ/a+YqynM0VZT9gYXI4AQTa1RTIX29TM/ynHC8ns5ewTR44NSBe1ynHzYq8k+o7eSzFjMnhg==}
+  /@quilted/react-graphql/0.4.52_@quilted+react@18.2.0:
+    resolution: {integrity: sha512-QeahvtZqTIupONOdZcYqwmYi0gM44AnfHQ8jaorb4bpfbrTjK10URAOKqBRcd7kzmZZvAjLjouxWLG1R03WRWw==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
     peerDependenciesMeta:
@@ -4405,7 +4405,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/async': 0.3.32
-      '@quilted/graphql': 0.4.51
+      '@quilted/graphql': 0.4.54
       '@quilted/react-utilities': 0.1.9_@quilted+react@18.2.0
       '@quilted/useful-types': 0.2.17
       react: /@quilted/react/18.2.0
@@ -4417,8 +4417,8 @@ packages:
       - jest-matcher-utils
     dev: true
 
-  /@quilted/react-html/0.3.44_e9cae1e08d7374508de5817ff2da6f36:
-    resolution: {integrity: sha512-z116A8ksfEqmU0BVUS1tY7LY5Z9bjEmqq5rRs5PxN223ztad8aELNYdD9Xzq1emwtyXTuAUoeLfpbKdaHfsZdQ==}
+  /@quilted/react-html/0.3.45_e9cae1e08d7374508de5817ff2da6f36:
+    resolution: {integrity: sha512-qed1zp1dYgzrwA8i2FFv4BnW97RDDUikfwNfBDN7r2Z8VOnFbUFjka02kSuEEmcp+ZI25EMtR5YsctRkTJnJew==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
@@ -4443,7 +4443,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/http': 0.2.29
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-server-render': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-utilities': 0.1.9_@quilted+react@18.2.0
       js-cookie: 3.0.1
@@ -4479,7 +4479,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/localize': 0.1.7
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-http': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-router': 0.3.55_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-utilities': 0.1.9_@quilted+react@18.2.0
@@ -4503,7 +4503,7 @@ packages:
       react: /@quilted/react/18.2.0
     dev: true
 
-  /@quilted/react-query/0.1.15_5e1f016f9322b33ad9511486459d233b:
+  /@quilted/react-query/0.1.15_d8ac9d60464a1a2c442ab5d9746d6f8a:
     resolution: {integrity: sha512-QuXK9FrIjarL3DJE3Iu2/qb0+x40KPTsi3AJMKbL3f0ogWG9vwjGNPfdVLN5zpYimVyFmEnhjq5OdVVsuTEMkg==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4518,8 +4518,8 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.178_c373fd44778ef36bf50aee7a5532f8ed
-      '@quilted/quilt': 0.5.127_f855ab86e273f1d734a79d802e66c066
+      '@quilted/craft': 0.1.183_a3dd2550ffe61b318ad9f2929768832a
+      '@quilted/quilt': 0.5.129_f855ab86e273f1d734a79d802e66c066
       '@quilted/useful-types': 0.2.17
       '@tanstack/react-query': 4.20.4_e9cae1e08d7374508de5817ff2da6f36
       react: /@quilted/react/18.2.0
@@ -4533,7 +4533,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/react-html': 0.3.44_e9cae1e08d7374508de5817ff2da6f36
+      '@quilted/react-html': 0.3.45_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-http': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
       '@quilted/react-performance': 0.1.17_@quilted+react@18.2.0
       '@quilted/react-server-render': 0.3.27_e9cae1e08d7374508de5817ff2da6f36
@@ -4674,8 +4674,8 @@ packages:
   /@quilted/routing/0.2.24:
     resolution: {integrity: sha512-TrZC1S9JLg2/1OUJjLGZNdPEiZngdyxe2kY6eX0K7FsHBNMr1Keh/nSGTZ9Cc3aSHFaF7uta08oKiV+oEu4XWA==}
 
-  /@quilted/sewing-kit/0.2.37:
-    resolution: {integrity: sha512-VRXP3qzef2hpFPTjUuA8M0qCreZrbgjVe62R0oHsFaLDtuPmvvXc5kenwBXqurv5V98AoflyTyxD8FzNqPoWIA==}
+  /@quilted/sewing-kit/0.2.38:
+    resolution: {integrity: sha512-e0Du02yuePDSJnL6mYZe+/QOmSGVoxCHmKs5JCeXaB+gXyU60XdtJgH7QDQStiLnyS8KNUCNINmReO67+QhzZQ==}
     dependencies:
       common-tags: 1.8.2
       globby: 13.1.1
@@ -11574,8 +11574,8 @@ packages:
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
 
-  /tslib/2.4.1:
-    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+  /tslib/2.5.0:
+    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
 
   /tsutils/3.21.0_typescript@4.9.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -11924,7 +11924,7 @@ packages:
       '@peculiar/json-schema': 1.1.12
       asn1js: 3.0.5
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.5.0
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
