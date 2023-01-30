@@ -6,9 +6,9 @@ import {prisma} from '../config/craft/plugins';
 export default createProject((app) => {
   app.use(
     quiltApp({
-      entry: './App.tsx',
-      assets: {baseUrl: '/assets/app/'},
       develop: {port: 8912},
+      assets: {baseUrl: '/assets/app/'},
+      browser: {entry: './browser.tsx'},
       server: {
         entry: './server.tsx',
         env: {

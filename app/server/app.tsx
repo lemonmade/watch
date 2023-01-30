@@ -1,14 +1,14 @@
+import {createAsyncComponent} from '@quilted/quilt';
 import {createServerRender} from '@quilted/quilt/server';
 import {createAssetManifest} from '@quilted/quilt/magic/asset-manifest';
 
 import {authenticate} from './shared/auth';
 
+const App = createAsyncComponent(() => import('../App'));
+
 const appHandler = createServerRender(
   async (request) => {
-    const [{default: App}, authentication] = await Promise.all([
-      import('../App'),
-      authenticate(request),
-    ]);
+    const [authentication] = await Promise.all([authenticate(request)]);
 
     const user = authentication.user
       ? {
