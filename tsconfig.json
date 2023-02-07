@@ -17,6 +17,7 @@
     {"path": "./app"},
     {"path": "./functions/clips-upload"},
     {"path": "./functions/email"},
+    {"path": "./functions/images"},
     {"path": "./functions/metrics"},
     {"path": "./functions/router"},
     {"path": "./functions/shared"},

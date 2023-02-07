@@ -1,6 +1,6 @@
 import {createRequestRouter} from '@quilted/request-router';
 import type {R2Bucket, Fetcher} from '@cloudflare/workers-types';
-import type {} from '@quilted/cloudflare';
+import type {CloudflareRequestContext} from '@quilted/cloudflare';
 
 const APP_HOST = 'watch-test-app.fly.dev';
 
@@ -11,6 +11,7 @@ interface Environment {
   SERVICE_EMAIL_QUEUE: Fetcher;
   SERVICE_STRIPE: Fetcher;
   SERVICE_METRICS: Fetcher;
+  SERVICE_IMAGES: Fetcher;
 }
 
 declare module '@quilted/cloudflare' {
@@ -18,7 +19,7 @@ declare module '@quilted/cloudflare' {
 }
 
 // TODO: caching
-const router = createRequestRouter();
+const router = createRequestRouter<CloudflareRequestContext>();
 
 router.any(
   'assets/app',
@@ -29,6 +30,16 @@ router.any(
 router.any(
   'assets/clips',
   (request, {env}) => assetFromBucket(request.URL, env.CLIPS_ASSETS),
+  {exact: false},
+);
+
+router.any(
+  'assets/images',
+  (request, {env}) => {
+    const newUrl = new URL(request.url);
+    newUrl.pathname = newUrl.pathname.replace('/assets/images', '');
+    return env.SERVICE_IMAGES.fetch(newUrl, request as any) as any;
+  },
   {exact: false},
 );
 

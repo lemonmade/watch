@@ -8,6 +8,11 @@ usage_model = "unbound"
 workers_dev = false
 
 [[services]]
+binding = "SERVICE_IMAGES"
+service = "watch-images"
+environment = "production"
+
+[[services]]
 binding = "SERVICE_UPLOAD_CLIPS"
 service = "watch-internal-upload-clips"
 environment = "production"

@@ -93,6 +93,7 @@ jobs:
       matrix:
         worker:
           - email
+          - images
           - clips-upload
           - metrics
           - stripe

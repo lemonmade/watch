@@ -9,6 +9,7 @@ import {bufferFromSlice, type Slice} from '~/global/slices';
 import type {Resolver, QueryResolver, MutationResolver} from './types';
 import {toGid, fromGid} from './utilities/id';
 import {toHandle} from './utilities/handle';
+import {imageUrl} from './utilities/images';
 
 import {
   Series as SeriesLists,
@@ -88,7 +89,7 @@ export const Series: SeriesResolver = {
     });
   },
   poster({posterUrl}) {
-    return posterUrl ? {source: posterUrl} : null;
+    return posterUrl ? {source: imageUrl(posterUrl, {width: 300})} : null;
   },
   ...SeriesLists,
   ...SeriesWatches,
@@ -132,7 +133,7 @@ export const Season: SeasonResolver = {
     return episodes;
   },
   poster({posterUrl}) {
-    return posterUrl ? {source: posterUrl} : null;
+    return posterUrl ? {source: imageUrl(posterUrl, {width: 300})} : null;
   },
   isSpecials({number}) {
     return number === 0;
@@ -172,7 +173,7 @@ export const Episode: EpisodeResolver = {
     });
   },
   still({stillUrl}) {
-    return stillUrl ? {source: stillUrl} : null;
+    return stillUrl ? {source: imageUrl(stillUrl, {width: 1_000})} : null;
   },
   async hasAired({firstAired, seasonId}, _, {prisma}) {
     if (firstAired != null) {

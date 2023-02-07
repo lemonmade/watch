@@ -156,6 +156,12 @@ importers:
       react: /@quilted/react/18.2.0
       react-dom: /@quilted/react-dom/18.2.1
 
+  functions/images:
+    specifiers:
+      '@cloudflare/workers-types': ^4.20221111.1
+    devDependencies:
+      '@cloudflare/workers-types': 4.20221111.1
+
   functions/metrics:
     specifiers:
       '@cloudflare/workers-types': ^4.20221111.1
@@ -9099,7 +9105,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
