@@ -14,7 +14,7 @@ importers:
       '@quilted/aws': ^0.3.43
       '@quilted/browserslist-config': ^0.1.9
       '@quilted/cloudflare': ^0.1.48
-      '@quilted/craft': ^0.1.187
+      '@quilted/craft': ^0.1.188
       '@quilted/eslint-config': ^0.1.16
       '@quilted/prettier': ^0.2.11
       '@quilted/quilt': ^0.5.130
@@ -36,10 +36,10 @@ importers:
       '@changesets/changelog-github': 0.4.3
       '@changesets/cli': 2.21.1
       '@prisma/client': 4.7.1_prisma@4.7.1
-      '@quilted/aws': 0.3.43_f002a7c6ed82d0f173e39bd7240a5034
+      '@quilted/aws': 0.3.43_ec7ba0cfffd2d2baab28d2b344d4af6f
       '@quilted/browserslist-config': 0.1.9
-      '@quilted/cloudflare': 0.1.48_f002a7c6ed82d0f173e39bd7240a5034
-      '@quilted/craft': 0.1.187_eee9e3a7a05ea010005dde697bfe7d2e
+      '@quilted/cloudflare': 0.1.48_ec7ba0cfffd2d2baab28d2b344d4af6f
+      '@quilted/craft': 0.1.188_eee9e3a7a05ea010005dde697bfe7d2e
       '@quilted/eslint-config': 0.1.16_typescript@4.9.4
       '@quilted/prettier': 0.2.11
       '@quilted/quilt': 0.5.130_f6d853d570c2fdbe788158aef96e3b81
@@ -106,7 +106,7 @@ importers:
       '@lemon/zest': link:../packages/zest
       '@lemonmade/graphql-live': 0.1.12_@babel+runtime@7.18.9
       '@quilted/quilt': 0.5.130_f6d853d570c2fdbe788158aef96e3b81
-      '@quilted/react-query': 0.1.15_c275c55fd8e19b545cbb9ce835296576
+      '@quilted/react-query': 0.1.15_e7f874dfeb5fd6975ceba50e8ee7b10c
       '@remote-ui/core': 2.2.1
       '@remote-ui/react': 5.0.0_@quilted+react@18.2.0
       '@simplewebauthn/browser': 6.2.1
@@ -4052,7 +4052,7 @@ packages:
       magic-string: 0.25.9
     dev: true
 
-  /@quilted/aws/0.3.43_f002a7c6ed82d0f173e39bd7240a5034:
+  /@quilted/aws/0.3.43_ec7ba0cfffd2d2baab28d2b344d4af6f:
     resolution: {integrity: sha512-OezJ5TQdjsx2IwUvvTFGbr+jGMB5CJ2WcCBT0Twr5sRaeriwe7ON42jjWjf3KCkCUrAmV2FJ0FKJTZkFsbOO0g==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4063,7 +4063,7 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.187_eee9e3a7a05ea010005dde697bfe7d2e
+      '@quilted/craft': 0.1.188_eee9e3a7a05ea010005dde697bfe7d2e
       '@quilted/quilt': 0.5.130_f6d853d570c2fdbe788158aef96e3b81
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
@@ -4089,7 +4089,7 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare/0.1.48_f002a7c6ed82d0f173e39bd7240a5034:
+  /@quilted/cloudflare/0.1.48_ec7ba0cfffd2d2baab28d2b344d4af6f:
     resolution: {integrity: sha512-tREvbwfl5xXTFjANznBRHXxcrMgJsi1oA6D5IA6TmxB++OtAOjQ02ZixTcZDW82P/uNDVWP2dYyRhXsQsSbAwg==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4102,7 +4102,7 @@ packages:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/craft': 0.1.187_eee9e3a7a05ea010005dde697bfe7d2e
+      '@quilted/craft': 0.1.188_eee9e3a7a05ea010005dde697bfe7d2e
       '@quilted/quilt': 0.5.130_f6d853d570c2fdbe788158aef96e3b81
       common-tags: 1.8.2
       mime: 2.6.0
@@ -4115,8 +4115,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@quilted/craft/0.1.187_eee9e3a7a05ea010005dde697bfe7d2e:
-    resolution: {integrity: sha512-URCfd8Zj5494MGpPwTci91xLuUco6JQA7/VdTjPfTIkaa5upWAMFQoZtYp08pfFJjcSTCnLIwzA7H99hSLEq1w==}
+  /@quilted/craft/0.1.188_eee9e3a7a05ea010005dde697bfe7d2e:
+    resolution: {integrity: sha512-oLH3V7qo4/3s6TAMOTNduI3HZkSQdKJoOr4tjZnvuqx+/ExlZGZxmWWUoWuY/yyFASnh/O6N57Zt7xBGQRLxFw==}
     hasBin: true
     peerDependencies:
       '@quilted/quilt': ^0.5.129
@@ -4514,7 +4514,7 @@ packages:
       react: /@quilted/react/18.2.0
     dev: true
 
-  /@quilted/react-query/0.1.15_c275c55fd8e19b545cbb9ce835296576:
+  /@quilted/react-query/0.1.15_e7f874dfeb5fd6975ceba50e8ee7b10c:
     resolution: {integrity: sha512-QuXK9FrIjarL3DJE3Iu2/qb0+x40KPTsi3AJMKbL3f0ogWG9vwjGNPfdVLN5zpYimVyFmEnhjq5OdVVsuTEMkg==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4529,7 +4529,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.187_eee9e3a7a05ea010005dde697bfe7d2e
+      '@quilted/craft': 0.1.188_eee9e3a7a05ea010005dde697bfe7d2e
       '@quilted/quilt': 0.5.130_f6d853d570c2fdbe788158aef96e3b81
       '@quilted/useful-types': 0.2.17
       '@tanstack/react-query': 4.20.4_e9cae1e08d7374508de5817ff2da6f36

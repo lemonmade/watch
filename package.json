@@ -15,7 +15,7 @@
     "@quilted/aws": "^0.3.43",
     "@quilted/browserslist-config": "^0.1.9",
     "@quilted/cloudflare": "^0.1.48",
-    "@quilted/craft": "^0.1.187",
+    "@quilted/craft": "^0.1.188",
     "@quilted/eslint-config": "^0.1.16",
     "@quilted/prettier": "^0.2.11",
     "@quilted/quilt": "^0.5.130",
