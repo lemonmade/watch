@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prisma": "prisma",
-    "start": "node ./build/runtime/index.js"
+    "start": "node ./build/runtime/runtime.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
@@ -20,7 +20,7 @@
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@lemonmade/graphql-live": "^0.1.12",
-    "@quilted/quilt": "^0.5.130",
+    "@quilted/quilt": "^0.5.134",
     "@quilted/react-query": "^0.1.15",
     "@remote-ui/core": "^2.2.1",
     "@remote-ui/react": "^5.0.0",
