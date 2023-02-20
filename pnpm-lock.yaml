@@ -322,13 +322,13 @@ importers:
       '@preact/signals-core': ^1.2.3
       '@quilted/react-utilities': ^0.1.9
       '@remote-ui/core': ^2.2.1
-      '@types/react': ^18.0.28
+      '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@watching/clips': workspace:^0.2.27
       '@watching/clips-dom': workspace:^0.1.13
       '@watching/thread-signals': workspace:^0.1.7
       p-limit: ^4.0.0
-      preact: ^10.12.1
+      preact: ^10.12.0
       terser: ^5.15.1
     dependencies:
       '@preact/signals-core': 1.2.3
@@ -9112,7 +9112,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonwebtoken/8.5.1:
