@@ -79,33 +79,33 @@ export default function App(props: AppContextProps) {
 const routes: RouteDefinition[] = [
   {
     match: '/',
-    render: () => <Start />,
-    renderPreload: () => <Start.Preload />,
+    render: <Start />,
+    renderPreload: <Start.Preload />,
   },
   {
     match: 'sign-in',
-    render: () => <SignIn />,
-    renderPreload: () => <SignIn.Preload />,
+    render: <SignIn />,
+    renderPreload: <SignIn.Preload />,
   },
   {
     match: 'signed-out',
-    render: () => <SignedOut />,
+    render: <SignedOut />,
   },
   {
     match: 'create-account',
     children: [
       {
         match: '/',
-        render: () => <CreateAccount />,
-        renderPreload: () => <CreateAccount.Preload />,
+        render: <CreateAccount />,
+        renderPreload: <CreateAccount.Preload />,
       },
       {
         match: 'check-your-email',
-        render: () => <CheckYourEmail />,
+        render: <CheckYourEmail />,
       },
     ],
   },
-  {match: 'goodbye', render: () => <Goodbye />},
+  {match: 'goodbye', render: <Goodbye />},
   {
     match: 'app',
     render: ({children}) => (
@@ -113,35 +113,35 @@ const routes: RouteDefinition[] = [
         <Frame>{children}</Frame>
       </Authenticated>
     ),
-    renderPreload: () => <Frame.Preload />,
+    renderPreload: <Frame.Preload />,
     children: [
       {
         match: '/',
-        render: () => <Watching />,
-        renderPreload: () => <Watching.Preload />,
+        render: <Watching />,
+        renderPreload: <Watching.Preload />,
       },
       {
         match: 'finished',
-        render: () => <FinishedWatching />,
-        renderPreload: () => <FinishedWatching.Preload />,
+        render: <FinishedWatching />,
+        renderPreload: <FinishedWatching.Preload />,
       },
       {
         match: 'watch-later',
-        render: () => <WatchLater />,
-        renderPreload: () => <WatchLater.Preload />,
+        render: <WatchLater />,
+        renderPreload: <WatchLater.Preload />,
       },
       {
         match: ['me', 'my'],
         children: [
           {
             match: '/',
-            render: () => <Account />,
-            renderPreload: () => <Account.Preload />,
+            render: <Account />,
+            renderPreload: <Account.Preload />,
           },
           {
             match: 'payment',
-            render: () => <Payment />,
-            renderPreload: () => <Payment.Preload />,
+            render: <Payment />,
+            renderPreload: <Payment.Preload />,
           },
         ],
       },
@@ -150,74 +150,74 @@ const routes: RouteDefinition[] = [
         children: [
           {
             match: '/',
-            render: () => <Developer />,
-            renderPreload: () => <Developer.Preload />,
+            render: <Developer />,
+            renderPreload: <Developer.Preload />,
           },
           {
             match: 'apps',
-            render: () => <DevelopedApps />,
-            renderPreload: () => <DevelopedApps.Preload />,
+            render: <DevelopedApps />,
+            renderPreload: <DevelopedApps.Preload />,
           },
           {
             match: 'access-tokens',
-            render: () => <AccessTokens />,
-            renderPreload: () => <AccessTokens.Preload />,
+            render: <AccessTokens />,
+            renderPreload: <AccessTokens.Preload />,
           },
           {
             match: 'cli',
             children: [
               {
                 match: 'authenticate',
-                render: () => <AuthenticateCli />,
-                renderPreload: () => <AuthenticateCli.Preload />,
+                render: <AuthenticateCli />,
+                renderPreload: <AuthenticateCli.Preload />,
               },
               {
                 match: 'created-account',
-                render: () => <CreatedAccountFromCli />,
-                renderPreload: () => <CreatedAccountFromCli.Preload />,
+                render: <CreatedAccountFromCli />,
+                renderPreload: <CreatedAccountFromCli.Preload />,
               },
             ],
           },
           {
             match: 'console',
-            render: () => <Console />,
-            renderPreload: () => <Console.Preload />,
+            render: <Console />,
+            renderPreload: <Console.Preload />,
           },
         ],
       },
       {
         match: 'apps',
-        render: () => <Apps />,
-        renderPreload: () => <Apps.Preload />,
+        render: <Apps />,
+        renderPreload: <Apps.Preload />,
       },
       {
         match: 'subscriptions',
-        render: () => <Subscriptions />,
-        renderPreload: () => <Subscriptions.Preload />,
+        render: <Subscriptions />,
+        renderPreload: <Subscriptions.Preload />,
       },
       {
         match: 'search',
-        render: () => <Search />,
-        renderPreload: () => <Search.Preload />,
+        render: <Search />,
+        renderPreload: <Search.Preload />,
       },
       {
         match: 'series',
         children: [
           {
             match: '.random',
-            render: () => <RandomSeries />,
+            render: <RandomSeries />,
           },
           {
             match: /\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/,
             render: ({matched}) => (
               <Series id={`gid://watch/Series/${matched}`} />
             ),
-            renderPreload: () => <Series.Preload />,
+            renderPreload: <Series.Preload />,
           },
           {
             match: /[\w-]+/,
             render: ({matched}) => <Series handle={matched} />,
-            renderPreload: () => <Series.Preload />,
+            renderPreload: <Series.Preload />,
           },
         ],
       },
@@ -226,14 +226,14 @@ const routes: RouteDefinition[] = [
         children: [
           {
             match: '.random',
-            render: () => <RandomWatchThrough />,
+            render: <RandomWatchThrough />,
           },
           {
             match: /[\w-]+/,
             render: ({matched}) => (
               <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
             ),
-            renderPreload: () => <WatchThrough.Preload />,
+            renderPreload: <WatchThrough.Preload />,
           },
         ],
       },
@@ -241,7 +241,7 @@ const routes: RouteDefinition[] = [
   },
   {
     match: 'internal',
-    children: [{match: 'components', render: () => <ComponentLibrary />}],
+    children: [{match: 'components', render: <ComponentLibrary />}],
   },
 ];
 
