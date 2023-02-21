@@ -45,4 +45,4 @@ RUN tree . -a -L 2
 
 ENV NODE_ENV production
 
-CMD ["node", "./app/build/server/index.js"]
+CMD ["node", "./app/build/server/server.js"]
