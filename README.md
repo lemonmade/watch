@@ -36,6 +36,17 @@ Add the following to your `/etc/hosts` file (only needed for https):
 127.0.0.1 watch.lemon.dev
 ```
 
+Make sure you have a (gitignored) `.env` file in the root of the project with at least the following contents:
+
+```sh
+# See 1Password for the values
+GITHUB_CLIENT_ID="ABC123"
+GITHUB_CLIENT_SECRET="XYZ789"
+TMDB_ACCESS_TOKEN="ABC123"
+# Generate some random value, I generally use 1Password
+JWT_DEFAULT_SECRET="imbue-madman-real-bizarre"
+```
+
 Run the development server:
 
 ```sh
@@ -47,7 +58,7 @@ pnpm develop
 We use [PlanetScale](https://planetscale.com) to host a MySQL database for the application, and manage the schema with [Prisma](https://www.prisma.io). Install the [`pscale` CLI](https://docs.planetscale.com/concepts/planetscale-environment-setup). Log in, and connect to the `watch-test-db` database on the `develop` branch:
 
 ```sh
-pscale connect watch-test-db initial-setup --port 3309
+pscale connect watch-test-db develop --port 3309
 ```
 
 Make sure the `DATABASE_URL` is updated in the root `.env` file to reflect this local connection to the database:

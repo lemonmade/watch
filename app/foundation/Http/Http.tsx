@@ -19,7 +19,13 @@ export function Http() {
         // We inject style tags into the page, so we need unsafe-inline
         styleSources={["'self'", "'unsafe-inline'"]}
         // data: needed for the favicon
-        imageSources={["'self'", 'data:', 'https://image.tmdb.org']}
+        // production URL used in development to get smaller images
+        imageSources={[
+          "'self'",
+          'data:',
+          'https://image.tmdb.org',
+          ...(Env.MODE === 'development' ? ['https://watch.lemon.tools'] : []),
+        ]}
         // blob: needed for the Quilt worker libraries; Safari does not
         // support worker-src, so we need to set child-src for it.
         childSources={["'self'", 'blob:']}

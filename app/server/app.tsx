@@ -1,6 +1,6 @@
 import {createAsyncComponent} from '@quilted/quilt';
 import {createServerRender} from '@quilted/quilt/server';
-import {createAssetManifest} from '@quilted/quilt/magic/asset-manifest';
+import {createBrowserAssets} from '@quilted/quilt/magic/assets';
 
 import {authenticate} from './shared/auth';
 
@@ -20,7 +20,7 @@ const appHandler = createServerRender(
     return <App user={user} />;
   },
   {
-    assets: createAssetManifest(),
+    assets: createBrowserAssets(),
   },
 );
 

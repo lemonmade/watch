@@ -6,11 +6,13 @@ export function imageUrl(
   source: string,
   options?: {width?: number; height?: number},
 ) {
-  if (Env.MODE === 'development' || !source.startsWith(BASE_URL)) {
+  if (!source.startsWith(BASE_URL)) {
     return source;
   }
 
-  const path = `/assets/images/${source.slice(BASE_URL.length)}`;
+  const path = `${
+    Env.MODE === 'development' ? 'https://watch.lemon.tools' : ''
+  }/assets/images/${source.slice(BASE_URL.length)}`;
 
   if (!options) return path;
 
