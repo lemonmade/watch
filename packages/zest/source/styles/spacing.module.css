@@ -1,0 +1,19 @@
+.spacingSmall2 {
+  gap: var(--z-spacing-small-2);
+}
+
+.spacingSmall1 {
+  gap: var(--z-spacing-small-1);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
+}
+
+.spacingLarge1 {
+  gap: var(--z-spacing-large-1);
+}
+
+.spacingLarge2 {
+  gap: var(--z-spacing-large-2);
+}

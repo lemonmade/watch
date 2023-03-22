@@ -8,7 +8,7 @@
 
 .Content {
   padding-block-end: calc(
-    var(--z-Action-minimum-size) + (2 * var(--z-spacing-small))
+    var(--z-Action-minimum-size) + (2 * var(--z-spacing-small-1))
   );
   padding-inline-end: env(safe-area-inset-right);
 }

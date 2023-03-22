@@ -6,7 +6,7 @@
   align-items: center;
   block-size: var(--z-internal-Tag-block-size);
   border: 1px solid var(--z-border-subdued-color);
-  padding: 0 var(--z-spacing-tiny);
+  padding: 0 var(--z-spacing-small-2);
   border-radius: var(--z-corner-radius-small);
   background-color: var(--z-text-subdued-color);
   color: var(--z-text-subdued-color);

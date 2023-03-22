@@ -18,9 +18,9 @@
 .PlaceholderContent {
   display: flex;
   flex-direction: column;
-  gap: var(--z-spacing-small);
+  gap: var(--z-spacing-small-1);
   align-items: var(--z-internal-inline-alignment);
-  padding: var(--z-spacing-small);
+  padding: var(--z-spacing-small-1);
   text-align: var(--z-internal-inline-alignment);
 }
 

@@ -53,9 +53,13 @@ const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
 const PADDING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
   ['none', false],
   ['tiny', styles.paddingTiny],
+  ['small.2', styles.paddingSmall2],
+  ['small.1', styles.paddingSmall1],
   ['small', styles.paddingSmall],
   ['base', styles.paddingBase],
   ['large', styles.paddingLarge],
+  ['large.1', styles.paddingLarge1],
+  ['large.2', styles.paddingLarge2],
   ['huge', styles.paddingHuge],
 ] as [SpacingKeyword, string | false][]);
 

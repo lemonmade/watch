@@ -10,16 +10,16 @@
   outline: none;
   touch-action: none;
   user-select: none;
-  padding: var(--z-spacing-tiny) 0;
+  padding: var(--z-spacing-small-2) 0;
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .interactive {
-  --z-internal-Rating-star-size: calc(var(--z-Action-minimum-size) - (2 * var(--z-spacing-small)));
+  --z-internal-Rating-star-size: calc(var(--z-Action-minimum-size) - (2 * var(--z-spacing-small-1)));
 
   border-radius: var(--z-corner-radius-base);
   background: var(--z-Action-background);
-  padding: var(--z-spacing-small);
+  padding: var(--z-spacing-small-1);
 
   &:focus,
   &:hover {

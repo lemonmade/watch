@@ -4,7 +4,7 @@ import {classes, variation} from '@lemon/css';
 import styles from './Icon.module.css';
 
 export type IconSource =
-  | 'arrowEnd'
+  | 'arrow.end'
   | 'watching'
   | 'watchlist'
   | 'subscription'
@@ -26,7 +26,7 @@ export type IconSource =
   | 'message'
   | 'gift'
   | 'success'
-  | 'disclosureInlineEnd';
+  | 'disclosure.inline.end';
 
 export interface IconProps {
   source: IconSource;
@@ -35,7 +35,7 @@ export interface IconProps {
 }
 
 const ICON_MAP = new Map<IconProps['source'], ComponentType>([
-  ['arrowEnd', ArrowEndIcon],
+  ['arrow.end', ArrowEndIcon],
   ['watching', WatchingIcon],
   ['watchlist', WatchlistIcon],
   ['subscription', SubscriptionIcon],
@@ -57,7 +57,7 @@ const ICON_MAP = new Map<IconProps['source'], ComponentType>([
   ['message', MessageIcon],
   ['gift', GiftIcon],
   ['success', SuccessIcon],
-  ['disclosureInlineEnd', DisclosureInlineEndIcon],
+  ['disclosure.inline.end', DisclosureInlineEndIcon],
 ]);
 
 export function Icon({source, size, emphasis}: IconProps) {

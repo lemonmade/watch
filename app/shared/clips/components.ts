@@ -4,11 +4,13 @@ import {Action} from './components/Action.tsx';
 import {BlockStack} from './components/BlockStack.tsx';
 import {Header} from './components/Header.tsx';
 import {Footer} from './components/Footer.tsx';
+import {Grid, BlockGrid, InlineGrid} from './components/Grid.tsx';
 import {Heading} from './components/Heading.tsx';
 import {Image} from './components/Image.tsx';
 import {InlineStack} from './components/InlineStack.tsx';
 import {Modal} from './components/Modal.tsx';
 import {Popover} from './components/Popover.tsx';
+import {Stack, BlockStack, InlineStack} from './components/Stack.tsx';
 import {Section} from './components/Section.tsx';
 import {Text} from './components/Text.tsx';
 import {TextBlock} from './components/TextBlock.tsx';
@@ -35,12 +37,10 @@ export {
 const Common: ReactComponentsForRemoteComponents<CommonComponents> =
   Object.freeze({
     Action,
-    BlockStack,
     Image,
     Footer,
     Header,
     Heading,
-    InlineStack,
     Modal,
     Popover,
     Section,
@@ -48,6 +48,14 @@ const Common: ReactComponentsForRemoteComponents<CommonComponents> =
     TextBlock,
     TextField,
     View,
+
+    // Layout
+    Stack,
+    BlockStack,
+    InlineStack,
+    Grid,
+    BlockGrid,
+    InlineGrid,
   });
 
 export {Common as CommonComponents};

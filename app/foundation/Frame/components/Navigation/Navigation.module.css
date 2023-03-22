@@ -2,7 +2,7 @@
   --z-internal-Action-inset-content: '';
   --z-internal-Action-inset-display: block;
   --z-internal-Action-inset-none: none;
-  --z-internal-Action-inset-block-size: calc(var(--z-spacing-tiny) / 2);
+  --z-internal-Action-inset-block-size: calc(var(--z-spacing-small-2) / 2);
   --z-internal-Action-inset-block-nudge: 0;
 
   --z-Action-selected-background: var(--z-Action-pressed-background);
@@ -14,5 +14,5 @@
 
   --z-Action-background: transparent;
 
-  padding: var(--z-spacing-small);
+  padding: var(--z-spacing-small-1);
 }

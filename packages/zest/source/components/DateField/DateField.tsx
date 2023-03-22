@@ -1,6 +1,6 @@
 import {type ReactNode} from 'react';
 
-import {BlockStack} from '../BlockStack.tsx';
+import {useStackProps, resolveStackProps} from '../Stack.tsx';
 
 import styles from './DateField.module.css';
 
@@ -12,8 +12,10 @@ export interface DateFieldProps {
 }
 
 export function DateField({id, label, value, onChange}: DateFieldProps) {
+  const stack = useStackProps({spacing: 'small'});
+
   return (
-    <BlockStack spacing="small">
+    <div {...resolveStackProps(stack)}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}
@@ -35,6 +37,6 @@ export function DateField({id, label, value, onChange}: DateFieldProps) {
           );
         }}
       />
-    </BlockStack>
+    </div>
   );
 }

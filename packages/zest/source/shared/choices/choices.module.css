@@ -16,8 +16,8 @@
   align-items: start;
   padding: calc(-1 * var(--z-internal-Choice-block-inset)) 0;
   margin: var(--z-internal-Choice-block-inset) 0;
-  column-gap: var(--z-spacing-small);
-  row-gap: var(--z-spacing-tiny);
+  column-gap: var(--z-spacing-small-1);
+  row-gap: var(--z-spacing-small-2);
 }
 
 .cornerRadiusBase {

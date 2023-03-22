@@ -1,5 +1,5 @@
 .Header {
-  padding: var(--z-spacing-base) var(--z-spacing-base) var(--z-spacing-large);
+  padding: var(--z-spacing-base) var(--z-spacing-base) var(--z-spacing-large-1);
 }
 
 .Content {

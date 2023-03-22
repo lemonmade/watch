@@ -4,12 +4,10 @@ export * from '@preact/signals-core';
 export {extension} from './extension.tsx';
 export {
   Action,
-  BlockStack,
   Footer,
   Header,
   Heading,
   Image,
-  InlineStack,
   Modal,
   Popover,
   Section,
@@ -17,6 +15,14 @@ export {
   TextBlock,
   TextField,
   View,
+
+  // Layout
+  Stack,
+  BlockStack,
+  InlineStack,
+  Grid,
+  BlockGrid,
+  InlineGrid,
 } from './components.ts';
 export * from './hooks.ts';
 export {useSignal, useSignalEffect, useComputed} from './signals.ts';

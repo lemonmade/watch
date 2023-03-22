@@ -62,9 +62,9 @@ function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
                     <Action
                       to={preview.url}
                       key={target}
-                      detail={<Icon source="arrowEnd" />}
+                      detail={<Icon source="arrow.end" />}
                     >
-                      <BlockStack spacing="tiny">
+                      <BlockStack spacing="small.2">
                         <Text accessibilityRole="code">
                           {target
                             .split('.')

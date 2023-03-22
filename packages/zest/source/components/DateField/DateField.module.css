@@ -6,7 +6,7 @@
   background: transparent;
   color: inherit;
   border-radius: var(--z-corner-radius-base);
-  padding: 0 var(--z-spacing-small);
+  padding: 0 var(--z-spacing-small-1);
   border: 1px solid var(--z-input-border-color);
   overflow: hidden;
 }

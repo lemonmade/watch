@@ -45,7 +45,7 @@ export default function Watching(_: Props) {
       heading="Watching"
       menu={
         <Menu>
-          <Action icon="arrowEnd" to="/app/finished">
+          <Action icon="arrow.end" to="/app/finished">
             Finished watching
           </Action>
         </Menu>

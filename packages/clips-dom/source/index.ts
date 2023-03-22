@@ -1,9 +1,10 @@
 export * from '@watching/clips';
 export {
+  type UIViewElement,
+  type HTMLElementForRemoteComponent,
+  type HTMLConstructorForRemoteComponent,
   Action,
   type UIActionElement,
-  BlockStack,
-  type UIBlockStackElement,
   Footer,
   type UIFooterElement,
   Header,
@@ -12,8 +13,6 @@ export {
   type UIHeadingElement,
   Image,
   type UIImageElement,
-  InlineStack,
-  type UIInlineStackElement,
   Modal,
   type UIModalElement,
   Popover,
@@ -30,6 +29,20 @@ export {
   type UIViewElement,
   type HTMLElementForRemoteComponent,
   type HTMLConstructorForRemoteComponent,
+
+  // Layout
+  Stack,
+  type UIStackElement,
+  BlockStack,
+  type UIBlockStackElement,
+  InlineStack,
+  type UIInlineStackElement,
+  Grid,
+  type UIGridElement,
+  BlockGrid,
+  type UIBlockGridElement,
+  InlineGrid,
+  type UIInlineGridElement,
 } from './components.ts';
 export {extension} from './extension.ts';
 export {type RemoteDOM} from './dom.ts';

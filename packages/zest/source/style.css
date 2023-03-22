@@ -1,9 +1,9 @@
 :root {
-  --z-spacing-tiny: 0.25rem;
-  --z-spacing-small: 0.5rem;
+  --z-spacing-small-2: 0.25rem;
+  --z-spacing-small-1: 0.5rem;
   --z-spacing-base: 1rem;
-  --z-spacing-large: 1.5rem;
-  --z-spacing-huge: 2rem;
+  --z-spacing-large-1: 1.5rem;
+  --z-spacing-large-2: 2rem;
 
   --z-border-base-color: rgb(125 108 152);
   --z-border-base-size: 1px;

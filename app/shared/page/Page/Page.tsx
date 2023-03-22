@@ -33,7 +33,7 @@ export function Page({
   );
 
   const headerContent = detail ? (
-    <BlockStack spacing="tiny" inlineAlignment="start">
+    <BlockStack spacing="small.2" inlineAlignment="start">
       {headingContent}
       <Text emphasis="subdued">{detail}</Text>
     </BlockStack>

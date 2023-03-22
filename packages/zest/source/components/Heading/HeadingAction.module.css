@@ -10,14 +10,16 @@
           var(--z-internal-HeadingAction-minimum-block-size)
       ) / 2
   );
-  --z-internal-HeadingAction-visible-block-padding: var(--z-spacing-tiny);
-  --z-internal-HeadingAction-icon-margin: var(--z-spacing-small);
+  --z-internal-HeadingAction-visible-block-padding: var(--z-spacing-small-2);
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-small-1);
+
+  --z-internal-container-inline-size: initial;
 
   margin: calc(
       var(--z-internal-HeadingAction-visible-block-padding) -
         var(--z-internal-HeadingAction-block-padding)
     )
-    calc(-1 * var(--z-spacing-small));
+    calc(-1 * var(--z-spacing-small-1));
 }
 
 .level1 {
@@ -48,19 +50,19 @@
   --z-internal-HeadingAction-minimum-block-size: var(
     --z-Heading-level-5-line-height
   );
-  --z-internal-HeadingAction-icon-margin: var(--z-spacing-tiny);
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-small-2);
 }
 
 .level6 {
   --z-internal-HeadingAction-minimum-block-size: var(
     --z-Heading-level-6-line-height
   );
-  --z-internal-HeadingAction-icon-margin: var(--z-spacing-tiny);
+  --z-internal-HeadingAction-icon-margin: var(--z-spacing-small-2);
 }
 
 .Pressable {
   position: relative;
-  padding: var(--z-internal-HeadingAction-block-padding) var(--z-spacing-small);
+  padding: var(--z-internal-HeadingAction-block-padding) var(--z-spacing-small-1);
 
   &::after {
     content: '';

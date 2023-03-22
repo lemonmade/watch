@@ -1,0 +1,50 @@
+.Grid {
+  grid-template-rows: 1fr;
+  grid-template: 1fr;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.spacingTiny {
+  gap: var(--z-spacing-small-2);
+}
+
+.spacingSmall {
+  gap: var(--z-spacing-small-1);
+}
+
+.spacingBase {
+  gap: var(--z-spacing-base);
+}
+
+.spacingLarge {
+  gap: var(--z-spacing-large-1);
+}
+
+.spacingHuge {
+  gap: var(--z-spacing-large-2);
+}
+
+.inlineAlignmentStart {
+  justify-content: start;
+}
+
+.inlineAlignmentEnd {
+  justify-content: end;
+}
+
+.inlineAlignmentCenter {
+  justify-content: center;
+}
+
+.blockAlignmentStart {
+  align-items: start;
+}
+
+.blockAlignmentEnd {
+  align-items: end;
+}
+
+.blockAlignmentCenter {
+  align-items: center;
+}

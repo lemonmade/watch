@@ -1,5 +1,5 @@
 .ActionList {
-  --z-internal-Action-forced-block-padding: var(--z-spacing-small);
+  --z-internal-Action-forced-block-padding: var(--z-spacing-small-1);
 
   & > *:not(:first-child) {
     --z-internal-forced-block-start-divider: 1px solid var(--z-border-subdued-color);

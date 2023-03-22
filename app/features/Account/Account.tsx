@@ -84,7 +84,7 @@ export default function Account() {
 
   return (
     <Page heading="Account">
-      <BlockStack spacing="huge">
+      <BlockStack spacing="large.2">
         <AccountSection
           email={email}
           level={level}
@@ -264,7 +264,7 @@ function MemberAccountSection({
         </InlineStack>
 
         {giftCode != null && (
-          <InlineStack spacing="tiny">
+          <InlineStack spacing="small.2">
             <Icon emphasis="subdued" source="gift" />
 
             <Text emphasis="subdued">
@@ -275,7 +275,7 @@ function MemberAccountSection({
         )}
 
         {giftCode == null && subscription?.startedAt && (
-          <InlineStack spacing="tiny">
+          <InlineStack spacing="small.2">
             <Icon emphasis="subdued" source="success" />
 
             <Text emphasis="subdued">

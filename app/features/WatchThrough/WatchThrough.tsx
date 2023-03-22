@@ -161,7 +161,7 @@ function WatchThroughWithData({
         }
         menu={
           <Menu>
-            <Action icon="arrowEnd" to={`/app/series/${series.handle}`}>
+            <Action icon="arrow.end" to={`/app/series/${series.handle}`}>
               More about {series.name}
             </Action>
             {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
@@ -169,7 +169,7 @@ function WatchThroughWithData({
           </Menu>
         }
       >
-        <BlockStack spacing="huge">
+        <BlockStack spacing="large.2">
           {nextEpisode != null && nextEpisode.hasAired ? (
             <NextEpisode
               form={nextEpisodeForm}
@@ -217,7 +217,7 @@ function watchFormFromNextEpisode(
 function UpToDate({nextEpisode}: {nextEpisode?: WatchThrough['nextEpisode']}) {
   return (
     <Section padding="large" border="subdued" cornerRadius>
-      <BlockStack spacing align="center">
+      <BlockStack spacing blockAlignment="center">
         <Heading level={4}>You’re all caught up!</Heading>
 
         {nextEpisode?.firstAired == null ? (
@@ -267,7 +267,7 @@ function NextEpisode({
             <BlockStack spacing="small">
               <Heading>{title}</Heading>
 
-              <BlockStack spacing="tiny">
+              <BlockStack spacing="small.2">
                 {watchingSingleSeason ? (
                   <Text emphasis="subdued">Episode {number}</Text>
                 ) : (
@@ -683,10 +683,10 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
         </IconHighlight>
       }
       iconAlignment="start"
-      detail={<Icon source="disclosureInlineEnd" />}
+      detail={<Icon source="disclosure.inline.end" />}
       overlay={<PreviousActionWatchEditModal action={action} />}
     >
-      <BlockStack spacing="tiny">
+      <BlockStack spacing="small.2">
         <Text emphasis>{media.title}</Text>
         <Text emphasis="subdued">
           Season {media.season.number}, Episode {media.number}
@@ -721,7 +721,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
         </IconHighlight>
       }
       iconAlignment="start"
-      detail={<Icon source="disclosureInlineEnd" />}
+      detail={<Icon source="disclosure.inline.end" />}
       overlay={<PreviousActionSkipEditModal action={action} />}
     >
       <BlockStack spacing="small">

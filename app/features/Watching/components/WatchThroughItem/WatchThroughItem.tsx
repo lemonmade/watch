@@ -42,7 +42,7 @@ export function WatchThroughItem({
         label={series.name}
         source={nextEpisode?.poster ?? series.poster}
       />
-      <BlockStack padding="small" spacing="tiny">
+      <BlockStack padding="small" spacing="small.2">
         <Text emphasis>{nextEpisode?.title}</Text>
         {nextEpisode && (
           <p className={styles.WatchThroughNextEpisodeTiming}>

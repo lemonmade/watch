@@ -2,7 +2,7 @@ import {useUniqueId} from '../../shared/id.ts';
 import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import {Label} from '../Label.tsx';
-import {BlockStack} from '../BlockStack.tsx';
+import {BlockStack} from '../Stack.tsx';
 
 import {Input} from './Input.tsx';
 
@@ -18,7 +18,7 @@ export function TextField({
   const id = useUniqueId('TextField', explicitId);
 
   return (
-    <BlockStack spacing="small" align="stretch">
+    <BlockStack spacing="small" inlineAlignment="stretch">
       <Label
         target={id}
         visibility={labelStyle === 'placeholder' ? 'hidden' : 'visible'}

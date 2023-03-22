@@ -4,11 +4,6 @@ import {
   type UIActionElement,
 } from './components/Action.ts';
 import {
-  BlockStack,
-  BlockStackComponent,
-  type UIBlockStackElement,
-} from './components/BlockStack.ts';
-import {
   Footer,
   FooterComponent,
   type UIFooterElement,
@@ -61,6 +56,30 @@ import {
 } from './components/TextField.ts';
 import {View, ViewComponent, type UIViewElement} from './components/View.ts';
 
+// Layout
+import {
+  Stack,
+  StackComponent,
+  type UIStackElement,
+  BlockStack,
+  BlockStackComponent,
+  type UIBlockStackElement,
+  InlineStack,
+  InlineStackComponent,
+  type UIInlineStackElement,
+} from './components/Stack.ts';
+import {
+  Grid,
+  GridComponent,
+  type UIGridElement,
+  BlockGrid,
+  BlockGridComponent,
+  type UIBlockGridElement,
+  InlineGrid,
+  InlineGridComponent,
+  type UIInlineGridElement,
+} from './components/Grid.ts';
+
 export {
   type RemoteDOMComponent,
   type HTMLConstructorForRemoteComponent,
@@ -70,12 +89,10 @@ export {
 declare global {
   interface HTMLElementTagNameMap {
     [Action]: UIActionElement;
-    [BlockStack]: UIBlockStackElement;
     [Footer]: UIFooterElement;
     [Header]: UIHeaderElement;
     [Heading]: UIHeadingElement;
     [Image]: UIImageElement;
-    [InlineStack]: UIInlineStackElement;
     [Modal]: UIModalElement;
     [Popover]: UIPopoverElement;
     [Section]: UISectionElement;
@@ -83,17 +100,23 @@ declare global {
     [TextBlock]: UITextBlockElement;
     [TextField]: UITextFieldElement;
     [View]: UIViewElement;
+
+    // Layout
+    [Stack]: UIStackElement;
+    [BlockStack]: UIBlockStackElement;
+    [InlineStack]: UIInlineStackElement;
+    [Grid]: UIGridElement;
+    [BlockGrid]: UIBlockGridElement;
+    [InlineGrid]: UIInlineGridElement;
   }
 }
 
 export const CUSTOM_ELEMENTS = {
   [Action]: ActionComponent,
-  [BlockStack]: BlockStackComponent,
   [Footer]: FooterComponent,
   [Header]: HeaderComponent,
   [Heading]: HeadingComponent,
   [Image]: ImageComponent,
-  [InlineStack]: InlineStackComponent,
   [Modal]: ModalComponent,
   [Popover]: PopoverComponent,
   [Section]: SectionComponent,
@@ -101,13 +124,19 @@ export const CUSTOM_ELEMENTS = {
   [TextBlock]: TextBlockComponent,
   [TextField]: TextFieldComponent,
   [View]: ViewComponent,
+
+  // Layout
+  [Stack]: StackComponent,
+  [BlockStack]: BlockStackComponent,
+  [InlineStack]: InlineStackComponent,
+  [Grid]: GridComponent,
+  [BlockGrid]: BlockGridComponent,
+  [InlineGrid]: InlineGridComponent,
 };
 
 export {
   Action,
   type UIActionElement,
-  BlockStack,
-  type UIBlockStackElement,
   Footer,
   type UIFooterElement,
   Header,
@@ -116,8 +145,6 @@ export {
   type UIHeadingElement,
   Image,
   type UIImageElement,
-  InlineStack,
-  type UIInlineStackElement,
   Modal,
   type UIModalElement,
   Popover,
@@ -132,4 +159,18 @@ export {
   type UITextFieldElement,
   View,
   type UIViewElement,
+
+  // Layout
+  Stack,
+  type UIStackElement,
+  BlockStack,
+  type UIBlockStackElement,
+  InlineStack,
+  type UIInlineStackElement,
+  Grid,
+  type UIGridElement,
+  BlockGrid,
+  type UIBlockGridElement,
+  InlineGrid,
+  type UIInlineGridElement,
 };
