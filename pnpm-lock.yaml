@@ -84,7 +84,7 @@ importers:
       aws-sdk: ^2.935.0
       base64url: ^3.0.1
       common-tags: ^1.8.0
-      graphql: ^15.0.0
+      graphql: ^16.6.0
       jsonwebtoken: ^8.0.0
       mime: ^2.5.0
       nanoid: ^4.0.0
@@ -101,10 +101,10 @@ importers:
       prisma: 4.7.1
       stripe: 11.4.0
     devDependencies:
-      '@graphql-tools/schema': 7.1.5_graphql@15.8.0
+      '@graphql-tools/schema': 7.1.5_graphql@16.6.0
       '@lemon/css': link:../packages/css
       '@lemon/zest': link:../packages/zest
-      '@lemonmade/graphql-live': 0.1.14_graphql@15.8.0
+      '@lemonmade/graphql-live': 0.1.14_graphql@16.6.0
       '@quilted/quilt': 0.5.139_0ca4ef06627f94db4329e3934a7303a0
       '@quilted/react-query': 0.1.16_3f85aeb92d850344015011e7e62f189e
       '@remote-ui/core': 2.2.2
@@ -122,7 +122,7 @@ importers:
       '@watching/thread-signals': link:../packages/thread-signals
       base64url: 3.0.1
       common-tags: 1.8.2
-      graphql: 15.8.0
+      graphql: 16.6.0
       jsonwebtoken: 8.5.1
       mime: 2.6.0
       nanoid: 4.0.0
@@ -243,7 +243,7 @@ importers:
       colorette: ^1.0.0
       esbuild: ^0.15.0
       glob: ^7.0.0
-      graphql: ^15.0.0
+      graphql: ^16.6.0
       mime: ^2.5.0
       open: ^8.0.0
       pkg-dir: ^6.0.0
@@ -256,9 +256,9 @@ importers:
       toml: ^3.0.0
       ws: ^7.0.0
     dependencies:
-      '@graphql-tools/schema': 7.1.5_graphql@15.8.0
+      '@graphql-tools/schema': 7.1.5_graphql@16.6.0
       '@iarna/toml': 3.0.0
-      '@lemonmade/graphql-live': 0.1.14_graphql@15.8.0
+      '@lemonmade/graphql-live': 0.1.14_graphql@16.6.0
       '@quilted/cli-kit': 0.1.9
       '@quilted/graphql': 0.4.57
       '@quilted/polyfills': 0.2.34
@@ -276,7 +276,7 @@ importers:
       colorette: 1.4.0
       esbuild: 0.15.3
       glob: 7.2.0
-      graphql: 15.8.0
+      graphql: 16.6.0
       mime: 2.6.0
       open: 8.4.0
       pkg-dir: 6.0.1
@@ -347,9 +347,9 @@ importers:
 
   packages/graphql:
     specifiers:
-      graphql: ^16.4.0
+      graphql: ^16.6.0
     dependencies:
-      graphql: 16.4.0
+      graphql: 16.6.0
 
   packages/react-signals:
     specifiers:
@@ -3326,13 +3326,13 @@ packages:
       graphql: 16.6.0
       tslib: 2.5.0
 
-  /@graphql-tools/schema/7.1.5_graphql@15.8.0:
+  /@graphql-tools/schema/7.1.5_graphql@16.6.0:
     resolution: {integrity: sha512-uyn3HSNSckf4mvQSq0Q07CPaVZMNFCYEVxroApOaw802m9DcZPgf9XVPy/gda5GWj9AhbijfRYVTZQgHnJ4CXA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0
     dependencies:
-      '@graphql-tools/utils': 7.10.0_graphql@15.8.0
-      graphql: 15.8.0
+      '@graphql-tools/utils': 7.10.0_graphql@16.6.0
+      graphql: 16.6.0
       tslib: 2.2.0
       value-or-promise: 1.0.6
 
@@ -3347,14 +3347,14 @@ packages:
       tslib: 2.5.0
       value-or-promise: 1.0.12
 
-  /@graphql-tools/utils/7.10.0_graphql@15.8.0:
+  /@graphql-tools/utils/7.10.0_graphql@16.6.0:
     resolution: {integrity: sha512-d334r6bo9mxdSqZW6zWboEnnOOFRrAPVQJ7LkU8/6grglrbcu6WhwCLzHb90E94JI3TD3ricC3YGbUqIi9Xg0w==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0
     dependencies:
       '@ardatan/aggregate-error': 0.0.6
       camel-case: 4.1.2
-      graphql: 15.8.0
+      graphql: 16.6.0
       tslib: 2.2.0
 
   /@graphql-tools/utils/9.1.4_graphql@16.6.0:
@@ -3449,7 +3449,7 @@ packages:
       jest-validate: 29.3.1
       jest-watcher: 29.3.1
       micromatch: 4.0.5
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
       slash: 3.0.0
       strip-ansi: 6.0.1
     transitivePeerDependencies:
@@ -3528,7 +3528,7 @@ packages:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 5.2.1
       istanbul-lib-report: 3.0.0
@@ -3572,7 +3572,7 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.17
       callsites: 3.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /@jest/test-result/29.3.1:
@@ -3677,7 +3677,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@lemonmade/graphql-live/0.1.14_graphql@15.8.0:
+  /@lemonmade/graphql-live/0.1.14_graphql@16.6.0:
     resolution: {integrity: sha512-c/PSB3EyFcWInAXRBEVr7dRRQSK6yvXidORx3m3bwfNXXj07YpYDI/XFqMdNCfGTIJBQU4gleBADssOIA4ND7w==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3688,7 +3688,7 @@ packages:
     dependencies:
       '@quilted/events': 0.1.18
       '@quilted/graphql': 0.4.57
-      graphql: 15.8.0
+      graphql: 16.6.0
     transitivePeerDependencies:
       - '@jest/globals'
       - jest-matcher-utils
@@ -4415,7 +4415,7 @@ packages:
     dependencies:
       '@quilted/assets': 0.0.3
       '@quilted/react-server-render': 0.3.28_8b4f6161cd4571c046ab504d65f5d2c9
-      '@types/react': 18.0.31
+      '@types/react': 18.0.33
       react: /@quilted/react/18.2.2
     transitivePeerDependencies:
       - react-dom
@@ -4503,7 +4503,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/react-server-render': 0.3.28_8b4f6161cd4571c046ab504d65f5d2c9
-      '@types/react': 18.0.31
+      '@types/react': 18.0.33
       react: /@quilted/react/18.2.2
       react-dom: /@quilted/react-dom/18.2.3
     dev: true
@@ -4629,7 +4629,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/react-utilities': 0.1.10_@quilted+react@18.2.2
-      '@types/react': 18.0.31
+      '@types/react': 18.0.33
       react: /@quilted/react/18.2.2
       react-dom: /@quilted/react-dom/18.2.3
     dev: true
@@ -5318,14 +5318,6 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
-
-  /@types/react/18.0.31:
-    resolution: {integrity: sha512-EEG67of7DsvRDU6BLLI0p+k1GojDLz9+lZsnCpCRTa/lOokvyPBvp8S5x+A24hME3yyQuIipcP70KJ6H7Qupww==}
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.3
-      csstype: 3.1.1
-    dev: true
 
   /@types/react/18.0.33:
     resolution: {integrity: sha512-sHxzVxeanvQyQ1lr8NSHaj0kDzcNiGpILEVt69g9S31/7PfMvNCKLKcsHw4lYKjs3cGNJjXSP4mYzX43QlnjNA==}
@@ -7998,15 +7990,6 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql/15.8.0:
-    resolution: {integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==}
-    engines: {node: '>= 10.x'}
-
-  /graphql/16.4.0:
-    resolution: {integrity: sha512-tYDNcRvKCcfHREZYje3v33NSrSD/ZpbWWdPtBtUUuXx9NCo/2QDxYzNqCnMvfsrnbwRpEHMovVrPu/ERoLrIRg==}
-    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
-    dev: false
-
   /graphql/16.6.0:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
@@ -8571,7 +8554,7 @@ packages:
       jest-snapshot: 29.3.1
       jest-util: 29.3.1
       p-limit: 3.1.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
       slash: 3.0.0
       stack-utils: 2.0.6
     transitivePeerDependencies:
@@ -8701,7 +8684,7 @@ packages:
       chalk: 4.1.2
       diff-sequences: 29.3.1
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
     dev: true
 
   /jest-docblock/29.2.0:
@@ -8719,7 +8702,7 @@ packages:
       chalk: 4.1.2
       jest-get-type: 29.2.0
       jest-util: 29.3.1
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
     dev: true
 
   /jest-environment-jsdom/29.3.1:
@@ -8776,7 +8759,7 @@ packages:
       '@types/node': 17.0.23
       anymatch: 3.1.3
       fb-watchman: 2.0.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-regex-util: 29.2.0
       jest-util: 29.3.1
       jest-worker: 29.3.1
@@ -8791,7 +8774,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
     dev: true
 
   /jest-matcher-utils/27.5.1:
@@ -8811,7 +8794,7 @@ packages:
       chalk: 4.1.2
       jest-diff: 29.3.1
       jest-get-type: 29.2.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
     dev: true
 
   /jest-message-util/29.3.1:
@@ -8925,7 +8908,7 @@ packages:
       cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.3.1
       jest-message-util: 29.3.1
       jest-mock: 29.3.1
@@ -8957,7 +8940,7 @@ packages:
       babel-preset-current-node-syntax: 1.0.1_@babel+core@7.20.5
       chalk: 4.1.2
       expect: 29.3.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-diff: 29.3.1
       jest-get-type: 29.2.0
       jest-haste-map: 29.3.1
@@ -8965,7 +8948,7 @@ packages:
       jest-message-util: 29.3.1
       jest-util: 29.3.1
       natural-compare: 1.4.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
       semver: 7.3.7
     transitivePeerDependencies:
       - supports-color
@@ -8992,7 +8975,7 @@ packages:
       chalk: 4.1.2
       jest-get-type: 29.2.0
       leven: 3.1.0
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
     dev: true
 
   /jest-watch-typeahead/2.2.1_jest@29.3.1:
@@ -9165,7 +9148,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonwebtoken/8.5.1:

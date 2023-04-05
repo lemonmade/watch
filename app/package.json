@@ -38,7 +38,7 @@
     "@watching/thread-signals": "workspace:*",
     "base64url": "^3.0.1",
     "common-tags": "^1.8.0",
-    "graphql": "^15.0.0",
+    "graphql": "^16.6.0",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
     "nanoid": "^4.0.0",
