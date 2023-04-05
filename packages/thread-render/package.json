@@ -28,7 +28,7 @@
     "@preact/signals-core": "^1.2.3",
     "@quilted/events": "^0.1.18",
     "@quilted/threads": "^0.1.14",
-    "@remote-ui/core": "^2.2.1"
+    "@remote-ui/core": "^2.2.2"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0"

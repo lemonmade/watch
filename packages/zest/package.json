@@ -12,7 +12,7 @@
     "@preact/signals-core": "^1.2.3",
     "@quilted/events": "^0.1.18",
     "@quilted/react-utilities": "^0.1.10",
-    "@remote-ui/core": "^2.2.1",
+    "@remote-ui/core": "^2.2.2",
     "@watching/clips": "workspace:*",
     "@watching/react-signals": "workspace:*",
     "@watching/thread-signals": "workspace:*",

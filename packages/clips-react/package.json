@@ -21,7 +21,7 @@
   "dependencies": {
     "@preact/signals-core": "^1.2.3",
     "@quilted/react-utilities": "^0.1.10",
-    "@remote-ui/core": "^2.2.1",
+    "@remote-ui/core": "^2.2.2",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@watching/clips": "workspace:^0.2.27",

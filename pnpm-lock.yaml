@@ -68,8 +68,8 @@ importers:
       '@prisma/client': ^4.7.0
       '@quilted/quilt': ^0.5.139
       '@quilted/react-query': ^0.1.16
-      '@remote-ui/core': ^2.2.1
-      '@remote-ui/react': ^5.0.1
+      '@remote-ui/core': ^2.2.2
+      '@remote-ui/react': ^5.0.2
       '@simplewebauthn/browser': ^6.2.0
       '@simplewebauthn/server': ^6.2.0
       '@stripe/stripe-js': ^1.46.0
@@ -107,8 +107,8 @@ importers:
       '@lemonmade/graphql-live': 0.1.14_graphql@15.8.0
       '@quilted/quilt': 0.5.139_0ca4ef06627f94db4329e3934a7303a0
       '@quilted/react-query': 0.1.16_3f85aeb92d850344015011e7e62f189e
-      '@remote-ui/core': 2.2.1
-      '@remote-ui/react': 5.0.1_@quilted+react@18.2.2
+      '@remote-ui/core': 2.2.2
+      '@remote-ui/react': 5.0.2_@quilted+react@18.2.2
       '@simplewebauthn/browser': 6.2.1
       '@simplewebauthn/server': 6.2.1
       '@stripe/stripe-js': 1.46.0
@@ -298,19 +298,19 @@ importers:
 
   packages/clips:
     specifiers:
-      '@remote-ui/core': ^2.2.1
+      '@remote-ui/core': ^2.2.2
       '@watching/thread-signals': workspace:^0.1.7
     dependencies:
-      '@remote-ui/core': 2.2.1
+      '@remote-ui/core': 2.2.2
       '@watching/thread-signals': link:../thread-signals
 
   packages/clips-dom:
     specifiers:
       '@quilted/testing': ^0.1.5
-      '@remote-ui/core': ^2.2.1
+      '@remote-ui/core': ^2.2.2
       '@watching/clips': workspace:^0.2.27
     dependencies:
-      '@remote-ui/core': 2.2.1
+      '@remote-ui/core': 2.2.2
       '@watching/clips': link:../clips
     devDependencies:
       '@quilted/testing': 0.1.5
@@ -319,7 +319,7 @@ importers:
     specifiers:
       '@preact/signals-core': ^1.2.3
       '@quilted/react-utilities': ^0.1.10
-      '@remote-ui/core': ^2.2.1
+      '@remote-ui/core': ^2.2.2
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@watching/clips': workspace:^0.2.27
@@ -331,7 +331,7 @@ importers:
     dependencies:
       '@preact/signals-core': 1.2.3
       '@quilted/react-utilities': 0.1.10_@quilted+react@18.2.2
-      '@remote-ui/core': 2.2.1
+      '@remote-ui/core': 2.2.2
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.10
       '@watching/clips': link:../clips
@@ -370,12 +370,12 @@ importers:
       '@quilted/events': ^0.1.18
       '@quilted/testing': ^0.1.5
       '@quilted/threads': ^0.1.14
-      '@remote-ui/core': ^2.2.1
+      '@remote-ui/core': ^2.2.2
     dependencies:
       '@preact/signals-core': 1.2.3
       '@quilted/events': 0.1.18
       '@quilted/threads': 0.1.14
-      '@remote-ui/core': 2.2.1
+      '@remote-ui/core': 2.2.2
     devDependencies:
       '@quilted/testing': 0.1.5
 
@@ -398,7 +398,7 @@ importers:
       '@preact/signals-core': ^1.2.3
       '@quilted/events': ^0.1.18
       '@quilted/react-utilities': ^0.1.10
-      '@remote-ui/core': ^2.2.1
+      '@remote-ui/core': ^2.2.2
       '@watching/clips': workspace:*
       '@watching/react-signals': workspace:*
       '@watching/thread-signals': workspace:*
@@ -408,7 +408,7 @@ importers:
       '@preact/signals-core': 1.2.3
       '@quilted/events': 0.1.18
       '@quilted/react-utilities': 0.1.10_@quilted+react@18.2.2
-      '@remote-ui/core': 2.2.1
+      '@remote-ui/core': 2.2.2
       '@watching/clips': link:../clips
       '@watching/react-signals': link:../react-signals
       '@watching/thread-signals': link:../thread-signals
@@ -3559,6 +3559,13 @@ packages:
       '@sinclair/typebox': 0.25.21
     dev: true
 
+  /@jest/schemas/29.4.3:
+    resolution: {integrity: sha512-VLYKXQmtmuEz6IxJsrZwzG9NvtkQsWNnWMsKxqWNu3+CnfzJQhp0WDDKWLVV9hLKr0l3SLLFRqcYHjhtyuDVxg==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    dependencies:
+      '@sinclair/typebox': 0.25.24
+    dev: true
+
   /@jest/source-map/29.2.0:
     resolution: {integrity: sha512-1NX9/7zzI0nqa6+kgpSdKPK+WU1p+SJk3TloWZf5MzPbxri9UEeXX5bWZAPCzbQcyuAzubcdUHA7hcNznmRqWQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -4696,7 +4703,7 @@ packages:
   /@quilted/react/18.2.2:
     resolution: {integrity: sha512-4RN0bQVKLKzFEKZq9i4+eyKzc7ojmbwUAVyv9iSxpc+69CmIE8vCIinbvvEd/I8zNJe+BFRXmumvQWGWVTeNsg==}
     dependencies:
-      '@types/react': 18.0.31
+      '@types/react': 18.0.33
       preact: 10.13.2
     dev: true
 
@@ -4805,20 +4812,20 @@ packages:
     dependencies:
       web-streams-polyfill: 3.2.1
 
-  /@remote-ui/async-subscription/2.1.13:
-    resolution: {integrity: sha512-Mc7iZ4nCIizdG/UWTW31HdtdmGpmjTah6Im+NJgwmmXZ8cnfFjxHFgpKc+kIhJTVKdmuN4KFHmNIXVSmeMTZdA==}
+  /@remote-ui/async-subscription/2.1.14:
+    resolution: {integrity: sha512-m4HQ7LmBNN80d5CDG1d0MzESfXQB3tPK3cEFannUoyqZybxZst/AB8TAnwKKZcXUR1eedkZMTqH6BjEgMRzulQ==}
     dependencies:
-      '@remote-ui/rpc': 1.4.1
+      '@remote-ui/rpc': 1.4.3
     dev: true
 
-  /@remote-ui/core/2.2.1:
-    resolution: {integrity: sha512-sq9MClWfTpBmzxSquBXM6dGWzrBi3+ok6QBeAwWDG5huhRM6Ga9mDm4O8qfkm616jEwMO0vk9kZ/nOv9FSFzDw==}
+  /@remote-ui/core/2.2.2:
+    resolution: {integrity: sha512-oKJ4JtRu956rmzUVGXHMrGwrcv69jTV5KgUBL37pGvUaQECLRlpCBGbOm73MkHwDYmuxZUBnIQfNUkfLXHYaIw==}
     dependencies:
-      '@remote-ui/rpc': 1.4.1
-      '@remote-ui/types': 1.1.2
+      '@remote-ui/rpc': 1.4.3
+      '@remote-ui/types': 1.1.3
 
-  /@remote-ui/react/5.0.1_@quilted+react@18.2.2:
-    resolution: {integrity: sha512-5rom1IGC9fv8d5+N3+sLEJXNwy1TZ9s3svPAJuk4c8BCTbNYsx4Uxi1Yr9HJ11bOyFFMk0AwzJF8sJkwKdQQ7A==}
+  /@remote-ui/react/5.0.2_@quilted+react@18.2.2:
+    resolution: {integrity: sha512-v1C6QekhR6NrpzHA1dGMPun47N0TBb6VRq+yjIN5b6Z7i7wApf5+ifKc5gYouv4ENfoKPhatXAsOoYblG5iRpw==}
     peerDependencies:
       react: '>=17.0.0 <19.0.0'
       react-reconciler: '>=0.26.0 <0.30.0'
@@ -4826,19 +4833,19 @@ packages:
       react-reconciler:
         optional: true
     dependencies:
-      '@remote-ui/async-subscription': 2.1.13
-      '@remote-ui/core': 2.2.1
-      '@remote-ui/rpc': 1.4.1
+      '@remote-ui/async-subscription': 2.1.14
+      '@remote-ui/core': 2.2.2
+      '@remote-ui/rpc': 1.4.3
       '@types/react': 18.0.28
       '@types/react-reconciler': 0.26.7
       react: /@quilted/react/18.2.2
     dev: true
 
-  /@remote-ui/rpc/1.4.1:
-    resolution: {integrity: sha512-YLjZqAeTolxLPvH59jO1W5/A1M0uK8IDtbfnrU8LXEaUPn9kmE7w5z2Isa+Do5m+YjTCn4y5bNHBsUTTsmhO0w==}
+  /@remote-ui/rpc/1.4.3:
+    resolution: {integrity: sha512-+XyELrHLIJVQEuidHoqZ32+drbphY/x697vykHCinTPhhuUiZpag1DnKSxoE4UlnwBzz336UtFHZIiDGtOL2Kg==}
 
-  /@remote-ui/types/1.1.2:
-    resolution: {integrity: sha512-F2u6McqvHj2c89FHeozQ0O8qbqhOFMMNYR2HqF33mHCMNTEXzUVheCj7laNO1/dGNXwcJHpoWIBNwfChbEfVyA==}
+  /@remote-ui/types/1.1.3:
+    resolution: {integrity: sha512-P1kN1F3p0oMgnLN8Of1Ie9am3sLvJ7nhqHH1pvzkrxqjVwhhyPVZNcwOHyUNZPKp62izhDavdrcnqrdXzVJqGA==}
 
   /@rollup/plugin-alias/4.0.2_rollup@3.7.4:
     resolution: {integrity: sha512-1hv7dBOZZwo3SEupxn4UA2N0EDThqSSS+wI1St1TNTBtOZvUchyIClyHcnDcjjrReTPZ47Faedrhblv4n+T5UQ==}
@@ -5057,6 +5064,10 @@ packages:
 
   /@sinclair/typebox/0.25.21:
     resolution: {integrity: sha512-gFukHN4t8K4+wVC+ECqeqwzBDeFeTzBXroBTqE6vcWrQGbEUpHO7LYdG0f4xnvYq4VOEwITSlHlp0JBAIFMS/g==}
+    dev: true
+
+  /@sinclair/typebox/0.25.24:
+    resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
     dev: true
 
   /@sinonjs/commons/1.8.6:
@@ -5292,7 +5303,7 @@ packages:
   /@types/react-dom/18.0.11:
     resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
     dependencies:
-      '@types/react': 18.0.31
+      '@types/react': 18.0.33
     dev: true
 
   /@types/react-reconciler/0.26.7:
@@ -5314,6 +5325,14 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
       csstype: 3.1.1
+    dev: true
+
+  /@types/react/18.0.33:
+    resolution: {integrity: sha512-sHxzVxeanvQyQ1lr8NSHaj0kDzcNiGpILEVt69g9S31/7PfMvNCKLKcsHw4lYKjs3cGNJjXSP4mYzX43QlnjNA==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.3
+      csstype: 3.1.2
     dev: true
 
   /@types/resolve/1.20.2:
@@ -6458,6 +6477,10 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
+
+  /csstype/3.1.2:
+    resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+    dev: true
 
   /csv-generate/3.4.3:
     resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
@@ -7963,6 +7986,10 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: true
 
+  /graceful-fs/4.2.11:
+    resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+    dev: true
+
   /graceful-fs/4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
     dev: true
@@ -8795,9 +8822,9 @@ packages:
       '@jest/types': 29.3.1
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 4.0.5
-      pretty-format: 29.4.1
+      pretty-format: 29.5.0
       slash: 3.0.0
       stack-utils: 2.0.6
     dev: true
@@ -9138,7 +9165,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken/8.5.1:
@@ -9258,7 +9285,7 @@ packages:
     resolution: {integrity: sha512-OfCBkGEw4nN6JLtgRidPX6QxjBQGQf72q3si2uvqyFEMbycSFFHwAZeXx6cJgFM9wmLrf9zBwCP3Ivqa+LLZPw==}
     engines: {node: '>=6'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       js-yaml: 3.14.1
       pify: 4.0.1
       strip-bom: 3.0.0
@@ -10575,6 +10602,15 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/schemas': 29.4.0
+      ansi-styles: 5.2.0
+      react-is: 18.2.0
+    dev: true
+
+  /pretty-format/29.5.0:
+    resolution: {integrity: sha512-V2mGkI31qdttvTFX7Mt4efOqHXqJWMu4/r66Xh3Z3BwZaPfPJgp6/gbwoujRpPUtfEF6AUUWx3Jim3GCw5g/Qw==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    dependencies:
+      '@jest/schemas': 29.4.3
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true

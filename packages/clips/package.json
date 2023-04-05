@@ -19,7 +19,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@remote-ui/core": "^2.2.1",
+    "@remote-ui/core": "^2.2.2",
     "@watching/thread-signals": "workspace:^0.1.7"
   },
   "eslintConfig": {
