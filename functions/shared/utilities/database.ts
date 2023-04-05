@@ -1,5 +1,6 @@
 import prisma from '@prisma/client';
 export type {PrismaClient as Prisma} from '@prisma/client';
+
 import Env from '@quilted/quilt/env';
 
 declare module '@quilted/quilt/env' {

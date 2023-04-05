@@ -8,7 +8,7 @@ import type {
 import type {} from '@quilted/cloudflare';
 import {createFetchHandler} from '@quilted/cloudflare/request-router';
 
-import {ulid} from './ulid';
+import {ulid} from './ulid.ts';
 
 export interface MetricMap {
   navigation: {id: string; target: string};

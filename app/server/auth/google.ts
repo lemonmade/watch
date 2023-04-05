@@ -4,4 +4,4 @@ export {
   startGoogleOAuthCreateAccount,
   handleGoogleOAuthCreateAccount,
   handleGoogleOAuthConnect,
-} from './google/google';
+} from './google/google.ts';

@@ -2,7 +2,7 @@ import {useMutation as useBasicMutation} from '@tanstack/react-query';
 
 import {useCurrentUrl} from '@quilted/quilt';
 
-import {useMutation} from '~/shared/graphql';
+import {useMutation} from '~/shared/graphql.ts';
 
 import createAccessTokenForCliMutation, {
   type CreateAccessTokenForCliMutationData,

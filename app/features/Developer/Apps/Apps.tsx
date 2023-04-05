@@ -3,8 +3,8 @@ import {usePerformanceNavigation} from '@quilted/quilt';
 
 import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {useQuery, useMutation} from '~/shared/graphql.ts';
 
 import myAppsQuery from './graphql/MyAppsQuery.graphql';
 import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';

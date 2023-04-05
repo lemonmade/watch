@@ -4,10 +4,10 @@ import {type ThreadRenderer} from '@watching/thread-render';
 import {type Version, type ExtensionPoint} from '@watching/clips';
 import {type Signal} from '@watching/thread-signals';
 
-import {type OptionsForExtensionPoint} from './extension-points';
-import {type ReactComponentsForExtensionPoint} from './components';
-import {type Sandbox} from './sandboxes';
-import {type LiveQueryRunner} from './live-query';
+import {type OptionsForExtensionPoint} from './extension-points.ts';
+import {type ReactComponentsForExtensionPoint} from './components.ts';
+import {type Sandbox} from './sandbox.ts';
+import {type LiveQueryRunner} from './live-query.ts';
 
 export type {Version, ExtensionPoint};
 

@@ -2,7 +2,7 @@ import {type PropsWithChildren} from 'react';
 
 import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 
-import {Navigation, NavigationItem} from './components/Navigation';
+import {Navigation, NavigationItem} from './components/Navigation.ts';
 
 import styles from './Frame.module.css';
 

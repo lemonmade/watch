@@ -22,9 +22,9 @@ import {
 } from '@quilted/quilt';
 import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {useQuery} from '~/shared/graphql';
-import {SearchParam, PaymentStatus} from '~/global/subscriptions';
+import {Page} from '~/shared/page.ts';
+import {useQuery} from '~/shared/graphql.ts';
+import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
 
 import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql';
 

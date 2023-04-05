@@ -3,7 +3,7 @@ import {signal, type Signal, anyAbortSignal} from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 import {run, createQueryResolver} from '@lemonmade/graphql-live';
 
-import {type ExtensionPointDefinitionContext} from './extension-points';
+import {type ExtensionPointDefinitionContext} from './extension-points.ts';
 
 export interface LiveQueryRunner<_Point extends ExtensionPoint> {
   readonly query: Signal<string | undefined>;

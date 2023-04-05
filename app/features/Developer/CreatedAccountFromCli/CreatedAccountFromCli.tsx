@@ -4,7 +4,7 @@ import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 
-import {useAuthenticateCliWithAccessToken} from '../shared/cli';
+import {useAuthenticateCliWithAccessToken} from '../shared/cli.ts';
 
 export default function CreatedAccountFromCli() {
   usePerformanceNavigation({state: 'complete'});

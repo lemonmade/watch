@@ -2,10 +2,14 @@ import {type RemoteComponentType} from '@remote-ui/core';
 
 export * from './components';
 
-type ComponentTypes = typeof import('./components');
+type ComponentTypes = typeof import('./components.ts');
 
 export type Components = {
-  [Key in keyof ComponentTypes]: ComponentTypes[Key] extends RemoteComponentType<any>
+  [Key in keyof ComponentTypes]: ComponentTypes[Key] extends RemoteComponentType<
+    any,
+    any,
+    any
+  >
     ? ComponentTypes[Key]
     : never;
 };

@@ -2,8 +2,8 @@ import {useState, type ReactNode} from 'react';
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, TextBlock, Action, Banner, Text, Layout} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {useQuery, useMutation} from '~/shared/graphql.ts';
 
 import accessTokensQuery from './graphql/AccessTokensQuery.graphql';
 import createAccessTokenMutation from './graphql/CreateAccessTokenMutation.graphql';

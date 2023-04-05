@@ -1,12 +1,13 @@
 import {type Signal} from '@quilted/quilt';
 import {signalToIterator} from '@watching/thread-signals';
+
 import {
   CommonComponents,
   createExtensionPoint,
   createSharedGraphQLApi,
-} from '~/shared/clips';
+} from '~/shared/clips.ts';
 
-import {type WatchForm} from './WatchThrough';
+import {type WatchForm} from './WatchThrough.tsx';
 
 export interface WatchThroughDetailsRenderAccessoryOptions {
   readonly id: string;

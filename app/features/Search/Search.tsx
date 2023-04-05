@@ -7,8 +7,8 @@ import {
 
 import {BlockStack, TextField, Action} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {useQuery} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {useQuery} from '~/shared/graphql.ts';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 

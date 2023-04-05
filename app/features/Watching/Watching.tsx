@@ -3,14 +3,15 @@ import {useMemo, ComponentProps} from 'react';
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {Menu, Action} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {parseGid, useQuery} from '~/shared/graphql';
-import {MediaGrid} from '~/shared/media';
+import {Page} from '~/shared/page.ts';
+import {parseGid, useQuery} from '~/shared/graphql.ts';
+import {MediaGrid} from '~/shared/media.ts';
 
 import watchingQuery, {
   WatchingQueryData,
 } from './graphql/WatchingQuery.graphql';
-import {WatchThroughItem} from './components';
+
+import {WatchThroughItem} from './components/WatchThroughItem.tsx';
 
 export interface Props {}
 

@@ -22,10 +22,10 @@ import {
   Poster,
 } from '@lemon/zest';
 
-import {SpoilerAvoidance} from '~/shared/spoilers';
+import {SpoilerAvoidance} from '~/shared/spoilers.ts';
 
-import {parseGid, useQuery, useMutation} from '~/shared/graphql';
-import {useClips, Clip} from '~/shared/clips';
+import {parseGid, useQuery, useMutation} from '~/shared/graphql.ts';
+import {useClips, Clip} from '~/shared/clips.ts';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';

@@ -4,7 +4,7 @@ import {Buffer} from 'buffer-polyfill';
 
 import {type ExportedHandlerQueueHandler} from '@cloudflare/workers-types';
 
-import {updateSeries} from '~/global/tmdb';
+import {updateSeries} from '~/global/tmdb.ts';
 
 interface Environment {
   DATABASE_URL: string;

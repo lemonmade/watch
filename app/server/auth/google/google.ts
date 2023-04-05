@@ -16,16 +16,16 @@ import {
   GOOGLE_OAUTH_MESSAGE_TOPIC,
   GoogleOAuthFlow,
   type GoogleOAuthMessage,
-} from '~/global/auth';
+} from '~/global/auth.ts';
 
 import {
   getUserIdFromRequest,
   addAuthCookies,
   createSignedToken,
   verifySignedToken,
-} from '../../shared/auth';
-import {validateRedirectTo, createPrisma} from '../shared';
-import {createAccountWithGiftCode} from '../../shared/create-account';
+} from '../../shared/auth.ts';
+import {createAccountWithGiftCode} from '../../shared/create-account.ts';
+import {validateRedirectTo, createPrisma} from '../shared.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

@@ -1,8 +1,8 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {useQuery, useMutation} from '~/shared/graphql.ts';
 
 import appsQuery, {type AppsQueryData} from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';

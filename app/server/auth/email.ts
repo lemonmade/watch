@@ -4,15 +4,15 @@ import {
   SearchParam,
   SignInErrorReason,
   CreateAccountErrorReason,
-} from '~/global/auth';
+} from '~/global/auth.ts';
 
 import {
   // addAuthCookies,
   verifySignedToken,
   addAuthCookies,
-} from '../shared/auth';
-import {createAccountWithGiftCode} from '../shared/create-account';
-import {validateRedirectTo, createPrisma} from './shared';
+} from '../shared/auth.ts';
+import {createAccountWithGiftCode} from '../shared/create-account.ts';
+import {validateRedirectTo, createPrisma} from './shared.ts';
 
 export async function signInFromEmail(request: Request) {
   const token = new URL(request.url).searchParams.get(SearchParam.Token);

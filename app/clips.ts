@@ -1,10 +1,10 @@
 import {
   type ExtensionPoint,
   type ExtensionPointDefinition,
-} from './shared/clips';
+} from './shared/clips.ts';
 
-import {SeriesDetailsRenderAccessoryExtensionPoint} from './features/Series';
-import {WatchThroughDetailsRenderAccessoryExtensionPoint} from './features/WatchThrough';
+import {SeriesDetailsRenderAccessoryExtensionPoint} from './features/Series.ts';
+import {WatchThroughDetailsRenderAccessoryExtensionPoint} from './features/WatchThrough.ts';
 
 export const EXTENSION_POINTS = extensionPoints({
   'Series.Details.RenderAccessory': SeriesDetailsRenderAccessoryExtensionPoint,

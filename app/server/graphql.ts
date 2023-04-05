@@ -6,8 +6,8 @@ import {
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
 
-import {authenticate} from './shared/auth';
-import {createPrisma} from './shared/database';
+import {authenticate} from './shared/auth.ts';
+import {createPrisma} from './shared/database.ts';
 
 const router = createRequestRouter();
 

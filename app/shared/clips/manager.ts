@@ -19,7 +19,7 @@ import {
   type ThreadAbortSignal,
 } from '@quilted/quilt/threads';
 
-import {createResolvablePromise} from '../promises';
+import {createResolvablePromise} from '../promises.ts';
 
 import {
   type ExtensionPoint,
@@ -29,17 +29,18 @@ import {
   type ClipsExtensionPointInstanceOptions,
   type ClipsExtensionPointLocalInstanceOptions,
   type ClipsExtensionPointInstalledInstanceOptions,
-} from './extension';
+} from './extension.ts';
 import {
   type ExtensionPointDefinitions,
   type ExtensionPointDefinitionContext,
-} from './extension-points';
-import {createSandbox} from './sandboxes';
+} from './extension-points.ts';
+import {createSandbox} from './sandbox.ts';
+import {createLiveQueryRunner} from './live-query.ts';
+
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
 import localClipQuery, {
   type LocalClipQueryData,
 } from './graphql/LocalClipQuery.graphql';
-import {createLiveQueryRunner} from './live-query';
 
 export interface ClipsManager {
   readonly extensionPoints: ExtensionPointDefinitions;

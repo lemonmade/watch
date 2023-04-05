@@ -26,8 +26,8 @@
   "sideEffects": false,
   "dependencies": {
     "@preact/signals-core": "^1.2.3",
-    "@quilted/events": "^0.1.17",
-    "@quilted/threads": "^0.1.13",
+    "@quilted/events": "^0.1.18",
+    "@quilted/threads": "^0.1.14",
     "@remote-ui/core": "^2.2.1"
   },
   "peerDependencies": {

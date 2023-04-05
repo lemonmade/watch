@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
+import {Page} from '~/shared/page.ts';
 
 import {useAuthenticateCliWithAccessToken} from '../shared/cli';
 

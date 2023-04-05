@@ -1,22 +1,22 @@
 import {createRequestRouter, redirect} from '@quilted/quilt/request-router';
 
-import {SearchParam} from '~/global/auth';
+import {SearchParam} from '~/global/auth.ts';
 
-import {signInFromEmail, createAccountFromEmail} from './auth/email';
+import {signInFromEmail, createAccountFromEmail} from './auth/email.ts';
 import {
   startGithubOAuth,
   handleGithubOAuthSignIn,
   startGithubOAuthCreateAccount,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
-} from './auth/github';
+} from './auth/github.ts';
 import {
   startGoogleOAuth,
   handleGoogleOAuthSignIn,
   startGoogleOAuthCreateAccount,
   handleGoogleOAuthCreateAccount,
   handleGoogleOAuthConnect,
-} from './auth/google';
+} from './auth/google.ts';
 
 const router = createRequestRouter();
 

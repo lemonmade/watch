@@ -6,7 +6,7 @@ import type {
 import {json, noContent} from '@quilted/request-router';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
-import type {EmailType, PropsForEmail} from './Email';
+import type {EmailType, PropsForEmail} from './Email.tsx';
 
 export type {EmailType, PropsForEmail};
 

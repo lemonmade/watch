@@ -1,5 +1,6 @@
 import {type Prisma as PrismaData} from '@prisma/client';
-import {type Prisma} from '../shared/database';
+
+import {type Prisma} from './database.ts';
 
 export async function createAccountWithGiftCode(
   data: PrismaData.UserCreateInput,

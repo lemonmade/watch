@@ -4,4 +4,4 @@ export {
   startGithubOAuthCreateAccount,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
-} from './github/github';
+} from './github/github.ts';

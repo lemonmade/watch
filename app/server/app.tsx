@@ -2,9 +2,9 @@ import {createAsyncComponent} from '@quilted/quilt';
 import {createServerRender} from '@quilted/quilt/server';
 import {createBrowserAssets} from '@quilted/quilt/magic/assets';
 
-import {authenticate} from './shared/auth';
+import {authenticate} from './shared/auth.ts';
 
-const App = createAsyncComponent(() => import('../App'));
+const App = createAsyncComponent(() => import('../App.tsx'));
 
 const appHandler = createServerRender(
   async (request) => {
