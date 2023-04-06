@@ -18,7 +18,7 @@ import {classes} from '@lemon/css';
 
 import {useMutation} from '~/shared/graphql.ts';
 
-import {useClipsManager} from '../react.ts';
+import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
