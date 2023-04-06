@@ -17,7 +17,6 @@
     "stripe": "^11.4.0"
   },
   "devDependencies": {
-    "@graphql-tools/schema": "^7.0.0",
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@lemonmade/graphql-live": "^0.1.14",

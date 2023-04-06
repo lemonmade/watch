@@ -89,7 +89,7 @@ function loadSchema() {
     const [{makeExecutableSchema}, resolvers, {default: schemaSource}] =
       await Promise.all([
         import('@graphql-tools/schema'),
-        import('./graphql/resolvers'),
+        import('./graphql/resolvers.ts'),
         import('./graphql/schema.ts'),
       ]);
 

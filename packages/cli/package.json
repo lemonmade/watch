@@ -20,7 +20,7 @@
     "bin"
   ],
   "dependencies": {
-    "@graphql-tools/schema": "^7.0.0",
+    "@graphql-tools/schema": "^9.0.0",
     "@iarna/toml": "^3.0.0",
     "@lemonmade/graphql-live": "^0.1.14",
     "@quilted/cli-kit": "^0.1.9",
