@@ -12,27 +12,27 @@ import {
   Query as AppsQuery,
   Mutation as AppsMutation,
   User as AppsUser,
-} from './apps';
+} from './resolvers/apps.ts';
 import {
   Series,
   Season,
   Episode,
   Query as MediaQuery,
   Mutation as MediaMutation,
-} from './media';
+} from './resolvers/media.ts';
 import {
   List,
   ListItem,
   Listable,
   Query as ListsQuery,
   Mutation as ListsMutation,
-} from './lists';
-import {Query as SearchQuery} from './search';
+} from './resolvers/lists.ts';
+import {Query as SearchQuery} from './resolvers/search.ts';
 import {
   SeriesSubscription,
   Query as SubscriptionsQuery,
   Mutation as SubscriptionsMutation,
-} from './subscriptions';
+} from './resolvers/subscriptions.ts';
 import {
   Watch,
   Skip,
@@ -42,11 +42,11 @@ import {
   Skippable,
   Query as WatchesQuery,
   Mutation as WatchesMutation,
-} from './watches';
+} from './resolvers/watches.ts';
 import {
   Query as WatchLaterQuery,
   Mutation as WatchLaterMutation,
-} from './watch-later';
+} from './resolvers/watch-later.ts';
 import {
   User as BaseUser,
   PersonalAccessToken,
@@ -55,9 +55,9 @@ import {
   Subscription,
   Query as UsersQuery,
   Mutation as UsersMutation,
-} from './users';
+} from './resolvers/users.ts';
 
-import type {QueryResolver, MutationResolver} from './types';
+import type {QueryResolver, MutationResolver} from './resolvers/types.ts';
 
 export const Query: QueryResolver = {
   version: () => 'unstable',

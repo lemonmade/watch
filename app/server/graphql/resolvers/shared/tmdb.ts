@@ -1,5 +1,6 @@
 import Env from '@quilted/quilt/env';
-import type {Context} from '../../context';
+
+import type {Context} from '../../context.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

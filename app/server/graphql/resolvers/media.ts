@@ -3,29 +3,30 @@ import type {
   Season as DatabaseSeason,
   Episode as DatabaseEpisode,
 } from '@prisma/client';
-import {updateSeries} from '~/global/tmdb';
-import {bufferFromSlice, type Slice} from '~/global/slices';
 
-import type {Resolver, QueryResolver, MutationResolver} from './types';
-import {toGid, fromGid} from './utilities/id';
-import {toHandle} from './utilities/handle';
-import {imageUrl} from './utilities/images';
+import {updateSeries} from '~/global/tmdb.ts';
+import {bufferFromSlice, type Slice} from '~/global/slices.ts';
+
+import type {Resolver, QueryResolver, MutationResolver} from './types.ts';
+import {toGid, fromGid} from './shared/id.ts';
+import {toHandle} from './shared/handle.ts';
+import {imageUrl} from './shared/images.ts';
 
 import {
   Series as SeriesLists,
   Season as SeasonLists,
   Episode as EpisodeLists,
-} from './lists';
-import {Series as SeriesSubscription} from './subscriptions';
-import {Series as SeriesApp} from './apps';
-import {Series as SeriesWatchLater} from './watch-later';
+} from './lists.ts';
+import {Series as SeriesSubscription} from './subscriptions.ts';
+import {Series as SeriesApp} from './apps.ts';
+import {Series as SeriesWatchLater} from './watch-later.ts';
 import {
   Series as SeriesWatches,
   Season as SeasonWatches,
   Episode as EpisodeWatches,
-} from './watches';
+} from './watches.ts';
 
-declare module './types' {
+declare module './types.ts' {
   export interface ValueMap {
     Series: DatabaseSeries;
     Season: DatabaseSeason;

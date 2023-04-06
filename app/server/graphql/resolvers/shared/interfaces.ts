@@ -1,6 +1,6 @@
-import {fromGid} from './id';
+import {fromGid} from './id.ts';
 
-import type {InterfaceResolver, UnionResolver} from '../types';
+import type {InterfaceResolver, UnionResolver} from '../types.ts';
 
 export function addResolvedType(type: string) {
   return <T>(rest: T): T => ({...rest, __resolvedType: type});

@@ -1,8 +1,8 @@
-import type {Context, QueryResolver, MutationResolver} from './types';
-import {toGid, fromGid} from './utilities/id';
+import {toGid, fromGid} from './shared/id.ts';
+import type {Context, QueryResolver, MutationResolver} from './types.ts';
 
-import type {SeriesResolver} from './media';
-import {VIRTUAL_WATCH_LATER_LIST} from './lists';
+import type {SeriesResolver} from './media.ts';
+import {VIRTUAL_WATCH_LATER_LIST} from './lists.ts';
 
 export const Query: Pick<QueryResolver, 'watchLater'> = {
   async watchLater(_, __, {user, prisma}) {

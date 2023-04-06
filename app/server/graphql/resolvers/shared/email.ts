@@ -1,10 +1,10 @@
-import {createSignedToken, Header} from '../../../shared/auth';
+import {createSignedToken, Header} from '../../../shared/auth.ts';
 
 import type {
   Message,
   EmailType,
   PropsForEmail,
-} from '../../../../../functions/email';
+} from '../../../../../functions/email/index.tsx';
 
 // TODO
 export async function enqueueSendEmail<T extends EmailType>(

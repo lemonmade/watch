@@ -3,13 +3,13 @@ import type {
   ListItem as DatabaseListItem,
 } from '@prisma/client';
 
-import type {QueryResolver, MutationResolver, Resolver} from './types';
-import {toGid, fromGid} from './utilities/id';
-import {addResolvedType, createInterfaceResolver} from './utilities/interfaces';
+import type {QueryResolver, MutationResolver, Resolver} from './types.ts';
+import {toGid, fromGid} from './shared/id.ts';
+import {addResolvedType, createInterfaceResolver} from './shared/interfaces.ts';
 
-import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
+import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media.ts';
 
-declare module './types' {
+declare module './types.ts' {
   export interface ValueMap {
     List: DatabaseList | typeof VIRTUAL_WATCH_LATER_LIST;
     ListItem: DatabaseListItem;

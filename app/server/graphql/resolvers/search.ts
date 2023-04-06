@@ -1,5 +1,5 @@
-import type {QueryResolver} from './types';
-import {tmdbFetch, loadTmdbSeries} from './utilities/tmdb';
+import type {QueryResolver} from './types.ts';
+import {tmdbFetch, loadTmdbSeries} from './shared/tmdb.ts';
 
 export const Query: Pick<QueryResolver, 'search'> = {
   async search(_, {query}, {prisma}) {

@@ -50,18 +50,17 @@ router.post(async (request) => {
   const [schema, {graphql}, {createContext}] = await Promise.all([
     loadSchema(),
     import('graphql'),
-    import('./graphql/context'),
+    import('./graphql/context.ts'),
   ]);
 
   try {
-    const result = await graphql(
+    const result = await graphql({
       schema,
-      query,
-      {},
-      createContext(auth, prisma, request, response),
-      variables,
+      source: query,
       operationName,
-    );
+      variableValues: variables,
+      contextValue: createContext(auth, prisma, request, response),
+    });
 
     return json(result, {
       status: response.status,
@@ -91,7 +90,7 @@ function loadSchema() {
       await Promise.all([
         import('@graphql-tools/schema'),
         import('./graphql/resolvers'),
-        import('./graphql/schema'),
+        import('./graphql/schema.ts'),
       ]);
 
     const schema = makeExecutableSchema({

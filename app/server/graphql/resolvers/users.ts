@@ -11,17 +11,20 @@ import type {
 import {customAlphabet} from 'nanoid';
 import type {Stripe} from 'stripe';
 
-import {SUBSCRIPTION_LEVELS, SubscriptionLevel} from '~/global/subscriptions';
+import {
+  SUBSCRIPTION_LEVELS,
+  SubscriptionLevel,
+} from '~/global/subscriptions.ts';
 
 import {
   createSignedToken,
   removeAuthCookies,
   addAuthCookies,
-} from '../../shared/auth';
+} from '../../shared/auth.ts';
 
-import type {Resolver, QueryResolver, MutationResolver} from './types';
-import {toGid, fromGid} from './utilities/id';
-import {enqueueSendEmail} from './utilities/email';
+import type {Resolver, QueryResolver, MutationResolver} from './types.ts';
+import {toGid, fromGid} from './shared/id.ts';
+import {enqueueSendEmail} from './shared/email.ts';
 
 const WEBAUTHN_CHALLENGE_COOKIE = 'WebAuthnChallenge';
 

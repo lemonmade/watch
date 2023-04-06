@@ -4,8 +4,8 @@ import type {
   GraphQLBaseResolverValueMap,
 } from '@watching/graphql/server';
 
-import type {Context} from '../context';
-import type {Schema} from '../schema';
+import type {Context} from '../context.ts';
+import type {Schema} from '../schema.ts';
 
 export type {Context};
 
