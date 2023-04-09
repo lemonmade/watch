@@ -1,8 +1,9 @@
 import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {Icon} from '../Icon';
-import {Pressable, type PressableProps} from '../Pressable';
+import {Icon} from '../Icon.tsx';
+import {Pressable, type PressableProps} from '../Pressable.tsx';
+
 import systemStyles from '../../system.module.css';
 
 import styles from './ContentAction.module.css';

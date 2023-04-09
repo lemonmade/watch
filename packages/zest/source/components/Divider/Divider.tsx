@@ -1,13 +1,13 @@
 import {classes, variation} from '@lemon/css';
-import {type SpacingKeyword} from '../../system';
+import {type SpacingKeyword} from '../../system.ts';
 import styles from './Divider.module.css';
 
-export interface Props {
+export interface DividerProps {
   emphasis?: boolean | 'strong' | 'subdued';
   padding?: boolean | SpacingKeyword;
 }
 
-export function Divider({emphasis, padding}: Props) {
+export function Divider({emphasis, padding}: DividerProps) {
   return (
     <hr
       className={classes(

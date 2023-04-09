@@ -5,7 +5,7 @@ import systemStyles from '../../system.module.css';
 
 import styles from './Label.module.css';
 
-interface Props {
+export interface LabelProps {
   target: string;
   visibility?: 'hidden' | 'visible';
 }
@@ -14,7 +14,7 @@ export function Label({
   target,
   visibility,
   children,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<LabelProps>) {
   return (
     <label
       htmlFor={target}

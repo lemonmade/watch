@@ -15,17 +15,17 @@ import {
 } from '@watching/react-signals';
 import {once} from '@quilted/events';
 
-import {ConnectedAccessoryReset} from '../../utilities/actions';
+import {ConnectedAccessoryReset} from '../../shared/actions.tsx';
 import {
   useContainingOverlay,
   type OverlayController,
-} from '../../utilities/overlays';
-import {LockCanvas} from '../../utilities/canvas';
-import {useLayer, type Layer} from '../../utilities/layers';
-import {useGlobalEventListener} from '../../utilities/global-events';
-import {focusFirstFocusable} from '../../utilities/focus';
+} from '../../shared/overlays.tsx';
+import {LockCanvas} from '../../shared/canvas.tsx';
+import {useLayer, type Layer} from '../../shared/layers.tsx';
+import {useGlobalEventListener} from '../../shared/global-events.ts';
+import {focusFirstFocusable} from '../../shared/focus.ts';
 
-import {Portal} from '../Portal';
+import {Portal} from '../Portal.tsx';
 
 import styles from './Overlay.module.css';
 

@@ -1,7 +1,7 @@
-import {NEXT} from './constants';
-import type {ParentNode} from './ParentNode';
-import {Node} from './Node';
-// import {Text} from './Text';
+import {NEXT} from './constants.ts';
+import type {ParentNode} from './ParentNode.ts';
+import {Node} from './Node.ts';
+// import {Text} from './Text.ts';
 
 /** Ensure the argument is a Node, coercing strings to Text nodes */
 export function toNode(parent: ParentNode, node: Node | any) {

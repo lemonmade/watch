@@ -1,9 +1,9 @@
-import type {Adaptor} from '../protocol';
+import type {Adaptor} from '../protocol.ts';
 
-import {CHANNEL, ID, LISTENERS} from './constants';
-import {fireEvent, dispatchEvent, EventPhase} from './Event';
-import type {Event} from './Event';
-import type {ChildNode} from './ChildNode';
+import {CHANNEL, ID, LISTENERS} from './constants.ts';
+import {fireEvent, dispatchEvent, EventPhase} from './Event.ts';
+import type {Event} from './Event.ts';
+import type {ChildNode} from './ChildNode.ts';
 
 export interface EventListenerOptions {
   capture?: boolean;

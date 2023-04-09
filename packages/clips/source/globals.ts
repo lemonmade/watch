@@ -1,4 +1,4 @@
-import type {ExtensionPoints} from './extension-points';
+import type {ExtensionPoints} from './extension-points.ts';
 
 export interface ClipsApi {
   register<ExtensionPoint extends keyof ExtensionPoints>(

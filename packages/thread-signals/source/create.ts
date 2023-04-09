@@ -2,7 +2,7 @@ import {type Signal} from '@preact/signals-core';
 import {anyAbortSignal} from '@quilted/events';
 import {retain, release, acceptThreadAbortSignal} from '@quilted/threads';
 
-import {type ThreadSignal} from './types';
+import {type ThreadSignal} from './types.ts';
 
 export function createThreadSignal<T>(
   signal: Signal<T>,

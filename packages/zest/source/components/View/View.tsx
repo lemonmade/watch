@@ -1,8 +1,10 @@
 import {PropsWithChildren} from 'react';
 
-import {useViewProps, resolveViewProps, type Props} from './props';
+import {useViewProps, resolveViewProps, type ViewProps} from './props.ts';
 
-export function View({children, ...systemProps}: PropsWithChildren<Props>) {
+export {useViewProps, resolveViewProps, type ViewProps};
+
+export function View({children, ...systemProps}: PropsWithChildren<ViewProps>) {
   const dom = useViewProps(systemProps);
   return <div {...resolveViewProps(dom)}>{children}</div>;
 }

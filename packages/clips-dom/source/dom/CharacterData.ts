@@ -1,5 +1,5 @@
-import {CHANNEL, DATA} from './constants';
-import {ChildNode} from './ChildNode';
+import {CHANNEL, DATA} from './constants.ts';
+import {ChildNode} from './ChildNode.ts';
 
 export class CharacterData extends ChildNode {
   [DATA] = '';

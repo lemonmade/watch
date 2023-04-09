@@ -8,8 +8,8 @@ export {
   type BackgroundKeyword,
   type BorderKeyword,
   type CornerRadiusKeyword,
-} from './system';
+} from './system.ts';
 
 export {default as systemStyles} from './system.module.css';
 
-export * from './components';
+export * from './components.ts';

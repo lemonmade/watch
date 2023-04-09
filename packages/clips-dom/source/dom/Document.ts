@@ -5,17 +5,17 @@ import {
   NamespaceURI,
   NodeType,
   OWNER_DOCUMENT,
-} from './constants';
-import type {Window} from './Window';
-import type {Node} from './Node';
-import {Event} from './Event';
-import {ParentNode} from './ParentNode';
-import {Element} from './Element';
-import {SVGElement} from './SVGElement';
-import {Text} from './Text';
-import {Comment} from './Comment';
-import {DocumentFragment} from './DocumentFragment';
-import {HTMLTemplateElement} from './HTMLTemplateElement';
+} from './constants.ts';
+import type {Window} from './Window.ts';
+import type {Node} from './Node.ts';
+import {Event} from './Event.ts';
+import {ParentNode} from './ParentNode.ts';
+import {Element} from './Element.ts';
+import {SVGElement} from './SVGElement.ts';
+import {Text} from './Text.ts';
+import {Comment} from './Comment.ts';
+import {DocumentFragment} from './DocumentFragment.ts';
+import {HTMLTemplateElement} from './HTMLTemplateElement.ts';
 
 export class Document extends ParentNode {
   nodeType = NodeType.DOCUMENT_NODE;

@@ -1,8 +1,9 @@
 import {Image as BaseImage} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Image = 'ui-image';
 

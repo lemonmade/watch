@@ -1,7 +1,7 @@
-import {NestedHeadingLevel} from '../Heading';
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {NestedHeadingLevel} from '../Heading.tsx';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 export type SectionProps = PropsForClipsComponent<'Section'> & ViewProps;
 

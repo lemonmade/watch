@@ -1,5 +1,5 @@
-import {type Api} from './api';
-import {type WithThreadSignals} from './signals';
+import {type Api} from './api.ts';
+import {type WithThreadSignals} from './signals.ts';
 
 export function getQuery<Data = Record<string, unknown>>(
   apiOrQuery:

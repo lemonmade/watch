@@ -2,7 +2,8 @@ import {
   type RemoteComponentType,
   type PropsForRemoteComponent,
 } from '@remote-ui/core';
-import {CHANNEL} from '../dom/constants';
+
+import {CHANNEL} from '../dom/constants.ts';
 
 export type HTMLElementForRemoteComponent<
   Type extends RemoteComponentType<any, any, any>,

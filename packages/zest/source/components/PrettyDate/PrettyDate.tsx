@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 
-import {prettyDate} from '../../utilities/dates';
+import {prettyDate} from '../../shared/dates.ts';
 
 export interface PrettyDateProps {
   date: Date | string;

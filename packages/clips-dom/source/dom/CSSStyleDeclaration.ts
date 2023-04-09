@@ -1,7 +1,7 @@
-import type {Adaptor} from '../protocol';
+import type {Adaptor} from '../protocol.ts';
 
-import {PROPERTIES, CHANNEL, OWNER_ELEMENT, ID} from './constants';
-import type {Element} from './Element';
+import {PROPERTIES, CHANNEL, OWNER_ELEMENT, ID} from './constants.ts';
+import type {Element} from './Element.ts';
 
 type StyleProto = StyleProtoConstructor;
 

@@ -1,12 +1,13 @@
 import {type PropsWithChildren} from 'react';
 import {classes} from '@lemon/css';
 
-import {Icon} from '../Icon';
-import {Pressable, type PressableProps} from '../Pressable';
+import {Icon} from '../Icon.tsx';
+import {Pressable, type PressableProps} from '../Pressable.tsx';
+
 import systemStyles from '../../system.module.css';
 
-import {type HeadingProps} from './Heading';
-import {useHeadingDomDetails} from './shared';
+import {type HeadingProps} from './Heading.tsx';
+import {useHeadingDomDetails} from './shared.ts';
 
 import styles from './HeadingAction.module.css';
 import headingStyles from './Heading.module.css';

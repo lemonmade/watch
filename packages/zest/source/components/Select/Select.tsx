@@ -3,21 +3,22 @@ import {
   resolveSignalOrValue,
   type SignalOrValue,
 } from '@watching/react-signals';
-import {useUniqueId} from '../../utilities/id';
+
+import {useUniqueId} from '../../shared/id.ts';
 
 interface Option {
   value: string;
   label: string;
 }
 
-interface Props {
+export interface SelectProps {
   value?: SignalOrValue<string>;
   label: string;
   options: Option[];
   onChange?(value: string): void;
 }
 
-export function Select({value, label, options, onChange}: Props) {
+export function Select({value, label, options, onChange}: SelectProps) {
   const id = useUniqueId('Select');
   const resolvedValue = resolveSignalOrValue(value);
 

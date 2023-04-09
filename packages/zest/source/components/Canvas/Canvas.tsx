@@ -2,19 +2,22 @@ import {useEffect, useMemo} from 'react';
 import type {PropsWithChildren} from 'react';
 import {signal, effect} from '@preact/signals-core';
 
-import {CanvasContext, type Canvas as CanvasType} from '../../utilities/canvas';
-import {RootLayer} from '../../utilities/layers';
-import {UniqueIdContext, UniqueIdFactory} from '../../utilities/id';
-import {createActionScope} from '../../utilities/actions';
-
-import systemStyles from '../../system.module.css';
+import {
+  CanvasContext,
+  type Canvas as CanvasType,
+} from '../../shared/canvas.tsx';
+import {RootLayer} from '../../shared/layers.tsx';
+import {UniqueIdContext, UniqueIdFactory} from '../../shared/id.ts';
+import {createActionScope} from '../../shared/actions.tsx';
 
 import '../../style.css';
+import systemStyles from '../../system.module.css';
+
 import styles from './Canvas.module.css';
 
-interface Props {}
+export interface CanvasProps {}
 
-export function Canvas({children}: PropsWithChildren<Props>) {
+export function Canvas({children}: PropsWithChildren<CanvasProps>) {
   const {canvas, idFactory} = useMemo(() => {
     const canvas: CanvasType = {
       level: 0,

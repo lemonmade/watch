@@ -13,28 +13,28 @@ import {
   computed,
 } from '@watching/react-signals';
 
-import {Icon, type IconSource} from '../Icon';
-import {Pressable, type PressableProps} from '../Pressable';
+import {Icon, type IconSource} from '../Icon.tsx';
+import {Pressable, type PressableProps} from '../Pressable.tsx';
 
-import {useUniqueId} from '../../utilities/id';
+import {useUniqueId} from '../../shared/id.ts';
 import {
   useActionScope,
   useConnectedAccessory,
   ConnectedAccessoryContext,
   ConnectedAccessoryReset,
-} from '../../utilities/actions';
-import {useMenuController} from '../../utilities/menus';
+} from '../../shared/actions.tsx';
+import {useMenuController} from '../../shared/menus.ts';
+import {useContainingForm} from '../../shared/forms.ts';
 
 import type {
   EmphasisValue,
   ActionRoleKeyword,
   BasicAlignmentKeyword,
-} from '../../system';
+} from '../../system.ts';
 
 import styles from './Action.module.css';
-import {useContainingForm} from '../../utilities/forms';
 
-export type Props = Omit<PressableProps, 'className' | 'display'> & {
+export type ActionProps = Omit<PressableProps, 'className' | 'display'> & {
   emphasis?: EmphasisValue;
   loading?: SignalOrValue<boolean>;
   icon?: IconSource | ReactElement;
@@ -48,7 +48,7 @@ export type Props = Omit<PressableProps, 'className' | 'display'> & {
 
 export const Action = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  PropsWithChildren<Props>
+  PropsWithChildren<ActionProps>
 >(function Action(
   {
     role,

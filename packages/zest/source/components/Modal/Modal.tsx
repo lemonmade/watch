@@ -1,16 +1,16 @@
 import {classes} from '@lemon/css';
 
-import {HeadingLevelReset} from '../Heading';
-import {ActionScopeReset} from '../../utilities/actions';
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {Overlay} from '../Overlay.tsx';
+import {HeadingLevelReset} from '../Heading.tsx';
+
+import {ActionScopeReset} from '../../shared/actions.tsx';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import systemStyles from '../../system.module.css';
 
-import {Overlay} from '../Overlay';
-
 import styles from './Modal.module.css';
 
-type ModalProps = PropsForClipsComponent<'Modal'>;
+export type ModalProps = PropsForClipsComponent<'Modal'>;
 
 export function Modal({children, padding}: ModalProps) {
   return (

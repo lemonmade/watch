@@ -6,12 +6,12 @@ import {
   NEXT,
   VALUE,
   NodeType,
-} from './constants';
-import type {Node} from './Node';
-import type {Text} from './Text';
-import type {Comment} from './Comment';
-import type {ParentNode} from './ParentNode';
-import type {Element} from './Element';
+} from './constants.ts';
+import type {Node} from './Node.ts';
+import type {Text} from './Text.ts';
+import type {Comment} from './Comment.ts';
+import type {ParentNode} from './ParentNode.ts';
+import type {Element} from './Element.ts';
 
 // const voidElements = {
 //   img: true,

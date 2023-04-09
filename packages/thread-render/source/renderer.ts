@@ -1,7 +1,7 @@
 import {createEmitter, raceAgainstAbortSignal} from '@quilted/events';
 import {signal, computed} from '@preact/signals-core';
-import {createRemoteReceiver} from './receiver';
 
+import {createRemoteReceiver} from './receiver.ts';
 import {
   type ThreadRenderer,
   type ThreadRendererEventMap,
@@ -9,7 +9,7 @@ import {
   type ThreadRendererInstanceEventMap,
   type ThreadRendererInstanceTimings,
   type ThreadRendererInstanceState,
-} from './types';
+} from './types.ts';
 
 export type PartialThreadRendererInstance = Omit<
   ThreadRendererInstance<never>,

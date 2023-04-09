@@ -16,17 +16,17 @@
       "require": "./build/cjs/index.cjs"
     },
     "./server": {
-      "types": "./build/typescript/server/index.d.ts",
-      "quilt:source": "./source/server/index.ts",
-      "quilt:esnext": "./build/esnext/server/index.esnext",
-      "import": "./build/esm/server/index.mjs",
-      "require": "./build/cjs/server/index.cjs"
+      "types": "./build/typescript/server.d.ts",
+      "quilt:source": "./source/server.ts",
+      "quilt:esnext": "./build/esnext/server.esnext",
+      "import": "./build/esm/server.mjs",
+      "require": "./build/cjs/server.cjs"
     }
   },
   "typesVersions": {
     "*": {
       "server": [
-        "./build/typescript/server/index.d.ts"
+        "./build/typescript/server.d.ts"
       ],
       "*": [
         "./build/typescript/index.d.ts"

@@ -6,9 +6,9 @@ import {
   ID,
   CHANNEL,
   NamespaceURI,
-} from './constants';
-import type {Attr} from './Attr';
-import type {Element} from './Element';
+} from './constants.ts';
+import type {Attr} from './Attr.ts';
+import type {Element} from './Element.ts';
 
 export class NamedNodeMap {
   [CHILD]: Attr | null = null;

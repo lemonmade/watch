@@ -18,30 +18,30 @@ import {
   isSameDay,
 } from 'date-fns';
 
-import {Action} from '../Action';
-import {Popover} from '../Popover';
-import {Menu} from '../Menu';
-import {Text} from '../Text';
-import {TextField} from '../TextField';
-import {View} from '../View';
+import {Action} from '../Action.tsx';
+import {Popover} from '../Popover.tsx';
+import {Menu} from '../Menu.tsx';
+import {Text} from '../Text.tsx';
+import {TextField} from '../TextField.tsx';
+import {View} from '../View.tsx';
 
 import {
   prettyDate,
   shortDate,
   weekdayDetails,
   type WeekdayDetails,
-} from '../../utilities/dates';
+} from '../../shared/dates.ts';
 
 import styles from './DatePicker.module.css';
 
-interface Props {
+export interface DatePickerProps {
   id?: string;
   label: ReactNode;
   value?: SignalOrValue<Date | undefined>;
   onChange?(value: Date | undefined): void;
 }
 
-export function DatePicker({id, label, value, onChange}: Props) {
+export function DatePicker({id, label, value, onChange}: DatePickerProps) {
   const resolvedValue = resolveSignalOrValue(value);
   const handleChange =
     onChange ??

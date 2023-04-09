@@ -1,5 +1,5 @@
-import {IS_TRUSTED, LISTENERS} from './constants';
-import type {EventTarget} from './EventTarget';
+import {IS_TRUSTED, LISTENERS} from './constants.ts';
+import type {EventTarget} from './EventTarget.ts';
 
 export const enum EventPhase {
   NONE = 0,

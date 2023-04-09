@@ -1,8 +1,9 @@
 import {Action as BaseAction} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Action = 'ui-action';
 

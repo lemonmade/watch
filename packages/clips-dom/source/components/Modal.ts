@@ -1,8 +1,9 @@
 import {Modal as BaseModal} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Modal = 'ui-modal';
 

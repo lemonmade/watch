@@ -1,6 +1,6 @@
 import type {PropsWithChildren} from 'react';
 
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import styles from './TextBlock.module.css';
 

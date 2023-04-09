@@ -1,6 +1,6 @@
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 
-import {useRenderContext} from '../context';
+import {useRenderContext} from '../context.ts';
 
 export function useApi<
   Point extends ExtensionPoint = ExtensionPoint,

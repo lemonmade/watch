@@ -1,5 +1,5 @@
 import {BlockStack as UiBlockStack} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared';
+import {type PropsForClipsComponent} from './shared.ts';
 
 export function BlockStack({
   children,

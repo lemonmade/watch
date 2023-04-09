@@ -4,7 +4,7 @@ import {
   toHeadingLevel,
   HeadingLevelContext,
   type HeadingLevel,
-} from './shared';
+} from './shared.ts';
 
 export function HeadingLevelReset({
   level = 1,

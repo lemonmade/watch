@@ -1,11 +1,11 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {Pressable, type PressableProps} from '../Pressable';
+import {Pressable, type PressableProps} from '../Pressable.tsx';
 
 import styles from './TextLink.module.css';
 
-interface Props extends Pick<PressableProps, 'id' | 'target'> {
+export interface TextLinkProps extends Pick<PressableProps, 'id' | 'target'> {
   to: NonNullable<PressableProps['to']>;
   size?: 'small' | 'base';
   emphasis?: boolean | 'strong' | 'subdued';
@@ -18,7 +18,7 @@ export function TextLink({
   size,
   emphasis,
   children,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<TextLinkProps>) {
   return (
     <Pressable
       id={id}

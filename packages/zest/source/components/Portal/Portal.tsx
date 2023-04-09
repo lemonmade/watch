@@ -1,18 +1,18 @@
 import type {PropsWithChildren, ReactElement} from 'react';
 import {createPortal} from 'react-dom';
 
-import {useUniqueId} from '../../utilities/id';
-import {useCanvas} from '../../utilities/canvas';
-import {StackedLayer} from '../../utilities/layers';
+import {useUniqueId} from '../../shared/id.ts';
+import {useCanvas} from '../../shared/canvas.tsx';
+import {StackedLayer} from '../../shared/layers.tsx';
 
-interface Props {
+export interface PortalProps {
   layer?: boolean;
 }
 
 export function Portal({
   layer = true,
   children,
-}: PropsWithChildren<Props>): ReactElement | null {
+}: PropsWithChildren<PortalProps>): ReactElement | null {
   const id = useUniqueId('Portal');
   const {portal} = useCanvas();
   const container = portal.container.value;

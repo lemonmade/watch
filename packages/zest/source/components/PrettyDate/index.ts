@@ -1,1 +1,0 @@
-export {PrettyDate} from './PrettyDate';

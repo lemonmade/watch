@@ -1,7 +1,7 @@
 import {signal as createSignal, type Signal} from '@preact/signals-core';
 import {createThreadAbortSignal} from '@quilted/threads';
 
-import {type ThreadSignal} from './types';
+import {type ThreadSignal} from './types.ts';
 
 export function isThreadSignal<T = unknown>(
   value?: unknown,

@@ -8,10 +8,10 @@ import {
   type RemoteText,
 } from '@remote-ui/core';
 
-import {type Adaptor} from './protocol';
-import {type RemoteDOMComponent} from './components';
-import {Window} from './dom/Window';
-import {CHANNEL, ID, NodeType} from './dom/constants';
+import {type Adaptor} from './protocol.ts';
+import {type RemoteDOMComponent} from './components.ts';
+import {Window} from './dom/Window.ts';
+import {CHANNEL, ID, NodeType} from './dom/constants.ts';
 
 export function createWindow({adaptor}: RemoteDOM) {
   const window = new Window();

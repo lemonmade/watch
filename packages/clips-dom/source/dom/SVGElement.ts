@@ -1,5 +1,5 @@
-import {NS, NamespaceURI} from './constants';
-import {Element} from './Element';
+import {NS, NamespaceURI} from './constants.ts';
+import {Element} from './Element.ts';
 
 export class SVGElement extends Element {
   [NS] = NamespaceURI.SVG;

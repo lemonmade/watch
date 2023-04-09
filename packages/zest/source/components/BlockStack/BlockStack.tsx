@@ -2,15 +2,15 @@ import type {PropsWithChildren} from 'react';
 import {variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {type SpacingKeyword} from '../../system';
+import {type SpacingKeyword} from '../../system.ts';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
 import styles from './BlockStack.module.css';
 
 export type AlignKeyword = 'start' | 'end' | 'center' | 'stretch';
 
-interface Props extends ViewProps {
+export interface BlockStackProps extends ViewProps {
   spacing?: boolean | SpacingKeyword;
   align?: AlignKeyword;
 }
@@ -29,7 +29,7 @@ export function BlockStack({
   spacing,
   children,
   ...systemProps
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<BlockStackProps>) {
   const view = useViewProps({...systemProps, display: 'grid'});
   view.addClassName(styles.BlockStack);
 

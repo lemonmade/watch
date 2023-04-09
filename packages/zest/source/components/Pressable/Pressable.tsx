@@ -14,15 +14,15 @@ import {
 } from '@watching/react-signals';
 
 import systemStyles from '../../system.module.css';
-import {useUniqueId} from '../../utilities/id';
-import {useContainingForm} from '../../utilities/forms';
+import {useUniqueId} from '../../shared/id.ts';
+import {useContainingForm} from '../../shared/forms.ts';
 import {
   OverlayContext,
   createOverlayController,
   useContainingOverlay,
   ariaForOverlay,
   type OverlayController,
-} from '../../utilities/overlays';
+} from '../../shared/overlays.tsx';
 
 import styles from './Pressable.module.css';
 
@@ -36,7 +36,7 @@ export type PostPerformAction =
   | 'closeContainingOverlay'
   | 'none';
 
-export interface Props {
+export interface PressableProps {
   id?: string;
   className?: string;
   display?: 'block' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
@@ -54,7 +54,7 @@ export interface Props {
 
 export const Pressable = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  PropsWithChildren<Props>
+  PropsWithChildren<PressableProps>
 >(function Pressable(props, ref) {
   const {id, overlay} = props;
 
@@ -89,7 +89,9 @@ export const Pressable = forwardRef<
 
 export const PressableInternal = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
-  PropsWithChildren<Omit<Props, 'overlay'> & {overlay?: OverlayController}>
+  PropsWithChildren<
+    Omit<PressableProps, 'overlay'> & {overlay?: OverlayController}
+  >
 >(function PressableInternal(
   {
     to,

@@ -6,10 +6,11 @@ import {
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {choiceStyles} from '../../utilities/choices';
-import {useUniqueId} from '../../utilities/id';
 
-export interface Props {
+import {choiceStyles} from '../../shared/choices.ts';
+import {useUniqueId} from '../../shared/id.ts';
+
+export interface CheckboxProps {
   id?: string;
   disabled?: SignalOrValue<boolean>;
   readonly?: SignalOrValue<boolean>;
@@ -26,7 +27,7 @@ export function Checkbox({
   children,
   helpText,
   onChange,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<CheckboxProps>) {
   const id = useUniqueId('Checkbox', explicitId);
 
   const resolvedChecked = resolveSignalOrValue(checked);

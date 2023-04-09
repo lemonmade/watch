@@ -1,7 +1,7 @@
 export * from '@watching/clips';
 export * from '@preact/signals-core';
 
-export {extension} from './extension';
+export {extension} from './extension.tsx';
 export {
   Action,
   BlockStack,
@@ -17,6 +17,6 @@ export {
   TextBlock,
   TextField,
   View,
-} from './components';
-export * from './hooks';
-export {useSignal, useSignalEffect, useComputed} from './signals';
+} from './components.ts';
+export * from './hooks.ts';
+export {useSignal, useSignalEffect, useComputed} from './signals.ts';

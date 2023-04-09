@@ -1,5 +1,5 @@
-import {type PropsForClipsComponent} from '../../utilities/clips';
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
 export type FooterProps = PropsForClipsComponent<'Footer'> & ViewProps;
 

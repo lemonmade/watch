@@ -7,11 +7,11 @@ import {
   OWNER_DOCUMENT,
   NodeType,
   // PROXY,
-} from './constants';
-import type {Node} from './Node';
-// import type {Element} from './Element';
-import {ChildNode, toNode} from './ChildNode';
-import {NodeList} from './NodeList';
+} from './constants.ts';
+import type {Node} from './Node.ts';
+// import type {Element} from './Element.ts';
+import {ChildNode, toNode} from './ChildNode.ts';
+import {NodeList} from './NodeList.ts';
 
 export class ParentNode extends ChildNode {
   private _children?: NodeList;

@@ -1,8 +1,9 @@
 import {Popover as BasePopover} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Popover = 'ui-popover';
 

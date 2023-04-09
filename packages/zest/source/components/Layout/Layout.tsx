@@ -1,10 +1,10 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {useUniqueId} from '../../utilities/id';
-import {raw, type SpacingKeyword, type RawValue} from '../../system';
+import {raw, type SpacingKeyword, type RawValue} from '../../system.ts';
+import {useUniqueId} from '../../shared/id.ts';
 
-import {View, type ViewProps} from '../View';
+import {View, type ViewProps} from '../View.tsx';
 
 import styles from './Layout.module.css';
 
@@ -101,7 +101,7 @@ export interface Media<T> {
 
 export type ValueOrMediaList<T> = T | Media<T>[];
 
-interface Props extends Omit<ViewProps, 'display'> {
+export interface LayoutProps extends Omit<ViewProps, 'display'> {
   inlineAlignment?: 'start' | 'center' | 'end';
   blockAlignment?: 'start' | 'center' | 'end';
   columns?: ValueOrMediaList<Size[]>;
@@ -131,7 +131,7 @@ export function Layout({
   spacing,
   children,
   ...rest
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<LayoutProps>) {
   const id = useUniqueId('Layout');
 
   const className = classes(
@@ -157,7 +157,7 @@ function ColumnsStyles({
   columns,
 }: {
   scope: string;
-  columns: NonNullable<Props['columns']>;
+  columns: NonNullable<LayoutProps['columns']>;
 }) {
   const rootSelector = `#${scope}`;
 
