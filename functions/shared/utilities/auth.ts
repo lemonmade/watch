@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
+
 import Env from '@quilted/quilt/env';
 import type {
   EnhancedResponse,

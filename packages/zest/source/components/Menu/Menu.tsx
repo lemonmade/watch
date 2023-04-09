@@ -8,18 +8,18 @@ import {
 import {signal} from '@preact/signals-core';
 import {classes} from '@lemon/css';
 
-import {useUniqueId} from '../../utilities/id';
+import {useUniqueId} from '../../shared/id.ts';
 import {
   MenuControllerContext,
   type MenuController,
-} from '../../utilities/menus';
-import {findFirstFocusable} from '../../utilities/focus';
+} from '../../shared/menus.ts';
+import {findFirstFocusable} from '../../shared/focus.ts';
 
 import systemStyles from '../../system.module.css';
 
 import styles from './Menu.module.css';
 
-interface MenuProps {
+export interface MenuProps {
   id?: string;
   label?: ReactNode;
   filter?: ReactNode;

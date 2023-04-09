@@ -1,8 +1,8 @@
 import {classes} from '@lemon/css';
 
-import {useHeadingDomDetails} from './shared';
+import {useHeadingDomDetails} from './shared.ts';
 
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import styles from './Heading.module.css';
 

@@ -5,7 +5,7 @@ import {
   type ExportedHandlerScheduledHandler,
 } from '@cloudflare/workers-types';
 
-import {type Message} from '../tmdb-refresher';
+import {type Message} from '../tmdb-refresher/tmdb-refresher.ts';
 
 interface Environment {
   DATABASE_URL: string;

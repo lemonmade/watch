@@ -1,12 +1,12 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {View} from '../View';
-import {NestedHeadingLevel} from '../Heading';
+import {View} from '../View.tsx';
+import {NestedHeadingLevel} from '../Heading.tsx';
 
 import styles from './Banner.module.css';
 
-interface Props {
+export interface BannerProps {
   status?: 'information' | 'error' | 'success';
   padding?: boolean;
 }
@@ -15,7 +15,7 @@ export function Banner({
   status,
   padding = true,
   children,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<BannerProps>) {
   return (
     <NestedHeadingLevel>
       <View

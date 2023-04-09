@@ -9,9 +9,9 @@ import {
 } from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 
-import {createUseAppContextHook} from '~/shared/context';
+import {createUseAppContextHook} from '~/shared/context.ts';
 
-import {type ClipsManager} from './manager';
+import {type ClipsManager} from './manager.ts';
 import {type ClipsExtensionPoint} from './extension';
 import {
   type ExtensionPointWithOptions,
@@ -19,7 +19,7 @@ import {
 } from './extension-points';
 import {type ClipsExtensionFragmentData} from './graphql/ClipsExtensionFragment.graphql';
 
-declare module '~/shared/context' {
+declare module '~/shared/context.ts' {
   interface AppContext {
     readonly clipsManager?: ClipsManager;
   }

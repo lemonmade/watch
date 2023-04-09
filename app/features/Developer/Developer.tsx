@@ -1,7 +1,7 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {BlockStack, InlineStack, Action} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
+import {Page} from '~/shared/page.ts';
 
 export default function Developer() {
   usePerformanceNavigation({state: 'complete'});

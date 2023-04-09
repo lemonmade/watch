@@ -1,7 +1,7 @@
-import {CONTENT} from './constants';
-import {DocumentFragment} from './DocumentFragment';
-import {Element} from './Element';
-import {parseHtml, serializeChildren} from './serialization';
+import {CONTENT} from './constants.ts';
+import {DocumentFragment} from './DocumentFragment.ts';
+import {Element} from './Element.ts';
+import {parseHtml, serializeChildren} from './serialization.ts';
 
 export class HTMLTemplateElement extends Element {
   [CONTENT]?: DocumentFragment;

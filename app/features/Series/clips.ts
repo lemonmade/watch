@@ -2,7 +2,7 @@ import {
   CommonComponents,
   createExtensionPoint,
   createSharedGraphQLApi,
-} from '~/shared/clips';
+} from '~/shared/clips.ts';
 
 export interface SeriesDetailsRenderAccessoryOptions {
   readonly id: string;

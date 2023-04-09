@@ -1,8 +1,9 @@
 import {View as BaseView, type ViewProps} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const VIEW_PROPERTIES: (keyof ViewProps)[] = [
   'padding',

@@ -1,8 +1,9 @@
 import {InlineStack as BaseInlineStack} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const InlineStack = 'ui-inline-stack';
 

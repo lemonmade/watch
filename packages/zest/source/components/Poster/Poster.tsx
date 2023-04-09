@@ -1,16 +1,16 @@
 import {classes} from '@lemon/css';
 
-import {Icon} from '../Icon';
-import {Text} from '../Text';
+import {Icon} from '../Icon.tsx';
+import {Text} from '../Text.tsx';
 
 import styles from './Poster.module.css';
 
-interface Props {
+export interface PosterProps {
   source?: string | null;
   label?: string;
 }
 
-export function Poster({source, label}: Props) {
+export function Poster({source, label}: PosterProps) {
   const isPlaceholder = !source;
 
   return (

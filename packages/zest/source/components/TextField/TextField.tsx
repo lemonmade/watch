@@ -1,12 +1,12 @@
-import {useUniqueId} from '../../utilities/id';
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {useUniqueId} from '../../shared/id.ts';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
-import {Label} from '../Label';
-import {BlockStack} from '../BlockStack';
+import {Label} from '../Label.tsx';
+import {BlockStack} from '../BlockStack.tsx';
 
-import {Input} from './Input';
+import {Input} from './Input.tsx';
 
-type Props = PropsForClipsComponent<'TextField'>;
+export type TextFieldProps = PropsForClipsComponent<'TextField'>;
 
 export function TextField({
   id: explicitId,
@@ -14,7 +14,7 @@ export function TextField({
   labelStyle,
   placeholder,
   ...baseProps
-}: Props) {
+}: TextFieldProps) {
   const id = useUniqueId('TextField', explicitId);
 
   return (

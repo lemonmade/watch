@@ -11,8 +11,9 @@ import {
 import {classes, variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {choiceStyles} from '../../utilities/choices';
-import {useUniqueId} from '../../utilities/id';
+
+import {choiceStyles} from '../../shared/choices.ts';
+import {useUniqueId} from '../../shared/id.ts';
 
 interface ChoiceListContextValue {
   id: string;
@@ -23,7 +24,7 @@ interface ChoiceListContextValue {
 const ChoiceListContext = createOptionalContext<ChoiceListContextValue>();
 const useChoiceListContext = createUseContextHook(ChoiceListContext);
 
-export interface Props<Value extends string = string> {
+export interface ChoiceListProps<Value extends string = string> {
   id?: string;
   value?: SignalOrValue<Value>;
   spacing?: 'small' | 'base';
@@ -36,7 +37,7 @@ export function ChoiceList<Value extends string = string>({
   value,
   spacing = 'small',
   onChange,
-}: PropsWithChildren<Props<Value>>) {
+}: PropsWithChildren<ChoiceListProps<Value>>) {
   const id = useUniqueId('ChoiceList', explicitId);
 
   const contextValue = useMemo<ChoiceListContextValue>(

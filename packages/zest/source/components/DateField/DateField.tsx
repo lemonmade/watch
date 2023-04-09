@@ -1,17 +1,17 @@
 import {type ReactNode} from 'react';
 
-import {BlockStack} from '../BlockStack';
+import {BlockStack} from '../BlockStack.tsx';
 
 import styles from './DateField.module.css';
 
-interface Props {
+export interface DateFieldProps {
   id?: string;
   label: ReactNode;
   value: Date;
   onChange(value: Date): void;
 }
 
-export function DateField({id, label, value, onChange}: Props) {
+export function DateField({id, label, value, onChange}: DateFieldProps) {
   return (
     <BlockStack spacing="small">
       <label htmlFor={id}>{label}</label>

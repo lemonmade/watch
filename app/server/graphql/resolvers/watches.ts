@@ -5,20 +5,26 @@ import type {
   Episode as DatabaseEpisode,
   Season as DatabaseSeason,
 } from '@prisma/client';
-import {bufferFromSlice, sliceFromBuffer, type Slice} from '~/global/slices';
 
-import type {QueryResolver, MutationResolver, Resolver, Context} from './types';
-import {toGid, fromGid} from './utilities/id';
+import {bufferFromSlice, sliceFromBuffer, type Slice} from '~/global/slices.ts';
+
+import type {
+  QueryResolver,
+  MutationResolver,
+  Resolver,
+  Context,
+} from './types.ts';
+import {toGid, fromGid} from './shared/id.ts';
 import {
   addResolvedType,
   createUnionResolver,
   createInterfaceResolver,
-} from './utilities/interfaces';
+} from './shared/interfaces.ts';
 
-import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media';
-import {VIRTUAL_WATCH_LATER_LIST} from './lists';
-import {addSeriesToWatchLater} from './watch-later';
-import {WatchThrough as WatchThroughApp} from './apps';
+import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media.ts';
+import {VIRTUAL_WATCH_LATER_LIST} from './lists.ts';
+import {addSeriesToWatchLater} from './watch-later.ts';
+import {WatchThrough as WatchThroughApp} from './apps.ts';
 
 declare module './types' {
   export interface ValueMap {

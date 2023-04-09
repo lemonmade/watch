@@ -7,7 +7,7 @@ export {
   type ReadonlySignal,
 } from '@preact/signals-core';
 
-export * from './types';
-export * from './create';
-export * from './accept';
-export * from './iterator';
+export * from './types.ts';
+export * from './create.ts';
+export * from './accept.ts';
+export * from './iterator.ts';

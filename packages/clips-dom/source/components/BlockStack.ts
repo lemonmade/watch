@@ -1,8 +1,9 @@
 import {BlockStack as BaseBlockStack} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const BlockStack = 'ui-block-stack';
 

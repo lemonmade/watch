@@ -30,13 +30,13 @@ import {
   Icon,
 } from '@lemon/zest';
 
-import {SpoilerAvoidance} from '~/shared/spoilers';
-import {Page} from '~/shared/page';
-import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github';
-import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google';
-import {useQuery, useMutation} from '~/shared/graphql';
+import {SpoilerAvoidance} from '~/shared/spoilers.ts';
+import {Page} from '~/shared/page.ts';
+import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
+import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
+import {useQuery, useMutation} from '~/shared/graphql.ts';
 
-import {SearchParam, PaymentStatus} from '~/global/subscriptions';
+import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
 
 import accountQuery, {
   type AccountQueryData,

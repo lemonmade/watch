@@ -8,9 +8,9 @@ import {
   CHANNEL,
   NamespaceURI,
   NodeType,
-} from './constants';
-import {Node} from './Node';
-import type {Element} from './Element';
+} from './constants.ts';
+import {Node} from './Node.ts';
+import type {Element} from './Element.ts';
 
 export class Attr extends Node {
   nodeType = NodeType.ATTRIBUTE_NODE;

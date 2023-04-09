@@ -2,13 +2,13 @@ import type {PropsWithChildren} from 'react';
 import {variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {type SpacingKeyword, type AlignKeyword} from '../../system';
+import {type SpacingKeyword, type AlignKeyword} from '../../system.ts';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
 import styles from './InlineStack.module.css';
 
-interface Props
+export interface InlineStackProps
   extends Omit<ViewProps, 'display' | 'alignment' | 'inlineAlignment'> {
   spacing?: boolean | SpacingKeyword;
   alignment?: AlignKeyword;
@@ -28,7 +28,7 @@ export function InlineStack({
   children,
   alignment,
   ...systemProps
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<InlineStackProps>) {
   const view = useViewProps({...systemProps, display: 'flex'});
   view.addClassName(styles.InlineStack);
 

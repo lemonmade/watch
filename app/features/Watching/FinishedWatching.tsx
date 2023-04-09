@@ -1,12 +1,12 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 
-import {Page} from '~/shared/page';
-import {MediaGrid} from '~/shared/media';
-import {parseGid, useQuery} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {MediaGrid} from '~/shared/media.ts';
+import {parseGid, useQuery} from '~/shared/graphql.ts';
 
 import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 
-import {WatchThroughItem} from './components';
+import {WatchThroughItem} from './components/WatchThroughItem.tsx';
 
 export default function FinishedWatching() {
   const {data, isLoading} = useQuery(finishedWatchingQuery);

@@ -2,7 +2,7 @@ import {type PropsWithChildren} from 'react';
 
 import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 
-import {Navigation, NavigationItem} from './components/Navigation';
+import {Navigation, NavigationItem} from './components/Navigation.ts';
 
 import styles from './Frame.module.css';
 
@@ -14,20 +14,17 @@ const ROOT_NAVIGATION_ITEM_MATCHES = [
 
 export default function Frame({children}: PropsWithChildren<Props>) {
   return (
-    <>
-      <View display="grid" className={styles.Frame}>
-        <View className={styles.Navigation}>
-          <NavigationMenu />
-        </View>
-        <View className={styles.Content}>{children}</View>
-      </View>
-
+    <View display="grid" className={styles.Frame}>
       <View className={styles.GoMenu}>
         <Action emphasis detail={<Icon source="go" />} overlay={<GoModal />}>
           Go
         </Action>
       </View>
-    </>
+      <View className={styles.Navigation}>
+        <NavigationMenu />
+      </View>
+      <View className={styles.Content}>{children}</View>
+    </View>
   );
 }
 

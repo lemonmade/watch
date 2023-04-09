@@ -1,4 +1,4 @@
-import type {Adaptor} from '../protocol';
+import type {Adaptor} from '../protocol.ts';
 
 import {
   CHANNEL,
@@ -13,12 +13,12 @@ import {
   DATA,
   NamespaceURI,
   NodeType,
-} from './constants';
-import type {Document} from './Document';
-import type {ParentNode} from './ParentNode';
-import type {CharacterData} from './CharacterData';
-import type {Text} from './Text';
-import {EventTarget} from './EventTarget';
+} from './constants.ts';
+import type {Document} from './Document.ts';
+import type {ParentNode} from './ParentNode.ts';
+import type {CharacterData} from './CharacterData.ts';
+import type {Text} from './Text.ts';
+import {EventTarget} from './EventTarget.ts';
 
 // Internal Node ID's are global
 let nodeId = 0;

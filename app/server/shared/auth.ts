@@ -5,7 +5,7 @@ import type {
 } from '@quilted/quilt/request-router';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
-import {createPrisma, type Prisma} from './database';
+import {createPrisma, type Prisma} from './database.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

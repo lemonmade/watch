@@ -1,5 +1,5 @@
 import {View as UiView} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared';
+import {type PropsForClipsComponent} from './shared.ts';
 
 export function View({
   children,

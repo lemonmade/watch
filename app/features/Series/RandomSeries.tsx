@@ -1,5 +1,5 @@
 import {Redirect} from '@quilted/quilt';
-import {useQuery, parseGid} from '~/shared/graphql';
+import {useQuery, parseGid} from '~/shared/graphql.ts';
 
 import randomSeriesQuery from './graphql/RandomSeriesQuery.graphql';
 

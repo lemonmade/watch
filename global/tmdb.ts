@@ -1,3 +1,3 @@
-export {tmdbFetch} from './tmdb/fetch';
-export {updateSeries} from './tmdb/update-series';
-export * from './tmdb/types';
+export {tmdbFetch} from './tmdb/fetch.ts';
+export {updateSeries} from './tmdb/update-series.ts';
+export * from './tmdb/types.ts';

@@ -7,13 +7,13 @@ import {
   ID,
   NamespaceURI,
   NodeType,
-} from './constants';
-import {ParentNode} from './ParentNode';
-import {NamedNodeMap} from './NamedNodeMap';
-import {Attr} from './Attr';
-import {CSSStyleDeclaration} from './CSSStyleDeclaration';
-import {querySelectorAll, querySelector} from './selectors';
-import {serializeNode, serializeChildren, parseHtml} from './serialization';
+} from './constants.ts';
+import {ParentNode} from './ParentNode.ts';
+import {NamedNodeMap} from './NamedNodeMap.ts';
+import {Attr} from './Attr.ts';
+import {CSSStyleDeclaration} from './CSSStyleDeclaration.ts';
+import {querySelectorAll, querySelector} from './selectors.ts';
+import {serializeNode, serializeChildren, parseHtml} from './serialization.ts';
 
 // Intercept initial property assignment on Element instances to install a
 // getter/setter pair that forwards assigned values to the backing channel.

@@ -7,6 +7,7 @@
     "prisma": "prisma",
     "start": "node ./build/runtime/runtime.js"
   },
+  "sideEffects": false,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
@@ -16,14 +17,14 @@
     "stripe": "^11.4.0"
   },
   "devDependencies": {
-    "@graphql-tools/schema": "^7.0.0",
+    "@graphql-tools/schema": "^9.0.0",
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
-    "@lemonmade/graphql-live": "^0.1.12",
-    "@quilted/quilt": "^0.5.138",
-    "@quilted/react-query": "^0.1.15",
-    "@remote-ui/core": "^2.2.1",
-    "@remote-ui/react": "^5.0.1",
+    "@lemonmade/graphql-live": "^0.1.14",
+    "@quilted/quilt": "^0.5.139",
+    "@quilted/react-query": "^0.1.16",
+    "@remote-ui/core": "^2.2.2",
+    "@remote-ui/react": "^5.0.2",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",
     "@stripe/stripe-js": "^1.46.0",
@@ -37,7 +38,7 @@
     "@watching/thread-signals": "workspace:*",
     "base64url": "^3.0.1",
     "common-tags": "^1.8.0",
-    "graphql": "^15.0.0",
+    "graphql": "^16.6.0",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
     "nanoid": "^4.0.0",

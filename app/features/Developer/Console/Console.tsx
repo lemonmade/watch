@@ -11,12 +11,12 @@ import {
   Icon,
 } from '@lemon/zest';
 
-import {Page} from '~/shared/page';
+import {Page} from '~/shared/page.ts';
 import {
   useClipsManager,
   useLocalDevelopmentServerQuery,
   type ClipsLocalDevelopmentServer,
-} from '~/shared/clips';
+} from '~/shared/clips.ts';
 
 import developerConsoleQuery, {
   type DeveloperConsoleQueryData,

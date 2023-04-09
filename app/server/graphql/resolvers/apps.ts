@@ -14,8 +14,8 @@ import type {
   ClipsExtensionPointSupportInput,
   CreateClipsInitialVersion,
   ClipsExtensionSettingsStringInput,
-} from '../schema';
-import {createSignedToken} from '../../shared/auth';
+} from '../schema.ts';
+import {createSignedToken} from '../../shared/auth.ts';
 
 import type {
   Resolver,
@@ -23,10 +23,10 @@ import type {
   MutationResolver,
   UnionResolver,
   Context,
-} from './types';
-import {toHandle} from './utilities/handle';
-import {toGid, fromGid} from './utilities/id';
-import {createUnionResolver, addResolvedType} from './utilities/interfaces';
+} from './types.ts';
+import {toHandle} from './shared/handle.ts';
+import {toGid, fromGid} from './shared/id.ts';
+import {createUnionResolver, addResolvedType} from './shared/interfaces.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

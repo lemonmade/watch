@@ -1,13 +1,14 @@
 import {createRemoteRoot} from '@remote-ui/core';
+
 import {
   type ExtensionPoint,
   type ExtensionPoints,
   type RenderExtension,
   type RenderExtensionRoot,
   type RenderExtensionWithRemoteRoot,
-} from './extension-points';
-import {acceptSignals, type WithThreadSignals} from './signals';
-import {type Api} from './api';
+} from './extension-points.ts';
+import {acceptSignals, type WithThreadSignals} from './signals.ts';
+import {type Api} from './api.ts';
 
 export type ExtensionPointsWithWrapper = {
   [Target in ExtensionPoint]: ExtensionPoints[Target] extends RenderExtension<

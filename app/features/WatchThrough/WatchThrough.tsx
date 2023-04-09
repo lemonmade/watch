@@ -35,10 +35,10 @@ import {
   PrettyDate,
 } from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {SpoilerAvoidance} from '~/shared/spoilers';
-import {useQuery, useMutation, type PickTypename} from '~/shared/graphql';
-import {Clip, useClips} from '~/shared/clips';
+import {Page} from '~/shared/page.ts';
+import {SpoilerAvoidance} from '~/shared/spoilers.ts';
+import {useQuery, useMutation, type PickTypename} from '~/shared/graphql.ts';
+import {Clip, useClips} from '~/shared/clips.ts';
 
 import watchThroughQuery, {
   type WatchThroughQueryData,

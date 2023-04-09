@@ -31,7 +31,7 @@ await writeFile(
   `packages/clips-react/source/components/${name}.tsx`,
   stripIndent`
     import {${name} as Base${name}} from '@watching/clips';
-    import {createRemoteReactComponent} from './shared';
+    import {createRemoteReactComponent} from './shared.ts';
     
     export const ${name} = createRemoteReactComponent(Base${name});
   `,

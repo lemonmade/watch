@@ -1,2 +1,2 @@
-export * from './types';
-export {createRenderer} from './renderer';
+export * from './types.ts';
+export {createRenderer} from './renderer.ts';

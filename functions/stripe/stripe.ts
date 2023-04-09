@@ -6,9 +6,9 @@ import {
   SearchParam,
   PaymentStatus,
   SUBSCRIPTION_LEVELS,
-} from '~/global/subscriptions';
+} from '~/global/subscriptions.ts';
 
-import type {EmailQueue} from '../email';
+import type {EmailQueue} from '../email/index.tsx';
 
 interface Environment {
   STRIPE_SECRET: string;

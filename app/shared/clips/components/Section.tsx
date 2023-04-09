@@ -1,5 +1,5 @@
 import {Section as UiSection} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared';
+import {type PropsForClipsComponent} from './shared.ts';
 
 export function Section({
   children,

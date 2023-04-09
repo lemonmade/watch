@@ -1,1 +1,1 @@
-export {useAuthenticateCliWithAccessToken} from './cli/cli';
+export {useAuthenticateCliWithAccessToken} from './cli/cli.ts';

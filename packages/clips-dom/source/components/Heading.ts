@@ -1,8 +1,9 @@
 import {Heading as BaseHeading} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Heading = 'ui-heading';
 

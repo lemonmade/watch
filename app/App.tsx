@@ -18,21 +18,27 @@ import {Canvas} from '@lemon/zest';
 
 import {SearchParam} from '~/global/auth';
 
-import {Head, Http, Metrics, Frame} from './foundation';
+import {Head} from './foundation/Head.ts';
+import {Http} from './foundation/Http.ts';
+import {Metrics} from './foundation/Metrics.ts';
+import {Frame} from './foundation/Frame.ts';
 
-import {Start} from './features/Start';
-import {CheckYourEmail, CreateAccount} from './features/CreateAccount';
-import {Goodbye} from './features/Goodbye';
-import {Watching, FinishedWatching} from './features/Watching';
-import {Series, RandomSeries} from './features/Series';
-import {Subscriptions} from './features/Subscriptions';
-import {WatchThrough, RandomWatchThrough} from './features/WatchThrough';
-import {Apps} from './features/Apps';
-import {Search} from './features/Search';
-import {SignIn} from './features/SignIn';
-import {SignedOut} from './features/SignedOut';
-import {Account, Payment} from './features/Account';
-import {WatchLater} from './features/WatchLater';
+import {Start} from './features/Start.ts';
+import {Watching, FinishedWatching} from './features/Watching.ts';
+import {WatchThrough, RandomWatchThrough} from './features/WatchThrough.ts';
+import {Series, RandomSeries} from './features/Series.ts';
+import {Subscriptions} from './features/Subscriptions.ts';
+import {Apps} from './features/Apps.ts';
+import {Search} from './features/Search.ts';
+import {SignIn, SignedOut} from './features/Authentication.ts';
+import {
+  Account,
+  Payment,
+  Goodbye,
+  CreateAccount,
+  CheckYourEmail,
+} from './features/Account.ts';
+import {WatchLater} from './features/WatchLater.ts';
 import {
   Developer,
   Apps as DevelopedApps,
@@ -40,10 +46,10 @@ import {
   AuthenticateCli,
   CreatedAccountFromCli,
   Console,
-} from './features/Developer';
-import {ComponentLibrary} from './features/Internal';
+} from './features/Developer.ts';
+import {ComponentLibrary} from './features/Internal.ts';
 
-import {EXTENSION_POINTS} from './clips';
+import {EXTENSION_POINTS} from './clips.ts';
 
 import {
   useAppContext,

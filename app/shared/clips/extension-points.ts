@@ -9,7 +9,7 @@ import {
   type GraphQLLiveResolverObject,
 } from '@lemonmade/graphql-live';
 
-import {type ReactComponentTypeFromRemoteComponentType} from './components';
+import {type ReactComponentTypeFromRemoteComponentType} from './components.ts';
 
 export type ReactComponentsForExtensionPoint<Point extends ExtensionPoint> = {
   [Component in keyof ComponentsForExtensionPoint<Point>]: ReactComponentTypeFromRemoteComponentType<

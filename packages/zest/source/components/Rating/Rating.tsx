@@ -14,7 +14,7 @@ import {
 
 import styles from './Rating.module.css';
 
-export interface Props {
+export interface RatingProps {
   value?: SignalOrValue<number | undefined>;
   size?: 'base' | 'large';
   onChange?(value: number | undefined): void;
@@ -34,7 +34,7 @@ const PERCENTAGE_TO_PREFER_FILLING = 0.9;
 
 // https://www.w3.org/TR/wai-aria-practices/examples/slider/slider-1.html
 
-export function Rating(props: Props) {
+export function Rating(props: RatingProps) {
   return resolveSignalOrValue(props.readonly) ? (
     <ReadonlyRating {...props} />
   ) : (
@@ -42,7 +42,7 @@ export function Rating(props: Props) {
   );
 }
 
-function ReadonlyRating({size, value}: Pick<Props, 'size' | 'value'>) {
+function ReadonlyRating({size, value}: Pick<RatingProps, 'size' | 'value'>) {
   const resolvedValue = resolveSignalOrValue(value);
 
   return (
@@ -75,7 +75,7 @@ export const EditableRating = memo(function Rating({
   size,
   value,
   onChange,
-}: Props) {
+}: RatingProps) {
   const starContainer = useRef<null | HTMLDivElement>(null);
   const resolvedValue = resolveSignalOrValue(value);
   const inProgressValue = useSignal<number | undefined>(undefined);

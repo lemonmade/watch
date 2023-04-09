@@ -3,12 +3,12 @@
 import {PropsWithChildren, ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {View} from '../View';
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {View} from '../View.tsx';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
 
-type Props = PropsForClipsComponent<'Image'>;
+export type ImageProps = PropsForClipsComponent<'Image'>;
 
 export enum Media {
   Medium = '(min-width: 601px)',
@@ -29,7 +29,7 @@ export function Image({
   fit,
   loading,
   aspectRatio,
-}: Props) {
+}: ImageProps) {
   const sourcesMarkup =
     sources &&
     sources
@@ -81,7 +81,7 @@ export function Image({
 }
 
 function normalizeLoading(
-  loading: NonNullable<Props['loading']>,
+  loading: NonNullable<ImageProps['loading']>,
 ): ImgHTMLAttributes<HTMLImageElement>['loading'] {
   switch (loading) {
     case 'immediate':

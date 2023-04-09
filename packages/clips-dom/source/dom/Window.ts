@@ -1,18 +1,18 @@
-import {Document} from './Document';
-import {Event} from './Event';
-import {EventTarget} from './EventTarget';
-import {Node} from './Node';
-import {ParentNode} from './ParentNode';
-import {ChildNode} from './ChildNode';
-import {Element} from './Element';
-import {HTMLElement} from './HTMLElement';
-import {SVGElement} from './SVGElement';
-import {CharacterData} from './CharacterData';
-import {Text} from './Text';
-import {Comment} from './Comment';
-import {DocumentFragment} from './DocumentFragment';
-import {HTMLTemplateElement} from './HTMLTemplateElement';
-import {CustomElementRegistryImplementation} from './CustomElementRegistry';
+import {Document} from './Document.ts';
+import {Event} from './Event.ts';
+import {EventTarget} from './EventTarget.ts';
+import {Node} from './Node.ts';
+import {ParentNode} from './ParentNode.ts';
+import {ChildNode} from './ChildNode.ts';
+import {Element} from './Element.ts';
+import {HTMLElement} from './HTMLElement.ts';
+import {SVGElement} from './SVGElement.ts';
+import {CharacterData} from './CharacterData.ts';
+import {Text} from './Text.ts';
+import {Comment} from './Comment.ts';
+import {DocumentFragment} from './DocumentFragment.ts';
+import {HTMLTemplateElement} from './HTMLTemplateElement.ts';
+import {CustomElementRegistryImplementation} from './CustomElementRegistry.ts';
 
 export class Window extends EventTarget {
   name = '';

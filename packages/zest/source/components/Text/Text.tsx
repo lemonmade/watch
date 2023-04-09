@@ -1,7 +1,7 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {useHeadingDomDetails} from '../Heading';
+import {useHeadingDomDetails} from '../Heading.tsx';
 
 import styles from './Text.module.css';
 

@@ -10,7 +10,7 @@ import {
   Signal,
   type ReadonlySignal,
 } from '@preact/signals-core';
-import {OptionsTypes} from './internal';
+import {OptionsTypes} from './internal.ts';
 import type {
   VNode,
   HookFn,
@@ -18,7 +18,7 @@ import type {
   // PropertyUpdater,
   AugmentedComponent,
   // AugmentedElement as Element,
-} from './internal';
+} from './internal.ts';
 
 export {signal, computed, batch, effect, Signal, type ReadonlySignal};
 

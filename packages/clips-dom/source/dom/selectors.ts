@@ -1,6 +1,6 @@
-import {CHILD, NEXT, PARENT, PREV, NodeType} from './constants';
-import type {Node} from './Node';
-import type {Element} from './Element';
+import {CHILD, NEXT, PARENT, PREV, NodeType} from './constants.ts';
+import type {Node} from './Node.ts';
+import type {Element} from './Element.ts';
 
 const enum Combinator {
   Descendant,

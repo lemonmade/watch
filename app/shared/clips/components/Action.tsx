@@ -1,5 +1,8 @@
 import {Action as UiAction} from '@lemon/zest';
-import {usePossibleThreadSignals, type PropsForClipsComponent} from './shared';
+import {
+  usePossibleThreadSignals,
+  type PropsForClipsComponent,
+} from './shared.ts';
 
 export function Action({
   to,

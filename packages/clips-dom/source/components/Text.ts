@@ -1,8 +1,9 @@
 import {Text as BaseText} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const Text = 'ui-text';
 

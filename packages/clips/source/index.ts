@@ -1,15 +1,7 @@
-export type {
-  ExtensionPoints,
-  ExtensionPoint,
-  RenderExtension,
-  RenderExtensionRoot,
-  RenderExtensionWithRemoteRoot,
-  GraphQLApiForExtensionPoint,
-  ComponentsForExtensionPoint,
-} from './extension-points';
-export * from './api';
-export * from './globals';
-export * from './query';
-export * from './extension';
-export * from './signals';
-export * from './components';
+export * from './extension-points.ts';
+export * from './api.ts';
+export * from './globals.ts';
+export * from './query.ts';
+export * from './extension.ts';
+export * from './signals.ts';
+export * from './components.ts';

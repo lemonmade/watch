@@ -30,6 +30,6 @@ export {
   type UIViewElement,
   type HTMLElementForRemoteComponent,
   type HTMLConstructorForRemoteComponent,
-} from './components';
-export {extension} from './extension';
-export {type RemoteDOM} from './dom';
+} from './components.ts';
+export {extension} from './extension.ts';
+export {type RemoteDOM} from './dom.ts';

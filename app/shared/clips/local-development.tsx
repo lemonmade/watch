@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 import {useInitialUrl} from '@quilted/quilt';
 
-import {type ClipsManager} from './manager';
+import {type ClipsManager} from './manager.ts';
 
 const LOCAL_STORAGE_KEY = 'localDevelopment';
 

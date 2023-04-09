@@ -11,11 +11,11 @@ import {
   type SignalOrValue,
 } from '@watching/react-signals';
 
-import {useUniqueId} from '../../utilities/id';
-import {useContainingForm} from '../../utilities/forms';
-import {useMenuController} from '../../utilities/menus';
-import {useActionScope} from '../../utilities/actions';
-import {type PropsForClipsComponent} from '../../utilities/clips';
+import {useUniqueId} from '../../shared/id.ts';
+import {useContainingForm} from '../../shared/forms.ts';
+import {useMenuController} from '../../shared/menus.ts';
+import {useActionScope} from '../../shared/actions.tsx';
+import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import styles from './Input.module.css';
 

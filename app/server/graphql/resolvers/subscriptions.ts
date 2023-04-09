@@ -1,11 +1,11 @@
 import type {SeriesSubscription as DatabaseSeriesSubscription} from '@prisma/client';
 
-import type {Resolver, QueryResolver, MutationResolver} from './types';
-import {toGid, fromGid} from './utilities/id';
+import type {Resolver, QueryResolver, MutationResolver} from './types.ts';
+import {toGid, fromGid} from './shared/id.ts';
 
-import type {SeriesResolver} from './media';
+import type {SeriesResolver} from './media.ts';
 
-declare module './types' {
+declare module './types.ts' {
   export interface ValueMap {
     SeriesSubscription: DatabaseSeriesSubscription;
   }

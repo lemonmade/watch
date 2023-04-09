@@ -9,22 +9,24 @@
   "license": "MIT",
   "exports": {
     ".": {
+      "types": "./build/typescript/index.d.ts",
       "quilt:source": "./source/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
     },
     "./server": {
-      "quilt:source": "./source/server/index.ts",
-      "quilt:esnext": "./build/esnext/server/index.esnext",
-      "import": "./build/esm/server/index.mjs",
-      "require": "./build/cjs/server/index.cjs"
+      "types": "./build/typescript/server.d.ts",
+      "quilt:source": "./source/server.ts",
+      "quilt:esnext": "./build/esnext/server.esnext",
+      "import": "./build/esm/server.mjs",
+      "require": "./build/cjs/server.cjs"
     }
   },
   "typesVersions": {
-    ">=1": {
+    "*": {
       "server": [
-        "./build/typescript/server/index.d.ts"
+        "./build/typescript/server.d.ts"
       ],
       "*": [
         "./build/typescript/index.d.ts"
@@ -36,6 +38,6 @@
     "extends": "@quilted/eslint-config/project"
   },
   "dependencies": {
-    "graphql": "^16.4.0"
+    "graphql": "^16.6.0"
   }
 }

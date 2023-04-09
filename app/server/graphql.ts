@@ -6,8 +6,8 @@ import {
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
 
-import {authenticate} from './shared/auth';
-import {createPrisma} from './shared/database';
+import {authenticate} from './shared/auth.ts';
+import {createPrisma} from './shared/database.ts';
 
 const router = createRequestRouter();
 
@@ -50,18 +50,17 @@ router.post(async (request) => {
   const [schema, {graphql}, {createContext}] = await Promise.all([
     loadSchema(),
     import('graphql'),
-    import('./graphql/context'),
+    import('./graphql/context.ts'),
   ]);
 
   try {
-    const result = await graphql(
+    const result = await graphql({
       schema,
-      query,
-      {},
-      createContext(auth, prisma, request, response),
-      variables,
+      source: query,
       operationName,
-    );
+      variableValues: variables,
+      contextValue: createContext(auth, prisma, request, response),
+    });
 
     return json(result, {
       status: response.status,
@@ -90,8 +89,8 @@ function loadSchema() {
     const [{makeExecutableSchema}, resolvers, {default: schemaSource}] =
       await Promise.all([
         import('@graphql-tools/schema'),
-        import('./graphql/resolvers'),
-        import('./graphql/schema'),
+        import('./graphql/resolvers.ts'),
+        import('./graphql/schema.ts'),
       ]);
 
     const schema = makeExecutableSchema({

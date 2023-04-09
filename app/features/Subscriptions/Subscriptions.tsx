@@ -1,9 +1,9 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
 import {Poster, Pressable} from '@lemon/zest';
 
-import {Page} from '~/shared/page';
-import {MediaGrid} from '~/shared/media';
-import {useQuery} from '~/shared/graphql';
+import {Page} from '~/shared/page.ts';
+import {MediaGrid} from '~/shared/media.ts';
+import {useQuery} from '~/shared/graphql.ts';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 

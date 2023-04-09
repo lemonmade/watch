@@ -1,5 +1,4 @@
-export {createPrisma} from '../shared/database';
-export type {Prisma} from '../shared/database';
+export {createPrisma, type Prisma} from '../shared/database.ts';
 
 export function validateRedirectTo(
   redirectTo: string | undefined,

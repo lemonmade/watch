@@ -4,8 +4,8 @@ import {render} from 'react-dom';
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 import {extension as domExtension} from '@watching/clips-dom';
 
-import {installHooks} from './signals';
-import {type RenderContext, ReactRenderContext} from './context';
+import {installHooks} from './signals.ts';
+import {type RenderContext, ReactRenderContext} from './context.ts';
 
 export function extension<Target extends ExtensionPoint>(
   renderReact: (

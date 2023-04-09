@@ -17,12 +17,12 @@ import {
   CreateAccountErrorReason,
   GITHUB_OAUTH_MESSAGE_TOPIC,
   GithubOAuthFlow,
-} from '~/global/auth';
-import type {GithubOAuthMessage} from '~/global/auth';
+  type GithubOAuthMessage,
+} from '~/global/auth.ts';
 
-import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth';
-import {createAccountWithGiftCode} from '../../shared/create-account';
-import {validateRedirectTo, createPrisma} from '../shared';
+import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth.ts';
+import {createAccountWithGiftCode} from '../../shared/create-account.ts';
+import {validateRedirectTo, createPrisma} from '../shared.ts';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';

@@ -1,8 +1,9 @@
 import {TextField as BaseTextField} from '@watching/clips';
+
 import {
   createRemoteDOMComponent,
   type HTMLElementForRemoteComponent,
-} from './shared';
+} from './shared.ts';
 
 export const TextField = 'ui-text-field';
 

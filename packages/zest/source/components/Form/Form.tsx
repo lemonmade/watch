@@ -2,34 +2,39 @@ import {useMemo, forwardRef} from 'react';
 import {computed, signal, type SignalOrValue} from '@watching/react-signals';
 import type {PropsWithChildren, ReactNode, FormEventHandler} from 'react';
 
-import {Portal} from '../Portal';
-import {View, useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {Portal} from '../Portal.tsx';
+import {
+  View,
+  useViewProps,
+  resolveViewProps,
+  type ViewProps,
+} from '../View.tsx';
 
-import {removeFromSet} from '../../utilities/sets';
-import {useUniqueId} from '../../utilities/id';
+import {removeFromSet} from '../../shared/sets.ts';
+import {useUniqueId} from '../../shared/id.ts';
 import {
   createActionScope,
   ActionScopeContext,
   type ActionScope,
-} from '../../utilities/actions';
+} from '../../shared/actions.tsx';
 import {
   FormContext,
   useContainingForm,
   type FormDetails,
-} from '../../utilities/forms';
+} from '../../shared/forms.ts';
 
 export interface ImplicitSubmit {
   label: string;
 }
 
-interface Props extends ViewProps {
+export interface FormProps extends ViewProps {
   id?: string;
   implicitSubmit?: boolean | ImplicitSubmit;
   disabled?: SignalOrValue<boolean>;
   onSubmit(): void | Promise<void>;
 }
 
-export const Form = forwardRef<HTMLFormElement, PropsWithChildren<Props>>(
+export const Form = forwardRef<HTMLFormElement, PropsWithChildren<FormProps>>(
   function Form(
     {
       id: explicitId,

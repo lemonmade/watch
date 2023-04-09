@@ -16,16 +16,17 @@ import {
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
 
-import {useMutation} from '~/shared/graphql';
+import {useMutation} from '~/shared/graphql.ts';
 
-import {useClipsManager} from '../react';
+import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
-} from '../extension';
+} from '../extension.ts';
+
+import {ClipSettings} from './ClipSettings.tsx';
 
 import styles from './Clip.module.css';
-import {ClipSettings} from './ClipSettings';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 
 export interface ClipProps<Point extends ExtensionPoint> {

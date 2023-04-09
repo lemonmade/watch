@@ -11,12 +11,12 @@ import {
   type BorderKeyword,
   type CornerRadiusKeyword,
   type AlignKeyword,
-} from '../../system';
+} from '../../system.ts';
 import systemStyles from '../../system.module.css';
 
 import styles from './View.module.css';
 
-export interface Props {
+export interface ViewProps {
   id?: string;
   className?: string;
   style?: CSSProperties;
@@ -113,7 +113,7 @@ export function useViewProps({
   alignment,
   inlineAlignment,
   blockAlignment,
-}: Props = {}): DOMPropController {
+}: ViewProps = {}): DOMPropController {
   let className = classes(systemStyles.resetOrientation, styles.View!);
   let domStyles: DOMPropController['styles'] = explicitStyle;
   let attributes: DOMPropController['attributes'];
@@ -139,7 +139,7 @@ export function useViewProps({
   };
 
   const handlePadding = (
-    padding: Props['padding'],
+    padding: ViewProps['padding'],
     side?: 'inlineStart' | 'inlineEnd' | 'blockStart' | 'blockEnd',
   ) => {
     if (padding == null) return;

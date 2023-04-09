@@ -1,5 +1,6 @@
 import {type PropsWithChildren} from '@quilted/quilt';
 import {classes, variation} from '@lemon/css';
+
 import styles from './MediaGrid.module.css';
 
 interface Props {

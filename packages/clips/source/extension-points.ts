@@ -9,8 +9,8 @@ import type {
   SharedGraphQLApi,
   SeriesDetailsGraphQLApi,
   WatchThroughDetailsGraphQLApi,
-} from './api';
-import type {CommonComponents} from './components';
+} from './api.ts';
+import type {CommonComponents} from './components.ts';
 
 export interface ExtensionPoints {
   'Series.Details.RenderAccessory': RenderExtension<
