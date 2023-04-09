@@ -7,7 +7,10 @@
     "prisma": "prisma",
     "start": "node ./build/runtime/runtime.js"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css",
+    "browser.tsx"
+  ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
