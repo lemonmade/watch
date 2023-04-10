@@ -9,7 +9,8 @@ export interface SpacerProps {
   size?: boolean | SpacingKeyword;
 }
 
-const SIZE_CLASS_MAP = new Map<NonNullable<Props['size']>, string | undefined>([
+const SIZE_CLASS_MAP = new Map<SpacerProps['size'], string | undefined>([
+  [false, styles.sizeNone],
   ['none', styles.sizeNone],
   ['small.2', styles.sizeSmall2],
   ['small.1', styles.sizeSmall1],

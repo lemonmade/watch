@@ -24,11 +24,6 @@ import {
   type UIImageElement,
 } from './components/Image.ts';
 import {
-  InlineStack,
-  InlineStackComponent,
-  type UIInlineStackElement,
-} from './components/InlineStack.ts';
-import {
   Modal,
   ModalComponent,
   type UIModalElement,

@@ -7,27 +7,12 @@ import type {
 } from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import {type SpacingKeyword, type RawValue} from '../../system';
+import {type SpacingKeyword} from '../../system';
 import {SPACING_CLASS_MAP} from '../../styles/spacing';
 
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
 import styles from './Grid.module.css';
-
-export type Size = 'auto' | 'fill' | 'hidden' | false | RawValue;
-export type ViewportSize = 'small' | 'medium' | 'large';
-
-export interface ViewportMedia {
-  readonly min?: ViewportSize;
-  readonly max?: ViewportSize;
-}
-
-export interface Media<T> {
-  readonly value: T;
-  readonly viewport?: ViewportMedia;
-}
-
-export type ValueOrMediaList<T> = T | Media<T>[];
 
 export interface GridProps
   extends BaseGridProps,
@@ -66,12 +51,18 @@ const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['spaceBetween', styles.blockAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
-export function Grid({inlineSizes, blockSizes, props}: PropsWithChildren<GridProps>) {
+export function Grid({
+  inlineSizes,
+  blockSizes,
+  ...props
+}: PropsWithChildren<GridProps>) {
   const grid = useGridProps(props);
-  return <>
-    <GridSizesStyles id={id} inline={inlineSizes} block={blockSizes} />
-    <div {...resolveViewProps(grid)}>{props.children}</div>
-  </>;
+  return (
+    <>
+      <GridSizesStyles id={id} inline={inlineSizes} block={blockSizes} />
+      <div {...resolveViewProps(grid)}>{props.children}</div>
+    </>
+  );
 }
 
 export function BlockGrid({
@@ -80,10 +71,12 @@ export function BlockGrid({
 }: PropsWithChildren<BlockGridProps>) {
   const grid = useGridProps({...props, blockSizes: sizes});
 
-  return <>
-    <GridSizesStyles id={id} block={sizes} />
-    <div {...resolveViewProps(grid)}>{props.children}</div>
-  </>;
+  return (
+    <>
+      <GridSizesStyles id={id} block={sizes} />
+      <div {...resolveViewProps(grid)}>{props.children}</div>
+    </>
+  );
 }
 
 export function InlineGrid({
@@ -96,10 +89,12 @@ export function InlineGrid({
     direction: 'inline',
   });
 
-  return <>
-    <GridSizesStyles id={id} inline={sizes} />
-    <div {...resolveViewProps(grid)}>{props.children}</div>
-  </>;
+  return (
+    <>
+      <GridSizesStyles id={id} inline={sizes} />
+      <div {...resolveViewProps(grid)}>{props.children}</div>
+    </>
+  );
 }
 
 export {resolveViewProps as resolveGridProps};
@@ -161,22 +156,30 @@ export function useGridProps({
   return view;
 }
 
-function GridSizesStyles({id, inline, block}: {id: string; inline?: GridProps['inlineSizes']; block?: GridProps['blockSizes']}) {
+function GridSizesStyles({
+  id,
+  inline,
+  block,
+}: {
+  id: string;
+  inline?: GridProps['inlineSizes'];
+  block?: GridProps['blockSizes'];
+}) {
   const gridRules = createGridRules(`#${id}`, inline, block);
 
-  return (
-    <style>
-      {gridRules.join('\n')}
-    </style>
-  );
+  return <style>{gridRules.join('\n')}</style>;
 }
 
-function createGridRules(selector: string, inline?: GridProps['inlineSizes'], block?: GridProps['blockSizes']) {
+function createGridRules(
+  selector: string,
+  inline?: GridProps['inlineSizes'],
+  block?: GridProps['blockSizes'],
+) {
   const rules: string[] = [];
 
   if (block) {
     const rows: string[] = [];
-  
+
     for (const [index, size] of block.entries()) {
       if (!size || size === 'hidden') {
         rules.push(
@@ -186,7 +189,7 @@ function createGridRules(selector: string, inline?: GridProps['inlineSizes'], bl
         );
         continue;
       }
-  
+
       // if (raw.test(size)) {
       //   rows.push(raw.parse(size));
       //   rules.push(
@@ -211,17 +214,15 @@ function createGridRules(selector: string, inline?: GridProps['inlineSizes'], bl
         );
       }
     }
-  
+
     if (rows.length) {
-      rules.push(`${selector} { grid-template-rows: ${rows.join(
-        ' ',
-      ) }`);
+      rules.push(`${selector} { grid-template-rows: ${rows.join(' ')}`);
     }
   }
 
   if (inline) {
     const columns: string[] = [];
-  
+
     for (const [index, size] of inline.entries()) {
       if (!size || size === 'hidden') {
         rules.push(
@@ -231,7 +232,7 @@ function createGridRules(selector: string, inline?: GridProps['inlineSizes'], bl
         );
         continue;
       }
-  
+
       // if (raw.test(size)) {
       //   columns.push(raw.parse(size));
       //   rules.push(
@@ -256,13 +257,11 @@ function createGridRules(selector: string, inline?: GridProps['inlineSizes'], bl
         );
       }
     }
-  
+
     if (columns.length) {
-      rules.push(`${selector} { grid-template-columns: ${columns.join(
-        ' ',
-      ) }`);
+      rules.push(`${selector} { grid-template-columns: ${columns.join(' ')}`);
     }
   }
-  
+
   return rules;
 }

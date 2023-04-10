@@ -46,11 +46,14 @@ export function Stack(props: PropsWithChildren<StackProps>) {
   return <div {...resolveViewProps(stack)}>{props.children}</div>;
 }
 
-export const BlockStack: ComponentType<
-  PropsWithChildren<Omit<StackProps, 'direction'>>
-> = Stack;
+export type BlockStackProps = Omit<StackProps, 'direction'>;
 
-export function InlineStack(props: PropsWithChildren<StackProps>) {
+export const BlockStack: ComponentType<PropsWithChildren<BlockStackProps>> =
+  Stack;
+
+export type InlineStackProps = Omit<StackProps, 'direction'>;
+
+export function InlineStack(props: PropsWithChildren<InlineStackProps>) {
   const stack = useStackProps({...props, direction: 'inline'});
   return <div {...resolveViewProps(stack)}>{props.children}</div>;
 }

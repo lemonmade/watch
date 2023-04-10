@@ -26,9 +26,6 @@ export {
   TextField,
   type UITextFieldElement,
   View,
-  type UIViewElement,
-  type HTMLElementForRemoteComponent,
-  type HTMLConstructorForRemoteComponent,
 
   // Layout
   Stack,
