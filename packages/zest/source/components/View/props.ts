@@ -1,5 +1,5 @@
 import type {CSSProperties, HTMLAttributes} from 'react';
-import {classes, variation} from '@lemon/css';
+import {variation} from '@lemon/css';
 
 import {
   raw,
@@ -118,7 +118,7 @@ export function useViewProps({
   inlineAlignment,
   blockAlignment,
 }: ViewProps = {}): DOMPropController {
-  let className = classes(systemStyles.resetOrientation, styles.View!);
+  let className = styles.View!;
   let domStyles: DOMPropController['styles'] = explicitStyle;
   let attributes: DOMPropController['attributes'];
 
