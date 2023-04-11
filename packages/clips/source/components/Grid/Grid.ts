@@ -13,8 +13,8 @@ export interface GridProps extends ViewProps {
   direction?: DirectionKeyword;
   inlineSpacing?: SpacingValue;
   blockSpacing?: SpacingValue;
-  inlineSizes?: SizeValue;
-  blockSizes?: SizeValue;
+  inlineSizes?: readonly SizeValue[];
+  blockSizes?: readonly SizeValue[];
   inlineAlignment?: AlignmentKeyword;
   blockAlignment?: AlignmentKeyword;
   layoutMode?: LayoutModeKeyword;
@@ -42,7 +42,7 @@ export const Grid = createRemoteComponent<'Grid', GridProps>('Grid');
 
 export interface BlockGridProps
   extends Omit<GridProps, 'inlineSizes' | 'blockSizes'> {
-  sizes?: SizeValue;
+  sizes: NonNullable<GridProps['blockSizes']>;
 }
 
 /**
@@ -68,7 +68,7 @@ export const BlockGrid = createRemoteComponent<'BlockGrid', BlockGridProps>(
 
 export interface InlineGridProps
   extends Omit<GridProps, 'inlineSizes' | 'blockSizes'> {
-  sizes?: SizeValue;
+  sizes: NonNullable<GridProps['inlineSizes']>;
 }
 
 /**

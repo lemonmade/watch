@@ -3,6 +3,11 @@
   grid-template: 1fr;
   align-items: stretch;
   justify-content: stretch;
+  grid-auto-flow: column;
+}
+
+.directionInline {
+  grid-auto-flow: row;
 }
 
 .spacingTiny {

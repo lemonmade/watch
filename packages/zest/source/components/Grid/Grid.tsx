@@ -4,11 +4,13 @@ import type {
   AlignmentKeyword,
   GridProps as BaseGridProps,
   BlockGridProps as BaseBlockGridProps,
+  InlineGridProps as BaseInlineGridProps,
 } from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
 import {type SpacingKeyword} from '../../system';
 import {SPACING_CLASS_MAP} from '../../styles/spacing';
+import {useUniqueId} from '../../shared/id.ts';
 
 import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 
@@ -33,7 +35,7 @@ export interface BlockGridProps
 
 export interface InlineGridProps
   extends Omit<GridProps, 'direction' | 'blockSizes' | 'inlineSizes'>,
-    Pick<BaseBlockGridProps, 'sizes'> {}
+    Pick<BaseInlineGridProps, 'sizes'> {}
 
 const INLINE_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['start', styles.inlineAlignmentStart],
@@ -57,10 +59,14 @@ export function Grid({
   ...props
 }: PropsWithChildren<GridProps>) {
   const grid = useGridProps(props);
+  const id = useUniqueId('Grid');
+
   return (
     <>
       <GridSizesStyles id={id} inline={inlineSizes} block={blockSizes} />
-      <div {...resolveViewProps(grid)}>{props.children}</div>
+      <div {...resolveViewProps(grid)} id={id}>
+        {props.children}
+      </div>
     </>
   );
 }
@@ -70,11 +76,14 @@ export function BlockGrid({
   ...props
 }: PropsWithChildren<BlockGridProps>) {
   const grid = useGridProps({...props, blockSizes: sizes});
+  const id = useUniqueId('BlockGrid');
 
   return (
     <>
       <GridSizesStyles id={id} block={sizes} />
-      <div {...resolveViewProps(grid)}>{props.children}</div>
+      <div {...resolveViewProps(grid)} id={id}>
+        {props.children}
+      </div>
     </>
   );
 }
@@ -88,11 +97,14 @@ export function InlineGrid({
     inlineSizes: sizes,
     direction: 'inline',
   });
+  const id = useUniqueId('InlineGrid');
 
   return (
     <>
       <GridSizesStyles id={id} inline={sizes} />
-      <div {...resolveViewProps(grid)}>{props.children}</div>
+      <div {...resolveViewProps(grid)} id={id}>
+        {props.children}
+      </div>
     </>
   );
 }
@@ -216,7 +228,7 @@ function createGridRules(
     }
 
     if (rows.length) {
-      rules.push(`${selector} { grid-template-rows: ${rows.join(' ')}`);
+      rules.push(`${selector} { grid-template-rows: ${rows.join(' ')}; }`);
     }
   }
 
@@ -259,7 +271,9 @@ function createGridRules(
     }
 
     if (columns.length) {
-      rules.push(`${selector} { grid-template-columns: ${columns.join(' ')}`);
+      rules.push(
+        `${selector} { grid-template-columns: ${columns.join(' ')}; }`,
+      );
     }
   }
 
