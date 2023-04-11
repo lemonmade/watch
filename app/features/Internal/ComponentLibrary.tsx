@@ -594,6 +594,20 @@ function LayoutComponents() {
                 </View>
               </InlineStack>
 
+              <InlineStack>
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Inline
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Stretch
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Spacer
+                </View>
+              </InlineStack>
+
               <InlineStack spacing>
                 <View cornerRadius background={raw`indigo`} padding>
                   Inline
@@ -644,6 +658,20 @@ function LayoutComponents() {
                 </View>
                 <Spacer />
                 <View cornerRadius background={raw`purple`} padding>
+                  Spacer
+                </View>
+              </BlockStack>
+
+              <BlockStack blockSize={raw`16rem`}>
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Block
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Stretch
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
                   Spacer
                 </View>
               </BlockStack>
