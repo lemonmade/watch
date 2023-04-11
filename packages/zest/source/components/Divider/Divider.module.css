@@ -46,11 +46,11 @@
 }
 
 .paddingTiny {
-  --z-Divider-padding: var(--z-spacing-tiny);
+  --z-Divider-padding: var(--z-spacing-small-2);
 }
 
 .paddingSmall {
-  --z-Divider-padding: var(--z-spacing-small);
+  --z-Divider-padding: var(--z-spacing-small-1);
 }
 
 .paddingBase {

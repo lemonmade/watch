@@ -95,7 +95,7 @@ function SeriesWithData({
     : undefined;
 
   return (
-    <BlockStack spacing="huge" padding>
+    <BlockStack spacing="large.2" padding>
       <BlockStack spacing>
         <Header>
           <Layout spacing blockAlignment="start" columns={[raw`6rem`, 'fill']}>
@@ -110,14 +110,14 @@ function SeriesWithData({
                         <Action
                           to={series.tmdbUrl}
                           target="new"
-                          icon="arrowEnd"
+                          icon="arrow.end"
                         >
                           TMDB
                         </Action>
                         <Action
                           to={series.imdbUrl}
                           target="new"
-                          icon="arrowEnd"
+                          icon="arrow.end"
                         >
                           IMDB
                         </Action>
@@ -414,7 +414,7 @@ function SeasonsSection({
             >
               <Poster source={poster?.source} />
 
-              <BlockStack spacing="tiny">
+              <BlockStack spacing="small.2">
                 <InlineStack spacing="small">
                   <TextAction
                     emphasis
@@ -477,10 +477,10 @@ function SeasonActionPopover({
   return (
     <Popover inlineAttachment="start">
       <Menu label="See season in…">
-        <Action icon="arrowEnd" to={season.tmdbUrl} target="new">
+        <Action icon="arrow.end" to={season.tmdbUrl} target="new">
           TMDB
         </Action>
-        <Action icon="arrowEnd" to={season.imdbUrl} target="new">
+        <Action icon="arrow.end" to={season.imdbUrl} target="new">
           IMDB
         </Action>
       </Menu>
@@ -598,9 +598,9 @@ function WatchThroughsSection({
               key={watchThrough.id}
               to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
               inlineAlignment="start"
-              detail={<Icon source="disclosureInlineEnd" />}
+              detail={<Icon source="disclosure.inline.end" />}
             >
-              <BlockStack spacing="tiny">
+              <BlockStack spacing="small.2">
                 <Text emphasis>
                   {watchThrough.from.season === watchThrough.to.season ? (
                     `Season ${watchThrough.from.season}`

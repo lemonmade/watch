@@ -16,6 +16,7 @@ export default function Developer() {
           <Action to="/api/graphql" target="current">
             GraphQL
           </Action>
+          <Action to="/internal/components">Component library</Action>
         </InlineStack>
       </BlockStack>
     </Page>

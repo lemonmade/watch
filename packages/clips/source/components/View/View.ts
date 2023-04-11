@@ -1,12 +1,12 @@
 import {createRemoteComponent} from '@remote-ui/core';
-import {type SpacingValue} from '../shared';
+import {type SpacingKeyword} from '../shared';
 
 export interface ViewProps {
-  padding?: boolean | SpacingValue;
-  paddingInlineStart?: boolean | SpacingValue;
-  paddingInlineEnd?: boolean | SpacingValue;
-  paddingBlockStart?: boolean | SpacingValue;
-  paddingBlockEnd?: boolean | SpacingValue;
+  padding?: boolean | SpacingKeyword;
+  paddingInlineStart?: boolean | SpacingKeyword;
+  paddingInlineEnd?: boolean | SpacingKeyword;
+  paddingBlockStart?: boolean | SpacingKeyword;
+  paddingBlockEnd?: boolean | SpacingKeyword;
 }
 
 /**

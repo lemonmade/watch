@@ -1,7 +1,6 @@
 export {Action, type ActionProps} from './components/Action.tsx';
 export {ActionList, type ActionListProps} from './components/ActionList.tsx';
 export {Banner, type BannerProps} from './components/Banner.tsx';
-export {BlockStack, type BlockStackProps} from './components/BlockStack.tsx';
 export {Canvas, type CanvasProps} from './components/Canvas.tsx';
 export {Checkbox, type CheckboxProps} from './components/Checkbox.tsx';
 export {
@@ -32,7 +31,6 @@ export {
   type IconSource,
 } from './components/Icon.tsx';
 export {Image, type ImageProps} from './components/Image.tsx';
-export {InlineStack, type InlineStackProps} from './components/InlineStack.tsx';
 export {Label, type LabelProps} from './components/Label.tsx';
 export {Layout, type LayoutProps} from './components/Layout.tsx';
 export {
@@ -71,3 +69,21 @@ export {TextBlock, type TextBlockProps} from './components/TextBlock.tsx';
 export {TextField, type TextFieldProps} from './components/TextField.tsx';
 export {TextLink, type TextLinkProps} from './components/TextLink.tsx';
 export {View, type ViewProps} from './components/View.tsx';
+
+// Layout
+export {
+  Stack,
+  type StackProps,
+  BlockStack,
+  type BlockStackProps,
+  InlineStack,
+  type InlineStackProps,
+} from './components/Stack.tsx';
+export {
+  Grid,
+  type GridProps,
+  BlockGrid,
+  type BlockGridProps,
+  InlineGrid,
+  type InlineGridProps,
+} from './components/Grid.tsx';

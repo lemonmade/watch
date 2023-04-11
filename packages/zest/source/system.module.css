@@ -118,33 +118,33 @@
   gap: 0;
 }
 
-.spacingTiny {
-  gap: var(--z-spacing-tiny);
+.spacingSmall2 {
+  gap: var(--z-spacing-small-2);
 }
 
-.spacingSmall {
-  gap: var(--z-spacing-small);
+.spacingSmall1 {
+  gap: var(--z-spacing-small-1);
 }
 
 .spacingBase {
   gap: var(--z-spacing-base);
 }
 
-.spacingLarge {
-  gap: var(--z-spacing-large);
+.spacingLarge1 {
+  gap: var(--z-spacing-large-1);
 }
 
-.spacingHuge {
-  gap: var(--z-spacing-huge);
+.spacingLarge2 {
+  gap: var(--z-spacing-large-2);
 }
 
 
 .paddingTiny {
-  padding: var(--z-spacing-tiny);
+  padding: var(--z-spacing-small-2);
 }
 
 .paddingSmall {
-  padding: var(--z-spacing-small);
+  padding: var(--z-spacing-small-1);
 }
 
 .paddingBase {
@@ -152,11 +152,11 @@
 }
 
 .paddingLarge {
-  padding: var(--z-spacing-large);
+  padding: var(--z-spacing-large-1);
 }
 
 .paddingHuge {
-  padding: var(--z-spacing-huge);
+  padding: var(--z-spacing-large-2);
 }
 
 .paddingInlineStartNone {
@@ -164,11 +164,11 @@
 }
 
 .paddingInlineStartTiny {
-  padding-inline-start: var(--z-spacing-tiny);
+  padding-inline-start: var(--z-spacing-small-2);
 }
 
 .paddingInlineStartSmall {
-  padding-inline-start: var(--z-spacing-small);
+  padding-inline-start: var(--z-spacing-small-1);
 }
 
 .paddingInlineStartBase {
@@ -176,11 +176,11 @@
 }
 
 .paddingInlineStartLarge {
-  padding-inline-start: var(--z-spacing-large);
+  padding-inline-start: var(--z-spacing-large-1);
 }
 
 .paddingInlineStartHuge {
-  padding-inline-start: var(--z-spacing-huge);
+  padding-inline-start: var(--z-spacing-large-2);
 }
 
 .paddingInlineEndNone {
@@ -188,11 +188,11 @@
 }
 
 .paddingInlineEndTiny {
-  padding-inline-end: var(--z-spacing-tiny);
+  padding-inline-end: var(--z-spacing-small-2);
 }
 
 .paddingInlineEndSmall {
-  padding-inline-end: var(--z-spacing-small);
+  padding-inline-end: var(--z-spacing-small-1);
 }
 
 .paddingInlineEndBase {
@@ -200,11 +200,11 @@
 }
 
 .paddingInlineEndLarge {
-  padding-inline-end: var(--z-spacing-large);
+  padding-inline-end: var(--z-spacing-large-1);
 }
 
 .paddingInlineEndHuge {
-  padding-inline-end: var(--z-spacing-huge);
+  padding-inline-end: var(--z-spacing-large-2);
 }
 
 .paddingBlockStartNone {
@@ -212,11 +212,11 @@
 }
 
 .paddingBlockStartTiny {
-  padding-block-start: var(--z-spacing-tiny);
+  padding-block-start: var(--z-spacing-small-2);
 }
 
 .paddingBlockStartSmall {
-  padding-block-start: var(--z-spacing-small);
+  padding-block-start: var(--z-spacing-small-1);
 }
 
 .paddingBlockStartBase {
@@ -224,11 +224,11 @@
 }
 
 .paddingBlockStartLarge {
-  padding-block-start: var(--z-spacing-large);
+  padding-block-start: var(--z-spacing-large-1);
 }
 
 .paddingBlockStartHuge {
-  padding-block-start: var(--z-spacing-huge);
+  padding-block-start: var(--z-spacing-large-2);
 }
 
 .paddingBlockEndNone {
@@ -236,11 +236,11 @@
 }
 
 .paddingBlockEndTiny {
-  padding-block-end: var(--z-spacing-tiny);
+  padding-block-end: var(--z-spacing-small-2);
 }
 
 .paddingBlockEndSmall {
-  padding-block-end: var(--z-spacing-small);
+  padding-block-end: var(--z-spacing-small-1);
 }
 
 .paddingBlockEndBase {
@@ -248,11 +248,11 @@
 }
 
 .paddingBlockEndLarge {
-  padding-block-end: var(--z-spacing-large);
+  padding-block-end: var(--z-spacing-large-1);
 }
 
 .paddingBlockEndHuge {
-  padding-block-end: var(--z-spacing-huge);
+  padding-block-end: var(--z-spacing-large-2);
 }
 
 .resetOrientation {

@@ -1,6 +1,6 @@
 import {createRemoteComponent} from '@remote-ui/core';
 
-import {type ViewportSize} from '../shared';
+import {type ViewportSizeKeyword} from '../shared';
 
 export type ImageFit = 'stretch' | 'cover' | 'contain';
 export type ImageLoading = 'immediate' | 'in-viewport';
@@ -80,7 +80,7 @@ export interface ImageSource {
    * The minimum viewport size at which this condition applies. The condition will also apply at larger viewport sizes,
    * if no other conditions are present for those larger sizes.
    */
-  viewport?: ViewportSize;
+  viewport?: ViewportSizeKeyword;
 
   /**
    * The viewport resolution that this image targets.

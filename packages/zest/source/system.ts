@@ -1,3 +1,5 @@
+import type {SpacingKeyword as ClipsSpacingKeyword} from '@watching/clips';
+
 export type RawValue = `@raw@${any}`;
 
 export function raw(strings: TemplateStringsArray, ...values: any[]): RawValue {
@@ -18,13 +20,7 @@ raw.test = (value: unknown): value is RawValue =>
 
 raw.parse = (value: RawValue): string => value.slice(5);
 
-export type SpacingKeyword =
-  | 'none'
-  | 'tiny'
-  | 'small'
-  | 'base'
-  | 'large'
-  | 'huge';
+export type SpacingKeyword = ClipsSpacingKeyword;
 export type BorderKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
 export type CornerRadiusKeyword = 'none' | 'base' | 'concentric';
 export type BackgroundKeyword = 'none' | 'base' | 'emphasized' | 'subdued';

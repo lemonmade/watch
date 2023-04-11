@@ -1,16 +1,16 @@
 .MediaGrid {
-  --w-internal-MediaGrid-block-spacing: var(--z-spacing-small);
+  --w-internal-MediaGrid-block-spacing: var(--z-spacing-small-1);
 
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   row-gap: var(--w-internal-MediaGrid-block-spacing);
-  column-gap: var(--z-spacing-small);
+  column-gap: var(--z-spacing-small-1);
   align-items: flex-start;
 }
 
 .blockSpacingLarge {
-  --w-internal-MediaGrid-block-spacing: var(--z-spacing-large);
+  --w-internal-MediaGrid-block-spacing: var(--z-spacing-large-1);
 }
 
 @media (min-width: 40em) {

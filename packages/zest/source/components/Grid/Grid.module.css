@@ -1,0 +1,35 @@
+.Grid {
+  grid-template-rows: 1fr;
+  grid-template: 1fr;
+  align-items: stretch;
+  justify-content: stretch;
+  grid-auto-flow: column;
+}
+
+.directionInline {
+  grid-auto-flow: row;
+}
+
+.inlineAlignmentStart {
+  justify-content: start;
+}
+
+.inlineAlignmentEnd {
+  justify-content: end;
+}
+
+.inlineAlignmentCenter {
+  justify-content: center;
+}
+
+.blockAlignmentStart {
+  align-items: start;
+}
+
+.blockAlignmentEnd {
+  align-items: end;
+}
+
+.blockAlignmentCenter {
+  align-items: center;
+}

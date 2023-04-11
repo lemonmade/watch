@@ -7,12 +7,18 @@ import {NestedHeadingLevel} from '../Heading.tsx';
 import styles from './Banner.module.css';
 
 export interface BannerProps {
-  status?: 'information' | 'error' | 'success';
+  tone?:
+    | 'neutral'
+    | 'critical'
+    | 'positive'
+    // TODO
+    | 'highlight'
+    | 'caution';
   padding?: boolean;
 }
 
 export function Banner({
-  status,
+  tone,
   padding = true,
   children,
 }: PropsWithChildren<BannerProps>) {
@@ -25,7 +31,7 @@ export function Banner({
         padding={padding}
         className={classes(
           styles.Banner,
-          status && styles[variation('status', status)],
+          tone && styles[variation('tone', tone)],
         )}
       >
         {children}

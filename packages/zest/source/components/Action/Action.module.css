@@ -11,7 +11,7 @@
   --z-internal-Action-inline-padding: var(--z-spacing-base);
   --z-internal-Action-block-padding: var(
     --z-internal-Action-forced-block-padding,
-    var(--z-spacing-tiny)
+    var(--z-spacing-small-2)
   );
   --z-internal-Action-alignment: center;
 
@@ -502,12 +502,12 @@
   --z-internal-Action-inset-content: '';
   --z-internal-Action-inset-display: block;
   --z-internal-Action-inset-none: none;
-  --z-internal-Action-inset-block-size: var(--z-spacing-small);
+  --z-internal-Action-inset-block-size: var(--z-spacing-small-1);
   --z-internal-Action-inset-block-nudge: var(
     --z-internal-Action-inset-block-size
   );
 
-  --z-internal-Action-inline-padding: var(--z-spacing-small);
+  --z-internal-Action-inline-padding: var(--z-spacing-small-1);
 }
 
 .inlineSizeFill {
@@ -515,7 +515,7 @@
 }
 
 .spacing {
-  gap: var(--z-spacing-small);
+  gap: var(--z-spacing-small-1);
 }
 
 .hasIcon {
@@ -527,10 +527,10 @@
   }
 
   &:not(.sizeSmall) > *:first-child {
-    margin-inline-start: calc(-0.5 * var(--z-spacing-small));
+    margin-inline-start: calc(-0.5 * var(--z-spacing-small-1));
 
     &:only-child {
-      margin-inline-end: calc(-0.5 * var(--z-spacing-small));
+      margin-inline-end: calc(-0.5 * var(--z-spacing-small-1));
     }
   }
 

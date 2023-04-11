@@ -1,5 +1,5 @@
 import type {CSSProperties, HTMLAttributes} from 'react';
-import {classes, variation} from '@lemon/css';
+import {variation} from '@lemon/css';
 
 import {
   raw,
@@ -53,9 +53,13 @@ const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
 const PADDING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
   ['none', false],
   ['tiny', styles.paddingTiny],
+  ['small.2', styles.paddingSmall2],
+  ['small.1', styles.paddingSmall1],
   ['small', styles.paddingSmall],
   ['base', styles.paddingBase],
   ['large', styles.paddingLarge],
+  ['large.1', styles.paddingLarge1],
+  ['large.2', styles.paddingLarge2],
   ['huge', styles.paddingHuge],
 ] as [SpacingKeyword, string | false][]);
 
@@ -114,7 +118,7 @@ export function useViewProps({
   inlineAlignment,
   blockAlignment,
 }: ViewProps = {}): DOMPropController {
-  let className = classes(systemStyles.resetOrientation, styles.View!);
+  let className = styles.View!;
   let domStyles: DOMPropController['styles'] = explicitStyle;
   let attributes: DOMPropController['attributes'];
 

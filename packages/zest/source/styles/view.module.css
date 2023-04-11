@@ -1,0 +1,255 @@
+.displayInline {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-block, inline)
+  );
+}
+
+.displayBlock {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-block, block)
+  );
+}
+
+.displayInlineGrid {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-grid, inline-grid)
+  );
+  justify-content: var(--z-internal-inline-alignment);
+  align-items: var(--z-internal-block-alignment);
+}
+
+.displayGrid {
+  display: var(--z-internal-display-none, var(--z-internal-display-grid, grid));
+  justify-content: var(--z-internal-inline-alignment);
+  align-items: var(--z-internal-block-alignment);
+}
+
+.displayInlineFlex {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-flex, inline-flex)
+  );
+  justify-content: var(--z-internal-inline-alignment);
+  align-items: var(--z-internal-block-alignment);
+}
+
+.displayFlex {
+  display: var(--z-internal-display-none, var(--z-internal-display-flex, flex));
+  justify-content: var(--z-internal-inline-alignment);
+  align-items: var(--z-internal-block-alignment);
+}
+
+:where(.contentInlineSizeFill) > * {
+  --z-internal-display-block: block;
+  --z-internal-display-flex: flex;
+  --z-internal-display-grid: grid;
+  --z-internal-container-inline-size: 100%;
+}
+
+.alignmentReset {
+  --z-internal-inline-alignment: initial;
+  --z-internal-block-alignment: initial;
+}
+
+.alignmentStart {
+  --z-internal-inline-alignment: start;
+  --z-internal-block-alignment: start;
+}
+
+.alignmentCenter {
+  --z-internal-inline-alignment: center;
+  --z-internal-block-alignment: center;
+}
+
+.alignmentEnd {
+  --z-internal-inline-alignment: end;
+  --z-internal-block-alignment: end;
+}
+
+.alignmentSpaceBetween {
+  --z-internal-inline-alignment: space-between;
+  --z-internal-block-alignment: space-between;
+}
+
+.inlineAlignmentReset {
+  --z-internal-inline-alignment: initial;
+}
+
+.inlineAlignmentStart {
+  --z-internal-inline-alignment: start;
+}
+
+.inlineAlignmentCenter {
+  --z-internal-inline-alignment: center;
+}
+
+.inlineAlignmentEnd {
+  --z-internal-inline-alignment: end;
+}
+
+.inlineAlignmentSpaceBetween {
+  --z-internal-inline-alignment: space-between;
+}
+
+.blockAlignmentReset {
+  --z-internal-block-alignment: initial;
+}
+
+.blockAlignmentStart {
+  --z-internal-block-alignment: start;
+}
+
+.blockAlignmentCenter {
+  --z-internal-block-alignment: center;
+}
+
+.blockAlignmentEnd {
+  --z-internal-block-alignment: end;
+}
+
+.blockAlignmentSpaceBetween {
+  --z-internal-block-alignment: space-between;
+}
+
+.paddingTiny {
+  padding: var(--z-spacing-small-2);
+}
+
+.paddingSmall {
+  padding: var(--z-spacing-small-1);
+}
+
+.paddingBase {
+  padding: var(--z-spacing-base);
+}
+
+.paddingLarge {
+  padding: var(--z-spacing-large-1);
+}
+
+.paddingHuge {
+  padding: var(--z-spacing-large-2);
+}
+
+.paddingInlineStartNone {
+  padding-inline-start: 0;
+}
+
+.paddingInlineStartTiny {
+  padding-inline-start: var(--z-spacing-small-2);
+}
+
+.paddingInlineStartSmall {
+  padding-inline-start: var(--z-spacing-small-1);
+}
+
+.paddingInlineStartBase {
+  padding-inline-start: var(--z-spacing-base);
+}
+
+.paddingInlineStartLarge {
+  padding-inline-start: var(--z-spacing-large-1);
+}
+
+.paddingInlineStartHuge {
+  padding-inline-start: var(--z-spacing-large-2);
+}
+
+.paddingInlineEndNone {
+  padding-inline-end: 0;
+}
+
+.paddingInlineEndTiny {
+  padding-inline-end: var(--z-spacing-small-2);
+}
+
+.paddingInlineEndSmall {
+  padding-inline-end: var(--z-spacing-small-1);
+}
+
+.paddingInlineEndBase {
+  padding-inline-end: var(--z-spacing-base);
+}
+
+.paddingInlineEndLarge {
+  padding-inline-end: var(--z-spacing-large-1);
+}
+
+.paddingInlineEndHuge {
+  padding-inline-end: var(--z-spacing-large-2);
+}
+
+.paddingBlockStartNone {
+  padding-block-start: 0;
+}
+
+.paddingBlockStartTiny {
+  padding-block-start: var(--z-spacing-small-2);
+}
+
+.paddingBlockStartSmall {
+  padding-block-start: var(--z-spacing-small-1);
+}
+
+.paddingBlockStartBase {
+  padding-block-start: var(--z-spacing-base);
+}
+
+.paddingBlockStartLarge {
+  padding-block-start: var(--z-spacing-large-1);
+}
+
+.paddingBlockStartHuge {
+  padding-block-start: var(--z-spacing-large-2);
+}
+
+.paddingBlockEndNone {
+  padding-block-end: 0;
+}
+
+.paddingBlockEndTiny {
+  padding-block-end: var(--z-spacing-small-2);
+}
+
+.paddingBlockEndSmall {
+  padding-block-end: var(--z-spacing-small-1);
+}
+
+.paddingBlockEndBase {
+  padding-block-end: var(--z-spacing-base);
+}
+
+.paddingBlockEndLarge {
+  padding-block-end: var(--z-spacing-large-1);
+}
+
+.paddingBlockEndHuge {
+  padding-block-end: var(--z-spacing-large-2);
+}
+
+.resetOrientation {
+  --z-internal-divider-inline-size: 0;
+  --z-internal-divider-block-size: initial;
+}
+
+.scrollLock {
+  overflow: hidden;
+}
+
+.visibilityHidden {
+  --z-implicit-display-none: none;
+}
+
+.visibilityVisuallyHidden {
+  position: absolute !important;
+  top: 0;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  overflow: hidden !important;
+  height: 1px !important;
+  width: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}

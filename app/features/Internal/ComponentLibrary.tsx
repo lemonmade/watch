@@ -40,13 +40,16 @@ import {
   Poster,
   IconHighlight,
   ContentAction,
+  Stack,
+  InlineGrid,
+  BlockGrid,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
   usePerformanceNavigation({state: 'complete'});
 
   return (
-    <BlockStack spacing padding="base">
+    <BlockStack spacing padding>
       <ActionComponents />
       <Divider />
       <PopoverComponents />
@@ -68,18 +71,18 @@ function ActionComponents() {
       <BlockStack spacing>
         <Heading>Actions</Heading>
 
-        <InlineStack spacing="small">
+        <Stack direction="inline" spacing="small">
           <Action>Action (button)</Action>
           <Action to="#">Action (link)</Action>
           <Action disabled>Action (disabled)</Action>
 
           <Action emphasis>Action (emphasized)</Action>
-          <Action emphasis disabled icon="arrowEnd">
+          <Action emphasis disabled icon="arrow.end">
             Action (emphasized disabled)
           </Action>
 
           <Action emphasis="subdued">Action (subdued)</Action>
-          <Action emphasis="subdued" disabled icon="arrowEnd">
+          <Action emphasis="subdued" disabled icon="arrow.end">
             Action (subdued disabled)
           </Action>
 
@@ -92,10 +95,10 @@ function ActionComponents() {
 
           <Action overlay={<ActionExampleModal />}>Action (modal)</Action>
           <Action size="small">Action (small)</Action>
-          <Action detail={<Icon source="arrowEnd" />}>Action (detail)</Action>
+          <Action detail={<Icon source="arrow.end" />}>Action (detail)</Action>
           <Pressable>Pressable</Pressable>
           <Pressable to="#">Pressable (link)</Pressable>
-        </InlineStack>
+        </Stack>
 
         <Action>Action that fills</Action>
         <Action icon="delete">Action that fills</Action>
@@ -217,7 +220,7 @@ function ActionComponents() {
           <Action>Menu button</Action>
           <Action to="#">Menu link</Action>
           <Action emphasis="subdued">Menu button (subdued)</Action>
-          <Action loading icon="arrowEnd">
+          <Action loading icon="arrow.end">
             Menu button (loading)
           </Action>
           <Action emphasis>Menu button (emphasized)</Action>
@@ -262,10 +265,10 @@ function LoadingActionExample() {
         >
           Action (accessory loading)
         </Action>
-        <Action emphasis="subdued" loading={loading} icon="arrowEnd">
+        <Action emphasis="subdued" loading={loading} icon="arrow.end">
           Action (subdued loading)
         </Action>
-        <Action emphasis loading={loading} icon="arrowEnd">
+        <Action emphasis loading={loading} icon="arrow.end">
           Action (emphasized loading)
         </Action>
         <Action role="destructive" loading={loading} icon="delete">
@@ -281,7 +284,7 @@ function ActionExamplePopoverMenu(props: ComponentProps<typeof Popover>) {
     <Popover {...props}>
       <Menu>
         <Action icon="watchlist">Menu button</Action>
-        <Action icon="arrowEnd" to="#">
+        <Action icon="arrow.end" to="#">
           Menu link
         </Action>
         <Action icon="delete" role="destructive">
@@ -409,9 +412,9 @@ function DisplayComponents() {
       <BlockStack spacing>
         <Heading>Display</Heading>
         <Banner>Hello world</Banner>
-        <Banner status="error">Hello world</Banner>
-        <Banner status="success">Hello world</Banner>
-        <Banner padding={false} status="information">
+        <Banner tone="critical">Hello world</Banner>
+        <Banner tone="positive">Hello world</Banner>
+        <Banner padding={false}>
           <Header padding>
             <Heading>Banner heading</Heading>
           </Header>
@@ -552,76 +555,138 @@ function LayoutComponents() {
     <Section>
       <BlockStack spacing>
         <Heading>Layout</Heading>
+        <BlockStack spacing="large">
+          <Section>
+            <BlockStack spacing>
+              <Heading>Inline</Heading>
 
-        <InlineStack spacing>
-          <View cornerRadius background={raw`#333`} padding="base">
-            Inline
-          </View>
-          <View cornerRadius background={raw`#333`} padding="base">
-            Stack
-          </View>
-        </InlineStack>
-        <BlockStack spacing>
-          <View cornerRadius background={raw`darkred`} padding="base">
-            Block
-          </View>
-          <View cornerRadius background={raw`darkred`} padding="base">
-            Stack
-          </View>
-        </BlockStack>
-        <Layout spacing columns={['auto', 'fill']}>
-          <View cornerRadius background={raw`blue`} padding="base">
-            Fancy
-          </View>
-          <View cornerRadius background={raw`blue`} padding="base">
-            Layout
-          </View>
-          <View cornerRadius background={raw`blue`} padding="base">
-            Fancy
-          </View>
-          <View cornerRadius background={raw`blue`} padding="base">
-            Layout
-          </View>
-        </Layout>
+              <InlineStack spacing>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Stack
+                </View>
+              </InlineStack>
 
-        <InlineStack>
-          <View cornerRadius background={raw`purple`} padding="base">
-            Inline
-          </View>
-          <Spacer />
-          <View cornerRadius background={raw`purple`} padding="base">
-            Spacer
-          </View>
-        </InlineStack>
+              <InlineGrid spacing sizes={['auto', 'fill']}>
+                <View cornerRadius background={raw`blue`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+              </InlineGrid>
 
-        <InlineStack spacing>
-          <View cornerRadius background={raw`indigo`} padding="base">
-            Inline
-          </View>
-          <Divider emphasis="subdued" padding="small" />
-          <View cornerRadius background={raw`indigo`} padding="base">
-            Divider
-          </View>
-        </InlineStack>
+              <InlineStack>
+                <View cornerRadius background={raw`purple`} padding>
+                  Inline
+                </View>
+                <Spacer />
+                <View cornerRadius background={raw`purple`} padding>
+                  Spacer
+                </View>
+              </InlineStack>
 
-        <BlockStack>
-          <View cornerRadius background={raw`darkgreen`} padding="base">
-            Block
-          </View>
-          <Spacer />
-          <View cornerRadius background={raw`darkgreen`} padding="base">
-            Spacer
-          </View>
-        </BlockStack>
+              <InlineStack>
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Inline
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Stretch
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Spacer
+                </View>
+              </InlineStack>
 
-        <BlockStack spacing>
-          <View cornerRadius background={raw`green`} padding="base">
-            Block
-          </View>
-          <Divider />
-          <View cornerRadius background={raw`green`} padding="base">
-            Divider
-          </View>
+              <InlineStack spacing>
+                <View cornerRadius background={raw`indigo`} padding>
+                  Inline
+                </View>
+                <Divider emphasis="subdued" padding="small" />
+                <View cornerRadius background={raw`indigo`} padding>
+                  Divider
+                </View>
+              </InlineStack>
+            </BlockStack>
+          </Section>
+
+          <Section>
+            <BlockStack spacing>
+              <Heading>Block</Heading>
+
+              <BlockStack spacing>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Stack
+                </View>
+              </BlockStack>
+
+              <BlockGrid
+                spacing
+                sizes={['auto', 'fill']}
+                blockSize={raw`10rem`}
+              >
+                <View cornerRadius background={raw`blue`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+              </BlockGrid>
+
+              <BlockStack>
+                <View cornerRadius background={raw`purple`} padding>
+                  Block
+                </View>
+                <Spacer />
+                <View cornerRadius background={raw`purple`} padding>
+                  Spacer
+                </View>
+              </BlockStack>
+
+              <BlockStack blockSize={raw`16rem`}>
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Block
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Stretch
+                </View>
+                <Spacer stretch />
+                <View cornerRadius background={raw`blueviolet`} padding>
+                  Spacer
+                </View>
+              </BlockStack>
+
+              <BlockStack spacing>
+                <View cornerRadius background={raw`indigo`} padding>
+                  Block
+                </View>
+                <Divider emphasis="subdued" padding="small" />
+                <View cornerRadius background={raw`indigo`} padding>
+                  Divider
+                </View>
+              </BlockStack>
+            </BlockStack>
+          </Section>
         </BlockStack>
       </BlockStack>
     </Section>

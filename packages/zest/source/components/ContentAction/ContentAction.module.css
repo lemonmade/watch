@@ -4,14 +4,14 @@
   --z-internal-ContentAction-border: var(--z-border-subdued);
   --z-internal-ContentAction-background: var(--z-Action-subdued-background);
   --z-internal-ContentAction-shadow: var(--z-Action-subdued-shadow);
-  --z-internal-ContentAction-icon-margin: var(--z-spacing-small);
+  --z-internal-ContentAction-icon-margin: var(--z-spacing-small-1);
 
   grid-template-columns: 1fr auto;
   gap: var(--z-internal-ContentAction-icon-margin);
   max-inline-size: max-content;
 
-  padding: var(--z-spacing-small);
-  margin: 0 calc(-1 * var(--z-spacing-small));
+  padding: var(--z-spacing-small-1);
+  margin: 0 calc(-1 * var(--z-spacing-small-1));
   border: var(--z-border-subdued);
   border-radius: var(--z-corner-radius-base);
   border: var(--z-internal-ContentAction-border);

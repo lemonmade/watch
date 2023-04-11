@@ -102,7 +102,7 @@ export function Clip<Point extends ExtensionPoint>({
 function ViewAppAction() {
   return (
     <Action
-      icon="arrowEnd"
+      icon="arrow.end"
       onPress={() => alert('App page not implemented yet!')}
     >
       View app

@@ -5,11 +5,11 @@
   --z-internal-TextField-resize: none;
   --z-internal-TextField-maximum-block-size: calc(
     var(--z-internal-TextField-maximum-lines, 1) *
-      var(--z-text-base-line-height) + var(--z-spacing-small) * 2
+      var(--z-text-base-line-height) + var(--z-spacing-small-1) * 2
   );
   --z-internal-TextField-minimum-block-size: calc(
     var(--z-internal-TextField-minimum-lines, 1) *
-      var(--z-text-base-line-height) + var(--z-spacing-small) * 2
+      var(--z-text-base-line-height) + var(--z-spacing-small-1) * 2
   );
 
   position: relative;
@@ -72,7 +72,7 @@
   font-size: 1em;
   line-height: var(--z-text-base-line-height);
   font-family: inherit;
-  padding: var(--z-spacing-small) var(--z-spacing-base);
+  padding: var(--z-spacing-small-1) var(--z-spacing-base);
   min-block-size: var(--z-internal-TextField-minimum-block-size);
   max-block-size: var(--z-internal-TextField-maximum-block-size);
 }

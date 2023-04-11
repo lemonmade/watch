@@ -16,20 +16,37 @@ export type Components = {
 
 export type CommonComponents = Pick<
   Components,
-  | 'Action'
-  | 'BlockStack'
-  | 'Footer'
-  | 'Header'
-  | 'Heading'
-  | 'Image'
-  | 'InlineStack'
-  | 'Modal'
-  | 'Popover'
-  | 'Section'
+  // Typography
   | 'Text'
   | 'TextBlock'
+  | 'Heading'
+
+  // Media
+  | 'Image'
+
+  // Forms
   | 'TextField'
+
+  // Interaction
+  | 'Action'
+
+  // Containers
   | 'View'
+  | 'Section'
+  | 'Footer'
+  | 'Header'
+
+  // Overlays
+  | 'Modal'
+  | 'Popover'
+
+  // Layout
+  | 'Stack'
+  | 'BlockStack'
+  | 'InlineStack'
+  | 'Grid'
+  | 'BlockGrid'
+  | 'InlineGrid'
 >;
 
 export type AnyComponent = Components[keyof Components];

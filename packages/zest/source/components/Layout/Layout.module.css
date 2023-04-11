@@ -6,11 +6,11 @@
 }
 
 .spacingTiny {
-  gap: var(--z-spacing-tiny);
+  gap: var(--z-spacing-small-2);
 }
 
 .spacingSmall {
-  gap: var(--z-spacing-small);
+  gap: var(--z-spacing-small-1);
 }
 
 .spacingBase {
@@ -18,11 +18,11 @@
 }
 
 .spacingLarge {
-  gap: var(--z-spacing-large);
+  gap: var(--z-spacing-large-1);
 }
 
 .spacingHuge {
-  gap: var(--z-spacing-huge);
+  gap: var(--z-spacing-large-2);
 }
 
 .inlineAlignmentStart {

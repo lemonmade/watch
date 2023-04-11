@@ -6,7 +6,7 @@
   max-width: 20rem;
   transform: scale(100%);
   opacity: 1;
-  margin: var(--z-spacing-small) var(--z-spacing-base);
+  margin: var(--z-spacing-small-1) var(--z-spacing-base);
 }
 
 .transitionOpenEnd,

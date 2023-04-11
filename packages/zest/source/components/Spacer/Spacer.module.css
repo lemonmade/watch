@@ -8,29 +8,24 @@
   min-inline-size: 0;
 }
 
-.sizeTiny {
-  min-block-size: var(--z-spacing-tiny);
-  min-inline-size: var(--z-spacing-tiny);
+.sizeSmall2 {
+  min-block-size: var(--z-spacing-small-2);
+  min-inline-size: var(--z-spacing-small-2);
 }
 
-.sizeSmall {
-  min-block-size: var(--z-spacing-small);
-  min-inline-size: var(--z-spacing-small);
+.sizeSmall1 {
+  min-block-size: var(--z-spacing-small-1);
+  min-inline-size: var(--z-spacing-small-1);
 }
 
-.sizeLarge {
-  min-block-size: var(--z-spacing-large);
-  min-inline-size: var(--z-spacing-large);
+.sizeLarge1 {
+  min-block-size: var(--z-spacing-large-1);
+  min-inline-size: var(--z-spacing-large-1);
 }
 
-.sizeHuge {
-  min-block-size: var(--z-spacing-huge);
-  min-inline-size: var(--z-spacing-huge);
-}
-
-.sizeLarge {
-  min-block-size: var(--z-spacing-large);
-  min-inline-size: var(--z-spacing-large);
+.sizeLarge2 {
+  min-block-size: var(--z-spacing-large-2);
+  min-inline-size: var(--z-spacing-large-2);
 }
 
 .stretch {

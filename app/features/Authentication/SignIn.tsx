@@ -245,7 +245,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
   switch (reason) {
     case SignInErrorReason.GithubNoAccount: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           You authenticated with Github, but no account is linked with your
           Github profile. You’ll need to sign in with email, then connect Github
           from the <Link to="/app/me">account page</Link>.
@@ -254,7 +254,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
     }
     case SignInErrorReason.GithubError: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           There was an error while trying to sign in with Github. You can try
           again, or sign in with your email instead. Sorry for the
           inconvenience!
@@ -263,7 +263,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
     }
     case SignInErrorReason.GoogleNoAccount: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           You authenticated with Google, but no account is linked with your
           Google profile. You’ll need to sign in with email, then connect Google
           from the <Link to="/app/me">account page</Link>.
@@ -272,7 +272,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
     }
     case SignInErrorReason.GoogleError: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           There was an error while trying to sign in with Google. You can try
           again, or sign in with your email instead. Sorry for the
           inconvenience!
@@ -281,7 +281,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
     }
     case SignInErrorReason.Expired: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           Your temporary sign in token expired, so you’ll need to sign in again.
           Sorry for the inconvenience!
         </Banner>
@@ -289,7 +289,7 @@ function ErrorBanner({reason}: {reason: SignInErrorReason}) {
     }
     default: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           Something went wrong while trying to sign you in, so you’ll need to
           try again. Sorry for the inconvenience!
         </Banner>

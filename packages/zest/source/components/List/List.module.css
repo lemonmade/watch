@@ -4,11 +4,11 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--z-spacing-tiny);
+  gap: var(--z-spacing-small-2);
 }
 
 .ListItem {
-  padding: var(--z-spacing-tiny) var(--z-spacing-small);
+  padding: var(--z-spacing-small-2) var(--z-spacing-small-1);
   background: var(--z-surface-background-emphasized);
   border-radius: var(--z-corner-radius-base);
 }

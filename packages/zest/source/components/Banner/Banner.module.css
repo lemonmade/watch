@@ -13,7 +13,7 @@
   --z-Action-pressed-background: rgb(97 119 194);
 }
 
-.statusError {
+.toneCritical {
   --z-surface-background-base: rgb(105, 10, 10);
   --z-border-base-color: rgb(208 33 33);
 
@@ -23,7 +23,7 @@
   --z-Action-pressed-background: rgb(212 44 45);
 }
 
-.statusSuccess {
+.tonePositive {
   --z-surface-background-base: rgb(25 70 55);
   --z-border-base-color: rgb(46 160 127);
 

@@ -84,7 +84,7 @@ export default function Account() {
 
   return (
     <Page heading="Account">
-      <BlockStack spacing="huge">
+      <BlockStack spacing="large.2">
         <AccountSection
           email={email}
           level={level}
@@ -136,19 +136,17 @@ function AccountSection({
   switch (paymentStatus) {
     case PaymentStatus.Success: {
       paymentBanner = (
-        <Banner status="success">Your payment was successful!</Banner>
+        <Banner tone="positive">Your payment was successful!</Banner>
       );
       break;
     }
     case PaymentStatus.Pending: {
-      paymentBanner = (
-        <Banner status="information">Your payment is pending…</Banner>
-      );
+      paymentBanner = <Banner>Your payment is pending…</Banner>;
       break;
     }
     case PaymentStatus.Failed: {
       paymentBanner = (
-        <Banner status="error">Your payment failed. Please try again</Banner>
+        <Banner tone="critical">Your payment failed. Please try again</Banner>
       );
     }
   }
@@ -264,7 +262,7 @@ function MemberAccountSection({
         </InlineStack>
 
         {giftCode != null && (
-          <InlineStack spacing="tiny">
+          <InlineStack spacing="small.2">
             <Icon emphasis="subdued" source="gift" />
 
             <Text emphasis="subdued">
@@ -275,7 +273,7 @@ function MemberAccountSection({
         )}
 
         {giftCode == null && subscription?.startedAt && (
-          <InlineStack spacing="tiny">
+          <InlineStack spacing="small.2">
             <Icon emphasis="subdued" source="success" />
 
             <Text emphasis="subdued">
@@ -644,7 +642,7 @@ function ConnectGoogleAccount({onUpdate}: {onUpdate(): Promise<void>}) {
   });
 
   const errorContent = error ? (
-    <Banner status="error">
+    <Banner tone="critical">
       There was an error connecting your Github account. You’ll need to try
       again.
     </Banner>
@@ -727,7 +725,7 @@ function ConnectGithubAccount({
   });
 
   const errorContent = error ? (
-    <Banner status="error">
+    <Banner tone="critical">
       There was an error connecting your Github account. You’ll need to try
       again.
     </Banner>
