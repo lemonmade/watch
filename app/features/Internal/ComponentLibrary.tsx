@@ -41,7 +41,6 @@ import {
   IconHighlight,
   ContentAction,
   Stack,
-  Grid,
   InlineGrid,
   BlockGrid,
 } from '@lemon/zest';
@@ -413,9 +412,9 @@ function DisplayComponents() {
       <BlockStack spacing>
         <Heading>Display</Heading>
         <Banner>Hello world</Banner>
-        <Banner status="error">Hello world</Banner>
-        <Banner status="success">Hello world</Banner>
-        <Banner padding={false} status="information">
+        <Banner tone="critical">Hello world</Banner>
+        <Banner tone="positive">Hello world</Banner>
+        <Banner padding={false} tone="information">
           <Header padding>
             <Heading>Banner heading</Heading>
           </Header>
@@ -556,77 +555,110 @@ function LayoutComponents() {
     <Section>
       <BlockStack spacing>
         <Heading>Layout</Heading>
+        <BlockStack spacing="large">
+          <Section>
+            <BlockStack spacing>
+              <Heading>Inline</Heading>
 
-        <InlineStack spacing>
-          <View cornerRadius background={raw`#333`} padding>
-            Inline
-          </View>
-          <View cornerRadius background={raw`#333`} padding>
-            Stack
-          </View>
-        </InlineStack>
-        <BlockStack spacing>
-          <View cornerRadius background={raw`darkred`} padding>
-            Block
-          </View>
-          <View cornerRadius background={raw`darkred`} padding>
-            Stack
-          </View>
-        </BlockStack>
+              <InlineStack spacing>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Stack
+                </View>
+              </InlineStack>
 
-        <InlineGrid spacing columns={['auto', 'fill']}>
-          <View cornerRadius background={raw`blue`} padding>
-            Inline
-          </View>
-          <View cornerRadius background={raw`blue`} padding>
-            Grid
-          </View>
-          <View cornerRadius background={raw`blue`} padding>
-            Inline
-          </View>
-          <View cornerRadius background={raw`blue`} padding>
-            Grid
-          </View>
-        </InlineGrid>
+              <InlineGrid spacing sizes={['auto', 'fill']}>
+                <View cornerRadius background={raw`blue`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Inline
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+              </InlineGrid>
 
-        <InlineStack>
-          <View cornerRadius background={raw`purple`} padding>
-            Inline
-          </View>
-          <Spacer />
-          <View cornerRadius background={raw`purple`} padding>
-            Spacer
-          </View>
-        </InlineStack>
+              <InlineStack>
+                <View cornerRadius background={raw`purple`} padding>
+                  Inline
+                </View>
+                <Spacer />
+                <View cornerRadius background={raw`purple`} padding>
+                  Spacer
+                </View>
+              </InlineStack>
 
-        <InlineStack spacing>
-          <View cornerRadius background={raw`indigo`} padding>
-            Inline
-          </View>
-          <Divider emphasis="subdued" padding="small" />
-          <View cornerRadius background={raw`indigo`} padding>
-            Divider
-          </View>
-        </InlineStack>
+              <InlineStack spacing>
+                <View cornerRadius background={raw`indigo`} padding>
+                  Inline
+                </View>
+                <Divider emphasis="subdued" padding="small" />
+                <View cornerRadius background={raw`indigo`} padding>
+                  Divider
+                </View>
+              </InlineStack>
+            </BlockStack>
+          </Section>
 
-        <BlockStack>
-          <View cornerRadius background={raw`darkgreen`} padding>
-            Block
-          </View>
-          <Spacer />
-          <View cornerRadius background={raw`darkgreen`} padding>
-            Spacer
-          </View>
-        </BlockStack>
+          <Section>
+            <BlockStack spacing>
+              <Heading>Block</Heading>
 
-        <BlockStack spacing>
-          <View cornerRadius background={raw`green`} padding>
-            Block
-          </View>
-          <Divider />
-          <View cornerRadius background={raw`green`} padding>
-            Divider
-          </View>
+              <BlockStack spacing>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`darkred`} padding>
+                  Stack
+                </View>
+              </BlockStack>
+
+              <BlockGrid
+                spacing
+                sizes={['auto', 'fill']}
+                blockSize={raw`10rem`}
+              >
+                <View cornerRadius background={raw`blue`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Block
+                </View>
+                <View cornerRadius background={raw`blue`} padding>
+                  Grid
+                </View>
+              </BlockGrid>
+
+              <BlockStack>
+                <View cornerRadius background={raw`purple`} padding>
+                  Block
+                </View>
+                <Spacer />
+                <View cornerRadius background={raw`purple`} padding>
+                  Spacer
+                </View>
+              </BlockStack>
+
+              <BlockStack spacing>
+                <View cornerRadius background={raw`indigo`} padding>
+                  Block
+                </View>
+                <Divider emphasis="subdued" padding="small" />
+                <View cornerRadius background={raw`indigo`} padding>
+                  Divider
+                </View>
+              </BlockStack>
+            </BlockStack>
+          </Section>
         </BlockStack>
       </BlockStack>
     </Section>
