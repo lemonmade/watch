@@ -10,26 +10,6 @@
   grid-auto-flow: row;
 }
 
-.spacingTiny {
-  gap: var(--z-spacing-small-2);
-}
-
-.spacingSmall {
-  gap: var(--z-spacing-small-1);
-}
-
-.spacingBase {
-  gap: var(--z-spacing-base);
-}
-
-.spacingLarge {
-  gap: var(--z-spacing-large-1);
-}
-
-.spacingHuge {
-  gap: var(--z-spacing-large-2);
-}
-
 .inlineAlignmentStart {
   justify-content: start;
 }
