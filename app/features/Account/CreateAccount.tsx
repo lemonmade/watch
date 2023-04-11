@@ -177,7 +177,7 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
   switch (reason) {
     case CreateAccountErrorReason.GithubError: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           There was an error while trying to create your account with Github.
           You can try again, or create an account with your email instead (you
           can always connect your Github account later). Sorry for the
@@ -187,7 +187,7 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
     }
     case CreateAccountErrorReason.GoogleError: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           There was an error while trying to create your account with Google.
           You can try again, or create an account with your email instead (you
           can always connect your Google account later). Sorry for the
@@ -197,7 +197,7 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
     }
     case CreateAccountErrorReason.Expired: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           Your temporary account creation token expired, so you’ll need to
           create your account again. Sorry for the inconvenience!
         </Banner>
@@ -205,7 +205,7 @@ function ErrorBanner({reason}: {reason: CreateAccountErrorReason}) {
     }
     default: {
       return (
-        <Banner status="error">
+        <Banner tone="critical">
           Something went wrong while trying to create your account, so you’ll
           need to try again. Sorry for the inconvenience!
         </Banner>

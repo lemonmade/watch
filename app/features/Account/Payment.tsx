@@ -83,7 +83,7 @@ export default function Payment() {
       >
         <BlockStack spacing>
           {error.value && (
-            <Banner status="error">
+            <Banner tone="critical">
               There was an error processing your payment. Please try again.
             </Banner>
           )}

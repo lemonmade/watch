@@ -40,6 +40,4 @@ export type LayoutModeKeyword = 'logical' /* TODO: | 'physical' */;
 
 export type SizeKeyword = 'auto' | 'fill' | 'hidden';
 export type SizePercentage = `${number}%`;
-export type SizeValue = ValueOrArray<
-  SizeKeyword | SizePercentage | false | number
->;
+export type SizeValue = SizeKeyword | SizePercentage | false | number;

@@ -414,7 +414,7 @@ function DisplayComponents() {
         <Banner>Hello world</Banner>
         <Banner tone="critical">Hello world</Banner>
         <Banner tone="positive">Hello world</Banner>
-        <Banner padding={false} tone="information">
+        <Banner padding={false}>
           <Header padding>
             <Heading>Banner heading</Heading>
           </Header>

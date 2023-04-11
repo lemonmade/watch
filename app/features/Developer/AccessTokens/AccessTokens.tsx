@@ -90,7 +90,7 @@ export default function AccessTokens() {
       <BlockStack spacing>
         {createResult == null ? null : (
           <Banner
-            status={createResult.type === 'error' ? 'error' : 'information'}
+            tone={createResult.type === 'error' ? 'critical' : 'positive'}
           >
             {createResult.message}
           </Banner>
