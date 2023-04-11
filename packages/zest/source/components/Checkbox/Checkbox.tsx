@@ -33,6 +33,7 @@ export function Checkbox({
   const resolvedChecked = resolveSignalOrValue(checked);
   const resolvedDisabled = resolveSignalOrValue(disabled);
   const resolvedReadonly = resolveSignalOrValue(readonly);
+  const disabledAttribute = resolvedDisabled || resolvedReadonly;
 
   const handleChange =
     onChange ??
@@ -56,9 +57,12 @@ export function Checkbox({
         id={id}
         type="checkbox"
         checked={resolvedChecked}
-        disabled={resolvedDisabled}
+        disabled={disabledAttribute}
         readOnly={resolvedReadonly}
-        className={choiceStyles.Input}
+        className={classes(
+          choiceStyles.Input,
+          resolvedDisabled && choiceStyles.disabled,
+        )}
         onChange={
           handleChange &&
           (({currentTarget: {checked}}) => {

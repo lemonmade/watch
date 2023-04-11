@@ -8,7 +8,7 @@ import {
   createOptionalContext,
   createUseContextHook,
 } from '@quilted/react-utilities';
-import {classes, variation} from '@lemon/css';
+import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
 
@@ -27,7 +27,7 @@ const useChoiceListContext = createUseContextHook(ChoiceListContext);
 export interface ChoiceListProps<Value extends string = string> {
   id?: string;
   value?: SignalOrValue<Value>;
-  spacing?: 'small' | 'base';
+  spacing?: boolean | 'base';
   onChange?(value: Value): void;
 }
 
@@ -35,7 +35,7 @@ export function ChoiceList<Value extends string = string>({
   id: explicitId,
   children,
   value,
-  spacing = 'small',
+  spacing = true,
   onChange,
 }: PropsWithChildren<ChoiceListProps<Value>>) {
   const id = useUniqueId('ChoiceList', explicitId);
@@ -60,7 +60,7 @@ export function ChoiceList<Value extends string = string>({
       <div
         className={classes(
           systemStyles.displayGrid,
-          systemStyles[variation('spacing', spacing)],
+          spacing && systemStyles.spacingSmall1,
         )}
       >
         {children}
@@ -89,6 +89,7 @@ export function Choice({
   const choiceListContext = useChoiceListContext();
   const resolvedDisabled = resolveSignalOrValue(disabled);
   const resolvedReadonly = resolveSignalOrValue(readonly);
+  const disabledAttribute = resolvedDisabled || resolvedReadonly;
 
   const handleChange = choiceListContext.onChange;
 
@@ -113,8 +114,11 @@ export function Choice({
             handleChange(value);
           })
         }
-        className={choiceStyles.Input}
-        disabled={resolvedDisabled}
+        className={classes(
+          choiceStyles.Input,
+          resolvedDisabled && choiceStyles.disabled,
+        )}
+        disabled={disabledAttribute}
         readOnly={resolvedReadonly}
       ></input>
       <span className={choiceStyles.Label}>{children}</span>
