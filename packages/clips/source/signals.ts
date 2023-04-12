@@ -6,6 +6,8 @@ import {
 
 export {type Signal};
 
+export type SignalOrValue<T> = T | Signal<T>;
+
 export type WithThreadSignals<T> = {
   [K in keyof T]: T[K] extends ThreadSignal<infer U> ? Signal<U> : T[K];
 };

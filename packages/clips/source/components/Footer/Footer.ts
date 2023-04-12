@@ -1,5 +1,6 @@
 import {createRemoteComponent} from '@remote-ui/core';
-import {type ViewProps} from '../View';
+
+import {type ViewProps} from '../View.ts';
 
 export interface FooterProps extends ViewProps {}
 

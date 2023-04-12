@@ -1,6 +1,6 @@
 import {createRemoteComponent} from '@remote-ui/core';
 
-import {type ViewportSizeKeyword} from '../shared';
+import {type ViewportSizeKeyword} from '../../styles.ts';
 
 export type ImageFit = 'stretch' | 'cover' | 'contain';
 export type ImageLoading = 'immediate' | 'in-viewport';

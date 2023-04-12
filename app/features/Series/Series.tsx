@@ -12,10 +12,11 @@ import {
   Heading,
   HeadingAction,
   Icon,
+  InlineGrid,
   Menu,
   Layout,
   Popover,
-  raw,
+  Style,
   Tag,
   Modal,
   TextBlock,
@@ -98,7 +99,11 @@ function SeriesWithData({
     <BlockStack spacing="large.2" padding>
       <BlockStack spacing>
         <Header>
-          <Layout spacing blockAlignment="start" columns={[raw`6rem`, 'fill']}>
+          <InlineGrid
+            spacing
+            blockAlignment="start"
+            sizes={[Style.css`6rem`, 'fill']}
+          >
             <Poster source={series.poster?.source} />
 
             <BlockStack spacing>
@@ -163,7 +168,7 @@ function SeriesWithData({
                 />
               </Layout>
             </BlockStack>
-          </Layout>
+          </InlineGrid>
         </Header>
 
         {series.overview && <TextBlock>{series.overview}</TextBlock>}
@@ -406,11 +411,11 @@ function SeasonsSection({
           } = season;
 
           return (
-            <Layout
+            <InlineGrid
               key={id}
               spacing
-              columns={[raw`4rem`, 'fill', 'auto']}
               blockAlignment="start"
+              sizes={[Style.css`4rem`, 'fill', 'auto']}
             >
               <Poster source={poster?.source} />
 
@@ -457,7 +462,7 @@ function SeasonsSection({
                   lastSeason={lastSeason}
                 />
               )}
-            </Layout>
+            </InlineGrid>
           );
         })}
       </BlockStack>

@@ -1,5 +1,6 @@
 import {createRemoteComponent, type RemoteFragment} from '@remote-ui/core';
-import {type SignalOrValue} from '../shared';
+
+import {type SignalOrValue} from '../../signals.ts';
 
 export interface ActionProps {
   /**

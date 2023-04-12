@@ -1,6 +1,13 @@
 import {useState, type ReactNode} from 'react';
 import {usePerformanceNavigation} from '@quilted/quilt';
-import {BlockStack, TextBlock, Action, Banner, Text, Layout} from '@lemon/zest';
+import {
+  BlockStack,
+  TextBlock,
+  Action,
+  Banner,
+  Text,
+  InlineGrid,
+} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {useQuery, useMutation} from '~/shared/graphql.ts';
@@ -54,7 +61,7 @@ export default function AccessTokens() {
       <TextBlock>No personal access tokens</TextBlock>
     ) : (
       data!.me.accessTokens.map((accessToken) => (
-        <Layout columns={['fill', 'auto']} key={accessToken.id}>
+        <InlineGrid sizes={['fill', 'auto']} key={accessToken.id}>
           <BlockStack spacing="small">
             <Text>
               {accessToken.prefix}
@@ -81,7 +88,7 @@ export default function AccessTokens() {
           >
             Delete
           </Action>
-        </Layout>
+        </InlineGrid>
       ))
     );
 

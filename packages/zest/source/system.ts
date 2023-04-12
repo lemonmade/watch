@@ -1,24 +1,19 @@
-import type {SpacingKeyword as ClipsSpacingKeyword} from '@watching/clips';
+import {
+  Style,
+  type CSSLiteralValue,
+  type SpacingKeyword as ClipsSpacingKeyword,
+} from '@watching/clips';
 
-export type RawValue = `@raw@${any}`;
+export {Style, type CSSLiteralValue};
 
-export function raw(strings: TemplateStringsArray, ...values: any[]): RawValue {
-  let result = '';
-
-  for (let i = 0; i < strings.length; i++) {
-    result += strings[i];
-    if (i < values.length) {
-      result += values[i];
-    }
-  }
-
-  return `@raw@${result}`;
-}
-
-raw.test = (value: unknown): value is RawValue =>
-  typeof value === 'string' && value.startsWith('@raw@');
-
-raw.parse = (value: RawValue): string => value.slice(5);
+export const CSSLiteral = {
+  test(value: unknown): value is CSSLiteralValue {
+    return typeof value === 'string' && value.startsWith('@@css:');
+  },
+  parse(value: CSSLiteralValue): string {
+    return value.slice(6);
+  },
+};
 
 export type SpacingKeyword = ClipsSpacingKeyword;
 export type BorderKeyword = 'none' | 'base' | 'emphasized' | 'subdued';

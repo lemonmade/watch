@@ -16,7 +16,7 @@ import {
   Section,
   Text,
   Banner,
-  Layout,
+  InlineGrid,
   Menu,
   Popover,
   Modal,
@@ -564,12 +564,12 @@ function WebAuthnCredential(props: WebAuthnCredentialProps) {
   const {id} = props.credential;
 
   return (
-    <Layout spacing columns={['fill', 'auto']}>
+    <InlineGrid spacing sizes={['fill', 'auto']}>
       <Text>{id}</Text>
       <Action overlay={<WebAuthnCredentialManageMenu {...props} />}>
         Manage
       </Action>
-    </Layout>
+    </InlineGrid>
   );
 }
 

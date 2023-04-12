@@ -1,9 +1,8 @@
 import './style.css';
 
 export {
-  raw,
+  Style,
   type Position,
-  type RawValue,
   type SpacingKeyword,
   type BackgroundKeyword,
   type BorderKeyword,

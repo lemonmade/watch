@@ -2,15 +2,15 @@ import type {CSSProperties, HTMLAttributes} from 'react';
 import {variation} from '@lemon/css';
 
 import {
-  raw,
   relativeSize,
-  type RawValue,
   type Position,
+  type CSSLiteralValue,
   type SpacingKeyword,
   type BackgroundKeyword,
   type BorderKeyword,
   type CornerRadiusKeyword,
   type AlignKeyword,
+  CSSLiteral,
 } from '../../system.ts';
 import systemStyles from '../../system.module.css';
 
@@ -22,25 +22,25 @@ export interface ViewProps {
   style?: CSSProperties;
   inert?: boolean;
   display?: 'block' | 'inline' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
-  padding?: boolean | SpacingKeyword | RawValue;
-  paddingInlineStart?: boolean | SpacingKeyword | RawValue;
-  paddingInlineEnd?: boolean | SpacingKeyword | RawValue;
-  paddingBlockStart?: boolean | SpacingKeyword | RawValue;
-  paddingBlockEnd?: boolean | SpacingKeyword | RawValue;
+  padding?: boolean | SpacingKeyword | CSSLiteralValue;
+  paddingInlineStart?: boolean | SpacingKeyword | CSSLiteralValue;
+  paddingInlineEnd?: boolean | SpacingKeyword | CSSLiteralValue;
+  paddingBlockStart?: boolean | SpacingKeyword | CSSLiteralValue;
+  paddingBlockEnd?: boolean | SpacingKeyword | CSSLiteralValue;
   visibility?: 'hidden' | 'visible';
   accessibilityVisibility?: 'hidden' | 'visible';
 
   position?: Position | Position['type'];
-  border?: boolean | BorderKeyword | RawValue;
-  background?: boolean | BackgroundKeyword | RawValue;
-  cornerRadius?: boolean | CornerRadiusKeyword | RawValue;
+  border?: boolean | BorderKeyword | CSSLiteralValue;
+  background?: boolean | BackgroundKeyword | CSSLiteralValue;
+  cornerRadius?: boolean | CornerRadiusKeyword | CSSLiteralValue;
 
   alignment?: AlignKeyword | 'reset';
   inlineAlignment?: AlignKeyword | 'reset';
   blockAlignment?: AlignKeyword | 'reset';
 
-  inlineSize?: RawValue;
-  blockSize?: RawValue;
+  inlineSize?: CSSLiteralValue;
+  blockSize?: CSSLiteralValue;
 }
 
 const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
@@ -148,8 +148,8 @@ export function useViewProps({
   ) => {
     if (padding == null) return;
 
-    if (raw.test(padding)) {
-      addStyles({padding: raw.parse(padding)});
+    if (CSSLiteral.test(padding)) {
+      addStyles({padding: CSSLiteral.parse(padding)});
     } else {
       let normalizedPadding: SpacingKeyword;
 
@@ -196,11 +196,11 @@ export function useViewProps({
   }
 
   if (inlineSize) {
-    addStyles({width: raw.parse(inlineSize)});
+    addStyles({width: CSSLiteral.parse(inlineSize)});
   }
 
   if (blockSize) {
-    addStyles({height: raw.parse(blockSize)});
+    addStyles({height: CSSLiteral.parse(blockSize)});
   }
 
   handlePadding(padding);
@@ -209,8 +209,8 @@ export function useViewProps({
   handlePadding(paddingBlockStart, 'blockStart');
   handlePadding(paddingBlockEnd, 'blockEnd');
 
-  if (raw.test(padding)) {
-    addStyles({padding: raw.parse(padding)});
+  if (CSSLiteral.test(padding)) {
+    addStyles({padding: CSSLiteral.parse(padding)});
   } else if (padding) {
     let normalizedPadding: SpacingKeyword;
 
@@ -228,8 +228,8 @@ export function useViewProps({
     addAttributes({'aria-hidden': true});
   }
 
-  if (raw.test(border)) {
-    addStyles({border: raw.parse(border)});
+  if (CSSLiteral.test(border)) {
+    addStyles({border: CSSLiteral.parse(border)});
   } else if (border) {
     let normalizedBorder: BorderKeyword;
 
@@ -243,8 +243,8 @@ export function useViewProps({
     addClassName(systemClassName);
   }
 
-  if (raw.test(background)) {
-    addStyles({background: raw.parse(background)});
+  if (CSSLiteral.test(background)) {
+    addStyles({background: CSSLiteral.parse(background)});
   } else if (background) {
     let normalizedBackground: BackgroundKeyword;
 
@@ -263,8 +263,8 @@ export function useViewProps({
     }
   }
 
-  if (raw.test(cornerRadius)) {
-    const radius = raw.parse(cornerRadius);
+  if (CSSLiteral.test(cornerRadius)) {
+    const radius = CSSLiteral.parse(cornerRadius);
     addStyles({
       '--z-container-corner-radius': radius,
       borderRadius: radius,

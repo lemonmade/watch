@@ -10,14 +10,14 @@ import {
 } from '@quilted/quilt';
 
 import {
-  raw,
+  Style,
   BlockStack,
   InlineStack,
   Action,
   ActionList,
   Checkbox,
   Heading,
-  Layout,
+  InlineGrid,
   TextField,
   Rating,
   Image,
@@ -263,7 +263,7 @@ function NextEpisode({
       <BlockStack spacing>
         {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
         <BlockStack spacing>
-          <Layout spacing blockAlignment="start" columns={['fill', 'auto']}>
+          <InlineGrid sizes={['fill', 'auto']} spacing blockAlignment="start">
             <BlockStack spacing="small">
               <Heading>{title}</Heading>
 
@@ -312,7 +312,7 @@ function NextEpisode({
             >
               Watch
             </Action>
-          </Layout>
+          </InlineGrid>
 
           <InlineStack spacing>
             <EpisodeRating value={form.rating} />
@@ -487,10 +487,10 @@ function SkipEpisodeModal({
         <BlockStack spacing>
           <Heading>Skip episode</Heading>
 
-          <Layout
+          <InlineGrid
+            sizes={image ? [Style.css`8rem`, 'fill'] : ['fill']}
             border="subdued"
             cornerRadius
-            columns={image ? [raw`8rem`, 'fill'] : undefined}
           >
             {image ? (
               <Image source={image} aspectRatio={1.77} fit="cover" />
@@ -501,7 +501,7 @@ function SkipEpisodeModal({
                 Season {season.number}, Episode {number}
               </Text>
             </BlockStack>
-          </Layout>
+          </InlineGrid>
 
           <DetailedReview notes={form.notes} />
 

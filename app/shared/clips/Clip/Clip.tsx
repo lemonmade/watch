@@ -2,16 +2,16 @@ import {useEffect, useMemo, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRenderer, createController} from '@remote-ui/react/host';
 import {
+  Style,
   Popover,
   BlockStack,
+  InlineGrid,
   View,
   Text,
   Menu,
   ContentAction,
-  Layout,
   Icon,
   Action,
-  raw,
   Section,
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
@@ -70,15 +70,15 @@ export function Clip<Point extends ExtensionPoint>({
             </Popover>
           }
         >
-          <Layout columns={['auto', 'fill']} spacing="small">
+          <InlineGrid sizes={['auto', 'fill']} spacing="small">
             <View
               display="inlineFlex"
               background="emphasized"
               border="subdued"
               cornerRadius
               alignment="center"
-              blockSize={raw`2.5rem`}
-              inlineSize={raw`2.5rem`}
+              blockSize={Style.css`2.5rem`}
+              inlineSize={Style.css`2.5rem`}
             >
               <Icon source="app" />
             </View>
@@ -90,7 +90,7 @@ export function Clip<Point extends ExtensionPoint>({
                 from app <Text emphasis>{app.name}</Text>
               </Text>
             </BlockStack>
-          </Layout>
+          </InlineGrid>
         </ContentAction>
 
         {renderer && <ClipInstanceRenderer renderer={renderer} />}

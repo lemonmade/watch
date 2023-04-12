@@ -8,11 +8,11 @@ import type {
 } from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import {type SpacingKeyword} from '../../system';
-import {SPACING_CLASS_MAP} from '../../styles/spacing';
+import {CSSLiteral, type SpacingKeyword} from '../../system.ts';
+import {SPACING_CLASS_MAP} from '../../styles/spacing.ts';
 import {useUniqueId} from '../../shared/id.ts';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
 import styles from './Grid.module.css';
 
@@ -202,14 +202,6 @@ function createGridRules(
         continue;
       }
 
-      // if (raw.test(size)) {
-      //   rows.push(raw.parse(size));
-      //   rules.push(
-      //     `:where(${selector}) > :where(:nth-child(${
-      //       index + 1
-      //     })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
-      //   );
-      // } else
       if (size === 'auto') {
         rows.push('auto');
         rules.push(
@@ -223,6 +215,13 @@ function createGridRules(
           `:where(${selector}) > :where(:nth-child(${
             index + 1
           })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
+        );
+      } else if (CSSLiteral.test(size)) {
+        rows.push(CSSLiteral.parse(size));
+        rules.push(
+          `:where(${selector}) > :where(:nth-child(${
+            index + 1
+          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
         );
       }
     }
@@ -245,14 +244,6 @@ function createGridRules(
         continue;
       }
 
-      // if (raw.test(size)) {
-      //   columns.push(raw.parse(size));
-      //   rules.push(
-      //     `:where(${selector}) > :where(:nth-child(${
-      //       index + 1
-      //     })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
-      //   );
-      // } else
       if (size === 'auto') {
         columns.push('auto');
         rules.push(
@@ -262,6 +253,13 @@ function createGridRules(
         );
       } else if (size === 'fill') {
         columns.push('minmax(0, 1fr)');
+        rules.push(
+          `:where(${selector}) > :where(:nth-child(${
+            index + 1
+          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
+        );
+      } else if (CSSLiteral.test(size)) {
+        columns.push(CSSLiteral.parse(size));
         rules.push(
           `:where(${selector}) > :where(:nth-child(${
             index + 1

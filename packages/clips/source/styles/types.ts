@@ -1,7 +1,6 @@
-import {type Signal} from '@watching/thread-signals';
+import {CSS_LITERAL_PREFIX} from './constants.ts';
 
-export type SignalOrValue<T> = T | Signal<T>;
-export type ValueOrArray<T> = T | readonly T[];
+export type CSSLiteralValue = `${typeof CSS_LITERAL_PREFIX}${string}`;
 
 export type SpacingKeyword =
   | 'none'
@@ -39,5 +38,4 @@ export type DirectionKeyword = 'inline' | 'block';
 export type LayoutModeKeyword = 'logical' /* TODO: | 'physical' */;
 
 export type SizeKeyword = 'auto' | 'fill' | 'hidden';
-export type SizePercentage = `${number}%`;
-export type SizeValue = SizeKeyword | SizePercentage | false | number;
+export type SizeValue = SizeKeyword | CSSLiteralValue | false;

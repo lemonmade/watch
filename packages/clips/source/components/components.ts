@@ -34,7 +34,6 @@ export {
   type TextFieldAutocompleteTarget,
 } from './TextField.ts';
 export {View, type ViewProps} from './View.ts';
-export * from './shared.ts';
 
 // Layout
 export {

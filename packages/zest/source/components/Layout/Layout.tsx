@@ -1,19 +1,21 @@
 import type {PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
+import {
+  type SizeValue,
+  type SpacingKeyword,
+  type ViewportSizeKeyword,
+} from '@watching/clips';
 
-import {raw, type SpacingKeyword, type RawValue} from '../../system.ts';
+import {CSSLiteral} from '../../system.ts';
 import {useUniqueId} from '../../shared/id.ts';
 
 import {View, type ViewProps} from '../View.tsx';
 
 import styles from './Layout.module.css';
 
-export type Size = 'auto' | 'fill' | 'hidden' | false | RawValue;
-export type ViewportSize = 'small' | 'medium' | 'large';
-
 export interface ViewportMedia {
-  readonly min?: ViewportSize;
-  readonly max?: ViewportSize;
+  readonly min?: ViewportSizeKeyword;
+  readonly max?: ViewportSizeKeyword;
 }
 
 export interface Media<T> {
@@ -104,12 +106,12 @@ export type ValueOrMediaList<T> = T | Media<T>[];
 export interface LayoutProps extends Omit<ViewProps, 'display'> {
   inlineAlignment?: 'start' | 'center' | 'end';
   blockAlignment?: 'start' | 'center' | 'end';
-  columns?: ValueOrMediaList<Size[]>;
+  columns?: ValueOrMediaList<SizeValue[]>;
   spacing?: boolean | SpacingKeyword;
 }
 
 // In ems, need to make configurable
-const MEDIAQUERY_MAP: Map<ViewportSize, number> = new Map([
+const MEDIAQUERY_MAP: Map<ViewportSizeKeyword, number> = new Map([
   ['small', 32],
   ['medium', 50],
   ['large', 70],
@@ -195,7 +197,7 @@ function wrapViewportMedia({min, max}: ViewportMedia, content: string) {
   return `@media all and ${selector} {\n${content}\n}`;
 }
 
-function getMinimum(value: ViewportSize) {
+function getMinimum(value: ViewportSizeKeyword) {
   switch (value) {
     case 'small':
       return 0;
@@ -206,11 +208,11 @@ function getMinimum(value: ViewportSize) {
   }
 }
 
-function getMaximum(value: ViewportSize) {
+function getMaximum(value: ViewportSizeKeyword) {
   return MEDIAQUERY_MAP.get(value)! - 0.001;
 }
 
-function sizesToSelectors(root: string, sizes: Size[]) {
+function sizesToSelectors(root: string, sizes: SizeValue[]) {
   const columns: string[] = [];
   const rules: string[] = [];
 
@@ -224,8 +226,8 @@ function sizesToSelectors(root: string, sizes: Size[]) {
       continue;
     }
 
-    if (raw.test(size)) {
-      columns.push(raw.parse(size));
+    if (CSSLiteral.test(size)) {
+      columns.push(CSSLiteral.parse(size));
       rules.push(
         `:where(${root}) > :where(:nth-child(${
           index + 1

@@ -1,11 +1,12 @@
 import {createRemoteComponent} from '@remote-ui/core';
-import type {ViewProps} from '../View/View';
+
+import type {ViewProps} from '../View.ts';
 import type {
   SpacingValue,
   DirectionKeyword,
   LayoutModeKeyword,
   AlignmentKeyword,
-} from '../shared';
+} from '../../styles.ts';
 
 export interface StackProps extends ViewProps {
   spacing?: SpacingValue;

@@ -1,5 +1,6 @@
 import {createRemoteComponent} from '@remote-ui/core';
-import {type SpacingKeyword} from '../shared';
+
+import {type SpacingKeyword} from '../../styles.ts';
 
 export interface ViewProps {
   padding?: boolean | SpacingKeyword;

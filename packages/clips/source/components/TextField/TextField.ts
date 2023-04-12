@@ -1,5 +1,6 @@
 import {createRemoteComponent, type RemoteFragment} from '@remote-ui/core';
-import {type SignalOrValue} from '../shared';
+
+import {type SignalOrValue} from '../../signals.ts';
 
 export type TextFieldType = 'text' | 'email';
 export type TextFieldLabelStyle = 'default' | 'placeholder';

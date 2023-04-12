@@ -1,12 +1,13 @@
 import {createRemoteComponent} from '@remote-ui/core';
-import type {ViewProps} from '../View/View';
+
+import type {ViewProps} from '../View.ts';
 import type {
   SizeValue,
   SpacingValue,
   DirectionKeyword,
   LayoutModeKeyword,
   AlignmentKeyword,
-} from '../shared';
+} from '../../styles.ts';
 
 export interface GridProps extends ViewProps {
   spacing?: SpacingValue;
