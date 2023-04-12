@@ -7,6 +7,9 @@
   align-items: var(--z-Stack-align-items);
   align-content: var(--z-Stack-align-items);
   flex-direction: var(--z-Stack-direction);
+}
+
+.directionInline {
   flex-wrap: wrap;
 }
 
