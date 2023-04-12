@@ -3,11 +3,11 @@
   grid-template: 1fr;
   align-items: stretch;
   justify-content: stretch;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
 }
 
-.directionInline {
-  grid-auto-flow: row;
+.directionBlock {
+  grid-auto-flow: column;
 }
 
 .inlineAlignmentStart {

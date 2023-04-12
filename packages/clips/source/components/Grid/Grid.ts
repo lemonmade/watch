@@ -7,6 +7,7 @@ import type {
   DirectionKeyword,
   LayoutModeKeyword,
   AlignmentKeyword,
+  ValueOrStyleDynamicValue,
 } from '../../styles.ts';
 
 export interface GridProps extends ViewProps {
@@ -14,8 +15,8 @@ export interface GridProps extends ViewProps {
   direction?: DirectionKeyword;
   inlineSpacing?: SpacingValue;
   blockSpacing?: SpacingValue;
-  inlineSizes?: readonly SizeValue[];
-  blockSizes?: readonly SizeValue[];
+  inlineSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
+  blockSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
   inlineAlignment?: AlignmentKeyword;
   blockAlignment?: AlignmentKeyword;
   layoutMode?: LayoutModeKeyword;

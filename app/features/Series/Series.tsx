@@ -14,7 +14,6 @@ import {
   Icon,
   InlineGrid,
   Menu,
-  Layout,
   Popover,
   Style,
   Tag,
@@ -149,12 +148,12 @@ function SeriesWithData({
                 </InlineStack>
               </BlockStack>
 
-              <Layout
+              <InlineGrid
                 spacing="small"
-                columns={[
-                  {value: ['fill']},
-                  {value: ['fill', 'fill'], viewport: {min: 'large'}},
-                ]}
+                sizes={Style.value(['fill'], {
+                  value: ['fill', 'fill'],
+                  viewport: {min: 'large'},
+                })}
               >
                 <WatchSeriesAction
                   id={series.id}
@@ -166,7 +165,7 @@ function SeriesWithData({
                   inWatchLater={series.inWatchLater}
                   onUpdate={onUpdate}
                 />
-              </Layout>
+              </InlineGrid>
             </BlockStack>
           </InlineGrid>
         </Header>

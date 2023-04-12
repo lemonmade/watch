@@ -1,14 +1,18 @@
 import type {PropsWithChildren} from 'react';
 import {variation} from '@lemon/css';
 import type {
+  DynamicValue,
+  ViewportSizeKeyword,
+  ValueFromStyleDynamicValue,
   AlignmentKeyword,
   GridProps as BaseGridProps,
   BlockGridProps as BaseBlockGridProps,
   InlineGridProps as BaseInlineGridProps,
+  ViewportCondition,
 } from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import {CSSLiteral, type SpacingKeyword} from '../../system.ts';
+import {CSSLiteral, DynamicStyle, type SpacingKeyword} from '../../system.ts';
 import {SPACING_CLASS_MAP} from '../../styles/spacing.ts';
 import {useUniqueId} from '../../shared/id.ts';
 
@@ -52,6 +56,31 @@ const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['stretch', styles.blockAlignmentStretch],
   ['spaceBetween', styles.blockAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
+
+const MEDIA_QUERY_MAXIMUM_EM_REDUCTION = 0.01;
+const MEDIA_QUERIES = {
+  small: 0,
+  medium: 32,
+  large: 50,
+};
+
+const MEDIA_QUERY_MAP: Map<
+  ViewportSizeKeyword,
+  [`${number}em`?, `${number}em`?]
+> = new Map([
+  [
+    'small',
+    [undefined, `${MEDIA_QUERIES.medium - MEDIA_QUERY_MAXIMUM_EM_REDUCTION}em`],
+  ],
+  [
+    'medium',
+    [
+      `${MEDIA_QUERIES.medium}em`,
+      `${MEDIA_QUERIES.large - MEDIA_QUERY_MAXIMUM_EM_REDUCTION}em`,
+    ],
+  ],
+  ['large', [`${MEDIA_QUERIES.large}em`, undefined]],
+]);
 
 export function Grid({
   inlineSizes,
@@ -113,7 +142,9 @@ export {resolveViewProps as resolveGridProps};
 
 export function useGridProps({
   spacing,
-  direction,
+  blockSizes,
+  inlineSizes,
+  direction = blockSizes != null && inlineSizes == null ? 'block' : 'inline',
   inlineAlignment,
   blockAlignment,
   ...systemProps
@@ -156,7 +187,7 @@ export function useGridProps({
 
   if (
     (inlineAlignment == null || inlineAlignment === 'stretch') &&
-    (direction == null || direction === 'block')
+    direction === 'block'
   ) {
     view.addClassName(systemStyles.contentInlineSizeFill);
   }
@@ -192,88 +223,179 @@ function createGridRules(
   if (block) {
     const rows: string[] = [];
 
-    for (const [index, size] of block.entries()) {
-      if (!size || size === 'hidden') {
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: none; }`,
-        );
-        continue;
-      }
+    const blockWithConditions: DynamicValue<
+      ValueFromStyleDynamicValue<GridProps['blockSizes']>
+    >[] = [];
 
-      if (size === 'auto') {
-        rows.push('auto');
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }`,
-        );
-      } else if (size === 'fill') {
-        rows.push('minmax(0, 1fr)');
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
-        );
-      } else if (CSSLiteral.test(size)) {
-        rows.push(CSSLiteral.parse(size));
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }`,
-        );
-      }
+    if (DynamicStyle.test(block)) {
+      blockWithConditions.push(DynamicStyle.parse(block));
+    } else {
+      blockWithConditions.push({value: block});
     }
 
-    if (rows.length) {
-      rules.push(`${selector} { grid-template-rows: ${rows.join(' ')}; }`);
+    for (const {value: block, viewport} of blockWithConditions) {
+      let mediaQueryPrefix = '';
+      let mediaQueryPostfix = '';
+
+      if (viewport) {
+        mediaQueryPrefix = mediaQueryPrefixFromViewportCondition(viewport);
+        mediaQueryPostfix = mediaQueryPrefix ? ' }' : '';
+      }
+
+      for (const [index, size] of block.entries()) {
+        if (!size || size === 'hidden') {
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: none; }${mediaQueryPostfix}`,
+          );
+          continue;
+        }
+
+        if (size === 'auto') {
+          rows.push('auto');
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }${mediaQueryPostfix}`,
+          );
+        } else if (size === 'fill') {
+          rows.push('minmax(0, 1fr)');
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }${mediaQueryPostfix}`,
+          );
+        } else if (CSSLiteral.test(size)) {
+          rows.push(CSSLiteral.parse(size));
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: initial; }${mediaQueryPostfix}`,
+          );
+        }
+      }
+
+      if (rows.length) {
+        rules.push(
+          `${mediaQueryPrefix}${selector} { grid-template-rows: ${rows.join(
+            ' ',
+          )}; }${mediaQueryPostfix}`,
+        );
+      }
     }
   }
 
   if (inline) {
     const columns: string[] = [];
 
-    for (const [index, size] of inline.entries()) {
-      if (!size || size === 'hidden') {
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: none; }`,
-        );
-        continue;
-      }
+    const inlineWithConditions: DynamicValue<
+      ValueFromStyleDynamicValue<GridProps['inlineSizes']>
+    >[] = [];
 
-      if (size === 'auto') {
-        columns.push('auto');
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }`,
-        );
-      } else if (size === 'fill') {
-        columns.push('minmax(0, 1fr)');
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
-        );
-      } else if (CSSLiteral.test(size)) {
-        columns.push(CSSLiteral.parse(size));
-        rules.push(
-          `:where(${selector}) > :where(:nth-child(${
-            index + 1
-          })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }`,
-        );
-      }
+    if (DynamicStyle.test(inline)) {
+      inlineWithConditions.push(DynamicStyle.parse(inline));
+    } else {
+      inlineWithConditions.push({value: inline});
     }
 
-    if (columns.length) {
-      rules.push(
-        `${selector} { grid-template-columns: ${columns.join(' ')}; }`,
-      );
+    for (const {value: inline, viewport} of inlineWithConditions) {
+      let mediaQueryPrefix = '';
+      let mediaQueryPostfix = '';
+
+      if (viewport) {
+        mediaQueryPrefix = mediaQueryPrefixFromViewportCondition(viewport);
+        mediaQueryPostfix = mediaQueryPrefix ? ' }' : '';
+      }
+
+      for (const [index, size] of inline.entries()) {
+        if (!size || size === 'hidden') {
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: none; }`,
+          );
+          continue;
+        }
+
+        if (size === 'auto') {
+          columns.push('auto');
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: initial; --z-implicit-display-flex: initial; --z-implicit-display-grid: initial; --z-internal-container-inline-size: initial; }${mediaQueryPostfix}`,
+          );
+        } else if (size === 'fill') {
+          columns.push('minmax(0, 1fr)');
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }${mediaQueryPostfix}`,
+          );
+        } else if (CSSLiteral.test(size)) {
+          columns.push(CSSLiteral.parse(size));
+          rules.push(
+            `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
+              index + 1
+            })) { --z-internal-display-none: initial; --z-internal-display-block: block; --z-internal-display-flex: flex; --z-internal-display-grid: grid; --z-internal-container-inline-size: 100%; }${mediaQueryPostfix}`,
+          );
+        }
+      }
+
+      if (columns.length) {
+        rules.push(
+          `${mediaQueryPrefix}${selector} { grid-template-columns: ${columns.join(
+            ' ',
+          )}; }${mediaQueryPostfix}`,
+        );
+      }
     }
   }
 
   return rules;
+}
+
+function mediaQueryPrefixFromViewportCondition(viewport?: ViewportCondition) {
+  if (viewport == null) return '';
+
+  let minWidthCondition: string | undefined;
+  let maxWidthCondition: string | undefined;
+
+  if (viewport.min) {
+    const namedViewportSizes = MEDIA_QUERY_MAP.get(viewport.min);
+
+    if (namedViewportSizes) {
+      const namedMinimumViewportSize = namedViewportSizes[0];
+
+      if (namedMinimumViewportSize) {
+        minWidthCondition = namedMinimumViewportSize;
+      }
+    } else if (CSSLiteral.test(viewport.min)) {
+      minWidthCondition = CSSLiteral.parse(viewport.min);
+    }
+  }
+
+  if (viewport.max) {
+    const namedViewportSizes = MEDIA_QUERY_MAP.get(viewport.max);
+
+    if (namedViewportSizes) {
+      const namedMaximumViewportSize = namedViewportSizes[1];
+
+      if (namedMaximumViewportSize) {
+        maxWidthCondition = namedMaximumViewportSize;
+      }
+    } else if (CSSLiteral.test(viewport.max)) {
+      maxWidthCondition = CSSLiteral.parse(viewport.max);
+    }
+  }
+
+  if (!minWidthCondition && !maxWidthCondition) return '';
+
+  if (minWidthCondition && maxWidthCondition) {
+    return `@media (min-width: ${minWidthCondition}, max-width: ${maxWidthCondition}) {`;
+  } else if (maxWidthCondition) {
+    return `@media (max-width: ${maxWidthCondition}) {`;
+  } else {
+    return `@media (min-width: ${minWidthCondition}) {`;
+  }
 }

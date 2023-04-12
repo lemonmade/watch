@@ -32,7 +32,6 @@ export {
 } from './components/Icon.tsx';
 export {Image, type ImageProps} from './components/Image.tsx';
 export {Label, type LabelProps} from './components/Label.tsx';
-export {Layout, type LayoutProps} from './components/Layout.tsx';
 export {
   List,
   type ListProps,

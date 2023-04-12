@@ -32,7 +32,7 @@ import {
   Popover,
   Label,
   Select,
-  Layout,
+  Grid,
   Spacer,
   Modal,
   Icon,
@@ -184,7 +184,7 @@ function ActionComponents() {
           <ContentAction
             overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
-            <Layout columns={['auto', 'fill']} spacing="small">
+            <InlineGrid sizes={['auto', 'fill']} spacing="small">
               <IconHighlight>
                 <Icon source="watch" />
               </IconHighlight>
@@ -193,13 +193,13 @@ function ActionComponents() {
                 <Text emphasis>Season 10</Text>
                 <Text emphasis="subdued">20 episodes</Text>
               </BlockStack>
-            </Layout>
+            </InlineGrid>
           </ContentAction>
 
           <ContentAction
             overlay={<ActionExamplePopoverMenu inlineAttachment="start" />}
           >
-            <Layout columns={['auto', 'fill']} spacing="small">
+            <InlineGrid sizes={['auto', 'fill']} spacing="small">
               <IconHighlight>
                 <Icon source="watch" />
               </IconHighlight>
@@ -210,7 +210,7 @@ function ActionComponents() {
                   An extremely long content action that might wrap
                 </Text>
               </BlockStack>
-            </Layout>
+            </InlineGrid>
           </ContentAction>
         </BlockStack>
 
@@ -447,11 +447,11 @@ function DisplayComponents() {
           </Footer>
         </Banner>
 
-        <Layout spacing columns={['fill', 'fill']}>
+        <Grid spacing inlineSizes={['fill', 'fill']}>
           <Poster source="https://image.tmdb.org/t/p/original/oXJ1fGDAIE7NVLlrjktKWzfvlrg.jpg" />
           <Poster />
           <Poster label="RuPaul’s Drag Race" />
-        </Layout>
+        </Grid>
 
         <Image aspectRatio={1} source="https://placekitten.com/200/200" />
       </BlockStack>
