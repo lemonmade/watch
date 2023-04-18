@@ -118,13 +118,15 @@ function SeriesWithData({
                         >
                           TMDB
                         </Action>
-                        <Action
-                          to={series.imdbUrl}
-                          target="new"
-                          icon="arrow.end"
-                        >
-                          IMDB
-                        </Action>
+                        {series.imdbUrl && (
+                          <Action
+                            to={series.imdbUrl}
+                            target="new"
+                            icon="arrow.end"
+                          >
+                            IMDB
+                          </Action>
+                        )}
                       </Menu>
 
                       <Menu label="Internal…">

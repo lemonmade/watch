@@ -67,7 +67,7 @@ export const Series: SeriesResolver = {
   id: ({id}) => toGid(id, 'Series'),
   handle: ({name, handle}) => handle ?? toHandle(name),
   imdbUrl({imdbId}) {
-    return `https://www.imdb.com/title/${imdbId}`;
+    return imdbId && `https://www.imdb.com/title/${imdbId}`;
   },
   tmdbUrl({tmdbId}) {
     return `https://www.themoviedb.org/tv/${tmdbId}`;

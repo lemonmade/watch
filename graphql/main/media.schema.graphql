@@ -66,8 +66,8 @@ type Series {
   handle: String!
   tmdbId: ID!
   tmdbUrl: Url!
-  imdbId: ID!
-  imdbUrl: Url!
+  imdbId: ID
+  imdbUrl: Url
   name: String!
   poster: Image
   overview: String
