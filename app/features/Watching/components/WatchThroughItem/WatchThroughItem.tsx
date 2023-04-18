@@ -1,5 +1,6 @@
-import {classes} from '@lemon/css';
-import {Poster, Pressable, Tag, Text, Spacer, BlockStack} from '@lemon/zest';
+import {Poster, Tag, Text, Spacer, BlockStack} from '@lemon/zest';
+
+import {MediaGridItem} from '~/shared/media.ts';
 
 import styles from './WatchThroughItem.module.css';
 
@@ -30,22 +31,23 @@ export function WatchThroughItem({
   unfinishedEpisodeCount = 0,
 }: Props) {
   return (
-    <Pressable
+    <MediaGridItem
       to={to}
-      inlineAlignment="start"
-      className={classes(
-        styles.WatchThrough,
-        unfinishedEpisodeCount > 1 && styles.hasFootnotes,
-      )}
+      poster={
+        <Poster
+          label={series.name}
+          source={nextEpisode?.poster ?? series.poster}
+        />
+      }
     >
-      <Poster
-        label={series.name}
-        source={nextEpisode?.poster ?? series.poster}
-      />
       <BlockStack padding="small" spacing="small.2">
         <Text emphasis>{nextEpisode?.title}</Text>
         {nextEpisode && (
-          <p className={styles.WatchThroughNextEpisodeTiming}>
+          <Text
+            emphasis="subdued"
+            className={styles.WatchThroughNextEpisodeTiming}
+            size="small.2"
+          >
             S{nextEpisode.seasonNumber}E{nextEpisode.number} •{' '}
             {nextEpisode.firstAired &&
               new Date(
@@ -56,7 +58,7 @@ export function WatchThroughItem({
                 day: 'numeric',
                 year: 'numeric',
               })}
-          </p>
+          </Text>
         )}
       </BlockStack>
       {unfinishedEpisodeCount > 1 && (
@@ -67,6 +69,6 @@ export function WatchThroughItem({
           </div>
         </>
       )}
-    </Pressable>
+    </MediaGridItem>
   );
 }

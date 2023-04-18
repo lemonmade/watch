@@ -1,1 +1,1 @@
-export {MediaGrid} from './media/MediaGrid.ts';
+export {MediaGrid, MediaGridItem} from './media/MediaGrid.tsx';

@@ -7,7 +7,7 @@ import styles from './Text.module.css';
 
 export interface TextProps {
   className?: string;
-  size?: 'small' | 'base';
+  size?: 'small.2' | 'small.1' | 'small' | 'base';
   emphasis?: boolean | 'strong' | 'subdued';
   accessibilityRole?: 'code' | 'heading';
 }
@@ -33,6 +33,12 @@ function TextAsHeading(
   );
 }
 
+const SIZE_CLASS_MAP = new Map<TextProps['size'], string | undefined>([
+  ['small.2', styles.sizeSmall2],
+  ['small.1', styles.sizeSmall1],
+  ['small', styles.sizeSmall1],
+]);
+
 function classesForText({
   size,
   emphasis,
@@ -41,7 +47,7 @@ function classesForText({
 }: TextProps) {
   return [
     styles.Text,
-    size && styles[variation('size', size)],
+    SIZE_CLASS_MAP.get(size),
     emphasis &&
       styles[
         variation(

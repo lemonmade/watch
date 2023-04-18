@@ -5,10 +5,11 @@ import {
   useNavigate,
 } from '@quilted/quilt';
 
-import {BlockStack, TextField, Action} from '@lemon/zest';
+import {BlockStack, TextField, Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {parseGid, useQuery} from '~/shared/graphql.ts';
+import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import searchQuery from './graphql/SearchQuery.graphql';
 
@@ -61,13 +62,17 @@ export default function Search() {
           onInput={handleSearchInput}
         />
         {series.length > 0 ? (
-          <BlockStack>
+          <MediaGrid>
             {series.map((series) => (
-              <Action key={series.id} to={`/app/series/${series.handle}`}>
-                {series.name}
-              </Action>
+              <MediaGridItem
+                key={series.id}
+                to={`/app/series/${parseGid(series.id).id}`}
+                poster={
+                  <Poster source={series.poster?.source} label={series.name} />
+                }
+              />
             ))}
-          </BlockStack>
+          </MediaGrid>
         ) : null}
       </BlockStack>
     </Page>

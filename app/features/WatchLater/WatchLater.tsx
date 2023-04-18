@@ -3,7 +3,7 @@ import {Poster, Pressable} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {useQuery} from '~/shared/graphql.ts';
-import {MediaGrid} from '~/shared/media.ts';
+import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 
@@ -19,12 +19,16 @@ export default function WatchLater() {
       <MediaGrid>
         {watchLater?.items.map(({id, media}) =>
           media.__typename === 'Series' ? (
-            <Pressable key={id} to={`/app/series/${media.handle}`}>
-              <Poster
-                label={media.name}
-                source={media.poster?.source.replace('/original/', '/w342/')}
-              />
-            </Pressable>
+            <MediaGridItem
+              key={id}
+              to={`/app/series/${media.handle}`}
+              poster={
+                <Poster
+                  label={media.name}
+                  source={media.poster?.source.replace('/original/', '/w342/')}
+                />
+              }
+            />
           ) : null,
         )}
       </MediaGrid>

@@ -1,5 +1,6 @@
-import {type PropsWithChildren} from '@quilted/quilt';
+import {type ReactNode, type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
+import {Pressable, type PressableProps} from '@lemon/zest';
 
 import styles from './MediaGrid.module.css';
 
@@ -17,5 +18,23 @@ export function MediaGrid({children, blockSpacing}: PropsWithChildren<Props>) {
     >
       {children}
     </div>
+  );
+}
+
+export interface MediaGridItemProps {
+  to?: PressableProps['to'];
+  poster: ReactNode;
+}
+
+export function MediaGridItem({
+  to,
+  poster,
+  children,
+}: PropsWithChildren<MediaGridItemProps>) {
+  return (
+    <Pressable to={to} className={styles.MediaGridItem} inlineAlignment="start">
+      {poster}
+      {children}
+    </Pressable>
   );
 }

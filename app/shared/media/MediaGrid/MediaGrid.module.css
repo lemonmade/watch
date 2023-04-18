@@ -24,3 +24,30 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.MediaGridItem {
+  --MediaGridItem-badge-size: 1.125rem;
+
+  position: relative;
+  z-index: 10;
+  display: block;
+  border-radius: 0 0 var(--z-corner-radius-base) var(--z-corner-radius-base);
+  transition: background 0.2s ease, transform 0.15s ease;
+  text-decoration: none;
+  color: var(--z-text-base-color);
+  /* touch-action: manipulation; */
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover,
+  &:focus,
+  &:active {
+    outline: none;
+    background: var(--z-Action-hovered-background);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

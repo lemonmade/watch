@@ -1,8 +1,8 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
-import {Poster, Pressable} from '@lemon/zest';
+import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {MediaGrid} from '~/shared/media.ts';
+import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 import {useQuery} from '~/shared/graphql.ts';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
@@ -20,14 +20,18 @@ export default function Subscriptions() {
     <Page heading="Subscriptions">
       <MediaGrid>
         {data.subscriptions.map(({id, series}) => (
-          <Pressable key={id} to={`/app/series/${series.handle}`}>
-            <Poster
-              label={series.name}
-              source={
-                series.poster?.source.replace('/original/', '/w342/') ?? ''
-              }
-            />
-          </Pressable>
+          <MediaGridItem
+            key={id}
+            to={`/app/series/${series.handle}`}
+            poster={
+              <Poster
+                label={series.name}
+                source={
+                  series.poster?.source.replace('/original/', '/w342/') ?? ''
+                }
+              />
+            }
+          />
         ))}
       </MediaGrid>
     </Page>

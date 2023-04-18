@@ -10,8 +10,13 @@
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 }
 
-.sizeSmall {
+.sizeSmall1 {
   font-size: 0.875em;
+}
+
+.sizeSmall2 {
+  line-height: 1.15;
+  font-size: 0.75em;
 }
 
 .emphasisSubdued {
