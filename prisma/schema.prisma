@@ -171,7 +171,7 @@ enum SeriesStatus {
 
 model Series {
   id          String       @id @default(uuid())
-  tmdbId      String
+  tmdbId      String       @unique
   imdbId      String?
   name        String
   handle      String?

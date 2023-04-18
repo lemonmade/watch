@@ -4,6 +4,7 @@ query Series($id: ID, $handle: String) {
   series(id: $id, handle: $handle) {
     id
     name
+    handle
     overview
     imdbUrl
     tmdbUrl
