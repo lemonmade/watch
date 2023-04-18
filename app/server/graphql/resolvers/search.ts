@@ -10,7 +10,7 @@ export const Query: Pick<QueryResolver, 'search'> = {
     const {results} = await tmdbFetch<{results: any[]}>(
       `/search/tv?query=${encodeURIComponent(query)}`,
     );
-    const cappedResults = results.slice(0, 5);
+    const cappedResults = results.slice(0, 12);
     const existingSeries =
       cappedResults.length > 0
         ? await prisma.series.findMany({

@@ -1,5 +1,7 @@
 import Env from '@quilted/quilt/env';
 
+import {seriesToHandle} from '~/global/tmdb.ts';
+
 import type {Context} from '../../context.ts';
 
 declare module '@quilted/quilt/env' {
@@ -22,6 +24,7 @@ export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
 }
 
 interface TmdbSeries {
+  id: number;
   name: string;
   status: string;
   seasons: TmdbSeriesSeason[];
@@ -33,7 +36,7 @@ interface TmdbSeries {
 }
 
 interface TmdbExternalIds {
-  imdb_id: string;
+  imdb_id?: string;
 }
 
 interface TmdbSeriesSeason {
@@ -83,11 +86,7 @@ export async function loadTmdbSeries(
         tmdbId: String(tmdbId),
         imdbId: seriesIds.imdb_id,
         name: seriesResult.name,
-        handle: seriesResult.name
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/-$/, '')
-          .replace(/^-/, ''),
+        handle: seriesToHandle(seriesResult),
         firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
         status: tmdbStatusToEnum(seriesResult.status),
         overview: seriesResult.overview || null,

@@ -1,4 +1,5 @@
 export interface TmdbSeries {
+  id: number;
   name: string;
   overview?: string;
   status: string;

@@ -2,8 +2,9 @@
 
 import type {PrismaClient} from '@prisma/client';
 
-import {tmdbFetch as baseTmdbFetch} from './fetch';
-import type {TmdbEpisode, TmdbSeries, TmdbSeason} from './types';
+import {tmdbFetch as baseTmdbFetch} from './fetch.ts';
+import {seriesToHandle} from './handle.ts';
+import type {TmdbEpisode, TmdbSeries, TmdbSeason} from './types.ts';
 
 export async function updateSeries({
   id: seriesId,
@@ -152,6 +153,7 @@ export async function updateSeries({
       },
       data: {
         name: seriesResult.name,
+        handle: seriesToHandle(seriesResult),
         firstAired: tmdbAirDateToDate(seriesResult.first_air_date),
         status: tmdbStatusToEnum(seriesResult.status),
         overview: seriesResult.overview?.slice(0, 900) || null,
