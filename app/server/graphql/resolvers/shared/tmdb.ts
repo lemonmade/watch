@@ -1,6 +1,12 @@
 import Env from '@quilted/quilt/env';
 
-import {seriesToHandle} from '~/global/tmdb.ts';
+import {
+  seasonStatus,
+  seriesToHandle,
+  type TmdbSeries,
+  type TmdbSeason,
+  type TmdbExternalIds,
+} from '~/global/tmdb.ts';
 
 import type {Context} from '../../context.ts';
 
@@ -23,43 +29,6 @@ export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
   return fetched.json();
 }
 
-interface TmdbSeries {
-  id: number;
-  name: string;
-  status: string;
-  seasons: TmdbSeriesSeason[];
-  air_date?: string;
-  first_air_date?: string;
-  overview?: string;
-  poster_path?: string;
-  number_of_seasons?: number;
-}
-
-interface TmdbExternalIds {
-  imdb_id?: string;
-}
-
-interface TmdbSeriesSeason {
-  season_number: number;
-}
-
-interface TmdbSeason {
-  season_number: number;
-  episodes: TmdbEpisode[];
-  air_date?: string;
-  overview?: string;
-  poster_path?: string;
-}
-
-interface TmdbEpisode {
-  name: string;
-  overview?: string;
-  air_date?: string;
-  episode_number: number;
-  season_number: number;
-  still_path?: string;
-}
-
 export async function loadTmdbSeries(
   tmdbId: string,
   {prisma}: Pick<Context, 'prisma'>,
@@ -75,10 +44,6 @@ export async function loadTmdbSeries(
       ),
     )
   ).filter(({season_number: seasonNumber}) => seasonNumber != null);
-
-  const lastSeasonWithAirDate = seasonResults
-    .reverse()
-    .find((season) => season.air_date != null);
 
   try {
     const series = await prisma.series.create({
@@ -104,20 +69,13 @@ export async function loadTmdbSeries(
                 number: season.season_number,
                 firstAired: tmdbAirDateToDate(season.air_date),
                 overview: season.overview ?? null,
-                status:
-                  tmdbStatusToEnum(seriesResult.status) === 'RETURNING' &&
-                  (season.air_date == null ||
-                    lastSeasonWithAirDate == null ||
-                    season.season_number ===
-                      lastSeasonWithAirDate.season_number)
-                    ? 'CONTINUING'
-                    : 'ENDED',
+                status: seasonStatus(season, seriesResult),
                 posterUrl: season.poster_path
                   ? `https://image.tmdb.org/t/p/original${season.poster_path}`
                   : null,
-                episodeCount: season.episodes.length,
+                episodeCount: season.episodes?.length ?? 0,
                 episodes: {
-                  create: season.episodes.map(
+                  create: season.episodes?.map(
                     (
                       episode,
                     ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({
@@ -153,9 +111,9 @@ export async function loadTmdbSeries(
             posterUrl: season.poster_path
               ? `https://image.tmdb.org/t/p/original${season.poster_path}`
               : null,
-            episodeCount: season.episodes.length,
+            episodeCount: season.episodes?.length ?? 0,
             episodes: {
-              create: season.episodes.map(
+              create: season.episodes?.map(
                 (
                   episode,
                 ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({

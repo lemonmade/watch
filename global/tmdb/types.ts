@@ -8,6 +8,7 @@ export interface TmdbSeries {
   first_air_date?: string;
   next_episode_to_air?: TmdbEpisode;
   last_episode_to_air?: TmdbEpisode;
+  seasons: TmdbSeason[];
 }
 
 export interface TmdbEpisode {
@@ -25,4 +26,8 @@ export interface TmdbSeason {
   overview: string;
   poster_path?: string;
   episodes?: TmdbEpisode[];
+}
+
+export interface TmdbExternalIds {
+  imdb_id?: string;
 }
