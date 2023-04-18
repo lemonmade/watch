@@ -8,7 +8,7 @@ import {
 import {BlockStack, TextField, Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {parseGid, useQuery} from '~/shared/graphql.ts';
+import {useQuery} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import searchQuery from './graphql/SearchQuery.graphql';
