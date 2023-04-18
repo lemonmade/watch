@@ -652,10 +652,8 @@ function SettingsSection({
         {subscription ? (
           <Action
             onPress={async () => {
-              await unsubscribeFromSeries.mutateAsync(
-                {id},
-                {onSuccess: onUpdate},
-              );
+              await unsubscribeFromSeries.mutateAsync({id});
+              await onUpdate();
             }}
           >
             Unsubscribe
@@ -663,7 +661,8 @@ function SettingsSection({
         ) : (
           <Action
             onPress={async () => {
-              await subscribeToSeries.mutateAsync({id}, {onSuccess: onUpdate});
+              await subscribeToSeries.mutateAsync({id});
+              await onUpdate();
             }}
           >
             Subscribe
@@ -716,15 +715,15 @@ function SpoilerAvoidanceSection({
   return (
     <SpoilerAvoidance
       value={spoilerAvoidanceSignal}
-      onChange={(spoilerAvoidance) => {
+      onChange={async (spoilerAvoidance) => {
         spoilerAvoidanceSignal.value = spoilerAvoidance;
-        updateSubscriptionSettings.mutate(
-          {
-            id,
-            spoilerAvoidance,
-          },
-          {onSuccess: onUpdate},
-        );
+
+        await updateSubscriptionSettings.mutateAsync({
+          id,
+          spoilerAvoidance,
+        });
+
+        await onUpdate();
       }}
     />
   );
