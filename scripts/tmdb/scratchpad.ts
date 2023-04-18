@@ -3,7 +3,8 @@
 import 'dotenv/config';
 import '@quilted/quilt/polyfills/fetch';
 
-// console.log(await tmdbSearch('drag race uk'));
+// console.log(await tmdbSearch('survivor'));
+// console.log(await tmdbSeasonForSeries({id: 14658, season: 44}));
 
 // Utilities
 

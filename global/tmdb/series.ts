@@ -1,10 +1,52 @@
 /* eslint no-console: off */
 
-import type {PrismaClient} from '@prisma/client';
+import type {PrismaClient, SeasonStatus} from '@prisma/client';
 
 import {tmdbFetch as baseTmdbFetch} from './fetch.ts';
 import {seriesToHandle} from './handle.ts';
 import type {TmdbEpisode, TmdbSeries, TmdbSeason} from './types.ts';
+
+export function seasonStatus(
+  season: TmdbSeason,
+  series: TmdbSeries,
+): SeasonStatus {
+  if (season.episodes == null) {
+    return 'CONTINUING';
+  }
+
+  const lastEpisode = season.episodes
+    .reverse()
+    .find((episode) => episode.air_date != null);
+
+  if (lastEpisode == null) {
+    return 'CONTINUING';
+  }
+
+  if (!isOlderThan(lastEpisode, Date.now())) {
+    return 'CONTINUING';
+  }
+
+  if (series.last_episode_to_air) {
+    if (series.last_episode_to_air.season_number > season.season_number) {
+      return 'ENDED';
+    }
+
+    if (series.last_episode_to_air.season_number < season.season_number) {
+      return 'CONTINUING';
+    }
+
+    if (
+      (series.next_episode_to_air == null ||
+        series.next_episode_to_air.season_number !== season.season_number) &&
+      // last episode older than 60 days
+      isOlderThan(lastEpisode, Date.now() - 60 * 24 * 60 * 60 * 1000)
+    ) {
+      return 'ENDED';
+    }
+  }
+
+  return 'CONTINUING';
+}
 
 export async function updateSeries({
   id: seriesId,
@@ -22,7 +64,7 @@ export async function updateSeries({
   const log = (message: string) => console.log(`[${name}] ${message}`);
   const tmdbFetch = (path: string) => baseTmdbFetch(path, {accessToken});
 
-  log(`Updating series`);
+  log(`Updating series (tmdb: ${tmdbId}, id: ${seriesId})`);
 
   const series = await prisma.series.findFirst({
     where: {id: seriesId},
@@ -45,14 +87,31 @@ export async function updateSeries({
     .filter((season) => season.status === 'CONTINUING')
     .map((season) => season.number);
   const seasonsToUpdate = new Set(continuingSeasons);
+  const seasonsToDelete = new Set<number>();
 
-  log(`Updating continuing seasons: ${[...continuingSeasons].join(', ')}`);
   const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
-  log(JSON.stringify(seriesResult, null, 2));
+
+  for (const season of seasonsToUpdate) {
+    if (season > seriesResult.number_of_seasons) {
+      log(`Deleting season ${season} (no longer exists)`);
+      seasonsToDelete.add(season);
+      seasonsToUpdate.delete(season);
+    }
+  }
+
+  if (seasonsToUpdate.size > 0) {
+    log(
+      `Updating continuing season${
+        continuingSeasons.length === 1 ? '' : 's'
+      }: ${[...continuingSeasons].join(', ')}`,
+    );
+  } else {
+    log(`No continuing seasons to update`);
+  }
 
   for (let i = 1; i <= seriesResult.number_of_seasons; i++) {
     if (!seasonNumbers.has(i)) {
-      log(`Updating missing season: ${i}`);
+      log(`Creating missing season: ${i}`);
       seasonsToUpdate.add(i);
     }
   }
@@ -65,38 +124,24 @@ export async function updateSeries({
 
   const results: string[] = [];
 
-  console.log('SEASONS TO UPDATE:');
-  console.log(
-    [...seasonsToUpdate],
-    [...seasonNumbers],
-    seriesResult.number_of_seasons,
-  );
-
   const updateSeasons: import('@prisma/client').Prisma.SeasonUpdateArgs[] = [];
   const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] =
     [];
   const completedWatchthroughs: import('@prisma/client/edge').Prisma.WatchThroughWhereInput[] =
     [];
 
-  const lastSeasonWithAirDate = seasonResults
-    .reverse()
-    .find((season) => season.air_date != null);
-
   for (const season of seasonResults) {
-    console.log('UPDATING SEASON:');
-    console.log(season);
-
     if (season.season_number == null) continue;
 
+    log(`Updating season ${season.season_number}`);
+    console.log(season);
+
     const id = seasonToId.get(season.season_number);
-    const isEnded =
-      season.season_number === lastSeasonWithAirDate?.season_number &&
-      (tmdbStatusToEnum(seriesResult.status) !== 'RETURNING' ||
-        (seriesResult.next_episode_to_air == null &&
-          isOlderThanThirtyDays(seriesResult.last_episode_to_air)));
+
+    const status = seasonStatus(season, seriesResult);
 
     if (id) {
-      if (isEnded) {
+      if (status === 'ENDED') {
         completedWatchthroughs.push({
           current: bufferFromSlice({
             season: season.season_number,
@@ -160,12 +205,26 @@ export async function updateSeries({
         posterUrl: seriesResult.poster_path
           ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
           : null,
+        seasonCount: seriesResult.number_of_seasons,
         seasons: {
           create: createSeasons,
         },
       },
     }),
     ...updateSeasons.map((update) => prisma.season.update(update)),
+    ...(seasonsToDelete.size > 0
+      ? [
+          prisma.season.deleteMany({
+            where: {
+              id: {
+                in: [...seasonsToDelete].map(
+                  (season) => seasonToId.get(season)!,
+                ),
+              },
+            },
+          }),
+        ]
+      : []),
     ...(completedWatchthroughs.length > 0
       ? [
           prisma.watchThrough.updateMany({
@@ -185,11 +244,11 @@ export async function updateSeries({
   return {series: updateSeries, results};
 }
 
-function isOlderThanThirtyDays(episode?: {air_date?: string}) {
+function isOlderThan(episode: Pick<TmdbEpisode, 'air_date'>, time: number) {
   if (episode?.air_date == null) return false;
 
   const airDate = new Date(episode.air_date);
-  return Date.now() - airDate.getTime() >= 30 * 24 * 60 * 60 * 1000;
+  return airDate.getTime() < time;
 }
 
 function tmdbAirDateToDate(date?: string) {
@@ -217,18 +276,11 @@ function tmdbSeasonToSeasonInput(
   season: TmdbSeason,
   series: TmdbSeries,
 ): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput {
-  const isEnded =
-    season.season_number === series.number_of_seasons &&
-    (tmdbStatusToEnum(series.status) !== 'RETURNING' ||
-      (series.next_episode_to_air == null &&
-        series.last_episode_to_air != null &&
-        isOlderThanThirtyDays(series.last_episode_to_air)));
-
   return {
     number: season.season_number,
     firstAired: tmdbAirDateToDate(season.air_date),
     overview: season.overview?.slice(0, 900) ?? null,
-    status: isEnded ? 'ENDED' : 'CONTINUING',
+    status: seasonStatus(season, series),
     posterUrl: season.poster_path
       ? `https://image.tmdb.org/t/p/original${season.poster_path}`
       : null,

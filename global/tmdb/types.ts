@@ -16,6 +16,7 @@ export interface TmdbEpisode {
   air_date?: string;
   overview: string;
   still_path?: string;
+  season_number: number;
 }
 
 export interface TmdbSeason {
