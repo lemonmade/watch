@@ -1,5 +1,5 @@
 import {usePerformanceNavigation} from '@quilted/quilt';
-import {Poster, Pressable} from '@lemon/zest';
+import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {useQuery} from '~/shared/graphql.ts';
