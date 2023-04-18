@@ -66,7 +66,7 @@ export default function Search() {
             {series.map((series) => (
               <MediaGridItem
                 key={series.id}
-                to={`/app/series/${parseGid(series.id).id}`}
+                to={`/app/series/${series.handle}`}
                 poster={
                   <Poster source={series.poster?.source} label={series.name} />
                 }
