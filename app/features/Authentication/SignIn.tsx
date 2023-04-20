@@ -60,10 +60,6 @@ function SignInForm() {
 
       <TextBlock>or...</TextBlock>
 
-      <SignInWithWebAuthn />
-
-      <TextBlock>or...</TextBlock>
-
       <SignInWithGithub onError={setReason} />
       <SignInWithGoogle onError={setReason} />
     </BlockStack>
@@ -72,48 +68,53 @@ function SignInForm() {
 
 function SignInWithEmail() {
   const email = useSignal('');
-  const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
-  const signInWithEmail = useMutation(signInWithEmailMutation);
+  const disabled = useComputed(() => email.value.trim().length === 0);
+
+  const signInWithPasskey = useSignInWithPasskey();
+  const signInWithEmail = useSignInWithEmail();
 
   return (
     <Form
-      onSubmit={() => {
-        signInWithEmail.mutate(
-          {
-            email: email.value,
-            redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-          },
-          {
-            onSuccess() {
-              navigate('check-your-email');
-            },
-          },
-        );
+      onSubmit={async () => {
+        await signInWithPasskey({email: email.value});
       }}
     >
-      <TextField
-        type="email"
-        label="Email"
-        value={email}
-        autocomplete="username"
-      />
+      <BlockStack spacing>
+        <TextField
+          type="email"
+          label="Email"
+          value={email}
+          changeTiming="input"
+          autocomplete="webauthn username"
+        />
+        <Action
+          disabled={disabled}
+          onPress={async () => {
+            await signInWithEmail({email: email.value});
+          }}
+        >
+          Sign in email
+        </Action>
+        <Action perform="submit" disabled={disabled}>
+          Sign in with Passkey
+        </Action>
+      </BlockStack>
     </Form>
   );
 }
 
-function SignInWithWebAuthn() {
+function useSignInWithPasskey() {
   const router = useRouter();
   const startWebAuthnSignIn = useMutation(startWebAuthnSignInMutation);
   const completeWebAuthnSignIn = useMutation(completeWebAuthnSignInMutation);
 
-  const email = useSignal('');
-  const disabled = useComputed(() => email.value.trim().length === 0);
+  const {signInWithPasskey, prepareBrowserAutocomplete} = useMemo(() => {
+    return {signInWithPasskey, prepareBrowserAutocomplete};
 
-  const {authenticate, authenticateForAutocomplete} = useMemo(() => {
-    return {authenticate, authenticateForAutocomplete};
-
-    async function authenticate({email}: {email?: string} = {}) {
+    async function signInWithPasskey({
+      email,
+      browserAutocomplete = false,
+    }: {email?: string; browserAutocomplete?: boolean} = {}) {
       const [{startAuthentication}, options] = await Promise.all([
         import('@simplewebauthn/browser'),
         startWebAuthnSignIn.mutateAsync({
@@ -123,6 +124,7 @@ function SignInWithWebAuthn() {
 
       const authenticationResult = await startAuthentication(
         JSON.parse(options.startWebAuthnSignIn.result),
+        browserAutocomplete,
       );
 
       const result = await completeWebAuthnSignIn.mutateAsync({
@@ -139,7 +141,7 @@ function SignInWithWebAuthn() {
       }
     }
 
-    async function authenticateForAutocomplete() {
+    async function prepareBrowserAutocomplete() {
       const {browserSupportsWebAuthnAutofill} = await import(
         '@simplewebauthn/browser'
       );
@@ -147,7 +149,7 @@ function SignInWithWebAuthn() {
       if (!(await browserSupportsWebAuthnAutofill())) return;
 
       try {
-        await authenticate();
+        await signInWithPasskey({browserAutocomplete: true});
       } catch {
         // intentional noop
       }
@@ -156,29 +158,30 @@ function SignInWithWebAuthn() {
   }, []);
 
   useEffect(() => {
-    authenticateForAutocomplete();
-  }, [authenticateForAutocomplete]);
+    prepareBrowserAutocomplete();
+  }, [prepareBrowserAutocomplete]);
 
-  return (
-    <Form
-      onSubmit={async () => {
-        await authenticate({email: email.value});
-      }}
-    >
-      <BlockStack spacing>
-        <TextField
-          type="email"
-          label="Email"
-          value={email}
-          changeTiming="input"
-          autocomplete="webauthn username"
-        />
-        <Action perform="submit" disabled={disabled}>
-          Sign in with WebAuthn
-        </Action>
-      </BlockStack>
-    </Form>
-  );
+  return signInWithPasskey;
+}
+
+function useSignInWithEmail() {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const signInWithEmail = useMutation(signInWithEmailMutation);
+
+  return async function doSignInWithEmail({email}: {email: string}) {
+    await signInWithEmail.mutateAsync(
+      {
+        email,
+        redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+      },
+      {
+        onSuccess() {
+          navigate('check-your-email');
+        },
+      },
+    );
+  };
 }
 
 function SignInWithGithub({

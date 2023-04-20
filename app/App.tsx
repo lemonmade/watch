@@ -90,8 +90,18 @@ const routes: RouteDefinition[] = [
   },
   {
     match: 'sign-in',
-    render: <SignIn />,
-    renderPreload: <SignIn.Preload />,
+    children: [
+      {
+        match: '/',
+        render: <SignIn />,
+        renderPreload: <SignIn.Preload />,
+      },
+      {
+        match: 'check-your-email',
+        render: <CheckYourEmail />,
+        renderPreload: <CheckYourEmail.Preload />,
+      },
+    ],
   },
   {
     match: 'signed-out',
@@ -108,6 +118,7 @@ const routes: RouteDefinition[] = [
       {
         match: 'check-your-email',
         render: <CheckYourEmail />,
+        renderPreload: <CheckYourEmail.Preload />,
       },
     ],
   },
