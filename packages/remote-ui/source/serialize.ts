@@ -1,3 +1,4 @@
+import {REMOTE_ID, REMOTE_PROPERTIES} from './constants.ts';
 import type {RemoteNodeSerialization} from './types.ts';
 
 let id = 0;
@@ -6,17 +7,17 @@ export function serializeNode(node: Node): RemoteNodeSerialization {
   switch (node.nodeType) {
     case Node.TEXT_NODE: {
       return {
-        id: serializedId(node),
+        id: remoteId(node),
         type: 3,
         data: (node as Text).data,
       };
     }
     case Node.ELEMENT_NODE: {
       return {
-        id: serializedId(node),
+        id: remoteId(node),
         type: 0,
         element: (node as Element).localName,
-        properties: {},
+        properties: remoteProperties(node),
         children: Array.from(node.childNodes).map(serializeNode),
       };
     }
@@ -26,12 +27,16 @@ export function serializeNode(node: Node): RemoteNodeSerialization {
   }
 }
 
-const SERIALIZED_ID = Symbol.for('remote.id');
-
-export function serializedId(node: Node & {[SERIALIZED_ID]?: string}) {
-  if (node[SERIALIZED_ID] == null) {
-    node[SERIALIZED_ID] = String(id++);
+export function remoteId(node: Node & {[REMOTE_ID]?: string}) {
+  if (node[REMOTE_ID] == null) {
+    node[REMOTE_ID] = String(id++);
   }
 
-  return node[SERIALIZED_ID];
+  return node[REMOTE_ID];
+}
+
+export function remoteProperties(
+  node: Node & {[REMOTE_PROPERTIES]?: Record<string, unknown>},
+) {
+  return node[REMOTE_PROPERTIES];
 }

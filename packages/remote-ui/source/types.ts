@@ -47,7 +47,7 @@ export interface RemoteElementSerialization {
   readonly id: string;
   readonly type: typeof NODE_TYPE_ELEMENT;
   readonly element: string;
-  readonly properties: Record<string, any>;
+  readonly properties?: Record<string, unknown>;
   readonly children: readonly (
     | RemoteElementSerialization
     | RemoteTextSerialization

@@ -13,7 +13,8 @@ export interface RemoteReceiverText extends RemoteTextSerialization {
 }
 
 export interface RemoteReceiverElement
-  extends Omit<RemoteElementSerialization, 'children'> {
+  extends Omit<RemoteElementSerialization, 'children' | 'properties'> {
+  readonly properties: NonNullable<RemoteElementSerialization['properties']>;
   readonly children: readonly RemoteReceiverChild[];
   readonly version: number;
 }
@@ -115,7 +116,6 @@ export function createRemoteReceiver(): RemoteReceiver {
       // release(oldValue);
     },
     updateText: (id, newText) => {
-      console.log({id, newText});
       const text = attachedNodes.get(id) as Writable<RemoteReceiverText>;
 
       text.data = newText;
@@ -198,6 +198,7 @@ function normalizeNode<
   R,
 >(node: T, normalizer: (node: T) => R) {
   if (node.type === NODE_TYPE_ELEMENT) {
+    (node as any).properties ??= {};
     (node as any).children.forEach((child: T) =>
       normalizeNode(child, normalizer),
     );

@@ -16,6 +16,7 @@ export {RemoteMutationObserver} from './mutation-observer.ts';
 export {
   REMOTE_ID,
   REMOTE_CALLBACK,
+  REMOTE_PROPERTIES,
   REMOTE_ROOT_ELEMENT_NAME,
   MUTATION_TYPE_INSERT_CHILD,
   MUTATION_TYPE_REMOVE_CHILD,

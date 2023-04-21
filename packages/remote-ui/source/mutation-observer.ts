@@ -1,5 +1,6 @@
-import {serializedId, serializeNode} from './serialize.ts';
+import {remoteId, serializeNode} from './serialize.ts';
 import {
+  REMOTE_CALLBACK,
   MUTATION_TYPE_INSERT_CHILD,
   MUTATION_TYPE_REMOVE_CHILD,
   MUTATION_TYPE_UPDATE_TEXT,
@@ -13,7 +14,7 @@ export class RemoteMutationObserver extends MutationObserver {
       const remoteRecords: RemoteMutationRecord[] = [];
 
       for (const record of records) {
-        const targetId = serializedId(record.target);
+        const targetId = remoteId(record.target);
 
         if (record.type === 'childList') {
           const position = record.previousSibling
@@ -29,6 +30,9 @@ export class RemoteMutationObserver extends MutationObserver {
           });
 
           record.addedNodes.forEach((node, index) => {
+            // TODO: iterate through descendants
+            (node as any)[REMOTE_CALLBACK] = callback;
+
             remoteRecords.push([
               MUTATION_TYPE_INSERT_CHILD,
               targetId,
