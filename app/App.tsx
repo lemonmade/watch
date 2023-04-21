@@ -47,7 +47,7 @@ import {
   CreatedAccountFromCli,
   Console,
 } from './features/Developer.ts';
-import {ComponentLibrary} from './features/Internal.ts';
+import {ComponentLibrary, Playground} from './features/Internal.ts';
 
 import {EXTENSION_POINTS} from './clips.ts';
 
@@ -258,7 +258,10 @@ const routes: RouteDefinition[] = [
   },
   {
     match: 'internal',
-    children: [{match: 'components', render: <ComponentLibrary />}],
+    children: [
+      {match: 'components', render: <ComponentLibrary />},
+      {match: 'playground', render: <Playground />},
+    ],
   },
 ];
 

@@ -1,0 +1,30 @@
+{
+  "name": "@lemon/remote-ui",
+  "type": "module",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "exports": {
+    ".": "./source/index.ts",
+    "./polyfill": "./source/polyfill.ts"
+  },
+  "types": "./build/typescript/index.d.ts",
+  "sideEffects": false,
+  "dependencies": {},
+  "peerDependencies": {},
+  "peerDependenciesMeta": {},
+  "devDependencies": {
+    "@quilted/testing": "^0.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/project",
+      "@quilted/eslint-config/react"
+    ]
+  },
+  "browserslist": [
+    "extends @quilted/browserslist-config/defaults"
+  ]
+}
