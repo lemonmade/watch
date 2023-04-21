@@ -17,11 +17,11 @@ export {
   REMOTE_ID,
   REMOTE_CALLBACK,
   REMOTE_PROPERTIES,
-  REMOTE_ROOT_ELEMENT_NAME,
   MUTATION_TYPE_INSERT_CHILD,
   MUTATION_TYPE_REMOVE_CHILD,
   MUTATION_TYPE_UPDATE_TEXT,
   MUTATION_TYPE_UPDATE_PROPERTY,
 } from './constants.ts';
 export {RemoteRootElement} from './elements/root.ts';
+export {updateNodeRemoteProperty} from './remote.ts';
 export * from './types.ts';

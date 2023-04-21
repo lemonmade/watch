@@ -1,7 +1,5 @@
-import {REMOTE_ID, REMOTE_PROPERTIES} from './constants.ts';
+import {remoteId, remoteProperties} from './remote.ts';
 import type {RemoteNodeSerialization} from './types.ts';
-
-let id = 0;
 
 export function serializeNode(node: Node): RemoteNodeSerialization {
   switch (node.nodeType) {
@@ -25,18 +23,4 @@ export function serializeNode(node: Node): RemoteNodeSerialization {
       throw new Error(`Cannot serialize node of type ${node.nodeType}`);
     }
   }
-}
-
-export function remoteId(node: Node & {[REMOTE_ID]?: string}) {
-  if (node[REMOTE_ID] == null) {
-    node[REMOTE_ID] = String(id++);
-  }
-
-  return node[REMOTE_ID];
-}
-
-export function remoteProperties(
-  node: Node & {[REMOTE_PROPERTIES]?: Record<string, unknown>},
-) {
-  return node[REMOTE_PROPERTIES];
 }

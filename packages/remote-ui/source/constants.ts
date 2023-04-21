@@ -11,5 +11,3 @@ export const REMOTE_ID = Symbol.for('remote.id');
 export const REMOTE_CALLBACK = Symbol.for('remote.callback');
 export const REMOTE_PROPERTIES = Symbol.for('remote.properties');
 export const ROOT_ID = '__root__';
-
-export const REMOTE_ROOT_ELEMENT_NAME = 'remote-root';

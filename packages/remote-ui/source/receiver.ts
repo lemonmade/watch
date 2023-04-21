@@ -33,8 +33,8 @@ export type RemoteReceiverParent = RemoteReceiverElement | RemoteReceiverRoot;
 export interface RemoteReceiver {
   readonly root: RemoteReceiverRoot;
   readonly receive: RemoteMutationCallback;
-  get<T extends RemoteReceiverParent>(attachable: Pick<T, 'id'>): T | null;
-  subscribe<T extends RemoteReceiverParent>(
+  get<T extends RemoteReceiverNode>(attachable: Pick<T, 'id'>): T | null;
+  subscribe<T extends RemoteReceiverNode>(
     {id}: T,
     subscriber: (value: T) => void,
     options?: {signal?: AbortSignal},

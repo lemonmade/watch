@@ -1,10 +1,13 @@
-import {remoteId, serializeNode} from './serialize.ts';
 import {
-  REMOTE_CALLBACK,
+  remoteId,
+  connectNodeToRemoteCallback,
+  disconnectNodeFromRemoteCallback,
+} from './remote.ts';
+import {serializeNode} from './serialize.ts';
+import {
   MUTATION_TYPE_INSERT_CHILD,
   MUTATION_TYPE_REMOVE_CHILD,
   MUTATION_TYPE_UPDATE_TEXT,
-  MUTATION_TYPE_UPDATE_PROPERTY,
 } from './constants.ts';
 import type {RemoteMutationCallback, RemoteMutationRecord} from './types';
 
@@ -21,7 +24,9 @@ export class RemoteMutationObserver extends MutationObserver {
             ? indexOf(record.previousSibling, record.target.childNodes) + 1
             : 0;
 
-          record.removedNodes.forEach(() => {
+          record.removedNodes.forEach((node) => {
+            disconnectNodeFromRemoteCallback(node);
+
             remoteRecords.push([
               MUTATION_TYPE_REMOVE_CHILD,
               targetId,
@@ -30,8 +35,7 @@ export class RemoteMutationObserver extends MutationObserver {
           });
 
           record.addedNodes.forEach((node, index) => {
-            // TODO: iterate through descendants
-            (node as any)[REMOTE_CALLBACK] = callback;
+            connectNodeToRemoteCallback(node, callback);
 
             remoteRecords.push([
               MUTATION_TYPE_INSERT_CHILD,
@@ -46,13 +50,6 @@ export class RemoteMutationObserver extends MutationObserver {
             targetId,
             record.target.textContent ?? '',
           ]);
-        } else if (record.type === 'attributes') {
-          remoteRecords.push([
-            MUTATION_TYPE_UPDATE_PROPERTY,
-            targetId,
-            record.attributeName!,
-            (record.target as Element).getAttribute(record.attributeName!),
-          ]);
         }
       }
 
@@ -64,7 +61,7 @@ export class RemoteMutationObserver extends MutationObserver {
     super.observe(target, {
       subtree: true,
       childList: true,
-      attributes: true,
+      attributes: false,
       characterData: true,
       ...options,
     });
