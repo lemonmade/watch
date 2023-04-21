@@ -3,12 +3,8 @@ import {
   RemoteMutationObserver,
   createRemoteReceiver,
   RemoteRootElement,
-  REMOTE_ID,
-  REMOTE_CALLBACK,
   REMOTE_PROPERTIES,
-  REMOTE_ROOT_ELEMENT_NAME,
-  MUTATION_TYPE_UPDATE_PROPERTY,
-  createRemoteMutationCallback,
+  updateNodeRemoteProperty,
 } from '@lemon/remote-ui';
 
 class UiButtonElement extends HTMLElement {
@@ -22,10 +18,7 @@ class UiButtonElement extends HTMLElement {
   }
 
   set primary(value) {
-    this[REMOTE_PROPERTIES].primary = value;
-    this[REMOTE_CALLBACK]?.([
-      [MUTATION_TYPE_UPDATE_PROPERTY, this[REMOTE_ID], 'primary', value],
-    ]);
+    updateNodeRemoteProperty(this, 'primary', value);
   }
 
   attributeChangedCallback(key: string, _oldValue: any, newValue: any) {
@@ -33,12 +26,12 @@ class UiButtonElement extends HTMLElement {
   }
 }
 
-customElements.define(REMOTE_ROOT_ELEMENT_NAME, RemoteRootElement);
+customElements.define('remote-root', RemoteRootElement);
 customElements.define('ui-button', UiButtonElement);
 
 declare global {
   interface HTMLElementTagNameMap {
-    [REMOTE_ROOT_ELEMENT_NAME]: RemoteRootElement;
+    'remote-root': RemoteRootElement;
     'ui-button': UiButtonElement;
   }
 }
@@ -47,16 +40,15 @@ export default function Playground() {
   useEffect(() => {
     const receiver = createRemoteReceiver();
 
-    const observer = new RemoteMutationObserver(receiver.receive);
-
     receiver.subscribe(receiver.root, (root) => {
       console.log(performance.now());
       console.log(JSON.stringify(root.children, null, 2));
     });
 
-    const element = document.createElement(REMOTE_ROOT_ELEMENT_NAME);
-    element[REMOTE_CALLBACK] = receiver.receive;
+    const element = document.createElement('remote-root');
 
+    element.connect(receiver.receive);
+    const observer = new RemoteMutationObserver(receiver.receive);
     observer.observe(element);
 
     element.innerHTML = '<span>Hello1</span>';
@@ -65,6 +57,7 @@ export default function Playground() {
 
     setTimeout(() => {
       element.children[2]?.setAttribute('primary', 'two');
+      // element.connect(receiver.receive);
     }, 20);
 
     console.log(performance.now(), element.outerHTML);
