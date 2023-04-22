@@ -23,5 +23,9 @@ export {
   MUTATION_TYPE_UPDATE_PROPERTY,
 } from './constants.ts';
 export {RemoteRootElement} from './elements/root.ts';
+export {
+  RemoteElement,
+  type RemoteElementProperties,
+} from './elements/element.ts';
 export {updateNodeRemoteProperty} from './remote.ts';
 export * from './types.ts';

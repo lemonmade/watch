@@ -2,28 +2,14 @@ import {useEffect} from 'react';
 import {
   RemoteMutationObserver,
   createRemoteReceiver,
+  RemoteElement,
   RemoteRootElement,
-  REMOTE_PROPERTIES,
-  updateNodeRemoteProperty,
 } from '@lemon/remote-ui';
 
-class UiButtonElement extends HTMLElement {
-  static get observedAttributes() {
-    return ['primary'];
-  }
-  private [REMOTE_PROPERTIES]: Record<string, unknown> = {};
-
-  get primary() {
-    return this[REMOTE_PROPERTIES].primary;
-  }
-
-  set primary(value) {
-    updateNodeRemoteProperty(this, 'primary', value);
-  }
-
-  attributeChangedCallback(key: string, _oldValue: any, newValue: any) {
-    this[key] = newValue;
-  }
+class UiButtonElement extends RemoteElement {
+  static properties = {
+    primary: {attribute: true},
+  };
 }
 
 customElements.define('remote-root', RemoteRootElement);
@@ -57,6 +43,8 @@ export default function Playground() {
 
     setTimeout(() => {
       element.children[2]?.setAttribute('primary', 'two');
+      element.children[2]?.append('Hello4');
+      element.appendChild(document.createElement('span'));
       // element.connect(receiver.receive);
     }, 20);
 

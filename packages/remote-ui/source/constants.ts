@@ -10,4 +10,4 @@ export const MUTATION_TYPE_UPDATE_PROPERTY = 3;
 export const REMOTE_ID = Symbol.for('remote.id');
 export const REMOTE_CALLBACK = Symbol.for('remote.callback');
 export const REMOTE_PROPERTIES = Symbol.for('remote.properties');
-export const ROOT_ID = '__root__';
+export const ROOT_ID = '_root';

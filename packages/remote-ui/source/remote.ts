@@ -38,13 +38,6 @@ export function updateNodeRemoteProperty(
 
   const callback = (node as any)[REMOTE_CALLBACK];
 
-  console.log({
-    node: node.outerHTML,
-    currentIndex: id,
-    callback,
-    id: remoteId(node),
-  });
-
   if (callback == null) return;
 
   callback([[MUTATION_TYPE_UPDATE_PROPERTY, remoteId(node), property, value]]);
