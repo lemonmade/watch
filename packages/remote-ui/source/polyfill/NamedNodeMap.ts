@@ -1,18 +1,12 @@
-import {
-  CHILD,
-  OWNER_ELEMENT,
-  NS,
-  NEXT,
-  ID,
-  CHANNEL,
-  NamespaceURI,
-} from './constants.ts';
+import {hooks} from './hooks.ts';
+import {CHILD, OWNER_ELEMENT, NS, NEXT, NamespaceURI} from './constants.ts';
 import type {Attr} from './Attr.ts';
 import type {Element} from './Element.ts';
 
 export class NamedNodeMap {
   [CHILD]: Attr | null = null;
   [OWNER_ELEMENT]: Element;
+
   constructor(ownerElement: Element) {
     this[OWNER_ELEMENT] = ownerElement;
   }
@@ -58,20 +52,19 @@ export class NamedNodeMap {
 
   removeNamedItemNS(namespaceURI: NamespaceURI | null, name: string) {
     const ownerElement = this[OWNER_ELEMENT];
-    const owner = ownerElement[ID];
-    const channel = ownerElement[CHANNEL];
     let attr = this[CHILD];
+
     if (!attr) return null;
     if (attr.name === name && attr[NS] == namespaceURI) {
       this[CHILD] = attr[NEXT];
-      channel?.removeAttribute(owner as any, name, namespaceURI);
+      hooks.removeAttribute?.(ownerElement as any, name, namespaceURI);
       return attr;
     }
     let prev = attr;
     while ((attr = attr[NEXT])) {
       if (attr.name === name && attr[NS] == namespaceURI) {
         prev[NEXT] = attr[NEXT];
-        channel?.removeAttribute(owner as any, name, namespaceURI);
+        hooks.removeAttribute?.(ownerElement as any, name, namespaceURI);
         return attr;
       }
       prev = attr;
@@ -107,9 +100,8 @@ export class NamedNodeMap {
       // return null;
     }
     // only invoke the protocol if the value changed
-    const channel = ownerElement[CHANNEL];
-    if (channel && (!old || old.value !== attr.value)) {
-      channel.setAttribute(
+    if (!old || old.value !== attr.value) {
+      hooks.setAttribute?.(
         ownerElement as any,
         attr.name,
         attr.value,

@@ -1,6 +1,3 @@
-export const CHANNEL = Symbol('channel');
-export const PROXY = Symbol('proxy');
-export const ID = Symbol('id');
 export const NAME = Symbol('name');
 export const VALUE = Symbol('value');
 export const NS = Symbol('ns');
@@ -15,9 +12,6 @@ export const DATA = Symbol('data');
 export const USER_PROPERTIES = Symbol('user_properties');
 export const LISTENERS = Symbol('listeners');
 export const IS_TRUSTED = Symbol('isTrusted');
-export const PROPERTIES = Symbol('properties');
-export const STYLE = Symbol('style');
-export const GENERATE_ID = Symbol('generate_id');
 export const CONTENT = Symbol('content');
 
 // @TODO remove explicit values

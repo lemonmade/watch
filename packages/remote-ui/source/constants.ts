@@ -1,4 +1,4 @@
-export const NODE_TYPE_ELEMENT = 0;
+export const NODE_TYPE_ELEMENT = 1;
 export const NODE_TYPE_TEXT = 3;
 export const NODE_TYPE_ROOT = 9;
 

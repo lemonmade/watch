@@ -1,19 +1,6 @@
 import {NEXT} from './constants.ts';
 import type {ParentNode} from './ParentNode.ts';
 import {Node} from './Node.ts';
-// import {Text} from './Text.ts';
-
-/** Ensure the argument is a Node, coercing strings to Text nodes */
-export function toNode(parent: ParentNode, node: Node | any) {
-  if (node instanceof Node) return node;
-  const ownerDocument = parent.ownerDocument;
-  return ownerDocument.createTextNode(String(node));
-
-  // @todo - need to find a nice fallback for when we're converting without an ownerDocument,
-  // or prove this can never happen (since Element should always have ownerDocument).
-  // if (ownerDocument) return ownerDocument.createTextNode(String(node));
-  // return new Text(String(node));
-}
 
 export class ChildNode extends Node {
   remove() {
@@ -49,4 +36,10 @@ export class ChildNode extends Node {
       parent.insertBefore(toNode(parent, node), next);
     }
   }
+}
+
+export function toNode(parent: ParentNode, node: Node | any) {
+  if (node instanceof Node) return node;
+  const ownerDocument = parent.ownerDocument;
+  return ownerDocument.createTextNode(String(node));
 }

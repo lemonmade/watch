@@ -1,11 +1,10 @@
+import {hooks} from './hooks.ts';
 import {
   NS,
   NEXT,
   VALUE,
   OWNER_ELEMENT,
   NAME,
-  ID,
-  CHANNEL,
   NamespaceURI,
   NodeType,
 } from './constants.ts';
@@ -46,11 +45,7 @@ export class Attr extends Node {
     this[VALUE] = str;
     const ownerElement = this[OWNER_ELEMENT];
     if (!ownerElement) return;
-    const owner = ownerElement[ID];
-    const channel = ownerElement[CHANNEL];
-    if (owner !== undefined && channel) {
-      channel.setAttribute(owner as any, this[NAME], str, this[NS]);
-    }
+    hooks.setAttribute?.(ownerElement as any, this[NAME], str, this[NS]);
   }
 
   get nodeValue() {

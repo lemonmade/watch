@@ -1,15 +1,13 @@
+import {hooks} from './hooks.ts';
 import {
   CHILD,
   NEXT,
   PREV,
-  CHANNEL,
   PARENT,
   OWNER_DOCUMENT,
   NodeType,
-  // PROXY,
 } from './constants.ts';
 import type {Node} from './Node.ts';
-// import type {Element} from './Element.ts';
 import {ChildNode, toNode} from './ChildNode.ts';
 import {NodeList} from './NodeList.ts';
 
@@ -96,8 +94,7 @@ export class ParentNode extends ChildNode {
       if (children) children.splice(children.indexOf(child), 1);
     }
 
-    const channel = this[CHANNEL];
-    channel?.remove(this as any, child as any);
+    hooks.removeChild?.(this as any, child as any);
   }
 
   replaceChild(newChild: Node, oldChild: Node) {
@@ -171,15 +168,11 @@ export class ParentNode extends ChildNode {
     }
 
     const ownerDocument = this[OWNER_DOCUMENT];
-    const channel = this[CHANNEL] || ownerDocument[CHANNEL];
 
-    // child[PARENT] = isElementNode(this) ? this[PROXY] : this;
     child[PARENT] = this;
-    // automatically importNode() on append
     child[OWNER_DOCUMENT] = ownerDocument;
-    child[CHANNEL] = channel;
 
-    channel?.insert(this as any, child as any, before as any);
+    hooks.insertChild?.(this as any, child as any, before as any);
   }
 }
 

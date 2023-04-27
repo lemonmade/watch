@@ -1,4 +1,5 @@
-import {CHANNEL, DATA} from './constants.ts';
+import {hooks} from './hooks.ts';
+import {DATA} from './constants.ts';
 import {ChildNode} from './ChildNode.ts';
 
 export class CharacterData extends ChildNode {
@@ -15,7 +16,7 @@ export class CharacterData extends ChildNode {
       str = typeof data === 'string' ? data : String(data);
     }
     this[DATA] = str;
-    this[CHANNEL]?.setText(this as any, str);
+    hooks.setText?.(this as any, str);
   }
 
   get data() {

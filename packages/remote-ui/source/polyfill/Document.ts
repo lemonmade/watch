@@ -1,11 +1,4 @@
-import {
-  NS,
-  CHANNEL,
-  NAME,
-  NamespaceURI,
-  NodeType,
-  OWNER_DOCUMENT,
-} from './constants.ts';
+import {NS, NAME, NamespaceURI, NodeType, OWNER_DOCUMENT} from './constants.ts';
 import type {Window} from './Window.ts';
 import type {Node} from './Node.ts';
 import {Event} from './Event.ts';
@@ -24,9 +17,6 @@ export class Document extends ParentNode {
   constructor(public defaultView: Window) {
     super();
     this[OWNER_DOCUMENT] = this;
-    // this.documentElement = this.createElement('html');
-    // this.body = this.createElement('body');
-    // this.documentElement.appendChild(this.body);
   }
 
   createElement(localName: string) {
@@ -71,14 +61,8 @@ export class Document extends ParentNode {
 }
 
 export function createNode<T extends Node>(node: T, ownerDocument: Document) {
-  Reflect.defineProperty(node, OWNER_DOCUMENT, {
+  Object.defineProperty(node, OWNER_DOCUMENT, {
     value: ownerDocument,
-    writable: true,
-    enumerable: false,
-  });
-
-  Reflect.defineProperty(node, CHANNEL, {
-    value: ownerDocument[CHANNEL],
     writable: true,
     enumerable: false,
   });
@@ -94,10 +78,10 @@ export function createElement<T extends Element>(
 ) {
   createNode(element, ownerDocument);
 
-  Reflect.defineProperty(element, NAME, {value: name});
+  Object.defineProperty(element, NAME, {value: name});
 
   if (namespace) {
-    Reflect.defineProperty(element, NS, {value: namespace});
+    Object.defineProperty(element, NS, {value: namespace});
   }
 
   return element;

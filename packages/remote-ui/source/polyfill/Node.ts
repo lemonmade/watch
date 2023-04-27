@@ -1,15 +1,10 @@
-import type {Adaptor} from '../protocol.ts';
-
 import {
-  CHANNEL,
   OWNER_DOCUMENT,
   NAME,
   PARENT,
   CHILD,
   PREV,
   NEXT,
-  GENERATE_ID,
-  ID,
   DATA,
   NamespaceURI,
   NodeType,
@@ -20,35 +15,15 @@ import type {CharacterData} from './CharacterData.ts';
 import type {Text} from './Text.ts';
 import {EventTarget} from './EventTarget.ts';
 
-// Internal Node ID's are global
-let nodeId = 0;
-
-function isCharacterData(node: Node): node is CharacterData {
-  return DATA in node;
-}
-
-function isTextNode(node: Node): node is Text {
-  return node.nodeType === NodeType.TEXT_NODE;
-}
-
-function isParentNode(node: Node): node is ParentNode {
-  return 'appendChild' in node;
-}
-
 export class Node extends EventTarget {
   nodeType = NodeType.NODE;
-  [CHANNEL]?: Adaptor;
+
   [OWNER_DOCUMENT]!: Document;
   [NAME] = '';
   [PARENT]: ParentNode | null = null;
   [CHILD]: Node | null = null;
   [PREV]: Node | null = null;
   [NEXT]: Node | null = null;
-
-  [GENERATE_ID]() {
-    this[ID] = ++nodeId;
-    return nodeId;
-  }
 
   get localName() {
     return this[NAME];
@@ -154,4 +129,16 @@ export class Node extends EventTarget {
       this.append(data);
     }
   }
+}
+
+function isCharacterData(node: Node): node is CharacterData {
+  return DATA in node;
+}
+
+function isTextNode(node: Node): node is Text {
+  return node.nodeType === NodeType.TEXT_NODE;
+}
+
+function isParentNode(node: Node): node is ParentNode {
+  return 'appendChild' in node;
 }

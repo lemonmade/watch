@@ -36,3 +36,21 @@ export class Window extends EventTarget {
   SVGElement = SVGElement;
   HTMLTemplateElement = HTMLTemplateElement;
 }
+
+export function installWindowGlobals(window: Window) {
+  const {self, ...rest} = Object.getOwnPropertyDescriptors(window);
+
+  Object.defineProperties(globalThis, {
+    ...rest,
+    window: {value: window},
+  });
+
+  if (typeof self === 'undefined') {
+    Object.defineProperty(globalThis, 'self', {value: window});
+  } else {
+    // There can already be a `self`, like when polyfilling the DOM
+    // in a Web Worker. In those cases, just mirror all the `Window`
+    // properties onto `self`, rather than wholly redefining it.
+    Object.defineProperties(self, rest);
+  }
+}

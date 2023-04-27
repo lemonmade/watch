@@ -11,7 +11,16 @@
     "./polyfill": "./source/polyfill.ts"
   },
   "types": "./build/typescript/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "./source/polyfill.ts",
+    "./source/polyfill/**/*",
+    "./build/cjs/polyfill.cjs",
+    "./build/cjs/polyfill/**/*",
+    "./build/esm/polyfill.mjs",
+    "./build/esm/polyfill/**/*",
+    "./build/esnext/polyfill.esnext",
+    "./build/esnext/polyfill/**/*"
+  ],
   "dependencies": {},
   "peerDependencies": {},
   "peerDependenciesMeta": {},

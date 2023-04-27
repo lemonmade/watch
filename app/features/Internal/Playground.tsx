@@ -1,30 +1,39 @@
 import {useEffect} from 'react';
 import {
-  RemoteMutationObserver,
+  // RemoteMutationObserver,
   createRemoteReceiver,
   RemoteElement,
   RemoteRootElement,
+  RemoteMutationCallback,
 } from '@lemon/remote-ui';
 
-class UiButtonElement extends RemoteElement {
-  static properties = {
-    primary: {attribute: true},
-  };
-}
+import {
+  createThread,
+  targetFromWebWorker,
+  createThreadWorker,
+} from '@quilted/quilt/threads';
 
-customElements.define('remote-root', RemoteRootElement);
-customElements.define('ui-button', UiButtonElement);
+// class UiButtonElement extends RemoteElement {
+//   static properties = {
+//     primary: {attribute: true},
+//   };
+// }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'remote-root': RemoteRootElement;
-    'ui-button': UiButtonElement;
-  }
-}
+// customElements.define('remote-root', RemoteRootElement);
+// customElements.define('ui-button', UiButtonElement);
+
+const createWorker = createThreadWorker(() => import('./worker.ts'));
 
 export default function Playground() {
   useEffect(() => {
     const receiver = createRemoteReceiver();
+
+    const worker = createWorker({});
+
+    console.log('MESSAGING');
+    worker.render(receiver.receive);
+    window.receiver = receiver;
+    return;
 
     receiver.subscribe(receiver.root, (root) => {
       console.log(performance.now());

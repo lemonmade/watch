@@ -1,6 +1,5 @@
-import type {Adaptor} from '../protocol.ts';
-
-import {CHANNEL, ID, LISTENERS} from './constants.ts';
+import {hooks} from './hooks.ts';
+import {LISTENERS} from './constants.ts';
 import {fireEvent, dispatchEvent, EventPhase} from './Event.ts';
 import type {Event} from './Event.ts';
 import type {ChildNode} from './ChildNode.ts';
@@ -22,8 +21,6 @@ export type EventListenerOrEventListenerObject =
   | EventListenerObject;
 
 export class EventTarget {
-  [CHANNEL]?: Adaptor;
-  [ID]?: number;
   [LISTENERS]?: Map<
     string,
     Set<EventListenerOrEventListenerObject> & {proxy?: (event: any) => boolean}
@@ -50,8 +47,7 @@ export class EventTarget {
     }
     if (list.proxy === undefined) {
       list.proxy = dispatchEvent.bind(this, type);
-      const channel = this[CHANNEL];
-      channel?.addListener(this as any, type, list.proxy!);
+      hooks.addListener?.(this as any, type, list.proxy!);
     }
     list.add(listener);
   }
@@ -69,9 +65,8 @@ export class EventTarget {
     const list = listeners && listeners.get(key);
     if (list) {
       list.delete(listener);
-      const channel = this[CHANNEL];
-      if (list.proxy !== undefined && channel) {
-        channel.removeListener(this as any, type, list.proxy!);
+      if (list.proxy !== undefined) {
+        hooks.removeListener?.(this as any, type, list.proxy!);
         list.proxy = undefined;
       }
     }

@@ -3,15 +3,14 @@ export {
   type RemoteMutationHandler,
 } from './callback.ts';
 export {
-  createRemoteReceiver,
-  type RemoteReceiver,
+  RemoteReceiver,
   type RemoteReceiverChild,
   type RemoteReceiverElement,
   type RemoteReceiverNode,
   type RemoteReceiverParent,
   type RemoteReceiverRoot,
   type RemoteReceiverText,
-} from './receiver.ts';
+} from './receiver/basic.ts';
 export {RemoteMutationObserver} from './mutation-observer.ts';
 export {
   REMOTE_ID,
