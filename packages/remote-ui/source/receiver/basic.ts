@@ -55,7 +55,7 @@ export class RemoteReceiver {
 
   readonly receive: RemoteMutationCallback;
 
-  constructor({retain, release}: ReceiverOptions) {
+  constructor({retain, release}: ReceiverOptions = {}) {
     const {attached, subscribers} = this;
 
     this.receive = createRemoteMutationCallback({
@@ -66,7 +66,7 @@ export class RemoteReceiver {
 
         const normalizedChild = normalizeNode(child, addVersion);
 
-        retain(normalizedChild);
+        retain?.(normalizedChild);
         attach(normalizedChild);
 
         if (index === children.length) {
@@ -96,11 +96,13 @@ export class RemoteReceiver {
 
         detach(removed!);
         runSubscribers(parent);
+
+        release?.(removed);
       },
       updateProperty: (id, property, value) => {
         const element = attached.get(id) as Writable<RemoteReceiverElement>;
 
-        retain(value);
+        retain?.(value);
 
         const oldValue = element.properties[property];
 
@@ -109,7 +111,7 @@ export class RemoteReceiver {
 
         runSubscribers(element);
 
-        release(oldValue);
+        release?.(oldValue);
       },
       updateText: (id, newText) => {
         const text = attached.get(id) as Writable<RemoteReceiverText>;

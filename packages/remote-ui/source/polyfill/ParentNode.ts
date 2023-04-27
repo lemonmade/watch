@@ -88,13 +88,19 @@ export class ParentNode extends ChildNode {
     if (next) next[PREV] = prev;
 
     const childNodes = this._childNodes;
-    if (childNodes) childNodes.splice(childNodes.indexOf(child), 1);
+
+    if (!childNodes) return;
+
+    const childNodesIndex = childNodes.indexOf(child);
+
+    childNodes.splice(childNodesIndex, 1);
+
     if (child.nodeType === 1) {
       const children = this._children;
       if (children) children.splice(children.indexOf(child), 1);
     }
 
-    hooks.removeChild?.(this as any, child as any);
+    hooks.removeChild?.(this as any, child as any, childNodesIndex);
   }
 
   replaceChild(newChild: Node, oldChild: Node) {

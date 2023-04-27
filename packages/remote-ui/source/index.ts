@@ -11,6 +11,7 @@ export {
   type RemoteReceiverRoot,
   type RemoteReceiverText,
 } from './receiver/basic.ts';
+export {DOMRemoteReceiver} from './receiver/dom.ts';
 export {RemoteMutationObserver} from './mutation-observer.ts';
 export {
   REMOTE_ID,
@@ -21,6 +22,7 @@ export {
   MUTATION_TYPE_UPDATE_TEXT,
   MUTATION_TYPE_UPDATE_PROPERTY,
 } from './constants.ts';
+// export {RemoteReceiverElement} from './elements/receiver.ts';
 export {RemoteRootElement} from './elements/root.ts';
 export {
   RemoteElement,
