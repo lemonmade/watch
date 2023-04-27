@@ -1,17 +1,13 @@
 import {useEffect} from 'react';
 import {
   // RemoteMutationObserver,
-  createRemoteReceiver,
+  DOMRemoteReceiver,
   RemoteElement,
   RemoteRootElement,
   RemoteMutationCallback,
 } from '@lemon/remote-ui';
 
-import {
-  createThread,
-  targetFromWebWorker,
-  createThreadWorker,
-} from '@quilted/quilt/threads';
+import {retain, release, createThreadWorker} from '@quilted/quilt/threads';
 
 // class UiButtonElement extends RemoteElement {
 //   static properties = {
@@ -19,20 +15,36 @@ import {
 //   };
 // }
 
+class UiButtonElement extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot!.innerHTML = `<button><slot></slot></button>`;
+  }
+
+  connectedCallback() {
+    this.shadowRoot!.querySelector('button')!.addEventListener('click', () => {
+      this.onPress?.();
+    });
+  }
+}
+
 // customElements.define('remote-root', RemoteRootElement);
-// customElements.define('ui-button', UiButtonElement);
+customElements.define('ui-button', UiButtonElement);
 
 const createWorker = createThreadWorker(() => import('./worker.ts'));
 
 export default function Playground() {
   useEffect(() => {
-    const receiver = createRemoteReceiver();
+    const receiver = new DOMRemoteReceiver({retain, release});
 
-    const worker = createWorker({});
+    const worker = createWorker();
 
-    console.log('MESSAGING');
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    receiver.connect(root);
+
     worker.render(receiver.receive);
-    window.receiver = receiver;
     return;
 
     receiver.subscribe(receiver.root, (root) => {
