@@ -49,7 +49,7 @@ import {
   TextFieldComponent,
   type UITextFieldElement,
 } from './components/TextField.ts';
-import {View, ViewComponent, type UIViewElement} from './components/View.ts';
+import {View, ViewElement} from './components/View.ts';
 
 // Layout
 import {
@@ -94,7 +94,7 @@ declare global {
     [Text]: UITextElement;
     [TextBlock]: UITextBlockElement;
     [TextField]: UITextFieldElement;
-    [View]: UIViewElement;
+    [View]: ViewElement;
 
     // Layout
     [Stack]: UIStackElement;

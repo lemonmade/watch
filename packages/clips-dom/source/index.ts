@@ -1,3 +1,5 @@
+import '@lemonmade/remote-ui/polyfill';
+
 export * from '@watching/clips';
 export {
   type UIViewElement,
