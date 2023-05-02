@@ -18,8 +18,9 @@
   --z-border-emphasized-style: solid;
   --z-border-emphasized: var(--z-border-emphasized-size) var(--z-border-emphasized-style) var(--z-border-emphasized-color);
 
-  --z-corner-radius-small: 4px;
+  --z-corner-radius-small-1: 4px;
   --z-corner-radius-base: 6px;
+  --z-corner-radius-large-2: 8px;
 
   --z-surface-background-base: rgb(26 21 34);
   --z-surface-background-subdued: var(--z-surface-background-base);

@@ -7,7 +7,7 @@
   block-size: var(--z-internal-Tag-block-size);
   border: 1px solid var(--z-border-subdued-color);
   padding: 0 var(--z-spacing-small-2);
-  border-radius: var(--z-corner-radius-small);
+  border-radius: var(--z-corner-radius-small-1);
   background-color: var(--z-text-subdued-color);
   color: var(--z-text-subdued-color);
   font-size: var(--z-internal-Tag-font-size);

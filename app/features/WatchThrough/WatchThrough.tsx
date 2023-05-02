@@ -261,7 +261,15 @@ function NextEpisode({
       onUpdate={onUpdate}
     >
       <BlockStack spacing>
-        {image && <Image source={image} aspectRatio={1.77} fit="cover" />}
+        {image && (
+          <Image
+            key={image}
+            source={image}
+            aspectRatio={1.77}
+            cornerRadius
+            fit="cover"
+          />
+        )}
         <BlockStack spacing>
           <InlineGrid sizes={['fill', 'auto']} spacing blockAlignment="start">
             <BlockStack spacing="small">

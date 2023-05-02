@@ -1,6 +1,9 @@
 import {createRemoteComponent} from '@remote-ui/core';
 
-import {type ViewportSizeKeyword} from '../../styles.ts';
+import {
+  type CornerRadiusValue,
+  type ViewportSizeKeyword,
+} from '../../styles.ts';
 
 export type ImageFit = 'stretch' | 'cover' | 'contain';
 export type ImageLoading = 'immediate' | 'in-viewport';
@@ -68,6 +71,13 @@ export interface ImageProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
    */
   fit?: ImageFit;
+
+  /**
+   * The radius of the corners of the image.
+   *
+   * @default 'none'
+   */
+  cornerRadius?: CornerRadiusValue;
 }
 
 export interface ImageSource {

@@ -278,3 +278,19 @@
   padding: 0 !important;
   border: 0 !important;
 }
+
+.cornerRadiusNone {
+  border-radius: 0;
+}
+
+.cornerRadiusSmall1 {
+  border-radius: var(--z-corner-radius-small-1);
+}
+
+.cornerRadiusBase {
+  border-radius: var(--z-corner-radius-base);
+}
+
+.cornerRadiusLarge1 {
+  border-radius: var(--z-corner-radius-large-1);
+}

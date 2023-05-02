@@ -1,9 +1,9 @@
 /* eslint react/jsx-no-useless-fragment: off */
 
-import {PropsWithChildren, ImgHTMLAttributes} from 'react';
+import {ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
-import {View} from '../View.tsx';
+import systemStyles from '../../system.module.css';
 import {type PropsForClipsComponent} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
@@ -21,6 +21,17 @@ const MEDIA_MAP = {
   large: Media.Large,
 };
 
+const CORNER_RADIUS_CLASS_MAP = new Map<string | boolean, string | undefined>([
+  [false, systemStyles.cornerRadiusNone],
+  ['none', systemStyles.cornerRadiusNone],
+  ['small.1', systemStyles.cornerRadiusSmall1],
+  ['small', systemStyles.cornerRadiusSmall1],
+  ['base', systemStyles.cornerRadiusBase],
+  [true, systemStyles.cornerRadiusBase],
+  ['large', systemStyles.cornerRadiusLarge1],
+  ['large', systemStyles.cornerRadiusLarge1],
+]);
+
 export function Image({
   source,
   sources,
@@ -29,6 +40,7 @@ export function Image({
   fit,
   loading,
   aspectRatio,
+  cornerRadius,
 }: ImageProps) {
   const sourcesMarkup =
     sources &&
@@ -58,26 +70,44 @@ export function Image({
         <source key={`${props.srcSet}${index}`} {...props} />
       ));
 
-  const className = classes(styles.Image, fit && styles[variation('fit', fit)]);
-
-  return (
-    <MaybeHiddenForA11y condition={accessibilityRole === 'decorative'}>
-      <MaybeAspectRatio
-        condition={aspectRatio != null}
-        aspectRatio={aspectRatio}
-      >
-        <MaybePicture condition={sourcesMarkup != null}>
-          {sourcesMarkup}
-          <img
-            src={source}
-            alt={description}
-            className={className}
-            loading={loading && normalizeLoading(loading)}
-          />
-        </MaybePicture>
-      </MaybeAspectRatio>
-    </MaybeHiddenForA11y>
+  const className = classes(
+    styles.Image,
+    fit && styles[variation('fit', fit)],
+    cornerRadius != null && CORNER_RADIUS_CLASS_MAP.get(cornerRadius),
   );
+
+  const imageMarkup = (
+    <img
+      src={source}
+      alt={description}
+      className={className}
+      loading={loading && normalizeLoading(loading)}
+      aria-hidden={!aspectRatio && accessibilityRole === 'decorative'}
+    />
+  );
+
+  let content = sourcesMarkup ? (
+    <picture>
+      {sourcesMarkup}
+      {imageMarkup}
+    </picture>
+  ) : (
+    imageMarkup
+  );
+
+  content = aspectRatio ? (
+    <div
+      className={styles.AspectRatio}
+      style={{paddingBottom: `calc(100% / ${aspectRatio})`}}
+      aria-hidden={accessibilityRole === 'decorative'}
+    >
+      {content}
+    </div>
+  ) : (
+    content
+  );
+
+  return content;
 }
 
 function normalizeLoading(
@@ -89,37 +119,4 @@ function normalizeLoading(
     case 'in-viewport':
       return 'lazy';
   }
-}
-
-type MaybeProps<T = Record<string, unknown>> = PropsWithChildren<
-  T & {condition: boolean}
->;
-
-function MaybeHiddenForA11y({children, condition}: MaybeProps) {
-  return condition ? (
-    <View accessibilityVisibility="hidden">{children}</View>
-  ) : (
-    <>{children}</>
-  );
-}
-
-function MaybeAspectRatio({
-  children,
-  condition,
-  aspectRatio,
-}: MaybeProps<{aspectRatio?: number}>) {
-  return condition ? (
-    <div
-      className={styles.AspectRatio}
-      style={{paddingBottom: `calc(100% / ${aspectRatio})`}}
-    >
-      {children}
-    </div>
-  ) : (
-    <>{children}</>
-  );
-}
-
-function MaybePicture({children, condition}: MaybeProps) {
-  return condition ? <picture>{children}</picture> : <>{children}</>;
 }

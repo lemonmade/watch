@@ -52,6 +52,15 @@ export type SpacingKeyword =
 
 export type SpacingValue = SpacingKeyword | boolean;
 
+export type CornerRadiusKeyword =
+  | 'none'
+  | /** @alias small */ 'small.1'
+  | 'small'
+  | 'base'
+  | 'large'
+  | /** @alias large */ 'large.1';
+export type CornerRadiusValue = CornerRadiusKeyword | boolean;
+
 export type ViewportSizeKeyword = 'small' | 'medium' | 'large';
 
 export type AlignmentKeyword =

@@ -1,5 +1,7 @@
 .Image {
+  overflow: hidden;
   max-width: 100%;
+  background-color: var(--z-surface-background-subdued);
 }
 
 .AspectRatio {
