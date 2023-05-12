@@ -1,1 +1,1 @@
-export {Text, type TextProps} from './Text/Text.ts';
+export {Text, TextElement, type TextProperties} from './Text/Text.ts';

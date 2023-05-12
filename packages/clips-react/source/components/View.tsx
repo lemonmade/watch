@@ -1,4 +1,6 @@
-import {View as BaseView} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {View as ViewName, ViewElement} from '@watching/clips';
 
-export const View = createRemoteReactComponent(BaseView);
+export const View = createRemoteComponent(ViewElement, {
+  element: ViewName,
+});

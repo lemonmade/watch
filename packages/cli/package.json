@@ -57,7 +57,6 @@
     "@types/prompts": "^2.0.0",
     "@types/ws": "^7.0.0",
     "@watching/clips": "workspace:*",
-    "@watching/clips-dom": "workspace:*",
     "@watching/clips-react": "workspace:*"
   },
   "peerDependencies": {

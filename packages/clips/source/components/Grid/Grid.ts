@@ -1,6 +1,11 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {
+  createRemoteElement,
+  type RemoteElementPropertyType,
+  type RemoteElementPropertiesDefinition,
+} from '@lemonmade/remote-ui/elements';
 
-import type {ViewProps} from '../View.ts';
+import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
+import {RemoteElementSpacingValue} from '../shared.ts';
 import type {
   SizeValue,
   SpacingValue,
@@ -10,17 +15,48 @@ import type {
   ValueOrStyleDynamicValue,
 } from '../../styles.ts';
 
-export interface GridProps extends ViewProps {
+export interface GridProperties extends ViewProperties {
   spacing?: SpacingValue;
-  direction?: DirectionKeyword;
   inlineSpacing?: SpacingValue;
   blockSpacing?: SpacingValue;
+  direction?: DirectionKeyword;
   inlineSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
   blockSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
   inlineAlignment?: AlignmentKeyword;
   blockAlignment?: AlignmentKeyword;
   layoutMode?: LayoutModeKeyword;
 }
+
+export const COMMON_GRID_PROPERTIES: RemoteElementPropertiesDefinition<
+  Omit<GridProperties, 'blockSizes' | 'inlineSizes'>
+> = {
+  ...VIEW_PROPERTIES,
+  spacing: {type: RemoteElementSpacingValue},
+  inlineSpacing: {type: RemoteElementSpacingValue},
+  blockSpacing: {type: RemoteElementSpacingValue},
+  direction: {type: String},
+  blockAlignment: {type: String},
+  inlineAlignment: {type: String},
+  layoutMode: {type: String},
+};
+
+export const SizeValueOrDynamicSizeValue: RemoteElementPropertyType<
+  ValueOrStyleDynamicValue<readonly SizeValue[]>
+> = {
+  parse(value) {
+    if (typeof value === 'string' && value.startsWith('css:')) {
+      return value;
+    }
+
+    try {
+      return JSON.parse((value as any) ?? '[]');
+    } catch {
+      return String(value).split(/\s+/g);
+    }
+  },
+};
+
+export const Grid = 'ui-grid';
 
 /**
  * A `Grid` is a container component that lays out sibling elements
@@ -40,56 +76,18 @@ export interface GridProps extends ViewProps {
  * In addition to the grid-specific properties described above, You can
  * pass any property available on `View` to a `Grid` component.
  */
-export const Grid = createRemoteComponent<'Grid', GridProps>('Grid');
+export const GridElement = createRemoteElement<GridProperties>({
+  properties: {
+    ...COMMON_GRID_PROPERTIES,
+    blockSizes: {type: SizeValueOrDynamicSizeValue},
+    inlineSizes: {type: SizeValueOrDynamicSizeValue},
+  },
+});
 
-export interface BlockGridProps
-  extends Omit<GridProps, 'inlineSizes' | 'blockSizes'> {
-  sizes: NonNullable<GridProps['blockSizes']>;
+customElements.define(Grid, GridElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Grid]: InstanceType<typeof GridElement>;
+  }
 }
-
-/**
- * A `BlockGrid` is a container component that lays out sibling elements
- * using predetermined sizes. Children are laid out along the inline axis
- * (horizontally, in most Western locales), with sizes set by the `sizes`
- * property. If there are more children than sizes, additional rows will be
- * created along the block axis, with each row having their intrinsic block
- * size.
- *
- * You can configure a consistent spacing between siblings using the `spacing`
- * property, or using the `blockSpacing` and `inlineSpacing` properties for
- * per-axis control. If you need to control how children are aligned on either
- * the inline or block axis, you can use the `inlineAlignment` and `blockAlignment`
- * properties.
- *
- * In addition to the grid-specific properties described above, You can
- * pass any property available on `View` to a `BlockGrid` component.
- */
-export const BlockGrid = createRemoteComponent<'BlockGrid', BlockGridProps>(
-  'BlockGrid',
-);
-
-export interface InlineGridProps
-  extends Omit<GridProps, 'inlineSizes' | 'blockSizes'> {
-  sizes: NonNullable<GridProps['inlineSizes']>;
-}
-
-/**
- * A `InlineGrid` is a container component that lays out sibling elements
- * using predetermined sizes. Children are laid out along the inline axis
- * (horizontally, in most Western locales), with sizes set by the `sizes`
- * property. If there are more children than sizes, additional rows will be
- * created along the block axis, with each row having their intrinsic block
- * size.
- *
- * You can configure a consistent spacing between siblings using the `spacing`
- * property, or using the `blockSpacing` and `inlineSpacing` properties for
- * per-axis control. If you need to control how children are aligned on either
- * the inline or block axis, you can use the `inlineAlignment` and `blockAlignment`
- * properties.
- *
- * In addition to the grid-specific properties described above, You can
- * pass any property available on `View` to a `InlineGrid` component.
- */
-export const InlineGrid = createRemoteComponent<'InlineGrid', InlineGridProps>(
-  'InlineGrid',
-);

@@ -1,10 +1,6 @@
-import {
-  Grid as BaseGrid,
-  BlockGrid as BaseBlockGrid,
-  InlineGrid as BaseInlineGrid,
-} from '@watching/clips';
-import {createRemoteReactComponent} from './shared';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Grid as GridName, GridElement} from '@watching/clips';
 
-export const Grid = createRemoteReactComponent(BaseGrid);
-export const BlockGrid = createRemoteReactComponent(BaseBlockGrid);
-export const InlineGrid = createRemoteReactComponent(BaseInlineGrid);
+export const Grid = createRemoteComponent(GridElement, {
+  element: GridName,
+});

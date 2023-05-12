@@ -1,8 +1,9 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
 
-import {type ViewProps} from '../View.ts';
+export interface SectionProperties extends ViewProperties {}
 
-export interface SectionProps extends ViewProps {}
+export const Section = 'ui-section';
 
 /**
  * Sections are container elements that create semantic groupings of content. Most notably,
@@ -11,6 +12,14 @@ export interface SectionProps extends ViewProps {}
  * This component accepts all the same props as the `View` component, so you don’t need to nest
  * an additional `View` to change basic styling props.
  */
-export const Section = createRemoteComponent<'Section', SectionProps>(
-  'Section',
-);
+export const SectionElement = createRemoteElement<SectionProperties>({
+  properties: VIEW_PROPERTIES,
+});
+
+customElements.define(Section, SectionElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Section]: InstanceType<typeof SectionElement>;
+  }
+}

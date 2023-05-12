@@ -12,5 +12,10 @@ export {TextField} from './components/TextField.tsx';
 export {View} from './components/View.tsx';
 
 // Layout
-export {Stack, BlockStack, InlineStack} from './components/Stack.tsx';
-export {Grid, BlockGrid, InlineGrid} from './components/Grid.tsx';
+export {Stack} from './components/Stack.tsx';
+export {BlockStack} from './components/BlockStack.tsx';
+export {InlineStack} from './components/InlineStack.tsx';
+
+export {Grid} from './components/Grid.tsx';
+export {BlockGrid} from './components/BlockGrid.tsx';
+export {InlineGrid} from './components/InlineGrid.tsx';

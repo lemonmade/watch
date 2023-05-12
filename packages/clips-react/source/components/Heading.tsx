@@ -1,4 +1,6 @@
-import {Heading as BaseHeading} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Heading as HeadingName, HeadingElement} from '@watching/clips';
 
-export const Heading = createRemoteReactComponent(BaseHeading);
+export const Heading = createRemoteComponent(HeadingElement, {
+  element: HeadingName,
+});

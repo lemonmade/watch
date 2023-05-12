@@ -1,10 +1,20 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
-export interface TextBlockProps {}
+export interface TextBlockProperties {}
+
+export const TextBlock = 'ui-text-block';
 
 /**
  * TextBlock wraps a block of text content.
  */
-export const TextBlock = createRemoteComponent<'TextBlock', TextBlockProps>(
-  'TextBlock',
-);
+export const TextBlockElement = createRemoteElement<TextBlockProperties>({
+  properties: {},
+});
+
+customElements.define(TextBlock, TextBlockElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [TextBlock]: InstanceType<typeof TextBlockElement>;
+  }
+}

@@ -1,1 +1,5 @@
-export {TextBlock, type TextBlockProps} from './TextBlock/TextBlock.ts';
+export {
+  TextBlock,
+  TextBlockElement,
+  type TextBlockProperties,
+} from './TextBlock/TextBlock.ts';

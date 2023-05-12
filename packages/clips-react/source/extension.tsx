@@ -2,7 +2,7 @@ import {type ReactNode} from 'react';
 import {render} from 'react-dom';
 
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
-import {extension as domExtension} from '@watching/clips-dom';
+import {extension as domExtension} from '@watching/clips';
 
 import {installHooks} from './signals.ts';
 import {type RenderContext, ReactRenderContext} from './context.ts';
@@ -14,14 +14,12 @@ export function extension<Target extends ExtensionPoint>(
 ) {
   installHooks();
 
-  return domExtension<Target>(async (element, api, {dom, root}) => {
+  return domExtension<Target>(async (root, api: any) => {
     const rendered = await renderReact(api);
 
     const context: RenderContext<Target> = {
       api,
-      dom,
       root,
-      element,
     };
 
     await new Promise<void>((resolve, reject) => {
@@ -30,7 +28,7 @@ export function extension<Target extends ExtensionPoint>(
           <ReactRenderContext.Provider value={context}>
             {rendered}
           </ReactRenderContext.Provider>,
-          element,
+          root,
           () => {
             resolve();
           },

@@ -1,8 +1,9 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
 
-import {type ViewProps} from '../View.ts';
+export interface FooterProperties extends ViewProperties {}
 
-export interface FooterProps extends ViewProps {}
+export const Footer = 'ui-footer';
 
 /**
  * Footers are container elements that designates part of a section as being supplementary to the
@@ -13,4 +14,14 @@ export interface FooterProps extends ViewProps {}
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer
  */
-export const Footer = createRemoteComponent<'Footer', FooterProps>('Footer');
+export const FooterElement = createRemoteElement<FooterProperties>({
+  properties: VIEW_PROPERTIES,
+});
+
+customElements.define(Footer, FooterElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Footer]: InstanceType<typeof FooterElement>;
+  }
+}

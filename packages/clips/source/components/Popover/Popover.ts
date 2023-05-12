@@ -1,13 +1,26 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
 export type PopoverBlockAttachment = 'start' | 'end';
 export type PopoverInlineAttachment = 'start' | 'center' | 'end';
 
-export interface PopoverProps {
+export interface PopoverProperties {
   blockAttachment?: PopoverBlockAttachment;
   inlineAttachment?: PopoverInlineAttachment;
 }
 
-export const Popover = createRemoteComponent<'Popover', PopoverProps>(
-  'Popover',
-);
+export const Popover = 'ui-popover';
+
+export const PopoverElement = createRemoteElement<PopoverProperties>({
+  properties: {
+    blockAttachment: {type: String},
+    inlineAttachment: {type: String},
+  },
+});
+
+customElements.define(Popover, PopoverElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Popover]: InstanceType<typeof PopoverElement>;
+  }
+}

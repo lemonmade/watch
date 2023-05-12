@@ -1,1 +1,1 @@
-export {Header, type HeaderProps} from './Header/Header.ts';
+export {Header, HeaderElement, type HeaderProperties} from './Header/Header.ts';

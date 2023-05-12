@@ -1,4 +1,6 @@
-import {Footer as BaseFooter} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Footer as FooterName, FooterElement} from '@watching/clips';
 
-export const Footer = createRemoteReactComponent(BaseFooter);
+export const Footer = createRemoteComponent(FooterElement, {
+  element: FooterName,
+});

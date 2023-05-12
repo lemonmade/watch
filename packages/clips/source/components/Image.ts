@@ -1,6 +1,7 @@
 export {
   Image,
-  type ImageProps,
+  ImageElement,
+  type ImageProperties,
   type ImageFit,
   type ImageLoading,
   type ImageSource,
