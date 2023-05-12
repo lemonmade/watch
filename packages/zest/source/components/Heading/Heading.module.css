@@ -10,6 +10,7 @@
   font-weight: var(--z-internal-Heading-weight);
   color: var(--z-internal-Heading-color);
   text-align: var(--z-internal-inline-alignment);
+  text-wrap: balance;
 }
 
 .level1 {
