@@ -1,5 +1,5 @@
 import {Section as UiSection} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Section({
   children,
@@ -8,7 +8,7 @@ export function Section({
   paddingBlockStart,
   paddingInlineEnd,
   paddingInlineStart,
-}: PropsForClipsComponent<'Section'>) {
+}: ReactComponentPropsForClipsElement<'ui-section'>) {
   return (
     <UiSection
       padding={padding}

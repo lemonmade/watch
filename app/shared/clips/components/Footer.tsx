@@ -1,5 +1,5 @@
 import {Footer as UiFooter} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Footer({
   children,
@@ -8,7 +8,7 @@ export function Footer({
   paddingBlockStart,
   paddingInlineEnd,
   paddingInlineStart,
-}: PropsForClipsComponent<'Footer'>) {
+}: ReactComponentPropsForClipsElement<'ui-footer'>) {
   return (
     <UiFooter
       padding={padding}

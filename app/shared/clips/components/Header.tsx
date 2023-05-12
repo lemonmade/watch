@@ -1,5 +1,5 @@
 import {Header as UiHeader} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Header({
   children,
@@ -8,7 +8,7 @@ export function Header({
   paddingBlockStart,
   paddingInlineEnd,
   paddingInlineStart,
-}: PropsForClipsComponent<'Header'>) {
+}: ReactComponentPropsForClipsElement<'ui-header'>) {
   return (
     <UiHeader
       padding={padding}

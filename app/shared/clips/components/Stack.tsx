@@ -3,16 +3,22 @@ import {
   BlockStack as UiBlockStack,
   InlineStack as UiInlineStack,
 } from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
-export function Stack({...props}: PropsForClipsComponent<'Stack'>) {
+export function Stack({
+  ...props
+}: ReactComponentPropsForClipsElement<'ui-stack'>) {
   return <UiStack {...props} />;
 }
 
-export function InlineStack({...props}: PropsForClipsComponent<'InlineStack'>) {
+export function InlineStack({
+  ...props
+}: ReactComponentPropsForClipsElement<'ui-inline-stack'>) {
   return <UiInlineStack {...props} />;
 }
 
-export function BlockStack({...props}: PropsForClipsComponent<'BlockStack'>) {
+export function BlockStack({
+  ...props
+}: ReactComponentPropsForClipsElement<'ui-block-stack'>) {
   return <UiBlockStack {...props} />;
 }

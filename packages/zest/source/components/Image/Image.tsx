@@ -4,11 +4,11 @@ import {ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
 
-export type ImageProps = PropsForClipsComponent<'Image'>;
+export type ImageProps = ReactComponentPropsForClipsElement<'ui-image'>;
 
 export enum Media {
   Medium = '(min-width: 601px)',

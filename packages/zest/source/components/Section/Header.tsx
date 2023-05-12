@@ -1,7 +1,8 @@
-import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
-export type HeaderProps = PropsForClipsComponent<'Header'> & ViewProps;
+export type HeaderProps = ReactComponentPropsForClipsElement<'ui-header'> &
+  ViewProps;
 
 export function Header({children, ...viewProps}: HeaderProps) {
   const view = useViewProps(viewProps);

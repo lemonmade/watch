@@ -1,7 +1,8 @@
+import {retain, release} from '@quilted/threads';
 import {createEmitter, raceAgainstAbortSignal} from '@quilted/events';
+import {RemoteReceiver} from '@lemonmade/remote-ui';
 import {signal, computed} from '@preact/signals-core';
 
-import {createRemoteReceiver} from './receiver.ts';
 import {
   type ThreadRenderer,
   type ThreadRendererEventMap,
@@ -72,7 +73,7 @@ export function createRenderer<Context = Record<string, never>>({
     if (instanceInternals.value != null) return;
 
     const abort = new AbortController();
-    const receiver = createRemoteReceiver();
+    const receiver = new RemoteReceiver({retain, release});
     const state = signal<ThreadRendererInstanceState>('preparing');
     const timings = signal<ThreadRendererInstanceTimings>({});
 

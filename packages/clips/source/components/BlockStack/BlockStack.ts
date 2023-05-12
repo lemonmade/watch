@@ -26,7 +26,7 @@ export const BlockStack = 'ui-block-stack';
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `BlockStack` component.
  */
-export const BlockStackElement = createRemoteElement({
+export const BlockStackElement = createRemoteElement<BlockStackProperties>({
   properties: {...COMMON_STACK_PROPERTIES},
 });
 

@@ -26,7 +26,7 @@ export const InlineStack = 'ui-inline-stack';
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `InlineStack` component.
  */
-export const InlineStackElement = createRemoteElement({
+export const InlineStackElement = createRemoteElement<InlineStackProperties>({
   properties: {...COMMON_STACK_PROPERTIES},
 });
 

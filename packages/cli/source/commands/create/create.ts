@@ -76,7 +76,6 @@ export async function create({ui}: {ui: Ui}) {
         type: 'select',
         message: 'What format would you like to use?',
         choices: [
-          {title: 'Basic', value: 'basic'},
           {title: 'DOM', value: 'dom'},
           {title: 'React', value: 'react'},
         ],
@@ -179,7 +178,7 @@ function validateTemplate(template: string) {
   return resolvedTemplate;
 }
 
-const VALID_FORMATS = new Set(['basic', 'dom', 'react']);
+const VALID_FORMATS = new Set(['dom', 'react']);
 
 function validateFormat(format: string) {
   const normalized = format.trim().toLowerCase();

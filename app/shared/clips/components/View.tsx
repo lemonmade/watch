@@ -1,5 +1,5 @@
 import {View as UiView} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function View({
   children,
@@ -8,7 +8,7 @@ export function View({
   paddingInlineEnd,
   paddingBlockStart,
   paddingBlockEnd,
-}: PropsForClipsComponent<'View'>) {
+}: ReactComponentPropsForClipsElement<'ui-view'>) {
   return (
     <UiView
       padding={padding}

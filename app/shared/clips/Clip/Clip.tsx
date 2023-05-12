@@ -1,6 +1,6 @@
-import {useEffect, useMemo, useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
-import {RemoteRenderer, createController} from '@remote-ui/react/host';
+import {RemoteRootRenderer} from '@lemonmade/remote-ui-react/host';
 import {
   Style,
   Popover,
@@ -174,30 +174,16 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
   const receiver = instance?.receiver;
   const components = instance?.context.components;
 
-  const controller = useMemo(
-    () => components && createController(components),
-    [components],
-  );
-
   const instanceState = instance?.state.value;
   const isRendered = instanceState === 'rendered';
 
-  const lastRendered = useRef<{
-    receiver?: NonNullable<typeof instance>['receiver'];
-    controller?: NonNullable<typeof controller>;
-  }>({});
+  const lastRendered = useRef<NonNullable<typeof instance>['receiver']>();
 
   if (isRendered) {
-    lastRendered.current.receiver = receiver;
-    lastRendered.current.controller = controller;
+    lastRendered.current = receiver;
   }
 
-  const {receiver: lastRenderedReceiver, controller: lastRenderedController} =
-    lastRendered.current;
-
-  const resolvedController = isRendered
-    ? controller
-    : lastRenderedController ?? controller;
+  const lastRenderedReceiver = lastRendered.current;
 
   const resolvedReceiver = isRendered
     ? receiver
@@ -205,14 +191,11 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
 
   const restarting = receiver !== resolvedReceiver;
 
-  return resolvedController && resolvedReceiver ? (
+  return resolvedReceiver && components ? (
     <Section
       className={classes(styles.Content, restarting && styles.restarting)}
     >
-      <RemoteRenderer
-        controller={resolvedController}
-        receiver={resolvedReceiver}
-      />
+      <RemoteRootRenderer components={components} receiver={resolvedReceiver} />
     </Section>
   ) : null;
 }

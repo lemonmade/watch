@@ -22,6 +22,8 @@
     "@quilted/typescript": "^0.2.19",
     "@types/common-tags": "^1.8.1",
     "@types/node": "^16.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.0",
     "nodemon": "^2.0.0",

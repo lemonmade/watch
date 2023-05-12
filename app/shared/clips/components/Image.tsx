@@ -1,5 +1,5 @@
 import {Image as UiImage} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Image({
   source,
@@ -9,7 +9,7 @@ export function Image({
   description,
   fit,
   loading,
-}: PropsForClipsComponent<'Image'>) {
+}: ReactComponentPropsForClipsElement<'ui-image'>) {
   return (
     <UiImage
       source={source}

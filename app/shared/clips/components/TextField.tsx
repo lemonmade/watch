@@ -1,7 +1,7 @@
 import {TextField as UiTextField} from '@lemon/zest';
 import {
   usePossibleThreadSignals,
-  type PropsForClipsComponent,
+  type ReactComponentPropsForClipsElement,
 } from './shared.ts';
 
 export function TextField({
@@ -10,7 +10,7 @@ export function TextField({
   disabled,
   readonly,
   ...rest
-}: PropsForClipsComponent<'TextField'>) {
+}: ReactComponentPropsForClipsElement<'ui-text-field'>) {
   const signalProps = usePossibleThreadSignals({value, disabled, readonly});
   return <UiTextField {...signalProps} label={label} {...rest} />;
 }

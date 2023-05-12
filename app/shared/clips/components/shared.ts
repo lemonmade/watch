@@ -1,16 +1,11 @@
+import {useRef, useEffect} from 'react';
+import {type Elements} from '@watching/clips';
+import {type RemoteElement} from '@lemonmade/remote-ui/elements';
 import {
-  useRef,
-  useEffect,
-  type ReactElement,
-  type ReactNode,
-  type ComponentType,
-} from 'react';
-import {
-  type Components,
-  type ExtensionPoint,
-  type ComponentsForExtensionPoint,
-} from '@watching/clips';
-import {type RemoteComponentType, type RemoteFragment} from '@remote-ui/core';
+  createRemoteComponentRenderer,
+  type RemoteComponentType,
+  type RemoteComponentProps,
+} from '@lemonmade/remote-ui-react/host';
 import {createThreadAbortSignal} from '@quilted/quilt/threads';
 import {
   isThreadSignal,
@@ -19,43 +14,17 @@ import {
   type ThreadSignal,
 } from '@watching/thread-signals';
 
-type PropsForRemoteComponent<T> = T extends RemoteComponentType<
-  string,
-  infer Props,
-  any
->
-  ? Props extends Record<string, never>
-    ? {}
-    : {[K in keyof Props]: RemoteFragmentToReactElement<Props[K]>}
-  : never;
+export type ReactComponentPropsForClipsElement<Element extends keyof Elements> =
+  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
+    ? RemoteComponentProps<Properties, Slots>
+    : never;
 
-type RemoteFragmentToReactElement<T> = T extends RemoteFragment<any>
-  ? ReactElement
-  : T;
+export type ReactComponentTypeForClipsElement<Element extends keyof Elements> =
+  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
+    ? RemoteComponentType<Properties, Slots>
+    : never;
 
-export type ReactPropsFromRemoteComponentType<
-  Type extends RemoteComponentType<string, any, any>,
-> = PropsForRemoteComponent<Type> & {
-  children?: ReactNode;
-};
-
-export type ReactComponentTypeFromRemoteComponentType<
-  Type extends RemoteComponentType<string, any, any>,
-> = ComponentType<ReactPropsFromRemoteComponentType<Type>>;
-
-export type PropsForClipsComponent<Component extends keyof Components> =
-  ReactPropsFromRemoteComponentType<Components[Component]>;
-
-export type ReactComponentsForRemoteComponents<
-  Components extends {[key: string]: RemoteComponentType<any, any, any>},
-> = {
-  [Component in keyof Components]: ReactComponentTypeFromRemoteComponentType<
-    Components[Component]
-  >;
-};
-
-export type ReactComponentsForExtensionPoint<Point extends ExtensionPoint> =
-  ReactComponentsForRemoteComponents<ComponentsForExtensionPoint<Point>>;
+export {createRemoteComponentRenderer};
 
 export function usePossibleThreadSignals<T extends Record<string, any>>(
   values: T,

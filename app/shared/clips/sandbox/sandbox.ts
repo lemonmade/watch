@@ -5,7 +5,7 @@ import {
   createBasicEncoderWithOverrides,
 } from '@quilted/quilt/threads';
 import {createThreadSignal} from '@watching/thread-signals';
-import {type RemoteChannel} from '@remote-ui/core';
+import {type RemoteMutationCallback} from '@lemonmade/remote-ui';
 
 import type {
   Api,
@@ -66,11 +66,11 @@ export async function load(script: string, _: Version) {
 
 export async function render<T extends ExtensionPoint>(
   id: T,
-  channel: RemoteChannel,
+  callback: RemoteMutationCallback,
   components: string[],
   api: Api<T>,
 ) {
-  retain(channel);
+  retain(callback);
   retain(api);
 
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...

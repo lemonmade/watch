@@ -4,7 +4,7 @@ import {
   BlockStack,
   TextBlock,
   Text,
-} from '@watching/clips-dom';
+} from '@watching/clips';
 import {type WatchThroughQueryData} from './WatchThroughQuery.graphql';
 
 export default extension((root, {query, target}) => {

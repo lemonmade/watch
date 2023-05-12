@@ -1,6 +1,9 @@
 import {Text as UiText} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
-export function Text({children, emphasis}: PropsForClipsComponent<'Text'>) {
+export function Text({
+  children,
+  emphasis,
+}: ReactComponentPropsForClipsElement<'ui-text'>) {
   return <UiText emphasis={emphasis}>{children}</UiText>;
 }

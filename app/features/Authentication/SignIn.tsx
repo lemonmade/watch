@@ -81,9 +81,9 @@ function SignInWithEmail() {
     >
       <BlockStack spacing>
         <TextField
-          type="email"
           label="Email"
           value={email}
+          keyboardType="email"
           changeTiming="input"
           autocomplete="webauthn username"
         />

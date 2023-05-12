@@ -5,9 +5,9 @@ import type {
   ViewportSizeKeyword,
   ValueFromStyleDynamicValue,
   AlignmentKeyword,
-  GridProps as BaseGridProps,
-  BlockGridProps as BaseBlockGridProps,
-  InlineGridProps as BaseInlineGridProps,
+  GridProperties as BaseGridProps,
+  BlockGridProperties as BaseBlockGridProps,
+  InlineGridProperties as BaseInlineGridProps,
   ViewportCondition,
 } from '@watching/clips';
 

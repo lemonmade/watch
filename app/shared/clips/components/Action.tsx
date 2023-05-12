@@ -1,16 +1,17 @@
 import {Action as UiAction} from '@lemon/zest';
 import {
   usePossibleThreadSignals,
-  type PropsForClipsComponent,
+  createRemoteComponentRenderer,
+  type ReactComponentPropsForClipsElement,
 } from './shared.ts';
 
-export function Action({
+export const Action = createRemoteComponentRenderer(function Action({
   to,
   disabled,
   onPress,
   overlay,
   children,
-}: PropsForClipsComponent<'Action'>) {
+}: ReactComponentPropsForClipsElement<'ui-action'>) {
   const signalProps = usePossibleThreadSignals({disabled});
 
   return (
@@ -18,4 +19,4 @@ export function Action({
       {children}
     </UiAction>
   );
-}
+});

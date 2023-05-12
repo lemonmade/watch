@@ -1,12 +1,12 @@
 import {Heading as UiHeading} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Heading({
   children,
   level,
   divider,
   accessibilityRole,
-}: PropsForClipsComponent<'Heading'>) {
+}: ReactComponentPropsForClipsElement<'ui-heading'>) {
   return (
     <UiHeading
       level={level}

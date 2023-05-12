@@ -1,11 +1,11 @@
 import {Popover as UiPopover} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared.ts';
+import {type ReactComponentPropsForClipsElement} from './shared.ts';
 
 export function Popover({
   children,
   blockAttachment,
   inlineAttachment,
-}: PropsForClipsComponent<'Popover'>) {
+}: ReactComponentPropsForClipsElement<'ui-popover'>) {
   return (
     <UiPopover
       blockAttachment={blockAttachment}

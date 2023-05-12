@@ -51,7 +51,7 @@ export const Stack = 'ui-stack';
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `Stack` component.
  */
-export const StackElement = createRemoteElement({
+export const StackElement = createRemoteElement<StackProperties>({
   properties: {
     ...COMMON_STACK_PROPERTIES,
     direction: {type: String},

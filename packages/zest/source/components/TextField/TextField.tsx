@@ -1,12 +1,13 @@
 import {useUniqueId} from '../../shared/id.ts';
-import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import {Label} from '../Label.tsx';
 import {BlockStack} from '../Stack.tsx';
 
 import {Input} from './Input.tsx';
 
-export type TextFieldProps = PropsForClipsComponent<'TextField'>;
+export type TextFieldProps =
+  ReactComponentPropsForClipsElement<'ui-text-field'>;
 
 export function TextField({
   id: explicitId,

@@ -4,13 +4,13 @@ import {Overlay} from '../Overlay.tsx';
 import {HeadingLevelReset} from '../Heading.tsx';
 
 import {ActionScopeReset} from '../../shared/actions.tsx';
-import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import systemStyles from '../../system.module.css';
 
 import styles from './Modal.module.css';
 
-export type ModalProps = PropsForClipsComponent<'Modal'>;
+export type ModalProps = ReactComponentPropsForClipsElement<'ui-modal'>;
 
 export function Modal({children, padding}: ModalProps) {
   return (
