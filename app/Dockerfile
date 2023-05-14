@@ -1,4 +1,4 @@
-FROM node:16-bullseye-slim as base
+FROM node:18.16.0-bullseye-slim as base
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl && apt-get install -y ca-certificates
@@ -17,7 +17,7 @@ FROM base as dependencies
 
 WORKDIR /workspace
 
-RUN npm install -g pnpm@6.32.2
+RUN npm install -g pnpm@8.5.0
 
 # Copy the lockfile, which is the only file `pnpm fetch` needs to run
 COPY pnpm-lock.yaml .
