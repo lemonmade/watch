@@ -1,4 +1,4 @@
-import {type KeyboardEvent} from 'react';
+import {type KeyboardEvent, type Context} from 'react';
 import {type Signal} from '@preact/signals-core';
 import {
   createOptionalContext,
@@ -11,5 +11,6 @@ export interface MenuController {
   keypress(event: KeyboardEvent<HTMLElement>): void;
 }
 
-export const MenuControllerContext = createOptionalContext<MenuController>();
+export const MenuControllerContext: Context<MenuController | undefined> =
+  createOptionalContext();
 export const useMenuController = createUseContextHook(MenuControllerContext);
