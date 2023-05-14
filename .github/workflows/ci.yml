@@ -21,6 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
+      - name: Create Prisma client
+        run: pnpm prisma generate --data-proxy
       - uses: quilt-framework/action-build@v2
         with:
           cache-key: ${{ hashFiles('**/pnpm-lock.yaml') }}
