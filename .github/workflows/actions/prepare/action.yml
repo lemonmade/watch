@@ -12,5 +12,5 @@ runs:
       run: corepack enable && pnpm -v
       shell: bash
     - name: Install dependencies
-      run: PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm install --frozen-lockfile
+      run: PRISMA_GENERATE_DATAPROXY=true pnpm install --frozen-lockfile
       shell: bash
