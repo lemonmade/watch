@@ -1,8 +1,9 @@
 import {TextBlock as UiTextBlock} from '@lemon/zest';
-import {type ReactComponentPropsForClipsElement} from './shared.ts';
+import {createClipsComponent} from './shared.ts';
 
-export function TextBlock({
-  children,
-}: ReactComponentPropsForClipsElement<'ui-text-block'>) {
-  return <UiTextBlock>{children}</UiTextBlock>;
-}
+export const TextBlock = createClipsComponent(
+  'ui-text-block',
+  function TextBlock({children}) {
+    return <UiTextBlock>{children}</UiTextBlock>;
+  },
+);

@@ -1,24 +1,36 @@
-import {
-  Stack as UiStack,
-  BlockStack as UiBlockStack,
-  InlineStack as UiInlineStack,
-} from '@lemon/zest';
-import {type ReactComponentPropsForClipsElement} from './shared.ts';
+import {Stack as UiStack} from '@lemon/zest';
+import {createClipsComponent} from './shared.ts';
 
-export function Stack({
-  ...props
-}: ReactComponentPropsForClipsElement<'ui-stack'>) {
-  return <UiStack {...props} />;
-}
-
-export function InlineStack({
-  ...props
-}: ReactComponentPropsForClipsElement<'ui-inline-stack'>) {
-  return <UiInlineStack {...props} />;
-}
-
-export function BlockStack({
-  ...props
-}: ReactComponentPropsForClipsElement<'ui-block-stack'>) {
-  return <UiBlockStack {...props} />;
-}
+export const Stack = createClipsComponent(
+  'ui-stack',
+  function Stack({
+    children,
+    direction,
+    spacing,
+    blockAlignment,
+    inlineAlignment,
+    layoutMode,
+    padding,
+    paddingBlockEnd,
+    paddingBlockStart,
+    paddingInlineEnd,
+    paddingInlineStart,
+  }) {
+    return (
+      <UiStack
+        direction={direction}
+        spacing={spacing}
+        blockAlignment={blockAlignment}
+        inlineAlignment={inlineAlignment}
+        layoutMode={layoutMode}
+        padding={padding}
+        paddingBlockEnd={paddingBlockEnd}
+        paddingBlockStart={paddingBlockStart}
+        paddingInlineEnd={paddingInlineEnd}
+        paddingInlineStart={paddingInlineStart}
+      >
+        {children}
+      </UiStack>
+    );
+  },
+);

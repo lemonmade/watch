@@ -28,13 +28,12 @@ export interface GridProperties extends ViewProperties {
 }
 
 export const COMMON_GRID_PROPERTIES: RemoteElementPropertiesDefinition<
-  Omit<GridProperties, 'blockSizes' | 'inlineSizes'>
+  Omit<GridProperties, 'direction' | 'blockSizes' | 'inlineSizes'>
 > = {
   ...VIEW_PROPERTIES,
   spacing: {type: RemoteElementSpacingValue},
   inlineSpacing: {type: RemoteElementSpacingValue},
   blockSpacing: {type: RemoteElementSpacingValue},
-  direction: {type: String},
   blockAlignment: {type: String},
   inlineAlignment: {type: String},
   layoutMode: {type: String},
@@ -79,6 +78,7 @@ export const Grid = 'ui-grid';
 export const GridElement = createRemoteElement<GridProperties>({
   properties: {
     ...COMMON_GRID_PROPERTIES,
+    direction: {type: String},
     blockSizes: {type: SizeValueOrDynamicSizeValue},
     inlineSizes: {type: SizeValueOrDynamicSizeValue},
   },

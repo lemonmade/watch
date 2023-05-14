@@ -1,10 +1,14 @@
-import {Section as UiSection} from '@lemon/zest';
+import {InlineStack as UiInlineStack} from '@lemon/zest';
 import {createClipsComponent} from './shared.ts';
 
-export const Section = createClipsComponent(
-  'ui-section',
-  function Section({
+export const InlineStack = createClipsComponent(
+  'ui-inline-stack',
+  function InlineStack({
     children,
+    spacing,
+    blockAlignment,
+    inlineAlignment,
+    layoutMode,
     padding,
     paddingBlockEnd,
     paddingBlockStart,
@@ -12,7 +16,11 @@ export const Section = createClipsComponent(
     paddingInlineStart,
   }) {
     return (
-      <UiSection
+      <UiInlineStack
+        spacing={spacing}
+        blockAlignment={blockAlignment}
+        inlineAlignment={inlineAlignment}
+        layoutMode={layoutMode}
         padding={padding}
         paddingBlockEnd={paddingBlockEnd}
         paddingBlockStart={paddingBlockStart}
@@ -20,7 +28,7 @@ export const Section = createClipsComponent(
         paddingInlineStart={paddingInlineStart}
       >
         {children}
-      </UiSection>
+      </UiInlineStack>
     );
   },
 );

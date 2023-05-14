@@ -1,9 +1,9 @@
 import {Modal as UiModal} from '@lemon/zest';
-import {type ReactComponentPropsForClipsElement} from './shared.ts';
+import {createClipsComponent} from './shared.ts';
 
-export function Modal({
-  children,
-  padding,
-}: ReactComponentPropsForClipsElement<'ui-modal'>) {
-  return <UiModal padding={padding}>{children}</UiModal>;
-}
+export const Modal = createClipsComponent(
+  'ui-modal',
+  function Modal({children, padding}) {
+    return <UiModal padding={padding}>{children}</UiModal>;
+  },
+);

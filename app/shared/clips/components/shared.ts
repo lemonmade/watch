@@ -1,15 +1,23 @@
-import {useRef, useEffect} from 'react';
+import {
+  useRef,
+  useEffect,
+  forwardRef,
+  type ForwardRefExoticComponent,
+  type ForwardRefRenderFunction,
+} from 'react';
 import {type Elements} from '@watching/clips';
 import {type RemoteElement} from '@lemonmade/remote-ui/elements';
 import {
-  createRemoteComponentRenderer,
+  useRemoteReceived,
+  useReactPropsForElement,
   type RemoteComponentType,
   type RemoteComponentProps,
+  type RemoteComponentRendererProps,
 } from '@lemonmade/remote-ui-react/host';
 import {createThreadAbortSignal} from '@quilted/quilt/threads';
 import {
-  isThreadSignal,
   signal,
+  isThreadSignal,
   type Signal,
   type ThreadSignal,
 } from '@watching/thread-signals';
@@ -24,7 +32,31 @@ export type ReactComponentTypeForClipsElement<Element extends keyof Elements> =
     ? RemoteComponentType<Properties, Slots>
     : never;
 
-export {createRemoteComponentRenderer};
+export function createClipsComponent<Element extends keyof Elements>(
+  element: Element,
+  Component: ForwardRefRenderFunction<
+    any,
+    ReactComponentPropsForClipsElement<Element>
+  >,
+): ForwardRefExoticComponent<RemoteComponentRendererProps> {
+  const ClipsComponent = forwardRef<any, RemoteComponentRendererProps>(
+    function ClipsComponent({element, receiver, components}, ref) {
+      const currentElement = useRemoteReceived(element, receiver) ?? element;
+      const props = useReactPropsForElement<
+        ReactComponentPropsForClipsElement<Element>
+      >(currentElement, {
+        receiver,
+        components,
+      });
+
+      return Component(props!, ref);
+    },
+  );
+
+  ClipsComponent.displayName = `Clips(${element})`;
+
+  return ClipsComponent;
+}
 
 export function usePossibleThreadSignals<T extends Record<string, any>>(
   values: T,

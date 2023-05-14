@@ -1,13 +1,11 @@
-import {Grid as UiGrid} from '@lemon/zest';
+import {InlineGrid as UiInlineGrid} from '@lemon/zest';
 import {createClipsComponent} from './shared.ts';
 
-export const Grid = createClipsComponent(
-  'ui-grid',
-  function Grid({
+export const InlineGrid = createClipsComponent(
+  'ui-inline-grid',
+  function InlineGrid({
     children,
-    direction,
-    blockSizes,
-    inlineSizes,
+    sizes,
     spacing,
     blockSpacing,
     inlineSpacing,
@@ -21,10 +19,8 @@ export const Grid = createClipsComponent(
     paddingInlineStart,
   }) {
     return (
-      <UiGrid
-        direction={direction}
-        blockSizes={blockSizes}
-        inlineSizes={inlineSizes}
+      <UiInlineGrid
+        sizes={sizes}
         spacing={spacing}
         blockSpacing={blockSpacing}
         inlineSpacing={inlineSpacing}
@@ -38,7 +34,7 @@ export const Grid = createClipsComponent(
         paddingInlineStart={paddingInlineStart}
       >
         {children}
-      </UiGrid>
+      </UiInlineGrid>
     );
   },
 );

@@ -14,9 +14,23 @@
       "quilt:esnext": "./build/esnext/index.esnext",
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
+    },
+    "./styles": {
+      "types": "./build/typescript/styles.d.ts",
+      "quilt:source": "./source/styles.ts",
+      "quilt:esnext": "./build/esnext/styles.esnext",
+      "import": "./build/esm/styles.mjs",
+      "require": "./build/cjs/styles.cjs"
     }
   },
   "types": "./build/typescript/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "styles": [
+        "./build/typescript/styles.d.ts"
+      ]
+    }
+  },
   "sideEffects": false,
   "dependencies": {
     "@lemonmade/remote-ui": "^0.1.20",

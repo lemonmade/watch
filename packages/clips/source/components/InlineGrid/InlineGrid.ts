@@ -7,7 +7,7 @@ import {
 } from '../Grid.ts';
 
 export interface InlineGridProperties
-  extends Omit<GridProperties, 'inlineSizes' | 'blockSizes'> {
+  extends Omit<GridProperties, 'direction' | 'inlineSizes' | 'blockSizes'> {
   sizes: NonNullable<GridProperties['inlineSizes']>;
 }
 
