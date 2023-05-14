@@ -1,10 +1,6 @@
-import {
-  Stack as BaseStack,
-  BlockStack as BaseBlockStack,
-  InlineStack as BaseInlineStack,
-} from '@watching/clips';
-import {createRemoteReactComponent} from './shared';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Stack as StackName, StackElement} from '@watching/clips';
 
-export const Stack = createRemoteReactComponent(BaseStack);
-export const BlockStack = createRemoteReactComponent(BaseBlockStack);
-export const InlineStack = createRemoteReactComponent(BaseInlineStack);
+export const Stack = createRemoteComponent(StackElement, {
+  element: StackName,
+});

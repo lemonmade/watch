@@ -1,52 +1,59 @@
-import {type RemoteComponentType} from '@remote-ui/core';
+import {
+  type RemoteElement,
+  type RemoteElementConstructor,
+} from '@lemonmade/remote-ui/elements';
 
 export * from './components/components.ts';
 
 type ComponentTypes = typeof import('./components/components.ts');
 
-export type Components = {
-  [Key in keyof ComponentTypes]: ComponentTypes[Key] extends RemoteComponentType<
-    any,
-    any,
-    any
+export type AnyElement = Extract<
+  ComponentTypes[keyof ComponentTypes],
+  `ui-${string}`
+>;
+
+export type Elements = Pick<HTMLElementTagNameMap, AnyElement>;
+
+export type ElementConstructors = {
+  [Key in keyof Elements]: Elements[Key] extends RemoteElement<
+    infer Properties,
+    infer Slots
   >
-    ? ComponentTypes[Key]
+    ? RemoteElementConstructor<Properties, Slots>
     : never;
 };
 
-export type CommonComponents = Pick<
-  Components,
+export type CommonElements = Pick<
+  Elements,
   // Typography
-  | 'Text'
-  | 'TextBlock'
-  | 'Heading'
+  | 'ui-text'
+  | 'ui-text-block'
+  | 'ui-heading'
 
   // Media
-  | 'Image'
+  | 'ui-image'
 
   // Forms
-  | 'TextField'
+  | 'ui-text-field'
 
   // Interaction
-  | 'Action'
+  | 'ui-action'
 
   // Containers
-  | 'View'
-  | 'Section'
-  | 'Footer'
-  | 'Header'
+  | 'ui-view'
+  | 'ui-section'
+  | 'ui-footer'
+  | 'ui-header'
 
   // Overlays
-  | 'Modal'
-  | 'Popover'
+  | 'ui-modal'
+  | 'ui-popover'
 
   // Layout
-  | 'Stack'
-  | 'BlockStack'
-  | 'InlineStack'
-  | 'Grid'
-  | 'BlockGrid'
-  | 'InlineGrid'
+  | 'ui-stack'
+  | 'ui-block-stack'
+  | 'ui-inline-stack'
+  | 'ui-grid'
+  | 'ui-block-grid'
+  | 'ui-inline-grid'
 >;
-
-export type AnyComponent = Components[keyof Components];

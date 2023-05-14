@@ -86,9 +86,9 @@ function CreateAccountWithEmail() {
       }}
     >
       <TextField
-        type="email"
         label="Email"
         value={email}
+        keyboardType="email"
         autocomplete="email"
       />
     </Form>

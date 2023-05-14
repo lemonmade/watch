@@ -15,19 +15,19 @@ import {useUniqueId} from '../../shared/id.ts';
 import {useContainingForm} from '../../shared/forms.ts';
 import {useMenuController} from '../../shared/menus.ts';
 import {useActionScope} from '../../shared/actions.tsx';
-import {type PropsForClipsComponent} from '../../shared/clips.ts';
+import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Input.module.css';
 
 export type InputProps = Omit<
-  PropsForClipsComponent<'TextField'>,
+  ReactComponentPropsForClipsElement<'ui-text-field'>,
   'label' | 'labelStyle'
 >;
 
 export function Input({
   id: explicitId,
   value: currentValue,
-  type,
+  keyboardType,
   disabled,
   readonly,
   minimumLines = 1,
@@ -60,7 +60,7 @@ export function Input({
   let autoCapitalize: HTMLAttributes<HTMLElement>['autoCapitalize'];
   const inlineStyles: Record<string, any> = {};
 
-  if (type === 'email') {
+  if (keyboardType === 'email') {
     inputMode = 'email';
     autoCorrect = 'off';
     autoCapitalize = 'none';

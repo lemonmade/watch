@@ -1,61 +1,62 @@
 import {
   useRef,
   useEffect,
-  type ReactElement,
-  type ReactNode,
-  type ComponentType,
+  forwardRef,
+  type ForwardRefExoticComponent,
+  type ForwardRefRenderFunction,
 } from 'react';
+import {type Elements} from '@watching/clips';
+import {type RemoteElement} from '@lemonmade/remote-ui/elements';
 import {
-  type Components,
-  type ExtensionPoint,
-  type ComponentsForExtensionPoint,
-} from '@watching/clips';
-import {type RemoteComponentType, type RemoteFragment} from '@remote-ui/core';
+  useRemoteReceived,
+  useReactPropsForElement,
+  type RemoteComponentType,
+  type RemoteComponentProps,
+  type RemoteComponentRendererProps,
+} from '@lemonmade/remote-ui-react/host';
 import {createThreadAbortSignal} from '@quilted/quilt/threads';
 import {
-  isThreadSignal,
   signal,
+  isThreadSignal,
   type Signal,
   type ThreadSignal,
 } from '@watching/thread-signals';
 
-type PropsForRemoteComponent<T> = T extends RemoteComponentType<
-  string,
-  infer Props,
-  any
->
-  ? Props extends Record<string, never>
-    ? {}
-    : {[K in keyof Props]: RemoteFragmentToReactElement<Props[K]>}
-  : never;
+export type ReactComponentPropsForClipsElement<Element extends keyof Elements> =
+  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
+    ? RemoteComponentProps<Properties, Slots>
+    : never;
 
-type RemoteFragmentToReactElement<T> = T extends RemoteFragment<any>
-  ? ReactElement
-  : T;
+export type ReactComponentTypeForClipsElement<Element extends keyof Elements> =
+  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
+    ? RemoteComponentType<Properties, Slots>
+    : never;
 
-export type ReactPropsFromRemoteComponentType<
-  Type extends RemoteComponentType<string, any, any>,
-> = PropsForRemoteComponent<Type> & {
-  children?: ReactNode;
-};
+export function createClipsComponent<Element extends keyof Elements>(
+  element: Element,
+  Component: ForwardRefRenderFunction<
+    any,
+    ReactComponentPropsForClipsElement<Element>
+  >,
+): ForwardRefExoticComponent<RemoteComponentRendererProps> {
+  const ClipsComponent = forwardRef<any, RemoteComponentRendererProps>(
+    function ClipsComponent({element, receiver, components}, ref) {
+      const currentElement = useRemoteReceived(element, receiver) ?? element;
+      const props = useReactPropsForElement<
+        ReactComponentPropsForClipsElement<Element>
+      >(currentElement, {
+        receiver,
+        components,
+      });
 
-export type ReactComponentTypeFromRemoteComponentType<
-  Type extends RemoteComponentType<string, any, any>,
-> = ComponentType<ReactPropsFromRemoteComponentType<Type>>;
+      return Component(props!, ref);
+    },
+  );
 
-export type PropsForClipsComponent<Component extends keyof Components> =
-  ReactPropsFromRemoteComponentType<Components[Component]>;
+  ClipsComponent.displayName = `Clips(${element})`;
 
-export type ReactComponentsForRemoteComponents<
-  Components extends {[key: string]: RemoteComponentType<any, any, any>},
-> = {
-  [Component in keyof Components]: ReactComponentTypeFromRemoteComponentType<
-    Components[Component]
-  >;
-};
-
-export type ReactComponentsForExtensionPoint<Point extends ExtensionPoint> =
-  ReactComponentsForRemoteComponents<ComponentsForExtensionPoint<Point>>;
+  return ClipsComponent;
+}
 
 export function usePossibleThreadSignals<T extends Record<string, any>>(
   values: T,

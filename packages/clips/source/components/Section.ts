@@ -1,1 +1,5 @@
-export {Section, type SectionProps} from './Section/Section.ts';
+export {
+  Section,
+  SectionElement,
+  type SectionProperties,
+} from './Section/Section.ts';

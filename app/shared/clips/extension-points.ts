@@ -1,21 +1,13 @@
 import {
   type ExtensionPoint,
   type SharedGraphQLApi,
-  type ComponentsForExtensionPoint,
   type GraphQLApiForExtensionPoint,
 } from '@watching/clips';
+import {RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
 import {
   type GraphQLLiveResolverCreateHelper,
   type GraphQLLiveResolverObject,
 } from '@lemonmade/graphql-live';
-
-import {type ReactComponentTypeFromRemoteComponentType} from './components.ts';
-
-export type ReactComponentsForExtensionPoint<Point extends ExtensionPoint> = {
-  [Component in keyof ComponentsForExtensionPoint<Point>]: ReactComponentTypeFromRemoteComponentType<
-    ComponentsForExtensionPoint<Point>[Component]
-  >;
-};
 
 export type GraphQLApiByExtensionPoint = {
   [Point in ExtensionPoint]: GraphQLApiForExtensionPoint<Point>;
@@ -52,7 +44,7 @@ export interface ExtensionPointDefinition<
       ExtensionPointDefinitionContext
     >,
   ): GraphQLQueryResolverByExtensionPoint[Point];
-  components(): ReactComponentsForExtensionPoint<Point>;
+  components(): RemoteComponentRendererMap;
 }
 
 export type ExtensionPointDefinitions =

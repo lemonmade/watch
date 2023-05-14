@@ -1,4 +1,6 @@
-import {Modal as BaseModal} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Modal as ModalName, ModalElement} from '@watching/clips';
 
-export const Modal = createRemoteReactComponent(BaseModal);
+export const Modal = createRemoteComponent(ModalElement, {
+  element: ModalName,
+});

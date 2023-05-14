@@ -1,6 +1,6 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
-export interface ModalProps {
+export interface ModalProperties {
   /**
    * Whether to add padding on the inside of the modal.
    *
@@ -8,6 +8,8 @@ export interface ModalProps {
    */
   padding?: boolean;
 }
+
+export const Modal = 'ui-modal';
 
 /**
  * A Modal is an overlay that blocks interaction with the rest of the page. The
@@ -18,4 +20,16 @@ export interface ModalProps {
  * passed to this prop will be automatically opened when the action is pressed, and
  * the action will be given accessibility markup that associates it with the modal.
  */
-export const Modal = createRemoteComponent<'Modal', ModalProps>('Modal');
+export const ModalElement = createRemoteElement<ModalProperties>({
+  properties: {
+    padding: {type: Boolean},
+  },
+});
+
+customElements.define(Modal, ModalElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Modal]: InstanceType<typeof ModalElement>;
+  }
+}

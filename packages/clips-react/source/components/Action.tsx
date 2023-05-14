@@ -1,6 +1,6 @@
-import {Action as BaseAction} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Action as ActionName, ActionElement} from '@watching/clips';
 
-export const Action = createRemoteReactComponent(BaseAction, {
-  fragmentProps: ['overlay'],
+export const Action = createRemoteComponent(ActionElement, {
+  element: ActionName,
 });

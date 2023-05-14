@@ -1,7 +1,7 @@
 import type {ComponentType, PropsWithChildren} from 'react';
 import {variation} from '@lemon/css';
 import type {
-  StackProps as BaseStackProps,
+  StackProperties as BaseStackProps,
   AlignmentKeyword,
 } from '@watching/clips';
 

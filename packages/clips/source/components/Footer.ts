@@ -1,1 +1,1 @@
-export {Footer, type FooterProps} from './Footer/Footer.ts';
+export {Footer, FooterElement, type FooterProperties} from './Footer/Footer.ts';

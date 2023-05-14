@@ -1,15 +1,16 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
 import {
   type CornerRadiusValue,
   type ViewportSizeKeyword,
 } from '../../styles.ts';
+import {RemoteElementCornerRadiusValue} from '../shared.ts';
 
 export type ImageFit = 'stretch' | 'cover' | 'contain';
 export type ImageLoading = 'immediate' | 'in-viewport';
 export type ViewportResolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
 
-export interface ImageProps {
+export interface ImageProperties {
   /**
    * The main source file for this image. When multiple images are provided with
    * the `sources` prop, the image provided here will be used as the fallback when
@@ -98,8 +99,29 @@ export interface ImageSource {
   resolution?: ViewportResolution;
 }
 
+export const Image = 'ui-image';
+
 /**
  * Image is used to visually style and provide semantic value for a small piece of image
  * content.
  */
-export const Image = createRemoteComponent<'Image', ImageProps>('Image');
+export const ImageElement = createRemoteElement<ImageProperties>({
+  properties: {
+    source: {type: String},
+    sources: {type: Array},
+    description: {type: String},
+    accessibilityRole: {type: String},
+    loading: {type: String},
+    fit: {type: String},
+    aspectRatio: {type: Number},
+    cornerRadius: {type: RemoteElementCornerRadiusValue},
+  },
+});
+
+customElements.define(Image, ImageElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Image]: InstanceType<typeof ImageElement>;
+  }
+}

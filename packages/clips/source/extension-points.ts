@@ -1,8 +1,7 @@
 import type {
-  RemoteRoot,
-  RemoteChannel,
-  RemoteComponentType,
-} from '@remote-ui/core';
+  RemoteRootElement,
+  RemoteMutationCallback,
+} from '@lemonmade/remote-ui/elements';
 
 import type {
   Api,
@@ -10,7 +9,6 @@ import type {
   SeriesDetailsGraphQLApi,
   WatchThroughDetailsGraphQLApi,
 } from './api.ts';
-import type {CommonComponents} from './components.ts';
 
 export interface ExtensionPoints {
   'Series.Details.RenderAccessory': RenderExtension<
@@ -26,43 +24,20 @@ export interface ExtensionPoints {
 export type ExtensionPoint = keyof ExtensionPoints;
 
 export type GraphQLApiForExtensionPoint<Point extends ExtensionPoint> =
-  ExtensionPoints[Point] extends RenderExtension<any, infer GraphQLApi, any>
+  ExtensionPoints[Point] extends RenderExtension<any, infer GraphQLApi>
     ? GraphQLApi
-    : never;
-
-export type ComponentsForExtensionPoint<Point extends ExtensionPoint> =
-  ExtensionPoints[Point] extends RenderExtension<any, any, infer Components>
-    ? Components
     : never;
 
 export interface RenderExtension<
   Point extends ExtensionPoint,
   _GraphQLApi = SharedGraphQLApi,
-  Components extends {
-    [key: string]: RemoteComponentType<string, any, any>;
-  } = CommonComponents,
 > {
-  (
-    root: RenderExtensionRoot<Components[keyof Components]>,
-    api: Api<Point>,
-  ): void | Promise<void>;
+  (callback: RemoteMutationCallback, api: Api<Point>): void | Promise<void>;
 }
 
 export interface RenderExtensionWithRemoteRoot<
   Api,
-  Components extends {
-    [key: string]: RemoteComponentType<string, any, any>;
-  } = CommonComponents,
+  _GraphQLApi = SharedGraphQLApi,
 > {
-  (
-    root: RemoteRoot<Components[keyof Components]>,
-    api: Api,
-  ): void | Promise<void>;
-}
-
-export interface RenderExtensionRoot<
-  AllowedComponents extends RemoteComponentType<string, any, any>,
-> {
-  readonly channel: RemoteChannel;
-  readonly components: AllowedComponents[];
+  (root: RemoteRootElement, api: Api): void | Promise<void>;
 }

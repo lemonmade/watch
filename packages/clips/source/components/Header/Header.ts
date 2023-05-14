@@ -1,8 +1,9 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
 
-import {type ViewProps} from '../View.ts';
+export interface HeaderProperties extends ViewProperties {}
 
-export interface HeaderProps extends ViewProps {}
+export const Header = 'ui-header';
 
 /**
  * Headers are container elements that designates part of a section as “introductory content”,
@@ -13,4 +14,14 @@ export interface HeaderProps extends ViewProps {}
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header
  */
-export const Header = createRemoteComponent<'Header', HeaderProps>('Header');
+export const HeaderElement = createRemoteElement<HeaderProperties>({
+  properties: VIEW_PROPERTIES,
+});
+
+customElements.define(Header, HeaderElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Header]: InstanceType<typeof HeaderElement>;
+  }
+}

@@ -1,1 +1,6 @@
-export {Action, type ActionProps} from './Action/Action.ts';
+export {
+  Action,
+  ActionElement,
+  type ActionProperties,
+  type ActionSlots,
+} from './Action/Action.ts';

@@ -1,7 +1,9 @@
 export {
   TextField,
-  type TextFieldProps,
-  type TextFieldType,
+  TextFieldElement,
+  type TextFieldProperties,
+  type TextFieldSlots,
+  type TextFieldKeyboardType,
   type TextFieldLabelStyle,
   type TextFieldChangeTiming,
   type TextFieldAutocompleteTarget,

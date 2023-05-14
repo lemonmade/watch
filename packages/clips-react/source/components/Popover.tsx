@@ -1,4 +1,6 @@
-import {Popover as BasePopover} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Popover as PopoverName, PopoverElement} from '@watching/clips';
 
-export const Popover = createRemoteReactComponent(BasePopover);
+export const Popover = createRemoteComponent(PopoverElement, {
+  element: PopoverName,
+});

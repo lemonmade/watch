@@ -1,8 +1,6 @@
 export {
   Stack,
-  type StackProps,
-  BlockStack,
-  type BlockStackProps,
-  InlineStack,
-  type InlineStackProps,
+  StackElement,
+  COMMON_STACK_PROPERTIES,
+  type StackProperties,
 } from './Stack/Stack.ts';

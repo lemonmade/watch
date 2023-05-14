@@ -1,18 +1,44 @@
-import {
-  Grid as UiGrid,
-  BlockGrid as UiBlockGrid,
-  InlineGrid as UiInlineGrid,
-} from '@lemon/zest';
-import {type PropsForClipsComponent} from './shared';
+import {Grid as UiGrid} from '@lemon/zest';
+import {createClipsComponent} from './shared.ts';
 
-export function Grid({...props}: PropsForClipsComponent<'Grid'>) {
-  return <UiGrid {...props} />;
-}
-
-export function InlineGrid({...props}: PropsForClipsComponent<'InlineGrid'>) {
-  return <UiInlineGrid {...props} />;
-}
-
-export function BlockGrid({...props}: PropsForClipsComponent<'BlockGrid'>) {
-  return <UiBlockGrid {...props} />;
-}
+export const Grid = createClipsComponent(
+  'ui-grid',
+  function Grid({
+    children,
+    direction,
+    blockSizes,
+    inlineSizes,
+    spacing,
+    blockSpacing,
+    inlineSpacing,
+    blockAlignment,
+    inlineAlignment,
+    layoutMode,
+    padding,
+    paddingBlockEnd,
+    paddingBlockStart,
+    paddingInlineEnd,
+    paddingInlineStart,
+  }) {
+    return (
+      <UiGrid
+        direction={direction}
+        blockSizes={blockSizes}
+        inlineSizes={inlineSizes}
+        spacing={spacing}
+        blockSpacing={blockSpacing}
+        inlineSpacing={inlineSpacing}
+        blockAlignment={blockAlignment}
+        inlineAlignment={inlineAlignment}
+        layoutMode={layoutMode}
+        padding={padding}
+        paddingBlockEnd={paddingBlockEnd}
+        paddingBlockStart={paddingBlockStart}
+        paddingInlineEnd={paddingInlineEnd}
+        paddingInlineStart={paddingInlineStart}
+      >
+        {children}
+      </UiGrid>
+    );
+  },
+);

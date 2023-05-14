@@ -1,13 +1,13 @@
-import {createRemoteComponent, type RemoteFragment} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
 import {type SignalOrValue} from '../../signals.ts';
 
-export type TextFieldType = 'text' | 'email';
+export type TextFieldKeyboardType = 'text' | 'email';
 export type TextFieldLabelStyle = 'default' | 'placeholder';
 export type TextFieldChangeTiming = 'commit' | 'input';
 export type TextFieldAutocompleteTarget = 'username' | 'email' | 'webauthn';
 
-export interface TextFieldProps {
+export interface TextFieldProperties {
   /**
    * A unique identifier for the text field. If you do not provide one,
    * one will be generated for you.
@@ -15,12 +15,12 @@ export interface TextFieldProps {
   id?: string;
 
   /**
-   * The type of data that the textfield is meant to collect. This may affect
-   * the keyboard that is shown on virtual keyboards.
+   * A hint for the keyboard to use when entering text on a device with
+   * a virtual keyboard.
    *
    * @default 'text'
    */
-  type?: TextFieldType;
+  keyboardType?: TextFieldKeyboardType;
 
   /**
    * The minimum number of lines of text that will be shown in the text field.
@@ -51,7 +51,7 @@ export interface TextFieldProps {
    * The label to use for this text field. You **must** provide a label so that
    * users get an accessible description of what content to enter in the field.
    */
-  label: string | RemoteFragment<any>;
+  label?: string;
 
   /**
    * The visual style of the label. By default, the label is rendered above the
@@ -136,9 +136,45 @@ export interface TextFieldProps {
   onInput?(value: string): void;
 }
 
+export interface TextFieldSlots {
+  label?: true;
+}
+
+export const TextField = 'ui-text-field';
+
 /**
  * TextField is used to collect text input from a user.
  */
-export const TextField = createRemoteComponent<'TextField', TextFieldProps>(
-  'TextField',
-);
+export const TextFieldElement = createRemoteElement<
+  TextFieldProperties,
+  TextFieldSlots
+>({
+  properties: {
+    id: {type: String},
+    label: {type: String},
+    labelStyle: {type: String},
+    placeholder: {type: String},
+    value: {type: String},
+    disabled: {type: Boolean},
+    readonly: {type: Boolean},
+    autocomplete: {type: String},
+    changeTiming: {type: String},
+    keyboardType: {type: String},
+    resize: {type: Boolean},
+    minimumLines: {type: Number},
+    maximumLines: {type: Number},
+    onChange: {type: Function},
+    onInput: {type: Function},
+  },
+  slots: {
+    label: {},
+  },
+});
+
+customElements.define(TextField, TextFieldElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [TextField]: InstanceType<typeof TextFieldElement>;
+  }
+}

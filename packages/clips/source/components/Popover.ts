@@ -1,6 +1,7 @@
 export {
   Popover,
-  type PopoverProps,
+  PopoverElement,
+  type PopoverProperties,
   type PopoverBlockAttachment,
   type PopoverInlineAttachment,
 } from './Popover/Popover.ts';

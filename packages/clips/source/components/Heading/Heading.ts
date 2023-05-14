@@ -1,4 +1,4 @@
-import {createRemoteComponent} from '@remote-ui/core';
+import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
 /**
  * A visual heading level, which corresponds to a theme-dependent visual design.
@@ -13,7 +13,7 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
  */
 export type HeadingAccessibilityRole = 'heading' | 'presentation';
 
-export interface HeadingProps {
+export interface HeadingProperties {
   /**
    * The visual level of the heading. Headings get a default design according to their
    * accessibility level, which is determined by the nesting of `Section` components containing
@@ -37,6 +37,8 @@ export interface HeadingProps {
   accessibilityRole?: HeadingAccessibilityRole;
 }
 
+export const Heading = 'ui-heading';
+
 /**
  * Headings are used as the title for a section of content. Headings automatically
  * get a default level based on how they are nested in `Section` components. Each `Section`
@@ -46,6 +48,18 @@ export interface HeadingProps {
  * **can not** change the heading level for accessibility purposes. You must use `Section`
  * components to create an accessible document structure.
  */
-export const Heading = createRemoteComponent<'Heading', HeadingProps>(
-  'Heading',
-);
+export const HeadingElement = createRemoteElement<HeadingProperties>({
+  properties: {
+    level: {type: Number},
+    divider: {type: Boolean},
+    accessibilityRole: {type: String},
+  },
+});
+
+customElements.define(Heading, HeadingElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [Heading]: InstanceType<typeof HeadingElement>;
+  }
+}

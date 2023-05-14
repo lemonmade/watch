@@ -4,7 +4,7 @@ import {
   type DynamicValue,
   type StyleDynamicValue,
   type SpacingKeyword as ClipsSpacingKeyword,
-} from '@watching/clips';
+} from '@watching/clips/styles';
 
 export {Style, type CSSLiteralValue};
 

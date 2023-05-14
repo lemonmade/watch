@@ -1,8 +1,7 @@
 export {
   Grid,
-  type GridProps,
-  BlockGrid,
-  type BlockGridProps,
-  InlineGrid,
-  type InlineGridProps,
+  GridElement,
+  SizeValueOrDynamicSizeValue,
+  COMMON_GRID_PROPERTIES,
+  type GridProperties,
 } from './Grid/Grid.ts';

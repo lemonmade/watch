@@ -1,4 +1,6 @@
-import {Section as BaseSection} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Section as SectionName, SectionElement} from '@watching/clips';
 
-export const Section = createRemoteReactComponent(BaseSection);
+export const Section = createRemoteComponent(SectionElement, {
+  element: SectionName,
+});

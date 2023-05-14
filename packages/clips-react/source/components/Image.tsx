@@ -1,4 +1,6 @@
-import {Image as BaseImage} from '@watching/clips';
-import {createRemoteReactComponent} from './shared.tsx';
+import {createRemoteComponent} from '@lemonmade/remote-ui-react';
+import {Image as ImageName, ImageElement} from '@watching/clips';
 
-export const Image = createRemoteReactComponent(BaseImage);
+export const Image = createRemoteComponent(ImageElement, {
+  element: ImageName,
+});

@@ -1,4 +1,4 @@
-import {extension, getQuery, TextBlock, Text} from '@watching/clips-dom';
+import {extension, getQuery, TextBlock, Text} from '@watching/clips';
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension((root, {query, target}) => {
