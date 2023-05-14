@@ -28,8 +28,6 @@
     "@lemonmade/remote-ui-react": "^0.1.11",
     "@quilted/quilt": "^0.5.139",
     "@quilted/react-query": "^0.1.16",
-    "@remote-ui/core": "^2.2.2",
-    "@remote-ui/react": "^5.0.2",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",
     "@stripe/stripe-js": "^1.46.0",
