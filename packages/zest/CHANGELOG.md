@@ -1,5 +1,20 @@
 # @lemon/zest
 
+## 0.1.0
+
+### Minor Changes
+
+- [#233](https://github.com/lemonmade/watch/pull/233) [`042979e`](https://github.com/lemonmade/watch/commit/042979e719f4877342e60fa16cdafc10e8c295bc) Thanks [@lemonmade](https://github.com/lemonmade)! - Update to new remote-ui DOM implementation
+
+### Patch Changes
+
+- [`56d6af7`](https://github.com/lemonmade/watch/commit/56d6af7685722d31becef445969b8c2f62a2855d) Thanks [@lemonmade](https://github.com/lemonmade)! - Add better styling primitives
+
+- Updated dependencies [[`c176a45`](https://github.com/lemonmade/watch/commit/c176a45a7289e1fedcd88d45510cd042285d4436), [`9488b9c`](https://github.com/lemonmade/watch/commit/9488b9c5e07161aeac8ff4d1f29666fe9aa76a0d), [`7415002`](https://github.com/lemonmade/watch/commit/74150021db9431ab8d84435482d5dc6e1fc00883), [`6e1fe5e`](https://github.com/lemonmade/watch/commit/6e1fe5e33121d2373e5c40727b926b10efa22d53), [`cf151b0`](https://github.com/lemonmade/watch/commit/cf151b0f1bb61e2873a33fce7710f0d09f97f087), [`9488b9c`](https://github.com/lemonmade/watch/commit/9488b9c5e07161aeac8ff4d1f29666fe9aa76a0d), [`042979e`](https://github.com/lemonmade/watch/commit/042979e719f4877342e60fa16cdafc10e8c295bc), [`56d6af7`](https://github.com/lemonmade/watch/commit/56d6af7685722d31becef445969b8c2f62a2855d)]:
+  - @watching/react-signals@0.1.5
+  - @watching/thread-signals@0.1.8
+  - @watching/clips@0.3.0
+
 ## 0.0.14
 
 ### Patch Changes

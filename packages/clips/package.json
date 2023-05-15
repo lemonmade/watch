@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips",
-  "version": "0.2.27",
+  "version": "0.3.0",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -34,7 +34,7 @@
   "sideEffects": false,
   "dependencies": {
     "@lemonmade/remote-ui": "^0.1.20",
-    "@watching/thread-signals": "workspace:^0.1.7"
+    "@watching/thread-signals": "workspace:^0.1.8"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"
