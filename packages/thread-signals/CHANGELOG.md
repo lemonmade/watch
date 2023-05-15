@@ -1,5 +1,17 @@
 # @watching/thread-signals
 
+## 0.1.8
+
+### Patch Changes
+
+- [#227](https://github.com/lemonmade/watch/pull/227) [`c176a45`](https://github.com/lemonmade/watch/commit/c176a45a7289e1fedcd88d45510cd042285d4436) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt and react dependencies
+
+* [#230](https://github.com/lemonmade/watch/pull/230) [`7415002`](https://github.com/lemonmade/watch/commit/74150021db9431ab8d84435482d5dc6e1fc00883) Thanks [@lemonmade](https://github.com/lemonmade)! - Update to TypeScript 5
+
+- [`6e1fe5e`](https://github.com/lemonmade/watch/commit/6e1fe5e33121d2373e5c40727b926b10efa22d53) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt
+
+* [`cf151b0`](https://github.com/lemonmade/watch/commit/cf151b0f1bb61e2873a33fce7710f0d09f97f087) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Preact dependencies
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @watching/react-signals
 
+## 0.1.5
+
+### Patch Changes
+
+- [#227](https://github.com/lemonmade/watch/pull/227) [`c176a45`](https://github.com/lemonmade/watch/commit/c176a45a7289e1fedcd88d45510cd042285d4436) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt and react dependencies
+
+* [`6e1fe5e`](https://github.com/lemonmade/watch/commit/6e1fe5e33121d2373e5c40727b926b10efa22d53) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt
+
 ## 0.1.4
 
 ### Patch Changes
