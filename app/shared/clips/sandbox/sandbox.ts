@@ -67,14 +67,13 @@ export async function load(script: string, _: Version) {
 export async function render<T extends ExtensionPoint>(
   id: T,
   callback: RemoteMutationCallback,
-  components: string[],
   api: Api<T>,
 ) {
   retain(callback);
   retain(api);
 
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
-  return runExtensionPoint(id, {channel, components}, api);
+  return runExtensionPoint(id, callback, api);
 }
 
 type ArgumentsForExtensionPoint<T extends ExtensionPoint> = Parameters<

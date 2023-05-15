@@ -159,7 +159,7 @@ export function createClipsManager(
         ]);
       },
       async render({signal, receiver, context}) {
-        const {settings, liveQuery, components, sandbox} = context;
+        const {settings, liveQuery, sandbox} = context;
 
         const api: Api<Point> = {
           target: options.target,
@@ -168,12 +168,7 @@ export function createClipsManager(
           query: createThreadSignal(liveQuery.result, {signal}),
         };
 
-        await sandbox.render(
-          options.target,
-          receiver.receive,
-          Object.keys(components),
-          api as any,
-        );
+        await sandbox.render(options.target, receiver.receive, api as any);
       },
     });
 
@@ -216,7 +211,7 @@ export function createClipsManager(
         ]);
       },
       async render({signal, receiver, context}) {
-        const {settings, liveQuery, components, sandbox} = context;
+        const {settings, liveQuery, sandbox} = context;
 
         const api: Api<Point> = {
           target: options.target,
@@ -225,12 +220,7 @@ export function createClipsManager(
           query: createThreadSignal(liveQuery.result, {signal}),
         };
 
-        await sandbox.render(
-          options.target,
-          receiver.receive,
-          Object.keys(components),
-          api as any,
-        );
+        await sandbox.render(options.target, receiver.receive, api as any);
       },
     });
 

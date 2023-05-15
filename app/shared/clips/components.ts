@@ -1,4 +1,7 @@
-import {type RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
+import {
+  RemoteFragmentRenderer,
+  type RemoteComponentRendererMap,
+} from '@lemonmade/remote-ui-react/host';
 
 import {Action} from './components/Action.tsx';
 import {BlockGrid} from './components/BlockGrid.tsx';
@@ -50,4 +53,7 @@ export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-grid', Grid],
   ['ui-block-grid', BlockGrid],
   ['ui-inline-grid', InlineGrid],
+
+  // remote-ui primitives
+  ['remote-fragment', RemoteFragmentRenderer as any],
 ]);
