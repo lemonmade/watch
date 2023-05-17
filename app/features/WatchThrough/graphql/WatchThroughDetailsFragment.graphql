@@ -81,7 +81,7 @@ fragment WatchThroughDetails on WatchThrough {
   settings {
     spoilerAvoidance
   }
-  clipsInstallations(target: "WatchThrough.Details.RenderAccessory") {
+  clipsInstallations(target: "watch-through.details.accessory") {
     ...ClipsExtension
   }
 }

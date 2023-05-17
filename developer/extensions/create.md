@@ -36,11 +36,11 @@ Extensions are created in an `extensions` directory by default. If you want to f
 
 When you create a new extension, you will be asked what template you’d like to start from. Here is a bit more detail on the templates you can create:
 
-- **Series accessory**: your new extension will target the [`Series.Details.RenderAccessory` extension point](TODO). This extension point renders in the main column of the details screen for a single TV series, below the key details about the series.
+- **Series accessory**: your new extension will target the [`series.details.accessory` extension point](TODO). This extension point renders in the main column of the details screen for a single TV series, below the key details about the series.
 
   You can use this extension point to render additional content about the series. For example, you might render content that references a public wiki about the series, or provide details about the people involved with the series.
 
-- **Watch-through accessory**: your new extension will target the [`WatchThrough.Details.RenderAccessory` extension point](TODO). This extension point renders directly below the section on a series watch-through where the user records the the episodes of the series they are watching.
+- **Watch-through accessory**: your new extension will target the [`watch-through.details.accessory` extension point](TODO). This extension point renders directly below the section on a series watch-through where the user records the the episodes of the series they are watching.
 
   You can use this extension to render additional content about a series that is actively being watched. For example, you could provide a UI that shows theories about a season with a juicy mystery, allow users to draft contestants for a reality show, or link to additional information about the series.
 

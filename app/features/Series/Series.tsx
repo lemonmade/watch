@@ -204,7 +204,7 @@ function AccessoryClips({
   installations: SeriesQueryData.Series['clipsInstallations'];
 }) {
   const accessoryClips = useClips(
-    'Series.Details.RenderAccessory',
+    'series.details.accessory',
     installations,
     {id, name},
   );

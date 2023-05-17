@@ -54,7 +54,7 @@ query Series($id: ID, $handle: String) {
         episode
       }
     }
-    clipsInstallations(target: "Series.Details.RenderAccessory") {
+    clipsInstallations(target: "series.details.accessory") {
       ...ClipsExtension
     }
   }

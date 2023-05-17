@@ -2,7 +2,7 @@ name = "{{ name }}"
 handle = "{{ handle }}"
 
 [[extends]]
-target = "WatchThrough.Details.RenderAccessory"
+target = "watch-through.details.accessory"
 module = "./WatchThroughAccessory.ts"
 query = "./WatchThroughQuery.graphql"
 

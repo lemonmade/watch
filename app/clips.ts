@@ -3,13 +3,12 @@ import {
   type ExtensionPointDefinition,
 } from './shared/clips.ts';
 
-import {SeriesDetailsRenderAccessoryExtensionPoint} from './features/Series.ts';
-import {WatchThroughDetailsRenderAccessoryExtensionPoint} from './features/WatchThrough.ts';
+import {SeriesDetailsAccessoryExtensionPoint} from './features/Series.ts';
+import {WatchThroughDetailsAccessoryExtensionPoint} from './features/WatchThrough.ts';
 
 export const EXTENSION_POINTS = extensionPoints({
-  'Series.Details.RenderAccessory': SeriesDetailsRenderAccessoryExtensionPoint,
-  'WatchThrough.Details.RenderAccessory':
-    WatchThroughDetailsRenderAccessoryExtensionPoint,
+  'series.details.accessory': SeriesDetailsAccessoryExtensionPoint,
+  'watch-through.details.accessory': WatchThroughDetailsAccessoryExtensionPoint,
 });
 
 function extensionPoints<

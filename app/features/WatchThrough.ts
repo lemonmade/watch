@@ -1,6 +1,6 @@
 import {createAsyncComponent} from '@quilted/quilt';
 
-export {WatchThroughDetailsRenderAccessoryExtensionPoint} from './WatchThrough/clips.ts';
+export {WatchThroughDetailsAccessoryExtensionPoint} from './WatchThrough/clips.ts';
 
 export const WatchThrough = createAsyncComponent(
   () => import('./WatchThrough/WatchThrough.tsx'),

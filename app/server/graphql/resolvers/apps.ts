@@ -146,9 +146,10 @@ export const User: Pick<Resolver<'User'>, 'app' | 'apps'> = {
   },
 };
 
-const SeriesExtensionPoint = z.enum([
-  'Series.Details.RenderAccessory',
-] as readonly [ExtensionPoint, ...ExtensionPoint[]]);
+const SeriesExtensionPoint = z.enum(['series.details.accessory'] as readonly [
+  ExtensionPoint,
+  ...ExtensionPoint[],
+]);
 
 export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
   async clipsInstallations({handle}, {target}, {user, prisma}) {
@@ -192,7 +193,7 @@ export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
 };
 
 const WatchThroughExtensionPoint = z.enum([
-  'WatchThrough.Details.RenderAccessory',
+  'watch-through.details.accessory',
 ] as readonly [ExtensionPoint, ...ExtensionPoint[]]);
 
 export const WatchThrough: Pick<
