@@ -138,6 +138,8 @@ const handleQueue: ExportedHandlerQueueHandler<Environment, Message> =
               },
             ],
           }),
+          // @see https://github.com/nodejs/node/issues/46221
+          ...{duplex: 'half'},
         });
 
         if (!response.ok) {

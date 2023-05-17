@@ -399,6 +399,8 @@ async function handleGithubOAuthCallback(
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      // @see https://github.com/nodejs/node/issues/46221
+      ...{duplex: 'half'},
     },
   );
 

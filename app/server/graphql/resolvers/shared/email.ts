@@ -24,6 +24,8 @@ export async function enqueueSendEmail<T extends EmailType>(
       [Header.Token]: await createSignedToken({}, {expiresIn: '5 minutes'}),
       'Content-Type': 'application/json',
     },
+    // @see https://github.com/nodejs/node/issues/46221
+    ...{duplex: 'half'},
   });
 
   if (!response.ok) {

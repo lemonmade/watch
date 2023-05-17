@@ -24,6 +24,8 @@ export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
     headers: {
       Authorization: `Bearer ${Env.TMDB_ACCESS_TOKEN}`,
     },
+    // @see https://github.com/nodejs/node/issues/46221
+    ...{duplex: 'half'},
   });
 
   return fetched.json();
