@@ -203,11 +203,10 @@ function AccessoryClips({
   name: string;
   installations: SeriesQueryData.Series['clipsInstallations'];
 }) {
-  const accessoryClips = useClips(
-    'series.details.accessory',
-    installations,
-    {id, name},
-  );
+  const accessoryClips = useClips('series.details.accessory', installations, {
+    id,
+    name,
+  });
 
   if (accessoryClips.length === 0) return null;
 
