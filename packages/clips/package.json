@@ -52,7 +52,7 @@
     "./build/cjs/elements/**/*.cjs"
   ],
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.1.20",
+    "@lemonmade/remote-ui": "^0.1.23",
     "@watching/thread-signals": "workspace:^0.1.8"
   },
   "eslintConfig": {
