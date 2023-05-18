@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.0
+
+### Minor Changes
+
+- [#234](https://github.com/lemonmade/watch/pull/234) [`fa3eceb`](https://github.com/lemonmade/watch/commit/fa3eceb9d492ae37636683de0c2356e5919fa5e8) Thanks [@lemonmade](https://github.com/lemonmade)! - Update extension point names
+
 ## 0.3.0
 
 ### Minor Changes
