@@ -7,7 +7,6 @@ import type {
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
 import Env from '@quilted/quilt/env';
-import {type ExtensionPoint} from '@watching/clips';
 import {z} from 'zod';
 
 import type {
@@ -146,10 +145,7 @@ export const User: Pick<Resolver<'User'>, 'app' | 'apps'> = {
   },
 };
 
-const SeriesExtensionPoint = z.enum(['series.details.accessory'] as readonly [
-  ExtensionPoint,
-  ...ExtensionPoint[],
-]);
+const SeriesExtensionPoint = z.enum(['series.details.accessory']);
 
 export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
   async clipsInstallations({handle}, {target}, {user, prisma}) {
@@ -192,9 +188,7 @@ export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
   },
 };
 
-const WatchThroughExtensionPoint = z.enum([
-  'watch-through.details.accessory',
-] as readonly [ExtensionPoint, ...ExtensionPoint[]]);
+const WatchThroughExtensionPoint = z.enum(['watch-through.details.accessory']);
 
 export const WatchThrough: Pick<
   Resolver<'WatchThrough'>,
