@@ -28,7 +28,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@quilted/react-signals": "^0.1.6",
+    "@quilted/react-signals": "^0.1.7",
     "@types/react": "^18.0.28"
   },
   "peerDependencies": {
