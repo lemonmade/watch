@@ -1,6 +1,7 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {InlineGrid as InlineGridName, InlineGridElement} from '@watching/clips';
+import {InlineGrid as InlineGridElement} from '@watching/clips/elements';
 
-export const InlineGrid = createRemoteComponent(InlineGridElement, {
-  element: InlineGridName,
-});
+export const InlineGrid = createRemoteComponent(
+  'ui-inline-grid',
+  InlineGridElement,
+);

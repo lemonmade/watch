@@ -1,10 +1,4 @@
-import {
-  extension,
-  getQuery,
-  BlockStack,
-  TextBlock,
-  Text,
-} from '@watching/clips';
+import {extension, getQuery} from '@watching/clips';
 import {type WatchThroughQueryData} from './WatchThroughQuery.graphql';
 
 export default extension((root, {query, target}) => {
@@ -14,18 +8,18 @@ export default extension((root, {query, target}) => {
   let currentWatchContent = contentForCurrentWatch(currentWatch);
   const seriesNameText = document.createTextNode(series.name);
 
-  const blockStack = document.createElement(BlockStack);
+  const blockStack = document.createElement('ui-block-stack');
   blockStack.spacing = true;
 
-  const seriesText = document.createElement(Text);
+  const seriesText = document.createElement('ui-text');
   seriesText.emphasis = true;
   seriesText.append(seriesNameText);
 
-  const targetText = document.createElement(Text);
+  const targetText = document.createElement('ui-text');
   targetText.emphasis = true;
   targetText.append(target);
 
-  const textBlock = document.createElement(TextBlock);
+  const textBlock = document.createElement('ui-text-block');
   textBlock.append(
     'You are rendering in the ',
     targetText,
@@ -64,16 +58,16 @@ export default extension((root, {query, target}) => {
     }
 
     if (currentWatch.rating == null) {
-      const textBlock = document.createElement(TextBlock);
+      const textBlock = document.createElement('ui-text-block');
       textBlock.append('You haven’t rated this episode yet.');
       return textBlock;
     }
 
-    const ratingText = document.createElement(Text);
+    const ratingText = document.createElement('ui-text');
     ratingText.emphasis = true;
     ratingText.append(String(currentWatch.rating));
 
-    const textBlock = document.createElement(TextBlock);
+    const textBlock = document.createElement('ui-text-block');
     textBlock.append('You’ve rated this episode ', ratingText, '.');
 
     return textBlock;

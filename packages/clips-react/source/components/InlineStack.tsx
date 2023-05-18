@@ -1,9 +1,7 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {
-  InlineStack as InlineStackName,
-  InlineStackElement,
-} from '@watching/clips';
+import {InlineStack as InlineStackElement} from '@watching/clips/elements';
 
-export const InlineStack = createRemoteComponent(InlineStackElement, {
-  element: InlineStackName,
-});
+export const InlineStack = createRemoteComponent(
+  'ui-inline-stack',
+  InlineStackElement,
+);

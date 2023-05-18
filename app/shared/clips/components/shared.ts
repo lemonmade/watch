@@ -1,15 +1,13 @@
 import {
   useRef,
   useEffect,
-  forwardRef,
   type ForwardRefExoticComponent,
   type ForwardRefRenderFunction,
 } from 'react';
 import {type Elements} from '@watching/clips';
 import {type RemoteElement} from '@lemonmade/remote-ui/elements';
 import {
-  useRemoteReceived,
-  useReactPropsForElement,
+  createRemoteComponentRenderer,
   type RemoteComponentType,
   type RemoteComponentProps,
   type RemoteComponentRendererProps,
@@ -39,23 +37,7 @@ export function createClipsComponent<Element extends keyof Elements>(
     ReactComponentPropsForClipsElement<Element>
   >,
 ): ForwardRefExoticComponent<RemoteComponentRendererProps> {
-  const ClipsComponent = forwardRef<any, RemoteComponentRendererProps>(
-    function ClipsComponent({element, receiver, components}, ref) {
-      const currentElement = useRemoteReceived(element, receiver) ?? element;
-      const props = useReactPropsForElement<
-        ReactComponentPropsForClipsElement<Element>
-      >(currentElement, {
-        receiver,
-        components,
-      });
-
-      return Component(props!, ref);
-    },
-  );
-
-  ClipsComponent.displayName = `Clips(${element})`;
-
-  return ClipsComponent;
+  return createRemoteComponentRenderer(Component, {name: `Clips(${element})`});
 }
 
 export function usePossibleThreadSignals<T extends Record<string, any>>(

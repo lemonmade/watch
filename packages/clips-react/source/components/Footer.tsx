@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Footer as FooterName, FooterElement} from '@watching/clips';
+import {Footer as FooterElement} from '@watching/clips/elements';
 
-export const Footer = createRemoteComponent(FooterElement, {
-  element: FooterName,
-});
+export const Footer = createRemoteComponent('ui-footer', FooterElement);

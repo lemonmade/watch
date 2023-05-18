@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {View as ViewName, ViewElement} from '@watching/clips';
+import {View as ViewElement} from '@watching/clips/elements';
 
-export const View = createRemoteComponent(ViewElement, {
-  element: ViewName,
-});
+export const View = createRemoteComponent('ui-view', ViewElement);

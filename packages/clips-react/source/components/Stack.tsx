@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Stack as StackName, StackElement} from '@watching/clips';
+import {Stack as StackElement} from '@watching/clips/elements';
 
-export const Stack = createRemoteComponent(StackElement, {
-  element: StackName,
-});
+export const Stack = createRemoteComponent('ui-stack', StackElement);

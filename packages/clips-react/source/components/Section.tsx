@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Section as SectionName, SectionElement} from '@watching/clips';
+import {Section as SectionElement} from '@watching/clips/elements';
 
-export const Section = createRemoteComponent(SectionElement, {
-  element: SectionName,
-});
+export const Section = createRemoteComponent('ui-section', SectionElement);

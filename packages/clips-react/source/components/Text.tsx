@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Text as TextName, TextElement} from '@watching/clips';
+import {Text as TextElement} from '@watching/clips/elements';
 
-export const Text = createRemoteComponent(TextElement, {
-  element: TextName,
-});
+export const Text = createRemoteComponent('ui-text', TextElement);
