@@ -15,6 +15,13 @@
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
     },
+    "./elements": {
+      "types": "./build/typescript/elements.d.ts",
+      "quilt:source": "./source/elements.ts",
+      "quilt:esnext": "./build/esnext/elements.esnext",
+      "import": "./build/esm/elements.mjs",
+      "require": "./build/cjs/elements.cjs"
+    },
     "./styles": {
       "types": "./build/typescript/styles.d.ts",
       "quilt:source": "./source/styles.ts",
@@ -26,14 +33,26 @@
   "types": "./build/typescript/index.d.ts",
   "typesVersions": {
     "*": {
+      "elements": [
+        "./build/typescript/elements.d.ts"
+      ],
       "styles": [
         "./build/typescript/styles.d.ts"
       ]
     }
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./source/elements.ts",
+    "./source/elements/**/*.ts",
+    "./build/esnext/elements.esnext",
+    "./build/esnext/elements/**/*.esnext",
+    "./build/esm/elements.mjs",
+    "./build/esm/elements/**/*.mjs",
+    "./build/cjs/elements.cjs",
+    "./build/cjs/elements/**/*.cjs"
+  ],
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.1.20",
+    "@lemonmade/remote-ui": "^0.1.23",
     "@watching/thread-signals": "workspace:^0.1.8"
   },
   "eslintConfig": {

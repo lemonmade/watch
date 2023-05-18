@@ -1,6 +1,7 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {BlockGrid as BlockGridName, BlockGridElement} from '@watching/clips';
+import {BlockGrid as BlockGridElement} from '@watching/clips/elements';
 
-export const BlockGrid = createRemoteComponent(BlockGridElement, {
-  element: BlockGridName,
-});
+export const BlockGrid = createRemoteComponent(
+  'ui-block-grid',
+  BlockGridElement,
+);

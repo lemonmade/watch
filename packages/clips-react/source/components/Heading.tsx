@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Heading as HeadingName, HeadingElement} from '@watching/clips';
+import {Heading as HeadingElement} from '@watching/clips/elements';
 
-export const Heading = createRemoteComponent(HeadingElement, {
-  element: HeadingName,
-});
+export const Heading = createRemoteComponent('ui-heading', HeadingElement);

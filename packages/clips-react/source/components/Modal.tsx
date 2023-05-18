@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Modal as ModalName, ModalElement} from '@watching/clips';
+import {Modal as ModalElement} from '@watching/clips/elements';
 
-export const Modal = createRemoteComponent(ModalElement, {
-  element: ModalName,
-});
+export const Modal = createRemoteComponent('ui-modal', ModalElement);

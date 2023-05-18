@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Popover as PopoverName, PopoverElement} from '@watching/clips';
+import {Popover as PopoverElement} from '@watching/clips/elements';
 
-export const Popover = createRemoteComponent(PopoverElement, {
-  element: PopoverName,
-});
+export const Popover = createRemoteComponent('ui-popover', PopoverElement);

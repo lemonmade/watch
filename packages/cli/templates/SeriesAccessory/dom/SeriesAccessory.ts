@@ -1,4 +1,4 @@
-import {extension, getQuery, TextBlock, Text} from '@watching/clips';
+import {extension, getQuery} from '@watching/clips';
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension((root, {query, target}) => {
@@ -11,15 +11,15 @@ export default extension((root, {query, target}) => {
     seriesNameText.data = series.name;
   });
 
-  const seriesText = document.createElement(Text);
+  const seriesText = document.createElement('ui-text');
   seriesText.emphasis = true;
   seriesText.append(seriesNameText);
 
-  const targetText = document.createElement(Text);
+  const targetText = document.createElement('ui-text');
   targetText.emphasis = true;
   targetText.append(target);
 
-  const textBlock = document.createElement(TextBlock);
+  const textBlock = document.createElement('ui-text-block');
   textBlock.append(
     'You are rendering in the ',
     targetText,

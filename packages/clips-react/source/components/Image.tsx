@@ -1,6 +1,4 @@
 import {createRemoteComponent} from '@lemonmade/remote-ui-react';
-import {Image as ImageName, ImageElement} from '@watching/clips';
+import {Image as ImageElement} from '@watching/clips/elements';
 
-export const Image = createRemoteComponent(ImageElement, {
-  element: ImageName,
-});
+export const Image = createRemoteComponent('ui-image', ImageElement);
