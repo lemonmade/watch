@@ -1,5 +1,18 @@
 # @watching/cli
 
+## 2.0.0
+
+### Major Changes
+
+- [#234](https://github.com/lemonmade/watch/pull/234) [`fa3eceb`](https://github.com/lemonmade/watch/commit/fa3eceb9d492ae37636683de0c2356e5919fa5e8) Thanks [@lemonmade](https://github.com/lemonmade)! - Update extension point names
+
+### Patch Changes
+
+- [`31831a4`](https://github.com/lemonmade/watch/commit/31831a4814c291ab9a0ff564a075324ac45c9ba4) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilted packages
+
+- Updated dependencies [[`fa3eceb`](https://github.com/lemonmade/watch/commit/fa3eceb9d492ae37636683de0c2356e5919fa5e8)]:
+  - @watching/clips@0.4.0
+
 ## 1.0.0
 
 ### Minor Changes

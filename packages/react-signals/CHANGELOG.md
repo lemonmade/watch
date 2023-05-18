@@ -1,5 +1,11 @@
 # @watching/react-signals
 
+## 0.1.6
+
+### Patch Changes
+
+- [`31831a4`](https://github.com/lemonmade/watch/commit/31831a4814c291ab9a0ff564a075324ac45c9ba4) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilted packages
+
 ## 0.1.5
 
 ### Patch Changes

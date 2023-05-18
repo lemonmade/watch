@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.1
+
+### Patch Changes
+
+- [`31831a4`](https://github.com/lemonmade/watch/commit/31831a4814c291ab9a0ff564a075324ac45c9ba4) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilted packages
+
+- Updated dependencies [[`fa3eceb`](https://github.com/lemonmade/watch/commit/fa3eceb9d492ae37636683de0c2356e5919fa5e8)]:
+  - @watching/clips@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
