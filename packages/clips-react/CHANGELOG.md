@@ -1,5 +1,16 @@
 # @watching/clips-react
 
+## 0.3.2
+
+### Patch Changes
+
+- [#236](https://github.com/lemonmade/watch/pull/236) [`a0247de`](https://github.com/lemonmade/watch/commit/a0247decb8af54d19877bf51f25fca5e6b23bc9f) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
+* [#236](https://github.com/lemonmade/watch/pull/236) [`a0247de`](https://github.com/lemonmade/watch/commit/a0247decb8af54d19877bf51f25fca5e6b23bc9f) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve DOM => React process
+
+* Updated dependencies [[`a0247de`](https://github.com/lemonmade/watch/commit/a0247decb8af54d19877bf51f25fca5e6b23bc9f), [`a0247de`](https://github.com/lemonmade/watch/commit/a0247decb8af54d19877bf51f25fca5e6b23bc9f)]:
+  - @watching/clips@0.4.1
+
 ## 0.3.1
 
 ### Patch Changes
