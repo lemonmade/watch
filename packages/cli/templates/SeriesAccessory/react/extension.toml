@@ -2,7 +2,7 @@ name = "{{ name }}"
 handle = "{{ handle }}"
 
 [[extends]]
-target = "Series.Details.RenderAccessory"
+target = "series.details.accessory"
 module = "./SeriesAccessory.tsx"
 query = "./SeriesQuery.graphql"
 

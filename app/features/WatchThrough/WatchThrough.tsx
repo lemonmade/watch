@@ -799,7 +799,7 @@ function AccessoryClips({
   currentWatch: Signal<WatchForm | undefined>;
 }) {
   const accessoryClips = useClips(
-    'WatchThrough.Details.RenderAccessory',
+    'watch-through.details.accessory',
     installations,
     {id, seriesId: series.id, seriesName: series.name, currentWatch},
   );

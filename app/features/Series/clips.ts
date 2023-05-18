@@ -4,14 +4,14 @@ import {
   createSharedGraphQLApi,
 } from '~/shared/clips.ts';
 
-export interface SeriesDetailsRenderAccessoryOptions {
+export interface SeriesDetailsAccessoryOptions {
   readonly id: string;
   readonly name: string;
 }
 
-export const SeriesDetailsRenderAccessoryExtensionPoint = createExtensionPoint({
-  name: 'Series.Details.RenderAccessory',
-  query({id, name}: SeriesDetailsRenderAccessoryOptions, {object}) {
+export const SeriesDetailsAccessoryExtensionPoint = createExtensionPoint({
+  name: 'series.details.accessory',
+  query({id, name}: SeriesDetailsAccessoryOptions, {object}) {
     return {
       ...createSharedGraphQLApi({object}),
       series: object('Series', {

@@ -11,12 +11,12 @@ import type {
 } from './api.ts';
 
 export interface ExtensionPoints {
-  'Series.Details.RenderAccessory': RenderExtension<
-    'Series.Details.RenderAccessory',
+  'series.details.accessory': RenderExtension<
+    'series.details.accessory',
     SeriesDetailsGraphQLApi
   >;
-  'WatchThrough.Details.RenderAccessory': RenderExtension<
-    'WatchThrough.Details.RenderAccessory',
+  'watch-through.details.accessory': RenderExtension<
+    'watch-through.details.accessory',
     WatchThroughDetailsGraphQLApi
   >;
 }

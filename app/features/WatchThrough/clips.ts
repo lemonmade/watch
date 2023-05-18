@@ -9,77 +9,76 @@ import {
 
 import {type WatchForm} from './WatchThrough.tsx';
 
-export interface WatchThroughDetailsRenderAccessoryOptions {
+export interface WatchThroughDetailsAccessoryOptions {
   readonly id: string;
   readonly seriesId: string;
   readonly seriesName: string;
   readonly currentWatch: Signal<WatchForm | undefined>;
 }
 
-export const WatchThroughDetailsRenderAccessoryExtensionPoint =
-  createExtensionPoint({
-    name: 'WatchThrough.Details.RenderAccessory',
-    query(
-      {
+export const WatchThroughDetailsAccessoryExtensionPoint = createExtensionPoint({
+  name: 'watch-through.details.accessory',
+  query(
+    {
+      id,
+      seriesId,
+      seriesName,
+      currentWatch: currentWatchSignal,
+    }: WatchThroughDetailsAccessoryOptions,
+    helpers,
+  ) {
+    const object = helpers.object;
+
+    return {
+      ...createSharedGraphQLApi(helpers),
+      watchThrough: object('WatchThrough', {
         id,
-        seriesId,
-        seriesName,
-        currentWatch: currentWatchSignal,
-      }: WatchThroughDetailsRenderAccessoryOptions,
-      helpers,
-    ) {
-      const object = helpers.object;
+        series: object('Series', {id: seriesId, name: seriesName}),
+        async *currentWatch(_, __, {signal}) {
+          yield* currentWatch(signal);
+        },
+      }),
+    };
 
-      return {
-        ...createSharedGraphQLApi(helpers),
-        watchThrough: object('WatchThrough', {
-          id,
-          series: object('Series', {id: seriesId, name: seriesName}),
-          async *currentWatch(_, __, {signal}) {
-            yield* currentWatch(signal);
-          },
-        }),
-      };
-
-      async function* currentWatch(signal: AbortSignal) {
-        for await (const watch of signalToIterator(currentWatchSignal, {
-          signal,
-        })) {
-          if (watch == null) {
-            yield null;
-          } else {
-            yield object('WatchThroughCurrentWatch', {
-              rating: (_, __, {signal}) =>
-                signalToIterator(watch.rating, {signal}),
-              async *finishedAt(_, __, {signal}) {
-                for await (const at of signalToIterator(watch.at, {signal})) {
-                  yield at?.toString();
+    async function* currentWatch(signal: AbortSignal) {
+      for await (const watch of signalToIterator(currentWatchSignal, {
+        signal,
+      })) {
+        if (watch == null) {
+          yield null;
+        } else {
+          yield object('WatchThroughCurrentWatch', {
+            rating: (_, __, {signal}) =>
+              signalToIterator(watch.rating, {signal}),
+            async *finishedAt(_, __, {signal}) {
+              for await (const at of signalToIterator(watch.at, {signal})) {
+                yield at?.toString();
+              }
+            },
+            async *notes(_, __, {signal}) {
+              for await (const content of signalToIterator(
+                watch.notes.content,
+                {signal},
+              )) {
+                if (content) {
+                  yield object('Notes', {
+                    content,
+                    containsSpoilers: (_, __, {signal}) =>
+                      signalToIterator(watch.notes.containsSpoilers, {
+                        signal,
+                      }),
+                  });
+                } else {
+                  yield null;
                 }
-              },
-              async *notes(_, __, {signal}) {
-                for await (const content of signalToIterator(
-                  watch.notes.content,
-                  {signal},
-                )) {
-                  if (content) {
-                    yield object('Notes', {
-                      content,
-                      containsSpoilers: (_, __, {signal}) =>
-                        signalToIterator(watch.notes.containsSpoilers, {
-                          signal,
-                        }),
-                    });
-                  } else {
-                    yield null;
-                  }
-                }
-              },
-            });
-          }
+              }
+            },
+          });
         }
       }
-    },
-    components() {
-      return CommonComponents;
-    },
-  });
+    }
+  },
+  components() {
+    return CommonComponents;
+  },
+});
