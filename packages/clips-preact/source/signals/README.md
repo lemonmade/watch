@@ -1,0 +1,1 @@
+This is copied from https://github.com/preactjs/signals/blob/81c4ae4477cee38c86d1ffc7bbec554ffb689a42/packages/preact/src/index.ts, but without the hook that resolves signal props to their values: https://github.com/preactjs/signals/blob/81c4ae4477cee38c86d1ffc7bbec554ffb689a42/packages/preact/src/index.ts#L114-L133.

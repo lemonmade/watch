@@ -1,0 +1,13 @@
+{
+  "extends": "@quilted/typescript/project.json",
+  "compilerOptions": {
+    "rootDir": "source",
+    "outDir": "build/typescript",
+    "lib": ["WebWorker", "DOM", "DOM.Iterable", "esnext"],
+    "types": [],
+    "jsxImportSource": "preact"
+  },
+  "include": ["source"],
+  "exclude": ["quilt.project.ts", "build"],
+  "references": [{"path": "../clips"}, {"path": "../thread-signals"}]
+}
