@@ -406,6 +406,9 @@ importers:
       '@watching/clips':
         specifier: workspace:*
         version: link:../clips
+      '@watching/clips-preact':
+        specifier: workspace:*
+        version: link:../clips-preact
       '@watching/clips-react':
         specifier: workspace:*
         version: link:../clips-react
