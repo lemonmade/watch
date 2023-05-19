@@ -1,0 +1,10 @@
+{
+  "name": "{{ handle }}",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@watching/clips-preact": "^0.1.0",
+    "preact": "^10.14.0"
+  }
+}
