@@ -147,6 +147,7 @@ export const TextField = createRemoteElement<
   TextFieldProperties,
   TextFieldSlots
 >({
+  slots: ['label'],
   properties: {
     id: {type: String},
     label: {type: String},
@@ -163,9 +164,6 @@ export const TextField = createRemoteElement<
     maximumLines: {type: Number},
     onChange: {type: Function},
     onInput: {type: Function},
-  },
-  slots: {
-    label: {},
   },
 });
 

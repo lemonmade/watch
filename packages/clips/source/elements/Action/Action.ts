@@ -31,13 +31,11 @@ export interface ActionSlots {
  * Actions are the primary component used to allow user action.
  */
 export const Action = createRemoteElement<ActionProperties, ActionSlots>({
+  slots: ['overlay'],
   properties: {
     to: {type: String},
     disabled: {type: Boolean},
     onPress: {type: Function},
-  },
-  slots: {
-    overlay: true,
   },
 });
 
