@@ -25,4 +25,11 @@ export {
   InlineGrid,
 } from './components.ts';
 export * from './hooks.ts';
-export {useSignal, useSignalEffect, useComputed} from './signals.ts';
+export {ClipRenderContext, type ClipRenderDetails} from './context.ts';
+export {
+  useSignal,
+  useSignalEffect,
+  useComputed,
+  useSignalState,
+  useSignalValue,
+} from './signals.ts';
