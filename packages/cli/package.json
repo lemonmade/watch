@@ -1,7 +1,7 @@
 {
   "name": "@watching/cli",
   "description": "A CLI to develop apps for watch.lemon.tools",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -61,7 +61,7 @@
     "@watching/clips-react": "workspace:*"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.4.1"
+    "@watching/clips": "^0.4.2"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {
