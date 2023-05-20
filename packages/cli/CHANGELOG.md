@@ -1,5 +1,14 @@
 # @watching/cli
 
+## 2.0.2
+
+### Patch Changes
+
+- [`ee4c134`](https://github.com/lemonmade/watch/commit/ee4c13466c060a6f54ae1617c40d1a3495388817) Thanks [@lemonmade](https://github.com/lemonmade)! - Add basic Preact templates
+
+- Updated dependencies [[`3a7ee47`](https://github.com/lemonmade/watch/commit/3a7ee47921a4d7b97d92b4777eb47954853901ac)]:
+  - @watching/clips@0.4.2
+
 ## 2.0.1
 
 ### Patch Changes

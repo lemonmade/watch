@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.3
+
+### Patch Changes
+
+- [`4ee99ca`](https://github.com/lemonmade/watch/commit/4ee99ca7b0554d1498f55bf0f7f1fe5f0fd1e102) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove Preact details from React library
+
+- Updated dependencies [[`3a7ee47`](https://github.com/lemonmade/watch/commit/3a7ee47921a4d7b97d92b4777eb47954853901ac)]:
+  - @watching/clips@0.4.2
+
 ## 0.3.2
 
 ### Patch Changes
