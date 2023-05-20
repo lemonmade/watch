@@ -1,0 +1,10 @@
+{
+  "extends": "@quilted/typescript/project.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../build/typescript-templates",
+    "jsxImportSource": "preact"
+  },
+  "include": ["./*/preact/**/*"],
+  "references": [{"path": "../../clips"}, {"path": "../../clips-preact"}]
+}

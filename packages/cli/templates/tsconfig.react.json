@@ -5,6 +5,6 @@
     "outDir": "../build/typescript-templates"
   },
   "include": ["."],
-  "exclude": ["quilt.project.ts", "build", "**/*.test.ts"],
+  "exclude": ["quilt.project.ts", "build", "./*/preact/**/*"],
   "references": [{"path": "../../clips"}, {"path": "../../clips-react"}]
 }
