@@ -1,5 +1,4 @@
-import {type ReactNode} from 'react';
-import {render} from 'react-dom';
+import {render, type ComponentChild} from 'preact';
 
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 import {extension as domExtension} from '@watching/clips';
@@ -10,7 +9,7 @@ import {ClipRenderContext, type ClipRenderDetails} from './context.ts';
 export function extension<Target extends ExtensionPoint>(
   renderPreact: (
     api: WithThreadSignals<Api<Target>>,
-  ) => ReactNode | Promise<ReactNode>,
+  ) => ComponentChild | Promise<ComponentChild>,
 ) {
   installHooks();
 
@@ -22,20 +21,11 @@ export function extension<Target extends ExtensionPoint>(
       root,
     };
 
-    await new Promise<void>((resolve, reject) => {
-      try {
-        render(
-          <ClipRenderContext.Provider value={renderDetails}>
-            {rendered}
-          </ClipRenderContext.Provider>,
-          root,
-          () => {
-            resolve();
-          },
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
+    render(
+      <ClipRenderContext.Provider value={renderDetails}>
+        {rendered}
+      </ClipRenderContext.Provider>,
+      root,
+    );
   });
 }

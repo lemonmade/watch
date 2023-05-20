@@ -1,5 +1,5 @@
 import {type ReactNode} from 'react';
-import {render} from 'react-dom';
+import {createRoot} from 'react-dom/client';
 
 import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
 import {extension as domExtension} from '@watching/clips';
@@ -19,20 +19,10 @@ export function extension<Target extends ExtensionPoint>(
       root,
     };
 
-    await new Promise<void>((resolve, reject) => {
-      try {
-        render(
-          <ClipRenderContext.Provider value={renderDetails}>
-            {rendered}
-          </ClipRenderContext.Provider>,
-          root,
-          () => {
-            resolve();
-          },
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
+    createRoot(root).render(
+      <ClipRenderContext.Provider value={renderDetails}>
+        {rendered}
+      </ClipRenderContext.Provider>,
+    );
   });
 }

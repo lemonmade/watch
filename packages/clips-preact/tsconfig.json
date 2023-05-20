@@ -4,7 +4,6 @@
     "rootDir": "source",
     "outDir": "build/typescript",
     "lib": ["WebWorker", "DOM", "DOM.Iterable", "esnext"],
-    "types": [],
     "jsxImportSource": "preact"
   },
   "include": ["source"],
