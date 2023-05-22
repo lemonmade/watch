@@ -1,8 +1,9 @@
+import {extension as domExtension} from '@watching/clips';
+import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
+import '@lemonmade/remote-ui-react/polyfill';
+
 import {type ReactNode} from 'react';
 import {createRoot} from 'react-dom/client';
-
-import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
-import {extension as domExtension} from '@watching/clips';
 
 import {ClipRenderContext, type ClipRenderDetails} from './context.ts';
 
