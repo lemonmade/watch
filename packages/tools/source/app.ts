@@ -237,7 +237,7 @@ async function tryLoad<T>(file: string): Promise<T> {
     throw new Error(`No file: ${file}`);
   }
 
-  const {parse} = await import('toml');
+  const {parse} = await import('@iarna/toml');
 
   const result = parse(await readFile(file, {encoding: 'utf8'}));
 
