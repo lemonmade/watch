@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.0.3
+
+### Patch Changes
+
+- [`84b10de`](https://github.com/lemonmade/watch/commit/84b10de9ff1ed502f620fc9dfb293e98a6493399) Thanks [@lemonmade](https://github.com/lemonmade)! - Use @watching/tools in CLI
+
 ## 2.0.2
 
 ### Patch Changes
