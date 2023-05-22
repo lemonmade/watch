@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.3.4
+
+### Patch Changes
+
+- [`76d9b76`](https://github.com/lemonmade/watch/commit/76d9b7648b2fcc1fffa3e7138a52c108bade7644) Thanks [@lemonmade](https://github.com/lemonmade)! - Add missing React polyfill
+
 ## 0.3.3
 
 ### Patch Changes
