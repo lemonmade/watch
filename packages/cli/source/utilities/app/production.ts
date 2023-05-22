@@ -1,9 +1,8 @@
 import type {GraphQLFetch} from '@quilted/graphql';
+import type {LocalApp, LocalExtension} from '@watching/tools';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
-
-import type {LocalApp, LocalExtension} from './local';
 
 import findAppMatchingLocalDevelopmentQuery from './graphql/FindAppMatchingLocalDevelopmentQuery.graphql';
 import type {FindAppMatchingLocalDevelopmentQueryData} from './graphql/FindAppMatchingLocalDevelopmentQuery.graphql';

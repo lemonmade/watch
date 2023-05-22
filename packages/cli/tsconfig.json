@@ -11,6 +11,7 @@
     {"path": "../clips"},
     {"path": "../clips-preact"},
     {"path": "../clips-react"},
-    {"path": "../graphql"}
+    {"path": "../graphql"},
+    {"path": "../tools"}
   ]
 }

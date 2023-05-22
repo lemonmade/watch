@@ -1,11 +1,7 @@
 import * as path from 'path';
 import {readFile, access} from 'fs/promises';
-import {watch} from 'chokidar';
+import {createEmitter, type Emitter} from '@quilted/events';
 import type {FSWatcher} from 'chokidar';
-import {createEmitter, type Emitter} from '@quilted/cli-kit';
-
-import glob from 'glob';
-import {parse} from '@iarna/toml';
 
 import type {ExtensionPoint} from '@watching/clips';
 
@@ -113,8 +109,8 @@ interface LocalExtensionEntry {
   readonly directories: string[];
 }
 
-export async function loadLocalApp(): Promise<LocalApp> {
-  const configurationPath = path.resolve('app.toml');
+export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
+  const configurationPath = path.resolve(root, 'app.toml');
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     configurationPath,
   );
@@ -133,7 +129,9 @@ export async function loadLocalApp(): Promise<LocalApp> {
     },
   };
 
+  const {watch} = await import('chokidar');
   let watcher: FSWatcher;
+
   const emitter = createEmitter<{change: Omit<LocalApp, 'on'>}>();
 
   return {
@@ -183,6 +181,32 @@ export async function loadLocalApp(): Promise<LocalApp> {
   };
 }
 
+export async function loadLocalExtension(
+  root = process.cwd(),
+): Promise<LocalExtension> {
+  const configurationPath = path.resolve(root, 'extension.toml');
+  const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
+    configurationPath,
+  );
+
+  validateExtensionConfig(configuration);
+
+  return {
+    id:
+      configuration.id ??
+      `gid://watch/LocalClipsExtension/${configuration.handle}`,
+    name: configuration.name,
+    handle: configuration.handle,
+    root,
+    extends: configuration.extends,
+    settings: {fields: [], ...configuration.settings},
+    configurationFile: {
+      path: configurationPath,
+      value: configuration,
+    },
+  };
+}
+
 async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
   const configurationPath = path.resolve('app.toml');
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
@@ -213,6 +237,8 @@ async function tryLoad<T>(file: string): Promise<T> {
     throw new Error(`No file: ${file}`);
   }
 
+  const {parse} = await import('toml');
+
   const result = parse(await readFile(file, {encoding: 'utf8'}));
 
   return result as any;
@@ -239,8 +265,10 @@ async function resolveExtensions(
 
   const extensionEntries =
     typeof extensions === 'string'
-      ? [loadExtensionEntry(extensions)]
-      : extensions.map((extension) => loadExtensionEntry(extension));
+      ? [await loadExtensionEntry(extensions)]
+      : await Promise.all(
+          extensions.map((extension) => loadExtensionEntry(extension)),
+        );
 
   const loadErrors: {directory: string; pattern: string}[] = [];
   const resolvedExtensions: LocalExtension[] = [];
@@ -250,9 +278,7 @@ async function resolveExtensions(
       await Promise.all(
         directories.map(async (directory) => {
           try {
-            resolvedExtensions.push(
-              await loadExtensionFromDirectory(directory),
-            );
+            resolvedExtensions.push(await loadLocalExtension(directory));
           } catch (error) {
             loadErrors.push({directory, pattern});
           }
@@ -272,32 +298,6 @@ async function resolveExtensions(
   return resolvedExtensions;
 }
 
-async function loadExtensionFromDirectory(
-  directory: string,
-): Promise<LocalExtension> {
-  const configurationPath = path.resolve(directory, 'extension.toml');
-  const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
-    configurationPath,
-  );
-
-  validateExtensionConfig(configuration);
-
-  return {
-    id:
-      configuration.id ??
-      `gid://watch/LocalClipsExtension/${configuration.handle}`,
-    name: configuration.name,
-    handle: configuration.handle,
-    root: directory,
-    extends: configuration.extends,
-    settings: {fields: [], ...configuration.settings},
-    configurationFile: {
-      path: configurationPath,
-      value: configuration,
-    },
-  };
-}
-
 function validateExtensionConfig(
   value: Partial<LocalExtensionConfiguration>,
 ): asserts value is LocalExtensionConfiguration {
@@ -312,7 +312,11 @@ function validateExtensionConfig(
   return value as any;
 }
 
-function loadExtensionEntry(pattern: string): LocalExtensionEntry {
+async function loadExtensionEntry(
+  pattern: string,
+): Promise<LocalExtensionEntry> {
+  const {default: glob} = await import('glob');
+
   return {
     pattern,
     directories: glob.sync(

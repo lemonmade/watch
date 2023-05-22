@@ -1,0 +1,76 @@
+{
+  "name": "@watching/tools",
+  "description": "Developer tooling helpers for building Clips extensions",
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "@watching/registry": "https://registry.npmjs.org"
+  },
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemonmade/watch",
+    "directory": "packages/tools"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/typescript/index.d.ts",
+      "quilt:source": "./source/index.ts",
+      "quilt:esnext": "./build/esnext/index.esnext",
+      "import": "./build/esm/index.mjs",
+      "require": "./build/cjs/index.cjs"
+    },
+    "./rollup": {
+      "types": "./build/typescript/rollup.d.ts",
+      "quilt:source": "./source/rollup.ts",
+      "quilt:esnext": "./build/esnext/rollup.esnext",
+      "import": "./build/esm/rollup.mjs",
+      "require": "./build/cjs/rollup.cjs"
+    }
+  },
+  "types": "./build/typescript/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "rollup": [
+        "./build/typescript/rollup.d.ts"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-replace": "^5.0.0",
+    "@quilted/events": "^0.1.18",
+    "ansi-escapes": "^6.0.0",
+    "chokidar": "^3.5.0",
+    "glob": "^10.0.0",
+    "rollup": "^3.20.0",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "toml": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@watching/clips": "^0.4.2"
+  },
+  "peerDependenciesMeta": {
+    "@watching/clips": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@quilted/testing": "^0.1.0",
+    "@watching/clips": "workspace:*"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@quilted/eslint-config/project"
+    ]
+  },
+  "browserslist": [
+    "extends @quilted/browserslist-config/defaults"
+  ]
+}
