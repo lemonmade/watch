@@ -315,11 +315,11 @@ function validateExtensionConfig(
 async function loadExtensionEntry(
   pattern: string,
 ): Promise<LocalExtensionEntry> {
-  const {default: glob} = await import('glob');
+  const {globSync} = await import('glob');
 
   return {
     pattern,
-    directories: glob.sync(
+    directories: globSync(
       pattern.endsWith(path.sep) ? pattern : `${pattern}${path.sep}`,
       {absolute: true},
     ),
