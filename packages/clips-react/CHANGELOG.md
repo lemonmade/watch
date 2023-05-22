@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.3.5
+
+### Patch Changes
+
+- [`3367eeb`](https://github.com/lemonmade/watch/commit/3367eebb14bf7f44f81b62a7209b6b6dd58b8069) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix React children
+
 ## 0.3.4
 
 ### Patch Changes
