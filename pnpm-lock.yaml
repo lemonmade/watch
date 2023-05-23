@@ -395,8 +395,8 @@ importers:
   packages/clips:
     dependencies:
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@watching/thread-signals':
         specifier: workspace:^
         version: link:../thread-signals
@@ -4213,7 +4213,7 @@ packages:
       preact:
         optional: true
     dependencies:
-      '@lemonmade/remote-ui': 0.1.26
+      '@lemonmade/remote-ui': 0.1.27
       preact: 10.14.1
     dev: false
 
@@ -4239,7 +4239,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@lemonmade/remote-ui': 0.1.26
+      '@lemonmade/remote-ui': 0.1.27
       '@types/react': 18.2.6
       react: 18.0.0
     dev: false
@@ -4247,6 +4247,11 @@ packages:
   /@lemonmade/remote-ui@0.1.26:
     resolution: {integrity: sha512-7NrTWITeikaqL6FZulkKubYMKrbt0wIajO15xeHWcN5uga+L+8GigwrYe8/iaIj914mGuoKdUtoAlhuyVT+eSA==}
     engines: {node: '>=14.0.0'}
+
+  /@lemonmade/remote-ui@0.1.27:
+    resolution: {integrity: sha512-MI6WeefTzCb88uAwhsVJtHMWkGK7W+HnwaqjXGJqV99lFRU4uQEJB+vmJo1824ZPKCVcrUNClviFceZnEYRpMQ==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /@manypkg/find-root@1.1.0:
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}

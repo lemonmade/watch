@@ -8,7 +8,7 @@ export {type Schema as WatchThroughDetailsGraphQLApi} from './graphql/WatchThrou
 
 export type Version = 'unstable';
 
-export interface Api<Point extends ExtensionPoint> {
+export interface Api<Point extends ExtensionPoint = ExtensionPoint> {
   readonly version: Version;
   readonly target: Point;
   readonly settings: ThreadSignal<Record<string, unknown>>;
