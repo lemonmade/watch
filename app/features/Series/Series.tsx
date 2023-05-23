@@ -227,6 +227,8 @@ function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {
       return <Tag>Cancelled</Tag>;
     case 'RETURNING':
       return <Tag>Continuing</Tag>;
+    case 'IN_PRODUCTION':
+      return <Tag>In production</Tag>;
   }
 }
 
