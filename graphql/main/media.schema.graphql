@@ -59,6 +59,7 @@ enum SeriesStatus {
   RETURNING
   ENDED
   CANCELLED
+  IN_PRODUCTION
 }
 
 type Series {

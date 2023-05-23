@@ -167,6 +167,7 @@ enum SeriesStatus {
   ENDED
   CANCELLED
   RETURNING
+  IN_PRODUCTION
 }
 
 model Series {

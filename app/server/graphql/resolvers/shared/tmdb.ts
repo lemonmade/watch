@@ -173,6 +173,8 @@ function tmdbStatusToEnum(status: TmdbSeries['status']) {
       return 'ENDED';
     case 'Canceled':
       return 'CANCELLED';
+    case 'In Production':
+      return 'IN_PRODUCTION';
     default: {
       throw new Error(`Unrecognized status: ${status}`);
     }
