@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.3
+
+### Patch Changes
+
+- [`51bcb46`](https://github.com/lemonmade/watch/commit/51bcb46ff9c240e9d90af412236cf7a19f14c2c1) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing element definitions in DOM library
+
 ## 0.4.2
 
 ### Patch Changes
