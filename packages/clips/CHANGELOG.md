@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.4
+
+### Patch Changes
+
+- [`36abaf6`](https://github.com/lemonmade/watch/commit/36abaf6517472fd8b150ddd2948abb52edfee3b6) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix some clips issues
+
 ## 0.4.3
 
 ### Patch Changes
