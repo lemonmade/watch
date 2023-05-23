@@ -38,4 +38,7 @@ export function Extension() {
   );
 }
 
-export default extension(() => <Extension />);
+export default extension<
+  'watch-through.details.accessory',
+  WatchThroughQueryData
+>(() => <Extension />);

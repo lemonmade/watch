@@ -19,4 +19,6 @@ export function Extension() {
   );
 }
 
-export default extension(() => <Extension />);
+export default extension<'series.details.accessory', SeriesQueryData>(() => (
+  <Extension />
+));

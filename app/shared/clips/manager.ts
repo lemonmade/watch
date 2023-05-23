@@ -1,6 +1,6 @@
 import {createRenderer} from '@watching/thread-render';
 
-import {type Api} from '@watching/clips';
+import {type ApiCore} from '@watching/clips';
 import {
   signal,
   createEmitter,
@@ -161,7 +161,7 @@ export function createClipsManager(
       async render({signal, receiver, context}) {
         const {settings, liveQuery, sandbox} = context;
 
-        const api: Api<Point> = {
+        const api: ApiCore<Point> = {
           target: options.target,
           version: options.version,
           settings: createThreadSignal(settings, {signal}),
@@ -213,7 +213,7 @@ export function createClipsManager(
       async render({signal, receiver, context}) {
         const {settings, liveQuery, sandbox} = context;
 
-        const api: Api<Point> = {
+        const api: ApiCore<Point> = {
           target: options.target,
           version: 'unstable',
           settings: createThreadSignal(settings, {signal}),

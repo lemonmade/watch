@@ -9,10 +9,10 @@ export {type Signal};
 export type SignalOrValue<T> = T | Signal<T>;
 
 export type WithThreadSignals<T> = {
-  [K in keyof T]: T[K] extends ThreadSignal<infer U> ? Signal<U> : T[K];
+  [K in keyof T]: T[K] extends Signal<infer U> ? ThreadSignal<U> : T[K];
 };
 
-export function acceptSignals<T extends {}>(value: T): WithThreadSignals<T> {
+export function acceptSignals<T extends {}>(value: WithThreadSignals<T>): T {
   const acceptedValue: Record<string, any> = {};
 
   for (const [key, nestedValue] of Object.entries(value)) {

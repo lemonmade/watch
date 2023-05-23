@@ -12,12 +12,12 @@ import type {
   ClipsApi,
   Version,
   ExtensionPoint,
-  ExtensionPoints,
+  ExtensionPointsCore,
 } from '@watching/clips';
 
 const registeredExtensions = new Map<
-  keyof ExtensionPoints,
-  ExtensionPoints[keyof ExtensionPoints]
+  keyof ExtensionPointsCore,
+  ExtensionPointsCore[keyof ExtensionPointsCore]
 >();
 
 const clips: ClipsApi = Object.freeze({
@@ -77,11 +77,11 @@ export async function render<T extends ExtensionPoint>(
 }
 
 type ArgumentsForExtensionPoint<T extends ExtensionPoint> = Parameters<
-  ExtensionPoints[T]
+  ExtensionPointsCore[T]
 >;
 
 type ReturnTypeForExtensionPoint<T extends ExtensionPoint> = ReturnType<
-  ExtensionPoints[T]
+  ExtensionPointsCore[T]
 >;
 
 function runExtensionPoint<T extends ExtensionPoint>(

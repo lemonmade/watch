@@ -7,12 +7,10 @@ import {
 
 import {
   type ExtensionPoint,
-  type ExtensionPoints,
   type RenderExtension,
-  type RenderExtensionWithRemoteRoot,
+  type RenderExtensionCore,
 } from './extension-points.ts';
-import {acceptSignals, type WithThreadSignals} from './signals.ts';
-import {type Api} from './api.ts';
+import {acceptSignals} from './signals.ts';
 
 customElements.define('remote-root', RemoteRootElement);
 customElements.define('remote-fragment', RemoteFragmentElement);
@@ -24,18 +22,13 @@ declare global {
   }
 }
 
-export type ExtensionPointsWithWrapper = {
-  [Target in ExtensionPoint]: ExtensionPoints[Target] extends RenderExtension<
-    Target,
-    infer GraphQLApi
-  >
-    ? RenderExtensionWithRemoteRoot<WithThreadSignals<Api<Target>>, GraphQLApi>
-    : never;
-};
-
-export function extension<Target extends ExtensionPoint>(
-  run: ExtensionPointsWithWrapper[Target],
-): ExtensionPoints[Target] {
+export function extension<
+  Target extends ExtensionPoint = ExtensionPoint,
+  Query = Record<string, unknown>,
+  Settings = Record<string, unknown>,
+>(
+  run: RenderExtension<Target, Query, Settings>,
+): RenderExtensionCore<Target, Query, Settings> {
   async function extension(callback: RemoteMutationCallback, api: unknown) {
     const root = document.createElement('remote-root');
     await (run as any)(root, acceptSignals(api as any));

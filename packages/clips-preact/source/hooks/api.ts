@@ -1,9 +1,11 @@
-import type {Api, ExtensionPoint, WithThreadSignals} from '@watching/clips';
+import type {Api, ExtensionPoint} from '@watching/clips';
 
 import {useClipRenderContext} from '../context.ts';
 
 export function useApi<
   Point extends ExtensionPoint = ExtensionPoint,
->(): WithThreadSignals<Api<Point>> {
-  return useClipRenderContext().api as WithThreadSignals<Api<Point>>;
+  Query = Record<string, unknown>,
+  Settings = Record<string, unknown>,
+>(): Api<Point, Query, Settings> {
+  return useClipRenderContext().api as any;
 }

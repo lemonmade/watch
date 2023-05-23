@@ -3,7 +3,10 @@ import {extension, getQuery} from '@watching/clips';
 
 import {type WatchThroughQueryData} from './WatchThroughQuery.graphql';
 
-export default extension((root, {query, target}) => {
+export default extension<
+  'watch-through.details.accessory',
+  WatchThroughQueryData
+>((root, {query, target}) => {
   const {watchThrough} = getQuery<WatchThroughQueryData>(query);
   const {series, currentWatch} = watchThrough;
 
