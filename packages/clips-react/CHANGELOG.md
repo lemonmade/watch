@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.8
+
+### Patch Changes
+
+- [`679454c`](https://github.com/lemonmade/watch/commit/679454c26d2bafaaab7756a811ffca10e89ad136) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve clips typings
+
+- Updated dependencies [[`679454c`](https://github.com/lemonmade/watch/commit/679454c26d2bafaaab7756a811ffca10e89ad136)]:
+  - @watching/clips@0.4.5
+
 ## 0.3.7
 
 ### Patch Changes
