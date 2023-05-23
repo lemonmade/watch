@@ -126,14 +126,14 @@ importers:
         specifier: ^0.1.14
         version: 0.1.14(graphql@16.6.0)
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@lemonmade/remote-ui-react':
-        specifier: ^0.1.17
-        version: 0.1.17(@quilted/react@18.2.3)
+        specifier: ^0.1.18
+        version: 0.1.18(@quilted/react@18.2.3)
       '@quilted/quilt':
         specifier: ^0.5.140
-        version: 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.14.1)(prettier@2.7.1)(rollup@3.7.4)
+        version: 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.0)(prettier@2.7.1)(rollup@3.7.4)
       '@quilted/react-query':
         specifier: ^0.1.17
         version: 0.1.17(@quilted/craft@0.1.201)(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@tanstack/react-query@4.20.4)
@@ -404,8 +404,8 @@ importers:
   packages/clips-preact:
     dependencies:
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@lemonmade/remote-ui-preact':
         specifier: ^0.1.4
         version: 0.1.4(preact@10.14.1)
@@ -432,11 +432,11 @@ importers:
   packages/clips-react:
     dependencies:
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@lemonmade/remote-ui-react':
         specifier: ^0.1.18
-        version: 0.1.18(react@18.0.0)
+        version: 0.1.18(@quilted/react@18.2.3)
       '@preact/signals-core':
         specifier: ^1.3.0
         version: 1.3.0
@@ -489,8 +489,8 @@ importers:
   packages/thread-render:
     dependencies:
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@preact/signals-core':
         specifier: ^1.3.0
         version: 1.3.0
@@ -570,11 +570,11 @@ importers:
         specifier: workspace:*
         version: link:../css
       '@lemonmade/remote-ui':
-        specifier: ^0.1.26
-        version: 0.1.26
+        specifier: ^0.1.27
+        version: 0.1.27
       '@lemonmade/remote-ui-react':
-        specifier: ^0.1.17
-        version: 0.1.17(@quilted/react@18.2.3)
+        specifier: ^0.1.18
+        version: 0.1.18(@quilted/react@18.2.3)
       '@preact/signals-core':
         specifier: ^1.3.0
         version: 1.3.0
@@ -4217,20 +4217,7 @@ packages:
       preact: 10.14.1
     dev: false
 
-  /@lemonmade/remote-ui-react@0.1.17(@quilted/react@18.2.3):
-    resolution: {integrity: sha512-X1vswPCG2shE1n+nEOlfnrnLk45MtlayzA7i/SEhgmsFjK3W5XKSf+67241/P7rzkiWLkYGebdw+Zsns+6elFw==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-    dependencies:
-      '@lemonmade/remote-ui': 0.1.26
-      '@types/react': 18.2.0
-      react: /@quilted/react@18.2.3
-
-  /@lemonmade/remote-ui-react@0.1.18(react@18.0.0):
+  /@lemonmade/remote-ui-react@0.1.18(@quilted/react@18.2.3):
     resolution: {integrity: sha512-sViCH+TjxZ/tYzb/e1ADlUsDysLZ9/N5okauwqcd3vnWzHJV9SebGG4pwVkNfbSupx3P9iYAUII1XVfu4yViJw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -4241,17 +4228,11 @@ packages:
     dependencies:
       '@lemonmade/remote-ui': 0.1.27
       '@types/react': 18.2.6
-      react: 18.0.0
-    dev: false
-
-  /@lemonmade/remote-ui@0.1.26:
-    resolution: {integrity: sha512-7NrTWITeikaqL6FZulkKubYMKrbt0wIajO15xeHWcN5uga+L+8GigwrYe8/iaIj914mGuoKdUtoAlhuyVT+eSA==}
-    engines: {node: '>=14.0.0'}
+      react: /@quilted/react@18.2.3
 
   /@lemonmade/remote-ui@0.1.27:
     resolution: {integrity: sha512-MI6WeefTzCb88uAwhsVJtHMWkGK7W+HnwaqjXGJqV99lFRU4uQEJB+vmJo1824ZPKCVcrUNClviFceZnEYRpMQ==}
     engines: {node: '>=14.0.0'}
-    dev: false
 
   /@manypkg/find-root@1.1.0:
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -4933,6 +4914,61 @@ packages:
       - supports-color
     dev: true
 
+  /@quilted/quilt@0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.0)(prettier@2.7.1)(rollup@3.7.4):
+    resolution: {integrity: sha512-zZqYg474kooAdBvzsjZIEs4FRi4XN3sk6y/8k+PasDzBIdwgScwZAn/lLSWCXoFx/EV4G1nYczI7sgBPeXMJmw==}
+    peerDependencies:
+      prettier: ^2.0.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      prettier:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      '@quilted/assets': 0.0.3(rollup@3.7.4)
+      '@quilted/async': 0.3.40(@babel/core@7.21.8)(rollup@3.7.4)
+      '@quilted/events': 0.1.18
+      '@quilted/graphql': 0.4.57
+      '@quilted/polyfills': 0.2.34
+      '@quilted/react': 18.2.3
+      '@quilted/react-assets': 0.0.4(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(rollup@3.7.4)
+      '@quilted/react-async': 0.3.47(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(rollup@3.7.4)
+      '@quilted/react-dom': 18.2.4
+      '@quilted/react-graphql': 0.4.54(@babel/core@7.21.8)(@quilted/react@18.2.3)(rollup@3.7.4)
+      '@quilted/react-html': 0.3.49(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
+      '@quilted/react-http': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
+      '@quilted/react-idle': 0.3.23(@quilted/react@18.2.3)
+      '@quilted/react-localize': 0.1.15(@quilted/react-dom@18.2.4)(@quilted/react-http@0.3.29)(@quilted/react@18.2.3)(@quilted/request-router@0.1.6)
+      '@quilted/react-performance': 0.1.19(@quilted/react@18.2.3)
+      '@quilted/react-router': 0.3.59(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
+      '@quilted/react-server-render': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
+      '@quilted/react-signals': 0.1.7(@quilted/react@18.2.3)
+      '@quilted/react-testing': 0.5.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.0)
+      '@quilted/react-utilities': 0.1.11(@quilted/react@18.2.3)
+      '@quilted/react-workers': 0.2.30(@babel/core@7.21.8)(@quilted/react@18.2.3)
+      '@quilted/request-router': 0.1.6
+      '@quilted/testing': 0.1.5
+      '@quilted/threads': 0.1.14
+      '@quilted/useful-react-types': 0.1.11
+      '@types/jest': 27.5.2
+      prettier: 2.7.1
+      react: /@quilted/react@18.2.3
+      react-dom: /@quilted/react-dom@18.2.4
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/traverse'
+      - '@babel/types'
+      - '@jest/globals'
+      - jest-matcher-utils
+      - preact
+      - react-test-renderer
+      - rollup
+      - supports-color
+    dev: true
+
   /@quilted/react-assets@0.0.4(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(rollup@3.7.4):
     resolution: {integrity: sha512-x7d8JhuM3qMFnbRAljaPJBXVzcNwgNE+MIxt+/4iJs12FcZhDbmmk8QFpbA6bYCoy2FxuCzl6OYN7tCgZBkc3g==}
     engines: {node: '>=14.0.0'}
@@ -4944,7 +4980,7 @@ packages:
     dependencies:
       '@quilted/assets': 0.0.3(rollup@3.7.4)
       '@quilted/react-server-render': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
-      '@types/react': 18.2.6
+      '@types/react': 18.2.0
       react: /@quilted/react@18.2.3
     transitivePeerDependencies:
       - react-dom
@@ -5032,7 +5068,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/react-server-render': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
-      '@types/react': 18.2.6
+      '@types/react': 18.2.0
       react: /@quilted/react@18.2.3
       react-dom: /@quilted/react-dom@18.2.4
     dev: true
@@ -5122,7 +5158,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/craft': 0.1.201(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
-      '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.14.1)(prettier@2.7.1)(rollup@3.7.4)
+      '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.0)(prettier@2.7.1)(rollup@3.7.4)
       '@quilted/useful-types': 0.2.17
       '@tanstack/react-query': 4.20.4(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       react: /@quilted/react@18.2.3
@@ -5158,7 +5194,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/react-utilities': 0.1.11(@quilted/react@18.2.3)
-      '@types/react': 18.2.6
+      '@types/react': 18.2.0
       react: /@quilted/react@18.2.3
       react-dom: /@quilted/react-dom@18.2.4
     dev: true
@@ -5203,6 +5239,32 @@ packages:
       react-dom: /@quilted/react-dom@18.2.4
     dev: true
 
+  /@quilted/react-testing@0.5.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.0):
+    resolution: {integrity: sha512-5nnPoKw5csv9bWHfY082SBNKGl2OhrEN+fFLV1gQQp5IQtrYQtSxHyt87pHfzcRCg0ytfUmWcCi2KsSGk6NKSQ==}
+    peerDependencies:
+      '@jest/globals': ^27.0.0
+      preact: ^10.14.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+      react-test-renderer: ^18.0.0
+    peerDependenciesMeta:
+      '@jest/globals':
+        optional: true
+      preact:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      react-test-renderer:
+        optional: true
+    dependencies:
+      jest-matcher-utils: 27.5.1
+      preact: 10.15.0
+      react: /@quilted/react@18.2.3
+      react-dom: /@quilted/react-dom@18.2.4
+    dev: true
+
   /@quilted/react-utilities@0.1.11(@quilted/react@18.2.3):
     resolution: {integrity: sha512-z9/nXAzllsrFPmZWu8akZMP3G5T2udlI1G/GsV20bZRmbdjbH69elNrgxwPiYc1iHWht+9ZCPR0UCqX3Nh7Zdw==}
     engines: {node: '>=14.0.0'}
@@ -5232,7 +5294,7 @@ packages:
   /@quilted/react@18.2.3:
     resolution: {integrity: sha512-/TVVpbHB+GpCtn5R+KPOP78QmHOYstG+3EjYk+WuzxcHLywbj4bD7K6idgKpAJMjQL1Ac/rGS14ybSyHDWFung==}
     dependencies:
-      '@types/react': 18.2.6
+      '@types/react': 18.2.0
       preact: 10.14.1
 
   /@quilted/request-router@0.1.6:
@@ -6546,7 +6608,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.2.1
+      ieee754: 1.1.13
       isarray: 1.0.0
     dev: false
 
@@ -8717,6 +8779,7 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
@@ -9679,7 +9742,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonwebtoken@8.5.1:
@@ -11064,6 +11127,10 @@ packages:
 
   /preact@10.14.1:
     resolution: {integrity: sha512-4XDSnUisk3YFBb3p9WeKeH1mKoxdFUsaXcvxs9wlpYR1wax/TWJVqhwmIWbByX0h7jMEJH6Zc5J6jqc58FKaNQ==}
+
+  /preact@10.15.0:
+    resolution: {integrity: sha512-nZSa8M2R2m1n7nJSBlzDpxRJaIsejrTO1vlFbdpFvyC8qM1iU+On2y0otfoUm6SRB5o0lF0CKDFxg6grEFU0iQ==}
+    dev: true
 
   /preferred-pm@3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}
