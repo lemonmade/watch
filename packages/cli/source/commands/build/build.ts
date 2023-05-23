@@ -8,7 +8,7 @@ import {buildDetailsForExtension, ensureRootOutputDirectory} from '../../utiliti
 import {createRollupConfiguration} from '../../utilities/rollup';
 import {brotliSize} from '../../utilities/sizes';
 
-const BUNDLE_SIZE_GOOD = 10_000;
+const BUNDLE_SIZE_GOOD = 15_000;
 const BUNDLE_SIZE_OKAY = 40_000;
 
 export async function build({ui}: {ui: Ui}) {

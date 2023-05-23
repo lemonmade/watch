@@ -84,7 +84,7 @@ export async function create({ui}: {ui: Ui}) {
 
   const directory = args['--directory']
     ? path.resolve(args['--directory'])
-    : path.resolve('extensions', toPascalCase(handle));
+    : path.resolve('extensions', handle);
 
   if (!(await isEmpty(directory))) {
     const overwrite = await prompt({
@@ -209,11 +209,4 @@ function toHandle(projectName: string) {
     .replace(/\s+/g, '-')
     .replace(/^[._]/, '')
     .replace(/[^a-z0-9-~@/]+/g, '-');
-}
-
-function toPascalCase(value: string) {
-  return (
-    value[0]!.toUpperCase() +
-    value.slice(1).replace(/[_.\- ]+(\w|$)/g, (_, x) => x.toUpperCase())
-  );
 }
