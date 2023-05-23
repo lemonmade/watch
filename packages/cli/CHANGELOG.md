@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 2.0.5
+
+### Patch Changes
+
+- [`5547140`](https://github.com/lemonmade/watch/commit/55471405a189c86b13f0fe8e13c9fbb5961edc30) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve CLI creation flow
+
+* [`51bcb46`](https://github.com/lemonmade/watch/commit/51bcb46ff9c240e9d90af412236cf7a19f14c2c1) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing element definitions in DOM library
+
+* Updated dependencies [[`51bcb46`](https://github.com/lemonmade/watch/commit/51bcb46ff9c240e9d90af412236cf7a19f14c2c1)]:
+  - @watching/clips@0.4.3
+  - @watching/tools@0.1.1
+
 ## 2.0.4
 
 ### Patch Changes
