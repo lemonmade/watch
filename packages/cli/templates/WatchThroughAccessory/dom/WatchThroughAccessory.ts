@@ -1,4 +1,6 @@
+import '@watching/clips/elements';
 import {extension, getQuery} from '@watching/clips';
+
 import {type WatchThroughQueryData} from './WatchThroughQuery.graphql';
 
 export default extension((root, {query, target}) => {

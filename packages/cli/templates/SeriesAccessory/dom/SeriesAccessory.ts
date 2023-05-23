@@ -1,4 +1,6 @@
+import '@watching/clips/elements';
 import {extension, getQuery} from '@watching/clips';
+
 import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension((root, {query, target}) => {

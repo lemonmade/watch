@@ -1,3 +1,5 @@
+import '@lemonmade/remote-ui/polyfill';
+
 import {
   type RemoteElement,
   type RemoteElementConstructor,
