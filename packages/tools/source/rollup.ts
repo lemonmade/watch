@@ -15,7 +15,7 @@ import esbuild, {type Options as ESBuildOptions} from 'rollup-plugin-esbuild';
 const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.js';
 
 export function extensionRollupConfiguration(
-  configurationFile: string | URL,
+  configurationFile: string,
   {
     esbuild: esbuildOptions = true,
     mode: explicitMode,
@@ -27,11 +27,16 @@ export function extensionRollupConfiguration(
 ): RollupOptionsFunction {
   return async function rollupConfiguration(args) {
     const mode = explicitMode || process.env.MODE || 'production';
-    const root = path.dirname(
-      typeof configurationFile === 'string'
-        ? configurationFile
-        : fileURLToPath(configurationFile),
-    );
+
+    let root: string;
+
+    // let consumers pass either a regular path, or a file URL, which
+    // they can conveniently get from `import.meta.url`.
+    try {
+      root = fileURLToPath(new URL('.', configurationFile));
+    } catch {
+      root = path.dirname(configurationFile);
+    }
 
     let baseConfiguration =
       typeof baseConfigurationOrFunction === 'function'
