@@ -1,5 +1,12 @@
 # @watching/cli
 
+## 2.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`e5ae9fc`](https://github.com/lemonmade/watch/commit/e5ae9fc2a2fde18340dc656aa65113bdc532fe34), [`cb0c85f`](https://github.com/lemonmade/watch/commit/cb0c85fe92959587f054af5f9e0fbe8359d8c429)]:
+  - @watching/tools@0.1.1
+
 ## 2.0.3
 
 ### Patch Changes
