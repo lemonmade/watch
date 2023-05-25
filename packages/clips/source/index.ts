@@ -1,5 +1,6 @@
 export * from './extension-points.ts';
 export * from './api.ts';
+export * from './graphql.ts';
 export * from './globals.ts';
 export * from './query.ts';
 export * from './extension.ts';

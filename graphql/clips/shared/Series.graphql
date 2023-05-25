@@ -1,0 +1,4 @@
+type Series {
+  id: ID!
+  name: String!
+}

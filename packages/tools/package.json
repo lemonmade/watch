@@ -24,6 +24,13 @@
       "import": "./build/esm/index.mjs",
       "require": "./build/cjs/index.cjs"
     },
+    "./graphql": {
+      "types": "./build/typescript/graphql.d.ts",
+      "quilt:source": "./source/graphql.ts",
+      "quilt:esnext": "./build/esnext/graphql.esnext",
+      "import": "./build/esm/graphql.mjs",
+      "require": "./build/cjs/graphql.cjs"
+    },
     "./rollup": {
       "types": "./build/typescript/rollup.d.ts",
       "quilt:source": "./source/rollup.ts",
@@ -35,6 +42,9 @@
   "types": "./build/typescript/index.d.ts",
   "typesVersions": {
     "*": {
+      "graphql": [
+        "./build/typescript/graphql.d.ts"
+      ],
       "rollup": [
         "./build/typescript/rollup.d.ts"
       ]

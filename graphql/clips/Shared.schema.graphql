@@ -1,6 +1,4 @@
-scalar Date
 scalar ApiVersion
-scalar FormattedText
 
 type User {
   id: ID!
@@ -9,14 +7,4 @@ type User {
 type Query {
   user: User!
   version: ApiVersion!
-}
-
-type Series {
-  id: ID!
-  name: String!
-}
-
-type WatchThrough {
-  id: ID!
-  series: Series!
 }

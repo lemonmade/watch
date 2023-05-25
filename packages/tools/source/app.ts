@@ -5,6 +5,11 @@ import type {FSWatcher} from 'chokidar';
 
 import type {ExtensionPoint} from '@watching/clips';
 
+import {
+  APP_CONFIGURATION_FILE_NAME,
+  EXTENSION_CONFIGURATION_FILE_NAME,
+} from './constants.ts';
+
 export interface LocalConfigurationFile<T> {
   readonly path: string;
   readonly value: T;
@@ -110,7 +115,7 @@ interface LocalExtensionEntry {
 }
 
 export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
-  const configurationPath = path.resolve(root, 'app.toml');
+  const configurationPath = path.resolve(root, APP_CONFIGURATION_FILE_NAME);
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     configurationPath,
   );
@@ -184,7 +189,10 @@ export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
 export async function loadLocalExtension(
   root = process.cwd(),
 ): Promise<LocalExtension> {
-  const configurationPath = path.resolve(root, 'extension.toml');
+  const configurationPath = path.resolve(
+    root,
+    EXTENSION_CONFIGURATION_FILE_NAME,
+  );
   const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
     configurationPath,
   );
@@ -208,7 +216,7 @@ export async function loadLocalExtension(
 }
 
 async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
-  const configurationPath = path.resolve('app.toml');
+  const configurationPath = path.resolve(APP_CONFIGURATION_FILE_NAME);
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     configurationPath,
   );

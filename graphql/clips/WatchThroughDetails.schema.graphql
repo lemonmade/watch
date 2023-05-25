@@ -1,5 +1,8 @@
 #import "./Shared.schema.graphql"
 
+#import "./shared/Scalars.graphql"
+#import "./shared/WatchThrough.graphql"
+
 extend type Query {
   watchThrough: WatchThrough!
 }
@@ -12,7 +15,7 @@ schema {
   query: Query
 }
 
-type Notes {
+type WatchThroughNotes {
   content: FormattedText!
   containsSpoilers: Boolean!
 }
@@ -20,5 +23,5 @@ type Notes {
 type WatchThroughCurrentWatch {
   finishedAt: Date
   rating: Int
-  notes: Notes
+  notes: WatchThroughNotes
 }

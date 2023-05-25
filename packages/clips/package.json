@@ -6,6 +6,11 @@
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "source",
+    "graphql",
+    "build"
+  ],
   "license": "MIT",
   "exports": {
     ".": {

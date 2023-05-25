@@ -1,1 +1,1 @@
-export {prisma} from './prisma';
+export {prisma} from './prisma.ts';

@@ -3,13 +3,12 @@ import type {
   RemoteMutationCallback,
 } from '@lemonmade/remote-ui/elements';
 
+import type {Api, ApiCore} from './api.ts';
 import type {
-  Api,
-  ApiCore,
   SharedGraphQLApi,
   SeriesDetailsGraphQLApi,
   WatchThroughDetailsGraphQLApi,
-} from './api.ts';
+} from './graphql.ts';
 
 export interface ExtensionPoints<
   Query = Record<string, unknown>,

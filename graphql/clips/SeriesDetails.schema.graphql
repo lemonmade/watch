@@ -1,5 +1,7 @@
 #import "./Shared.schema.graphql"
 
+#import "./shared/Series.graphql"
+
 extend type Query {
   series: Series!
 }

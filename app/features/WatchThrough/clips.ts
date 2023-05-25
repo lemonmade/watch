@@ -61,7 +61,7 @@ export const WatchThroughDetailsAccessoryExtensionPoint = createExtensionPoint({
                 {signal},
               )) {
                 if (content) {
-                  yield object('Notes', {
+                  yield object('WatchThroughNotes', {
                     content,
                     containsSpoilers: (_, __, {signal}) =>
                       signalToIterator(watch.notes.containsSpoilers, {

@@ -436,7 +436,7 @@ importers:
         version: 0.1.27
       '@lemonmade/remote-ui-react':
         specifier: ^0.1.18
-        version: 0.1.18(@quilted/react@18.2.3)
+        version: 0.1.18(react@18.0.0)
       '@preact/signals-core':
         specifier: ^1.3.0
         version: 1.3.0
@@ -4230,6 +4230,20 @@ packages:
       '@types/react': 18.2.6
       react: /@quilted/react@18.2.3
 
+  /@lemonmade/remote-ui-react@0.1.18(react@18.0.0):
+    resolution: {integrity: sha512-sViCH+TjxZ/tYzb/e1ADlUsDysLZ9/N5okauwqcd3vnWzHJV9SebGG4pwVkNfbSupx3P9iYAUII1XVfu4yViJw==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      '@lemonmade/remote-ui': 0.1.27
+      '@types/react': 18.2.6
+      react: 18.0.0
+    dev: false
+
   /@lemonmade/remote-ui@0.1.27:
     resolution: {integrity: sha512-MI6WeefTzCb88uAwhsVJtHMWkGK7W+HnwaqjXGJqV99lFRU4uQEJB+vmJo1824ZPKCVcrUNClviFceZnEYRpMQ==}
     engines: {node: '>=14.0.0'}
@@ -5015,8 +5029,8 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@types/react-dom': 18.2.1
-      preact: 10.14.1
-      preact-render-to-string: 5.2.3(preact@10.14.1)
+      preact: 10.15.0
+      preact-render-to-string: 5.2.3(preact@10.15.0)
     dev: true
 
   /@quilted/react-email@0.2.34(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3):
@@ -5294,8 +5308,8 @@ packages:
   /@quilted/react@18.2.3:
     resolution: {integrity: sha512-/TVVpbHB+GpCtn5R+KPOP78QmHOYstG+3EjYk+WuzxcHLywbj4bD7K6idgKpAJMjQL1Ac/rGS14ybSyHDWFung==}
     dependencies:
-      '@types/react': 18.2.0
-      preact: 10.14.1
+      '@types/react': 18.2.6
+      preact: 10.15.0
 
   /@quilted/request-router@0.1.6:
     resolution: {integrity: sha512-2fll99nsRo53Rj1rsvLYISikNxS6D+P/9gjit8XQVXKA7JwhQSN7Xj7cbiQKGC6tBjUyqjUt4Jy/VVZ4Q/zfWw==}
@@ -6608,7 +6622,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 
@@ -8779,7 +8793,6 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
@@ -9742,7 +9755,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonwebtoken@8.5.1:
@@ -11116,12 +11129,12 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-render-to-string@5.2.3(preact@10.14.1):
+  /preact-render-to-string@5.2.3(preact@10.15.0):
     resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.14.1
+      preact: 10.15.0
       pretty-format: 3.8.0
     dev: true
 
@@ -11130,7 +11143,6 @@ packages:
 
   /preact@10.15.0:
     resolution: {integrity: sha512-nZSa8M2R2m1n7nJSBlzDpxRJaIsejrTO1vlFbdpFvyC8qM1iU+On2y0otfoUm6SRB5o0lF0CKDFxg6grEFU0iQ==}
-    dev: true
 
   /preferred-pm@3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}

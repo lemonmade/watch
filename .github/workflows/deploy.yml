@@ -37,7 +37,7 @@ jobs:
             ./functions/*/build/
             ./packages/*/build/
             ./packages/*/bin/
-            ./packages/cli/graphql/
+            ./packages/clips/graphql/
             ./packages/clips/source/graphql/
 
   deploy-packages:

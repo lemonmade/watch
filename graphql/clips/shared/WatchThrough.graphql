@@ -1,0 +1,6 @@
+#import "./Series.graphql"
+
+type WatchThrough {
+  id: ID!
+  series: Series!
+}

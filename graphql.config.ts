@@ -62,7 +62,7 @@ const config: Configuration = {
             },
             {
               kind: 'graphql',
-              outputPath: 'packages/cli/graphql/Shared.schema.graphql',
+              outputPath: 'packages/clips/graphql/Shared.schema.graphql',
             },
           ],
         },
@@ -80,7 +80,7 @@ const config: Configuration = {
             },
             {
               kind: 'graphql',
-              outputPath: 'packages/cli/graphql/SeriesDetails.schema.graphql',
+              outputPath: 'packages/clips/graphql/SeriesDetails.schema.graphql',
             },
           ],
         },
@@ -100,7 +100,7 @@ const config: Configuration = {
             {
               kind: 'graphql',
               outputPath:
-                'packages/cli/graphql/WatchThroughDetails.schema.graphql',
+                'packages/clips/graphql/WatchThroughDetails.schema.graphql',
             },
           ],
         },
