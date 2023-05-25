@@ -177,7 +177,7 @@ export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
       return (version.extends as any[]).some((supports) => {
         return (
           target === supports.target &&
-          supports.conditions.some(
+          supports.conditions?.some(
             (supportCondition: any) =>
               supportCondition.series == null ||
               supportCondition.series.handle === handle,
@@ -229,7 +229,7 @@ export const WatchThrough: Pick<
       return (version.extends as any[]).some((supports) => {
         return (
           target === supports.target &&
-          supports.conditions.some(
+          supports.conditions?.some(
             (supportCondition: any) =>
               supportCondition.series == null ||
               supportCondition.series.handle === series.handle,
