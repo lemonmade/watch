@@ -109,7 +109,7 @@ export const Query: Pick<
         return ((version.extends as any[]) ?? []).some((supports: any) => {
           return (
             target === supports.target &&
-            supports.conditions.some(
+            supports.conditions?.some(
               (supportCondition: any) =>
                 supportCondition.series == null ||
                 supportCondition.series.handle === series.handle,
