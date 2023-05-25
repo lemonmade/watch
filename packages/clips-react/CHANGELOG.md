@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.9
+
+### Patch Changes
+
+- [`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7) Thanks [@lemonmade](https://github.com/lemonmade)! - Make core clips a required peer dependency
+
+- Updated dependencies [[`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7)]:
+  - @watching/clips@0.4.6
+
 ## 0.3.8
 
 ### Patch Changes
