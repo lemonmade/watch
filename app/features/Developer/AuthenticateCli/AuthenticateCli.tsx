@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 import {usePerformanceNavigation} from '@quilted/quilt';
-import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
+import {BlockStack, TextBlock, Text, Action, TextLink} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 
@@ -48,7 +48,10 @@ export default function AuthenticateCli() {
         <TextBlock>
           If you want to revoke access to this token in the future, you can do
           so on the{' '}
-          <Action to="/app/developer/access-tokens">access tokens page</Action>.
+          <TextLink to="/app/developer/access-tokens">
+            access tokens page
+          </TextLink>
+          .
         </TextBlock>
         <Action
           onPress={async () => {
