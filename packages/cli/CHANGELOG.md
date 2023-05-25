@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 2.0.8
+
+### Patch Changes
+
+- [`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7) Thanks [@lemonmade](https://github.com/lemonmade)! - Make core clips a required peer dependency
+
+* [`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7) Thanks [@lemonmade](https://github.com/lemonmade)! - Add GraphQL schema resolver
+
+* Updated dependencies [[`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7), [`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7)]:
+  - @watching/clips@0.4.6
+  - @watching/tools@0.1.2
+
 ## 2.0.7
 
 ### Patch Changes

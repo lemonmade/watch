@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.6
+
+### Patch Changes
+
+- [`a6a0c10`](https://github.com/lemonmade/watch/commit/a6a0c10856c98ebf516eb4b14a63eb1272967bd7) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Clips GraphQL exports
+
 ## 0.4.5
 
 ### Patch Changes
