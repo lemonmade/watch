@@ -1,5 +1,11 @@
 # @watching/tools
 
+## 0.1.3
+
+### Patch Changes
+
+- [`37be733`](https://github.com/lemonmade/watch/commit/37be7336cb0c66f074579aa6e597687f7295ea38) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix matching clips extensions by directory
+
 ## 0.1.2
 
 ### Patch Changes
