@@ -30,7 +30,6 @@ export function extensionGraphQLProjects(): Record<string, GraphQLProject> {
     const extensions = globSync(
       appConfig.extensions ?? `**/${EXTENSION_CONFIGURATION_FILE_NAME}`,
       {
-        nodir: true,
         ignore: ['**/node_modules/**'],
       },
     ).map((match) =>
