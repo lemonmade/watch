@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.10
+
+### Patch Changes
+
+- [`4134445`](https://github.com/lemonmade/watch/commit/41344455a45dac5ea58e81b70839da0f01ae3195) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
+- Updated dependencies [[`aed8643`](https://github.com/lemonmade/watch/commit/aed86430cd76b1319050541ebc38b5e740818d81)]:
+  - @watching/clips@0.4.7
+
 ## 0.3.9
 
 ### Patch Changes

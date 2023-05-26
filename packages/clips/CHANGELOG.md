@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.7
+
+### Patch Changes
+
+- [`aed8643`](https://github.com/lemonmade/watch/commit/aed86430cd76b1319050541ebc38b5e740818d81) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve typing for getQuery() helper
+
 ## 0.4.6
 
 ### Patch Changes
