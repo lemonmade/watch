@@ -28,14 +28,14 @@ extend type Mutation {
   updateUserSettings(
     spoilerAvoidance: SpoilerAvoidance
   ): UpdateUserSettingsPayload!
-  startWebAuthnRegistration: StartRegistrationPayload!
-  createWebAuthnCredential(credential: JSON!): CreateWebAuthnCredentialPayload!
-  deleteWebAuthnCredential(id: ID!): DeleteWebAuthnCredential!
-  startWebAuthnSignIn(email: String): StartWebAuthnSignInPayload!
-  completeWebAuthnSignIn(credential: JSON!): CompleteWebAuthnSignInPayload!
+  startPasskeyCreate: StartPasskeyCreatePayload!
+  finishPasskeyCreate(credential: JSON!): FinishPasskeyCreatePayload!
+  deletePasskey(id: ID!): DeletePasskeyPayload!
+  startPasskeySignIn(email: String): StartPasskeySignInPayload!
+  finishPasskeySignIn(credential: JSON!): FinishPasskeySignInPayload!
 }
 
-type WebAuthnCredential {
+type Passkey {
   id: ID!
 }
 
@@ -66,7 +66,7 @@ type User {
   email: Email!
   githubAccount: GithubAccount
   googleAccount: GoogleAccount
-  webAuthnCredentials: [WebAuthnCredential!]!
+  passkeys: [Passkey!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
   giftCode: RedeemedAccountGiftCode
@@ -182,25 +182,25 @@ type UpdateUserSettingsPayload {
   user: User!
 }
 
-type StartRegistrationPayload {
+type StartPasskeyCreatePayload {
   result: JSON!
 }
 
-type CreateWebAuthnCredentialPayload {
-  credential: WebAuthnCredential
+type FinishPasskeyCreatePayload {
+  passkey: Passkey
   user: User!
 }
 
-type DeleteWebAuthnCredential {
-  deletedCredentialId: ID!
+type DeletePasskeyPayload {
+  deletedPasskeyId: ID!
   user: User!
 }
 
-type StartWebAuthnSignInPayload {
+type StartPasskeySignInPayload {
   result: JSON!
 }
 
-type CompleteWebAuthnSignInPayload {
+type FinishPasskeySignInPayload {
   user: User
-  credential: WebAuthnCredential
+  passkey: Passkey
 }

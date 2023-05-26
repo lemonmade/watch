@@ -5,7 +5,7 @@ import type {
   GithubAccount as DatabaseGithubAccount,
   GoogleAccount as DatabaseGoogleAccount,
   PersonalAccessToken as DatabasePersonalAccessToken,
-  WebAuthnCredential as DatabaseWebAuthnCredential,
+  Passkey as DatabasePasskey,
   StripeSubscription,
 } from '@prisma/client';
 import {customAlphabet} from 'nanoid';
@@ -26,7 +26,7 @@ import type {Resolver, QueryResolver, MutationResolver} from './types.ts';
 import {toGid, fromGid} from './shared/id.ts';
 import {enqueueSendEmail} from './shared/email.ts';
 
-const WEBAUTHN_CHALLENGE_COOKIE = 'WebAuthnChallenge';
+const PASSKEY_CHALLENGE_COOKIE = 'PasskeyChallenge';
 
 declare module './types' {
   export interface ValueMap {
@@ -35,7 +35,7 @@ declare module './types' {
     GithubAccount: DatabaseGithubAccount;
     GoogleAccount: DatabaseGoogleAccount;
     PersonalAccessToken: DatabasePersonalAccessToken;
-    WebAuthnCredential: DatabaseWebAuthnCredential;
+    Passkey: DatabasePasskey;
   }
 }
 
@@ -90,8 +90,8 @@ export const User: Resolver<'User'> = {
       spoilerAvoidance,
     };
   },
-  webAuthnCredentials({id}, _, {prisma}) {
-    return prisma.webAuthnCredential.findMany({
+  passkeys({id}, _, {prisma}) {
+    return prisma.passkey.findMany({
       where: {userId: id},
     });
   },
@@ -129,8 +129,8 @@ export const Subscription: Resolver<'Subscription'> = {
   },
 };
 
-export const WebAuthnCredential: Resolver<'WebAuthnCredential'> = {
-  id: ({id}) => toGid(id, 'WebAuthnCredential'),
+export const Passkey: Resolver<'Passkey'> = {
+  id: ({id}) => toGid(id, 'Passkey'),
 };
 
 export const PersonalAccessToken: Resolver<'PersonalAccessToken'> = {
@@ -174,11 +174,11 @@ export const Mutation: Pick<
   | 'disconnectGoogleAccount'
   | 'createPersonalAccessToken'
   | 'deletePersonalAccessToken'
-  | 'startWebAuthnRegistration'
-  | 'createWebAuthnCredential'
-  | 'deleteWebAuthnCredential'
-  | 'startWebAuthnSignIn'
-  | 'completeWebAuthnSignIn'
+  | 'deletePasskey'
+  | 'startPasskeyCreate'
+  | 'finishPasskeyCreate'
+  | 'startPasskeySignIn'
+  | 'finishPasskeySignIn'
 > = {
   async signIn(_, {email, redirectTo}, {prisma, request}) {
     const user = await prisma.user.findFirst({where: {email}});
@@ -548,7 +548,7 @@ export const Mutation: Pick<
 
     return {deletedPersonalAccessTokenId: token?.id ?? null};
   },
-  async startWebAuthnRegistration(_, __, {prisma, user, request, response}) {
+  async startPasskeyCreate(_, __, {prisma, user, request, response}) {
     const {generateRegistrationOptions} = await import(
       '@simplewebauthn/server'
     );
@@ -570,7 +570,7 @@ export const Mutation: Pick<
       },
     });
 
-    response.cookies.set(WEBAUTHN_CHALLENGE_COOKIE, result.challenge, {
+    response.cookies.set(PASSKEY_CHALLENGE_COOKIE, result.challenge, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
@@ -581,13 +581,13 @@ export const Mutation: Pick<
       result: JSON.stringify(result),
     };
   },
-  async createWebAuthnCredential(
+  async finishPasskeyCreate(
     _,
     {credential},
     {user, prisma, request, response},
   ) {
     try {
-      const cookie = request.cookies.get(WEBAUTHN_CHALLENGE_COOKIE);
+      const cookie = request.cookies.get(PASSKEY_CHALLENGE_COOKIE);
 
       if (cookie == null) {
         throw new Error('No challenge cookie');
@@ -599,10 +599,10 @@ export const Mutation: Pick<
 
       const {origin, host} = new URL(request.url);
 
-      const parsedCredential = JSON.parse(credential);
+      const parsedPasskey = JSON.parse(credential);
 
       const result = await verifyRegistrationResponse({
-        credential: parsedCredential,
+        credential: parsedPasskey,
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
@@ -615,45 +615,31 @@ export const Mutation: Pick<
 
       const {registrationInfo} = result;
 
-      const {user: updatedUser, ...credentialResult} =
-        await prisma.webAuthnCredential.create({
+      const {user: updatedUser, ...passkeyResult} = await prisma.passkey.create(
+        {
           data: {
             counter: registrationInfo.counter,
             credentialId: registrationInfo.credentialID,
             publicKey: registrationInfo.credentialPublicKey,
-            transports: parsedCredential.transports,
+            transports: parsedPasskey.transports,
             userId: user.id,
           },
           include: {user: true},
-        });
+        },
+      );
 
-      return {user: updatedUser, credential: credentialResult};
+      return {user: updatedUser, passkey: passkeyResult};
     } finally {
-      response.cookies.delete(WEBAUTHN_CHALLENGE_COOKIE);
+      response.cookies.delete(PASSKEY_CHALLENGE_COOKIE);
     }
   },
-  async deleteWebAuthnCredential(_, {id}, {user, prisma}) {
-    const credential = await prisma.webAuthnCredential.findFirstOrThrow({
-      where: {
-        id: fromGid(id).id,
-        userId: user.id,
-      },
-    });
-
-    const {user: updatedUser} = await prisma.webAuthnCredential.delete({
-      where: {id: credential.id},
-      select: {user: true},
-    });
-
-    return {deletedCredentialId: credential.id, user: updatedUser};
-  },
-  async startWebAuthnSignIn(_, {email}, {prisma, request, response}) {
+  async startPasskeySignIn(_, {email}, {prisma, request, response}) {
     const {generateAuthenticationOptions} = await import(
       '@simplewebauthn/server'
     );
 
-    const credentials = email
-      ? await prisma.webAuthnCredential.findMany({
+    const passkeys = email
+      ? await prisma.passkey.findMany({
           take: 5,
           where: {
             user: {email},
@@ -664,18 +650,17 @@ export const Mutation: Pick<
     const result = generateAuthenticationOptions({
       rpID: new URL(request.url).host,
       userVerification: 'required',
-      allowCredentials: credentials.map((credential) => ({
-        id: credential.credentialId,
+      allowCredentials: passkeys.map((passkey) => ({
+        id: passkey.credentialId,
         type: 'public-key',
         transports:
-          Array.isArray(credential.transports) &&
-          typeof credentials[0] === 'string'
-            ? (credential.transports as any[])
+          Array.isArray(passkey.transports) && typeof passkeys[0] === 'string'
+            ? (passkey.transports as any[])
             : undefined,
       })),
     });
 
-    response.cookies.set(WEBAUTHN_CHALLENGE_COOKIE, result.challenge, {
+    response.cookies.set(PASSKEY_CHALLENGE_COOKIE, result.challenge, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
@@ -686,9 +671,9 @@ export const Mutation: Pick<
       result: JSON.stringify(result),
     };
   },
-  async completeWebAuthnSignIn(_, {credential}, {prisma, request, response}) {
+  async finishPasskeySignIn(_, {credential}, {prisma, request, response}) {
     try {
-      const cookie = request.cookies.get(WEBAUTHN_CHALLENGE_COOKIE);
+      const cookie = request.cookies.get(PASSKEY_CHALLENGE_COOKIE);
 
       if (cookie == null) {
         throw new Error('No challenge cookie');
@@ -703,12 +688,11 @@ export const Mutation: Pick<
           import('@simplewebauthn/server'),
         ]);
 
-      const webAuthnCredential =
-        await prisma.webAuthnCredential.findFirstOrThrow({
-          where: {
-            credentialId: base64url.toBuffer(credentialJson.rawId),
-          },
-        });
+      const passkey = await prisma.passkey.findFirstOrThrow({
+        where: {
+          credentialId: base64url.toBuffer(credentialJson.rawId),
+        },
+      });
 
       const result = await verifyAuthenticationResponse({
         credential: credentialJson,
@@ -717,9 +701,9 @@ export const Mutation: Pick<
         expectedRPID: host,
         requireUserVerification: true,
         authenticator: {
-          counter: webAuthnCredential.counter,
-          credentialID: webAuthnCredential.credentialId,
-          credentialPublicKey: webAuthnCredential.publicKey,
+          counter: passkey.counter,
+          credentialID: passkey.credentialId,
+          credentialPublicKey: passkey.publicKey,
         },
       });
 
@@ -729,22 +713,37 @@ export const Mutation: Pick<
 
       const {authenticationInfo} = result;
 
-      const [updatedWebAuthnCredential] = await Promise.all([
-        prisma.webAuthnCredential.update({
-          where: {id: webAuthnCredential.id},
+      const [updatedPasskey] = await Promise.all([
+        prisma.passkey.update({
+          where: {id: passkey.id},
           data: {counter: authenticationInfo.newCounter},
           include: {user: true},
         }),
-        addAuthCookies({id: webAuthnCredential.userId}, response),
+        addAuthCookies({id: passkey.userId}, response),
       ]);
 
       return {
-        user: updatedWebAuthnCredential.user,
-        credential: updatedWebAuthnCredential,
+        user: updatedPasskey.user,
+        passkey: updatedPasskey,
       };
     } finally {
-      response.cookies.delete(WEBAUTHN_CHALLENGE_COOKIE);
+      response.cookies.delete(PASSKEY_CHALLENGE_COOKIE);
     }
+  },
+  async deletePasskey(_, {id}, {user, prisma}) {
+    const passkey = await prisma.passkey.findFirstOrThrow({
+      where: {
+        id: fromGid(id).id,
+        userId: user.id,
+      },
+    });
+
+    const {user: updatedUser} = await prisma.passkey.delete({
+      where: {id: passkey.id},
+      select: {user: true},
+    });
+
+    return {deletedPasskeyId: passkey.id, user: updatedUser};
   },
 };
 

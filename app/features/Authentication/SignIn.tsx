@@ -26,8 +26,8 @@ import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useMutation} from '~/shared/graphql.ts';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
-import startWebAuthnSignInMutation from './graphql/StartWebAuthnSignInMutation.graphql';
-import completeWebAuthnSignInMutation from './graphql/CompleteWebAuthnSignInMutation.graphql';
+import startPasskeySignInMutation from './graphql/StartPasskeySignInMutation.graphql';
+import finishPasskeySignInMutation from './graphql/FinishPasskeySignInMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
@@ -105,8 +105,8 @@ function SignInWithEmail() {
 
 function useSignInWithPasskey() {
   const router = useRouter();
-  const startWebAuthnSignIn = useMutation(startWebAuthnSignInMutation);
-  const completeWebAuthnSignIn = useMutation(completeWebAuthnSignInMutation);
+  const startPasskeySignIn = useMutation(startPasskeySignInMutation);
+  const finishPasskeySignIn = useMutation(finishPasskeySignInMutation);
 
   const {signInWithPasskey, prepareBrowserAutocomplete} = useMemo(() => {
     return {signInWithPasskey, prepareBrowserAutocomplete};
@@ -117,21 +117,21 @@ function useSignInWithPasskey() {
     }: {email?: string; browserAutocomplete?: boolean} = {}) {
       const [{startAuthentication}, options] = await Promise.all([
         import('@simplewebauthn/browser'),
-        startWebAuthnSignIn.mutateAsync({
+        startPasskeySignIn.mutateAsync({
           email,
         }),
       ]);
 
       const authenticationResult = await startAuthentication(
-        JSON.parse(options.startWebAuthnSignIn.result),
+        JSON.parse(options.startPasskeySignIn.result),
         browserAutocomplete,
       );
 
-      const result = await completeWebAuthnSignIn.mutateAsync({
+      const result = await finishPasskeySignIn.mutateAsync({
         credential: JSON.stringify(authenticationResult),
       });
 
-      if (result.completeWebAuthnSignIn.user?.id) {
+      if (result.finishPasskeySignIn.user?.id) {
         const {url} = router.resolve(
           (currentUrl) =>
             currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',

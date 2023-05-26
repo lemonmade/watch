@@ -46,9 +46,9 @@ import deleteAccountMutation from './graphql/DeleteAccountMutation.graphql';
 import disconnectGithubAccountMutation from './graphql/DisconnectGithubAccountMutation.graphql';
 import disconnectGoogleAccountMutation from './graphql/DisconnectGoogleAccountMutation.graphql';
 import updateAccountSpoilerAvoidanceMutation from './graphql/UpdateAccountSpoilerAvoidanceMutation.graphql';
-import startWebAuthnRegistrationMutation from './graphql/StartWebAuthnRegistrationMutation.graphql';
-import createWebAuthnCredentialMutation from './graphql/CreateWebAuthnCredentialMutation.graphql';
-import deleteWebAuthnCredentialMutation from './graphql/DeleteWebAuthnCredentialMutation.graphql';
+import startPasskeyCreateMutation from './graphql/StartPasskeyCreateMutation.graphql';
+import finishPasskeyCreateMutation from './graphql/FinishPasskeyCreateMutation.graphql';
+import deletePasskeyMutation from './graphql/DeletePasskeyMutation.graphql';
 import redeemAccountGiftCardMutation from './graphql/RedeemAccountGiftCodeMutation.graphql';
 import createAccountGiftCardMutation from './graphql/CreateAccountGiftCodeMutation.graphql';
 import cancelSubscriptionMutation from './graphql/CancelSubscriptionMutation.graphql';
@@ -75,7 +75,7 @@ export default function Account() {
     githubAccount,
     googleAccount,
     settings,
-    webAuthnCredentials,
+    passkeys,
   } = data.me;
 
   const handleUpdate = async () => {
@@ -92,10 +92,7 @@ export default function Account() {
           subscription={subscription}
           onUpdate={handleUpdate}
         />
-        <WebAuthnSection
-          credentials={webAuthnCredentials}
-          onUpdate={handleUpdate}
-        />
+        <PasskeySection passkeys={passkeys} onUpdate={handleUpdate} />
         <GoogleSection account={googleAccount} onUpdate={handleUpdate} />
         <GithubSection
           account={githubAccount ?? undefined}
@@ -494,54 +491,46 @@ function AccountGiftCodeModal({onUpdate}: {onUpdate(): Promise<void>}) {
   );
 }
 
-function WebAuthnSection({
-  credentials,
+function PasskeySection({
+  passkeys,
   onUpdate,
 }: {
-  credentials: AccountQueryData.Me['webAuthnCredentials'];
+  passkeys: AccountQueryData.Me['passkeys'];
   onUpdate(): Promise<void>;
 }) {
-  const startWebAuthnRegistration = useMutation(
-    startWebAuthnRegistrationMutation,
-  );
-  const createWebAuthnCredential = useMutation(
-    createWebAuthnCredentialMutation,
-  );
+  const startPasskeyCreate = useMutation(startPasskeyCreateMutation);
+  const finishPasskeyCreate = useMutation(finishPasskeyCreateMutation);
 
   return (
     <Section>
       <BlockStack spacing>
-        <Heading divider>WebAuthn</Heading>
+        <Heading divider>Passkeys</Heading>
 
-        {credentials.length > 0 && (
+        {passkeys.length > 0 && (
           <BlockStack spacing>
-            {credentials.map((credential) => (
-              <WebAuthnCredential
-                key={credential.id}
-                credential={credential}
-                onUpdate={onUpdate}
-              />
+            {passkeys.map((passkey) => (
+              <Passkey key={passkey.id} passkey={passkey} onUpdate={onUpdate} />
             ))}
           </BlockStack>
         )}
 
-        <TextBlock>Connect a WebAuthn authenticator</TextBlock>
+        <TextBlock>Create a new Passkey</TextBlock>
         <Action
           onPress={async () => {
             const [{startRegistration}, result] = await Promise.all([
               import('@simplewebauthn/browser'),
-              startWebAuthnRegistration.mutateAsync({}),
+              startPasskeyCreate.mutateAsync({}),
             ]);
 
             const registrationOptions = JSON.parse(
-              result.startWebAuthnRegistration.result,
+              result.startPasskeyCreate.result,
             );
 
             const registrationResult = await startRegistration(
               registrationOptions,
             );
 
-            await createWebAuthnCredential.mutateAsync({
+            await finishPasskeyCreate.mutateAsync({
               credential: JSON.stringify(registrationResult),
             });
 
@@ -555,31 +544,24 @@ function WebAuthnSection({
   );
 }
 
-interface WebAuthnCredentialProps {
-  credential: AccountQueryData.Me.WebAuthnCredentials;
+interface PasskeyProps {
+  passkey: AccountQueryData.Me.Passkeys;
   onUpdate(): Promise<void>;
 }
 
-function WebAuthnCredential(props: WebAuthnCredentialProps) {
-  const {id} = props.credential;
+function Passkey(props: PasskeyProps) {
+  const {id} = props.passkey;
 
   return (
     <InlineGrid spacing sizes={['fill', 'auto']}>
       <Text>{id}</Text>
-      <Action overlay={<WebAuthnCredentialManageMenu {...props} />}>
-        Manage
-      </Action>
+      <Action overlay={<PasskeyManageMenu {...props} />}>Manage</Action>
     </InlineGrid>
   );
 }
 
-function WebAuthnCredentialManageMenu({
-  credential: {id},
-  onUpdate,
-}: WebAuthnCredentialProps) {
-  const deleteWebAuthnCredential = useMutation(
-    deleteWebAuthnCredentialMutation,
-  );
+function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
+  const deletePasskey = useMutation(deletePasskeyMutation);
 
   return (
     <Popover>
@@ -588,7 +570,7 @@ function WebAuthnCredentialManageMenu({
           icon="delete"
           role="destructive"
           onPress={async () => {
-            await deleteWebAuthnCredential.mutateAsync({id});
+            await deletePasskey.mutateAsync({id});
             await onUpdate();
           }}
         >
