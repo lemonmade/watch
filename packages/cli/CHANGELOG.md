@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 2.0.10
+
+### Patch Changes
+
+- [`aed8643`](https://github.com/lemonmade/watch/commit/aed86430cd76b1319050541ebc38b5e740818d81) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve typing for getQuery() helper
+
+* [`d67f942`](https://github.com/lemonmade/watch/commit/d67f942ffbcf1fc0ab6a1d8ef7a6c8de74a9fe97) Thanks [@lemonmade](https://github.com/lemonmade)! - Update template Preact version
+
+* Updated dependencies [[`aed8643`](https://github.com/lemonmade/watch/commit/aed86430cd76b1319050541ebc38b5e740818d81)]:
+  - @watching/clips@0.4.7
+  - @watching/tools@0.1.3
+
 ## 2.0.9
 
 ### Patch Changes
