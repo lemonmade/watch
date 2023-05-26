@@ -6,6 +6,6 @@
   "devDependencies": {
     "@watching/clips": "^0.4.0",
     "@watching/clips-preact": "^0.1.0",
-    "preact": "^10.14.0"
+    "preact": "^10.15.0"
   }
 }
