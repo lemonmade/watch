@@ -191,11 +191,6 @@ type FinishPasskeyCreatePayload {
   user: User!
 }
 
-type DeletePasskeyPayload {
-  deletedPasskeyId: ID!
-  user: User!
-}
-
 type StartPasskeySignInPayload {
   result: JSON!
 }
@@ -203,4 +198,9 @@ type StartPasskeySignInPayload {
 type FinishPasskeySignInPayload {
   user: User
   passkey: Passkey
+}
+
+type DeletePasskeyPayload {
+  deletedPasskeyId: ID!
+  user: User!
 }

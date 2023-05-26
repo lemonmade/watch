@@ -174,11 +174,11 @@ export const Mutation: Pick<
   | 'disconnectGoogleAccount'
   | 'createPersonalAccessToken'
   | 'deletePersonalAccessToken'
-  | 'deletePasskey'
   | 'startPasskeyCreate'
   | 'finishPasskeyCreate'
   | 'startPasskeySignIn'
   | 'finishPasskeySignIn'
+  | 'deletePasskey'
 > = {
   async signIn(_, {email, redirectTo}, {prisma, request}) {
     const user = await prisma.user.findFirst({where: {email}});
@@ -599,10 +599,10 @@ export const Mutation: Pick<
 
       const {origin, host} = new URL(request.url);
 
-      const parsedPasskey = JSON.parse(credential);
+      const parsedCredential = JSON.parse(credential);
 
       const result = await verifyRegistrationResponse({
-        credential: parsedPasskey,
+        credential: parsedCredential,
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
@@ -621,7 +621,7 @@ export const Mutation: Pick<
             counter: registrationInfo.counter,
             credentialId: registrationInfo.credentialID,
             publicKey: registrationInfo.credentialPublicKey,
-            transports: parsedPasskey.transports,
+            transports: parsedCredential.transports,
             userId: user.id,
           },
           include: {user: true},
@@ -654,7 +654,8 @@ export const Mutation: Pick<
         id: passkey.credentialId,
         type: 'public-key',
         transports:
-          Array.isArray(passkey.transports) && typeof passkeys[0] === 'string'
+          Array.isArray(passkey.transports) &&
+          typeof passkey.transports[0] === 'string'
             ? (passkey.transports as any[])
             : undefined,
       })),

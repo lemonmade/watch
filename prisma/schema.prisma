@@ -40,9 +40,9 @@ model User {
 
   spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
+  passkeys      Passkey[]
   githubAccount GithubAccount?
   googleAccount GoogleAccount?
-  passkeys      Passkey[]
 
   skips                       Skip[]
   watches                     Watch[]
