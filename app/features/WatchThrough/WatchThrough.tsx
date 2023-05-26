@@ -662,9 +662,9 @@ function PreviousEpisodesSection({
         <ActionList>
           {actions.map((action) =>
             action.__typename === 'Skip' ? (
-              <PreviousActionSkip action={action} />
+              <PreviousActionSkip key={action.id} action={action} />
             ) : action.__typename === 'Watch' ? (
-              <PreviousActionWatch action={action} />
+              <PreviousActionWatch key={action.id} action={action} />
             ) : null,
           )}
         </ActionList>
