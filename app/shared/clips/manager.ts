@@ -149,7 +149,7 @@ export function createClipsManager(
           settings,
           liveQuery,
           sandbox: createSandbox({signal}),
-          components: new Map(Object.entries(extensionPoint.components())),
+          components: extensionPoint.components(),
         };
       },
       async prepare({context: {sandbox, liveQuery}}) {
@@ -198,7 +198,7 @@ export function createClipsManager(
           settings,
           liveQuery,
           sandbox: createSandbox({signal}),
-          components: extensionPoint.components() as any,
+          components: extensionPoint.components(),
         };
       },
       async prepare({context: {sandbox, liveQuery}}) {
