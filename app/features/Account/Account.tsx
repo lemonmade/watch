@@ -514,7 +514,6 @@ function PasskeySection({
           </BlockStack>
         )}
 
-        <TextBlock>Create a new Passkey</TextBlock>
         <Action
           onPress={async () => {
             const [{startRegistration}, result] = await Promise.all([
@@ -537,7 +536,7 @@ function PasskeySection({
             await onUpdate();
           }}
         >
-          Connect
+          Create a Passkey
         </Action>
       </BlockStack>
     </Section>
