@@ -50,7 +50,7 @@ import {
 import {
   User as BaseUser,
   PersonalAccessToken,
-  WebAuthnCredential,
+  Passkey,
   GithubAccount,
   Subscription,
   Query as UsersQuery,
@@ -104,6 +104,7 @@ export {
   List,
   Listable,
   ListItem,
+  Passkey,
   PersonalAccessToken,
   Season,
   Series,
@@ -115,5 +116,4 @@ export {
   Watch,
   Watchable,
   WatchThrough,
-  WebAuthnCredential,
 };

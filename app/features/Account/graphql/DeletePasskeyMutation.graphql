@@ -1,0 +1,8 @@
+mutation DeletePasskey($id: ID!) {
+  deletePasskey(id: $id) {
+    deletedPasskeyId
+    user {
+      id
+    }
+  }
+}

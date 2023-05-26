@@ -1,0 +1,10 @@
+mutation FinishPasskeySignIn($credential: JSON!) {
+  finishPasskeySignIn(credential: $credential) {
+    passkey {
+      id
+    }
+    user {
+      id
+    }
+  }
+}

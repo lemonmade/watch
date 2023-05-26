@@ -1,0 +1,5 @@
+mutation StartPasskeySignIn($email: String) {
+  startPasskeySignIn(email: $email) {
+    result
+  }
+}

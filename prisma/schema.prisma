@@ -40,9 +40,9 @@ model User {
 
   spoilerAvoidance SpoilerAvoidance @default(UPCOMING)
 
-  githubAccount       GithubAccount?
-  googleAccount       GoogleAccount?
-  webAuthnCredentials WebAuthnCredential[]
+  passkeys      Passkey[]
+  githubAccount GithubAccount?
+  googleAccount GoogleAccount?
 
   skips                       Skip[]
   watches                     Watch[]
@@ -100,7 +100,7 @@ model AccountGiftCode {
   redeemedAt   DateTime?
 }
 
-model WebAuthnCredential {
+model Passkey {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
