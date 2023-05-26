@@ -1,7 +1,7 @@
-import {type Api} from './api.ts';
+import {type Signal} from './signals.ts';
 
 export function getQuery<Query = Record<string, unknown>>(
-  apiOrQuery: Pick<Api<any, any, any>, 'query'> | Api<any, any, any>['query'],
+  apiOrQuery: Signal<Query> | {query: Signal<Query>},
 ) {
   return 'query' in apiOrQuery
     ? (apiOrQuery.query.value as any as Query)

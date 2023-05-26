@@ -7,7 +7,7 @@ export default extension<
   'watch-through.details.accessory',
   WatchThroughQueryData
 >((root, {query, target}) => {
-  const {watchThrough} = getQuery<WatchThroughQueryData>(query);
+  const {watchThrough} = getQuery(query);
   const {series, currentWatch} = watchThrough;
 
   let currentWatchContent = contentForCurrentWatch(currentWatch);
@@ -42,7 +42,7 @@ export default extension<
   root.append(blockStack);
 
   query.subscribe(() => {
-    const {watchThrough} = getQuery<WatchThroughQueryData>(query);
+    const {watchThrough} = getQuery(query);
     const {series, currentWatch} = watchThrough;
 
     currentWatchContent?.remove();

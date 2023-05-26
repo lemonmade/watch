@@ -5,7 +5,7 @@ import {type SeriesQueryData} from './SeriesQuery.graphql';
 
 export default extension<'series.details.accessory', SeriesQueryData>(
   (root, {query, target}) => {
-    const {series} = getQuery<SeriesQueryData>(query);
+    const {series} = getQuery(query);
 
     const seriesNameText = document.createTextNode(series.name);
 
