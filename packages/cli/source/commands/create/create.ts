@@ -79,6 +79,7 @@ export async function create({ui}: {ui: Ui}) {
           {title: 'DOM', value: 'dom'},
           {title: 'Preact', value: 'preact'},
           {title: 'React', value: 'react'},
+          {title: 'Svelte', value: 'svelte'},
         ],
       });
 
@@ -179,7 +180,7 @@ function validateTemplate(template: string) {
   return resolvedTemplate;
 }
 
-const VALID_FORMATS = new Set(['dom', 'preact', 'react']);
+const VALID_FORMATS = new Set(['dom', 'preact', 'react', 'svelte']);
 
 function validateFormat(format: string) {
   const normalized = format.trim().toLowerCase();

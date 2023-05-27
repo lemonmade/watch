@@ -5,6 +5,3 @@ handle = "{{ handle }}"
 target = "watch-through.details.accessory"
 module = "./WatchThroughAccessory.tsx"
 query = "./WatchThroughQuery.graphql"
-
-# [[extends.conditions]]
-# series.handle = "survivor"

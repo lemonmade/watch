@@ -1,0 +1,11 @@
+{
+  "name": "{{ handle }}",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@watching/clips": "^0.4.0",
+    "@watching/clips-svelte": "^0.1.0",
+    "svelte": "^3.59.0"
+  }
+}

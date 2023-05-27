@@ -31,6 +31,7 @@
     {"path": "./packages/clips"},
     {"path": "./packages/clips-preact"},
     {"path": "./packages/clips-react"},
+    {"path": "./packages/clips-svelte"},
     {"path": "./packages/css"},
     {"path": "./packages/graphql"},
     {"path": "./packages/react-signals"},

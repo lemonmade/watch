@@ -6,5 +6,9 @@
   },
   "include": ["."],
   "exclude": ["quilt.project.ts", "build", "./*/preact/**/*"],
-  "references": [{"path": "../../clips"}, {"path": "../../clips-react"}]
+  "references": [
+    {"path": "../../clips"},
+    {"path": "../../clips-react"},
+    {"path": "../../clips-svelte"}
+  ]
 }
