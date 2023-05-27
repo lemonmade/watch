@@ -1,5 +1,11 @@
 # @watching/thread-signals
 
+## 0.1.9
+
+### Patch Changes
+
+- [`793368d`](https://github.com/lemonmade/watch/commit/793368dd8337cdef0e66ad52665b5c415d72ee3d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update threads dependencies
+
 ## 0.1.8
 
 ### Patch Changes
