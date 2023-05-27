@@ -19,7 +19,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.1.27",
+    "@lemonmade/remote-ui": "^0.1.29",
     "@lemonmade/remote-ui-preact": "^0.1.5",
     "@preact/signals-core": "^1.3.0",
     "@watching/thread-signals": "workspace:^"
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "p-limit": "^4.0.0",
-    "preact": "^10.15.0",
+    "preact": "^10.15.1",
     "terser": "^5.15.1"
   },
   "eslintConfig": {

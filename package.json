@@ -27,7 +27,7 @@
     "dotenv": "^16.0.0",
     "esbuild": "^0.15.0",
     "nodemon": "^2.0.0",
-    "preact": "^10.15.0",
+    "preact": "^10.15.1",
     "prisma": "^4.7.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
