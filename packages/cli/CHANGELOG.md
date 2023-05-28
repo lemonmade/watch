@@ -1,5 +1,16 @@
 # @watching/cli
 
+## 2.0.12
+
+### Patch Changes
+
+- [`71320ec`](https://github.com/lemonmade/watch/commit/71320ece4255a6476be815be4cc522d6e7f41430) Thanks [@lemonmade](https://github.com/lemonmade)! - Better rollup clip tools
+
+* [`71320ec`](https://github.com/lemonmade/watch/commit/71320ece4255a6476be815be4cc522d6e7f41430) Thanks [@lemonmade](https://github.com/lemonmade)! - Add missing development dependencies to Svelte templates
+
+* Updated dependencies [[`71320ec`](https://github.com/lemonmade/watch/commit/71320ece4255a6476be815be4cc522d6e7f41430)]:
+  - @watching/tools@0.1.4
+
 ## 2.0.11
 
 ### Patch Changes
