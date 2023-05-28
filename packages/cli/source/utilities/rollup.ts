@@ -32,6 +32,7 @@ export async function createRollupConfiguration(
 
     const automaticConfiguration = await extensionRollupConfiguration(
       extension.configurationFile.path,
+      undefined,
       {mode},
     )(rollupCommandOptions);
 
