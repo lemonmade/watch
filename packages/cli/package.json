@@ -13,18 +13,28 @@
   },
   "sideEffects": false,
   "exports": {
-    "./graphql": {
-      "types": "./build/typescript/graphql.d.ts",
-      "quilt:source": "./source/graphql.ts",
-      "quilt:esnext": "./build/esnext/graphql.esnext",
-      "import": "./build/esm/graphql.mjs",
-      "require": "./build/cjs/graphql.cjs"
+    "./tools/graphql": {
+      "types": "./build/typescript/tools/graphql.d.ts",
+      "quilt:source": "./source/tools/graphql.ts",
+      "quilt:esnext": "./build/esnext/tools/graphql.esnext",
+      "import": "./build/esm/tools/graphql.mjs",
+      "require": "./build/cjs/tools/graphql.cjs"
+    },
+    "./tools/rollup": {
+      "types": "./build/typescript/tools/rollup.d.ts",
+      "quilt:source": "./source/tools/rollup.ts",
+      "quilt:esnext": "./build/esnext/tools/rollup.esnext",
+      "import": "./build/esm/tools/rollup.mjs",
+      "require": "./build/cjs/tools/rollup.cjs"
     }
   },
   "typesVersions": {
     "*": {
-      "graphql": [
-        "./build/typescript/graphql.d.ts"
+      "tools/graphql": [
+        "./build/typescript/tools/graphql.d.ts"
+      ],
+      "tools/rollup": [
+        "./build/typescript/tools/rollup.d.ts"
       ]
     }
   },

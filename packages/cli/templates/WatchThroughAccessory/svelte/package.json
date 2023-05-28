@@ -4,8 +4,11 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
+    "@tsconfig/svelte": "^4.0.0",
     "@watching/clips": "^0.4.0",
     "@watching/clips-svelte": "^0.1.0",
-    "svelte": "^3.59.0"
+    "rollup-plugin-svelte": "^7.1.0",
+    "svelte": "^3.59.0",
+    "svelte-preprocess": "^5.0.0"
   }
 }

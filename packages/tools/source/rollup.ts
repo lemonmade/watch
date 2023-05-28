@@ -16,6 +16,7 @@ const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.js';
 
 export function extensionRollupConfiguration(
   configurationFile: string,
+  baseConfigurationOrFunction?: RollupOptions | RollupOptionsFunction,
   {
     esbuild: esbuildOptions = true,
     mode: explicitMode,
@@ -23,7 +24,6 @@ export function extensionRollupConfiguration(
     esbuild?: boolean | ESBuildOptions;
     mode?: 'production' | 'development';
   } = {},
-  baseConfigurationOrFunction?: RollupOptions | RollupOptionsFunction,
 ): RollupOptionsFunction {
   return async function rollupConfiguration(args) {
     const mode = explicitMode || process.env.MODE || 'production';
