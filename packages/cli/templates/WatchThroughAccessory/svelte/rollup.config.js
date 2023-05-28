@@ -1,4 +1,4 @@
-import {extensionRollupConfiguration} from '@watching/tools/rollup';
+import {extensionRollupConfiguration} from '@watching/cli/tools/rollup';
 import svelte from 'rollup-plugin-svelte';
 import sveltePreprocess from 'svelte-preprocess';
 
