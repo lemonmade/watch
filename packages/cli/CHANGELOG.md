@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 2.0.13
+
+### Patch Changes
+
+- [`cb4c40b`](https://github.com/lemonmade/watch/commit/cb4c40be41005f8d7c727b74993624a31c2c96bd) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix Svelte templates
+
+* [`d27bc4b`](https://github.com/lemonmade/watch/commit/d27bc4b39d87ef9a29f636b0c0cd995cf47bcbb7) Thanks [@lemonmade](https://github.com/lemonmade)! - Add clips html() helpers
+
+* Updated dependencies [[`d27bc4b`](https://github.com/lemonmade/watch/commit/d27bc4b39d87ef9a29f636b0c0cd995cf47bcbb7)]:
+  - @watching/clips@0.4.9
+  - @watching/tools@0.1.4
+
 ## 2.0.12
 
 ### Patch Changes

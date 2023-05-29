@@ -64,7 +64,7 @@
     "rollup-plugin-esbuild": "^5.0.0"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.4.8"
+    "@watching/clips": "^0.4.9"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {
