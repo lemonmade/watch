@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.1.5
+
+### Patch Changes
+
+- [`d27bc4b`](https://github.com/lemonmade/watch/commit/d27bc4b39d87ef9a29f636b0c0cd995cf47bcbb7) Thanks [@lemonmade](https://github.com/lemonmade)! - Add clips html() helpers
+
 ## 0.1.4
 
 ### Patch Changes
