@@ -1,5 +1,14 @@
 # @watching/clips-preact
 
+## 0.1.9
+
+### Patch Changes
+
+- [`1c435a6`](https://github.com/lemonmade/watch/commit/1c435a6e2112f80fb4751ce753344f6e41ccd3f0) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix DOM `html()` helper
+
+- Updated dependencies [[`1c435a6`](https://github.com/lemonmade/watch/commit/1c435a6e2112f80fb4751ce753344f6e41ccd3f0)]:
+  - @watching/clips@0.4.10
+
 ## 0.1.8
 
 ### Patch Changes

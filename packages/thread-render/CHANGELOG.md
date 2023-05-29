@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.1.6
+
+### Patch Changes
+
+- [`1c435a6`](https://github.com/lemonmade/watch/commit/1c435a6e2112f80fb4751ce753344f6e41ccd3f0) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix DOM `html()` helper
+
 ## 0.1.5
 
 ### Patch Changes
