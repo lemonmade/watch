@@ -14,7 +14,7 @@ export default extension<
     <ui-block-stack spacing>
       <ui-text-block>
         You are rendering the <ui-text emphasis>${target}</ui-text> extension
-        point, on a watch-through of a series named
+        point, on a watch-through of a series named${' '}
         <ui-text emphasis>${seriesNameText}</ui-text>!
       </ui-text-block>
       ${currentWatchContent}
