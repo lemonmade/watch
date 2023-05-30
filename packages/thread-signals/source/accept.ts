@@ -26,10 +26,6 @@ export function acceptThreadSignal<T>(
     'value',
   )!;
 
-  const setValue = (value: T) => {
-    valueDescriptor.set?.call(signal, value);
-  };
-
   Object.defineProperty(signal, 'value', {
     ...valueDescriptor,
     get() {
@@ -45,9 +41,12 @@ export function acceptThreadSignal<T>(
     },
   });
 
-  Promise.resolve(
-    threadSignal.start(setValue, {signal: threadAbortSignal}),
-  ).then(setValue);
+  threadSignal.start(
+    (value) => {
+      valueDescriptor.set?.call(signal, value);
+    },
+    {signal: threadAbortSignal},
+  );
 
   return signal;
 }

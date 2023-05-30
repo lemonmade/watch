@@ -6,5 +6,5 @@ export interface ThreadSignal<T> {
   start(
     subscriber: (value: T) => void | Promise<void>,
     options?: {signal?: AbortSignal | ThreadAbortSignal},
-  ): T | Promise<T>;
+  ): void;
 }

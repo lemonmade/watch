@@ -11,8 +11,12 @@ export function createThreadSignal<T>(
     signal: teardownAbortSignal,
   }: {writable?: boolean; signal?: AbortSignal} = {},
 ): ThreadSignal<T> {
+  let initialVersion: number;
+
   return {
     get initial() {
+      // @see https://github.com/preactjs/signals/blob/main/mangle.json#L56
+      initialVersion = (signal as any).i;
       return signal.peek();
     },
     set:
@@ -32,7 +36,13 @@ export function createThreadSignal<T>(
           ? anyAbortSignal(abortSignal, teardownAbortSignal)
           : abortSignal ?? teardownAbortSignal;
 
-      const teardown = signal.subscribe(subscriber);
+      const teardown = signal.subscribe((value) => {
+        if ((signal as any).i === initialVersion) {
+          return;
+        }
+
+        subscriber(value);
+      });
 
       finalAbortSignal?.addEventListener('abort', () => {
         teardown();
