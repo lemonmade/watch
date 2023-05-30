@@ -2,7 +2,7 @@
 
 ## Creating a new app
 
-<!-- TODO -->
+TODO
 
 ## Adding to an existing app
 
@@ -21,16 +21,16 @@ Alternatively, the `watchapp` command line interface has a `create` command, whi
 
 ```bash
 # pnpm
-pnpm watchapp create extension
+pnpm watchapp create
 # yarn
-npm run watchapp create extension
+npm run watchapp create
 # npm
-yarn watchapp create extension
+yarn watchapp create
 ```
 
-When you create an extension, you will first be asked to give it a name. You should use a short, friendly name that describes what the extension does, as this name will be shown to users anytime your extension is rendered. The name will also be used as the basis for the directory name of the extension. If you want to provide a name without a manual prompt, you can do so by passing the `--name` flag to the `create` command (for example, `pnpm watchapp create extension --name "Season rankings"`).
+When you create an extension, you will first be asked to give it a name. You should use a short, friendly name that describes what the extension does, as this name will be shown to users anytime your extension is rendered. The name will also be used as the basis for the directory name of the extension. If you want to provide a name without a manual prompt, you can do so by passing the `--name` flag to the `create` command (for example, `pnpm watchapp create --name "Season rankings"`).
 
-Extensions are created in an `extensions` directory by default. If you want to force the create command to choose a particular directory, you can pass the `--directory` flag to the `create` command. This should be the **full** directory name you want to use, relative to the directory in which you ran the create command. For example, `pnpm watchapp create extension --directory app/extensions/season-rankings` would output the new extension in the `app/extensions/season-rankings` directory of your project, regardless of the name you choose for the extension.
+Extensions are created in an `extensions` directory by default. If you want to force the create command to choose a particular directory, you can pass the `--directory` flag to the `create` command. This should be the **full** directory name you want to use, relative to the directory in which you ran the create command. For example, `pnpm watchapp create --directory app/extensions/season-rankings` would output the new extension in the `app/extensions/season-rankings` directory of your project, regardless of the name you choose for the extension.
 
 ## Templates
 
@@ -50,23 +50,82 @@ When you create a new extension, you will be asked what template you’d like to
 
 You can write extensions in a number of different formats, each suited to developers with different preferences and background. Regardless of which template you choose, you’ll also be asked to choose which of the following formats to use for your new extension:
 
-The [**Basic**](TODO) template provides a friendly, “vanilla” JavaScript (or TypeScript) API for creating extensions. It provides a [remote-ui `RemoteRoot` object](https://github.com/Shopify/remote-ui/tree/main/packages/core) that allows you to construct your UI using a small, type-safe API. It has the least amount of overhead, so you’ll produce the smallest bundle size with this format; this makes it the best approach for simple, mostly-static extensions.
+The [**DOM**](TODO) template provides a simulated DOM environment, which allows you to bring existing code that knows how to work on the DOM. The most important browser globals are made available to your extension, and gives you an HTML element that will map HTML elements into native UI components. This format is the base layer for all other formats.
 
 ```ts
-import {extension, Text} from '@watching/clips';
+import '@watching/clips/elements';
+import {extension} from '@watching/clips';
 
 export default extension((root, {target}) => {
-  root.append(
-    root.createComponent(Text, {}, [
-      'You are rendering in the ',
-      root.createComponent(Text, {emphasis: true}, target),
-      ' extension point!',
-    ]),
+  const targetElement = document.createElement('ui-text');
+
+  targetElement.emphasis = true;
+  targetElement.textContent = target;
+
+  const textElement = document.createElement('ui-text');
+  textElement.append(
+    'You are rendering in the ',
+    targetElement,
+    ' extension point!',
   );
+
+  root.append(textElement);
 });
 ```
 
-The [**React**](TODO) template lets you write your extension as a [React](https://reactjs.org) component. It provides type-safe React components and easy-to-use hooks for using the APIs available to an extension. Under the hood, this version actually uses [Preact](https://preactjs.com), but it does so in a way that should allow dependencies expecting the “real” React to continue to work correctly.
+This library provides a handy `html` tagged template literal. This helper is built on top of [`htm`](https://github.com/developit/htm), and gives you a convenient way of creating complex DOM trees:
+
+```ts
+import '@watching/clips/elements';
+import {extension, html} from '@watching/clips';
+
+export default extension((root, {target}) => {
+  let count = 0;
+  const countText = document.createTextNode(String(count));
+
+  const ui = html<Element>`
+    <ui-block-stack spacing>
+      <ui-text>
+        You have clicked the button${' '}
+        <ui-text emphasis>${countText}</ui-text> times.
+      </ui-text>
+
+      <ui-action
+        onPress=${() => {
+          count++;
+          countText.textContent = String(count);
+        }}
+      >
+        Click me!
+      </ui-action>
+    </ui-block-stack>
+  `;
+
+  root.append(ui);
+});
+```
+
+The [**Preact**](TODO) template lets you write your extension as a [Preact](https://preactjs.com) component. It provides type-safe Preact components and easy-to-use hooks for using the APIs available to an extension.
+
+```tsx
+import {extension, Text, useApi} from '@watching/clips-preact';
+
+export function Extension() {
+  const {target} = useApi();
+
+  return (
+    <Text>
+      You are rendering in the <Text emphasis>{target}</Text> extension point!
+    </Text>
+  );
+}
+
+export default extension(() => <Extension />);
+```
+
+The [**React**](TODO) template lets you write your extension as a [React](https://reactjs.org) component. It provides type-safe React components and easy-to-use hooks for using the APIs available to an extension.
+
+> **Note:** the Preact gives you all the same APIs and developer experience of using the React template, but in a significantly smaller package. We recommend using the Preact template instead. In most cases, even if you need to use dependencies that rely on Preact, you can install the [`@preact/compat` alias package](https://github.com/preactjs/compat-alias-package) to implement React NPM package on top of Preact.
 
 ```tsx
 import {extension, Text, useApi} from '@watching/clips-react';
@@ -84,42 +143,42 @@ export function Extension() {
 export default extension(() => <Extension />);
 ```
 
-The [**DOM**](TODO) template provides a simulated DOM environment, which allows you to bring existing code that knows how to work on the DOM. The most important browser globals are made available to your extension, and gives you an HTML element that will map HTML elements into native UI components. This format is great for folks who already know the DOM APIs:
+The [**Svelte**](TODO) template lets you write your extension as a [Svelte](https://svelte.dev) component. It provides a very minimal helper for making extension APIs available to Svelte components. For small extensions, Svelte will produce smaller bundles than Preact, and only slightly larger bundles than using the DOM directly.
 
-```ts
-import {extension, Text} from '@watching/clips-dom';
+```tsx
+import {extension} from '@watching/clips-svelte';
+import Extension from './Extension.svelte';
 
-export default extension((root, {target}) => {
-  const targetElement = document.createElement(Text);
-
-  targetElement.emphasis = true;
-  targetElement.textContent = target;
-
-  const textElement = document.createElement(Text);
-  textElement.append(
-    'You are rendering in the ',
-    targetElement,
-    ' extension point!',
-  );
-
-  root.append(textElement);
+export default extension((_, options) => {
+  return new Extension(options);
 });
 ```
 
-If you have a favorite JavaScript framework that works with the DOM, you should be able to use it with this “simulated” DOM format. Here’s an example of an extension using [Vue.js](https://vuejs.org):
+```svelte
+<script lang="ts">
+  import {getApi} from '@watching/clips-svelte';
+  const {target} = getApi();
+</script>
+
+<ui-text>
+  You are rendering in the <ui-text emphasis={true}>{target}</ui-text> extension point!
+</ui-text>
+```
+
+If you have a favorite JavaScript framework that works with the DOM but isn’t listed here, you should be able to use it with the base DOM format. Here’s an example of an extension using [Vue.js](https://vuejs.org):
 
 ```ts
 // Make sure you import @watching/clips-dom first, as it adds the browser globals that
 // allow Vue to work.
-import {extension, Text} from '@watching/clips-dom';
+import {extension} from '@watching/clips-dom';
 import {h, createApp} from 'vue';
 
 export default extension((root, {target}) => {
   createApp({
     render() {
-      return h(Text, {}, [
+      return h('ui-text', {}, [
         'You are rendering in the ',
-        h(Text, {emphasis: true}, target),
+        h('ui-text', {emphasis: true}, target),
         ' extension point!',
       ]);
     },
