@@ -120,7 +120,7 @@ export async function create({ui}: {ui: Ui}) {
   });
 
   if (!args['--no-install']) {
-    const packageManager = (await getPackageManager(directory)) ?? 'npm';
+    const packageManager = (await getPackageManager()) ?? 'npm';
 
     ui.TextBlock(`Installing dependencies with ${ui.Code(packageManager)}...`);
 
