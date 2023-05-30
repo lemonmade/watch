@@ -52,7 +52,7 @@ function CurrentWatch({
 
   return html<Elements.TextBlock>`
     <ui-text-block>
-      You’ve rated this episode
+      You’ve rated this episode${' '}
       <ui-text emphasis>${currentWatch.rating}</ui-text>.
     </ui-text-block>
   `;
