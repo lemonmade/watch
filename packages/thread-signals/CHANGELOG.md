@@ -1,5 +1,11 @@
 # @watching/thread-signals
 
+## 0.1.10
+
+### Patch Changes
+
+- [`92b7286`](https://github.com/lemonmade/watch/commit/92b7286abd7773d2f89cbcc6ecf36b93bf9b1b8a) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix thread signals getting written to unnecessarily
+
 ## 0.1.9
 
 ### Patch Changes

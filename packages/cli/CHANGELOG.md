@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 2.0.15
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @watching/clips@0.4.11
+  - @watching/tools@0.1.4
+
 ## 2.0.14
 
 ### Patch Changes
