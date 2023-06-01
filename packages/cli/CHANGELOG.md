@@ -1,5 +1,13 @@
 # @watching/cli
 
+## 2.0.16
+
+### Patch Changes
+
+- [`f8f565d`](https://github.com/lemonmade/watch/commit/f8f565d813475ab84197c3a447fedd494f4199a7) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix package manager selection in create command
+
+* [`ba8e81d`](https://github.com/lemonmade/watch/commit/ba8e81d8760697f433a558b01678760f9485f2fc) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing space in DOM watch-through template
+
 ## 2.0.15
 
 ### Patch Changes
