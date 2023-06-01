@@ -1,5 +1,6 @@
 import {createHash} from 'crypto';
 import type {
+  Series as DatabaseSeries,
   App as DatabaseApp,
   AppInstallation as DatabaseAppInstallation,
   ClipsExtension as DatabaseClipsExtension,
@@ -11,6 +12,7 @@ import {z} from 'zod';
 
 import type {
   ClipsExtensionPointSupportInput,
+  ClipsExtensionPointSupportConditionInput,
   CreateClipsInitialVersion,
   ClipsExtensionSettingsStringInput,
 } from '../schema.ts';
@@ -68,55 +70,13 @@ export const Query: Pick<
       take: 50,
     });
 
-    const resolvedConditions = await Promise.all(
-      conditions?.map(async (condition) => {
-        if (condition.series == null) {
-          throw new Error(`Unknown condition: ${condition}`);
-        }
+    if (installations.length === 0) return [];
 
-        if (condition.series.id != null) {
-          const series = await prisma.series.findFirst({
-            where: {id: fromGid(condition.series.id).id},
-            rejectOnNotFound: true,
-          });
+    const resolvedConditions = await resolveConditions(conditions, {prisma});
 
-          return {condition, series};
-        }
-
-        if (condition.series.handle != null) {
-          const series = await prisma.series.findFirst({
-            where: {handle: condition.series.handle},
-            rejectOnNotFound: true,
-          });
-
-          return {condition, series};
-        }
-
-        throw new Error(
-          `You must provide either an 'id' or 'handle' (${condition})`,
-        );
-      }) ?? [],
-    );
-
-    return installations.filter((installation) => {
-      const version = installation.extension.activeVersion;
-
-      if (version == null || version.status !== 'PUBLISHED') {
-        return false;
-      }
-
-      return resolvedConditions.every(({series}) => {
-        return ((version.extends as any[]) ?? []).some((supports: any) => {
-          return (
-            target === supports.target &&
-            supports.conditions?.some(
-              (supportCondition: any) =>
-                supportCondition.series == null ||
-                supportCondition.series.handle === series.handle,
-            )
-          );
-        });
-      });
+    return filterInstallations(installations, {
+      target,
+      conditions: resolvedConditions,
     });
   },
   clipsInstallation(_, {id}, {prisma}) {
@@ -148,7 +108,7 @@ export const User: Pick<Resolver<'User'>, 'app' | 'apps'> = {
 const SeriesExtensionPoint = z.enum(['series.details.accessory']);
 
 export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
-  async clipsInstallations({handle}, {target}, {user, prisma}) {
+  async clipsInstallations(series, {target}, {user, prisma}) {
     if (!SeriesExtensionPoint.safeParse(target).success) {
       throw new Error(`Invalid target: ${target}`);
     }
@@ -167,23 +127,16 @@ export const Series: Pick<Resolver<'Series'>, 'clipsInstallations'> = {
       take: 50,
     });
 
-    return installations.filter((installation) => {
-      const version = installation.extension.activeVersion;
+    if (installations.length === 0) return [];
 
-      if (version == null || version.status !== 'PUBLISHED') {
-        return false;
-      }
-
-      return (version.extends as any[]).some((supports) => {
-        return (
-          target === supports.target &&
-          supports.conditions?.some(
-            (supportCondition: any) =>
-              supportCondition.series == null ||
-              supportCondition.series.handle === handle,
-          )
-        );
-      });
+    return filterInstallations(installations, {
+      target,
+      conditions: [
+        {
+          series,
+          condition: {series: {handle: series.handle}},
+        },
+      ],
     });
   },
 };
@@ -219,23 +172,16 @@ export const WatchThrough: Pick<
       }),
     ]);
 
-    return installations.filter((installation) => {
-      const version = installation.extension.activeVersion;
+    if (installations.length === 0) return [];
 
-      if (version == null || version.status !== 'PUBLISHED') {
-        return false;
-      }
-
-      return (version.extends as any[]).some((supports) => {
-        return (
-          target === supports.target &&
-          supports.conditions?.some(
-            (supportCondition: any) =>
-              supportCondition.series == null ||
-              supportCondition.series.handle === series.handle,
-          )
-        );
-      });
+    return filterInstallations(installations, {
+      target,
+      conditions: [
+        {
+          series,
+          condition: {series: {handle: series.handle}},
+        },
+      ],
     });
   },
 };
@@ -822,4 +768,99 @@ function normalizeClipsString({
 
 function toParam(name: string) {
   return name.trim().toLocaleLowerCase().replace(/\s+/g, '-');
+}
+
+interface ResolvedCondition {
+  series: Pick<DatabaseSeries, 'handle'>;
+  condition: ClipsExtensionPointSupportConditionInput;
+}
+
+async function resolveConditions(
+  conditions: ClipsExtensionPointSupportConditionInput[] | undefined | null,
+  {prisma}: Pick<Context, 'prisma'>,
+): Promise<ResolvedCondition[]> {
+  const resolvedConditions = await Promise.all(
+    conditions?.map(async (condition) => {
+      if (condition.series == null) {
+        throw new Error(`Unknown condition: ${condition}`);
+      }
+
+      if (condition.series.id != null) {
+        const series = await prisma.series.findFirst({
+          where: {id: fromGid(condition.series.id).id},
+          rejectOnNotFound: true,
+        });
+
+        return {condition, series};
+      }
+
+      if (condition.series.handle != null) {
+        const series = await prisma.series.findFirst({
+          where: {handle: condition.series.handle},
+          rejectOnNotFound: true,
+        });
+
+        return {condition, series};
+      }
+
+      throw new Error(
+        `You must provide either an 'id' or 'handle' (${condition})`,
+      );
+    }) ?? [],
+  );
+
+  return resolvedConditions;
+}
+
+function filterInstallations(
+  installations: (DatabaseClipsExtensionInstallation & {
+    extension: {
+      activeVersion: Pick<
+        DatabaseClipsExtensionVersion,
+        'status' | 'extends'
+      > | null;
+    };
+  })[],
+  {
+    target,
+    conditions,
+  }: {
+    target?: string | null;
+    conditions: ResolvedCondition[];
+  },
+) {
+  return installations.filter((installation) => {
+    const version = installation.extension.activeVersion;
+
+    if (version == null || version.status !== 'PUBLISHED') {
+      return false;
+    }
+
+    const extensionPoints =
+      (version.extends as {
+        target: string;
+        conditions?: {series?: {handle?: string}}[];
+      }[]) ?? [];
+
+    return extensionPoints.some((extensionPoint) => {
+      if (target != null && target !== extensionPoint.target) {
+        return false;
+      }
+
+      if (
+        extensionPoint.conditions == null ||
+        extensionPoint.conditions.length === 0
+      ) {
+        return true;
+      }
+
+      return extensionPoint.conditions.some((extensionPointCondition) => {
+        return conditions.some(
+          ({series}) =>
+            extensionPointCondition.series == null ||
+            extensionPointCondition.series.handle === series.handle,
+        );
+      });
+    });
+  });
 }
