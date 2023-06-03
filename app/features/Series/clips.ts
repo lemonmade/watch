@@ -39,9 +39,10 @@ export const SeriesDetailsAccessoryExtensionPoint = createExtensionPoint({
           variables: {series: id, from, to, includeSpecials, spoilerAvoidance},
         });
 
+        const shouldNavigate = navigate ?? true;
         const watchThrough = data?.startWatchThrough.watchThrough;
 
-        if (navigate && watchThrough != null) {
+        if (shouldNavigate && watchThrough != null) {
           setTimeout(() => {
             router.navigate(watchThrough.url);
           }, 0);

@@ -64,7 +64,8 @@ export const Query: Pick<
 
 export const WatchThrough: Resolver<'WatchThrough'> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
-  url: ({id}) => new URL(`/app/watchthrough/${id}`).href,
+  url: ({id}, _, {request}) =>
+    new URL(`/app/watchthrough/${id}`, request.url).href,
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
       where: {id: seriesId},
