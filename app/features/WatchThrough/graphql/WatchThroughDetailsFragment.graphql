@@ -2,6 +2,7 @@
 
 fragment WatchThroughDetails on WatchThrough {
   id
+  url
   from {
     season
     episode

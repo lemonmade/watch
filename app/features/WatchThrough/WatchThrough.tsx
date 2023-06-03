@@ -99,6 +99,7 @@ function WatchThroughWithData({
 }) {
   const {
     id,
+    url,
     nextEpisode,
     status,
     series,
@@ -183,6 +184,7 @@ function WatchThroughWithData({
 
           <AccessoryClips
             id={id}
+            url={url}
             series={series}
             installations={clipsInstallations}
             currentWatch={nextEpisodeForm}
@@ -791,17 +793,18 @@ function SettingsSection({
 
 function AccessoryClips({
   id,
+  url,
   series,
   installations,
   currentWatch,
-}: Pick<WatchThroughQueryData.WatchThrough, 'id' | 'series'> & {
+}: Pick<WatchThroughQueryData.WatchThrough, 'id' | 'url' | 'series'> & {
   installations: WatchThroughQueryData.WatchThrough['clipsInstallations'];
   currentWatch: Signal<WatchForm | undefined>;
 }) {
   const accessoryClips = useClips(
     'watch-through.details.accessory',
     installations,
-    {id, seriesId: series.id, seriesName: series.name, currentWatch},
+    {id, url, seriesId: series.id, seriesName: series.name, currentWatch},
   );
 
   if (accessoryClips.length === 0) return null;
