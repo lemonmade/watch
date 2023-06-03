@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.1.7
+
+### Patch Changes
+
+- [#255](https://github.com/lemonmade/watch/pull/255) [`c36b3a9`](https://github.com/lemonmade/watch/commit/c36b3a979f38ede230cb9640706ffb6a719cf4b1) Thanks [@lemonmade](https://github.com/lemonmade)! - Add support for mutations
+
 ## 0.1.6
 
 ### Patch Changes
