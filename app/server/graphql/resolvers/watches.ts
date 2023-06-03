@@ -64,6 +64,8 @@ export const Query: Pick<
 
 export const WatchThrough: Resolver<'WatchThrough'> = {
   id: ({id}) => toGid(id, 'WatchThrough'),
+  url: ({id}, _, {request}) =>
+    new URL(`/app/watchthrough/${id}`, request.url).href,
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
       where: {id: seriesId},
@@ -722,6 +724,7 @@ export const Mutation: Pick<
     }
 
     return {
+      errors: [],
       watchThrough,
       watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
     };

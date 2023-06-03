@@ -36,6 +36,7 @@ import {
 } from './extension-points.ts';
 import {createSandbox} from './sandbox.ts';
 import {createLiveQueryRunner} from './live-query.ts';
+import {createMutateRunner} from './mutate.ts';
 
 import localClipsExtensionsQuery from './graphql/LocalClipsExtensionsQuery.graphql';
 import localClipQuery, {
@@ -142,12 +143,20 @@ export function createClipsManager(
         signal: new AbortController().signal,
       },
     );
+    const mutate = createMutateRunner(
+      ((helpers) =>
+        extensionPoint.mutate?.(options.options as never, helpers)) ?? {},
+      {
+        context: appContext,
+      },
+    );
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {
         return {
           settings,
           liveQuery,
+          mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
         };
@@ -159,13 +168,14 @@ export function createClipsManager(
         ]);
       },
       async render({signal, receiver, context}) {
-        const {settings, liveQuery, sandbox} = context;
+        const {settings, liveQuery, mutate, sandbox} = context;
 
         const api: ApiCore<Point> = {
           target: options.target,
           version: options.version,
           settings: createThreadSignal(settings, {signal}),
           query: createThreadSignal(liveQuery.result, {signal}),
+          mutate: mutate as any,
         };
 
         await sandbox.render(options.target, receiver.receive, api as any);
@@ -191,12 +201,20 @@ export function createClipsManager(
         signal: new AbortController().signal,
       },
     );
+    const mutate = createMutateRunner(
+      ((helpers) =>
+        extensionPoint.mutate?.(options.options as never, helpers)) ?? {},
+      {
+        context: appContext,
+      },
+    );
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {
         return {
           settings,
           liveQuery,
+          mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
         };
@@ -218,6 +236,7 @@ export function createClipsManager(
           version: 'unstable',
           settings: createThreadSignal(settings, {signal}),
           query: createThreadSignal(liveQuery.result, {signal}),
+          mutate: mutate as any,
         };
 
         await sandbox.render(options.target, receiver.receive, api as any);

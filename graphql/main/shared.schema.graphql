@@ -5,6 +5,15 @@ scalar Email
 scalar ApiVersion
 scalar FormattedText
 
+enum ErrorCode {
+  GENERIC
+}
+
+type Error {
+  code: ErrorCode!
+  message: String!
+}
+
 enum SpoilerAvoidance {
   NONE
   UPCOMING

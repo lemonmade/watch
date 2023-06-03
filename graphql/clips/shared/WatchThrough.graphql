@@ -1,6 +1,8 @@
+#import "./Scalars.graphql"
 #import "./Series.graphql"
 
 type WatchThrough {
   id: ID!
+  url: Url!
   series: Series!
 }

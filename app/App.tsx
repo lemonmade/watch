@@ -3,7 +3,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 import {
   useRoutes,
-  useNavigate,
+  useRouter,
   createGraphQLHttpFetch,
   QuiltApp,
   Redirect,
@@ -272,7 +272,7 @@ export function AppContext({
   user: explicitUser,
   children,
 }: PropsWithChildren<AppContextProps>) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const serializedContext = useSerialized('AppContext', () => ({
     user: explicitUser,
   }));
@@ -285,7 +285,7 @@ export function AppContext({
       const result = await fetch(...args);
 
       if (result.errors?.some((error) => (error as any).status === 401)) {
-        navigate(createSignInRedirect);
+        router.navigate(createSignInRedirect);
       }
 
       return result;
@@ -302,7 +302,10 @@ export function AppContext({
     });
 
     const clipsManager = user
-      ? createClipsManager({user}, EXTENSION_POINTS)
+      ? createClipsManager(
+          {user, graphql: fetchGraphQL, router},
+          EXTENSION_POINTS,
+        )
       : undefined;
 
     return {
@@ -313,7 +316,7 @@ export function AppContext({
       queryClient,
       clipsManager,
     };
-  }, [serializedContext, navigate, explicitUser]);
+  }, [serializedContext, router, explicitUser]);
 
   return (
     <Metrics>

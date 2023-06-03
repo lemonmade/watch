@@ -11,6 +11,7 @@ import {type WatchForm} from './WatchThrough.tsx';
 
 export interface WatchThroughDetailsAccessoryOptions {
   readonly id: string;
+  readonly url: string;
   readonly seriesId: string;
   readonly seriesName: string;
   readonly currentWatch: Signal<WatchForm | undefined>;
@@ -21,6 +22,7 @@ export const WatchThroughDetailsAccessoryExtensionPoint = createExtensionPoint({
   query(
     {
       id,
+      url,
       seriesId,
       seriesName,
       currentWatch: currentWatchSignal,
@@ -33,6 +35,7 @@ export const WatchThroughDetailsAccessoryExtensionPoint = createExtensionPoint({
       ...createSharedGraphQLApi(helpers),
       watchThrough: object('WatchThrough', {
         id,
+        url,
         series: object('Series', {id: seriesId, name: seriesName}),
         async *currentWatch(_, __, {signal}) {
           yield* currentWatch(signal);

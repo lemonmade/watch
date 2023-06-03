@@ -1,3 +1,4 @@
+import type {Router, GraphQLFetch} from '@quilted/quilt';
 import {
   type ExtensionPoint,
   type SharedGraphQLApi,
@@ -20,15 +21,33 @@ export type GraphQLQueryResolverByExtensionPoint = {
   >;
 };
 
+export type GraphQLMutationResolverByExtensionPoint = {
+  [Point in ExtensionPoint]: GraphQLMutationResolver<
+    GraphQLApiByExtensionPoint[Point],
+    ExtensionPointDefinitionContext
+  >;
+};
+
 type GraphQLQueryResolver<
-  Types extends {Query: any},
+  Types,
   Context = Record<string, never>,
-> = Omit<
-  GraphQLLiveResolverObject<Types['Query'], Context>,
-  '__typename' | '__context'
->;
+> = Types extends {Query?: infer Query}
+  ? Omit<GraphQLLiveResolverObject<Query, Context>, '__typename' | '__context'>
+  : never;
+
+type GraphQLMutationResolver<
+  Types,
+  Context = Record<string, never>,
+> = Types extends {Mutation?: infer Mutation}
+  ? Omit<
+      GraphQLLiveResolverObject<Mutation, Context>,
+      '__typename' | '__context'
+    >
+  : never;
 
 export interface ExtensionPointDefinitionContext {
+  readonly router: Router;
+  readonly graphql: GraphQLFetch;
   readonly user: {readonly id: string};
 }
 
@@ -44,6 +63,13 @@ export interface ExtensionPointDefinition<
       ExtensionPointDefinitionContext
     >,
   ): GraphQLQueryResolverByExtensionPoint[Point];
+  mutate?(
+    options: Options,
+    helpers: GraphQLLiveResolverCreateHelper<
+      GraphQLApiByExtensionPoint[Point],
+      ExtensionPointDefinitionContext
+    >,
+  ): GraphQLMutationResolverByExtensionPoint[Point];
   components(): RemoteComponentRendererMap;
 }
 

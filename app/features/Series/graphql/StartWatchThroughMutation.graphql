@@ -2,10 +2,23 @@ mutation SeriesStartWatchThrough(
   $series: ID!
   $from: EpisodeSliceInput
   $to: EpisodeSliceInput
+  $includeSpecials: Boolean
+  $spoilerAvoidance: SpoilerAvoidance
 ) {
-  startWatchThrough(series: $series, from: $from, to: $to) {
+  startWatchThrough(
+    series: $series
+    from: $from
+    to: $to
+    includeSpecials: $includeSpecials
+    spoilerAvoidance: $spoilerAvoidance
+  ) {
     watchThrough {
       id
+      url
+      series {
+        id
+        name
+      }
     }
   }
 }
