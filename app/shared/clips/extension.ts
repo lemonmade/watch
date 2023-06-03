@@ -2,7 +2,7 @@ import {type ThreadCallable} from '@quilted/quilt/threads';
 import {type ThreadRenderer} from '@watching/thread-render';
 import {type RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
 
-import {type Version, type ExtensionPoint} from '@watching/clips';
+import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
 import {type Signal} from '@watching/thread-signals';
 
 import {type OptionsForExtensionPoint} from './extension-points.ts';
@@ -38,6 +38,7 @@ export interface ClipsExtensionPointInstanceContext<
 > {
   readonly settings: Signal<Record<string, unknown>>;
   readonly liveQuery: LiveQueryRunner<Point>;
+  readonly mutate: Api<Point>['mutate'];
   readonly components: RemoteComponentRendererMap;
   readonly sandbox: ThreadCallable<Sandbox>;
 }

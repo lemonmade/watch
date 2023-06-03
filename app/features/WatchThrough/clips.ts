@@ -33,6 +33,7 @@ export const WatchThroughDetailsAccessoryExtensionPoint = createExtensionPoint({
       ...createSharedGraphQLApi(helpers),
       watchThrough: object('WatchThrough', {
         id,
+        url: 'TODO',
         series: object('Series', {id: seriesId, name: seriesName}),
         async *currentWatch(_, __, {signal}) {
           yield* currentWatch(signal);

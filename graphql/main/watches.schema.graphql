@@ -127,6 +127,7 @@ type EpisodeDescriptor {
 
 type WatchThrough {
   id: ID!
+  url: Url!
   series: Series!
   from: EpisodeSlice!
   to: EpisodeSlice!
@@ -172,7 +173,13 @@ type UpdateWatchThroughSettingsPayload {
   watchThrough: WatchThrough
 }
 
+extend enum ErrorCode {
+  INVALID_SERIES
+  INVALID_EPISODE
+}
+
 type StartWatchThroughPayload {
+  errors: [Error!]!
   watchThrough: WatchThrough
   watchLater: List!
 }

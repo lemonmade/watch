@@ -1,0 +1,8 @@
+enum ErrorCode {
+  GENERIC
+}
+
+type Error {
+  code: ErrorCode!
+  message: String!
+}

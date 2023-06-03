@@ -11,6 +11,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import esbuild, {type Options as ESBuildOptions} from 'rollup-plugin-esbuild';
+import {graphql} from '@quilted/graphql/rollup';
 
 const MAGIC_MODULE_EXTENSION_ENTRY = '__MAGIC__/ClipsExtension.js';
 
@@ -107,6 +108,7 @@ export function extensionRollupConfiguration(
         preferBuiltins: true,
       }),
       commonjs(),
+      graphql(),
       esbuild({
         include: /\.esnext$/,
         exclude: [],

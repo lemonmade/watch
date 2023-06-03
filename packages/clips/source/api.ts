@@ -1,3 +1,7 @@
+import {
+  type GraphQLOperation,
+  type GraphQLVariableOptions,
+} from '@quilted/quilt';
 import {type Signal, type ThreadSignal} from '@watching/thread-signals';
 
 import {type ExtensionPoint} from './extension-points';
@@ -11,8 +15,12 @@ export interface Api<
 > {
   readonly version: Version;
   readonly target: Point;
-  readonly query: Signal<Query>;
   readonly settings: Signal<Settings>;
+  readonly query: Signal<Query>;
+  mutate<Data = unknown, Variables = unknown>(
+    operation: GraphQLOperation<Data, Variables> | string,
+    variables: GraphQLVariableOptions<Variables>,
+  ): Promise<Data>;
 }
 
 export interface ApiCore<
@@ -22,6 +30,10 @@ export interface ApiCore<
 > {
   readonly version: Version;
   readonly target: Point;
-  readonly query: ThreadSignal<Query>;
   readonly settings: ThreadSignal<Settings>;
+  readonly query: ThreadSignal<Query>;
+  mutate<Data = unknown, Variables = unknown>(
+    operation: GraphQLOperation<Data, Variables> | string,
+    variables: GraphQLVariableOptions<Variables>,
+  ): Promise<Data>;
 }

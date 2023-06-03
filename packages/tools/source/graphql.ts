@@ -44,10 +44,14 @@ export function extensionGraphQLProjects(): Record<string, GraphQLProject> {
       const extensionRoot = path.dirname(extension);
       const extensionConfig = readToml<{
         handle: string;
-        extends: {target: string; query?: string}[];
+        extends: {
+          target: string;
+          query?: string;
+          mutations?: string | string[];
+        }[];
       }>(extension);
 
-      for (const {target, query} of extensionConfig.extends) {
+      for (const {target, query, mutations = []} of extensionConfig.extends) {
         if (query == null) continue;
 
         const schema = EXTENSION_TARGET_SCHEMA_MAP.get(target);
@@ -58,13 +62,26 @@ export function extensionGraphQLProjects(): Record<string, GraphQLProject> {
           );
         }
 
+        const mutationPatterns = Array.isArray(mutations)
+          ? mutations
+          : [mutations];
+
         projects[`${extensionConfig.handle}.${target}`] = {
           schema: path.join(
             extensionRoot,
             'node_modules/@watching/clips',
             schema,
           ),
-          documents: [path.join(extensionRoot, query)],
+          documents: [
+            path.join(extensionRoot, query),
+            ...mutationPatterns.flatMap((mutationPattern) =>
+              globSync(mutationPattern, {
+                cwd: extensionRoot,
+                ignore: ['**/node_modules/**'],
+                absolute: true,
+              }),
+            ),
+          ],
         };
       }
     }

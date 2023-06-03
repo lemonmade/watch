@@ -19,7 +19,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.1.31",
+    "@lemonmade/remote-ui": "^0.1.32",
     "@lemonmade/remote-ui-react": "^0.1.20",
     "@preact/signals-core": "^1.3.0",
     "@types/react": "^18.0.0",
@@ -41,6 +41,9 @@
     "react-dom": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@watching/clips": "workspace:^"
   },
   "eslintConfig": {
     "extends": [

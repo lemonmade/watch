@@ -1,11 +1,41 @@
 #import "./Shared.schema.graphql"
 
+#import "./shared/Errors.graphql"
+#import "./shared/Spoilers.graphql"
 #import "./shared/Series.graphql"
+#import "./shared/WatchThrough.graphql"
 
 extend type Query {
   series: Series!
 }
 
+type Mutation {
+  startWatchThrough(
+    from: EpisodeSliceInput
+    to: EpisodeSliceInput
+    includeSpecials: Boolean
+    spoilerAvoidance: SpoilerAvoidance
+    navigate: Boolean
+  ): StartWatchThroughResult!
+}
+
 schema {
   query: Query
+  mutation: Mutation
+}
+
+# Mutation
+
+input EpisodeSliceInput {
+  season: Int!
+  episode: Int
+}
+
+extend enum ErrorCode {
+  INVALID_EPISODE
+}
+
+type StartWatchThroughResult {
+  errors: [Error!]!
+  watchThrough: WatchThrough
 }

@@ -4,6 +4,8 @@ import {
   createSharedGraphQLApi,
 } from '~/shared/clips.ts';
 
+import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
+
 export interface SeriesDetailsAccessoryOptions {
   readonly id: string;
   readonly name: string;
@@ -25,6 +27,31 @@ export const SeriesDetailsAccessoryExtensionPoint = createExtensionPoint({
           }
         },
       }),
+    };
+  },
+  mutate({id}, {object}) {
+    return {
+      async startWatchThrough(
+        {from, to, includeSpecials, spoilerAvoidance, navigate},
+        {graphql, router},
+      ) {
+        const {data} = await graphql(startWatchThroughMutation, {
+          variables: {series: id, from, to, includeSpecials, spoilerAvoidance},
+        });
+
+        const watchThrough = data?.startWatchThrough.watchThrough;
+
+        if (navigate && watchThrough != null) {
+          setTimeout(() => {
+            router.navigate(watchThrough.url);
+          }, 0);
+        }
+
+        return object('StartWatchThroughResult', {
+          errors: [],
+          watchThrough,
+        });
+      },
     };
   },
   components() {

@@ -1,0 +1,5 @@
+enum SpoilerAvoidance {
+  NONE
+  UPCOMING
+  EVERYTHING
+}
