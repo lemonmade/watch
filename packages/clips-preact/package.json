@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips-preact",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "type": "module",
   "publishConfig": {
     "access": "public",
