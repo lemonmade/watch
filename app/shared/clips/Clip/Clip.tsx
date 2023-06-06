@@ -1,9 +1,11 @@
-import {useEffect, useRef} from 'react';
+import {ComponentType, useEffect, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRootRenderer} from '@lemonmade/remote-ui-react/host';
 import {
   Style,
   Popover,
+  Stack,
+  InlineStack,
   BlockStack,
   InlineGrid,
   View,
@@ -24,6 +26,7 @@ import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
   type ClipsExtensionPointInstanceContext,
+  type ClipsExtensionPointInstanceLoadingElement,
 } from '../extension.ts';
 
 import {ClipSettings} from './ClipSettings.tsx';
@@ -204,6 +207,16 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
   );
 }
 
+const LOADING_COMPONENT_MAP = new Map<string, ComponentType<any>>([
+  ['ui-stack', Stack],
+  ['ui-block-stack', BlockStack],
+  ['ui-inline-stack', InlineStack],
+  ['ui-skeleton-action', View],
+  ['ui-skeleton-text', View],
+  ['ui-skeleton-text-block', View],
+  ['ui-skeleton-view', View],
+]);
+
 function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
   instance,
 }: {
@@ -211,5 +224,30 @@ function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
 }) {
   const loadingUi = instance?.context.loadingUi.value;
 
-  return loadingUi ? <div>TODO</div> : null;
+  if (loadingUi == null) return null;
+
+  const renderNode = (
+    child: ClipsExtensionPointInstanceLoadingElement['children'][number],
+    index: number,
+  ) => {
+    if (typeof child === 'string') {
+      return <>{child}</>;
+    }
+
+    const {type, properties, children} = child;
+
+    const Component = LOADING_COMPONENT_MAP.get(type);
+
+    if (Component == null) {
+      throw new Error(`Unknown loading component: ${type}`);
+    }
+
+    return (
+      <Component key={index} {...properties}>
+        {children.map(renderNode)}
+      </Component>
+    );
+  };
+
+  return <>{loadingUi.map(renderNode)}</>;
 }

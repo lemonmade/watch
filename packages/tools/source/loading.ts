@@ -8,6 +8,7 @@ const ALLOWED_ELEMENTS = new Map<AnyElement, Record<string, any>>([
   ['ui-skeleton-text', {size: String}],
   ['ui-skeleton-text-block', {lines: Number}],
   ['ui-skeleton-action', {}],
+  ['ui-skeleton-view', {}],
 ]);
 
 const PROPERTY_CONVERTER_MAP = new Map<any, (value: any) => any>([
