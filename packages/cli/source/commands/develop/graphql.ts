@@ -77,7 +77,7 @@ export function createQueryResolver(
               const ui = extensionPoint.loading?.ui;
               if (ui == null) return null;
 
-              const {sanitizeLoadingUi} = await import(
+              const {parseLoadingHtml, serializeLoadingHtml} = await import(
                 '@watching/tools/loading'
               );
 
@@ -86,24 +86,24 @@ export function createQueryResolver(
                   path.resolve(extension.root, ui),
                   {signal},
                 )) {
-                  const html = await sanitizeLoadingUi(content);
+                  const tree = parseLoadingHtml(content);
 
                   yield object('ClipsExtensionPointLoading', {
                     ui: object('ClipsExtensionPointLoadingUi', {
                       file: ui,
-                      html,
-                      tree: () => undefined,
+                      tree: () => JSON.stringify(tree),
+                      html: () => serializeLoadingHtml(tree),
                     }),
                   });
                 }
               } else {
-                const html = await sanitizeLoadingUi(ui);
+                const tree = parseLoadingHtml(ui);
 
                 return object('ClipsExtensionPointLoading', {
                   ui: object('ClipsExtensionPointLoadingUi', {
                     file: extension.configurationFile.path,
-                    html,
-                    tree: () => undefined,
+                    tree: () => JSON.stringify(tree),
+                    html: () => serializeLoadingHtml(tree),
                   }),
                 });
               }

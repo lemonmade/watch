@@ -634,7 +634,22 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       const extend = (extension.activeVersion?.extends ?? []) as any[];
 
-      return extend.find((extend) => extend.target === target)?.loading;
+      const loading = extend.find(
+        (extend) => extend.target === target,
+      )?.loading;
+
+      if (loading == null) return null;
+
+      const {parseLoadingHtml} = await import('@watching/tools/loading');
+
+      return {
+        ui: loading?.ui
+          ? {
+              html: loading.ui,
+              tree: JSON.stringify(parseLoadingHtml(loading.ui)),
+            }
+          : null,
+      };
     },
     settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   };
@@ -699,11 +714,12 @@ async function createStagedClipsVersion({
                 ...loading,
                 ui: loading.ui
                   ? (async () => {
-                      const {sanitizeLoadingUi} = await import(
-                        '@watching/tools/loading'
+                      const {parseLoadingHtml, serializeLoadingHtml} =
+                        await import('@watching/tools/loading');
+
+                      return serializeLoadingHtml(
+                        parseLoadingHtml(loading.ui!),
                       );
-                      const sanitized = await sanitizeLoadingUi(loading.ui!);
-                      return sanitized;
                     })()
                   : undefined,
               },

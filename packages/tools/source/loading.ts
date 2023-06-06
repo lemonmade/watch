@@ -1,4 +1,4 @@
-import type {HTMLElement} from 'node-html-parser';
+import htm from 'htm/mini';
 import type {AnyElement} from '@watching/clips';
 
 const ALLOWED_ELEMENTS = new Map<AnyElement, Record<string, any>>([
@@ -10,44 +10,92 @@ const ALLOWED_ELEMENTS = new Map<AnyElement, Record<string, any>>([
   ['ui-skeleton-action', {}],
 ]);
 
-export async function sanitizeLoadingUi(content: string) {
-  const [{minify}, {parse}] = await Promise.all([
-    import('html-minifier-terser'),
-    import('node-html-parser'),
-  ]);
+const PROPERTY_CONVERTER_MAP = new Map<any, (value: any) => any>([
+  [Boolean, (value) => (typeof value === 'boolean' ? value : value === '')],
+  [Number, (value) => (typeof value === 'number' ? value : Number(value))],
+]);
 
-  const parsed = parse(content);
+class LoadingElement {
+  readonly properties: Record<string, unknown>;
 
-  sanitizeElement(parsed);
+  constructor(
+    readonly type: string,
+    properties: Record<string, unknown> | null | undefined,
+    readonly children: readonly (string | LoadingElement)[],
+  ) {
+    const allowedProperties = ALLOWED_ELEMENTS.get(type as any);
 
-  return minify(parsed.innerHTML, {
-    collapseWhitespace: true,
-  });
-}
+    if (allowedProperties == null) {
+      throw new Error(`Unrecognized element: ${type}`);
+    }
 
-function sanitizeElement(element: HTMLElement) {
-  const {tagName, attributes, childNodes} = element;
-  const allowedAttributes = tagName
-    ? ALLOWED_ELEMENTS.get(tagName.toLowerCase() as any)
-    : undefined;
+    const normalizedProperties: Record<string, any> = {};
 
-  if (tagName != null && allowedAttributes == null) {
-    throw new Error(`Unrecognized element: ${element.localName}`);
-  }
-
-  if (allowedAttributes) {
-    Object.entries(attributes).forEach(([attribute]) => {
-      if (allowedAttributes[attribute] == null) {
+    for (const [property, value] of Object.entries(properties ?? {})) {
+      if (allowedProperties[property] == null) {
         throw new Error(
-          `Unrecognized attribute on element ${element.localName}: ${attribute}`,
+          `Unrecognized property on element ${type}: ${property}`,
         );
       }
-    });
+
+      const converter =
+        PROPERTY_CONVERTER_MAP.get(allowedProperties[property]) ??
+        ((value) => value);
+
+      normalizedProperties[property] = converter(value);
+    }
+
+    this.type = type;
+    this.properties = normalizedProperties;
+    this.children = children;
   }
 
-  for (const child of childNodes) {
-    if (child.nodeType === 1) {
-      sanitizeElement(child as HTMLElement);
+  get innerHTML() {
+    let propertiesString = '';
+
+    for (const [property, value] of Object.entries(this.properties)) {
+      if (value === true) {
+        propertiesString += ` ${property}`;
+      } else if (typeof value === 'string' || typeof value === 'number') {
+        propertiesString += ` ${property}="${value}"`;
+      }
+    }
+
+    return `<${this.type}${propertiesString}>${serializeLoadingHtml(
+      this.children,
+    )}</${this.type}>`;
+  }
+}
+
+export const html = htm.bind<LoadingElement | string>(
+  (type, props, ...children) => {
+    return new LoadingElement(type, props, children);
+  },
+);
+
+export function parseLoadingHtml(content: string) {
+  const templateArray: any = [content];
+  templateArray.raw = [content];
+  const elements = html(templateArray);
+  return Array.isArray(elements) ? elements : [elements];
+}
+
+export function serializeLoadingHtml(
+  elements: string | LoadingElement | readonly (string | LoadingElement)[],
+) {
+  const list: readonly (string | LoadingElement)[] = Array.isArray(elements)
+    ? elements
+    : [elements];
+
+  let serialized = '';
+
+  for (const element of list) {
+    if (typeof element === 'string') {
+      serialized += element;
+    } else {
+      serialized += element.innerHTML;
     }
   }
+
+  return serialized;
 }
