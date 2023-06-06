@@ -6,7 +6,7 @@
 </script>
 
 <ui-text-block>
-  You are rendering in the <ui-text emphasis={true}>{target}</ui-text>
+  You are rendering in the <ui-text emphasis>{target}</ui-text>
   extension point, on a series named
-  <ui-text emphasis={true}>{$query.series.name}</ui-text>!
+  <ui-text emphasis>{$query.series.name}</ui-text>!
 </ui-text-block>

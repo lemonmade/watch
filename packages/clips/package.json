@@ -57,7 +57,7 @@
     "./build/cjs/elements/**/*.cjs"
   ],
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.1.32",
+    "@lemonmade/remote-ui": "^0.1.33",
     "@quilted/graphql": "^0.4.57",
     "@watching/thread-signals": "workspace:^"
   },

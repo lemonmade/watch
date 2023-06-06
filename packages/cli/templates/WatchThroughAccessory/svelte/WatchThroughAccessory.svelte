@@ -8,11 +8,11 @@
   >();
 </script>
 
-<ui-block-stack spacing={true}>
+<ui-block-stack spacing>
   <ui-text-block>
-    You are rendering in the <ui-text emphasis={true}>{target}</ui-text>
+    You are rendering in the <ui-text emphasis>{target}</ui-text>
     extension point, on a series named
-    <ui-text emphasis={true}>{$query.watchThrough.series.name}</ui-text>!
+    <ui-text emphasis>{$query.watchThrough.series.name}</ui-text>!
   </ui-text-block>
 
   {#if $query.watchThrough.currentWatch != null}
@@ -20,7 +20,7 @@
       <ui-text-block>You haven’t rated this episode yet.</ui-text-block>
     {:else}
       <ui-text-block>
-        You’ve rated this episode <ui-text emphasis={true}
+        You’ve rated this episode <ui-text emphasis
           >{$query.watchThrough.currentWatch.rating}</ui-text
         >.
       </ui-text-block>
