@@ -112,7 +112,7 @@ export const Image = createRemoteElement<ImageProperties>({
     loading: {type: String},
     fit: {type: String},
     aspectRatio: {type: Number},
-    cornerRadius: {type: RemoteElementCornerRadiusValue},
+    cornerRadius: {type: RemoteElementCornerRadiusValue, default: false},
   },
 });
 

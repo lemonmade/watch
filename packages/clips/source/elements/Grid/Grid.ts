@@ -31,9 +31,9 @@ export const COMMON_GRID_PROPERTIES: RemoteElementPropertiesDefinition<
   Omit<GridProperties, 'direction' | 'blockSizes' | 'inlineSizes'>
 > = {
   ...VIEW_PROPERTIES,
-  spacing: {type: RemoteElementSpacingValue},
-  inlineSpacing: {type: RemoteElementSpacingValue},
-  blockSpacing: {type: RemoteElementSpacingValue},
+  spacing: {type: RemoteElementSpacingValue, default: false},
+  inlineSpacing: {type: RemoteElementSpacingValue, default: false},
+  blockSpacing: {type: RemoteElementSpacingValue, default: false},
   blockAlignment: {type: String},
   inlineAlignment: {type: String},
   layoutMode: {type: String},

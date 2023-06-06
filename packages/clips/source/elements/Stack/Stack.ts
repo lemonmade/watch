@@ -24,7 +24,7 @@ export const COMMON_STACK_PROPERTIES: RemoteElementPropertiesDefinition<
   Omit<StackProperties, 'direction'>
 > = {
   ...VIEW_PROPERTIES,
-  spacing: {type: RemoteElementSpacingValue},
+  spacing: {type: RemoteElementSpacingValue, default: false},
   blockAlignment: {type: String},
   inlineAlignment: {type: String},
   layoutMode: {type: String},

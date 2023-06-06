@@ -18,6 +18,7 @@ export const Text = createRemoteElement<TextProperties>({
       type: BooleanOrString as RemoteElementPropertyType<
         TextProperties['emphasis']
       >,
+      default: false,
     },
   },
 });

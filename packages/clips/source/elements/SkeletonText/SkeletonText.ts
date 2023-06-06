@@ -17,6 +17,7 @@ export const SkeletonText = createRemoteElement<SkeletonTextProperties>({
       type: BooleanOrString as RemoteElementPropertyType<
         SkeletonTextProperties['emphasis']
       >,
+      default: false,
     },
     size: {
       type: String,

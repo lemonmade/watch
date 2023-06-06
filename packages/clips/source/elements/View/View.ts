@@ -16,11 +16,11 @@ export interface ViewProperties {
 
 export const VIEW_PROPERTIES: RemoteElementPropertiesDefinition<ViewProperties> =
   {
-    padding: {type: RemoteElementSpacingValue},
-    paddingInlineStart: {type: RemoteElementSpacingValue},
-    paddingInlineEnd: {type: RemoteElementSpacingValue},
-    paddingBlockStart: {type: RemoteElementSpacingValue},
-    paddingBlockEnd: {type: RemoteElementSpacingValue},
+    padding: {type: RemoteElementSpacingValue, default: false},
+    paddingInlineStart: {type: RemoteElementSpacingValue, default: false},
+    paddingInlineEnd: {type: RemoteElementSpacingValue, default: false},
+    paddingBlockStart: {type: RemoteElementSpacingValue, default: false},
+    paddingBlockEnd: {type: RemoteElementSpacingValue, default: false},
   };
 
 /**
