@@ -41,6 +41,7 @@
     "@watching/react-signals": "workspace:*",
     "@watching/thread-render": "workspace:*",
     "@watching/thread-signals": "workspace:*",
+    "@watching/tools": "workspace:*",
     "base64url": "^3.0.1",
     "common-tags": "^1.8.0",
     "graphql": "^16.6.0",

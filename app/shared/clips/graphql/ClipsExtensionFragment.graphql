@@ -3,6 +3,11 @@ fragment ClipsExtension on ClipsExtensionInstallation {
   target
   settings
   liveQuery
+  loading {
+    ui {
+      tree
+    }
+  }
   version {
     id
     apiVersion

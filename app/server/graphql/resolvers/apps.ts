@@ -626,6 +626,31 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       return extend.find((extend) => extend.target === target)?.liveQuery;
     },
+    async loading({target, extensionId}, _, {prisma}) {
+      const extension = await prisma.clipsExtension.findFirstOrThrow({
+        where: {id: extensionId},
+        select: {activeVersion: true},
+      });
+
+      const extend = (extension.activeVersion?.extends ?? []) as any[];
+
+      const loading = extend.find(
+        (extend) => extend.target === target,
+      )?.loading;
+
+      if (loading == null) return null;
+
+      const {parseLoadingHtml} = await import('@watching/tools/loading');
+
+      return {
+        ui: loading?.ui
+          ? {
+              html: loading.ui,
+              tree: JSON.stringify(parseLoadingHtml(loading.ui)),
+            }
+          : null,
+      };
+    },
     settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   };
 
@@ -679,21 +704,36 @@ async function createStagedClipsVersion({
     scriptUrl: `https://watch.lemon.tools/${path}`,
     apiVersion: 'UNSTABLE',
     translations: translations && JSON.parse(translations),
-    extends:
-      supports &&
-      (supports.map(({target, liveQuery, conditions}) => {
-        return {
-          target,
-          liveQuery,
-          conditions: conditions?.map((condition) => {
-            if (condition?.series?.handle == null) {
-              throw new Error(`Unknown condition: ${condition}`);
-            }
+    extends: supports
+      ? await Promise.all(
+          supports.map(async ({target, liveQuery, loading, conditions}) => {
+            return {
+              target,
+              liveQuery,
+              loading: loading && {
+                ...loading,
+                ui: loading.ui
+                  ? (async () => {
+                      const {parseLoadingHtml, serializeLoadingHtml} =
+                        await import('@watching/tools/loading');
 
-            return condition;
-          }),
-        };
-      }) as any),
+                      return serializeLoadingHtml(
+                        parseLoadingHtml(loading.ui!),
+                      );
+                    })()
+                  : undefined,
+              },
+              conditions: conditions?.map((condition) => {
+                if (condition?.series?.handle == null) {
+                  throw new Error(`Unknown condition: ${condition}`);
+                }
+
+                return condition;
+              }),
+            };
+          }) as any,
+        )
+      : [],
     settings: settings?.fields
       ? {
           fields: settings.fields?.map(

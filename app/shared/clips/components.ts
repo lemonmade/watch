@@ -15,8 +15,12 @@ import {InlineGrid} from './components/InlineGrid.tsx';
 import {InlineStack} from './components/InlineStack.tsx';
 import {Modal} from './components/Modal.tsx';
 import {Popover} from './components/Popover.tsx';
-import {Stack} from './components/Stack.tsx';
 import {Section} from './components/Section.tsx';
+import {SkeletonAction} from './components/SkeletonAction.tsx';
+import {SkeletonText} from './components/SkeletonText.tsx';
+import {SkeletonTextBlock} from './components/SkeletonTextBlock.tsx';
+import {SkeletonView} from './components/SkeletonView.tsx';
+import {Stack} from './components/Stack.tsx';
 import {Text} from './components/Text.tsx';
 import {TextBlock} from './components/TextBlock.tsx';
 import {TextField} from './components/TextField.tsx';
@@ -53,6 +57,12 @@ export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-grid', Grid],
   ['ui-block-grid', BlockGrid],
   ['ui-inline-grid', InlineGrid],
+
+  // Skeletons
+  ['ui-skeleton-action', SkeletonAction],
+  ['ui-skeleton-text', SkeletonText],
+  ['ui-skeleton-text-block', SkeletonTextBlock],
+  ['ui-skeleton-view', SkeletonView],
 
   // remote-ui primitives
   ['remote-fragment', RemoteFragmentRenderer as any],

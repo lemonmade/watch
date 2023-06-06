@@ -31,6 +31,13 @@
       "import": "./build/esm/graphql.mjs",
       "require": "./build/cjs/graphql.cjs"
     },
+    "./loading": {
+      "types": "./build/typescript/loading.d.ts",
+      "quilt:source": "./source/loading.ts",
+      "quilt:esnext": "./build/esnext/loading.esnext",
+      "import": "./build/esm/loading.mjs",
+      "require": "./build/cjs/loading.cjs"
+    },
     "./rollup": {
       "types": "./build/typescript/rollup.d.ts",
       "quilt:source": "./source/rollup.ts",
@@ -44,6 +51,9 @@
     "*": {
       "graphql": [
         "./build/typescript/graphql.d.ts"
+      ],
+      "loading": [
+        "./build/typescript/loading.d.ts"
       ],
       "rollup": [
         "./build/typescript/rollup.d.ts"
@@ -61,8 +71,10 @@
     "chokidar": "^3.5.0",
     "esbuild": "^0.17.0",
     "glob": "^10.0.0",
+    "htm": "^3.1.1",
     "rollup": "^3.20.0",
-    "rollup-plugin-esbuild": "^5.0.0"
+    "rollup-plugin-esbuild": "^5.0.0",
+    "zod": "^3.21.4"
   },
   "peerDependencies": {
     "@watching/clips": "^0.4.12"

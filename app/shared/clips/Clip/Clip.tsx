@@ -1,9 +1,11 @@
-import {useEffect, useRef} from 'react';
+import {ComponentType, useEffect, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRootRenderer} from '@lemonmade/remote-ui-react/host';
 import {
   Style,
   Popover,
+  Stack,
+  InlineStack,
   BlockStack,
   InlineGrid,
   View,
@@ -15,6 +17,7 @@ import {
   Section,
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
+import type {ThreadRendererInstance} from '@watching/thread-render';
 
 import {useMutation} from '~/shared/graphql.ts';
 
@@ -22,6 +25,8 @@ import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
+  type ClipsExtensionPointInstanceContext,
+  type ClipsExtensionPointInstanceLoadingElement,
 } from '../extension.ts';
 
 import {ClipSettings} from './ClipSettings.tsx';
@@ -197,5 +202,52 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     >
       <RemoteRootRenderer components={components} receiver={resolvedReceiver} />
     </Section>
-  ) : null;
+  ) : (
+    <ClipsInstanceRendererLoading instance={instance} />
+  );
+}
+
+const LOADING_COMPONENT_MAP = new Map<string, ComponentType<any>>([
+  ['ui-stack', Stack],
+  ['ui-block-stack', BlockStack],
+  ['ui-inline-stack', InlineStack],
+  ['ui-skeleton-action', View],
+  ['ui-skeleton-text', View],
+  ['ui-skeleton-text-block', View],
+  ['ui-skeleton-view', View],
+]);
+
+function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
+  instance,
+}: {
+  instance?: ThreadRendererInstance<ClipsExtensionPointInstanceContext<Point>>;
+}) {
+  const loadingUi = instance?.context.loadingUi.value;
+
+  if (loadingUi == null) return null;
+
+  const renderNode = (
+    child: ClipsExtensionPointInstanceLoadingElement['children'][number],
+    index: number,
+  ) => {
+    if (typeof child === 'string') {
+      return <>{child}</>;
+    }
+
+    const {type, properties, children} = child;
+
+    const Component = LOADING_COMPONENT_MAP.get(type);
+
+    if (Component == null) {
+      throw new Error(`Unknown loading component: ${type}`);
+    }
+
+    return (
+      <Component key={index} {...properties}>
+        {children.map(renderNode)}
+      </Component>
+    );
+  };
+
+  return <>{loadingUi.map(renderNode)}</>;
 }

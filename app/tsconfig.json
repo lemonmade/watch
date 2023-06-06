@@ -20,6 +20,7 @@
     {"path": "../packages/react-signals"},
     {"path": "../packages/thread-render"},
     {"path": "../packages/thread-signals"},
+    {"path": "../packages/tools"},
     {"path": "../packages/zest"}
   ]
 }
