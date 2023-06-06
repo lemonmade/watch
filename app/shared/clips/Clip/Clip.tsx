@@ -15,6 +15,7 @@ import {
   Section,
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
+import type {ThreadRendererInstance} from '@watching/thread-render';
 
 import {useMutation} from '~/shared/graphql.ts';
 
@@ -29,7 +30,6 @@ import {ClipSettings} from './ClipSettings.tsx';
 
 import styles from './Clip.module.css';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
-import {ThreadRendererInstance} from '@watching/thread-render';
 
 export interface ClipProps<Point extends ExtensionPoint> {
   extension: ClipsExtensionPoint<Point>;
