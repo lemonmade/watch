@@ -15,6 +15,10 @@ import {
   Icon,
   Action,
   Section,
+  SkeletonAction,
+  SkeletonText,
+  SkeletonTextBlock,
+  SkeletonView,
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
 import type {ThreadRendererInstance} from '@watching/thread-render';
@@ -196,7 +200,7 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
 
   const restarting = receiver !== resolvedReceiver;
 
-  return resolvedReceiver && components ? (
+  return lastRenderedReceiver != null && resolvedReceiver && components ? (
     <Section
       className={classes(styles.Content, restarting && styles.restarting)}
     >
@@ -211,10 +215,10 @@ const LOADING_COMPONENT_MAP = new Map<string, ComponentType<any>>([
   ['ui-stack', Stack],
   ['ui-block-stack', BlockStack],
   ['ui-inline-stack', InlineStack],
-  ['ui-skeleton-action', View],
-  ['ui-skeleton-text', View],
-  ['ui-skeleton-text-block', View],
-  ['ui-skeleton-view', View],
+  ['ui-skeleton-action', SkeletonAction],
+  ['ui-skeleton-text', SkeletonText],
+  ['ui-skeleton-text-block', SkeletonTextBlock],
+  ['ui-skeleton-view', SkeletonView],
 ]);
 
 function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
