@@ -137,8 +137,8 @@ type ClipsExtensionPointSupport {
 }
 
 type ClipsExtensionPointSupportLoadingUi {
-  tree: ClipsLoadingUiTree
-  html: ClipsLoadingUiHtml
+  tree: ClipsLoadingUiTree!
+  html: ClipsLoadingUiHtml!
 }
 
 type ClipsExtensionPointSupportLoading {

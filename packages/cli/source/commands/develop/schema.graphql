@@ -61,9 +61,9 @@ type ClipsExtensionPointLiveQuery {
 }
 
 type ClipsExtensionPointLoadingUi {
-  file: String
-  tree: ExtensionLoadingUiTree
-  html: ExtensionLoadingUiHtml
+  file: String!
+  tree: ExtensionLoadingUiTree!
+  html: ExtensionLoadingUiHtml!
 }
 
 type ClipsExtensionPointLoading {
