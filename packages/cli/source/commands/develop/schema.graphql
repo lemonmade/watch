@@ -3,6 +3,8 @@ scalar Date
 scalar Version
 scalar ExtensionPoint
 scalar ExtensionApiVersion
+scalar ExtensionLoadingUiTree
+scalar ExtensionLoadingUiHtml
 
 type Asset {
   source: Url!
@@ -58,10 +60,21 @@ type ClipsExtensionPointLiveQuery {
   query: String!
 }
 
+type ClipsExtensionPointLoadingUi {
+  file: String
+  tree: ExtensionLoadingUiTree
+  html: ExtensionLoadingUiHtml
+}
+
+type ClipsExtensionPointLoading {
+  ui: ClipsExtensionPointLoadingUi
+}
+
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
   module: String!
   liveQuery: ClipsExtensionPointLiveQuery
+  loading: ClipsExtensionPointLoading
   preview: ClipsExtensionPointPreview!
   conditions: [ClipsExtensionPointSupportCondition!]!
 }

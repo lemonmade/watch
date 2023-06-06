@@ -73,6 +73,41 @@ export function createQueryResolver(
           object('ClipsExtensionPointSupport', {
             target: extensionPoint.target,
             module: extensionPoint.module,
+            async *loading(_, __, {signal}) {
+              const ui = extensionPoint.loading?.ui;
+              if (ui == null) return null;
+
+              const {sanitizeLoadingUi} = await import(
+                '@watching/tools/loading'
+              );
+
+              if (ui.endsWith('.html')) {
+                for await (const {content} of watchFile(
+                  path.resolve(extension.root, ui),
+                  {signal},
+                )) {
+                  const html = await sanitizeLoadingUi(content);
+
+                  yield object('ClipsExtensionPointLoading', {
+                    ui: object('ClipsExtensionPointLoadingUi', {
+                      file: ui,
+                      html,
+                      tree: () => undefined,
+                    }),
+                  });
+                }
+              } else {
+                const html = await sanitizeLoadingUi(ui);
+
+                return object('ClipsExtensionPointLoading', {
+                  ui: object('ClipsExtensionPointLoadingUi', {
+                    file: extension.configurationFile.path,
+                    html,
+                    tree: () => undefined,
+                  }),
+                });
+              }
+            },
             async *liveQuery(_, __, {signal}) {
               if (extensionPoint.query == null) return null;
 

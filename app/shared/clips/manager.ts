@@ -150,12 +150,16 @@ export function createClipsManager(
         context: appContext,
       },
     );
+    const loadingUi = signal(
+      options.loadingUi ? JSON.parse(options.loadingUi) : undefined,
+    );
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {
         return {
           settings,
           liveQuery,
+          loadingUi,
           mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
@@ -208,12 +212,14 @@ export function createClipsManager(
         context: appContext,
       },
     );
+    const loadingUi = signal<any[] | undefined>(undefined);
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {
         return {
           settings,
           liveQuery,
+          loadingUi,
           mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
@@ -287,6 +293,9 @@ export function createClipsManager(
 
         if (extensionPoint) {
           liveQuery.update(extensionPoint.liveQuery?.query ?? undefined);
+          loadingUi.value = extensionPoint.loading?.ui?.tree
+            ? JSON.parse(extensionPoint.loading.ui.tree)
+            : undefined;
         }
       }
     }

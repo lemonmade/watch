@@ -11,6 +11,13 @@ query LocalClip($id: ID!) {
           file
           query
         }
+        loading {
+          ui {
+            file
+            tree
+            html
+          }
+        }
         conditions {
           __typename
         }

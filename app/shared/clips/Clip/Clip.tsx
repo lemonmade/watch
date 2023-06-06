@@ -22,12 +22,14 @@ import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
+  type ClipsExtensionPointInstanceContext,
 } from '../extension.ts';
 
 import {ClipSettings} from './ClipSettings.tsx';
 
 import styles from './Clip.module.css';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
+import {ThreadRendererInstance} from '@watching/thread-render';
 
 export interface ClipProps<Point extends ExtensionPoint> {
   extension: ClipsExtensionPoint<Point>;
@@ -197,5 +199,17 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     >
       <RemoteRootRenderer components={components} receiver={resolvedReceiver} />
     </Section>
-  ) : null;
+  ) : (
+    <ClipsInstanceRendererLoading instance={instance} />
+  );
+}
+
+function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
+  instance,
+}: {
+  instance?: ThreadRendererInstance<ClipsExtensionPointInstanceContext<Point>>;
+}) {
+  const loadingUi = instance?.context.loadingUi.value;
+
+  return loadingUi ? <div>TODO</div> : null;
 }

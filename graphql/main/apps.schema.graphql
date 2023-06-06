@@ -69,6 +69,8 @@ scalar TranslationKey
 scalar ClipsExtensionPoint
 scalar ClipsExtensionApiVersion
 scalar ClipsLiveQuery
+scalar ClipsLoadingUiTree
+scalar ClipsLoadingUiHtml
 
 type Icon {
   source: Url!
@@ -131,6 +133,16 @@ type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
   conditions: [ClipsExtensionPointSupportCondition!]!
   liveQuery: ClipsLiveQuery
+  loading: ClipsExtensionPointSupportLoading
+}
+
+type ClipsExtensionPointSupportLoadingUi {
+  tree: ClipsLoadingUiTree
+  html: ClipsLoadingUiHtml
+}
+
+type ClipsExtensionPointSupportLoading {
+  ui: ClipsExtensionPointSupportLoadingUi
 }
 
 input ClipsExtensionPointSupportSeriesConditionInput {
@@ -145,7 +157,12 @@ input ClipsExtensionPointSupportConditionInput {
 input ClipsExtensionPointSupportInput {
   target: ClipsExtensionPoint!
   liveQuery: ClipsLiveQuery
+  loading: ClipsExtensionPointSupportLoadingInput
   conditions: [ClipsExtensionPointSupportConditionInput!]
+}
+
+input ClipsExtensionPointSupportLoadingInput {
+  ui: ClipsLoadingUiHtml
 }
 
 # Extension settings
@@ -258,6 +275,7 @@ type ClipsExtensionInstallation {
   appInstallation: AppInstallation!
   settings: JSON
   liveQuery: ClipsLiveQuery
+  loading: ClipsExtensionPointSupportLoading
 }
 
 union AppExtensionInstallation = ClipsExtensionInstallation

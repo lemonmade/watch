@@ -43,7 +43,7 @@ export function useClips<Point extends ExtensionPoint>(
     const installedClips: ClipsExtensionPoint<Point>[] = [];
 
     for (const installation of installations) {
-      const {id, target, extension, version, settings, liveQuery} =
+      const {id, target, extension, version, settings, liveQuery, loading} =
         installation;
 
       if (target !== point) continue;
@@ -67,6 +67,9 @@ export function useClips<Point extends ExtensionPoint>(
           version: version.apiVersion.toLowerCase() as any,
           settings: settings ?? undefined,
           liveQuery: liveQuery ?? undefined,
+          loadingUi: loading?.ui?.tree
+            ? JSON.parse(loading.ui.tree)
+            : undefined,
           options: options as any,
         },
       });

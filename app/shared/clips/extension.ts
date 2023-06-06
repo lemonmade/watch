@@ -38,6 +38,7 @@ export interface ClipsExtensionPointInstanceContext<
 > {
   readonly settings: Signal<Record<string, unknown>>;
   readonly liveQuery: LiveQueryRunner<Point>;
+  readonly loadingUi: Signal<any[] | undefined>;
   readonly mutate: Api<Point>['mutate'];
   readonly components: RemoteComponentRendererMap;
   readonly sandbox: ThreadCallable<Sandbox>;
@@ -55,6 +56,7 @@ export interface ClipsExtensionPointInstalledInstanceOptions<
   readonly version: Version;
   readonly settings?: string;
   readonly liveQuery?: string;
+  readonly loadingUi?: string;
   readonly extension: {readonly id: string};
   readonly script: {readonly url: string};
   readonly options: OptionsForExtensionPoint<Point>;

@@ -88,6 +88,7 @@ export interface LocalExtensionPointSupport {
   readonly target: ExtensionPoint;
   readonly module: string;
   readonly query?: string;
+  readonly loading?: {ui?: string};
   readonly conditions?: LocalExtensionPointSupportCondition[];
 }
 

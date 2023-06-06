@@ -626,6 +626,16 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       return extend.find((extend) => extend.target === target)?.liveQuery;
     },
+    async loading({target, extensionId}, _, {prisma}) {
+      const extension = await prisma.clipsExtension.findFirstOrThrow({
+        where: {id: extensionId},
+        select: {activeVersion: true},
+      });
+
+      const extend = (extension.activeVersion?.extends ?? []) as any[];
+
+      return extend.find((extend) => extend.target === target)?.loading;
+    },
     settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   };
 
@@ -679,21 +689,35 @@ async function createStagedClipsVersion({
     scriptUrl: `https://watch.lemon.tools/${path}`,
     apiVersion: 'UNSTABLE',
     translations: translations && JSON.parse(translations),
-    extends:
-      supports &&
-      (supports.map(({target, liveQuery, conditions}) => {
-        return {
-          target,
-          liveQuery,
-          conditions: conditions?.map((condition) => {
-            if (condition?.series?.handle == null) {
-              throw new Error(`Unknown condition: ${condition}`);
-            }
+    extends: supports
+      ? await Promise.all(
+          supports.map(async ({target, liveQuery, loading, conditions}) => {
+            return {
+              target,
+              liveQuery,
+              loading: loading && {
+                ...loading,
+                ui: loading.ui
+                  ? (async () => {
+                      const {sanitizeLoadingUi} = await import(
+                        '@watching/tools/loading'
+                      );
+                      const sanitized = await sanitizeLoadingUi(loading.ui!);
+                      return sanitized;
+                    })()
+                  : undefined,
+              },
+              conditions: conditions?.map((condition) => {
+                if (condition?.series?.handle == null) {
+                  throw new Error(`Unknown condition: ${condition}`);
+                }
 
-            return condition;
-          }),
-        };
-      }) as any),
+                return condition;
+              }),
+            };
+          }) as any,
+        )
+      : [],
     settings: settings?.fields
       ? {
           fields: settings.fields?.map(
