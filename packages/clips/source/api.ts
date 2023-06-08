@@ -1,7 +1,7 @@
 import {
   type GraphQLOperation,
   type GraphQLVariableOptions,
-} from '@quilted/quilt';
+} from '@quilted/graphql';
 import {type Signal, type ThreadSignal} from '@watching/thread-signals';
 
 import {type ExtensionPoint} from './extension-points';
@@ -19,7 +19,14 @@ export interface Api<
   readonly query: Signal<Query>;
   mutate<Data = unknown, Variables = unknown>(
     operation: GraphQLOperation<Data, Variables> | string,
-    variables: GraphQLVariableOptions<Variables>,
+    options?: GraphQLVariableOptions<Variables>,
+  ): Promise<Data>;
+}
+
+export interface MutateApi {
+  <Data = unknown, Variables = unknown>(
+    operation: GraphQLOperation<Data, Variables> | string,
+    options?: GraphQLVariableOptions<Variables>,
   ): Promise<Data>;
 }
 
@@ -34,6 +41,6 @@ export interface ApiCore<
   readonly query: ThreadSignal<Query>;
   mutate<Data = unknown, Variables = unknown>(
     operation: GraphQLOperation<Data, Variables> | string,
-    variables: GraphQLVariableOptions<Variables>,
+    options?: GraphQLVariableOptions<Variables>,
   ): Promise<Data>;
 }
