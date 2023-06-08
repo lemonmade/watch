@@ -1,11 +1,15 @@
 import {createRemoteElement} from '@lemonmade/remote-ui/elements';
 
-export interface SkeletonActionProperties {}
+import type {CSSLiteralValue} from '../../styles.ts';
+
+export interface SkeletonActionProperties {
+  size?: 'small' | 'medium' | 'large' | CSSLiteralValue;
+}
 
 export const SkeletonAction = createRemoteElement<SkeletonActionProperties>({
   properties: {
-    lines: {
-      type: Number,
+    size: {
+      type: String,
     },
   },
 });

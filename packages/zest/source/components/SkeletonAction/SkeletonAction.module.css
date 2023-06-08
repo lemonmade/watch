@@ -1,0 +1,28 @@
+.SkeletonAction {
+  --z-internal-SkeletonAction-content-size: 4rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--z-corner-radius-base);
+  block-size: var(--z-Action-minimum-size);
+  padding: 0 var(--z-spacing-base);
+  background: var(--z-Action-background);
+
+  &::after {
+    content: '';
+    display: block;
+    inline-size: var(--z-internal-SkeletonAction-content-size);
+    block-size: calc(0.8 * var(--z-text-base-font-size));
+    background-color: var(--z-text-subdued-color);
+    border-radius: var(--z-corner-radius-base);
+  }
+}
+
+.sizeMedium {
+  --z-internal-SkeletonAction-content-size: 8rem;
+}
+
+.sizeLarge {
+  --z-internal-SkeletonAction-content-size: 12rem;
+}

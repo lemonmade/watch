@@ -3,7 +3,7 @@ import {createClipsComponent} from './shared.ts';
 
 export const SkeletonAction = createClipsComponent(
   'ui-skeleton-action',
-  function SkeletonAction({children}) {
-    return <UiSkeletonAction>{children}</UiSkeletonAction>;
+  function SkeletonAction({size, children}) {
+    return <UiSkeletonAction size={size}>{children}</UiSkeletonAction>;
   },
 );

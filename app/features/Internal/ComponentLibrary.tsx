@@ -45,6 +45,7 @@ import {
   BlockGrid,
   SkeletonTextBlock,
   SkeletonText,
+  SkeletonAction,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
@@ -766,12 +767,20 @@ function SkeletonComponents() {
       <BlockStack spacing>
         <Heading>Skeleton</Heading>
 
+        <TextBlock>Skeleton action</TextBlock>
+        <InlineStack spacing>
+          <SkeletonAction />
+          <SkeletonAction size="medium" />
+          <SkeletonAction size="large" />
+          <SkeletonAction size={Style.css`2rem`} />
+        </InlineStack>
+
         <TextBlock>Skeleton text</TextBlock>
         <SkeletonText />
         <SkeletonText size="medium" />
         <SkeletonText size="large" />
 
-        <InlineGrid sizes={['fill', 'fill']}>
+        <InlineGrid sizes={['fill', 'fill']} spacing>
           <TextBlock>
             Skeleton text block with the default number of lines, which is 3.
             That feels like an appropriate default length for a paragraph to me.
@@ -779,7 +788,7 @@ function SkeletonComponents() {
           <SkeletonTextBlock lines={3} />
         </InlineGrid>
 
-        <InlineGrid sizes={['fill', 'fill']}>
+        <InlineGrid sizes={['fill', 'fill']} spacing>
           <TextBlock>
             Skeleton text block with 2 lines, this content attempts to match.
           </TextBlock>
