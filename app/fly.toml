@@ -1,43 +1,40 @@
-# fly.toml file generated for watch-test-app on 2022-06-04T00:02:14-04:00
+# fly.toml app configuration file generated for watch-test-app on 2023-06-08T00:44:43-04:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "watch-test-app"
-
 kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
-
-[env]
-PORT = "8080"
-GITHUB_CLIENT_ID = "60c6903025bfd274db53"
-GOOGLE_CLIENT_ID = "357202806916-jj8a966am07ea17l39n5gdum61s3qahi.apps.googleusercontent.com"
+kill_timeout = "5s"
 
 [experimental]
-allowed_public_ports = []
 auto_rollback = true
 
+[env]
+GITHUB_CLIENT_ID = "60c6903025bfd274db53"
+GOOGLE_CLIENT_ID = "357202806916-jj8a966am07ea17l39n5gdum61s3qahi.apps.googleusercontent.com"
+PORT = "8080"
+
 [[services]]
-http_checks = []
+protocol = "tcp"
 internal_port = 8080
 processes = ["app"]
-protocol = "tcp"
-script_checks = []
 
+[[services.ports]]
+port = 80
+handlers = ["http"]
+force_https = true
+
+[[services.ports]]
+port = 443
+handlers = ["tls", "http"]
 [services.concurrency]
+type = "connections"
 hard_limit = 25
 soft_limit = 20
-type = "connections"
-
-[[services.ports]]
-force_https = true
-handlers = ["http"]
-port = 80
-
-[[services.ports]]
-handlers = ["tls", "http"]
-port = 443
 
 [[services.tcp_checks]]
-grace_period = "1s"
 interval = "15s"
-restart_limit = 0
 timeout = "2s"
+grace_period = "1s"
+restart_limit = 0
