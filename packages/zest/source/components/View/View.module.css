@@ -14,6 +14,7 @@
     --z-internal-display-none,
     var(--z-internal-display-block, block)
   );
+  margin: 0;
 }
 
 .cornerRadiusBase {

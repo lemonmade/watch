@@ -4,11 +4,13 @@ import {
   type RemoteElementPropertyType,
 } from '@lemonmade/remote-ui/elements';
 
+import type {CSSLiteralValue} from '../../styles.ts';
+
 import type {TextProperties} from '../Text.ts';
 
 export interface SkeletonTextProperties
   extends Pick<TextProperties, 'emphasis'> {
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | CSSLiteralValue;
 }
 
 export const SkeletonText = createRemoteElement<SkeletonTextProperties>({

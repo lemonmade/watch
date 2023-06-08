@@ -43,6 +43,8 @@ import {
   Stack,
   InlineGrid,
   BlockGrid,
+  SkeletonTextBlock,
+  SkeletonText,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
@@ -59,6 +61,8 @@ export default function ComponentLibrary() {
       <FormComponents />
       <Divider />
       <TextComponents />
+      <Divider />
+      <SkeletonComponents />
       <Divider />
       <DisplayComponents />
     </BlockStack>
@@ -751,6 +755,30 @@ function TextComponents() {
           <Tag>Tag</Tag>
           <Tag size="large">Tag (large)</Tag>
         </InlineStack>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function SkeletonComponents() {
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading>Skeleton</Heading>
+
+        <TextBlock>Skeleton text</TextBlock>
+        <SkeletonText />
+        <SkeletonText size="medium" />
+        <SkeletonText size="large" />
+        <TextBlock>Skeleton text block</TextBlock>
+        <SkeletonTextBlock />
+
+        <InlineGrid sizes={['fill', 'fill']}>
+          <TextBlock>
+            Skeleton text block with 2 lines, this content attempts to match.
+          </TextBlock>
+          <SkeletonTextBlock lines={2} />
+        </InlineGrid>
       </BlockStack>
     </Section>
   );

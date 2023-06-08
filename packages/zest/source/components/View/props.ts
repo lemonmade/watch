@@ -151,14 +151,21 @@ export function useViewProps({
     if (CSSLiteral.test(padding)) {
       addStyles({padding: CSSLiteral.parse(padding)});
     } else {
-      let normalizedPadding: SpacingKeyword;
+      let normalizedPadding: string;
 
       if (padding === true) {
         normalizedPadding = 'base';
       } else if (padding === false) {
         normalizedPadding = 'none';
       } else {
-        normalizedPadding = padding;
+        normalizedPadding = padding.replace('.', '');
+
+        if (
+          normalizedPadding.endsWith('small') ||
+          normalizedPadding.endsWith('large')
+        ) {
+          normalizedPadding = `${normalizedPadding}1`;
+        }
       }
 
       addClassName(

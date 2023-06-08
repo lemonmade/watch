@@ -139,11 +139,11 @@
 }
 
 
-.paddingTiny {
+.paddingSmall2 {
   padding: var(--z-spacing-small-2);
 }
 
-.paddingSmall {
+.paddingSmall1 {
   padding: var(--z-spacing-small-1);
 }
 
@@ -151,11 +151,11 @@
   padding: var(--z-spacing-base);
 }
 
-.paddingLarge {
+.paddingLarge1 {
   padding: var(--z-spacing-large-1);
 }
 
-.paddingHuge {
+.paddingLarge2 {
   padding: var(--z-spacing-large-2);
 }
 
@@ -163,11 +163,11 @@
   padding-inline-start: 0;
 }
 
-.paddingInlineStartTiny {
+.paddingInlineStartSmall2 {
   padding-inline-start: var(--z-spacing-small-2);
 }
 
-.paddingInlineStartSmall {
+.paddingInlineStartSmall1 {
   padding-inline-start: var(--z-spacing-small-1);
 }
 
@@ -175,11 +175,11 @@
   padding-inline-start: var(--z-spacing-base);
 }
 
-.paddingInlineStartLarge {
+.paddingInlineStartLarge1 {
   padding-inline-start: var(--z-spacing-large-1);
 }
 
-.paddingInlineStartHuge {
+.paddingInlineStartLarge2 {
   padding-inline-start: var(--z-spacing-large-2);
 }
 
@@ -187,11 +187,11 @@
   padding-inline-end: 0;
 }
 
-.paddingInlineEndTiny {
+.paddingInlineEndSmall2 {
   padding-inline-end: var(--z-spacing-small-2);
 }
 
-.paddingInlineEndSmall {
+.paddingInlineEndSmall1 {
   padding-inline-end: var(--z-spacing-small-1);
 }
 
@@ -199,11 +199,11 @@
   padding-inline-end: var(--z-spacing-base);
 }
 
-.paddingInlineEndLarge {
+.paddingInlineEndLarge1 {
   padding-inline-end: var(--z-spacing-large-1);
 }
 
-.paddingInlineEndHuge {
+.paddingInlineEndLarge2 {
   padding-inline-end: var(--z-spacing-large-2);
 }
 
@@ -211,11 +211,11 @@
   padding-block-start: 0;
 }
 
-.paddingBlockStartTiny {
+.paddingBlockStartSmall2 {
   padding-block-start: var(--z-spacing-small-2);
 }
 
-.paddingBlockStartSmall {
+.paddingBlockStartSmall1 {
   padding-block-start: var(--z-spacing-small-1);
 }
 
@@ -223,11 +223,11 @@
   padding-block-start: var(--z-spacing-base);
 }
 
-.paddingBlockStartLarge {
+.paddingBlockStartLarge1 {
   padding-block-start: var(--z-spacing-large-1);
 }
 
-.paddingBlockStartHuge {
+.paddingBlockStartLarge2 {
   padding-block-start: var(--z-spacing-large-2);
 }
 
@@ -235,11 +235,11 @@
   padding-block-end: 0;
 }
 
-.paddingBlockEndTiny {
+.paddingBlockEndSmall2 {
   padding-block-end: var(--z-spacing-small-2);
 }
 
-.paddingBlockEndSmall {
+.paddingBlockEndSmall1 {
   padding-block-end: var(--z-spacing-small-1);
 }
 
@@ -247,11 +247,11 @@
   padding-block-end: var(--z-spacing-base);
 }
 
-.paddingBlockEndLarge {
+.paddingBlockEndLarge1 {
   padding-block-end: var(--z-spacing-large-1);
 }
 
-.paddingBlockEndHuge {
+.paddingBlockEndLarge2 {
   padding-block-end: var(--z-spacing-large-2);
 }
 
