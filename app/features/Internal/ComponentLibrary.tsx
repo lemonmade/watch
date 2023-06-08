@@ -770,8 +770,14 @@ function SkeletonComponents() {
         <SkeletonText />
         <SkeletonText size="medium" />
         <SkeletonText size="large" />
-        <TextBlock>Skeleton text block</TextBlock>
-        <SkeletonTextBlock />
+
+        <InlineGrid sizes={['fill', 'fill']}>
+          <TextBlock>
+            Skeleton text block with the default number of lines, which is 3.
+            That feels like an appropriate default length for a paragraph to me.
+          </TextBlock>
+          <SkeletonTextBlock lines={3} />
+        </InlineGrid>
 
         <InlineGrid sizes={['fill', 'fill']}>
           <TextBlock>

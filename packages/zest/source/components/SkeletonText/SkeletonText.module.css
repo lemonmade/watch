@@ -1,10 +1,19 @@
 .SkeletonText {
-  display: inline-block;
+  display: inline-flex;
+  align-items: end;
   max-inline-size: 100%;
   inline-size: 4rem;
-  block-size: 0.85rem;
-  background-color: var(--z-text-base-color);
-  border-radius: var(--z-corner-radius-base);
+  block-size: var(--z-text-base-line-height);
+
+  &::after {
+    content: '';
+    display: inline-block;
+    inline-size: 100%;
+    block-size: calc(0.8 * var(--z-text-base-font-size));
+    background-color: var(--z-text-subdued-color);
+    border-radius: var(--z-corner-radius-base);
+    margin-bottom: calc(0.1 * var(--z-text-base-font-size));
+  }
 }
 
 .sizeSmall {

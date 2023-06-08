@@ -11,11 +11,7 @@ export type SkeletonTextBlockProps =
 export function SkeletonTextBlock({
   lines = 3,
 }: PropsWithChildren<SkeletonTextBlockProps>) {
-  const stack = useStackProps({
-    spacing: 'small.1',
-    direction: 'block',
-    paddingBlockStart: 'small.2',
-  });
+  const stack = useStackProps({direction: 'block'});
 
   const lineSizes = useMemo(() => {
     // create an array of line sizes, where the first line is 90% of the width,
