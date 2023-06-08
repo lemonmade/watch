@@ -1,5 +1,12 @@
 # @watching/clips-react
 
+## 0.3.17
+
+### Patch Changes
+
+- Updated dependencies [[`1ab256c`](https://github.com/lemonmade/watch/commit/1ab256cfd2ff1be638e64289a112f27ce46df016)]:
+  - @watching/clips@0.4.14
+
 ## 0.3.16
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @watching/clips-svelte
 
+## 0.1.7
+
+### Patch Changes
+
+- [`1ab256c`](https://github.com/lemonmade/watch/commit/1ab256cfd2ff1be638e64289a112f27ce46df016) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix some Clips types
+
+- Updated dependencies [[`1ab256c`](https://github.com/lemonmade/watch/commit/1ab256cfd2ff1be638e64289a112f27ce46df016)]:
+  - @watching/clips@0.4.14
+
 ## 0.1.6
 
 ### Patch Changes
