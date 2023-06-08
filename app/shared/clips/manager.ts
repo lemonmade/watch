@@ -380,7 +380,7 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
     const [graphql, options] = args;
 
     const signal = options?.signal;
-    const variables = options?.variables;
+    const variables = options?.variables as any;
 
     const results = thread.query(graphql.source, {
       variables,
