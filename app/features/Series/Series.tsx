@@ -20,6 +20,10 @@ import {
   Modal,
   TextBlock,
   Poster,
+  Disclosure,
+  Grid,
+  Spacer,
+  View,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
@@ -28,6 +32,7 @@ import {parseGid, useQuery, useMutation} from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
+import seasonEpisodesQuery from './graphql/SeasonEpisodesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
@@ -37,6 +42,7 @@ import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutati
 import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
+import watchEpisodeFromSeasonMutation from './graphql/WatchEpisodeFromSeasonMutation.graphql';
 
 export interface Props {
   id?: string;
@@ -413,58 +419,60 @@ function SeasonsSection({
           } = season;
 
           return (
-            <InlineGrid
-              key={id}
-              spacing
-              blockAlignment="start"
-              sizes={[Style.css`4rem`, 'fill', 'auto']}
-            >
-              <Poster source={poster?.source} />
+            <BlockStack key={id} spacing>
+              <InlineGrid
+                spacing
+                blockAlignment="start"
+                sizes={[Style.css`4rem`, 'fill', 'auto']}
+              >
+                <Poster source={poster?.source} />
 
-              <BlockStack spacing="small.2">
-                <InlineStack spacing="small">
-                  <TextAction
-                    emphasis
-                    overlay={
-                      <SeasonActionPopover
-                        season={season}
-                        onUpdate={onUpdate}
-                      />
-                    }
-                  >
-                    {isSpecials ? 'Specials' : `Season ${number}`}
-                  </TextAction>
-                </InlineStack>
-
-                <Text emphasis="subdued">
-                  {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
-                </Text>
-
-                {firstAired || status === 'CONTINUING' ? (
+                <BlockStack spacing="small.2">
                   <InlineStack spacing="small">
-                    {firstAired && (
-                      <Text emphasis="subdued">
-                        {new Date(firstAired).getFullYear()}
-                      </Text>
-                    )}
-
-                    {isCurrentlyAiring ? (
-                      <Tag>Ongoing</Tag>
-                    ) : isUpcoming ? (
-                      <Tag>Upcoming</Tag>
-                    ) : null}
+                    <TextAction
+                      emphasis
+                      overlay={
+                        <SeasonActionPopover
+                          season={season}
+                          onUpdate={onUpdate}
+                        />
+                      }
+                    >
+                      {isSpecials ? 'Specials' : `Season ${number}`}
+                    </TextAction>
                   </InlineStack>
-                ) : null}
-              </BlockStack>
 
-              {isUpcoming ? null : (
-                <SeasonWatchThroughAction
-                  seriesId={seriesId}
-                  season={season}
-                  lastSeason={lastSeason}
-                />
-              )}
-            </InlineGrid>
+                  <Text emphasis="subdued">
+                    {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
+                  </Text>
+
+                  {firstAired || status === 'CONTINUING' ? (
+                    <InlineStack spacing="small">
+                      {firstAired && (
+                        <Text emphasis="subdued">
+                          {new Date(firstAired).getFullYear()}
+                        </Text>
+                      )}
+
+                      {isCurrentlyAiring ? (
+                        <Tag>Ongoing</Tag>
+                      ) : isUpcoming ? (
+                        <Tag>Upcoming</Tag>
+                      ) : null}
+                    </InlineStack>
+                  ) : null}
+                </BlockStack>
+
+                {isUpcoming ? null : (
+                  <SeasonWatchThroughAction
+                    seriesId={seriesId}
+                    season={season}
+                    lastSeason={lastSeason}
+                  />
+                )}
+              </InlineGrid>
+              <SeasonEpisodesSection id={id} />
+            </BlockStack>
           );
         })}
       </BlockStack>
@@ -587,6 +595,48 @@ function SeasonWatchThroughAction({
     >
       Watch
     </Action>
+  );
+}
+
+function SeasonEpisodesSection({id}: {id: string}) {
+  return (
+    <Disclosure label="See episodes">
+      <SeasonEpisodesList id={id} />
+    </Disclosure>
+  );
+}
+
+function SeasonEpisodesList({id}: {id: string}) {
+  const {data} = useQuery(seasonEpisodesQuery, {variables: {id}});
+  const watchEpisodeFromSeason = useMutation(watchEpisodeFromSeasonMutation);
+
+  if (data?.season == null) return null;
+
+  const {episodes} = data.season;
+
+  return (
+    <Grid inlineSizes={['fill', 'fill']} spacing>
+      {episodes.map((episode) => {
+        return (
+          <BlockStack key={episode.id} inlineAlignment="start">
+            <Text emphasis="subdued">Episode {episode.number}</Text>
+            <Text>{episode.title}</Text>
+            <Spacer size="small" />
+            <View>
+              <Action
+                onPress={async () => {
+                  await watchEpisodeFromSeason.mutateAsync({
+                    episode: episode.id,
+                  });
+                }}
+              >
+                Watch
+              </Action>
+            </View>
+          </BlockStack>
+        );
+      })}
+    </Grid>
   );
 }
 

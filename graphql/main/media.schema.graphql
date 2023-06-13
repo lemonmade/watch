@@ -2,6 +2,7 @@
 
 extend type Query {
   series(id: ID, handle: String): Series
+  season(id: ID!): Season
   randomSeries: Series!
 }
 

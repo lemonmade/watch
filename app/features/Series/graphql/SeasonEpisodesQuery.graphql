@@ -1,0 +1,13 @@
+query SeasonEpisodes($id: ID!) {
+  season(id: $id) {
+    episodes {
+      id
+      number
+      title
+      hasAired
+      still {
+        source
+      }
+    }
+  }
+}

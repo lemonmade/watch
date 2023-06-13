@@ -1,0 +1,17 @@
+mutation WatchEpisodeFromSeason(
+  $episode: ID!
+  $rating: Int
+  $notes: NotesInput
+  $finishedAt: Date
+) {
+  watchEpisode(
+    episode: $episode
+    rating: $rating
+    notes: $notes
+    finishedAt: $finishedAt
+  ) {
+    watch {
+      id
+    }
+  }
+}
