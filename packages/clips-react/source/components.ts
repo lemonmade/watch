@@ -1,4 +1,3 @@
-export {Action} from './components/Action.tsx';
 export {Footer} from './components/Footer.tsx';
 export {Header} from './components/Header.tsx';
 export {Heading} from './components/Heading.tsx';
@@ -10,6 +9,10 @@ export {Text} from './components/Text.tsx';
 export {TextBlock} from './components/TextBlock.tsx';
 export {TextField} from './components/TextField.tsx';
 export {View} from './components/View.tsx';
+
+// Interaction
+export {Action} from './components/Action.tsx';
+export {Disclosure} from './components/Disclosure.tsx';
 
 // Layout
 export {Stack} from './components/Stack.tsx';

@@ -24,6 +24,7 @@ export namespace Elements {
   export type TextField = HTMLElementTagNameMap['ui-text-field'];
 
   export type Action = HTMLElementTagNameMap['ui-action'];
+  export type Disclosure = HTMLElementTagNameMap['ui-disclosure'];
 
   export type View = HTMLElementTagNameMap['ui-view'];
   export type Section = HTMLElementTagNameMap['ui-section'];
@@ -65,6 +66,7 @@ export type CommonElements = Pick<
 
   // Interaction
   | 'ui-action'
+  | 'ui-disclosure'
 
   // Containers
   | 'ui-view'

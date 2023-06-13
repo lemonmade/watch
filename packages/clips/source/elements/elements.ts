@@ -1,4 +1,3 @@
-export {Action, type ActionProperties, type ActionSlots} from './Action.ts';
 export {Footer, type FooterProperties} from './Footer.ts';
 export {Header, type HeaderProperties} from './Header.ts';
 export {
@@ -45,8 +44,15 @@ export {Grid, type GridProperties} from './Grid.ts';
 export {BlockGrid, type BlockGridProperties} from './BlockGrid.ts';
 export {InlineGrid, type InlineGridProperties} from './InlineGrid.ts';
 
-// Skeletons
+// Interaction
+export {Action, type ActionProperties, type ActionSlots} from './Action.ts';
+export {
+  Disclosure,
+  type DisclosureProperties,
+  type DisclosureSlots,
+} from './Disclosure.ts';
 
+// Skeletons
 export {
   SkeletonAction,
   type SkeletonActionProperties,

@@ -1,4 +1,3 @@
-export {Action, type ActionProps} from './components/Action.tsx';
 export {ActionList, type ActionListProps} from './components/ActionList.tsx';
 export {Banner, type BannerProps} from './components/Banner.tsx';
 export {Canvas, type CanvasProps} from './components/Canvas.tsx';
@@ -68,6 +67,10 @@ export {TextBlock, type TextBlockProps} from './components/TextBlock.tsx';
 export {TextField, type TextFieldProps} from './components/TextField.tsx';
 export {TextLink, type TextLinkProps} from './components/TextLink.tsx';
 export {View, type ViewProps} from './components/View.tsx';
+
+// Interaction
+export {Action} from './components/Action.tsx';
+export {Disclosure} from './components/Disclosure.tsx';
 
 // Layout
 export {

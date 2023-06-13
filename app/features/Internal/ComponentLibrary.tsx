@@ -46,6 +46,7 @@ import {
   SkeletonTextBlock,
   SkeletonText,
   SkeletonAction,
+  Disclosure,
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
@@ -54,6 +55,8 @@ export default function ComponentLibrary() {
   return (
     <BlockStack spacing padding>
       <ActionComponents />
+      <Divider />
+      <DisclosureComponents />
       <Divider />
       <PopoverComponents />
       <Divider />
@@ -344,6 +347,18 @@ function ActionExampleModal() {
         </InlineStack>
       </BlockStack>
     </Modal>
+  );
+}
+
+function DisclosureComponents() {
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading>Disclosure</Heading>
+
+        <Disclosure label="Disclosure label">Disclosure content</Disclosure>
+      </BlockStack>
+    </Section>
   );
 }
 
