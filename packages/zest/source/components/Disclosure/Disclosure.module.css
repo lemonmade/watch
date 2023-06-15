@@ -1,1 +1,31 @@
-.Disclosure {}
+.Disclosure {
+  border: var(--z-border-subdued);
+  border-radius: var(--z-corner-radius-base);
+}
+
+.Action {
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  border: none;
+  color: inherit;
+  font-size: 1em;
+  display: block;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  inline-size: 100%;
+  padding: var(--z-spacing-small-1);
+}
+
+.Content {
+  border-block-start: var(--z-border-subdued);
+  padding: var(--z-spacing-small-1);
+  display: none;
+}
+
+.open {
+  & .Content {
+    display: block;
+  }
+}

@@ -2,6 +2,8 @@ import './style.css';
 
 export {
   Style,
+  CSSLiteral,
+  type CSSLiteralValue,
   type Position,
   type SpacingKeyword,
   type BackgroundKeyword,

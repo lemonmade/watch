@@ -1,0 +1,36 @@
+.EpisodeImage {
+  --z-internal-inline-alignment: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: var(--z-internal-inline-alignment);
+  inline-size: 100%;
+  aspect-ratio: 1000 / 567;
+  background-size: cover;
+  background-color: var(--z-Action-background);
+  border-radius: var(--z-corner-radius-base);
+}
+
+.placeholder {
+  border: var(--z-border-subdued);
+}
+
+.PlaceholderContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--z-spacing-small-1);
+  align-items: var(--z-internal-inline-alignment);
+  padding: var(--z-spacing-small-1);
+  text-align: var(--z-internal-inline-alignment);
+}
+
+.Icon {
+  inline-size: 30%;
+  min-inline-size: var(--z-Icon-base-size);
+}
+
+.Image {
+  inline-size: 100%;
+  aspect-ratio: 1000 / 567;
+  border-radius: var(--z-corner-radius-base);
+}

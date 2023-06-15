@@ -10,26 +10,28 @@ export type DisclosureProps =
   ReactComponentPropsForClipsElement<'ui-disclosure'>;
 
 export function Disclosure({label, children}: DisclosureProps) {
-  const open = useSignal(false);
   const id = useUniqueId('Disclosure');
   const labelId = `${id}Label`;
 
+  const open = useSignal(false);
+  const isOpen = open.value;
+
   return (
-    <div className={styles.Disclosure}>
+    <div className={classes(styles.Disclosure, isOpen && styles.open)}>
       <button
         type="button"
         id={labelId}
         aria-controls={id}
-        aria-expanded={open.value}
-        className={classes(styles.Action, open.value && styles.open)}
+        aria-expanded={isOpen}
+        className={styles.Action}
         onClick={() => {
-          open.value = !open.value;
+          open.value = !isOpen;
         }}
       >
         {label}
       </button>
-      <div id={id} aria-labelledby={labelId}>
-        {open.value ? children : null}
+      <div id={id} className={styles.Content} aria-labelledby={labelId}>
+        {children}
       </div>
     </div>
   );

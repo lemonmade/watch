@@ -21,9 +21,7 @@ import {
   TextBlock,
   Poster,
   Disclosure,
-  Grid,
-  Spacer,
-  View,
+  EpisodeImage,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
@@ -32,7 +30,9 @@ import {parseGid, useQuery, useMutation} from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
-import seasonEpisodesQuery from './graphql/SeasonEpisodesQuery.graphql';
+import seasonEpisodesQuery, {
+  type SeasonEpisodesQueryData,
+} from './graphql/SeasonEpisodesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
 import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
@@ -43,6 +43,7 @@ import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSett
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 import watchEpisodeFromSeasonMutation from './graphql/WatchEpisodeFromSeasonMutation.graphql';
+import {MediaGrid, MediaGridItem} from '~/shared/media';
 
 export interface Props {
   id?: string;
@@ -471,7 +472,7 @@ function SeasonsSection({
                   />
                 )}
               </InlineGrid>
-              <SeasonEpisodesSection id={id} />
+              <SeasonEpisodesSection id={id} seriesId={seriesId} />
             </BlockStack>
           );
         })}
@@ -598,45 +599,108 @@ function SeasonWatchThroughAction({
   );
 }
 
-function SeasonEpisodesSection({id}: {id: string}) {
+function SeasonEpisodesSection({id, seriesId}: {id: string; seriesId: string}) {
   return (
-    <Disclosure label="See episodes">
-      <SeasonEpisodesList id={id} />
+    <Disclosure label="Episodes">
+      <SeasonEpisodesList id={id} seriesId={seriesId} />
     </Disclosure>
   );
 }
 
-function SeasonEpisodesList({id}: {id: string}) {
+function SeasonEpisodesList({id, seriesId}: {id: string; seriesId: string}) {
   const {data} = useQuery(seasonEpisodesQuery, {variables: {id}});
-  const watchEpisodeFromSeason = useMutation(watchEpisodeFromSeasonMutation);
+  const season = data?.season;
 
-  if (data?.season == null) return null;
+  if (season == null) return null;
 
-  const {episodes} = data.season;
+  const {episodes} = season;
 
   return (
-    <Grid inlineSizes={['fill', 'fill']} spacing>
+    <MediaGrid>
       {episodes.map((episode) => {
         return (
-          <BlockStack key={episode.id} inlineAlignment="start">
-            <Text emphasis="subdued">Episode {episode.number}</Text>
-            <Text>{episode.title}</Text>
-            <Spacer size="small" />
-            <View>
-              <Action
-                onPress={async () => {
-                  await watchEpisodeFromSeason.mutateAsync({
-                    episode: episode.id,
-                  });
-                }}
-              >
-                Watch
-              </Action>
-            </View>
-          </BlockStack>
+          <MediaGridItem
+            key={episode.id}
+            image={<EpisodeImage source={episode.still?.source} />}
+            menu={
+              <Menu>
+                <WatchEpisodeAction episode={episode} />
+                <WatchSeasonFromEpisodeAction
+                  episode={episode}
+                  season={season}
+                  seriesId={seriesId}
+                />
+              </Menu>
+            }
+          >
+            <BlockStack padding="small" spacing="small.2">
+              <Text emphasis="subdued" size="small.2">
+                Episode {episode.number}
+              </Text>
+              <Text emphasis>{episode.title}</Text>
+            </BlockStack>
+          </MediaGridItem>
         );
       })}
-    </Grid>
+    </MediaGrid>
+  );
+}
+
+function WatchEpisodeAction({
+  episode,
+}: {
+  episode: SeasonEpisodesQueryData.Season.Episodes;
+}) {
+  const watchEpisodeFromSeason = useMutation(watchEpisodeFromSeasonMutation);
+
+  return (
+    <Action
+      icon="watch"
+      onPress={async () => {
+        await watchEpisodeFromSeason.mutateAsync({episode: episode.id});
+      }}
+    >
+      Mark as watched…
+    </Action>
+  );
+}
+
+function WatchSeasonFromEpisodeAction({
+  episode,
+  season,
+  seriesId,
+}: {
+  episode: SeasonEpisodesQueryData.Season.Episodes;
+  season: SeasonEpisodesQueryData.Season;
+  seriesId: string;
+}) {
+  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const navigate = useNavigate();
+
+  return (
+    <Action
+      icon="watch"
+      onPress={async () => {
+        await startWatchThrough.mutateAsync(
+          {
+            series: seriesId,
+            from: {season: season.number, episode: episode.number},
+            to: {season: season.number},
+          },
+          {
+            onSuccess({startWatchThrough}) {
+              const watchThroughId = startWatchThrough?.watchThrough?.id;
+
+              if (watchThroughId) {
+                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
+              }
+            },
+          },
+        );
+      }}
+    >
+      Watch from Episode {episode.number}
+    </Action>
   );
 }
 

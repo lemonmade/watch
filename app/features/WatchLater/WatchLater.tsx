@@ -22,7 +22,7 @@ export default function WatchLater() {
             <MediaGridItem
               key={id}
               to={`/app/series/${media.handle}`}
-              poster={
+              image={
                 <Poster
                   label={media.name}
                   source={media.poster?.source.replace('/original/', '/w342/')}

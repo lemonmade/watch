@@ -33,7 +33,7 @@ export function WatchThroughItem({
   return (
     <MediaGridItem
       to={to}
-      poster={
+      image={
         <Poster
           label={series.name}
           source={nextEpisode?.poster ?? series.poster}

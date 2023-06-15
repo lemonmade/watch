@@ -1,5 +1,6 @@
 query SeasonEpisodes($id: ID!) {
   season(id: $id) {
+    number
     episodes {
       id
       number

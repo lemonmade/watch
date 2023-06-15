@@ -33,6 +33,7 @@ import {
   Icon,
   IconHighlight,
   PrettyDate,
+  EpisodeImage,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -263,15 +264,7 @@ function NextEpisode({
       onUpdate={onUpdate}
     >
       <BlockStack spacing>
-        {image && (
-          <Image
-            key={image}
-            source={image}
-            aspectRatio={1.77}
-            cornerRadius
-            fit="cover"
-          />
-        )}
+        {image && <EpisodeImage source={image} />}
         <BlockStack spacing>
           <InlineGrid sizes={['fill', 'auto']} spacing blockAlignment="start">
             <BlockStack spacing="small">

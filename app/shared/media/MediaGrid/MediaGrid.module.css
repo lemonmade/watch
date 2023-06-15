@@ -1,9 +1,9 @@
 .MediaGrid {
   --w-internal-MediaGrid-block-spacing: var(--z-spacing-small-1);
-
+  --w-internal-MediaGrid-item-min-inline-size: 12rem;
 
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(var(--w-internal-MediaGrid-item-min-inline-size), 1fr));
   row-gap: var(--w-internal-MediaGrid-block-spacing);
   column-gap: var(--z-spacing-small-1);
   align-items: flex-start;
@@ -13,25 +13,14 @@
   --w-internal-MediaGrid-block-spacing: var(--z-spacing-large-1);
 }
 
-@media (min-width: 40em) {
-  .MediaGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 50em) {
-  .MediaGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 .MediaGridItem {
   --MediaGridItem-badge-size: 1.125rem;
 
   position: relative;
   z-index: 10;
   display: block;
-  border-radius: 0 0 var(--z-corner-radius-base) var(--z-corner-radius-base);
+  cursor: pointer;
+  border-radius: var(--z-corner-radius-base);
   transition: background 0.2s ease, transform 0.15s ease;
   text-decoration: none;
   color: var(--z-text-base-color);

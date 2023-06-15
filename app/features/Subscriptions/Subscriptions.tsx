@@ -23,7 +23,7 @@ export default function Subscriptions() {
           <MediaGridItem
             key={id}
             to={`/app/series/${series.handle}`}
-            poster={
+            image={
               <Poster
                 label={series.name}
                 source={

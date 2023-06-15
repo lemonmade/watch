@@ -67,7 +67,7 @@ export default function Search() {
               <MediaGridItem
                 key={series.id}
                 to={`/app/series/${series.handle}`}
-                poster={
+                image={
                   <Poster source={series.poster?.source} label={series.name} />
                 }
               />
