@@ -1,6 +1,6 @@
 .MediaGrid {
   --w-internal-MediaGrid-block-spacing: var(--z-spacing-small-1);
-  --w-internal-MediaGrid-item-min-inline-size: 12rem;
+  --w-internal-MediaGrid-item-min-inline-size: 10rem;
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--w-internal-MediaGrid-item-min-inline-size), 1fr));
