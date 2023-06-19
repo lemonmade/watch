@@ -1,11 +1,3 @@
-.WatchThroughContainer {
-  position: relative;
-}
-
-.WatchThroughNextEpisodeTiming {
-  text-transform: uppercase;
-}
-
 .WatchThroughFootnote {
   display: flex;
   align-items: center;

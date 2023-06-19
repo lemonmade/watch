@@ -1,12 +1,14 @@
 import {type ReactNode, type PropsWithChildren} from 'react';
 import {classes, variation} from '@lemon/css';
 import {
+  Text,
   Pressable,
   View,
   CSSLiteral,
+  Popover,
+  BlockStack,
   type CSSLiteralValue,
   type PressableProps,
-  Popover,
 } from '@lemon/zest';
 
 import styles from './MediaGrid.module.css';
@@ -45,12 +47,16 @@ export interface MediaGridItemProps {
   to?: PressableProps['to'];
   image?: ReactNode;
   menu?: ReactNode;
+  title?: string;
+  subtitle?: string;
 }
 
 export function MediaGridItem({
   to,
   image,
   menu,
+  title,
+  subtitle,
   children,
 }: PropsWithChildren<MediaGridItemProps>) {
   const hasImage = Boolean(image);
@@ -67,6 +73,21 @@ export function MediaGridItem({
     actionProps.overlay = <Popover inlineAttachment="end">{menu}</Popover>;
   }
 
+  let titleContent: ReactNode = null;
+
+  if (title || subtitle) {
+    titleContent = (
+      <BlockStack padding="small" spacing="small.2">
+        {title && <Text emphasis>{title}</Text>}
+        {subtitle && (
+          <Text emphasis="subdued" size="small.2">
+            {subtitle}
+          </Text>
+        )}
+      </BlockStack>
+    );
+  }
+
   const baseProps = {
     className: classes(styles.MediaGridItem, hasImage && styles.hasImage),
     inlineAlignment: 'start',
@@ -75,11 +96,13 @@ export function MediaGridItem({
   return actionProps ? (
     <Pressable {...baseProps} {...actionProps}>
       {image}
+      {titleContent}
       {children}
     </Pressable>
   ) : (
     <View {...baseProps}>
       {image}
+      {titleContent}
       {children}
     </View>
   );

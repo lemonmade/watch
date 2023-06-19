@@ -7,6 +7,8 @@ export type PickTypename<
   Typename extends Type['__typename'],
 > = Extract<Type, {__typename: Typename}>;
 
+export type ListItemType<T> = T extends readonly (infer U)[] ? U : never;
+
 const GID_REGEXP = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/;
 
 export function parseGid(gid: string): {type: string; id: string} {

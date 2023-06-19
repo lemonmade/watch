@@ -2,6 +2,7 @@ query FinishedWatching {
   watchThroughs(status: FINISHED) {
     id
     updatedAt
+    finishedAt
     series {
       id
       name
