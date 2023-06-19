@@ -24,12 +24,7 @@ export default function Subscriptions() {
             key={id}
             to={`/app/series/${series.handle}`}
             image={
-              <Poster
-                label={series.name}
-                source={
-                  series.poster?.source.replace('/original/', '/w342/') ?? ''
-                }
-              />
+              <Poster label={series.name} source={series.poster?.source} />
             }
           />
         ))}

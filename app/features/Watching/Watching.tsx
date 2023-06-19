@@ -87,9 +87,7 @@ function watchThroughToProps({
       : undefined,
     series: {
       name: series.name,
-      poster:
-        nextEpisode?.season.poster?.source.replace('/original/', '/w342/') ??
-        series.poster?.source.replace('/original/', '/w342/'),
+      poster: nextEpisode?.season.poster?.source ?? series.poster?.source,
     },
     unfinishedEpisodeCount,
   };

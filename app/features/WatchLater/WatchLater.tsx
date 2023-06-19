@@ -23,10 +23,7 @@ export default function WatchLater() {
               key={id}
               to={`/app/series/${media.handle}`}
               image={
-                <Poster
-                  label={media.name}
-                  source={media.poster?.source.replace('/original/', '/w342/')}
-                />
+                <Poster label={media.name} source={media.poster?.source} />
               }
             />
           ) : null,
