@@ -52,6 +52,7 @@ export const Query: Pick<
     return prisma.watchThrough.findMany({
       where: {status: status ?? undefined, userId: user.id},
       take: 50,
+      orderBy: {updatedAt: 'desc'},
     });
   },
   randomWatchThrough(_, __, {prisma, user}) {
