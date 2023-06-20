@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.3.18
+
+### Patch Changes
+
+- [`59fb1ed`](https://github.com/lemonmade/watch/commit/59fb1edd1bbeacac8f484c17ef79df7a32691ef3) Thanks [@lemonmade](https://github.com/lemonmade)! - Add Disclosure component
+
+- Updated dependencies [[`59fb1ed`](https://github.com/lemonmade/watch/commit/59fb1edd1bbeacac8f484c17ef79df7a32691ef3)]:
+  - @watching/clips@0.4.15
+
 ## 0.3.17
 
 ### Patch Changes
