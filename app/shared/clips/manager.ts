@@ -29,6 +29,7 @@ import {
   type ClipsExtensionPointInstanceOptions,
   type ClipsExtensionPointLocalInstanceOptions,
   type ClipsExtensionPointInstalledInstanceOptions,
+  type ClipsExtensionPointInstanceLoadingElement,
 } from './extension.ts';
 import {
   type ExtensionPointDefinitions,
@@ -150,9 +151,7 @@ export function createClipsManager(
         context: appContext,
       },
     );
-    const loadingUi = signal(
-      options.loadingUi ? JSON.parse(options.loadingUi) : undefined,
-    );
+    const loadingUi = signal(options.loadingUi);
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {
@@ -212,7 +211,9 @@ export function createClipsManager(
         context: appContext,
       },
     );
-    const loadingUi = signal<any[] | undefined>(undefined);
+    const loadingUi = signal<
+      ClipsExtensionPointInstanceLoadingElement['children'] | undefined
+    >(undefined);
 
     const renderer = createRenderer<ClipsExtensionPointInstanceContext<Point>>({
       context({signal}) {

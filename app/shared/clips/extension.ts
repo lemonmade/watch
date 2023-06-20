@@ -67,7 +67,7 @@ export interface ClipsExtensionPointInstalledInstanceOptions<
   readonly version: Version;
   readonly settings?: string;
   readonly liveQuery?: string;
-  readonly loadingUi?: string;
+  readonly loadingUi?: ClipsExtensionPointInstanceLoadingElement['children'];
   readonly extension: {readonly id: string};
   readonly script: {readonly url: string};
   readonly options: OptionsForExtensionPoint<Point>;
