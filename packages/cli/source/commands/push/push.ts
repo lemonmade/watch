@@ -176,6 +176,14 @@ async function pushExtension(
           liveQuery: supported.query
             ? await readFile(path.join(extension.root, supported.query), 'utf8')
             : undefined,
+          loading: supported.loading?.ui
+            ? {
+                ui: await loadLoadingUiForExtension(
+                  supported.loading.ui,
+                  extension,
+                ),
+              }
+            : undefined,
         };
       }),
     ),
@@ -278,6 +286,21 @@ async function pushExtension(
   }
 
   return result;
+}
+
+async function loadLoadingUiForExtension(
+  ui: string,
+  extension: LocalExtension,
+) {
+  const {parseLoadingHtml, serializeLoadingHtml} = await import(
+    '@watching/tools/loading'
+  );
+
+  const html = ui.endsWith('.html')
+    ? await readFile(path.resolve(extension.root, ui), 'utf8')
+    : ui;
+
+  return serializeLoadingHtml(parseLoadingHtml(html));
 }
 
 async function loadTranslationsForExtension(extension: LocalExtension) {
