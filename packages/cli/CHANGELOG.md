@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 2.0.20
+
+### Patch Changes
+
+- [`45ceb7e`](https://github.com/lemonmade/watch/commit/45ceb7e4b2fda7a59763d29e44dbcd894cf0062f) Thanks [@lemonmade](https://github.com/lemonmade)! - Push loading UI to production
+
+- Updated dependencies [[`59fb1ed`](https://github.com/lemonmade/watch/commit/59fb1edd1bbeacac8f484c17ef79df7a32691ef3)]:
+  - @watching/clips@0.4.15
+  - @watching/tools@0.1.7
+
 ## 2.0.19
 
 ### Patch Changes
