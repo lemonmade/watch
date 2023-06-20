@@ -710,19 +710,18 @@ async function createStagedClipsVersion({
             return {
               target,
               liveQuery,
-              loading: loading && {
-                ...loading,
-                ui: loading.ui
-                  ? (async () => {
+              loading: loading?.ui
+                ? {
+                    ui: await (async () => {
                       const {parseLoadingHtml, serializeLoadingHtml} =
                         await import('@watching/tools/loading');
 
                       return serializeLoadingHtml(
                         parseLoadingHtml(loading.ui!),
                       );
-                    })()
-                  : undefined,
-              },
+                    })(),
+                  }
+                : undefined,
               conditions: conditions?.map((condition) => {
                 if (condition?.series?.handle == null) {
                   throw new Error(`Unknown condition: ${condition}`);
