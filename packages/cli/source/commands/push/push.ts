@@ -174,7 +174,7 @@ async function pushExtension(
           target: supported.target,
           conditions: supported.conditions,
           liveQuery: supported.query
-            ? await readFile(path.join(extension.root, supported.query), 'utf8')
+            ? await loadLiveQueryForExtension(supported.query, extension)
             : undefined,
           loading: supported.loading?.ui
             ? {
@@ -288,17 +288,34 @@ async function pushExtension(
   return result;
 }
 
+async function loadLiveQueryForExtension(
+  liveQuery: string,
+  extension: LocalExtension,
+) {
+  const graphql = await readFile(
+    path.resolve(extension.root, liveQuery),
+    'utf8',
+  );
+
+  const [{parse}, {cleanDocument, toSimpleDocument}] = await Promise.all([
+    import('graphql'),
+    import('@quilted/graphql/transform'),
+  ]);
+
+  return toSimpleDocument(cleanDocument(parse(graphql))).source;
+}
+
 async function loadLoadingUiForExtension(
   ui: string,
   extension: LocalExtension,
 ) {
-  const {parseLoadingHtml, serializeLoadingHtml} = await import(
-    '@watching/tools/loading'
-  );
-
   const html = ui.endsWith('.html')
     ? await readFile(path.resolve(extension.root, ui), 'utf8')
     : ui;
+
+  const {parseLoadingHtml, serializeLoadingHtml} = await import(
+    '@watching/tools/loading'
+  );
 
   return serializeLoadingHtml(parseLoadingHtml(html));
 }

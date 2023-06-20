@@ -709,7 +709,18 @@ async function createStagedClipsVersion({
           supports.map(async ({target, liveQuery, loading, conditions}) => {
             return {
               target,
-              liveQuery,
+              liveQuery: liveQuery
+                ? await (async () => {
+                    const [{parse}, {cleanDocument, toSimpleDocument}] =
+                      await Promise.all([
+                        import('graphql'),
+                        import('@quilted/graphql/transform'),
+                      ]);
+
+                    return toSimpleDocument(cleanDocument(parse(liveQuery)))
+                      .source;
+                  })()
+                : undefined,
               loading: loading?.ui
                 ? {
                     ui: await (async () => {
