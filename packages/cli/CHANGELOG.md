@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.0.21
+
+### Patch Changes
+
+- [`a1f4b2c`](https://github.com/lemonmade/watch/commit/a1f4b2cfed2365a56d0ba706003c881ebeb413d1) Thanks [@lemonmade](https://github.com/lemonmade)! - Minify live queries
+
 ## 2.0.20
 
 ### Patch Changes
