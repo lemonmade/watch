@@ -161,6 +161,9 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^8.0.0
         version: 8.5.8
+      '@watching/api':
+        specifier: workspace:*
+        version: link:../packages/api
       '@watching/clips':
         specifier: workspace:*
         version: link:../packages/clips
@@ -306,6 +309,12 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20221111.1
         version: 4.20221111.1
+
+  packages/api:
+    devDependencies:
+      '@quilted/testing':
+        specifier: ^0.1.0
+        version: 0.1.5
 
   packages/cli:
     dependencies:

@@ -14,6 +14,7 @@
   "references": [
     {"path": "../functions/email"},
     {"path": "../global"},
+    {"path": "../packages/api"},
     {"path": "../packages/clips"},
     {"path": "../packages/css"},
     {"path": "../packages/graphql"},

@@ -25,6 +25,7 @@
     {"path": "./functions/tmdb-refresher"},
     {"path": "./functions/tmdb-refresher-scheduler"},
     {"path": "./global"},
+    {"path": "./packages/api"},
     {"path": "./packages/cli"},
     {"path": "./packages/cli/templates/tsconfig.preact.json"},
     {"path": "./packages/cli/templates/tsconfig.react.json"},

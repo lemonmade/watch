@@ -256,6 +256,7 @@ enum WatchThroughStatus {
 
 model WatchThrough {
   id               String             @id @default(uuid())
+  include          Json?
   from             Bytes
   to               Bytes
   current          Bytes?
