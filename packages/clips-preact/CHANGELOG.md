@@ -1,5 +1,11 @@
 # @watching/clips-preact
 
+## 0.1.16
+
+### Patch Changes
+
+- [`19f4e65`](https://github.com/lemonmade/watch/commit/19f4e6503e7f66ab06d3f471128759b0d725a95d) Thanks [@lemonmade](https://github.com/lemonmade)! - Improve React translate hook
+
 ## 0.1.15
 
 ### Patch Changes
