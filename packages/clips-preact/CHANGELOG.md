@@ -1,5 +1,14 @@
 # @watching/clips-preact
 
+## 0.1.15
+
+### Patch Changes
+
+- [`2ec1768`](https://github.com/lemonmade/watch/commit/2ec1768be5211535a2c8dd4b7cfa9a00ab3881b5) Thanks [@lemonmade](https://github.com/lemonmade)! - Add support for translations
+
+- Updated dependencies [[`2ec1768`](https://github.com/lemonmade/watch/commit/2ec1768be5211535a2c8dd4b7cfa9a00ab3881b5)]:
+  - @watching/clips@0.4.16
+
 ## 0.1.14
 
 ### Patch Changes
