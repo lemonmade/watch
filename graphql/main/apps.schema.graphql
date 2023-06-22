@@ -274,6 +274,7 @@ type ClipsExtensionInstallation {
   target: ClipsExtensionPoint!
   appInstallation: AppInstallation!
   settings: JSON
+  translations: JSON
   liveQuery: ClipsLiveQuery
   loading: ClipsExtensionPointSupportLoading
 }

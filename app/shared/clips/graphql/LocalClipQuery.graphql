@@ -4,6 +4,10 @@ query LocalClip($id: ID!) {
     clipsExtension(id: $id) {
       id
       name
+      translations {
+        locale
+        dictionary
+      }
       extends {
         target
         module

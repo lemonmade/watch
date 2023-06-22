@@ -4,7 +4,9 @@ import {
   RemoteFragmentElement,
   type RemoteMutationCallback,
 } from '@lemonmade/remote-ui/elements';
+import {createTranslate} from '@quilted/localize';
 
+import type {LocalizeApi, ApiCore} from './api.ts';
 import {
   type ExtensionPoint,
   type RenderExtension,
@@ -29,9 +31,21 @@ export function extension<
 >(
   run: RenderExtension<Target, Query, Settings>,
 ): RenderExtensionCore<Target, Query, Settings> {
-  async function extension(callback: RemoteMutationCallback, api: unknown) {
+  async function extension(callback: RemoteMutationCallback, api: any) {
     const root = document.createElement('remote-root');
-    await (run as any)(root, acceptSignals(api as any));
+
+    const hydratedApi = acceptSignals<any>(api as any);
+    const {locale, translations} = api.localize as ApiCore['localize'];
+    const localize: LocalizeApi = {
+      locale,
+      translate: createTranslate(
+        locale,
+        translations ? JSON.parse(translations) : {},
+      ),
+    };
+    hydratedApi.localize = localize;
+
+    await (run as any)(root, hydratedApi);
     root.connect(callback);
   }
 

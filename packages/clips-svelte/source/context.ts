@@ -36,3 +36,7 @@ export function getApi<
 >() {
   return getRenderContext<Point, Query, Settings>().api;
 }
+
+export function getTranslate() {
+  return getRenderContext().api.localize.translate;
+}

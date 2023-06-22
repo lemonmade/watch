@@ -1,5 +1,7 @@
 scalar Url
 scalar Date
+scalar JSON
+scalar Locale
 scalar Version
 scalar ExtensionPoint
 scalar ExtensionApiVersion
@@ -79,10 +81,16 @@ type ClipsExtensionPointSupport {
   conditions: [ClipsExtensionPointSupportCondition!]!
 }
 
+type ClipsExtensionTranslation {
+  locale: Locale!
+  dictionary: JSON!
+}
+
 type ClipsExtension {
   id: ID!
   name: String!
   handle: String!
+  translations: [ClipsExtensionTranslation!]!
   build: ExtensionBuild!
   extends: [ClipsExtensionPointSupport!]!
 }

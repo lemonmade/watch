@@ -1,5 +1,7 @@
 export type Url = string;
 export type Date = string;
+export type JSON = string;
+export type Locale = string;
 export type Version = string;
 export type ExtensionPoint = string;
 export type ExtensionApiVersion = string;
@@ -75,11 +77,17 @@ export interface ClipsExtensionPointSupport {
     preview(variables: Record<string, never>): ClipsExtensionPointPreview;
     conditions(variables: Record<string, never>): ClipsExtensionPointSupportCondition[];
 }
+export interface ClipsExtensionTranslation {
+    __typename: "ClipsExtensionTranslation";
+    locale(variables: Record<string, never>): Locale;
+    dictionary(variables: Record<string, never>): JSON;
+}
 export interface ClipsExtension {
     __typename: "ClipsExtension";
     id(variables: Record<string, never>): string;
     name(variables: Record<string, never>): string;
     handle(variables: Record<string, never>): string;
+    translations(variables: Record<string, never>): ClipsExtensionTranslation[];
     build(variables: Record<string, never>): ExtensionBuild;
     extends(variables: Record<string, never>): ClipsExtensionPointSupport[];
 }
@@ -105,6 +113,8 @@ export interface Query {
 export interface Schema {
     Url: Url;
     Date: Date;
+    JSON: JSON;
+    Locale: Locale;
     Version: Version;
     ExtensionPoint: ExtensionPoint;
     ExtensionApiVersion: ExtensionApiVersion;
@@ -124,11 +134,12 @@ export interface Schema {
     ClipsExtensionPointLoadingUi: ClipsExtensionPointLoadingUi;
     ClipsExtensionPointLoading: ClipsExtensionPointLoading;
     ClipsExtensionPointSupport: ClipsExtensionPointSupport;
+    ClipsExtensionTranslation: ClipsExtensionTranslation;
     ClipsExtension: ClipsExtension;
     Extension: Extension;
     App: App;
     Query: Query;
 }
-declare const schema = "\nscalar Url\n\nscalar Date\n\nscalar Version\n\nscalar ExtensionPoint\n\nscalar ExtensionApiVersion\n\nscalar ExtensionLoadingUiTree\n\nscalar ExtensionLoadingUiHtml\n\ntype Asset {\n  source: Url!\n}\n\ntype BuildError {\n  message: String!\n  stack: String\n}\n\ntype ExtensionBuildInProgress {\n  id: ID!\n  startedAt: Date!\n}\n\ntype ExtensionBuildSuccess {\n  id: ID!\n  finishedAt: Date!\n  startedAt: Date!\n  duration: Int!\n  assets: [Asset!]!\n}\n\ntype ExtensionBuildError {\n  id: ID!\n  error: BuildError!\n  finishedAt: Date!\n  duration: Int!\n  startedAt: Date!\n}\n\nunion ExtensionBuild = ExtensionBuildInProgress | ExtensionBuildSuccess | ExtensionBuildError\n\nscalar ClipsExtensionPoint\n\ntype ClipsExtensionPointSupportSeriesCondition {\n  handle: String\n}\n\ntype ClipsExtensionPointSupportCondition {\n  series: ClipsExtensionPointSupportSeriesCondition\n}\n\ntype ClipsExtensionPointPreview {\n  url(connect: Boolean): Url!\n}\n\ntype ClipsExtensionPointLiveQuery {\n  file: String!\n  query: String!\n}\n\ntype ClipsExtensionPointLoadingUi {\n  file: String!\n  tree: ExtensionLoadingUiTree!\n  html: ExtensionLoadingUiHtml!\n}\n\ntype ClipsExtensionPointLoading {\n  ui: ClipsExtensionPointLoadingUi\n}\n\ntype ClipsExtensionPointSupport {\n  target: ClipsExtensionPoint!\n  module: String!\n  liveQuery: ClipsExtensionPointLiveQuery\n  loading: ClipsExtensionPointLoading\n  preview: ClipsExtensionPointPreview!\n  conditions: [ClipsExtensionPointSupportCondition!]!\n}\n\ntype ClipsExtension {\n  id: ID!\n  name: String!\n  handle: String!\n  build: ExtensionBuild!\n  extends: [ClipsExtensionPointSupport!]!\n}\n\nunion Extension = ClipsExtension\n\ntype App {\n  id: ID!\n  name: String!\n  handle: String!\n  extensions: [Extension!]!\n  extension(id: ID!): Extension\n  clipsExtension(id: ID!): ClipsExtension\n}\n\ntype Query {\n  version: Version!\n  app: App!\n}\n";
+declare const schema = "\nscalar Url\n\nscalar Date\n\nscalar JSON\n\nscalar Locale\n\nscalar Version\n\nscalar ExtensionPoint\n\nscalar ExtensionApiVersion\n\nscalar ExtensionLoadingUiTree\n\nscalar ExtensionLoadingUiHtml\n\ntype Asset {\n  source: Url!\n}\n\ntype BuildError {\n  message: String!\n  stack: String\n}\n\ntype ExtensionBuildInProgress {\n  id: ID!\n  startedAt: Date!\n}\n\ntype ExtensionBuildSuccess {\n  id: ID!\n  finishedAt: Date!\n  startedAt: Date!\n  duration: Int!\n  assets: [Asset!]!\n}\n\ntype ExtensionBuildError {\n  id: ID!\n  error: BuildError!\n  finishedAt: Date!\n  duration: Int!\n  startedAt: Date!\n}\n\nunion ExtensionBuild = ExtensionBuildInProgress | ExtensionBuildSuccess | ExtensionBuildError\n\nscalar ClipsExtensionPoint\n\ntype ClipsExtensionPointSupportSeriesCondition {\n  handle: String\n}\n\ntype ClipsExtensionPointSupportCondition {\n  series: ClipsExtensionPointSupportSeriesCondition\n}\n\ntype ClipsExtensionPointPreview {\n  url(connect: Boolean): Url!\n}\n\ntype ClipsExtensionPointLiveQuery {\n  file: String!\n  query: String!\n}\n\ntype ClipsExtensionPointLoadingUi {\n  file: String!\n  tree: ExtensionLoadingUiTree!\n  html: ExtensionLoadingUiHtml!\n}\n\ntype ClipsExtensionPointLoading {\n  ui: ClipsExtensionPointLoadingUi\n}\n\ntype ClipsExtensionPointSupport {\n  target: ClipsExtensionPoint!\n  module: String!\n  liveQuery: ClipsExtensionPointLiveQuery\n  loading: ClipsExtensionPointLoading\n  preview: ClipsExtensionPointPreview!\n  conditions: [ClipsExtensionPointSupportCondition!]!\n}\n\ntype ClipsExtensionTranslation {\n  locale: Locale!\n  dictionary: JSON!\n}\n\ntype ClipsExtension {\n  id: ID!\n  name: String!\n  handle: String!\n  translations: [ClipsExtensionTranslation!]!\n  build: ExtensionBuild!\n  extends: [ClipsExtensionPointSupport!]!\n}\n\nunion Extension = ClipsExtension\n\ntype App {\n  id: ID!\n  name: String!\n  handle: String!\n  extensions: [Extension!]!\n  extension(id: ID!): Extension\n  clipsExtension(id: ID!): ClipsExtension\n}\n\ntype Query {\n  version: Version!\n  app: App!\n}\n";
 export default schema;
 //# sourceMappingURL=schema.d.ts.map

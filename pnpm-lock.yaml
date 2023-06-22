@@ -21,16 +21,16 @@ importers:
         version: 4.7.1(prisma@4.7.1)
       '@quilted/aws':
         specifier: ^0.3.43
-        version: 0.3.43(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140)
+        version: 0.3.43(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140)
       '@quilted/browserslist-config':
         specifier: ^0.1.9
         version: 0.1.9
       '@quilted/cloudflare':
-        specifier: ^0.1.53
-        version: 0.1.53(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140)
+        specifier: ^0.1.54
+        version: 0.1.54(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140)
       '@quilted/craft':
-        specifier: ^0.1.203
-        version: 0.1.203(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
+        specifier: ^0.1.206
+        version: 0.1.206(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
       '@quilted/eslint-config':
         specifier: ^0.2.0
         version: 0.2.0(typescript@5.0.3)
@@ -132,14 +132,14 @@ importers:
         specifier: ^0.1.20
         version: 0.1.20(@quilted/react@18.2.3)
       '@quilted/graphql':
-        specifier: ^0.4.58
-        version: 0.4.58
+        specifier: ^0.4.59
+        version: 0.4.59
       '@quilted/quilt':
         specifier: ^0.5.140
         version: 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)
       '@quilted/react-query':
         specifier: ^0.1.17
-        version: 0.1.17(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@tanstack/react-query@4.20.4)
+        version: 0.1.17(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@tanstack/react-query@4.20.4)
       '@simplewebauthn/browser':
         specifier: ^6.2.0
         version: 6.2.1
@@ -313,8 +313,8 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9
       '@quilted/graphql':
-        specifier: ^0.4.58
-        version: 0.4.58
+        specifier: ^0.4.59
+        version: 0.4.59
       '@quilted/polyfills':
         specifier: ^0.2.34
         version: 0.2.34
@@ -408,7 +408,10 @@ importers:
         version: 0.1.33
       '@quilted/graphql':
         specifier: ^0.4.58
-        version: 0.4.58
+        version: 0.4.59
+      '@quilted/localize':
+        specifier: ^0.1.9
+        version: 0.1.9
       '@watching/thread-signals':
         specifier: workspace:^
         version: link:../thread-signals
@@ -568,8 +571,8 @@ importers:
         specifier: ^0.1.18
         version: 0.1.18
       '@quilted/graphql':
-        specifier: ^0.4.58
-        version: 0.4.58
+        specifier: ^0.4.59
+        version: 0.4.59
       '@rollup/plugin-commonjs':
         specifier: ^25.0.0
         version: 25.0.0(rollup@3.20.2)
@@ -1639,7 +1642,17 @@ packages:
     resolution: {integrity: sha512-C17MW4wlk//ES/CJDL51kPNwl+qiBQyN7b9SKyVp11BLGFeSPoVaHrv+MNt8jwQFhQWowW88z1eeBx3pFz9v8A==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.22.4
+      '@babel/types': 7.22.5
+      '@jridgewell/gen-mapping': 0.3.3
+      '@jridgewell/trace-mapping': 0.3.18
+      jsesc: 2.5.2
+    dev: true
+
+  /@babel/generator@7.22.5:
+    resolution: {integrity: sha512-+lcUbnTRhd0jOewtFSedLyiPsD5tswKkbgcezOqqWFUVNEwoUTlpPOBmvhG7OXWLR4jMdv0czPGH5XbflnD1EA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/types': 7.22.5
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
       jsesc: 2.5.2
@@ -1743,7 +1756,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/template': 7.20.7
-      '@babel/types': 7.22.4
+      '@babel/types': 7.22.5
     dev: true
 
   /@babel/helper-function-name@7.21.0:
@@ -1873,9 +1886,18 @@ packages:
   /@babel/helper-string-parser@7.21.5:
     resolution: {integrity: sha512-5pTUx3hAJaZIdW99sJ6ZUUgWq/Y+Hja7TowEnLNMm1VivRgZQL3vpBY3qUACVsvw+yQU6+YgfBVmcbLaZtrA1w==}
     engines: {node: '>=6.9.0'}
+    dev: true
+
+  /@babel/helper-string-parser@7.22.5:
+    resolution: {integrity: sha512-mM4COjgZox8U+JcXQwPijIZLElkgEpO5rsERVDJTc2qfCDfERyob6k5WegS14SX18IIjv+XD+GrqNumY5JRCDw==}
+    engines: {node: '>=6.9.0'}
 
   /@babel/helper-validator-identifier@7.19.1:
     resolution: {integrity: sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==}
+    engines: {node: '>=6.9.0'}
+
+  /@babel/helper-validator-identifier@7.22.5:
+    resolution: {integrity: sha512-aJXu+6lErq8ltp+JhkJUfk1MTGyuA4v7f3pA+BJ5HLfNC6nAQ0Cpi9uOquUj8Hehg0aUiHzWQbOVJGao6ztBAQ==}
     engines: {node: '>=6.9.0'}
 
   /@babel/helper-validator-option@7.18.6:
@@ -3035,6 +3057,15 @@ packages:
       '@babel/helper-string-parser': 7.21.5
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@babel/types@7.22.5:
+    resolution: {integrity: sha512-zo3MIHGOkPOfoRXitsgHLjEXmlDaD/5KU1Uzuc9GNiZPhSqVxVRtxuPaSBZDsYZ9qV88AjtMtWW7ww98loJ9KA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/helper-string-parser': 7.22.5
+      '@babel/helper-validator-identifier': 7.22.5
+      to-fast-properties: 2.0.0
 
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
@@ -3648,14 +3679,6 @@ packages:
     dev: false
     optional: true
 
-  /@esbuild/linux-loong64@0.14.54:
-    resolution: {integrity: sha512-bZBrLAIX1kpWelV0XemxBZllyRmM6vgFQQG2GdNb+r3Fkp0FOh1NJSvekXDs7jq70k4euu1cryLMfU+mTXlEpw==}
-    engines: {node: '>=12'}
-    cpu: [loong64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /@esbuild/linux-loong64@0.15.18:
     resolution: {integrity: sha512-L4jVKS82XVhw2nvzLg/19ClLWg0y27ulRwuP7lcyL6AbUWB5aPglXY3M21mauDQMDfRLs8cQmeT03r/+X3cZYQ==}
     engines: {node: '>=12'}
@@ -3918,47 +3941,47 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@graphql-tools/graphql-file-loader@7.5.17(graphql@16.6.0):
+  /@graphql-tools/graphql-file-loader@7.5.17(graphql@16.7.0):
     resolution: {integrity: sha512-hVwwxPf41zOYgm4gdaZILCYnKB9Zap7Ys9OhY1hbwuAuC4MMNY9GpUjoTU3CQc3zUiPoYStyRtUGkHSJZ3HxBw==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/import': 6.7.18(graphql@16.6.0)
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
+      '@graphql-tools/import': 6.7.18(graphql@16.7.0)
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
       globby: 11.1.0
-      graphql: 16.6.0
+      graphql: 16.7.0
       tslib: 2.5.3
       unixify: 1.0.0
 
-  /@graphql-tools/import@6.7.18(graphql@16.6.0):
+  /@graphql-tools/import@6.7.18(graphql@16.7.0):
     resolution: {integrity: sha512-XQDdyZTp+FYmT7as3xRWH/x8dx0QZA2WZqfMF5EWb36a0PiH7WwlRQYIdyYXj8YCLpiWkeBXgBRHmMnwEYR8iQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
-      graphql: 16.6.0
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
+      graphql: 16.7.0
       resolve-from: 5.0.0
       tslib: 2.5.3
 
-  /@graphql-tools/json-file-loader@7.4.18(graphql@16.6.0):
+  /@graphql-tools/json-file-loader@7.4.18(graphql@16.7.0):
     resolution: {integrity: sha512-AJ1b6Y1wiVgkwsxT5dELXhIVUPs/u3VZ8/0/oOtpcoyO/vAeM5rOvvWegzicOOnQw8G45fgBRMkkRfeuwVt6+w==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
       globby: 11.1.0
-      graphql: 16.6.0
+      graphql: 16.7.0
       tslib: 2.5.3
       unixify: 1.0.0
 
-  /@graphql-tools/load@7.8.14(graphql@16.6.0):
+  /@graphql-tools/load@7.8.14(graphql@16.7.0):
     resolution: {integrity: sha512-ASQvP+snHMYm+FhIaLxxFgVdRaM0vrN9wW2BKInQpktwWTXVyk+yP5nQUCEGmn0RTdlPKrffBaigxepkEAJPrg==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/schema': 9.0.19(graphql@16.6.0)
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
-      graphql: 16.6.0
+      '@graphql-tools/schema': 9.0.19(graphql@16.7.0)
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
+      graphql: 16.7.0
       p-limit: 3.1.0
       tslib: 2.5.3
 
@@ -3972,13 +3995,13 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@graphql-tools/merge@8.4.2(graphql@16.6.0):
+  /@graphql-tools/merge@8.4.2(graphql@16.7.0):
     resolution: {integrity: sha512-XbrHAaj8yDuINph+sAfuq3QCZ/tKblrTLOpirK0+CAgNlZUCHs0Fa+xtMUURgwCVThLle1AF7svJCxFizygLsw==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
-      graphql: 16.6.0
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
+      graphql: 16.7.0
       tslib: 2.5.0
 
   /@graphql-tools/schema@9.0.14(graphql@16.6.0):
@@ -3993,14 +4016,14 @@ packages:
       value-or-promise: 1.0.12
     dev: true
 
-  /@graphql-tools/schema@9.0.19(graphql@16.6.0):
+  /@graphql-tools/schema@9.0.19(graphql@16.7.0):
     resolution: {integrity: sha512-oBRPoNBtCkk0zbUsyP4GaIzCt8C0aCI4ycIRUL67KK5pOHljKLBBtGT+Jr6hkzA74C8Gco8bpZPe7aWFjiaK2w==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/merge': 8.4.2(graphql@16.6.0)
-      '@graphql-tools/utils': 9.2.1(graphql@16.6.0)
-      graphql: 16.6.0
+      '@graphql-tools/merge': 8.4.2(graphql@16.7.0)
+      '@graphql-tools/utils': 9.2.1(graphql@16.7.0)
+      graphql: 16.7.0
       tslib: 2.5.3
       value-or-promise: 1.0.12
 
@@ -4013,21 +4036,21 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@graphql-tools/utils@9.2.1(graphql@16.6.0):
+  /@graphql-tools/utils@9.2.1(graphql@16.7.0):
     resolution: {integrity: sha512-WUw506Ql6xzmOORlriNrD6Ugx+HjVgYxt9KCXD9mHAak+eaXSwuGGPyE60hy9xaDEoXKBsG7SkG69ybitaVl6A==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.6.0)
-      graphql: 16.6.0
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.7.0)
+      graphql: 16.7.0
       tslib: 2.5.3
 
-  /@graphql-typed-document-node/core@3.2.0(graphql@16.6.0):
+  /@graphql-typed-document-node/core@3.2.0(graphql@16.7.0):
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      graphql: 16.6.0
+      graphql: 16.7.0
 
   /@humanwhocodes/config-array@0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
@@ -4337,7 +4360,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/events': 0.1.18
-      '@quilted/graphql': 0.4.58
+      '@quilted/graphql': 0.4.59
       graphql: 16.6.0
     transitivePeerDependencies:
       - '@jest/globals'
@@ -4755,7 +4778,7 @@ packages:
       - rollup
     dev: true
 
-  /@quilted/aws@0.3.43(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140):
+  /@quilted/aws@0.3.43(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140):
     resolution: {integrity: sha512-OezJ5TQdjsx2IwUvvTFGbr+jGMB5CJ2WcCBT0Twr5sRaeriwe7ON42jjWjf3KCkCUrAmV2FJ0FKJTZkFsbOO0g==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4766,7 +4789,7 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.203(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
+      '@quilted/craft': 0.1.206(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
       '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)
       '@types/aws-lambda': 8.10.93
       common-tags: 1.8.2
@@ -4792,10 +4815,10 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare@0.1.53(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140):
-    resolution: {integrity: sha512-d2IwV7gEgW+5I9M8wGuY1cHr/iYhbchdDc1/QC45TtzfMDgjqylkusOb4j1A+2z3H3/eyKM+dh1jhFmteQApxw==}
+  /@quilted/cloudflare@0.1.54(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140):
+    resolution: {integrity: sha512-ubxc18z8TKPn4N77kTv8JFPfqHR5aEvGKpxtCAm/7kNSO7J2T2UJhIUWAibBJP2M1D03vbt9gFHTI5nOqMf1kg==}
     peerDependencies:
-      '@quilted/craft': ^0.1.198
+      '@quilted/craft': ^0.1.205
       '@quilted/quilt': ^0.5.139
     peerDependenciesMeta:
       '@quilted/craft':
@@ -4805,7 +4828,7 @@ packages:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@cloudflare/workers-types': 4.20221111.1
-      '@quilted/craft': 0.1.203(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
+      '@quilted/craft': 0.1.206(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
       '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)
       common-tags: 1.8.2
       mime: 2.6.0
@@ -4818,8 +4841,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@quilted/craft@0.1.203(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3):
-    resolution: {integrity: sha512-6SwCrarM6WuRBZ6fqadC5L5hfqnxSvQlJbygOwlGemSd4haBCFymDp73N5DfYPsTFC3FbIbXPU5o+mMKDgzUoQ==}
+  /@quilted/craft@0.1.206(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3):
+    resolution: {integrity: sha512-8gsF1Yl4FYoG7OZKfOSVZWXGrwF7fol8cuw/iVokwMnCCDIqI3m0Ub10Hmd1gGK20KPN8B1FKZGIvMUmGXat8Q==}
     hasBin: true
     peerDependencies:
       '@quilted/quilt': ^0.5.140
@@ -4845,7 +4868,7 @@ packages:
       '@quilted/async': 0.3.40(@babel/core@7.21.8)(rollup@3.7.4)
       '@quilted/browserslist-config': 0.1.9
       '@quilted/eslint-config': 0.2.0(typescript@5.0.3)
-      '@quilted/graphql': 0.4.58
+      '@quilted/graphql': 0.4.59
       '@quilted/polyfills': 0.2.34
       '@quilted/prettier': 0.2.11
       '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)
@@ -4948,8 +4971,8 @@ packages:
     resolution: {integrity: sha512-FzD9MymQGPSxCYZ0VwW/YdO3+Srkzn+YjguHD1P8qt+TzDdM7GhO7dgVdj8wJ6hlLvBmpCEyFrQ+DRx1sntHiw==}
     engines: {node: '>=14.0.0'}
 
-  /@quilted/graphql@0.4.58:
-    resolution: {integrity: sha512-OQjK8sg2Id4Y53yyMDbt3RrfrIW0YFuS+kR5ZCKZyZBQ0ScUTKkjHG3vh7IlmikpDPxIxDa6xfGDLOG4FRy85A==}
+  /@quilted/graphql@0.4.59:
+    resolution: {integrity: sha512-2ONGXzIaSUPgegqv2cbGMRecErGaMLI36L7UjzAcDSQvXzGVcKmyV8pgD0YTLu2IZcd8vUI4dm+vfENHWw82ZA==}
     hasBin: true
     peerDependencies:
       '@jest/globals': ^27.0.0
@@ -4960,33 +4983,32 @@ packages:
       jest-matcher-utils:
         optional: true
     dependencies:
-      '@babel/generator': 7.22.3
-      '@babel/types': 7.22.4
-      '@graphql-tools/graphql-file-loader': 7.5.17(graphql@16.6.0)
-      '@graphql-tools/json-file-loader': 7.4.18(graphql@16.6.0)
-      '@graphql-tools/load': 7.8.14(graphql@16.6.0)
-      '@graphql-tools/schema': 9.0.19(graphql@16.6.0)
+      '@babel/generator': 7.22.5
+      '@babel/types': 7.22.5
+      '@graphql-tools/graphql-file-loader': 7.5.17(graphql@16.7.0)
+      '@graphql-tools/json-file-loader': 7.4.18(graphql@16.7.0)
+      '@graphql-tools/load': 7.8.14(graphql@16.7.0)
+      '@graphql-tools/schema': 9.0.19(graphql@16.7.0)
       '@quilted/useful-types': 0.2.17
       '@types/chance': 1.1.3
       arg: 4.1.3
       chance: 1.1.11
       chokidar: 3.5.3
-      colorette: 2.0.20
+      colorette: 2.0.19
       cosmiconfig: 7.1.0
       cosmiconfig-toml-loader: 1.0.0
-      esbuild: 0.14.54
-      globby: 13.1.4
-      graphql: 16.6.0
+      esbuild: 0.14.51
+      globby: 13.1.1
+      graphql: 16.7.0
       is-glob: 4.0.3
       p-limit: 4.0.0
 
   /@quilted/http@0.2.30:
     resolution: {integrity: sha512-enqKUUV7qfPwlWQ6xL3bYfPlZJ4fz2sOySoOYKaUn1UHtBMHR2ym8IOgrAaeewXsRwyEAB76QOQDJCFBlZdqgg==}
 
-  /@quilted/localize@0.1.8:
-    resolution: {integrity: sha512-5cBCsidCMLIPI0s3c43fRxgtiV1Ei7p7eVoTSTOV1ND8vk6GQmgUKGxVfw/tr6bTgzUyKPFRIhJKzSsLke/r+w==}
+  /@quilted/localize@0.1.9:
+    resolution: {integrity: sha512-eHLP36WI1ODp0e1/VkxFpuSUMkVKlNyruzPlTeT79ahSGqNA8knl9T+baiGt7nTtXCaM4jd0w1c6sZ4oI5Jaaw==}
     engines: {node: '>=14.0.0'}
-    dev: true
 
   /@quilted/performance@0.1.19(@quilted/react@18.2.3):
     resolution: {integrity: sha512-p8PAPQmDuvrMsjvmq/C21eflMuHnqnOw9V9TbjDe711NoXHo8uiBMeqqZ+PRgeIQE4nJVzlGrcIuSHF/I+UOMg==}
@@ -5034,7 +5056,7 @@ packages:
       '@quilted/assets': 0.0.3(rollup@3.7.4)
       '@quilted/async': 0.3.40(@babel/core@7.21.8)(rollup@3.7.4)
       '@quilted/events': 0.1.18
-      '@quilted/graphql': 0.4.58
+      '@quilted/graphql': 0.4.59
       '@quilted/polyfills': 0.2.34
       '@quilted/react': 18.2.3
       '@quilted/react-assets': 0.0.4(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(rollup@3.7.4)
@@ -5044,7 +5066,7 @@ packages:
       '@quilted/react-html': 0.3.49(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       '@quilted/react-http': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       '@quilted/react-idle': 0.3.23(@quilted/react@18.2.3)
-      '@quilted/react-localize': 0.1.16(@quilted/react-dom@18.2.4)(@quilted/react-http@0.3.29)(@quilted/react@18.2.3)(@quilted/request-router@0.1.6)
+      '@quilted/react-localize': 0.1.17(@quilted/react-dom@18.2.4)(@quilted/react-http@0.3.29)(@quilted/react@18.2.3)(@quilted/request-router@0.1.6)
       '@quilted/react-performance': 0.1.19(@quilted/react@18.2.3)
       '@quilted/react-router': 0.3.59(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       '@quilted/react-server-render': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
@@ -5146,7 +5168,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/async': 0.3.40(@babel/core@7.21.8)(rollup@3.7.4)
-      '@quilted/graphql': 0.4.58
+      '@quilted/graphql': 0.4.59
       '@quilted/react-utilities': 0.1.11(@quilted/react@18.2.3)
       '@quilted/useful-types': 0.2.17
       react: /@quilted/react@18.2.3
@@ -5205,8 +5227,8 @@ packages:
       react: /@quilted/react@18.2.3
     dev: true
 
-  /@quilted/react-localize@0.1.16(@quilted/react-dom@18.2.4)(@quilted/react-http@0.3.29)(@quilted/react@18.2.3)(@quilted/request-router@0.1.6):
-    resolution: {integrity: sha512-iqGmSvTXxHzfgByF4b0NbS/aBGAxdMEho4Cvg12d+e8WxDe0FjROtMgtT/SlgkP7Y33is7QcpFwEgIhv4bK57g==}
+  /@quilted/react-localize@0.1.17(@quilted/react-dom@18.2.4)(@quilted/react-http@0.3.29)(@quilted/react@18.2.3)(@quilted/request-router@0.1.6):
+    resolution: {integrity: sha512-9edaKtQtXa+xcUtFtIzw+D2nAn4lSRWnDgWVvzVb+f3XWSFm0HSLI9jwqv/4e2TMvnQ4cIyC92GT+YcOzNJ0fQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@quilted/react-http': ^0.3.29
@@ -5220,7 +5242,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/localize': 0.1.8
+      '@quilted/localize': 0.1.9
       '@quilted/react-html': 0.3.49(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       '@quilted/react-http': 0.3.29(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
       '@quilted/react-router': 0.3.59(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
@@ -5245,7 +5267,7 @@ packages:
       react: /@quilted/react@18.2.3
     dev: true
 
-  /@quilted/react-query@0.1.17(@quilted/craft@0.1.203)(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@tanstack/react-query@4.20.4):
+  /@quilted/react-query@0.1.17(@quilted/craft@0.1.206)(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@tanstack/react-query@4.20.4):
     resolution: {integrity: sha512-RfaGiqSY/7xddMFB17mCp3+qmDwfx7CsDElU6Azvj7+QXTym6yXoQ7q8Ggw3H8ponll2wxF89VW8/bl/UuANOg==}
     peerDependencies:
       '@quilted/craft': ^0.1.201
@@ -5260,7 +5282,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.203(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
+      '@quilted/craft': 0.1.206(@quilted/quilt@0.5.140)(@quilted/react@18.2.3)(@types/node@16.11.26)(typescript@5.0.3)
       '@quilted/quilt': 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)
       '@quilted/useful-types': 0.2.17
       '@tanstack/react-query': 4.20.4(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)
@@ -6698,7 +6720,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.2.1
+      ieee754: 1.1.13
       isarray: 1.0.0
     dev: false
 
@@ -6921,9 +6943,6 @@ packages:
 
   /colorette@2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
-
-  /colorette@2.0.20:
-    resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
 
   /combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -7531,15 +7550,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-android-64@0.14.54:
-    resolution: {integrity: sha512-Tz2++Aqqz0rJ7kYBfz+iqyE3QMycD4vk7LBRyWaAVFgFtQ/O8EJOnVmTOiDWYZ/uYzB4kvP+bqejYdVKzE5lAQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [android]
-    requiresBuild: true
     optional: true
 
   /esbuild-android-64@0.15.18:
@@ -7553,15 +7563,6 @@ packages:
 
   /esbuild-android-arm64@0.14.51:
     resolution: {integrity: sha512-vBtp//5VVkZWmYYvHsqBRCMMi1MzKuMIn5XDScmnykMTu9+TD9v0NMEDqQxvtFToeYmojdo5UCV2vzMQWJcJ4A==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-android-arm64@0.14.54:
-    resolution: {integrity: sha512-F9E+/QDi9sSkLaClO8SOV6etqPd+5DgJje1F9lOWoNncDdOBL2YF59IhsWATSt0TLZbYCf3pNlTHvVV5VfHdvg==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
@@ -7583,15 +7584,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-darwin-64@0.14.54:
-    resolution: {integrity: sha512-jtdKWV3nBviOd5v4hOpkVmpxsBy90CGzebpbO9beiqUYVMBtSc0AL9zGftFuBon7PNDcdvNCEuQqw2x0wP9yug==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
     optional: true
 
   /esbuild-darwin-64@0.15.18:
@@ -7605,15 +7597,6 @@ packages:
 
   /esbuild-darwin-arm64@0.14.51:
     resolution: {integrity: sha512-juYD0QnSKwAMfzwKdIF6YbueXzS6N7y4GXPDeDkApz/1RzlT42mvX9jgNmyOlWKN7YzQAYbcUEJmZJYQGdf2ow==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-darwin-arm64@0.14.54:
-    resolution: {integrity: sha512-OPafJHD2oUPyvJMrsCvDGkRrVCar5aVyHfWGQzY1dWnzErjrDuSETxwA2HSsyg2jORLY8yBfzc1MIpUkXlctmw==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [darwin]
@@ -7635,15 +7618,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-freebsd-64@0.14.54:
-    resolution: {integrity: sha512-OKwd4gmwHqOTp4mOGZKe/XUlbDJ4Q9TjX0hMPIDBUWWu/kwhBAudJdBoxnjNf9ocIB6GN6CPowYpR/hRCbSYAg==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
     optional: true
 
   /esbuild-freebsd-64@0.15.18:
@@ -7657,15 +7631,6 @@ packages:
 
   /esbuild-freebsd-arm64@0.14.51:
     resolution: {integrity: sha512-TcWVw/rCL2F+jUgRkgLa3qltd5gzKjIMGhkVybkjk6PJadYInPtgtUBp1/hG+mxyigaT7ib+od1Xb84b+L+1Mg==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [freebsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-freebsd-arm64@0.14.54:
-    resolution: {integrity: sha512-sFwueGr7OvIFiQT6WeG0jRLjkjdqWWSrfbVwZp8iMP+8UHEHRBvlaxL6IuKNDwAozNUmbb8nIMXa7oAOARGs1Q==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [freebsd]
@@ -7687,15 +7652,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-32@0.14.54:
-    resolution: {integrity: sha512-1ZuY+JDI//WmklKlBgJnglpUL1owm2OX+8E1syCD6UAxcMM/XoWd76OHSjl/0MR0LisSAXDqgjT3uJqT67O3qw==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
     optional: true
 
   /esbuild-linux-32@0.15.18:
@@ -7709,15 +7665,6 @@ packages:
 
   /esbuild-linux-64@0.14.51:
     resolution: {integrity: sha512-dxjhrqo5i7Rq6DXwz5v+MEHVs9VNFItJmHBe1CxROWNf4miOGoQhqSG8StStbDkQ1Mtobg6ng+4fwByOhoQoeA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-64@0.14.54:
-    resolution: {integrity: sha512-EgjAgH5HwTbtNsTqQOXWApBaPVdDn7XcK+/PtJwZLT1UmpLoznPd8c5CxqsH2dQK3j05YsB3L17T8vE7cp4cCg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [linux]
@@ -7739,15 +7686,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-arm64@0.14.54:
-    resolution: {integrity: sha512-WL71L+0Rwv+Gv/HTmxTEmpv0UgmxYa5ftZILVi2QmZBgX3q7+tDeOQNqGtdXSdsL8TQi1vIaVFHUPDe0O0kdig==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
     optional: true
 
   /esbuild-linux-arm64@0.15.18:
@@ -7761,15 +7699,6 @@ packages:
 
   /esbuild-linux-arm@0.14.51:
     resolution: {integrity: sha512-LsJynDxYF6Neg7ZC7748yweCDD+N8ByCv22/7IAZglIEniEkqdF4HCaa49JNDLw1UQGlYuhOB8ZT/MmcSWzcWg==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-arm@0.14.54:
-    resolution: {integrity: sha512-qqz/SjemQhVMTnvcLGoLOdFpCYbz4v4fUo+TfsWG+1aOu70/80RV6bgNpR2JCrppV2moUQkww+6bWxXRL9YMGw==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [linux]
@@ -7791,15 +7720,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-mips64le@0.14.54:
-    resolution: {integrity: sha512-qTHGQB8D1etd0u1+sB6p0ikLKRVuCWhYQhAHRPkO+OF3I/iSlTKNNS0Lh2Oc0g0UFGguaFZZiPJdJey3AGpAlw==}
-    engines: {node: '>=12'}
-    cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
     optional: true
 
   /esbuild-linux-mips64le@0.15.18:
@@ -7813,15 +7733,6 @@ packages:
 
   /esbuild-linux-ppc64le@0.14.51:
     resolution: {integrity: sha512-xcdd62Y3VfGoyphNP/aIV9LP+RzFw5M5Z7ja+zdpQHHvokJM7d0rlDRMN+iSSwvUymQkqZO+G/xjb4/75du8BQ==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-ppc64le@0.14.54:
-    resolution: {integrity: sha512-j3OMlzHiqwZBDPRCDFKcx595XVfOfOnv68Ax3U4UKZ3MTYQB5Yz3X1mn5GnodEVYzhtZgxEBidLWeIs8FDSfrQ==}
     engines: {node: '>=12'}
     cpu: [ppc64]
     os: [linux]
@@ -7843,15 +7754,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-riscv64@0.14.54:
-    resolution: {integrity: sha512-y7Vt7Wl9dkOGZjxQZnDAqqn+XOqFD7IMWiewY5SPlNlzMX39ocPQlOaoxvT4FllA5viyV26/QzHtvTjVNOxHZg==}
-    engines: {node: '>=12'}
-    cpu: [riscv64]
-    os: [linux]
-    requiresBuild: true
     optional: true
 
   /esbuild-linux-riscv64@0.15.18:
@@ -7865,15 +7767,6 @@ packages:
 
   /esbuild-linux-s390x@0.14.51:
     resolution: {integrity: sha512-kFAJY3dv+Wq8o28K/C7xkZk/X34rgTwhknSsElIqoEo8armCOjMJ6NsMxm48KaWY2h2RUYGtQmr+RGuUPKBhyw==}
-    engines: {node: '>=12'}
-    cpu: [s390x]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-linux-s390x@0.14.54:
-    resolution: {integrity: sha512-zaHpW9dziAsi7lRcyV4r8dhfG1qBidQWUXweUjnw+lliChJqQr+6XD71K41oEIC3Mx1KStovEmlzm+MkGZHnHA==}
     engines: {node: '>=12'}
     cpu: [s390x]
     os: [linux]
@@ -7895,15 +7788,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-netbsd-64@0.14.54:
-    resolution: {integrity: sha512-PR01lmIMnfJTgeU9VJTDY9ZerDWVFIUzAtJuDHwwceppW7cQWjBBqP48NdeRtoP04/AtO9a7w3viI+PIDr6d+w==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [netbsd]
-    requiresBuild: true
     optional: true
 
   /esbuild-netbsd-64@0.15.18:
@@ -7917,15 +7801,6 @@ packages:
 
   /esbuild-openbsd-64@0.14.51:
     resolution: {integrity: sha512-7R1/p39M+LSVQVgDVlcY1KKm6kFKjERSX1lipMG51NPcspJD1tmiZSmmBXoY5jhHIu6JL1QkFDTx94gMYK6vfA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [openbsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-openbsd-64@0.14.54:
-    resolution: {integrity: sha512-Qyk7ikT2o7Wu76UsvvDS5q0amJvmRzDyVlL0qf5VLsLchjCa1+IAvd8kTBgUxD7VBUUVgItLkk609ZHUc1oCaw==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [openbsd]
@@ -7947,15 +7822,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-sunos-64@0.14.54:
-    resolution: {integrity: sha512-28GZ24KmMSeKi5ueWzMcco6EBHStL3B6ubM7M51RmPwXQGLe0teBGJocmWhgwccA1GeFXqxzILIxXpHbl9Q/Kw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [sunos]
-    requiresBuild: true
     optional: true
 
   /esbuild-sunos-64@0.15.18:
@@ -7969,15 +7835,6 @@ packages:
 
   /esbuild-windows-32@0.14.51:
     resolution: {integrity: sha512-4rtwSAM35A07CBt1/X8RWieDj3ZUHQqUOaEo5ZBs69rt5WAFjP4aqCIobdqOy4FdhYw1yF8Z0xFBTyc9lgPtEg==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-windows-32@0.14.54:
-    resolution: {integrity: sha512-T+rdZW19ql9MjS7pixmZYVObd9G7kcaZo+sETqNH4RCkuuYSuv9AGHUVnPoP9hhuE1WM1ZimHz1CIBHBboLU7w==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [win32]
@@ -7999,15 +7856,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-windows-64@0.14.54:
-    resolution: {integrity: sha512-AoHTRBUuYwXtZhjXZbA1pGfTo8cJo3vZIcWGLiUcTNgHpJJMC1rVA44ZereBHMJtotyN71S8Qw0npiCIkW96cQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
     optional: true
 
   /esbuild-windows-64@0.15.18:
@@ -8021,15 +7869,6 @@ packages:
 
   /esbuild-windows-arm64@0.14.51:
     resolution: {integrity: sha512-JQDqPjuOH7o+BsKMSddMfmVJXrnYZxXDHsoLHc0xgmAZkOOCflRmC43q31pk79F9xuyWY45jDBPolb5ZgGOf9g==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /esbuild-windows-arm64@0.14.54:
-    resolution: {integrity: sha512-M0kuUvXhot1zOISQGXwWn6YtS+Y/1RT9WrVIOywZnJHo3jCDyewAc79aKNQWFCQm+xNHVTq9h8dZKvygoXQQRg==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [win32]
@@ -8071,35 +7910,6 @@ packages:
       esbuild-windows-32: 0.14.51
       esbuild-windows-64: 0.14.51
       esbuild-windows-arm64: 0.14.51
-    dev: true
-
-  /esbuild@0.14.54:
-    resolution: {integrity: sha512-Cy9llcy8DvET5uznocPyqL3BFRrFXSVqbgpMJ9Wz8oVjZlh/zUSNbPRbov0VX7VxN2JH1Oa0uNxZ7eLRb62pJA==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      '@esbuild/linux-loong64': 0.14.54
-      esbuild-android-64: 0.14.54
-      esbuild-android-arm64: 0.14.54
-      esbuild-darwin-64: 0.14.54
-      esbuild-darwin-arm64: 0.14.54
-      esbuild-freebsd-64: 0.14.54
-      esbuild-freebsd-arm64: 0.14.54
-      esbuild-linux-32: 0.14.54
-      esbuild-linux-64: 0.14.54
-      esbuild-linux-arm: 0.14.54
-      esbuild-linux-arm64: 0.14.54
-      esbuild-linux-mips64le: 0.14.54
-      esbuild-linux-ppc64le: 0.14.54
-      esbuild-linux-riscv64: 0.14.54
-      esbuild-linux-s390x: 0.14.54
-      esbuild-netbsd-64: 0.14.54
-      esbuild-openbsd-64: 0.14.54
-      esbuild-sunos-64: 0.14.54
-      esbuild-windows-32: 0.14.54
-      esbuild-windows-64: 0.14.54
-      esbuild-windows-arm64: 0.14.54
 
   /esbuild@0.15.18:
     resolution: {integrity: sha512-x/R72SmW3sSFRm5zrrIjAhCeQSAWoni3CmHEqfQrZIQTM3lVCdehdwuIqaOtfC2slvpdlLa62GYoN8SxT23m6Q==}
@@ -8578,6 +8388,7 @@ packages:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.5
+    dev: true
 
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -8911,17 +8722,6 @@ packages:
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 4.0.0
-    dev: true
-
-  /globby@13.1.4:
-    resolution: {integrity: sha512-iui/IiiW+QrJ1X1hKH5qwlMQyv34wJAYwH1vrf8b9kBA4sNiif3gKsMHa+BrdnOpEudWjpotfa7LrTzB1ERS/g==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dependencies:
-      dir-glob: 3.0.1
-      fast-glob: 3.2.12
-      ignore: 5.2.4
-      merge2: 1.4.1
-      slash: 4.0.0
 
   /globjoin@0.1.4:
     resolution: {integrity: sha512-xYfnw62CKG8nLkZBfWbhWwDw02CHty86jfPcc2cr3ZfeuK9ysoVPPEUxf21bAD/rWAgk52SuBrLJlefNy8mvFg==}
@@ -8950,6 +8750,10 @@ packages:
 
   /graphql@16.6.0:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
+
+  /graphql@16.7.0:
+    resolution: {integrity: sha512-kdNG+ZGNf0E4dezSA2N9cRq8UdOMCcz9Wzh1dDSrCzGCz0nj6p8qlE+utY6iqr9y1sh3MZxUb7K794neZ2oT1w==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   /hard-rejection@2.1.0:
@@ -9135,6 +8939,7 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
@@ -9147,6 +8952,7 @@ packages:
   /ignore@5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
+    dev: true
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}

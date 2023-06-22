@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {readFile} from 'fs/promises';
+import {readFile, readdir} from 'fs/promises';
 import {parse} from 'graphql';
 import {watch} from 'chokidar';
 
@@ -69,6 +69,19 @@ export function createQueryResolver(
         id: extension.id,
         name: extension.name,
         handle: extension.handle,
+        async *translations(_, __, {signal}) {
+          for await (const {content} of watchDirectory(
+            path.resolve(extension.root, 'translations'),
+            {signal},
+          )) {
+            yield Object.entries(content).map(([locale, fileContent]) =>
+              object('ClipsExtensionTranslation', {
+                locale: locale.replace(/\.json$/, ''),
+                dictionary: fileContent.trim(),
+              }),
+            );
+          }
+        },
         extends: extension.extends.map((extensionPoint) =>
           object('ClipsExtensionPointSupport', {
             target: extensionPoint.target,
@@ -193,7 +206,51 @@ export function createQueryResolver(
 }
 
 async function* watchFile(file: string, {signal}: {signal: AbortSignal}) {
-  const watcher = watch(file, {ignoreInitial: true});
+  const emitter = createWatchEmitter(file, {signal});
+
+  yield {file, content: await readFile(file, 'utf8')};
+
+  for await (const _ of emitter.on('change', {signal})) {
+    yield {file, content: await readFile(file, 'utf8')};
+  }
+}
+
+async function* watchDirectory(
+  directory: string,
+  {signal}: {signal: AbortSignal},
+) {
+  const emitter = createWatchEmitter(directory, {signal});
+
+  try {
+    yield {directory, content: await readDirectoryContents(directory)};
+  } catch {
+    // noop
+  }
+
+  for await (const _ of emitter.on('change', {signal})) {
+    yield {directory, content: await readDirectoryContents(directory)};
+  }
+}
+
+async function readDirectoryContents(directory: string) {
+  const files = await readdir(directory);
+  const fileMap: Record<string, string> = {};
+  await Promise.all(
+    files.map(async (file) => {
+      try {
+        const content = await readFile(path.resolve(directory, file), 'utf8');
+        fileMap[path.basename(file)] = content;
+      } catch {
+        // noop
+      }
+    }),
+  );
+
+  return fileMap;
+}
+
+function createWatchEmitter(path: string, {signal}: {signal: AbortSignal}) {
+  const watcher = watch(path, {ignoreInitial: true});
 
   const emitter = createEmitter<{change: void}>();
 
@@ -201,19 +258,19 @@ async function* watchFile(file: string, {signal}: {signal: AbortSignal}) {
     emitter.emit('change');
   };
 
+  watcher.on('add', handler);
   watcher.on('change', handler);
+  watcher.on('unlink', handler);
 
   signal.addEventListener(
     'abort',
     () => {
+      watcher.off('add', handler);
       watcher.off('change', handler);
+      watcher.off('unlink', handler);
     },
     {once: true},
   );
 
-  yield {file, content: await readFile(file, 'utf8')};
-
-  for await (const _ of emitter.on('change', {signal})) {
-    yield {file, content: await readFile(file, 'utf8')};
-  }
+  return emitter;
 }

@@ -2,6 +2,7 @@ fragment ClipsExtension on ClipsExtensionInstallation {
   id
   target
   settings
+  translations
   liveQuery
   loading {
     ui {

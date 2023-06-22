@@ -177,6 +177,7 @@ export function createClipsManager(
           target: options.target,
           version: options.version,
           settings: createThreadSignal(settings, {signal}),
+          localize: {locale: 'en', translations: options.translations},
           query: createThreadSignal(liveQuery.result, {signal}),
           mutate: mutate as any,
         };
@@ -195,6 +196,7 @@ export function createClipsManager(
 
     const emitter = createEmitter<{script: string}>();
     const script = signal<string | undefined>(undefined);
+    const translations = signal<string | undefined>(undefined);
     const settings = signal({});
     const liveQuery = createLiveQueryRunner(
       undefined,
@@ -242,6 +244,7 @@ export function createClipsManager(
           target: options.target,
           version: 'unstable',
           settings: createThreadSignal(settings, {signal}),
+          localize: {locale: 'en', translations: translations.value},
           query: createThreadSignal(liveQuery.result, {signal}),
           mutate: mutate as any,
         };
@@ -269,11 +272,18 @@ export function createClipsManager(
         }
 
         const build = clipsExtension?.build;
+        const translationsJson = clipsExtension?.translations.find(({locale}) =>
+          locale.startsWith('en'),
+        )?.dictionary;
         const extensionPoint = clipsExtension?.extends.find((extend) => {
           return extend.target === options.target;
         });
 
         let needsRestart = false;
+
+        if (translations != null) {
+          translations.value = translationsJson;
+        }
 
         if (
           build?.__typename === 'ExtensionBuildSuccess' &&
