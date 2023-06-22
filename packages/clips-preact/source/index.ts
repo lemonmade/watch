@@ -25,7 +25,15 @@ export {
   BlockGrid,
   InlineGrid,
 } from './components.ts';
-export * from './hooks.ts';
+export {
+  useApi,
+  useQuery,
+  useMutate,
+  useLocale,
+  useLocalize,
+  useTranslate,
+  type Translate,
+} from './hooks.ts';
 export {ClipRenderContext, type ClipRenderDetails} from './context.ts';
 export {
   useSignal,
