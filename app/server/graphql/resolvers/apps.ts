@@ -616,7 +616,7 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       return extension.activeVersion!;
     },
-    async liveQuery({extensionId}, _, {prisma}) {
+    async translations({extensionId}, _, {prisma}) {
       const extension = await prisma.clipsExtension.findFirstOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
@@ -626,7 +626,7 @@ export const ClipsExtensionInstallation: Resolver<'ClipsExtensionInstallation'> 
 
       return translations ? JSON.stringify(translations) : null;
     },
-    async translations({target, extensionId}, _, {prisma}) {
+    async liveQuery({target, extensionId}, _, {prisma}) {
       const extension = await prisma.clipsExtension.findFirstOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
