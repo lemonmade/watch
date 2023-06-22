@@ -6,6 +6,7 @@ import {
 import {Action} from './components/Action.tsx';
 import {BlockGrid} from './components/BlockGrid.tsx';
 import {BlockStack} from './components/BlockStack.tsx';
+import {Disclosure} from './components/Disclosure.tsx';
 import {Header} from './components/Header.tsx';
 import {Footer} from './components/Footer.tsx';
 import {Grid} from './components/Grid.tsx';
@@ -37,7 +38,6 @@ export {
 };
 
 export const CommonComponents: RemoteComponentRendererMap = new Map([
-  ['ui-action', Action],
   ['ui-image', Image],
   ['ui-footer', Footer],
   ['ui-header', Header],
@@ -49,6 +49,10 @@ export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-text-block', TextBlock],
   ['ui-text-field', TextField],
   ['ui-view', View],
+
+  // Interaction
+  ['ui-action', Action],
+  ['ui-disclosure', Disclosure],
 
   // Layout
   ['ui-stack', Stack],
