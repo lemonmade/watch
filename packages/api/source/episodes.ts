@@ -8,9 +8,13 @@ import type {
   EpisodeEndpointSelectorObject,
 } from './types.ts';
 
-const EPISODE_SELECTOR_REGEX = /s(\d+)(?:e(\d+))?/i;
+const EPISODE_SELECTOR_REGEX =
+  /s0*(\d+)(?:e0*(\d+))?(?:-s0*(\d+)(?:e0*(\d+))?)?/i;
 
 export class EpisodeSelection {
+  static parse = parse;
+  static stringify = stringify;
+
   static from(...selectors: Parameters<EpisodeSelection['add']>) {
     return new EpisodeSelection(...selectors);
   }
@@ -68,9 +72,7 @@ export class EpisodeSelection {
     current: EpisodeSelector | SeasonSelector | EpisodeEndpointSelectorObject,
   ): EpisodeSelectorObject | undefined {
     const {episode, season} =
-      typeof current === 'string'
-        ? selectorToEpisodeEndpointObject(current)
-        : current;
+      typeof current === 'string' ? parse(current) : current;
 
     for (const range of this.includedRanges) {
       const [fromSeason, fromEpisode, toSeason, toEpisode] =
@@ -118,7 +120,11 @@ export class EpisodeRange implements EpisodeRangeSelectorObject {
         },
   ) {
     if (typeof range === 'string') {
-      Object.assign(this, selectorToEpisodeRange(range));
+      const parsed = parse(range);
+      Object.assign(
+        this,
+        'from' in parsed ? parsed : {from: parsed, to: parsed},
+      );
     } else if (range.season != null) {
       if (range.episode != null) {
         const endpoint: EpisodeEndpointSelectorObject = {
@@ -135,11 +141,8 @@ export class EpisodeRange implements EpisodeRangeSelectorObject {
       const {from, to} = range;
 
       Object.assign(this, {
-        from:
-          typeof from === 'string'
-            ? selectorToEpisodeEndpointObject(from)
-            : from,
-        to: typeof to === 'string' ? selectorToEpisodeEndpointObject(to) : to,
+        from: typeof from === 'string' ? parse(from) : from,
+        to: typeof to === 'string' ? parse(to) : to,
       });
     }
   }
@@ -152,11 +155,7 @@ export class EpisodeRange implements EpisodeRangeSelectorObject {
       | EpisodeEndpointSelectorObject,
   ): boolean {
     const parsedSelector =
-      typeof selector === 'string'
-        ? selector.includes('-')
-          ? selectorToEpisodeRange(selector)
-          : selectorToEpisodeEndpointObject(selector as EpisodeEndpointSelector)
-        : selector;
+      typeof selector === 'string' ? parse(selector) : selector;
 
     if ('season' in parsedSelector) {
       return (
@@ -301,42 +300,6 @@ function rangeToEdges({
   ];
 }
 
-function selectorToEpisodeRange(
-  selector: SeasonSelector | EpisodeSelector | EpisodeRangeSelector,
-): EpisodeRangeSelectorObject {
-  const parts = selector.split('-');
-
-  if (parts.length === 1) {
-    const endpoint = selectorToEpisodeEndpointObject(parts[0] as any);
-    return {from: endpoint, to: endpoint};
-  } else if (parts.length === 2) {
-    const from = parts[0]
-      ? selectorToEpisodeEndpointObject(parts[0] as any)
-      : undefined;
-    const to = parts[1]
-      ? selectorToEpisodeEndpointObject(parts[1] as any)
-      : undefined;
-    return {from, to};
-  } else {
-    throw new Error(`Invalid selector: "${selector}"`);
-  }
-}
-
-function selectorToEpisodeEndpointObject(
-  selector: SeasonSelector | EpisodeSelector,
-): EpisodeEndpointSelectorObject {
-  const [, season, episode] = selector!.match(EPISODE_SELECTOR_REGEX)!;
-
-  return episode
-    ? {
-        season: Number.parseInt(season!, 10),
-        episode: Number.parseInt(episode, 10),
-      }
-    : {
-        season: Number.parseInt(season!, 10),
-      };
-}
-
 function episodeRangeObjectToSelector({
   from,
   to,
@@ -358,4 +321,88 @@ function episodeEndpointObjectToSelector(
   return episode == null || (from && episode === 1)
     ? `S${season}`
     : `S${season}E${episode}`;
+}
+
+function stringify<
+  SelectorObject extends
+    | EpisodeSelectorObject
+    | EpisodeEndpointSelectorObject
+    | EpisodeRangeSelectorObject,
+>(
+  selector: SelectorObject,
+): SelectorObject extends EpisodeRangeSelectorObject
+  ? EpisodeRangeSelector
+  : SelectorObject extends EpisodeSelectorObject
+  ? EpisodeSelector
+  : EpisodeEndpointSelector {
+  if ('season' in selector) {
+    const {season, episode} = selector;
+    return (episode == null ? `S${season}` : `S${season}E${episode}`) as any;
+  }
+
+  const {from, to} = selector;
+  return `${from ? stringify(from) : ''}-${to ? stringify(to) : ''}` as any;
+}
+
+function parse<
+  Selector extends
+    | EpisodeSelector
+    | EpisodeEndpointSelector
+    | EpisodeRangeSelector,
+>(
+  selector: Selector,
+): Selector extends EpisodeRangeSelector
+  ? EpisodeRangeSelectorObject
+  : Selector extends EpisodeSelector
+  ? EpisodeSelectorObject
+  : EpisodeEndpointSelectorObject {
+  const matched = selector.match(EPISODE_SELECTOR_REGEX);
+
+  if (matched == null || !matched[1]) {
+    throw new Error(`Unable to parse episode selector: "${selector}"`);
+  }
+
+  const [
+    ,
+    fromSeasonMatch,
+    fromEpisodeMatch,
+    rangeSeparator,
+    toSeasonMatch,
+    toEpisodeMatch,
+  ] = matched;
+
+  const fromSeason = fromSeasonMatch
+    ? Number.parseInt(fromSeasonMatch, 10)
+    : undefined;
+  const fromEpisode = fromEpisodeMatch
+    ? Number.parseInt(fromEpisodeMatch, 10)
+    : undefined;
+  const toSeason = toSeasonMatch
+    ? Number.parseInt(toSeasonMatch, 10)
+    : undefined;
+  const toEpisode = toEpisodeMatch
+    ? Number.parseInt(toEpisodeMatch, 10)
+    : undefined;
+
+  const from =
+    fromEpisode == null
+      ? {season: fromSeason!}
+      : {season: fromSeason!, episode: fromEpisode};
+
+  if (!rangeSeparator) {
+    return from as any;
+  }
+
+  const to =
+    toSeason == null
+      ? undefined
+      : toEpisode == null
+      ? {season: toSeason}
+      : {season: toSeason, episode: toEpisode};
+
+  const range: EpisodeRangeSelectorObject = {};
+  if (from) range.from = from;
+  if (to) range.to = to;
+
+  return range as any;
 }

@@ -16,10 +16,10 @@ export interface EpisodeSelectorObject {
 
 export interface EpisodeEndpointSelectorObject {
   season: number;
-  episode?: number;
+  episode?: number | null;
 }
 
 export interface EpisodeRangeSelectorObject {
-  from?: EpisodeEndpointSelectorObject;
-  to?: EpisodeEndpointSelectorObject;
+  from?: EpisodeEndpointSelectorObject | null;
+  to?: EpisodeEndpointSelectorObject | null;
 }
