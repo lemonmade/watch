@@ -3,6 +3,7 @@ import type {
   EpisodeSelector,
   EpisodeRangeSelector,
   EpisodeEndpointSelector,
+  SeasonSelectorObject,
   EpisodeSelectorObject,
   EpisodeRangeSelectorObject,
   EpisodeEndpointSelectorObject,
@@ -59,9 +60,7 @@ export class EpisodeSelection {
   }
 
   selectors() {
-    return this.includedRanges.map((range) =>
-      episodeRangeObjectToSelector(range),
-    );
+    return this.includedRanges.map((range) => range.selector);
   }
 
   includes(...args: Parameters<EpisodeRange['includes']>) {
@@ -106,6 +105,10 @@ export class EpisodeSelection {
 export class EpisodeRange implements EpisodeRangeSelectorObject {
   from?: EpisodeEndpointSelectorObject;
   to?: EpisodeEndpointSelectorObject;
+
+  get selector() {
+    return stringify(this);
+  }
 
   constructor(
     range:
@@ -300,48 +303,35 @@ function rangeToEdges({
   ];
 }
 
-function episodeRangeObjectToSelector({
-  from,
-  to,
-}: EpisodeRangeSelectorObject):
-  | SeasonSelector
-  | EpisodeSelector
-  | EpisodeRangeSelector {
-  const fromSelector = from && episodeEndpointObjectToSelector(from, true);
-  const toSelector = to && episodeEndpointObjectToSelector(to, false);
-  return fromSelector != null && fromSelector === toSelector
-    ? fromSelector
-    : `${fromSelector ?? ''}-${toSelector ?? ''}`;
-}
-
-function episodeEndpointObjectToSelector(
-  {season, episode}: EpisodeEndpointSelectorObject,
-  from = false,
-): EpisodeEndpointSelector {
-  return episode == null || (from && episode === 1)
-    ? `S${season}`
-    : `S${season}E${episode}`;
-}
-
 function stringify<
   SelectorObject extends
+    | SeasonSelectorObject
     | EpisodeSelectorObject
     | EpisodeEndpointSelectorObject
     | EpisodeRangeSelectorObject,
 >(
   selector: SelectorObject,
 ): SelectorObject extends EpisodeRangeSelectorObject
-  ? EpisodeRangeSelector
+  ? EpisodeRangeSelector | EpisodeEndpointSelector
   : SelectorObject extends EpisodeSelectorObject
   ? EpisodeSelector
-  : EpisodeEndpointSelector {
+  : SelectorObject extends EpisodeEndpointSelectorObject
+  ? EpisodeEndpointSelector
+  : SeasonSelector {
   if ('season' in selector) {
-    const {season, episode} = selector;
+    const {season, episode} = selector as EpisodeEndpointSelectorObject;
     return (episode == null ? `S${season}` : `S${season}E${episode}`) as any;
   }
 
   const {from, to} = selector;
-  return `${from ? stringify(from) : ''}-${to ? stringify(to) : ''}` as any;
+  const fromSelector =
+    from && stringify(from.episode === 1 ? {season: from.season} : from);
+  const toSelector = to && stringify(to);
+  return (
+    fromSelector != null && fromSelector === toSelector
+      ? fromSelector
+      : `${fromSelector ?? ''}-${toSelector ?? ''}`
+  ) as any;
 }
 
 function parse<
