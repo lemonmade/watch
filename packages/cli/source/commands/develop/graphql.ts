@@ -74,12 +74,16 @@ export function createQueryResolver(
             path.resolve(extension.root, 'translations'),
             {signal},
           )) {
-            yield Object.entries(content).map(([locale, fileContent]) =>
-              object('ClipsExtensionTranslation', {
-                locale: locale.replace(/\.json$/, ''),
-                dictionary: JSON.stringify(JSON.parse(fileContent)),
-              }),
-            );
+            if (content == null) {
+              yield [];
+            } else {
+              yield Object.entries(content).map(([locale, fileContent]) =>
+                object('ClipsExtensionTranslation', {
+                  locale: locale.replace(/\.json$/, ''),
+                  dictionary: JSON.stringify(JSON.parse(fileContent)),
+                }),
+              );
+            }
           }
         },
         extends: extension.extends.map((extensionPoint) =>
@@ -221,11 +225,7 @@ async function* watchDirectory(
 ) {
   const emitter = createWatchEmitter(directory, {signal});
 
-  try {
-    yield {directory, content: await readDirectoryContents(directory)};
-  } catch {
-    // noop
-  }
+  yield {directory, content: await readDirectoryContents(directory)};
 
   for await (const _ of emitter.on('change', {signal})) {
     yield {directory, content: await readDirectoryContents(directory)};
@@ -233,20 +233,24 @@ async function* watchDirectory(
 }
 
 async function readDirectoryContents(directory: string) {
-  const files = await readdir(directory);
-  const fileMap: Record<string, string> = {};
-  await Promise.all(
-    files.map(async (file) => {
-      try {
-        const content = await readFile(path.resolve(directory, file), 'utf8');
-        fileMap[path.basename(file)] = content;
-      } catch {
-        // noop
-      }
-    }),
-  );
+  try {
+    const files = await readdir(directory);
+    const fileMap: Record<string, string> = {};
+    await Promise.all(
+      files.map(async (file) => {
+        try {
+          const content = await readFile(path.resolve(directory, file), 'utf8');
+          fileMap[path.basename(file)] = content;
+        } catch {
+          // noop
+        }
+      }),
+    );
 
-  return fileMap;
+    return fileMap;
+  } catch {
+    return undefined;
+  }
 }
 
 function createWatchEmitter(path: string, {signal}: {signal: AbortSignal}) {
