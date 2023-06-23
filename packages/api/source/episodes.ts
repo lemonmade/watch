@@ -9,7 +9,7 @@ import type {
 } from './types.ts';
 
 const EPISODE_SELECTOR_REGEX =
-  /s0*(\d+)(?:e0*(\d+))?(?:-s0*(\d+)(?:e0*(\d+))?)?/i;
+  /^(?:s0*(\d+))?(?:e0*(\d+))?(-)?(?:s0*(\d+)(?:e0*(\d+))?)?$/i;
 
 export class EpisodeSelection {
   static parse = parse;
@@ -263,7 +263,7 @@ function mergeRanges(current: EpisodeRange[], merge: EpisodeRange[]) {
       const startsDuring =
         rangeFromSeason < currentRangeToSeason ||
         (rangeFromSeason === currentRangeToSeason &&
-          rangeFromEpisode <= currentRangeToEpisode) ||
+          rangeFromEpisode <= currentRangeToEpisode + 1) ||
         (rangeFromSeason === currentRangeToSeason + 1 &&
           rangeFromEpisode === 1 &&
           currentRange.to?.episode == null);
@@ -356,6 +356,7 @@ function parse<
   : Selector extends EpisodeSelector
   ? EpisodeSelectorObject
   : EpisodeEndpointSelectorObject {
+  EPISODE_SELECTOR_REGEX.lastIndex = 0;
   const matched = selector.match(EPISODE_SELECTOR_REGEX);
 
   if (matched == null || !matched[1]) {
@@ -370,7 +371,6 @@ function parse<
     toSeasonMatch,
     toEpisodeMatch,
   ] = matched;
-
   const fromSeason = fromSeasonMatch
     ? Number.parseInt(fromSeasonMatch, 10)
     : undefined;
