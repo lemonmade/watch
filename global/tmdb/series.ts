@@ -228,7 +228,7 @@ export async function updateSeries({
     ...(completedWatchthroughs.length > 0
       ? [
           prisma.watchThrough.updateMany({
-            data: {current: null, status: 'FINISHED'},
+            data: {current: null, nextEpisode: null, status: 'FINISHED'},
             where: {
               seriesId,
               status: 'ONGOING',

@@ -5,6 +5,7 @@ import type {
   Episode as DatabaseEpisode,
   Season as DatabaseSeason,
 } from '@prisma/client';
+import {EpisodeSelection, type EpisodeSelector} from '@watching/api';
 
 import {bufferFromSlice, sliceFromBuffer, type Slice} from '~/global/slices.ts';
 
@@ -79,16 +80,9 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
   to({to}) {
     return sliceFromBuffer(to);
   },
-  on({current}) {
-    if (current == null) return null;
-
-    const {episode, season} = sliceFromBuffer(current);
-
-    if (episode == null) {
-      throw new Error('Invalid current episode');
-    }
-
-    return {episode, season};
+  on({nextEpisode}) {
+    if (nextEpisode == null) return null;
+    return EpisodeSelection.parse(nextEpisode as EpisodeSelector);
   },
   async actions({id}, _, {user, prisma}) {
     const [watches, skips] = await Promise.all([
@@ -131,14 +125,18 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
     });
   },
   async unfinishedEpisodeCount(
-    {seriesId, current: currentBuffer, to: toBuffer},
+    {seriesId, includeEpisodes, nextEpisode: nextEpisodeSelector},
     _,
     {prisma},
   ) {
-    if (currentBuffer == null) return 0;
+    if (nextEpisodeSelector == null) return 0;
 
-    const to = sliceFromBuffer(toBuffer);
-    const current = sliceFromBuffer(currentBuffer);
+    const nextEpisode = EpisodeSelection.parse(
+      nextEpisodeSelector as EpisodeSelector,
+    );
+    const lastRange = EpisodeSelection.from(includeEpisodes as any)
+      .ranges()
+      .pop()!;
 
     // This logic is a bit incorrect right now, because there can be
     // episodes that are in the future. For now, the client can query
@@ -147,7 +145,7 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
       where: {id: seriesId},
       select: {
         seasons: {
-          where: {number: {gte: current.season, lte: to.season}},
+          where: {number: {gte: nextEpisode.season, lte: lastRange.to?.season}},
           select: {number: true, episodeCount: true},
         },
       },
@@ -155,27 +153,32 @@ export const WatchThrough: Resolver<'WatchThrough'> = {
     });
 
     return seasons.reduce((count, season) => {
-      if (current.season > season.number || to.season < season.number) {
+      if (
+        nextEpisode.season > season.number ||
+        (lastRange.to?.season ?? Infinity) < season.number
+      ) {
         return count;
       }
 
       return (
         count +
-        (current.season === season.number
-          ? season.episodeCount - current.episode! + 1
+        (nextEpisode.season === season.number
+          ? season.episodeCount - nextEpisode.episode + 1
           : season.episodeCount)
       );
     }, 0);
   },
-  nextEpisode({current, seriesId}, _, {prisma}) {
-    if (current == null) return null;
+  nextEpisode({nextEpisode, seriesId}, _, {prisma}) {
+    if (nextEpisode == null) return null;
 
-    const slice = sliceFromBuffer(current);
+    const {season, episode} = EpisodeSelection.parse(
+      nextEpisode as EpisodeSelector,
+    );
 
     return prisma.episode.findFirst({
       where: {
-        number: slice.episode ?? undefined,
-        season: {number: slice.season, seriesId},
+        number: episode,
+        season: {number: season, seriesId},
       },
     });
   },
@@ -523,7 +526,7 @@ export const Mutation: Pick<
       rejectOnNotFound: true,
     });
 
-    // We should be making sure we don’t need to reset the `current`
+    // We should be making sure we don’t need to reset the `nextEpisode`
     // field...
     const {watchThrough} = await prisma.watch.delete({
       where: {id: validatedWatch.id},
@@ -707,6 +710,14 @@ export const Mutation: Pick<
       data: {
         seriesId,
         userId: user.id,
+        nextEpisode: EpisodeSelection.stringify({
+          episode: 1,
+          ...normalizedFrom,
+        }),
+        includeEpisodes: EpisodeSelection.from({
+          from: normalizedFrom,
+          to: normalizedTo,
+        }).selectors(),
         from: bufferFromSlice(normalizedFrom),
         to: bufferFromSlice(normalizedTo),
         current: bufferFromSlice({episode: 1, ...normalizedFrom}),
@@ -848,6 +859,7 @@ async function updateWatchThrough(
         data: {
           status: 'FINISHED',
           current: null,
+          nextEpisode: null,
           updatedAt,
           finishedAt: updatedAt,
         },
@@ -869,6 +881,11 @@ async function updateWatchThrough(
   return prisma.watchThrough.update({
     where: {id},
     data: {
+      nextEpisode: EpisodeSelection.stringify({
+        season:
+          nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
+        episode: nextEpisodeInSeasonNumber ?? 1,
+      }),
       current: Buffer.from([
         nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
         nextEpisodeInSeasonNumber ?? 1,
