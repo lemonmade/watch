@@ -77,7 +77,7 @@ export function createQueryResolver(
             yield Object.entries(content).map(([locale, fileContent]) =>
               object('ClipsExtensionTranslation', {
                 locale: locale.replace(/\.json$/, ''),
-                dictionary: fileContent.trim(),
+                dictionary: JSON.stringify(JSON.parse(fileContent)),
               }),
             );
           }

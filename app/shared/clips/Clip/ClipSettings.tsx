@@ -1,5 +1,6 @@
 import {useMemo} from 'react';
 import {type Signal, signal} from '@quilted/quilt';
+import {createTranslate} from '@quilted/localize';
 import {Action, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
 
 import {useQuery, useMutation} from '~/shared/graphql';
@@ -151,7 +152,7 @@ function InstalledClipLoadedSettings({
 
 function useTranslate(translations?: string | null) {
   return useMemo(() => {
-    const parsedTranslations = JSON.parse(translations ?? '{}');
+    const translate = createTranslate('en', JSON.parse(translations ?? '{}'));
 
     return (
       field: ClipExtensionSettingsQueryData.ClipsInstallation.Version.Settings.Fields_ClipsExtensionSettingsStringField.Label,
@@ -161,12 +162,7 @@ function useTranslate(translations?: string | null) {
           return field.value;
         }
         case 'ClipsExtensionSettingsStringTranslation': {
-          const translated = parsedTranslations[field.key];
-          if (translated == null) {
-            throw new Error(`No translation found for ${field.key}`);
-          }
-
-          return translated;
+          return translate(field.key);
         }
       }
 

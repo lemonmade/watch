@@ -194,8 +194,7 @@ async function pushExtension(
     'code' | 'extends' | 'translations' | 'settings'
   > = {
     code,
-    translations:
-      translations && JSON.stringify(flattenTranslations(translations)),
+    translations: translations && JSON.stringify(translations),
     extends: extensionPointSupport,
     settings: {
       fields: extension.settings.fields.map(
@@ -330,29 +329,6 @@ async function loadTranslationsForExtension(extension: LocalExtension) {
   } catch {
     // intentional no-op
   }
-}
-
-function flattenTranslations(nestedTranslations: Record<string, unknown>) {
-  const flattened: Record<string, string> = {};
-
-  const flattenObject = (
-    object: Record<string, unknown>,
-    nestedKey?: string,
-  ) => {
-    for (const [key, value] of Object.entries(object)) {
-      const fullKey = nestedKey ? `${nestedKey}.${key}` : key;
-
-      if (typeof value === 'string') {
-        flattened[fullKey] = value;
-      } else if (typeof value === 'object' && value != null) {
-        flattenObject(value as Record<string, unknown>, fullKey);
-      }
-    }
-  };
-
-  flattenObject(nestedTranslations);
-
-  return flattened;
 }
 
 function configurationStringToGraphQLInput(

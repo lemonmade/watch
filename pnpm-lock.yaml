@@ -134,6 +134,9 @@ importers:
       '@quilted/graphql':
         specifier: ^0.4.59
         version: 0.4.59
+      '@quilted/localize':
+        specifier: ^0.1.9
+        version: 0.1.9
       '@quilted/quilt':
         specifier: ^0.5.140
         version: 0.5.140(@babel/core@7.21.8)(@quilted/react-dom@18.2.4)(@quilted/react@18.2.3)(preact@10.15.1)(prettier@2.8.1)(rollup@3.7.4)

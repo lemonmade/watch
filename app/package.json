@@ -29,6 +29,7 @@
     "@lemonmade/remote-ui": "^0.1.33",
     "@lemonmade/remote-ui-react": "^0.1.20",
     "@quilted/graphql": "^0.4.59",
+    "@quilted/localize": "^0.1.9",
     "@quilted/quilt": "^0.5.140",
     "@quilted/react-query": "^0.1.17",
     "@simplewebauthn/browser": "^6.2.0",
