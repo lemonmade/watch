@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.4.17
+
+### Patch Changes
+
+- [#270](https://github.com/lemonmade/watch/pull/270) [`347df5b`](https://github.com/lemonmade/watch/commit/347df5bf5d5a0aa993895fb0f0d7ceedbae30299) Thanks [@lemonmade](https://github.com/lemonmade)! - Update GraphQL dependency
+
 ## 0.4.16
 
 ### Patch Changes
