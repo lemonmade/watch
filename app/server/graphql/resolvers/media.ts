@@ -25,6 +25,11 @@ import {
   Season as SeasonWatches,
   Episode as EpisodeWatches,
 } from './watches.ts';
+import {
+  EpisodeSelection,
+  type EpisodeSelector,
+  type SeasonSelector,
+} from '@watching/api';
 
 declare module './types.ts' {
   export interface ValueMap {
@@ -78,21 +83,61 @@ export const Series: SeriesResolver = {
   tmdbUrl({tmdbId}) {
     return `https://www.themoviedb.org/tv/${tmdbId}`;
   },
-  season({id}, {number}, {prisma}) {
-    return prisma.season.findFirst({where: {seriesId: id, number}});
+  season({id}, {selector, number}, {prisma}) {
+    let seasonNumber = number;
+
+    if (selector) {
+      seasonNumber = EpisodeSelection.parse(selector as SeasonSelector).season;
+    }
+
+    if (seasonNumber == null) {
+      throw new Error(
+        `You must provide either a 'selector' variable or 'number' variable`,
+      );
+    }
+
+    return prisma.season.findFirst({
+      where: {seriesId: id, number: seasonNumber},
+    });
   },
   seasons({id}, _, {prisma}) {
     return prisma.season.findMany({where: {seriesId: id}});
   },
-  episode({id}, {number, seasonNumber}, {prisma}) {
+  episode(
+    {id},
+    {selector, number, seasonNumber: explicitSeasonNumber},
+    {prisma},
+  ) {
+    let episodeNumber: number | undefined | null;
+    let seasonNumber: number | undefined | null;
+
+    if (selector) {
+      const parsed = EpisodeSelection.parse(selector as EpisodeSelector);
+      episodeNumber = parsed.episode;
+      seasonNumber = parsed.season;
+    } else {
+      episodeNumber = number;
+      seasonNumber = explicitSeasonNumber;
+    }
+
+    if (episodeNumber == null || seasonNumber == null) {
+      throw new Error(
+        `You must provide either a 'selector' variable, or 'number' and 'seasonNumber' variables`,
+      );
+    }
+
     return prisma.episode.findFirst({
-      where: {number, season: {number: seasonNumber, seriesId: id}},
+      where: {
+        number: episodeNumber,
+        seasonNumber,
+        seriesId: id,
+      },
     });
   },
   episodes({id}, _, {prisma}) {
     return prisma.episode.findMany({
       take: 50,
-      where: {season: {seriesId: id}},
+      where: {seriesId: id},
     });
   },
   poster({posterUrl}) {
@@ -107,6 +152,9 @@ export const Series: SeriesResolver = {
 
 export const Season: SeasonResolver = {
   id: ({id}) => toGid(id, 'Season'),
+  selector({number}) {
+    return EpisodeSelection.stringify({season: number});
+  },
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
       where: {id: seriesId},
@@ -164,19 +212,17 @@ export const Season: SeasonResolver = {
 
 export const Episode: EpisodeResolver = {
   id: ({id}) => toGid(id, 'Episode'),
-  async series({seasonId}, _, {prisma}) {
-    const foundSeason = await prisma.season.findFirst({
-      where: {id: seasonId},
-      select: {series: true},
-      rejectOnNotFound: true,
+  selector({number, seasonNumber}) {
+    return EpisodeSelection.stringify({episode: number, season: seasonNumber});
+  },
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirstOrThrow({
+      where: {id: fromGid(seriesId).id},
     });
-
-    return foundSeason.series;
   },
   season({seasonId}, _, {prisma}) {
-    return prisma.season.findFirst({
+    return prisma.season.findFirstOrThrow({
       where: {id: seasonId},
-      rejectOnNotFound: true,
     });
   },
   still({stillUrl}) {
@@ -231,6 +277,7 @@ export const Mutation: Pick<
           data: {
             status: 'FINISHED',
             current: null,
+            nextEpisode: null,
           },
         }),
         prisma.watch.createMany({
@@ -245,22 +292,6 @@ export const Mutation: Pick<
           }),
         }),
       ]);
-
-      await prisma.watchThrough.updateMany({
-        where: {
-          to: bufferFromSlice({season: season.number}),
-          current: bufferFromSlice({
-            season: season.number,
-            episode: season.episodeCount + 1,
-          }),
-          seriesId: season.seriesId,
-          status: 'ONGOING',
-        },
-        data: {
-          status: 'FINISHED',
-          current: null,
-        },
-      });
     }
 
     return {season};

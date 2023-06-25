@@ -14,6 +14,23 @@ export const prisma = new PrismaClient({
   },
 });
 
+const allSeries = await prisma.series.findMany();
+
+for (const series of allSeries) {
+  const seasons = await prisma.season.findMany({
+    where: {seriesId: series.id},
+  });
+
+  for (const season of seasons) {
+    console.log(`Updating ${series.name} season ${season.number}`);
+
+    await prisma.episode.updateMany({
+      where: {seasonId: season.id},
+      data: {seasonNumber: season.number, seriesId: series.id},
+    });
+  }
+}
+
 // const allSeries = await prisma.series.findMany({
 //   where: {
 //     id: {

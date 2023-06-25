@@ -313,11 +313,11 @@ function stringify<
   selector: SelectorObject,
 ): SelectorObject extends EpisodeRangeSelectorObject
   ? EpisodeRangeSelector | EpisodeEndpointSelector
+  : SeasonSelectorObject extends SelectorObject
+  ? SeasonSelector
   : SelectorObject extends EpisodeSelectorObject
   ? EpisodeSelector
-  : SelectorObject extends EpisodeEndpointSelectorObject
-  ? EpisodeEndpointSelector
-  : SeasonSelector {
+  : EpisodeEndpointSelector {
   if ('season' in selector) {
     const {season, episode} = selector as EpisodeEndpointSelectorObject;
     return (episode == null ? `S${season}` : `S${season}E${episode}`) as any;

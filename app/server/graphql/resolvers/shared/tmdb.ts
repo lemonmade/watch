@@ -61,77 +61,45 @@ export async function loadTmdbSeries(
           ? `https://image.tmdb.org/t/p/original${seriesResult.poster_path}`
           : null,
         seasonCount: seasonResults.length,
-        seasons: {
-          create: seasonResults
-            .slice(0, SEASON_BATCH_SIZE)
-            .map(
-              (
-                season,
-              ): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput => ({
-                number: season.season_number,
-                firstAired: tmdbAirDateToDate(season.air_date),
-                overview: season.overview ?? null,
-                status: seasonStatus(season, seriesResult),
-                posterUrl: season.poster_path
-                  ? `https://image.tmdb.org/t/p/original${season.poster_path}`
-                  : null,
-                episodeCount: season.episodes?.length ?? 0,
-                episodes: {
-                  create: season.episodes?.map(
-                    (
-                      episode,
-                    ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({
-                      number: episode.episode_number,
-                      title: episode.name,
-                      firstAired: tmdbAirDateToDate(episode.air_date),
-                      overview: episode.overview || null,
-                      stillUrl: episode.still_path
-                        ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-                        : null,
-                    }),
-                  ),
-                },
-              }),
-            ),
-        },
       },
     });
 
-    if (seasonResults.length > SEASON_BATCH_SIZE) {
-      for (const season of seasonResults.slice(SEASON_BATCH_SIZE)) {
-        await prisma.season.create({
-          data: {
-            seriesId: series.id,
-            number: season.season_number,
-            firstAired: tmdbAirDateToDate(season.air_date),
-            overview: season.overview ?? null,
-            status:
-              season.season_number === seriesResult.number_of_seasons &&
-              tmdbStatusToEnum(seriesResult.status) === 'RETURNING'
-                ? 'CONTINUING'
-                : 'ENDED',
-            posterUrl: season.poster_path
-              ? `https://image.tmdb.org/t/p/original${season.poster_path}`
-              : null,
-            episodeCount: season.episodes?.length ?? 0,
-            episodes: {
-              create: season.episodes?.map(
-                (
-                  episode,
-                ): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput => ({
-                  number: episode.episode_number,
-                  title: episode.name,
-                  firstAired: tmdbAirDateToDate(episode.air_date),
-                  overview: episode.overview || null,
-                  stillUrl: episode.still_path
-                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-                    : null,
-                }),
-              ),
-            },
+    let currentIndex = 0;
+    let currentBatch = seasonResults.slice(currentIndex, SEASON_BATCH_SIZE);
+
+    while (currentBatch.length > 0) {
+      await prisma.season.createMany({
+        data: currentBatch.map((season) => ({
+          seriesId: series.id,
+          number: season.season_number,
+          firstAired: tmdbAirDateToDate(season.air_date),
+          overview: season.overview ?? null,
+          status: seasonStatus(season, seriesResult),
+          posterUrl: season.poster_path
+            ? `https://image.tmdb.org/t/p/original${season.poster_path}`
+            : null,
+          episodeCount: season.episodes?.length ?? 0,
+          episodes: {
+            create: season.episodes?.map((episode) => ({
+              seriesId: series.id,
+              number: episode.episode_number,
+              seasonNumber: season.season_number,
+              title: episode.name,
+              firstAired: tmdbAirDateToDate(episode.air_date),
+              overview: episode.overview || null,
+              stillUrl: episode.still_path
+                ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+                : null,
+            })),
           },
-        });
-      }
+        })),
+      });
+
+      currentIndex += currentBatch.length;
+      currentBatch = seasonResults.slice(
+        currentIndex,
+        currentIndex + SEASON_BATCH_SIZE,
+      );
     }
 
     return series;
