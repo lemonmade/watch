@@ -1,8 +1,24 @@
 #import "./shared.schema.graphql"
 
+scalar EpisodeSelector
+scalar SeasonSelector
+scalar EpisodeEndpointSelector
+
 extend type Query {
   series(id: ID, handle: String): Series
-  season(id: ID!): Season
+  season(
+    id: ID
+    series: SeriesSelectorInput
+    number: Int
+    selector: SeasonSelector
+  ): Season
+  episode(
+    id: ID
+    series: SeriesSelectorInput
+    season: Int
+    number: Int
+    selector: EpisodeSelector
+  ): Episode
   randomSeries: Series!
 }
 
@@ -17,11 +33,18 @@ type Episode {
   title: String!
   series: Series!
   season: Season!
+  seasonNumber: Int!
+  selector: EpisodeSelector!
   number: Int!
   firstAired: Date
   hasAired: Boolean!
   still: Image
   overview: String
+}
+
+input SeriesSelectorInput {
+  id: ID
+  handle: String
 }
 
 input EpisodeSliceInput {
@@ -45,6 +68,7 @@ type Season {
   imdbUrl: Url!
   series: Series!
   number: Int!
+  selector: SeasonSelector!
   episodes: [Episode!]!
   episodeCount: Int!
   firstAired: Date
@@ -76,9 +100,9 @@ type Series {
   firstAired: Date
   status: SeriesStatus!
   seasons: [Season!]!
-  season(number: Int!): Season
+  season(selector: SeasonSelector, number: Int): Season
   episodes: [Episode!]!
-  episode(number: Int!, seasonNumber: Int!): Episode
+  episode(selector: EpisodeSelector, number: Int, season: Int): Episode
 }
 
 # Mutations

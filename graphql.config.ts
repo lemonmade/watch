@@ -21,6 +21,17 @@ const config: Configuration = {
       ],
       extensions: {
         quilt: {
+          customScalars: {
+            EpisodeSelector: {
+              package: '@watching/api',
+            },
+            EpisodeEndpointSelector: {
+              package: '@watching/api',
+            },
+            SeasonSelector: {
+              package: '@watching/api',
+            },
+          },
           schema: [
             {
               kind: 'definitions',

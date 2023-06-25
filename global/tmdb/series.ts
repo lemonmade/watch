@@ -1,6 +1,6 @@
 /* eslint no-console: off */
 
-import type {PrismaClient, SeasonStatus} from '@prisma/client';
+import type {Prisma, PrismaClient, SeasonStatus} from '@prisma/client';
 
 import {tmdbFetch as baseTmdbFetch} from './fetch.ts';
 import {seriesToHandle} from './handle.ts';
@@ -124,11 +124,9 @@ export async function updateSeries({
 
   const results: string[] = [];
 
-  const updateSeasons: import('@prisma/client').Prisma.SeasonUpdateArgs[] = [];
-  const createSeasons: import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput[] =
-    [];
-  const completedWatchthroughs: import('@prisma/client/edge').Prisma.WatchThroughWhereInput[] =
-    [];
+  const updateSeasons: Prisma.SeasonUpdateArgs[] = [];
+  const createSeasons: Prisma.SeasonCreateWithoutSeriesInput[] = [];
+  const completedWatchthroughs: Prisma.WatchThroughWhereInput[] = [];
 
   for (const season of seasonResults) {
     if (season.season_number == null) continue;
@@ -157,7 +155,18 @@ export async function updateSeries({
           ...tmdbSeasonToSeasonInput(season, seriesResult),
           episodes: {
             upsert: season.episodes?.map((episode) => {
-              const episodeInput = tmdbEpisodeToCreateInput(episode);
+              const episodeInput: Prisma.EpisodeUncheckedCreateWithoutSeasonInput =
+                {
+                  number: episode.episode_number,
+                  title: episode.name,
+                  firstAired: tmdbAirDateToDate(episode.air_date),
+                  overview: episode.overview?.slice(0, 900) || null,
+                  stillUrl: episode.still_path
+                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+                    : null,
+                  seasonNumber: season.season_number,
+                  seriesId,
+                };
 
               return {
                 where: {
@@ -275,7 +284,7 @@ function tmdbAirDateToDate(date?: string) {
 function tmdbSeasonToSeasonInput(
   season: TmdbSeason,
   series: TmdbSeries,
-): import('@prisma/client').Prisma.SeasonCreateWithoutSeriesInput {
+): Prisma.SeasonCreateWithoutSeriesInput {
   return {
     number: season.season_number,
     firstAired: tmdbAirDateToDate(season.air_date),
@@ -285,20 +294,6 @@ function tmdbSeasonToSeasonInput(
       ? `https://image.tmdb.org/t/p/original${season.poster_path}`
       : null,
     episodeCount: season.episodes?.length ?? 0,
-  };
-}
-
-function tmdbEpisodeToCreateInput(
-  episode: TmdbEpisode,
-): import('@prisma/client').Prisma.EpisodeCreateWithoutSeasonInput {
-  return {
-    number: episode.episode_number,
-    title: episode.name,
-    firstAired: tmdbAirDateToDate(episode.air_date),
-    overview: episode.overview?.slice(0, 900) || null,
-    stillUrl: episode.still_path
-      ? `https://image.tmdb.org/t/p/original${episode.still_path}`
-      : null,
   };
 }
 

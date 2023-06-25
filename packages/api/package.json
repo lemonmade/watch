@@ -26,11 +26,9 @@
   },
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
-  "dependencies": {},
-  "peerDependencies": {},
   "peerDependenciesMeta": {},
   "devDependencies": {
-    "@quilted/testing": "^0.1.0"
+    "@quilted/testing": "^0.1.5"
   },
   "eslintConfig": {
     "extends": [

@@ -183,6 +183,7 @@ model Series {
   seasonCount Int
 
   seasons       Season[]
+  episodes      Episode[]
   subscriptions SeriesSubscription[]
   watchThroughs WatchThrough[]
   listItems     ListItem[]
@@ -237,8 +238,12 @@ model Episode {
   overview   String?   @db.VarChar(2000)
   stillUrl   String?
 
-  season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  seasonId String
+  season       Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seasonId     String
+  seasonNumber Int
+
+  series   Series @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seriesId String
 
   skips   Skip[]
   watches Watch[]
@@ -246,6 +251,7 @@ model Episode {
   listItems ListItem[]
 
   @@unique([seasonId, number])
+  @@index([seriesId, seasonNumber])
 }
 
 enum WatchThroughStatus {

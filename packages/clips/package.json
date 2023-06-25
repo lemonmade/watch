@@ -58,7 +58,7 @@
   ],
   "dependencies": {
     "@lemonmade/remote-ui": "^0.1.33",
-    "@quilted/graphql": "^0.4.58",
+    "@quilted/graphql": "^0.4.61",
     "@quilted/localize": "^0.1.9",
     "@watching/thread-signals": "workspace:^"
   },
