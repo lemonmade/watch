@@ -1,10 +1,13 @@
-import type {Season as DatabaseSeason} from '@prisma/client';
+import type {Season as DatabaseSeason, Prisma} from '@prisma/client';
 
-import {bufferFromSlice} from '~/global/slices.ts';
-
-import type {Resolver, QueryResolver, MutationResolver} from '../types.ts';
-import {toGid, fromGid} from '../shared/id.ts';
+import {fromGid} from '../shared/id.ts';
 import {imageUrl} from '../shared/images.ts';
+import {
+  createQueryResolver,
+  createMutationResolver,
+  createResolverWithGid,
+  type Resolver,
+} from '../shared/resolvers.ts';
 
 import {Season as SeasonLists} from '../lists.ts';
 import {Season as SeasonWatches} from '../watches.ts';
@@ -18,7 +21,7 @@ declare module '../types.ts' {
 
 export type SeasonResolver = Resolver<'Season'>;
 
-export const Query: Pick<QueryResolver, 'season'> = {
+export const Query = createQueryResolver({
   season(_, {id, series, number, selector}, {prisma}) {
     if (id) {
       return prisma.season.findFirst({
@@ -55,10 +58,60 @@ export const Query: Pick<QueryResolver, 'season'> = {
       `You must provide either an 'id' or 'series' and 'number' variables`,
     );
   },
-};
+});
 
-export const Season: SeasonResolver = {
-  id: ({id}) => toGid(id, 'Season'),
+export const Mutation = createMutationResolver({
+  // Should be gated on permissions, and should update watchthroughs async
+  async updateSeason(_, {id: gid, status}, {prisma}) {
+    const {id} = fromGid(gid);
+    const season = await prisma.season.update({
+      where: {id},
+      data: {status: status ?? undefined},
+    });
+
+    if (status === 'ENDED') {
+      const watchThroughs = await prisma.watchThrough.findMany({
+        where: {
+          nextEpisode: EpisodeSelection.stringify({
+            season: season.number,
+            episode: season.episodeCount + 1,
+          }),
+          seriesId: season.seriesId,
+          status: 'ONGOING',
+        },
+        include: {user: {select: {id: true}}},
+      });
+
+      await Promise.all([
+        prisma.watchThrough.updateMany({
+          where: {
+            id: {in: watchThroughs.map(({id}) => id)},
+          },
+          data: {
+            status: 'FINISHED',
+            current: null,
+            nextEpisode: null,
+          },
+        }),
+        prisma.watch.createMany({
+          data: watchThroughs.map<Prisma.WatchCreateManyInput>(
+            ({id, userId}) => {
+              return {
+                userId,
+                seasonId: season.id,
+                watchThroughId: id,
+              };
+            },
+          ),
+        }),
+      ]);
+    }
+
+    return {season};
+  },
+});
+
+export const Season = createResolverWithGid('Season', {
   selector({number}) {
     return EpisodeSelection.stringify({season: number});
   },
@@ -115,56 +168,4 @@ export const Season: SeasonResolver = {
   },
   ...SeasonLists,
   ...SeasonWatches,
-};
-
-export const Mutation: Pick<MutationResolver, 'updateSeason'> = {
-  // Should be gated on permissions, and should update watchthroughs async
-  async updateSeason(_, {id: gid, status}, {prisma}) {
-    const {id} = fromGid(gid);
-    const season = await prisma.season.update({
-      where: {id},
-      data: {status: status ?? undefined},
-    });
-
-    if (status === 'ENDED') {
-      const watchThroughs = await prisma.watchThrough.findMany({
-        where: {
-          to: bufferFromSlice({season: season.number}),
-          current: bufferFromSlice({
-            season: season.number,
-            episode: season.episodeCount + 1,
-          }),
-          seriesId: season.seriesId,
-          status: 'ONGOING',
-        },
-        include: {user: {select: {id: true}}},
-      });
-
-      await Promise.all([
-        prisma.watchThrough.updateMany({
-          where: {
-            id: {in: watchThroughs.map(({id}) => id)},
-          },
-          data: {
-            status: 'FINISHED',
-            current: null,
-            nextEpisode: null,
-          },
-        }),
-        prisma.watch.createMany({
-          data: watchThroughs.map<
-            import('@prisma/client').Prisma.WatchCreateManyInput
-          >(({id, userId}) => {
-            return {
-              userId,
-              seasonId: season.id,
-              watchThroughId: id,
-            };
-          }),
-        }),
-      ]);
-    }
-
-    return {season};
-  },
-};
+});

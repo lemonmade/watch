@@ -2,7 +2,12 @@ import type {Series as DatabaseSeries} from '@prisma/client';
 
 import {updateSeries} from '~/global/tmdb.ts';
 
-import type {Resolver, QueryResolver, MutationResolver} from '../types.ts';
+import {
+  createQueryResolver,
+  createMutationResolver,
+  createResolverWithGid,
+  type Resolver,
+} from '../shared/resolvers.ts';
 import {toGid, fromGid} from '../shared/id.ts';
 import {toHandle} from '../shared/handle.ts';
 import {imageUrl} from '../shared/images.ts';
@@ -26,7 +31,7 @@ declare module '../types.ts' {
 
 export type SeriesResolver = Resolver<'Series'>;
 
-export const Query: Pick<QueryResolver, 'series' | 'randomSeries'> = {
+export const Query = createQueryResolver({
   series(_, {id, handle}, {prisma}) {
     if (id) {
       return prisma.series.findFirst({
@@ -46,10 +51,25 @@ export const Query: Pick<QueryResolver, 'series' | 'randomSeries'> = {
       rejectOnNotFound: true,
     });
   },
-};
+});
 
-export const Series: SeriesResolver = {
-  id: ({id}) => toGid(id, 'Series'),
+export const Mutation = createMutationResolver({
+  async deleteSeries(_, {id: gid}, {prisma}) {
+    const {id} = fromGid(gid);
+    await prisma.series.delete({where: {id}});
+    return {deletedId: gid};
+  },
+  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma}) {
+    const {id} = fromGid(gid);
+    const {tmdbId, name} = await prisma.series.findFirstOrThrow({where: {id}});
+    const {series} = await updateSeries({id, name, tmdbId, prisma});
+    return {series};
+  },
+});
+
+export const Series = createResolverWithGid('Series', {
+  url: ({handle}, _, {request}) =>
+    new URL(`/app/series/${handle}`, request.url).href,
   handle: ({name, handle}) => handle ?? toHandle(name),
   imdbUrl({imdbId}) {
     return imdbId && `https://www.imdb.com/title/${imdbId}`;
@@ -118,21 +138,4 @@ export const Series: SeriesResolver = {
   ...SeriesWatchLater,
   ...SeriesSubscription,
   ...SeriesApp,
-};
-
-export const Mutation: Pick<
-  MutationResolver,
-  'deleteSeries' | 'synchronizeSeriesWithTmdb'
-> = {
-  async deleteSeries(_, {id: gid}, {prisma}) {
-    const {id} = fromGid(gid);
-    await prisma.series.delete({where: {id}});
-    return {deletedId: gid};
-  },
-  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma}) {
-    const {id} = fromGid(gid);
-    const {tmdbId, name} = await prisma.series.findFirstOrThrow({where: {id}});
-    const {series} = await updateSeries({id, name, tmdbId, prisma});
-    return {series};
-  },
-};
+});

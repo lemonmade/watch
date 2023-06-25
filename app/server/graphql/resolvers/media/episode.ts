@@ -1,10 +1,12 @@
 import type {Episode as DatabaseEpisode} from '@prisma/client';
 
-import {type Slice} from '~/global/slices.ts';
-
-import type {Resolver, QueryResolver} from '../types.ts';
-import {toGid, fromGid} from '../shared/id.ts';
+import {fromGid} from '../shared/id.ts';
 import {imageUrl} from '../shared/images.ts';
+import {
+  createQueryResolver,
+  createResolverWithGid,
+  type Resolver,
+} from '../shared/resolvers.ts';
 
 import {Episode as EpisodeLists} from '../lists.ts';
 import {Episode as EpisodeWatches} from '../watches.ts';
@@ -13,13 +15,12 @@ import {EpisodeSelection} from '@watching/api';
 declare module '../types.ts' {
   export interface ValueMap {
     Episode: DatabaseEpisode;
-    EpisodeSlice: Slice;
   }
 }
 
 export type EpisodeResolver = Resolver<'Episode'>;
 
-export const Query: Pick<QueryResolver, 'episode'> = {
+export const Query = createQueryResolver({
   episode(_, {id, series, season, number, selector}, {prisma}) {
     if (id) {
       return prisma.episode.findFirst({
@@ -56,10 +57,9 @@ export const Query: Pick<QueryResolver, 'episode'> = {
       `You must provide either an 'id' or 'series' and 'number' variables`,
     );
   },
-};
+});
 
-export const Episode: EpisodeResolver = {
-  id: ({id}) => toGid(id, 'Episode'),
+export const Episode = createResolverWithGid('Episode', {
   selector({number, seasonNumber}) {
     return EpisodeSelection.stringify({episode: number, season: seasonNumber});
   },
@@ -89,4 +89,4 @@ export const Episode: EpisodeResolver = {
   },
   ...EpisodeWatches,
   ...EpisodeLists,
-};
+});

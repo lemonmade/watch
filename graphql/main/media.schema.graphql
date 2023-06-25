@@ -89,6 +89,7 @@ enum SeriesStatus {
 
 type Series {
   id: ID!
+  url: Url!
   handle: String!
   tmdbId: ID!
   tmdbUrl: Url!
