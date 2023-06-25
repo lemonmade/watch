@@ -29,7 +29,7 @@ export const Query: Pick<QueryResolver, 'season'> = {
       const seriesOption = handle
         ? {series: {handle}}
         : seriesId
-        ? {seriesId}
+        ? {seriesId: fromGid(seriesId).id}
         : {};
 
       if (number != null) {
