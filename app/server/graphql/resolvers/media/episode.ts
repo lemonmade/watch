@@ -65,7 +65,7 @@ export const Episode: EpisodeResolver = {
   },
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirstOrThrow({
-      where: {id: fromGid(seriesId).id},
+      where: {id: seriesId},
     });
   },
   season({seasonId}, _, {prisma}) {
