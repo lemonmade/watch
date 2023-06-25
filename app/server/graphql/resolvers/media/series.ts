@@ -77,11 +77,7 @@ export const Series: SeriesResolver = {
   seasons({id}, _, {prisma}) {
     return prisma.season.findMany({where: {seriesId: id}});
   },
-  episode(
-    {id},
-    {selector, number, seasonNumber: explicitSeasonNumber},
-    {prisma},
-  ) {
+  episode({id}, {selector, number, season}, {prisma}) {
     let episodeNumber: number | undefined | null;
     let seasonNumber: number | undefined | null;
 
@@ -91,12 +87,12 @@ export const Series: SeriesResolver = {
       seasonNumber = parsed.season;
     } else {
       episodeNumber = number;
-      seasonNumber = explicitSeasonNumber;
+      seasonNumber = season;
     }
 
     if (episodeNumber == null || seasonNumber == null) {
       throw new Error(
-        `You must provide either a 'selector' variable, or 'number' and 'seasonNumber' variables`,
+        `You must provide either a 'selector' variable, or 'number' and 'season' variables`,
       );
     }
 

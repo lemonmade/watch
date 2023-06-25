@@ -71,7 +71,9 @@ export class EpisodeSelection {
     current: EpisodeSelector | SeasonSelector | EpisodeEndpointSelectorObject,
   ): EpisodeSelectorObject | undefined {
     const {episode, season} =
-      typeof current === 'string' ? parse(current) : current;
+      typeof current === 'string'
+        ? (parse(current as EpisodeSelector) as EpisodeSelectorObject)
+        : current;
 
     for (const range of this.includedRanges) {
       const [fromSeason, fromEpisode, toSeason, toEpisode] =
@@ -335,17 +337,14 @@ function stringify<
 }
 
 function parse<
-  Selector extends
-    | EpisodeSelector
-    | EpisodeEndpointSelector
-    | EpisodeRangeSelector,
+  Selector extends SeasonSelector | EpisodeSelector | EpisodeRangeSelector,
 >(
   selector: Selector,
 ): Selector extends EpisodeRangeSelector
   ? EpisodeRangeSelectorObject
   : Selector extends EpisodeSelector
   ? EpisodeSelectorObject
-  : EpisodeEndpointSelectorObject {
+  : SeasonSelectorObject {
   EPISODE_SELECTOR_REGEX.lastIndex = 0;
   const matched = selector.match(EPISODE_SELECTOR_REGEX);
 

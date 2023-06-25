@@ -6,8 +6,19 @@ scalar EpisodeEndpointSelector
 
 extend type Query {
   series(id: ID, handle: String): Series
-  season(id: ID, series: SeriesSelector, number: Int): Season
-  episode(id: ID, series: SeriesSelector, season: Int, number: Int): Episode
+  season(
+    id: ID
+    series: SeriesSelectorInput
+    number: Int
+    selector: SeasonSelector
+  ): Season
+  episode(
+    id: ID
+    series: SeriesSelectorInput
+    season: Int
+    number: Int
+    selector: EpisodeSelector
+  ): Episode
   randomSeries: Series!
 }
 
@@ -31,7 +42,7 @@ type Episode {
   overview: String
 }
 
-input SeriesSelector {
+input SeriesSelectorInput {
   id: ID
   handle: String
 }
@@ -91,7 +102,7 @@ type Series {
   seasons: [Season!]!
   season(selector: SeasonSelector, number: Int): Season
   episodes: [Episode!]!
-  episode(selector: EpisodeSelector, number: Int, seasonNumber: Int): Episode
+  episode(selector: EpisodeSelector, number: Int, season: Int): Episode
 }
 
 # Mutations

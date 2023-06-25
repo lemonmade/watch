@@ -5,9 +5,13 @@ import type {
   Episode as DatabaseEpisode,
   Season as DatabaseSeason,
 } from '@prisma/client';
-import {EpisodeSelection, type EpisodeSelector} from '@watching/api';
+import {
+  EpisodeSelection,
+  type EpisodeSelector,
+  type EpisodeEndpointSelectorObject,
+} from '@watching/api';
 
-import {bufferFromSlice, sliceFromBuffer, type Slice} from '~/global/slices.ts';
+import {bufferFromSlice, sliceFromBuffer} from '~/global/slices.ts';
 
 import type {
   QueryResolver,
@@ -664,19 +668,24 @@ export const Mutation: Pick<
       rejectOnNotFound: true,
     });
 
-    const normalizedFrom: Slice =
-      from ??
-      (includeSpecials && series.seasons.some((season) => season.number === 0)
-        ? {season: 0, episode: 1}
-        : {season: 1, episode: 1});
+    const normalizedFrom: EpisodeEndpointSelectorObject = from
+      ? {season: from.season, episode: from.episode ?? undefined}
+      : includeSpecials && series.seasons.some((season) => season.number === 0)
+      ? {season: 0, episode: 1}
+      : {season: 1, episode: 1};
 
-    const normalizedTo: Slice = to ?? {
-      season: Math.max(
-        ...series.seasons.map((season) =>
-          seasonHasStarted(season) ? season.number : 1,
-        ),
-      ),
-    };
+    const normalizedTo: EpisodeEndpointSelectorObject = to
+      ? {
+          season: to.season,
+          episode: to.episode ?? undefined,
+        }
+      : {
+          season: Math.max(
+            ...series.seasons.map((season) =>
+              seasonHasStarted(season) ? season.number : 1,
+            ),
+          ),
+        };
 
     const toSeason = series.seasons.find(
       (season) => season.number === normalizedTo.season,

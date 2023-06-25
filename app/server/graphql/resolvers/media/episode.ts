@@ -20,12 +20,12 @@ declare module '../types.ts' {
 export type EpisodeResolver = Resolver<'Episode'>;
 
 export const Query: Pick<QueryResolver, 'episode'> = {
-  episode(_, {id, series, season, number}, {prisma}) {
+  episode(_, {id, series, season, number, selector}, {prisma}) {
     if (id) {
       return prisma.episode.findFirst({
         where: {id: fromGid(id).id},
       });
-    } else if (series && season != null && number != null) {
+    } else if (series) {
       const {handle, id: seriesId} = series;
       const seriesOption = handle
         ? {series: {handle}}
@@ -33,9 +33,23 @@ export const Query: Pick<QueryResolver, 'episode'> = {
         ? {seriesId}
         : {};
 
-      return prisma.episode.findFirst({
-        where: {number, seasonNumber: season, ...seriesOption},
-      });
+      if (season != null && number != null) {
+        return prisma.episode.findFirst({
+          where: {number, seasonNumber: season, ...seriesOption},
+        });
+      } else if (selector != null) {
+        const {episode, season} = EpisodeSelection.parse(selector);
+
+        if (episode == null || season == null) {
+          throw new Error(
+            `Invalid episode selector: ${JSON.stringify(selector)}}`,
+          );
+        }
+
+        return prisma.episode.findFirst({
+          where: {number: episode, seasonNumber: season, ...seriesOption},
+        });
+      }
     }
 
     throw new Error(
