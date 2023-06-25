@@ -1,5 +1,19 @@
 # @watching/cli
 
+## 2.0.23
+
+### Patch Changes
+
+- [#270](https://github.com/lemonmade/watch/pull/270) [`347df5b`](https://github.com/lemonmade/watch/commit/347df5bf5d5a0aa993895fb0f0d7ceedbae30299) Thanks [@lemonmade](https://github.com/lemonmade)! - Update GraphQL dependency
+
+* [`98bd7f3`](https://github.com/lemonmade/watch/commit/98bd7f3e7d5044b5bb9dd64d031a9d0c18c17e55) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix local extensions not loading due to having no translations
+
+- [`9c79ed1`](https://github.com/lemonmade/watch/commit/9c79ed1f759cc1ceadeff63593ad16cc62df67bb) Thanks [@lemonmade](https://github.com/lemonmade)! - Simplify translation uploading
+
+- Updated dependencies [[`347df5b`](https://github.com/lemonmade/watch/commit/347df5bf5d5a0aa993895fb0f0d7ceedbae30299)]:
+  - @watching/clips@0.4.17
+  - @watching/tools@0.1.9
+
 ## 2.0.22
 
 ### Patch Changes
