@@ -6,7 +6,8 @@ scalar EpisodeEndpointSelector
 
 extend type Query {
   series(id: ID, handle: String): Series
-  season(id: ID!): Season
+  season(id: ID, series: SeriesSelector, number: Int): Season
+  episode(id: ID, series: SeriesSelector, season: Int, number: Int): Episode
   randomSeries: Series!
 }
 
@@ -28,6 +29,11 @@ type Episode {
   hasAired: Boolean!
   still: Image
   overview: String
+}
+
+input SeriesSelector {
+  id: ID
+  handle: String
 }
 
 input EpisodeSliceInput {
