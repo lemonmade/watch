@@ -13,20 +13,18 @@ import {
 
 import {bufferFromSlice, sliceFromBuffer} from '~/global/slices.ts';
 
-import type {
-  QueryResolver,
-  MutationResolver,
-  Resolver,
-  Context,
-} from './types.ts';
 import {toGid, fromGid} from './shared/id.ts';
 import {
   addResolvedType,
+  createResolver,
+  createQueryResolver,
+  createMutationResolver,
+  createResolverWithGid,
   createUnionResolver,
   createInterfaceResolver,
-} from './shared/interfaces.ts';
+  type ResolverContext,
+} from './shared/resolvers.ts';
 
-import type {SeriesResolver, SeasonResolver, EpisodeResolver} from './media.ts';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists.ts';
 import {addSeriesToWatchLater} from './watch-later.ts';
 import {WatchThrough as WatchThroughApp} from './apps.ts';
@@ -39,10 +37,7 @@ declare module './types' {
   }
 }
 
-export const Query: Pick<
-  QueryResolver,
-  'watch' | 'watchThrough' | 'watchThroughs' | 'randomWatchThrough'
-> = {
+export const Query = createQueryResolver({
   watch(_, {id}, {prisma, user}) {
     return prisma.watch.findFirst({
       where: {id: fromGid(id).id, userId: user.id},
@@ -66,308 +61,9 @@ export const Query: Pick<
       rejectOnNotFound: false,
     });
   },
-};
+});
 
-export const WatchThrough: Resolver<'WatchThrough'> = {
-  id: ({id}) => toGid(id, 'WatchThrough'),
-  url: ({id}, _, {request}) =>
-    new URL(`/app/watchthrough/${id}`, request.url).href,
-  series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirst({
-      where: {id: seriesId},
-      rejectOnNotFound: true,
-    });
-  },
-  from({from}) {
-    return sliceFromBuffer(from);
-  },
-  to({to}) {
-    return sliceFromBuffer(to);
-  },
-  on({nextEpisode}) {
-    if (nextEpisode == null) return null;
-    return EpisodeSelection.parse(nextEpisode as EpisodeSelector);
-  },
-  async actions({id}, _, {user, prisma}) {
-    const [watches, skips] = await Promise.all([
-      prisma.watch.findMany({
-        where: {watchThroughId: id, userId: user.id},
-        include: {
-          episode: {select: {number: true, season: {select: {number: true}}}},
-          season: {select: {number: true}},
-        },
-        take: 50,
-      }),
-      prisma.skip.findMany({
-        where: {watchThroughId: id, userId: user.id},
-        include: {
-          episode: {select: {number: true, season: {select: {number: true}}}},
-          season: {select: {number: true}},
-        },
-        take: 50,
-      }),
-    ]);
-
-    return [
-      ...watches.map(addResolvedType('Watch')),
-      ...skips.map(addResolvedType('Skip')),
-    ].sort((actionOne, actionTwo) => {
-      const {season: seasonOne, episode: episodeOne = 0} =
-        getSeasonAndEpisode(actionOne);
-      const {season: seasonTwo, episode: episodeTwo = 0} =
-        getSeasonAndEpisode(actionTwo);
-
-      return seasonOne !== seasonTwo
-        ? seasonTwo - seasonOne
-        : episodeTwo - episodeOne;
-    });
-  },
-  watches({id}, _, {user, prisma}) {
-    return prisma.watch.findMany({
-      where: {watchThroughId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  async unfinishedEpisodeCount(
-    {seriesId, includeEpisodes, nextEpisode: nextEpisodeSelector},
-    _,
-    {prisma},
-  ) {
-    if (nextEpisodeSelector == null) return 0;
-
-    const nextEpisode = EpisodeSelection.parse(
-      nextEpisodeSelector as EpisodeSelector,
-    );
-    const lastRange = EpisodeSelection.from(includeEpisodes as any)
-      .ranges()
-      .pop()!;
-
-    // This logic is a bit incorrect right now, because there can be
-    // episodes that are in the future. For now, the client can query
-    // `nextEpisode` to check for that case
-    const {seasons} = await prisma.series.findFirst({
-      where: {id: seriesId},
-      select: {
-        seasons: {
-          where: {number: {gte: nextEpisode.season, lte: lastRange.to?.season}},
-          select: {number: true, episodeCount: true},
-        },
-      },
-      rejectOnNotFound: true,
-    });
-
-    return seasons.reduce((count, season) => {
-      if (
-        nextEpisode.season > season.number ||
-        (lastRange.to?.season ?? Infinity) < season.number
-      ) {
-        return count;
-      }
-
-      return (
-        count +
-        (nextEpisode.season === season.number
-          ? season.episodeCount - nextEpisode.episode + 1
-          : season.episodeCount)
-      );
-    }, 0);
-  },
-  nextEpisode({nextEpisode, seriesId}, _, {prisma}) {
-    if (nextEpisode == null) return null;
-
-    const {season, episode} = EpisodeSelection.parse(
-      nextEpisode as EpisodeSelector,
-    );
-
-    return prisma.episode.findFirst({
-      where: {
-        number: episode,
-        season: {number: season, seriesId},
-      },
-    });
-  },
-  settings({spoilerAvoidance}) {
-    return {
-      spoilerAvoidance,
-    };
-  },
-  ...WatchThroughApp,
-};
-
-export const Watch: Resolver<'Watch'> = {
-  id: ({id}) => toGid(id, 'Watch'),
-  async media({id, episodeId, seasonId}, _, {prisma}) {
-    const [episode, season] = await Promise.all([
-      episodeId
-        ? prisma.episode.findFirst({
-            where: {id: episodeId},
-          })
-        : Promise.resolve(null),
-      seasonId
-        ? prisma.season.findFirst({
-            where: {id: seasonId},
-            rejectOnNotFound: true,
-          })
-        : Promise.resolve(null),
-    ]);
-
-    if (episode) {
-      return addResolvedType('Episode')(episode);
-    } else if (season) {
-      return addResolvedType('Season')(season);
-    } else {
-      throw new Error(`Could not parse the media for watch ${id}`);
-    }
-  },
-  watchThrough({watchThroughId}, _, {prisma, user}) {
-    return watchThroughId
-      ? prisma.watchThrough.findFirst({
-          where: {id: watchThroughId, userId: user.id},
-          rejectOnNotFound: true,
-        })
-      : null;
-  },
-  notes({containsSpoilers, notes}) {
-    return notes == null ? null : {content: notes, containsSpoilers};
-  },
-};
-
-export const Skip: Resolver<'Skip'> = {
-  id: ({id}) => toGid(id, 'Skip'),
-  async media({id, episodeId, seasonId}, _, {prisma}) {
-    const [episode, season] = await Promise.all([
-      episodeId
-        ? prisma.episode.findFirst({
-            where: {id: episodeId},
-          })
-        : Promise.resolve(null),
-      seasonId
-        ? prisma.season.findFirst({
-            where: {id: seasonId},
-            rejectOnNotFound: true,
-          })
-        : Promise.resolve(null),
-    ]);
-
-    if (episode) {
-      return addResolvedType('Episode')(episode);
-    } else if (season) {
-      return addResolvedType('Season')(season);
-    } else {
-      throw new Error(`Could not parse the media for watch ${id}`);
-    }
-  },
-  watchThrough({watchThroughId}, _, {prisma, user}) {
-    return watchThroughId
-      ? prisma.watchThrough.findFirst({
-          where: {id: watchThroughId, userId: user.id},
-          rejectOnNotFound: true,
-        })
-      : null;
-  },
-  notes({containsSpoilers, notes}) {
-    return notes == null ? null : {content: notes, containsSpoilers};
-  },
-};
-
-function getSeasonAndEpisode(action: {
-  season?: {number: number} | null;
-  episode?: {number: number; season: {number: number}} | null;
-}) {
-  return action.season
-    ? {season: action.season.number}
-    : {
-        season: action.episode!.season.number,
-        episode: action.episode!.number,
-      };
-}
-
-export const Action = createUnionResolver();
-
-export const Watchable = createInterfaceResolver();
-
-export const Skippable = createInterfaceResolver();
-
-export const Series: Pick<SeriesResolver, 'watchThroughs'> = {
-  watchThroughs({id}, _, {prisma, user}) {
-    return prisma.watchThrough.findMany({
-      take: 50,
-      where: {seriesId: id, userId: user.id},
-    });
-  },
-};
-
-export const Season: Pick<
-  SeasonResolver,
-  'watches' | 'latestWatch' | 'skips' | 'latestSkip'
-> = {
-  watches({id}, _, {prisma, user}) {
-    return prisma.watch.findMany({
-      where: {seasonId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestWatch({id}, __, {prisma, user}) {
-    return prisma.watch.findFirst({
-      where: {seasonId: id, userId: user.id},
-      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
-    });
-  },
-  skips({id}, _, {prisma, user}) {
-    return prisma.skip.findMany({
-      where: {seasonId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestSkip({id}, __, {prisma, user}) {
-    return prisma.skip.findFirst({
-      where: {seasonId: id, userId: user.id},
-      orderBy: {at: 'desc', createdAt: 'desc'},
-    });
-  },
-};
-
-export const Episode: Pick<
-  EpisodeResolver,
-  'watches' | 'latestWatch' | 'skips' | 'latestSkip'
-> = {
-  watches({id}, _, {prisma, user}) {
-    return prisma.watch.findMany({
-      where: {episodeId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestWatch({id}, _, {prisma, user}) {
-    return prisma.watch.findFirst({
-      where: {episodeId: id, userId: user.id},
-      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
-    });
-  },
-  skips({id}, _, {prisma, user}) {
-    return prisma.skip.findMany({
-      where: {episodeId: id, userId: user.id},
-      take: 50,
-    });
-  },
-  latestSkip({id}, _, {prisma, user}) {
-    return prisma.skip.findFirst({
-      where: {episodeId: id, userId: user.id},
-      orderBy: {at: 'desc', createdAt: 'desc'},
-    });
-  },
-};
-
-export const Mutation: Pick<
-  MutationResolver,
-  | 'skipEpisode'
-  | 'watchEpisode'
-  | 'deleteWatch'
-  | 'watchEpisodesFromSeries'
-  | 'startWatchThrough'
-  | 'stopWatchThrough'
-  | 'deleteWatchThrough'
-  | 'updateWatchThroughSettings'
-> = {
+export const Mutation = createMutationResolver({
   async watchEpisode(
     _,
     {
@@ -671,8 +367,8 @@ export const Mutation: Pick<
     const normalizedFrom: EpisodeEndpointSelectorObject = from
       ? {season: from.season, episode: from.episode ?? undefined}
       : includeSpecials && series.seasons.some((season) => season.number === 0)
-      ? {season: 0, episode: 1}
-      : {season: 1, episode: 1};
+      ? {season: 0}
+      : {season: 1};
 
     const normalizedTo: EpisodeEndpointSelectorObject = to
       ? {
@@ -813,7 +509,289 @@ export const Mutation: Pick<
 
     return {watchThrough};
   },
-};
+});
+
+export const WatchThrough = createResolverWithGid('WatchThrough', {
+  url: ({id}, _, {request}) =>
+    new URL(`/app/watchthrough/${id}`, request.url).href,
+  series({seriesId}, _, {prisma}) {
+    return prisma.series.findFirst({
+      where: {id: seriesId},
+      rejectOnNotFound: true,
+    });
+  },
+  from({from}) {
+    const slice = sliceFromBuffer(from);
+    return {episode: slice.episode ?? null, season: slice.season};
+  },
+  to({to}) {
+    const slice = sliceFromBuffer(to);
+    return {episode: slice.episode ?? null, season: slice.season};
+  },
+  on({nextEpisode}) {
+    if (nextEpisode == null) return null;
+    return EpisodeSelection.parse(nextEpisode as EpisodeSelector);
+  },
+  async actions({id}, _, {user, prisma}) {
+    const [watches, skips] = await Promise.all([
+      prisma.watch.findMany({
+        where: {watchThroughId: id, userId: user.id},
+        include: {
+          episode: {select: {number: true, season: {select: {number: true}}}},
+          season: {select: {number: true}},
+        },
+        take: 50,
+      }),
+      prisma.skip.findMany({
+        where: {watchThroughId: id, userId: user.id},
+        include: {
+          episode: {select: {number: true, season: {select: {number: true}}}},
+          season: {select: {number: true}},
+        },
+        take: 50,
+      }),
+    ]);
+
+    return [
+      ...watches.map((watch) => addResolvedType('Watch', watch)),
+      ...skips.map((skip) => addResolvedType('Skip', skip)),
+    ].sort((actionOne, actionTwo) => {
+      const {season: seasonOne, episode: episodeOne = 0} =
+        getSeasonAndEpisode(actionOne);
+      const {season: seasonTwo, episode: episodeTwo = 0} =
+        getSeasonAndEpisode(actionTwo);
+
+      return seasonOne !== seasonTwo
+        ? seasonTwo - seasonOne
+        : episodeTwo - episodeOne;
+    });
+  },
+  watches({id}, _, {user, prisma}) {
+    return prisma.watch.findMany({
+      where: {watchThroughId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  async unfinishedEpisodeCount(
+    {seriesId, includeEpisodes, nextEpisode: nextEpisodeSelector},
+    _,
+    {prisma},
+  ) {
+    if (nextEpisodeSelector == null) return 0;
+
+    const nextEpisode = EpisodeSelection.parse(
+      nextEpisodeSelector as EpisodeSelector,
+    );
+    const lastRange = EpisodeSelection.from(includeEpisodes as any)
+      .ranges()
+      .pop()!;
+
+    // This logic is a bit incorrect right now, because there can be
+    // episodes that are in the future. For now, the client can query
+    // `nextEpisode` to check for that case
+    const {seasons} = await prisma.series.findFirst({
+      where: {id: seriesId},
+      select: {
+        seasons: {
+          where: {number: {gte: nextEpisode.season, lte: lastRange.to?.season}},
+          select: {number: true, episodeCount: true},
+        },
+      },
+      rejectOnNotFound: true,
+    });
+
+    return seasons.reduce((count, season) => {
+      if (
+        nextEpisode.season > season.number ||
+        (lastRange.to?.season ?? Infinity) < season.number
+      ) {
+        return count;
+      }
+
+      return (
+        count +
+        (nextEpisode.season === season.number
+          ? season.episodeCount - nextEpisode.episode + 1
+          : season.episodeCount)
+      );
+    }, 0);
+  },
+  nextEpisode({nextEpisode, seriesId}, _, {prisma}) {
+    if (nextEpisode == null) return null;
+
+    const {season, episode} = EpisodeSelection.parse(
+      nextEpisode as EpisodeSelector,
+    );
+
+    return prisma.episode.findFirst({
+      where: {
+        number: episode,
+        season: {number: season, seriesId},
+      },
+    });
+  },
+  settings({spoilerAvoidance}) {
+    return {
+      spoilerAvoidance,
+    };
+  },
+  ...WatchThroughApp,
+});
+
+export const Watch = createResolverWithGid('Watch', {
+  async media({id, episodeId, seasonId}, _, {prisma}) {
+    const [episode, season] = await Promise.all([
+      episodeId
+        ? prisma.episode.findFirst({
+            where: {id: fromGid(episodeId).id},
+          })
+        : Promise.resolve(null),
+      seasonId
+        ? prisma.season.findFirst({
+            where: {id: fromGid(seasonId).id},
+            rejectOnNotFound: true,
+          })
+        : Promise.resolve(null),
+    ]);
+
+    if (episode) {
+      return addResolvedType('Episode', episode);
+    } else if (season) {
+      return addResolvedType('Season', season);
+    } else {
+      throw new Error(`Could not parse the media for watch ${id}`);
+    }
+  },
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
+  },
+  notes({containsSpoilers, notes}) {
+    return notes == null ? null : {content: notes, containsSpoilers};
+  },
+});
+
+export const Skip = createResolverWithGid('Skip', {
+  async media({id, episodeId, seasonId}, _, {prisma}) {
+    const [episode, season] = await Promise.all([
+      episodeId
+        ? prisma.episode.findFirst({
+            where: {id: fromGid(episodeId).id},
+          })
+        : Promise.resolve(null),
+      seasonId
+        ? prisma.season.findFirst({
+            where: {id: fromGid(seasonId).id},
+            rejectOnNotFound: true,
+          })
+        : Promise.resolve(null),
+    ]);
+
+    if (episode) {
+      return addResolvedType('Episode', episode);
+    } else if (season) {
+      return addResolvedType('Season', season);
+    } else {
+      throw new Error(`Could not parse the media for watch ${id}`);
+    }
+  },
+  watchThrough({watchThroughId}, _, {prisma, user}) {
+    return watchThroughId
+      ? prisma.watchThrough.findFirst({
+          where: {id: watchThroughId, userId: user.id},
+          rejectOnNotFound: true,
+        })
+      : null;
+  },
+  notes({containsSpoilers, notes}) {
+    return notes == null ? null : {content: notes, containsSpoilers};
+  },
+});
+
+function getSeasonAndEpisode(action: {
+  season?: {number: number} | null;
+  episode?: {number: number; season: {number: number}} | null;
+}) {
+  return action.season
+    ? {season: action.season.number}
+    : {
+        season: action.episode!.season.number,
+        episode: action.episode!.number,
+      };
+}
+
+export const Action = createUnionResolver();
+
+export const Watchable = createInterfaceResolver();
+
+export const Skippable = createInterfaceResolver();
+
+export const Series = createResolver('Series', {
+  watchThroughs({id}, _, {prisma, user}) {
+    return prisma.watchThrough.findMany({
+      take: 50,
+      where: {seriesId: id, userId: user.id},
+    });
+  },
+});
+
+export const Season = createResolver('Season', {
+  watches({id}, _, {prisma, user}) {
+    return prisma.watch.findMany({
+      where: {seasonId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestWatch({id}, __, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {seasonId: id, userId: user.id},
+      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
+    });
+  },
+  skips({id}, _, {prisma, user}) {
+    return prisma.skip.findMany({
+      where: {seasonId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestSkip({id}, __, {prisma, user}) {
+    return prisma.skip.findFirst({
+      where: {seasonId: id, userId: user.id},
+      orderBy: {at: 'desc', createdAt: 'desc'},
+    });
+  },
+});
+
+export const Episode = createResolver('Episode', {
+  watches({id}, _, {prisma, user}) {
+    return prisma.watch.findMany({
+      where: {episodeId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestWatch({id}, _, {prisma, user}) {
+    return prisma.watch.findFirst({
+      where: {episodeId: id, userId: user.id},
+      orderBy: {finishedAt: 'desc', startedAt: 'desc', createdAt: 'desc'},
+    });
+  },
+  skips({id}, _, {prisma, user}) {
+    return prisma.skip.findMany({
+      where: {episodeId: id, userId: user.id},
+      take: 50,
+    });
+  },
+  latestSkip({id}, _, {prisma, user}) {
+    return prisma.skip.findFirst({
+      where: {episodeId: id, userId: user.id},
+      orderBy: {at: 'desc', createdAt: 'desc'},
+    });
+  },
+});
 
 function seasonHasStarted({firstAired}: Pick<DatabaseSeason, 'firstAired'>) {
   return firstAired != null && firstAired.getTime() < Date.now();
@@ -826,7 +804,7 @@ async function updateWatchThrough(
     prisma,
     episode,
     ...action
-  }: Pick<Context, 'prisma'> & {
+  }: Pick<ResolverContext, 'prisma'> & {
     episode: DatabaseEpisode;
   } & ({watch: DatabaseWatch} | {skip: DatabaseSkip}),
 ) {
@@ -837,10 +815,9 @@ async function updateWatchThrough(
 
   const episodeNumber = episode.number;
 
-  const season = await prisma.season.findFirst({
+  const season = await prisma.season.findFirstOrThrow({
     where: {id: episode.seasonId},
     select: {status: true, number: true, episodeCount: true},
-    rejectOnNotFound: true,
   });
 
   const to = sliceFromBuffer(watchThrough.to);

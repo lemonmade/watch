@@ -7,7 +7,7 @@ import type {
 import type {Context} from '../context.ts';
 import type {Schema} from '../schema.ts';
 
-export type {Context};
+export type {Context as ResolverContext};
 
 export interface ValueMap extends GraphQLBaseResolverValueMap {}
 
@@ -15,6 +15,10 @@ export type ResolverOptions = GraphQLResolverOptions<Schema, ValueMap, Context>;
 
 export type Resolver<Type extends keyof ResolverOptions['types']> =
   GraphQLResolver<Type, ResolverOptions>;
+
+export type Resolvers = {
+  [Type in keyof ResolverOptions['types']]: Resolver<Type>;
+};
 
 export type QueryResolver = Resolver<'Query'>;
 export type MutationResolver = Resolver<'Mutation'>;

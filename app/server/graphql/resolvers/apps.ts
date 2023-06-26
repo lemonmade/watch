@@ -20,10 +20,10 @@ import {createSignedToken} from '../../shared/auth.ts';
 
 import type {
   Resolver,
+  ResolverContext,
   QueryResolver,
   MutationResolver,
   UnionResolver,
-  Context,
 } from './types.ts';
 import {toHandle} from './shared/handle.ts';
 import {toGid, fromGid} from './shared/id.ts';
@@ -676,9 +676,9 @@ async function createStagedClipsVersion({
   id: string;
   code: string;
   appId: string;
-  request: Context['request'];
   extensionName: string;
-} & CreateClipsInitialVersion) {
+} & Pick<ResolverContext, 'request'> &
+  CreateClipsInitialVersion) {
   const hash = createHash('sha256').update(code).digest('hex');
   const path = `assets/clips/${appId}/${toParam(extensionName)}.${hash}.js`;
 
@@ -837,7 +837,7 @@ interface ResolvedCondition {
 
 async function resolveConditions(
   conditions: ClipsExtensionPointSupportConditionInput[] | undefined | null,
-  {prisma}: Pick<Context, 'prisma'>,
+  {prisma}: Pick<ResolverContext, 'prisma'>,
 ): Promise<ResolvedCondition[]> {
   const resolvedConditions = await Promise.all(
     conditions?.map(async (condition) => {

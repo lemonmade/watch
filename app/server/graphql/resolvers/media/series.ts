@@ -8,7 +8,7 @@ import {
   createResolverWithGid,
   type Resolver,
 } from '../shared/resolvers.ts';
-import {toGid, fromGid} from '../shared/id.ts';
+import {fromGid} from '../shared/id.ts';
 import {toHandle} from '../shared/handle.ts';
 import {imageUrl} from '../shared/images.ts';
 

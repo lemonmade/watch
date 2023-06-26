@@ -1,5 +1,9 @@
 import {toGid, fromGid} from './shared/id.ts';
-import type {Context, QueryResolver, MutationResolver} from './types.ts';
+import type {
+  ResolverContext,
+  QueryResolver,
+  MutationResolver,
+} from './types.ts';
 
 import type {SeriesResolver} from './media.ts';
 import {VIRTUAL_WATCH_LATER_LIST} from './lists.ts';
@@ -113,7 +117,7 @@ export const Mutation: Pick<
 
 export async function addSeriesToWatchLater(
   id: string,
-  {prisma, user}: Pick<Context, 'prisma' | 'user'>,
+  {prisma, user}: Pick<ResolverContext, 'prisma' | 'user'>,
 ) {
   const series = await prisma.series.findFirst({
     where: {id},
