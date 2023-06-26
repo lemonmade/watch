@@ -79,7 +79,6 @@ export const Mutation = createMutationResolver({
           seriesId: season.seriesId,
           status: 'ONGOING',
         },
-        include: {user: {select: {id: true}}},
       });
 
       await Promise.all([
@@ -89,17 +88,17 @@ export const Mutation = createMutationResolver({
           },
           data: {
             status: 'FINISHED',
-            current: null,
             nextEpisode: null,
           },
         }),
         prisma.watch.createMany({
           data: watchThroughs.map<Prisma.WatchCreateManyInput>(
-            ({id, userId}) => {
+            ({id, userId, updatedAt}) => {
               return {
                 userId,
                 seasonId: season.id,
                 watchThroughId: id,
+                finishedAt: updatedAt,
               };
             },
           ),

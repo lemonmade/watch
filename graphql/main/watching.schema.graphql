@@ -44,16 +44,20 @@ extend type Mutation {
     finishedAt: Date
     updateWatchLater: Boolean
   ): WatchEpisodePayload!
-  watchEpisodesFromSeries(
-    series: ID!
-    from: EpisodeSliceInput
-    to: EpisodeSliceInput
+  watchEpisodes(
+    series: SeriesSelectorInput!
+    from: EpisodeEndpointInput
+    to: EpisodeEndpointInput
+    episodes: [EpisodeSelectionSelector!]
+    ranges: [EpisodeRangeInput!]
     updateWatchLater: Boolean
   ): WatchEpisodesFromSeriesPayload!
   startWatchThrough(
-    series: ID!
-    from: EpisodeSliceInput
-    to: EpisodeSliceInput
+    series: SeriesSelectorInput!
+    from: EpisodeEndpointInput
+    to: EpisodeEndpointInput
+    episodes: [EpisodeSelectionSelector!]
+    episodeRanges: [EpisodeRangeInput!]
     includeSpecials: Boolean
     spoilerAvoidance: SpoilerAvoidance
     updateWatchLater: Boolean
@@ -120,18 +124,19 @@ enum WatchThroughStatus {
   FINISHED
 }
 
-type EpisodeDescriptor {
+type EpisodeSlice {
   season: Int!
-  episode: Int!
+  episode: Int
 }
 
 type WatchThrough {
   id: ID!
   url: Url!
   series: Series!
-  from: EpisodeSlice!
-  to: EpisodeSlice!
-  on: EpisodeDescriptor
+  from: EpisodeEndpoint!
+  to: EpisodeEndpoint!
+  episodeSelection: [EpisodeSelectionSelector!]!
+  episodeRanges: [EpisodeRange!]!
   startedAt: Date
   createdAt: Date!
   updatedAt: Date!

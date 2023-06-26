@@ -1,4 +1,5 @@
-import type {Watch as DatabaseWatch} from '@prisma/client';
+import type {Prisma, Watch as DatabaseWatch} from '@prisma/client';
+import {EpisodeSelection} from '@watching/api';
 
 import {toGid, fromGid} from '../shared/id.ts';
 import {
@@ -12,6 +13,7 @@ import {
 } from '../shared/resolvers.ts';
 
 import {VIRTUAL_WATCH_LATER_LIST} from '../lists.ts';
+import {episodeRangeSelectorObjectFromGraphQLInput} from '../media.ts';
 
 import {updateWatchThrough} from './shared.ts';
 
@@ -100,21 +102,64 @@ export const Mutation = createMutationResolver({
       watchLater: watchLater ?? VIRTUAL_WATCH_LATER_LIST,
     };
   },
-  async watchEpisodesFromSeries(
+  async watchEpisodes(
     _,
-    {series: seriesGid, from, to, updateWatchLater = true},
+    {
+      series: seriesInput,
+      from,
+      to,
+      episodes: episodeSelectors,
+      ranges: episodeRanges,
+      updateWatchLater = true,
+    },
     {user, prisma},
   ) {
-    const {id} = fromGid(seriesGid);
+    const episodes = new EpisodeSelection();
 
-    const series = await prisma.series.findFirst({
-      where: {id},
+    if (episodeSelectors) {
+      episodes.add(...episodeSelectors);
+    } else if (episodeRanges) {
+      episodes.add(
+        ...episodeRanges.map((range) =>
+          episodeRangeSelectorObjectFromGraphQLInput(range),
+        ),
+      );
+    } else {
+      episodes.add(episodeRangeSelectorObjectFromGraphQLInput({from, to}));
+    }
+
+    const ranges = episodes.ranges();
+
+    if (ranges.length === 0) {
+      throw new Error(
+        'You must provide at least one episode with the `episodes` or `ranges` variable',
+      );
+    }
+
+    const firstRange = ranges[0]!;
+    const lastRange = ranges[ranges.length - 1]!;
+
+    const seriesCondition: Prisma.SeriesWhereInput = {};
+
+    if (seriesInput.id) {
+      seriesCondition.id = fromGid(seriesInput.id).id;
+    } else if (seriesInput.handle) {
+      seriesCondition.handle = seriesInput.handle;
+    } else {
+      throw new Error(`You must provide either series.id or series.handle`);
+    }
+
+    const series = await prisma.series.findFirstOrThrow({
+      where: seriesCondition,
       include: {
         seasons: {
           where:
-            from || to
+            firstRange.from || lastRange.to
               ? {
-                  number: {gte: from?.season, lte: to?.season},
+                  number: {
+                    gte: firstRange.from?.season,
+                    lte: lastRange.to?.season,
+                  },
                 }
               : undefined,
           select: {
@@ -128,26 +173,13 @@ export const Mutation = createMutationResolver({
           },
         },
       },
-      rejectOnNotFound: true,
     });
 
     await prisma.watch.createMany({
-      data: series.seasons.flatMap<
-        import('@prisma/client').Prisma.WatchCreateManyInput
-      >((season) => {
-        let matchingEpisodes = season.episodes;
-
-        if (from?.episode && from.season === season.number) {
-          matchingEpisodes = matchingEpisodes.filter(
-            (episode) => episode.number >= from.episode!,
-          );
-        }
-
-        if (to?.episode && to.season === season.number) {
-          matchingEpisodes = matchingEpisodes.filter(
-            (episode) => episode.number <= to.episode!,
-          );
-        }
+      data: series.seasons.flatMap<Prisma.WatchCreateManyInput>((season) => {
+        const matchingEpisodes = season.episodes.filter((episode) =>
+          episodes.includes({season: season.number, episode: episode.number}),
+        );
 
         const finishedSeason =
           season.status === 'ENDED' &&
@@ -156,9 +188,7 @@ export const Mutation = createMutationResolver({
 
         return [
           ...matchingEpisodes.map(
-            (
-              episode,
-            ): import('@prisma/client').Prisma.WatchCreateManyInput => ({
+            (episode): Prisma.WatchCreateManyInput => ({
               userId: user.id,
               episodeId: episode.id,
             }),
@@ -186,10 +216,9 @@ export const Mutation = createMutationResolver({
   async deleteWatch(_, {id: gid}, {user, prisma}) {
     const {id} = fromGid(gid);
 
-    const validatedWatch = await prisma.watch.findFirst({
+    const validatedWatch = await prisma.watch.findFirstOrThrow({
       where: {id, userId: user.id},
       select: {id: true},
-      rejectOnNotFound: true,
     });
 
     // We should be making sure we don’t need to reset the `nextEpisode`

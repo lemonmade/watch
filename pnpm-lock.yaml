@@ -55,6 +55,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.0
         version: 18.2.1
+      '@watching/api':
+        specifier: workspace:*
+        version: link:packages/api
       dotenv:
         specifier: ^16.0.0
         version: 16.0.0
@@ -463,7 +466,7 @@ importers:
         version: 0.1.33
       '@lemonmade/remote-ui-react':
         specifier: ^0.1.20
-        version: 0.1.20(@quilted/react@18.2.3)
+        version: 0.1.20(react@18.0.0)
       '@preact/signals-core':
         specifier: ^1.3.0
         version: 1.3.0
@@ -4374,6 +4377,21 @@ packages:
       htm: 3.1.1
       react: /@quilted/react@18.2.3
 
+  /@lemonmade/remote-ui-react@0.1.20(react@18.0.0):
+    resolution: {integrity: sha512-cxS+YBGGO94Va/i/KFfeX6fLYoH1cJepmx+kp8+wIXhCtbchdNN2il0QBxMuQF16UJckYmEC06IgjinREKCbmA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      '@lemonmade/remote-ui': 0.1.33
+      '@types/react': 18.2.0
+      htm: 3.1.1
+      react: 18.0.0
+    dev: false
+
   /@lemonmade/remote-ui@0.1.33:
     resolution: {integrity: sha512-TLOCwJdb30K7Sw0dsZbc/S4bqUwvZZdNq/y5sTj4jrIwrb6nLMrieDK/6XvKLt5bwH/DOVVlbMYVxvUrZW+7gw==}
     engines: {node: '>=14.0.0'}
@@ -6685,7 +6703,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 
@@ -9122,7 +9140,6 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
@@ -10117,7 +10134,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonwebtoken@8.5.1:

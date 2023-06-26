@@ -1,11 +1,12 @@
-import type {WatchThrough as DatabaseWatchThrough} from '@prisma/client';
+import type {
+  Prisma,
+  WatchThrough as DatabaseWatchThrough,
+} from '@prisma/client';
 import {
   EpisodeSelection,
+  EpisodeRange,
   type EpisodeSelector,
-  type EpisodeEndpointSelectorObject,
 } from '@watching/api';
-
-import {bufferFromSlice, sliceFromBuffer} from '~/global/slices.ts';
 
 import {toGid, fromGid} from '../shared/id.ts';
 import {
@@ -18,6 +19,7 @@ import {
 
 import {WatchThrough as WatchThroughApp} from '../apps.ts';
 import {VIRTUAL_WATCH_LATER_LIST, addSeriesToWatchLater} from '../lists.ts';
+import {episodeRangeSelectorObjectFromGraphQLInput} from '../media.ts';
 
 declare module '../types' {
   export interface ValueMap {
@@ -79,19 +81,29 @@ export const Mutation = createMutationResolver({
   async startWatchThrough(
     _,
     {
-      series: seriesGid,
+      series: seriesInput,
       from,
       to,
+      episodes: episodeSelection,
+      episodeRanges,
       includeSpecials = false,
       spoilerAvoidance: explicitSpoilerAvoidance,
       updateWatchLater = true,
     },
     {user, prisma},
   ) {
-    const {id: seriesId} = fromGid(seriesGid);
+    const seriesCondition: Prisma.SeriesWhereInput = {};
+
+    if (seriesInput.id) {
+      seriesCondition.id = fromGid(seriesInput.id).id;
+    } else if (seriesInput.handle) {
+      seriesCondition.handle = seriesInput.handle;
+    } else {
+      throw new Error(`You must provide either series.id or series.handle`);
+    }
 
     const series = await prisma.series.findFirst({
-      where: {id: seriesId},
+      where: seriesCondition,
       include: {
         seasons: {
           select: {
@@ -105,27 +117,61 @@ export const Mutation = createMutationResolver({
       rejectOnNotFound: true,
     });
 
-    const normalizedFrom: EpisodeEndpointSelectorObject = from
-      ? {season: from.season, episode: from.episode ?? undefined}
-      : includeSpecials && series.seasons.some((season) => season.number === 0)
-      ? {season: 0}
-      : {season: 1};
+    const lastStartedSeason = Math.max(
+      ...series.seasons.map((season) =>
+        seasonHasStarted(season) ? season.number : 1,
+      ),
+    );
 
-    const normalizedTo: EpisodeEndpointSelectorObject = to
-      ? {
-          season: to.season,
-          episode: to.episode ?? undefined,
-        }
-      : {
-          season: Math.max(
-            ...series.seasons.map((season) =>
-              seasonHasStarted(season) ? season.number : 1,
-            ),
+    const selection = new EpisodeSelection();
+
+    if (episodeSelection) {
+      selection.add(
+        ...episodeSelection.map((selection) => {
+          const range = new EpisodeRange(selection);
+          range.to ??= {season: lastStartedSeason};
+          return range;
+        }),
+      );
+    } else if (episodeRanges) {
+      selection.add(
+        ...episodeRanges.map((range) =>
+          episodeRangeSelectorObjectFromGraphQLInputWithMaxSeason(
+            range,
+            lastStartedSeason,
           ),
-        };
+        ),
+      );
+    } else {
+      selection.add(
+        episodeRangeSelectorObjectFromGraphQLInputWithMaxSeason(
+          {from, to},
+          lastStartedSeason,
+        ),
+      );
+    }
+
+    if (selection.from == null) {
+      selection.add({from: {season: 1}, to: selection.to});
+    }
+
+    if (includeSpecials) {
+      selection.add({season: 0});
+    }
+
+    const ranges = selection.ranges();
+
+    if (ranges.length === 0) {
+      throw new Error(
+        `You must provide either 'episodes', 'episodeRanges', or 'from' and 'to'`,
+      );
+    }
+
+    const firstRange = ranges[0]!;
+    const lastRange = ranges[ranges.length - 1]!;
 
     const toSeason = series.seasons.find(
-      (season) => season.number === normalizedTo.season,
+      (season) => season.number === lastRange.to!.season,
     )!;
 
     let spoilerAvoidance = explicitSpoilerAvoidance;
@@ -133,13 +179,11 @@ export const Mutation = createMutationResolver({
     if (spoilerAvoidance == null) {
       const [{spoilerAvoidance: userSpoilerAvoidance}, lastSeasonWatch] =
         await Promise.all([
-          prisma.user.findFirst({
+          prisma.user.findFirstOrThrow({
             where: {id: user.id},
-            rejectOnNotFound: true,
           }),
-          prisma.watch.findFirst({
+          prisma.watch.findFirstOrThrow({
             where: {userId: user.id, seasonId: toSeason.id},
-            rejectOnNotFound: false,
           }),
         ]);
 
@@ -154,19 +198,13 @@ export const Mutation = createMutationResolver({
 
     const watchThrough = await prisma.watchThrough.create({
       data: {
-        seriesId,
+        seriesId: series.id,
         userId: user.id,
         nextEpisode: EpisodeSelection.stringify({
-          episode: 1,
-          ...normalizedFrom,
+          episode: firstRange.from!.episode ?? 1,
+          season: firstRange.from!.season,
         }),
-        includeEpisodes: EpisodeSelection.from({
-          from: normalizedFrom,
-          to: normalizedTo,
-        }).selectors(),
-        from: bufferFromSlice(normalizedFrom),
-        to: bufferFromSlice(normalizedTo),
-        current: bufferFromSlice({episode: 1, ...normalizedFrom}),
+        includeEpisodes: selection.selectors(),
         spoilerAvoidance,
       },
     });
@@ -260,17 +298,19 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
       rejectOnNotFound: true,
     });
   },
-  from({from}) {
-    const slice = sliceFromBuffer(from);
-    return {episode: slice.episode ?? null, season: slice.season};
+  from({includeEpisodes}) {
+    const ranges = new EpisodeSelection(...(includeEpisodes as any)).ranges();
+    return ranges[0]!.from!;
   },
-  to({to}) {
-    const slice = sliceFromBuffer(to);
-    return {episode: slice.episode ?? null, season: slice.season};
+  to({includeEpisodes}) {
+    const ranges = new EpisodeSelection(...(includeEpisodes as any)).ranges();
+    return ranges[ranges.length - 1]!.to!;
   },
-  on({nextEpisode}) {
-    if (nextEpisode == null) return null;
-    return EpisodeSelection.parse(nextEpisode as EpisodeSelector);
+  episodeSelection({includeEpisodes}) {
+    return new EpisodeSelection(...(includeEpisodes as any)).selectors();
+  },
+  episodeRanges({includeEpisodes}) {
+    return new EpisodeSelection(...(includeEpisodes as any)).ranges();
   },
   async actions({id}, _, {user, prisma}) {
     const [watches, skips] = await Promise.all([
@@ -322,39 +362,42 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
     const nextEpisode = EpisodeSelection.parse(
       nextEpisodeSelector as EpisodeSelector,
     );
-    const lastRange = EpisodeSelection.from(includeEpisodes as any)
+    const lastRange = EpisodeSelection.from(...(includeEpisodes as any))
       .ranges()
       .pop()!;
 
     // This logic is a bit incorrect right now, because there can be
     // episodes that are in the future. For now, the client can query
     // `nextEpisode` to check for that case
-    const {seasons} = await prisma.series.findFirst({
+    const {seasons} = await prisma.series.findFirstOrThrow({
       where: {id: seriesId},
       select: {
         seasons: {
-          where: {number: {gte: nextEpisode.season, lte: lastRange.to?.season}},
+          where: {
+            number: {gte: nextEpisode.season, lte: lastRange.to!.season},
+          },
           select: {number: true, episodeCount: true},
         },
       },
-      rejectOnNotFound: true,
     });
 
-    return seasons.reduce((count, season) => {
+    let unfinishedEpisodeCount = 0;
+
+    for (const season of seasons) {
       if (
         nextEpisode.season > season.number ||
-        (lastRange.to?.season ?? Infinity) < season.number
+        !lastRange.includes({season: season.number})
       ) {
-        return count;
+        continue;
       }
 
-      return (
-        count +
-        (nextEpisode.season === season.number
+      unfinishedEpisodeCount +=
+        nextEpisode.season === season.number
           ? season.episodeCount - nextEpisode.episode + 1
-          : season.episodeCount)
-      );
-    }, 0);
+          : season.episodeCount;
+    }
+
+    return unfinishedEpisodeCount;
   },
   nextEpisode({nextEpisode, seriesId}, _, {prisma}) {
     if (nextEpisode == null) return null;
@@ -401,4 +444,13 @@ function getSeasonAndEpisode(action: {
         season: action.episode!.seasonNumber,
         episode: action.episode!.number,
       };
+}
+
+function episodeRangeSelectorObjectFromGraphQLInputWithMaxSeason(
+  range: Parameters<typeof episodeRangeSelectorObjectFromGraphQLInput>[0],
+  maxSeason: number,
+) {
+  const {from, to} = episodeRangeSelectorObjectFromGraphQLInput(range);
+
+  return {from, to: to ?? {season: maxSeason}};
 }

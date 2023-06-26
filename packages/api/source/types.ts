@@ -4,6 +4,9 @@ export type EpisodeEndpointSelector = SeasonSelector | EpisodeSelector;
 export type EpisodeRangeSelector = `${EpisodeEndpointSelector | ''}-${
   | EpisodeEndpointSelector
   | ''}`;
+export type EpisodeSelectionSelector =
+  | EpisodeEndpointSelector
+  | EpisodeRangeSelector;
 
 export interface SeasonSelectorObject {
   season: number;

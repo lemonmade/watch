@@ -31,6 +31,12 @@ const config: Configuration = {
             SeasonSelector: {
               package: '@watching/api',
             },
+            EpisodeRangeSelector: {
+              package: '@watching/api',
+            },
+            EpisodeSelectionSelector: {
+              package: '@watching/api',
+            },
           },
           schema: [
             {

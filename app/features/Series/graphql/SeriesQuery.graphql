@@ -42,9 +42,9 @@ query Series($id: ID, $handle: String) {
       status
       unfinishedEpisodeCount
       finishedAt
-      on {
-        season
-        episode
+      nextEpisode {
+        number
+        seasonNumber
       }
       from {
         season

@@ -1,6 +1,7 @@
 /* eslint no-console: off */
 
 import type {Prisma, PrismaClient, SeasonStatus} from '@prisma/client';
+import {EpisodeSelection} from '@watching/api';
 
 import {tmdbFetch as baseTmdbFetch} from './fetch.ts';
 import {seriesToHandle} from './handle.ts';
@@ -126,7 +127,8 @@ export async function updateSeries({
 
   const updateSeasons: Prisma.SeasonUpdateArgs[] = [];
   const createSeasons: Prisma.SeasonCreateWithoutSeriesInput[] = [];
-  const completedWatchthroughs: Prisma.WatchThroughWhereInput[] = [];
+  const updateWatchThroughs: Prisma.WatchThroughUpdateArgs[] = [];
+  const createWatches: Prisma.WatchCreateManyInput[] = [];
 
   for (const season of seasonResults) {
     if (season.season_number == null) continue;
@@ -140,13 +142,44 @@ export async function updateSeries({
 
     if (id) {
       if (status === 'ENDED') {
-        completedWatchthroughs.push({
-          current: bufferFromSlice({
-            season: season.season_number,
-            episode: (season.episodes?.length ?? 0) + 1,
-          }),
-          to: bufferFromSlice({season: season.season_number}),
+        const watchThroughsToUpdate = await prisma.watchThrough.findMany({
+          where: {
+            seriesId,
+            status: 'ONGOING',
+            nextEpisode: EpisodeSelection.stringify({
+              season: season.season_number,
+              episode: (season.episodes?.length ?? 0) + 1,
+            }),
+          },
         });
+
+        for (const watchThrough of watchThroughsToUpdate) {
+          const nextEpisode = EpisodeSelection.from(
+            ...(watchThrough.includeEpisodes as any[]),
+          ).nextEpisode(watchThrough.nextEpisode as any);
+
+          if (nextEpisode == null) {
+            createWatches.push({
+              seasonId: id,
+              userId: watchThrough.userId,
+              finishedAt: watchThrough.updatedAt,
+              watchThroughId: watchThrough.id,
+            });
+          }
+
+          updateWatchThroughs.push({
+            where: {id: watchThrough.id},
+            data: nextEpisode
+              ? {
+                  nextEpisode: EpisodeSelection.stringify(nextEpisode),
+                }
+              : {
+                  status: 'FINISHED',
+                  nextEpisode: null,
+                  finishedAt: watchThrough.updatedAt,
+                },
+          });
+        }
       }
 
       updateSeasons.push({
@@ -234,18 +267,14 @@ export async function updateSeries({
           }),
         ]
       : []),
-    ...(completedWatchthroughs.length > 0
+    ...(createWatches.length > 0
       ? [
-          prisma.watchThrough.updateMany({
-            data: {current: null, nextEpisode: null, status: 'FINISHED'},
-            where: {
-              seriesId,
-              status: 'ONGOING',
-              OR: completedWatchthroughs,
-            },
+          prisma.watch.createMany({
+            data: createWatches,
           }),
         ]
       : []),
+    ...updateWatchThroughs.map((update) => prisma.watchThrough.update(update)),
   ]);
 
   results.push(JSON.stringify(updateSeries, null, 2));
@@ -309,15 +338,4 @@ function tmdbStatusToEnum(status: string) {
       throw new Error(`Unrecognized status: ${status}`);
     }
   }
-}
-
-interface Slice {
-  season: number;
-  episode?: number;
-}
-
-function bufferFromSlice(slice: Slice) {
-  return slice.episode == null
-    ? Buffer.from([slice.season])
-    : Buffer.from([slice.season, slice.episode]);
 }

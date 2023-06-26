@@ -5,8 +5,6 @@ import type {
 } from '@prisma/client';
 import {EpisodeSelection} from '@watching/api';
 
-import {sliceFromBuffer} from '~/global/slices.ts';
-
 import {type ResolverContext} from '../shared/resolvers.ts';
 
 export async function updateWatchThrough(
@@ -19,9 +17,8 @@ export async function updateWatchThrough(
     episode: DatabaseEpisode;
   } & ({watch: DatabaseWatch} | {skip: DatabaseSkip}),
 ) {
-  const watchThrough = await prisma.watchThrough.findFirst({
+  const watchThrough = await prisma.watchThrough.findFirstOrThrow({
     where: {id},
-    rejectOnNotFound: true,
   });
 
   const episodeNumber = episode.number;
@@ -31,12 +28,20 @@ export async function updateWatchThrough(
     select: {status: true, number: true, episodeCount: true},
   });
 
-  const to = sliceFromBuffer(watchThrough.to);
+  const selection = EpisodeSelection.from(
+    ...(watchThrough.includeEpisodes as any),
+  );
 
-  const nextEpisodeInSeasonNumber =
+  const nextEpisode = selection.nextEpisode(
     episodeNumber === season.episodeCount && season.status === 'ENDED'
-      ? undefined
-      : episodeNumber + 1;
+      ? {
+          season: season.number + 1,
+        }
+      : {
+          season: season.number,
+          episode: episodeNumber + 1,
+        },
+  );
 
   const updatedAt =
     'watch' in action
@@ -45,17 +50,12 @@ export async function updateWatchThrough(
         action.watch.createdAt
       : action.skip.at ?? action.skip.createdAt;
 
-  if (
-    to.season === season.number &&
-    (to.episode === episodeNumber ||
-      (to.episode == null && nextEpisodeInSeasonNumber == null))
-  ) {
+  if (nextEpisode == null) {
     const [updatedWatchThrough] = await Promise.all([
       prisma.watchThrough.update({
         where: {id},
         data: {
           status: 'FINISHED',
-          current: null,
           nextEpisode: null,
           updatedAt,
           finishedAt: updatedAt,
@@ -78,15 +78,7 @@ export async function updateWatchThrough(
   return prisma.watchThrough.update({
     where: {id},
     data: {
-      nextEpisode: EpisodeSelection.stringify({
-        season:
-          nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
-        episode: nextEpisodeInSeasonNumber ?? 1,
-      }),
-      current: Buffer.from([
-        nextEpisodeInSeasonNumber == null ? season.number + 1 : season.number,
-        nextEpisodeInSeasonNumber ?? 1,
-      ]),
+      nextEpisode: EpisodeSelection.stringify(nextEpisode),
       updatedAt,
     },
   });

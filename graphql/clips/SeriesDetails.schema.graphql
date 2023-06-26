@@ -11,8 +11,8 @@ extend type Query {
 
 type Mutation {
   startWatchThrough(
-    from: EpisodeSliceInput
-    to: EpisodeSliceInput
+    from: EpisodeEndpointInput
+    to: EpisodeEndpointInput
     includeSpecials: Boolean
     spoilerAvoidance: SpoilerAvoidance
     navigate: Boolean
@@ -26,7 +26,7 @@ schema {
 
 # Mutation
 
-input EpisodeSliceInput {
+input EpisodeEndpointInput {
   season: Int!
   episode: Int
 }

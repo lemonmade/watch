@@ -255,7 +255,7 @@ function WatchSeriesAction({
         icon="watch"
         to={`/app/watching/${parseGid(ongoingWatchThrough.id).id}`}
       >
-        Watching Season {ongoingWatchThrough.on!.season}
+        Watching Season {ongoingWatchThrough.nextEpisode!.seasonNumber}
       </Action>
     );
   }

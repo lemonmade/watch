@@ -17,6 +17,8 @@ import {
   Series,
   Season,
   Episode,
+  EpisodeEndpoint,
+  EpisodeRange,
   Query as MediaQuery,
   Mutation as MediaMutation,
 } from './resolvers/media.ts';
@@ -94,6 +96,8 @@ export {
   ClipsExtensionSettingsString,
   ClipsExtensionPointSupportCondition,
   Episode,
+  EpisodeEndpoint,
+  EpisodeRange,
   GithubAccount,
   List,
   Listable,

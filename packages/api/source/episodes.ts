@@ -7,6 +7,7 @@ import type {
   EpisodeSelectorObject,
   EpisodeRangeSelectorObject,
   EpisodeEndpointSelectorObject,
+  EpisodeSelectionSelector,
 } from './types.ts';
 
 const EPISODE_SELECTOR_REGEX =
@@ -24,6 +25,14 @@ export class EpisodeSelection {
 
   constructor(...selectors: Parameters<EpisodeSelection['add']>) {
     this.add(...selectors);
+  }
+
+  get from() {
+    return this.includedRanges[0]?.from;
+  }
+
+  get to() {
+    return this.includedRanges[this.includedRanges.length - 1]?.to;
   }
 
   add(
@@ -314,7 +323,7 @@ function stringify<
 >(
   selector: SelectorObject,
 ): SelectorObject extends EpisodeRangeSelectorObject
-  ? EpisodeRangeSelector | EpisodeEndpointSelector
+  ? EpisodeSelectionSelector
   : SeasonSelectorObject extends SelectorObject
   ? SeasonSelector
   : SelectorObject extends EpisodeSelectorObject

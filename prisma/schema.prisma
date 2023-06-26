@@ -264,9 +264,6 @@ model WatchThrough {
   id               String             @id @default(uuid())
   includeEpisodes  Json
   nextEpisode      String?            @db.VarChar(20)
-  from             Bytes
-  to               Bytes
-  current          Bytes?
   status           WatchThroughStatus @default(ONGOING)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt

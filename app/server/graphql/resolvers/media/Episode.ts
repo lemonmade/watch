@@ -1,20 +1,29 @@
+import type {EpisodeRangeInput, EpisodeEndpointInput} from '../../schema.ts';
+
 import type {Episode as DatabaseEpisode} from '@prisma/client';
 
 import {fromGid} from '../shared/id.ts';
 import {imageUrl} from '../shared/images.ts';
 import {
-  createQueryResolver,
+  createResolver,
   createResolverWithGid,
+  createQueryResolver,
   type Resolver,
 } from '../shared/resolvers.ts';
 
 import {Episode as EpisodeLists} from '../lists.ts';
 import {Episode as EpisodeWatching} from '../watching.ts';
-import {EpisodeSelection} from '@watching/api';
+import {
+  EpisodeSelection,
+  type EpisodeEndpointSelectorObject,
+  type EpisodeRangeSelectorObject,
+} from '@watching/api';
 
 declare module '../types.ts' {
   export interface ValueMap {
     Episode: DatabaseEpisode;
+    EpisodeRange: EpisodeRangeSelectorObject;
+    EpisodeEndpoint: EpisodeEndpointSelectorObject;
   }
 }
 
@@ -90,3 +99,45 @@ export const Episode = createResolverWithGid('Episode', {
   ...EpisodeWatching,
   ...EpisodeLists,
 });
+
+export const EpisodeRange = createResolver('EpisodeRange', {
+  selector({from, to}) {
+    return EpisodeSelection.stringify({from, to});
+  },
+});
+
+export const EpisodeEndpoint = createResolver('EpisodeEndpoint', {
+  selector({season, episode}) {
+    return EpisodeSelection.stringify({season, episode});
+  },
+});
+
+export function episodeRangeSelectorObjectFromGraphQLInput({
+  selector,
+  from,
+  to,
+}: EpisodeRangeInput): EpisodeRangeSelectorObject {
+  if (selector) return EpisodeSelection.parse(selector);
+
+  return {
+    from: episodeEndpointSelectorObjectFromGraphQLInput(from),
+    to: episodeEndpointSelectorObjectFromGraphQLInput(to),
+  };
+}
+
+export function episodeEndpointSelectorObjectFromGraphQLInput(
+  endpoint: EpisodeEndpointInput | undefined | null,
+): EpisodeEndpointSelectorObject | undefined {
+  if (endpoint == null) return undefined;
+  if (endpoint.selector) return EpisodeSelection.parse(endpoint.selector);
+
+  const {season, episode} = endpoint;
+
+  if (season == null) {
+    throw new Error(
+      'You must provide a `season` or `selector` field for range endpoint',
+    );
+  }
+
+  return {season, episode: episode ?? undefined};
+}

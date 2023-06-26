@@ -3,6 +3,8 @@
 scalar EpisodeSelector
 scalar SeasonSelector
 scalar EpisodeEndpointSelector
+scalar EpisodeRangeSelector
+scalar EpisodeSelectionSelector
 
 extend type Query {
   series(id: ID, handle: String): Series
@@ -42,18 +44,32 @@ type Episode {
   overview: String
 }
 
+type EpisodeRange {
+  selector: EpisodeRangeSelector!
+  from: EpisodeEndpoint
+  to: EpisodeEndpoint
+}
+
+type EpisodeEndpoint {
+  selector: EpisodeEndpointSelector!
+  season: Int!
+  episode: Int
+}
+
 input SeriesSelectorInput {
   id: ID
   handle: String
 }
 
-input EpisodeSliceInput {
-  season: Int!
-  episode: Int
+input EpisodeRangeInput {
+  selector: EpisodeRangeSelector
+  from: EpisodeEndpointInput
+  to: EpisodeEndpointInput
 }
 
-type EpisodeSlice {
-  season: Int!
+input EpisodeEndpointInput {
+  selector: EpisodeEndpointSelector
+  season: Int
   episode: Int
 }
 
