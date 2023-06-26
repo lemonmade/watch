@@ -1,14 +1,14 @@
-import {toGid, fromGid} from './shared/id.ts';
-import type {
-  ResolverContext,
-  QueryResolver,
-  MutationResolver,
-} from './types.ts';
+import {toGid, fromGid} from '../shared/id.ts';
+import {
+  createResolver,
+  createQueryResolver,
+  createMutationResolver,
+  type ResolverContext,
+} from '../shared/resolvers.ts';
 
-import type {SeriesResolver} from './media.ts';
-import {VIRTUAL_WATCH_LATER_LIST} from './lists.ts';
+import {VIRTUAL_WATCH_LATER_LIST} from './List.ts';
 
-export const Query: Pick<QueryResolver, 'watchLater'> = {
+export const Query = createQueryResolver({
   async watchLater(_, __, {user, prisma}) {
     const list = await prisma.list.findFirst({
       where: {watchLaterUser: {id: user.id}},
@@ -16,9 +16,9 @@ export const Query: Pick<QueryResolver, 'watchLater'> = {
 
     return list ?? VIRTUAL_WATCH_LATER_LIST;
   },
-};
+});
 
-export const Series: Pick<SeriesResolver, 'inWatchLater'> = {
+export const Series = createResolver('Series', {
   async inWatchLater({id}, _, {prisma, user}) {
     const item = await prisma.listItem.findFirst({
       where: {
@@ -29,12 +29,9 @@ export const Series: Pick<SeriesResolver, 'inWatchLater'> = {
 
     return item != null;
   },
-};
+});
 
-export const Mutation: Pick<
-  MutationResolver,
-  'watchLater' | 'removeFromWatchLater'
-> = {
+export const Mutation = createMutationResolver({
   async watchLater(_, {seriesId}, {user, prisma}) {
     if (seriesId == null) {
       // We will eventually implement storing episodes/ seasons for watching later
@@ -113,7 +110,7 @@ export const Mutation: Pick<
 
     return {series, list, removedListItemId: toGid(item.id, 'ListItem')};
   },
-};
+});
 
 export async function addSeriesToWatchLater(
   id: string,

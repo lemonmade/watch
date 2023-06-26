@@ -4,7 +4,6 @@ import type {
   ResolverContext,
   QueryResolver,
   MutationResolver,
-  ResolverOptions,
   InterfaceResolver,
   UnionResolver,
 } from '../types.ts';
@@ -21,27 +20,28 @@ export type {
   UnionResolver,
 };
 
-export function createResolver<Type extends keyof ResolverOptions['types']>(
-  _type: Type,
-  resolver: Resolver<Type>,
-) {
+export function createResolver<
+  Type extends keyof Resolvers,
+  Fields extends keyof Resolvers[Type],
+>(_type: Type, resolver: Required<Pick<Resolvers[Type], Fields>>) {
   return resolver;
 }
 
 export function createResolverWithGid<
-  Type extends keyof ResolverOptions['types'],
->(type: Type, resolver: Resolver<Type>) {
+  Type extends keyof Resolvers,
+  Fields extends keyof Resolvers[Type],
+>(type: Type, resolver: Required<Pick<Resolvers[Type], Fields>>) {
   return {id: ({id}: {id: string}) => toGid(id, type), ...resolver};
 }
 
 export function createQueryResolver<Fields extends keyof QueryResolver>(
-  resolver: Pick<QueryResolver, Fields>,
+  resolver: Required<Pick<QueryResolver, Fields>>,
 ) {
   return resolver;
 }
 
 export function createMutationResolver<Fields extends keyof MutationResolver>(
-  resolver: Pick<MutationResolver, Fields>,
+  resolver: Required<Pick<MutationResolver, Fields>>,
 ) {
   return resolver;
 }

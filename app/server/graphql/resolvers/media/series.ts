@@ -15,7 +15,6 @@ import {imageUrl} from '../shared/images.ts';
 import {Series as SeriesLists} from '../lists.ts';
 import {Series as SeriesSubscription} from '../subscriptions.ts';
 import {Series as SeriesApp} from '../apps.ts';
-import {Series as SeriesWatchLater} from '../watch-later.ts';
 import {Series as SeriesWatching} from '../watching.ts';
 import {
   EpisodeSelection,
@@ -135,7 +134,6 @@ export const Series = createResolverWithGid('Series', {
   },
   ...SeriesLists,
   ...SeriesWatching,
-  ...SeriesWatchLater,
   ...SeriesSubscription,
   ...SeriesApp,
 });

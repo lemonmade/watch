@@ -16,9 +16,8 @@ import {
   createResolverWithGid,
 } from '../shared/resolvers.ts';
 
-import {VIRTUAL_WATCH_LATER_LIST} from '../lists.ts';
-import {addSeriesToWatchLater} from '../watch-later.ts';
 import {WatchThrough as WatchThroughApp} from '../apps.ts';
+import {VIRTUAL_WATCH_LATER_LIST, addSeriesToWatchLater} from '../lists.ts';
 
 declare module '../types' {
   export interface ValueMap {

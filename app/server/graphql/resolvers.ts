@@ -44,10 +44,6 @@ import {
   Mutation as WatchesMutation,
 } from './resolvers/watching.ts';
 import {
-  Query as WatchLaterQuery,
-  Mutation as WatchLaterMutation,
-} from './resolvers/watch-later.ts';
-import {
   User as BaseUser,
   PersonalAccessToken,
   Passkey,
@@ -68,7 +64,6 @@ export const Query: QueryResolver = {
   ...SubscriptionsQuery,
   ...UsersQuery,
   ...WatchesQuery,
-  ...WatchLaterQuery,
 };
 
 export const Mutation: MutationResolver = {
@@ -79,7 +74,6 @@ export const Mutation: MutationResolver = {
   ...SubscriptionsMutation,
   ...UsersMutation,
   ...WatchesMutation,
-  ...WatchLaterMutation,
 };
 
 const User = {
