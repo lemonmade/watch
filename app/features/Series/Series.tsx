@@ -26,7 +26,7 @@ import {
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
 
-import {parseGid, useQuery, useMutation} from '~/shared/graphql.ts';
+import {useQuery, useMutation} from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
@@ -251,11 +251,10 @@ function WatchSeriesAction({
 
   if (ongoingWatchThrough != null) {
     return (
-      <Action
-        icon="watch"
-        to={`/app/watching/${parseGid(ongoingWatchThrough.id).id}`}
-      >
-        Watching Season {ongoingWatchThrough.nextEpisode!.seasonNumber}
+      <Action icon="watch" to={ongoingWatchThrough.url}>
+        Watching Season{' '}
+        {ongoingWatchThrough.nextEpisode?.seasonNumber ??
+          ongoingWatchThrough.to.season}
       </Action>
     );
   }
