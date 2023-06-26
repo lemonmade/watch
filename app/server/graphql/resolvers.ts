@@ -42,7 +42,7 @@ import {
   Skippable,
   Query as WatchesQuery,
   Mutation as WatchesMutation,
-} from './resolvers/watches.ts';
+} from './resolvers/watching.ts';
 import {
   Query as WatchLaterQuery,
   Mutation as WatchLaterMutation,

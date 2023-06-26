@@ -10,7 +10,7 @@ import {
 } from '../shared/resolvers.ts';
 
 import {Season as SeasonLists} from '../lists.ts';
-import {Season as SeasonWatches} from '../watches.ts';
+import {Season as SeasonWatching} from '../watching.ts';
 import {EpisodeSelection} from '@watching/api';
 
 declare module '../types.ts' {
@@ -167,5 +167,5 @@ export const Season = createResolverWithGid('Season', {
     );
   },
   ...SeasonLists,
-  ...SeasonWatches,
+  ...SeasonWatching,
 });

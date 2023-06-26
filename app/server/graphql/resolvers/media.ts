@@ -2,19 +2,19 @@ import {
   Episode,
   Query as EpisodeQuery,
   type EpisodeResolver,
-} from './media/episode.ts';
+} from './media/Episode.ts';
 import {
   Season,
   Query as SeasonQuery,
   Mutation as SeasonMutation,
   type SeasonResolver,
-} from './media/season.ts';
+} from './media/Season.ts';
 import {
   Series,
   Query as SeriesQuery,
   Mutation as SeriesMutation,
   type SeriesResolver,
-} from './media/series.ts';
+} from './media/Series.ts';
 
 export {Episode, Season, Series};
 export type {EpisodeResolver, SeasonResolver, SeriesResolver};

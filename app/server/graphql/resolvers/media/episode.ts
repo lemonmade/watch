@@ -9,7 +9,7 @@ import {
 } from '../shared/resolvers.ts';
 
 import {Episode as EpisodeLists} from '../lists.ts';
-import {Episode as EpisodeWatches} from '../watches.ts';
+import {Episode as EpisodeWatching} from '../watching.ts';
 import {EpisodeSelection} from '@watching/api';
 
 declare module '../types.ts' {
@@ -87,6 +87,6 @@ export const Episode = createResolverWithGid('Episode', {
 
     return season.status !== 'CONTINUING';
   },
-  ...EpisodeWatches,
+  ...EpisodeWatching,
   ...EpisodeLists,
 });
