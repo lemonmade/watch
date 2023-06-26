@@ -642,12 +642,12 @@ export const Watch = createResolverWithGid('Watch', {
     const [episode, season] = await Promise.all([
       episodeId
         ? prisma.episode.findFirst({
-            where: {id: fromGid(episodeId).id},
+            where: {id: episodeId},
           })
         : Promise.resolve(null),
       seasonId
         ? prisma.season.findFirst({
-            where: {id: fromGid(seasonId).id},
+            where: {id: seasonId},
             rejectOnNotFound: true,
           })
         : Promise.resolve(null),
@@ -679,12 +679,12 @@ export const Skip = createResolverWithGid('Skip', {
     const [episode, season] = await Promise.all([
       episodeId
         ? prisma.episode.findFirst({
-            where: {id: fromGid(episodeId).id},
+            where: {id: episodeId},
           })
         : Promise.resolve(null),
       seasonId
         ? prisma.season.findFirst({
-            where: {id: fromGid(seasonId).id},
+            where: {id: seasonId},
             rejectOnNotFound: true,
           })
         : Promise.resolve(null),
