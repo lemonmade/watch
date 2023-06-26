@@ -512,8 +512,7 @@ export const Mutation = createMutationResolver({
 });
 
 export const WatchThrough = createResolverWithGid('WatchThrough', {
-  url: ({id}, _, {request}) =>
-    new URL(`/app/watchthrough/${id}`, request.url).href,
+  url: ({id}, _, {request}) => new URL(`/app/watching/${id}`, request.url).href,
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
       where: {id: seriesId},

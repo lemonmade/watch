@@ -253,7 +253,7 @@ function WatchSeriesAction({
     return (
       <Action
         icon="watch"
-        to={`/app/watchthrough/${parseGid(ongoingWatchThrough.id).id}`}
+        to={`/app/watching/${parseGid(ongoingWatchThrough.id).id}`}
       >
         Watching Season {ongoingWatchThrough.on!.season}
       </Action>
@@ -271,11 +271,8 @@ function WatchSeriesAction({
           },
           {
             onSuccess({startWatchThrough}) {
-              const watchThroughId = startWatchThrough?.watchThrough?.id;
-
-              if (watchThroughId) {
-                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
-              }
+              const url = startWatchThrough?.watchThrough?.url;
+              if (url) navigate(url);
             },
           },
         );
@@ -551,14 +548,8 @@ function SeasonWatchThroughAction({
                     },
                     {
                       onSuccess({startWatchThrough}) {
-                        const watchThroughId =
-                          startWatchThrough?.watchThrough?.id;
-
-                        if (watchThroughId) {
-                          navigate(
-                            `/app/watchthrough/${parseGid(watchThroughId).id}`,
-                          );
-                        }
+                        const url = startWatchThrough?.watchThrough?.url;
+                        if (url) navigate(url);
                       },
                     },
                   );
@@ -584,11 +575,8 @@ function SeasonWatchThroughAction({
           },
           {
             onSuccess({startWatchThrough}) {
-              const watchThroughId = startWatchThrough?.watchThrough?.id;
-
-              if (watchThroughId) {
-                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
-              }
+              const url = startWatchThrough?.watchThrough?.url;
+              if (url) navigate(url);
             },
           },
         );
@@ -689,11 +677,8 @@ function WatchSeasonFromEpisodeAction({
           },
           {
             onSuccess({startWatchThrough}) {
-              const watchThroughId = startWatchThrough?.watchThrough?.id;
-
-              if (watchThroughId) {
-                navigate(`/app/watchthrough/${parseGid(watchThroughId).id}`);
-              }
+              const url = startWatchThrough?.watchThrough?.url;
+              if (url) navigate(url);
             },
           },
         );
@@ -717,7 +702,7 @@ function WatchThroughsSection({
           {watchThroughs.map((watchThrough) => (
             <Action
               key={watchThrough.id}
-              to={`/app/watchthrough/${parseGid(watchThrough.id).id}`}
+              to={watchThrough.url}
               inlineAlignment="start"
               detail={<Icon source="disclosure.inline.end" />}
             >

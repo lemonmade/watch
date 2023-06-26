@@ -1,6 +1,7 @@
 query Watching {
   watchThroughs {
     id
+    url
     unfinishedEpisodeCount
     updatedAt
     series {

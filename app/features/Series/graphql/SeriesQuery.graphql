@@ -38,6 +38,7 @@ query Series($id: ID, $handle: String) {
     }
     watchThroughs {
       id
+      url
       status
       unfinishedEpisodeCount
       finishedAt

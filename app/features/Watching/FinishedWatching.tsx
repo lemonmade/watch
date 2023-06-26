@@ -3,7 +3,7 @@ import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
-import {parseGid, useQuery} from '~/shared/graphql.ts';
+import {useQuery} from '~/shared/graphql.ts';
 
 import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 
@@ -16,10 +16,10 @@ export default function FinishedWatching() {
   return (
     <Page heading="Finished watching">
       <MediaGrid>
-        {data?.watchThroughs.map(({id, finishedAt, series}) => (
+        {data?.watchThroughs.map(({id, url, finishedAt, series}) => (
           <MediaGridItem
             key={id}
-            to={`/app/watchthrough/${parseGid(id).id}`}
+            to={url}
             image={<Poster source={series.poster?.source} />}
             title={series.name}
             subtitle={

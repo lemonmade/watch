@@ -16,6 +16,7 @@ import {
 import {useSerialized} from '@quilted/quilt/html';
 import {Canvas} from '@lemon/zest';
 
+import {toGid} from '~/shared/graphql';
 import {SearchParam} from '~/global/auth';
 
 import {Head} from './foundation/Head.ts';
@@ -226,9 +227,7 @@ const routes: RouteDefinition[] = [
           },
           {
             match: /\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/,
-            render: ({matched}) => (
-              <Series id={`gid://watch/Series/${matched}`} />
-            ),
+            render: ({matched}) => <Series id={toGid(matched, 'Series')} />,
             renderPreload: <Series.Preload />,
           },
           {
@@ -239,7 +238,7 @@ const routes: RouteDefinition[] = [
         ],
       },
       {
-        match: 'watchthrough',
+        match: ['watching', 'watch-through', 'watchthrough'],
         children: [
           {
             match: '.random',
@@ -248,7 +247,7 @@ const routes: RouteDefinition[] = [
           {
             match: /[\w-]+/,
             render: ({matched}) => (
-              <WatchThrough id={`gid://watch/WatchThrough/${matched}`} />
+              <WatchThrough id={toGid(matched, 'WatchThrough')} />
             ),
             renderPreload: <WatchThrough.Preload />,
           },

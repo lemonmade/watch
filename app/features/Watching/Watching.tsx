@@ -4,7 +4,7 @@ import {useLocalizedFormatting, usePerformanceNavigation} from '@quilted/quilt';
 import {Menu, Action, Poster, Spacer, Tag} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {parseGid, useQuery, type ListItemType} from '~/shared/graphql.ts';
+import {useQuery, type ListItemType} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import watchingQuery, {
@@ -63,7 +63,7 @@ export default function Watching(_: Props) {
 }
 
 function WatchThroughItem({watchThrough}: {watchThrough: WatchThrough}) {
-  const {id, series, nextEpisode, unfinishedEpisodeCount} = watchThrough;
+  const {url, series, nextEpisode, unfinishedEpisodeCount} = watchThrough;
   const {formatDate} = useLocalizedFormatting();
 
   let subtitle: string | undefined;
@@ -80,7 +80,7 @@ function WatchThroughItem({watchThrough}: {watchThrough: WatchThrough}) {
 
   return (
     <MediaGridItem
-      to={`/app/watchthrough/${parseGid(id).id}`}
+      to={url}
       image={
         <Poster
           label={series.name}

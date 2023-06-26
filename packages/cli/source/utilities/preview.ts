@@ -8,7 +8,7 @@ const TARGET_MAP: Record<
   (support: LocalExtensionPointSupport) => string
 > = {
   'series.details.accessory': getSeriesForExtensionPointSupport,
-  'watch-through.details.accessory': () => '/app/watchthrough/.random',
+  'watch-through.details.accessory': () => '/app/watching/.random',
 };
 
 export const DEFAULT_PREVIEW_PATH = '/app/developer/console';
