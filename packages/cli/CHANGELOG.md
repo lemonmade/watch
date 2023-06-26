@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.0.24
+
+### Patch Changes
+
+- [`c60848b`](https://github.com/lemonmade/watch/commit/c60848bbdc660d4db42b9261348bda37c87bae04) Thanks [@lemonmade](https://github.com/lemonmade)! - Update watch-through URLs
+
 ## 2.0.23
 
 ### Patch Changes

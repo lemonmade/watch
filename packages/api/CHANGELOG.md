@@ -1,5 +1,11 @@
 # @watching/api
 
+## 0.0.2
+
+### Patch Changes
+
+- [`0f05932`](https://github.com/lemonmade/watch/commit/0f05932aff569475dea77060593519fde1f52b25) Thanks [@lemonmade](https://github.com/lemonmade)! - Add EpisodeSelection.from and .to
+
 ## 0.0.1
 
 ### Patch Changes
