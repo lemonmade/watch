@@ -3,6 +3,7 @@
 extend type Query {
   lists: [List!]!
   list(id: ID!): List
+  watchLater: List!
 }
 
 extend type Episode implements Listable {
@@ -15,11 +16,14 @@ extend type Season implements Listable {
 
 extend type Series implements Listable {
   lists: [List!]!
+  inWatchLater: Boolean!
 }
 
 extend type Mutation {
   addToList(id: ID!, seriesId: ID): AddToListPayload!
   removeFromList(id: ID!, itemId: ID!): RemoveFromListPayload!
+  watchLater(seriesId: ID): WatchLaterPayload!
+  removeFromWatchLater(seriesId: ID): RemoveFromWatchLaterPayload!
 }
 
 interface Listable {
@@ -48,6 +52,18 @@ type AddToListPayload {
 
 type RemoveFromListPayload {
   list: List
+  series: Series
+  removedListItemId: ID
+}
+
+type WatchLaterPayload {
+  list: List!
+  item: ListItem
+  series: Series
+}
+
+type RemoveFromWatchLaterPayload {
+  list: List!
   series: Series
   removedListItemId: ID
 }

@@ -1,6 +1,6 @@
 #import "./shared.schema.graphql"
 #import "./media.schema.graphql"
-#import "./watch-later.schema.graphql"
+#import "./lists.schema.graphql"
 
 extend type Query {
   watch(id: ID!): Watch
