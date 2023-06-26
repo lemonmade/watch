@@ -22,7 +22,7 @@ router.options(() =>
 );
 
 router.post(async (request) => {
-  const {operationName, query, variables} = await request.json();
+  const {operationName, query, variables} = (await request.json()) as any;
 
   /* eslint-disable no-console */
   console.log(`Performing operation: ${operationName}`);

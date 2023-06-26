@@ -2,7 +2,7 @@ import type {Passkey as DatabasePasskey} from '@prisma/client';
 
 import {addAuthCookies} from '../../../shared/auth.ts';
 
-import {fromGid} from '../shared/id.ts';
+import {toGid, fromGid} from '../shared/id.ts';
 import {
   createResolverWithGid,
   createMutationResolver,
@@ -215,6 +215,6 @@ export const Mutation = createMutationResolver({
       select: {user: true},
     });
 
-    return {deletedPasskeyId: passkey.id, user: updatedUser};
+    return {deletedPasskeyId: toGid(passkey.id, 'Passkey'), user: updatedUser};
   },
 });
