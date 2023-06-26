@@ -3,8 +3,6 @@ import {
   EpisodeEndpoint,
   EpisodeRange,
   Query as EpisodeQuery,
-  episodeRangeSelectorObjectFromGraphQLInput,
-  episodeEndpointSelectorObjectFromGraphQLInput,
   type EpisodeResolver,
 } from './media/Episode.ts';
 import {
@@ -20,15 +18,7 @@ import {
   type SeriesResolver,
 } from './media/Series.ts';
 
-export {
-  Episode,
-  EpisodeEndpoint,
-  EpisodeRange,
-  Season,
-  Series,
-  episodeRangeSelectorObjectFromGraphQLInput,
-  episodeEndpointSelectorObjectFromGraphQLInput,
-};
+export {Episode, EpisodeEndpoint, EpisodeRange, Season, Series};
 export type {EpisodeResolver, SeasonResolver, SeriesResolver};
 
 export const Query = {

@@ -39,7 +39,7 @@ export async function updateWatchThrough(
         }
       : {
           season: season.number,
-          episode: episodeNumber + 1,
+          episode: episodeNumber,
         },
   );
 

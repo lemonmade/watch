@@ -16,10 +16,10 @@ import {
   createMutationResolver,
   createResolverWithGid,
 } from '../shared/resolvers.ts';
+import {episodeRangeSelectorObjectFromGraphQLInput} from '../shared/episode-selection.ts';
 
 import {WatchThrough as WatchThroughApp} from '../apps.ts';
 import {VIRTUAL_WATCH_LATER_LIST, addSeriesToWatchLater} from '../lists.ts';
-import {episodeRangeSelectorObjectFromGraphQLInput} from '../media.ts';
 
 declare module '../types' {
   export interface ValueMap {

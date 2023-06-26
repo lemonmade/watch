@@ -1,5 +1,3 @@
-import type {EpisodeRangeInput, EpisodeEndpointInput} from '../../schema.ts';
-
 import type {Episode as DatabaseEpisode} from '@prisma/client';
 
 import {fromGid} from '../shared/id.ts';
@@ -111,33 +109,3 @@ export const EpisodeEndpoint = createResolver('EpisodeEndpoint', {
     return EpisodeSelection.stringify({season, episode});
   },
 });
-
-export function episodeRangeSelectorObjectFromGraphQLInput({
-  selector,
-  from,
-  to,
-}: EpisodeRangeInput): EpisodeRangeSelectorObject {
-  if (selector) return EpisodeSelection.parse(selector);
-
-  return {
-    from: episodeEndpointSelectorObjectFromGraphQLInput(from),
-    to: episodeEndpointSelectorObjectFromGraphQLInput(to),
-  };
-}
-
-export function episodeEndpointSelectorObjectFromGraphQLInput(
-  endpoint: EpisodeEndpointInput | undefined | null,
-): EpisodeEndpointSelectorObject | undefined {
-  if (endpoint == null) return undefined;
-  if (endpoint.selector) return EpisodeSelection.parse(endpoint.selector);
-
-  const {season, episode} = endpoint;
-
-  if (season == null) {
-    throw new Error(
-      'You must provide a `season` or `selector` field for range endpoint',
-    );
-  }
-
-  return {season, episode: episode ?? undefined};
-}

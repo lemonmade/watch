@@ -11,9 +11,9 @@ import {
   createUnionResolver,
   createInterfaceResolver,
 } from '../shared/resolvers.ts';
+import {episodeRangeSelectorObjectFromGraphQLInput} from '../shared/episode-selection.ts';
 
 import {VIRTUAL_WATCH_LATER_LIST} from '../lists.ts';
-import {episodeRangeSelectorObjectFromGraphQLInput} from '../media.ts';
 
 import {updateWatchThrough} from './shared.ts';
 
