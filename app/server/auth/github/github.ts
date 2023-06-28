@@ -411,7 +411,7 @@ async function handleGithubOAuthCallback(
   const {access_token: accessToken} = accessTokenJson;
 
   const queryGithub = createGraphQLHttpFetch({
-    uri: 'https://api.github.com/graphql',
+    url: 'https://api.github.com/graphql',
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

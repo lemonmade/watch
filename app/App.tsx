@@ -60,8 +60,8 @@ import {
 import {createClipsManager, ClipsLocalDevelopment} from './shared/clips';
 
 const fetch = createGraphQLHttpFetch({
+  url: '/api/graphql',
   credentials: 'include',
-  uri: '/api/graphql',
 });
 
 export default function App(props: AppContextProps) {
