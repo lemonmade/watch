@@ -101,7 +101,7 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
 
 function graphqlFromAccessToken(accessToken: string) {
   return createGraphQLHttpFetch({
-    uri: watchUrl('/api/graphql').href,
+    url: watchUrl('/api/graphql'),
     headers: {
       'X-Access-Token': accessToken,
     },
