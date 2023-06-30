@@ -182,7 +182,7 @@ export const Mutation = createMutationResolver({
           prisma.user.findFirstOrThrow({
             where: {id: user.id},
           }),
-          prisma.watch.findFirstOrThrow({
+          prisma.watch.findFirst({
             where: {userId: user.id, seasonId: toSeason.id},
           }),
         ]);
