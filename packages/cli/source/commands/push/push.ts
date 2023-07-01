@@ -296,12 +296,10 @@ async function loadLiveQueryForExtension(
     'utf8',
   );
 
-  const [{parse}, {cleanDocument, toSimpleDocument}] = await Promise.all([
-    import('graphql'),
-    import('@quilted/graphql/transform'),
-  ]);
+  const [{parse}, {cleanGraphQLDocument, toGraphQLOperation}] =
+    await Promise.all([import('graphql'), import('@quilted/graphql-tools')]);
 
-  return toSimpleDocument(cleanDocument(parse(graphql))).source;
+  return toGraphQLOperation(cleanGraphQLDocument(parse(graphql))).source;
 }
 
 async function loadLoadingUiForExtension(

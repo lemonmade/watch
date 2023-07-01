@@ -146,7 +146,7 @@ function SeriesWithData({
                     </Popover>
                   }
                 >
-                  {series.name}
+                  {series.name}ssss
                 </HeadingAction>
                 <InlineStack spacing="small">
                   <SeriesStatusTag status={series.status} />
