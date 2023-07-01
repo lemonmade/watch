@@ -68,32 +68,36 @@ export async function loadTmdbSeries(
     let currentBatch = seasonResults.slice(currentIndex, SEASON_BATCH_SIZE);
 
     while (currentBatch.length > 0) {
-      await prisma.season.createMany({
-        data: currentBatch.map((season) => ({
-          seriesId: series.id,
-          number: season.season_number,
-          firstAired: tmdbAirDateToDate(season.air_date),
-          overview: season.overview ?? null,
-          status: seasonStatus(season, seriesResult),
-          posterUrl: season.poster_path
-            ? `https://image.tmdb.org/t/p/original${season.poster_path}`
-            : null,
-          episodeCount: season.episodes?.length ?? 0,
-          episodes: {
-            create: season.episodes?.map((episode) => ({
+      await Promise.all(
+        currentBatch.map(async (season) => {
+          await prisma.season.create({
+            data: {
               seriesId: series.id,
-              number: episode.episode_number,
-              seasonNumber: season.season_number,
-              title: episode.name,
-              firstAired: tmdbAirDateToDate(episode.air_date),
-              overview: episode.overview || null,
-              stillUrl: episode.still_path
-                ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+              number: season.season_number,
+              firstAired: tmdbAirDateToDate(season.air_date),
+              overview: season.overview ?? null,
+              status: seasonStatus(season, seriesResult),
+              posterUrl: season.poster_path
+                ? `https://image.tmdb.org/t/p/original${season.poster_path}`
                 : null,
-            })),
-          },
-        })),
-      });
+              episodeCount: season.episodes?.length ?? 0,
+              episodes: {
+                create: season.episodes?.map((episode) => ({
+                  seriesId: series.id,
+                  number: episode.episode_number,
+                  seasonNumber: season.season_number,
+                  title: episode.name,
+                  firstAired: tmdbAirDateToDate(episode.air_date),
+                  overview: episode.overview || null,
+                  stillUrl: episode.still_path
+                    ? `https://image.tmdb.org/t/p/original${episode.still_path}`
+                    : null,
+                })),
+              },
+            },
+          });
+        }),
+      );
 
       currentIndex += currentBatch.length;
       currentBatch = seasonResults.slice(
