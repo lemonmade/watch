@@ -82,14 +82,16 @@ export const Mutation = createMutationResolver({
       });
 
       await Promise.all([
-        prisma.watchThrough.updateMany({
-          where: {
-            id: {in: watchThroughs.map(({id}) => id)},
-          },
-          data: {
-            status: 'FINISHED',
-            nextEpisode: null,
-          },
+        // TODO: this should probably be on a queue
+        ...watchThroughs.map(async (watchThrough) => {
+          await prisma.watchThrough.update({
+            where: {id: watchThrough.id},
+            data: {
+              status: 'FINISHED',
+              finishedAt: watchThrough.updatedAt,
+              nextEpisode: null,
+            },
+          });
         }),
         prisma.watch.createMany({
           data: watchThroughs.map<Prisma.WatchCreateManyInput>(
