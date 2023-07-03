@@ -45,7 +45,7 @@
     "bin"
   ],
   "dependencies": {
-    "@lemonmade/graphql-live": "^0.1.17",
+    "@lemonmade/graphql-live": "^0.1.18",
     "@quilted/cli-kit": "^0.1.9",
     "@quilted/graphql": "^0.6.5",
     "@quilted/graphql-tools": "^0.1.2",
