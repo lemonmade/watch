@@ -2,6 +2,7 @@ lockfileVersion: '6.0'
 
 overrides:
   preact-render-to-string: 5.2.3
+  '@prefresh/core': 1.5.0
 
 importers:
 
@@ -4681,8 +4682,8 @@ packages:
     resolution: {integrity: sha512-joAwpkUDwo7ZqJnufXRGzUb+udk20RBgfA8oLPBh5aJH2LeStmV1luBfeJTztPdyCscC2j2SmZ/tVxFRMIxAEw==}
     dev: true
 
-  /@prefresh/core@1.5.1(preact@10.15.1):
-    resolution: {integrity: sha512-e0mB0Oxtog6ZpKPDBYbzFniFJDIktuKMzOHp7sguntU+ot0yi6dbhJRE9Css1qf0u16wdSZjpL2W2ODWuU05Cw==}
+  /@prefresh/core@1.5.0(preact@10.15.1):
+    resolution: {integrity: sha512-C8zcVW77HD/jh47sLJ4vX2//qFrdr6kpBwsLDD84bSl2cvmCamZImnaDvimxrhxcN9oeC+8qnUl92SxQFQY0rg==}
     peerDependencies:
       preact: ^10.0.0
     dependencies:
@@ -4701,7 +4702,7 @@ packages:
     dependencies:
       '@babel/core': 7.22.5
       '@prefresh/babel-plugin': 0.5.0
-      '@prefresh/core': 1.5.1(preact@10.15.1)
+      '@prefresh/core': 1.5.0(preact@10.15.1)
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.15.1
