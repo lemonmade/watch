@@ -9,7 +9,7 @@ import styles from './Frame.module.css';
 export interface Props {}
 
 const ROOT_NAVIGATION_ITEM_MATCHES = [
-  /[/]app[/]?($|finished[/]?$|watchthrough[/])/,
+  /[/]app[/]?($|finished[/]?$|watch-?through[/]|watching[/])/,
 ];
 
 export default function Frame({children}: PropsWithChildren<Props>) {
