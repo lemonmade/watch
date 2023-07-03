@@ -593,14 +593,17 @@ async function createStagedClipsVersion({
               target,
               liveQuery: liveQuery
                 ? await (async () => {
-                    const [{parse}, {cleanDocument, toSimpleDocument}] =
-                      await Promise.all([
-                        import('graphql'),
-                        import('@quilted/graphql/transform'),
-                      ]);
+                    const [
+                      {parse},
+                      {toGraphQLOperation, cleanGraphQLDocument},
+                    ] = await Promise.all([
+                      import('graphql'),
+                      import('@quilted/graphql-tools'),
+                    ]);
 
-                    return toSimpleDocument(cleanDocument(parse(liveQuery)))
-                      .source;
+                    return toGraphQLOperation(
+                      cleanGraphQLDocument(parse(liveQuery)),
+                    ).source;
                   })()
                 : undefined,
               loading: loading?.ui

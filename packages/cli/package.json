@@ -45,9 +45,10 @@
     "bin"
   ],
   "dependencies": {
-    "@lemonmade/graphql-live": "^0.1.15",
+    "@lemonmade/graphql-live": "^0.1.18",
     "@quilted/cli-kit": "^0.1.9",
-    "@quilted/graphql": "^0.5.1",
+    "@quilted/graphql": "^0.6.5",
+    "@quilted/graphql-tools": "^0.1.2",
     "@quilted/polyfills": "^0.2.34",
     "@quilted/request-router": "^0.1.6",
     "@quilted/threads": "^0.1.15",
@@ -59,7 +60,7 @@
     "brotli-size": "^4.0.0",
     "chokidar": "^3.5.0",
     "colorette": "^1.0.0",
-    "graphql": "^16.6.0",
+    "graphql": "^16.7.0",
     "mime": "^2.5.0",
     "open": "^8.0.0",
     "pkg-dir": "^6.0.0",
