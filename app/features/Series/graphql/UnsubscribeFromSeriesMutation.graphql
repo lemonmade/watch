@@ -1,5 +1,0 @@
-mutation UnsubscribeFromSeries($id: ID!) {
-  unsubscribeFromSeries(id: $id) {
-    deletedSubscriptionId
-  }
-}

@@ -1,7 +1,0 @@
-mutation SubscribeToSeries($id: ID!) {
-  subscribeToSeries(id: $id) {
-    subscription {
-      id
-    }
-  }
-}

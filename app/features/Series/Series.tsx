@@ -22,6 +22,7 @@ import {
   Poster,
   Disclosure,
   EpisodeImage,
+  Checkbox,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
@@ -34,11 +35,10 @@ import seasonEpisodesQuery, {
   type SeasonEpisodesQueryData,
 } from './graphql/SeasonEpisodesQuery.graphql';
 import startWatchThroughMutation from './graphql/StartWatchThroughMutation.graphql';
-import subscribeToSeriesMutation from './graphql/SubscribeToSeriesMutation.graphql';
+import toggleSubscriptionToSeriesMutation from './graphql/ToggleSubscriptionToSeriesMutation.graphql';
 import markSeasonAsFinishedMutation from './graphql/MarkSeasonAsFinishedMutation.graphql';
 import deleteSeriesMutation from './graphql/DeleteSeriesMutation.graphql';
 import synchronizeSeriesWithTmdbMutation from './graphql/SynchronizeSeriesWithTmdbMutation.graphql';
-import unsubscribeFromSeriesMutation from './graphql/UnsubscribeFromSeriesMutation.graphql';
 import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSettingsMutation.graphql';
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
@@ -741,33 +741,24 @@ function SettingsSection({
 }: Pick<SeriesQueryData.Series, 'id' | 'subscription'> & {
   onUpdate(): Promise<void>;
 }) {
-  const subscribeToSeries = useMutation(subscribeToSeriesMutation);
-  const unsubscribeFromSeries = useMutation(unsubscribeFromSeriesMutation);
+  const toggleSubscriptionToSeries = useMutation(
+    toggleSubscriptionToSeriesMutation,
+  );
 
   return (
     <Section>
       <BlockStack spacing>
         <Heading divider>Settings</Heading>
-        {subscription ? (
-          <Action
-            selected
-            onPress={async () => {
-              await unsubscribeFromSeries.mutateAsync({id});
-              await onUpdate();
-            }}
-          >
-            Unsubscribe
-          </Action>
-        ) : (
-          <Action
-            onPress={async () => {
-              await subscribeToSeries.mutateAsync({id});
-              await onUpdate();
-            }}
-          >
-            Subscribe
-          </Action>
-        )}
+        <Checkbox
+          checked={subscription != null}
+          onChange={async () => {
+            await toggleSubscriptionToSeries.mutateAsync({id});
+            await onUpdate();
+          }}
+          helpText="Automatically start watching new seasons as they air"
+        >
+          Subscribe to Series
+        </Checkbox>
         {subscription && (
           <SpoilerAvoidanceSection
             id={id}

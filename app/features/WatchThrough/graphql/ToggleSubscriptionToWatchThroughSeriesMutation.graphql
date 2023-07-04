@@ -1,0 +1,7 @@
+mutation ToggleSubscriptionToWatchThroughSeries($id: ID!) {
+  toggleSubscriptionToSeries(id: $id) {
+    subscription {
+      id
+    }
+  }
+}

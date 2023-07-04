@@ -44,8 +44,47 @@ export const Mutation = createMutationResolver({
         })
       ).spoilerAvoidance;
 
+    const seriesId = fromGid(id).id;
+
+    const subscription = await prisma.seriesSubscription.upsert({
+      where: {seriesId_userId: {seriesId, userId: user.id}},
+      create: {seriesId, userId: user.id, spoilerAvoidance},
+      update: explicitSpoilerAvoidance
+        ? {spoilerAvoidance: explicitSpoilerAvoidance}
+        : {},
+    });
+
+    return {subscription};
+  },
+  async toggleSubscriptionToSeries(
+    _,
+    {id, spoilerAvoidance: explicitSpoilerAvoidance},
+    {user, prisma},
+  ) {
+    const seriesId = fromGid(id).id;
+    const existingSubscription = await prisma.seriesSubscription.findFirst({
+      where: {seriesId, userId: user.id},
+    });
+
+    if (existingSubscription) {
+      await prisma.seriesSubscription.delete({
+        where: {id: existingSubscription.id},
+      });
+
+      return {subscription: null};
+    }
+
+    const spoilerAvoidance =
+      explicitSpoilerAvoidance ??
+      (
+        await prisma.user.findFirst({
+          where: {id: user.id},
+          rejectOnNotFound: true,
+        })
+      ).spoilerAvoidance;
+
     const subscription = await prisma.seriesSubscription.create({
-      data: {seriesId: fromGid(id).id, userId: user.id, spoilerAvoidance},
+      data: {seriesId, userId: user.id, spoilerAvoidance},
     });
 
     return {subscription};
@@ -53,7 +92,7 @@ export const Mutation = createMutationResolver({
   async unsubscribeFromSeries(_, {id: gid}: {id: string}, {user, prisma}) {
     const {id, type} = fromGid(gid);
 
-    const {id: validatedId} = await prisma.seriesSubscription.findFirst({
+    const subscription = await prisma.seriesSubscription.findFirst({
       where:
         type === 'Series'
           ? {seriesId: id, userId: user.id}
@@ -61,14 +100,26 @@ export const Mutation = createMutationResolver({
               id,
               userId: user.id,
             },
-      rejectOnNotFound: true,
     });
+
+    if (subscription == null) {
+      return {
+        errors: [
+          {
+            code: 'GENERIC_ERROR',
+            message: `No subscription for series ${id} found.`,
+          },
+        ],
+      };
+    }
+
+    const {id: validatedId} = subscription;
 
     await prisma.seriesSubscription.delete({
       where: {id: validatedId},
     });
 
-    return {deletedSubscriptionId: validatedId};
+    return {errors: []};
   },
   async updateSeriesSubscriptionSettings(
     _,

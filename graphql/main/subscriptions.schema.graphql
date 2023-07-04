@@ -15,6 +15,10 @@ extend type Mutation {
     id: ID!
     spoilerAvoidance: SpoilerAvoidance
   ): SubscribeToSeriesPayload!
+  toggleSubscriptionToSeries(
+    id: ID!
+    spoilerAvoidance: SpoilerAvoidance
+  ): ToggleSubscriptionToSeriesPayload!
   unsubscribeFromSeries(id: ID!): UnsubscribeFromSeriesPayload!
   updateSeriesSubscriptionSettings(
     id: ID!
@@ -39,8 +43,12 @@ type SubscribeToSeriesPayload {
   subscription: SeriesSubscription
 }
 
+type ToggleSubscriptionToSeriesPayload {
+  subscription: SeriesSubscription
+}
+
 type UnsubscribeFromSeriesPayload {
-  deletedSubscriptionId: ID!
+  errors: [Error!]!
 }
 
 type UpdateSeriesSubscriptionSettingsPayload {

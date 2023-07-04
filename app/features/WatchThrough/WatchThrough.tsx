@@ -55,8 +55,7 @@ import updateWatchThroughSettingsMutation from './graphql/UpdateWatchThroughSett
 import startWatchThroughFromWatchThroughMutation, {
   type StartWatchThroughFromWatchThroughMutationVariables,
 } from './graphql/StartWatchThroughFromWatchThroughMutation.graphql';
-import subscribeToWatchThroughSeriesMutation from './graphql/SubscribeToWatchThroughSeriesMutation.graphql';
-import unsubscribeToWatchThroughSeriesMutation from './graphql/UnsubscribeToWatchThroughSeriesMutation.graphql';
+import toggleSubscriptionToWatchThroughSeriesMutation from './graphql/ToggleSubscriptionToWatchThroughSeriesMutation.graphql';
 import {EpisodeSelection} from '@watching/api';
 
 export interface Props {
@@ -410,30 +409,23 @@ function SeriesSubscription({
   onUpdate(): void | Promise<void>;
 }) {
   const subscribed = watchThrough.series.subscription != null;
-  const subscribeToSeries = useMutation(subscribeToWatchThroughSeriesMutation);
-  const unsubscribeToSeries = useMutation(
-    unsubscribeToWatchThroughSeriesMutation,
+  const toggleSubscription = useMutation(
+    toggleSubscriptionToWatchThroughSeriesMutation,
   );
 
   return (
     <Checkbox
       checked={subscribed}
       onChange={async () => {
-        if (subscribed) {
-          await unsubscribeToSeries.mutateAsync({
-            id: watchThrough.series.id,
-          });
-        } else {
-          await subscribeToSeries.mutateAsync({
-            id: watchThrough.series.id,
-          });
-        }
+        await toggleSubscription.mutateAsync({
+          id: watchThrough.series.id,
+        });
 
         await onUpdate();
       }}
       helpText="Automatically start watching new seasons as they air"
     >
-      Subscribed
+      Subscribe to Series
     </Checkbox>
   );
 }
