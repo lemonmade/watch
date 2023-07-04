@@ -149,11 +149,11 @@ function SeriesWithData({
                   {series.name}
                 </HeadingAction>
                 <InlineStack spacing="small">
-                  <SeriesStatusTag status={series.status} />
                   <Text emphasis="subdued">
-                    {betweenText ? `${betweenText} • ` : ''}
                     {seasonCount} {seasonCount === 1 ? 'Season' : 'Seasons'}
+                    {betweenText ? ` • ${betweenText}` : ''}
                   </Text>
+                  <SeriesStatusTag status={series.status} />
                 </InlineStack>
               </BlockStack>
 
@@ -750,6 +750,7 @@ function SettingsSection({
         <Heading divider>Settings</Heading>
         {subscription ? (
           <Action
+            selected
             onPress={async () => {
               await unsubscribeFromSeries.mutateAsync({id});
               await onUpdate();

@@ -25,15 +25,23 @@ export async function updateWatchThrough(
 
   const season = await prisma.season.findFirstOrThrow({
     where: {id: episode.seasonId},
-    select: {status: true, number: true, episodeCount: true},
+    select: {
+      status: true,
+      number: true,
+      episodeCount: true,
+      series: {select: {id: true, status: true}},
+    },
   });
 
   const selection = EpisodeSelection.from(
     ...(watchThrough.includeEpisodes as any),
   );
 
+  const finishedLastEpisodeOfSeason =
+    episodeNumber === season.episodeCount && season.status === 'ENDED';
+
   const nextEpisode = selection.nextEpisode(
-    episodeNumber === season.episodeCount && season.status === 'ENDED'
+    finishedLastEpisodeOfSeason
       ? {
           season: season.number + 1,
         }
@@ -61,6 +69,22 @@ export async function updateWatchThrough(
           finishedAt: updatedAt,
         },
       }),
+      (season.series.status === 'RETURNING' ||
+        season.series.status === 'IN_PRODUCTION') &&
+        prisma.seriesSubscription.upsert({
+          where: {
+            seriesId_userId: {
+              seriesId: watchThrough.seriesId,
+              userId: watchThrough.userId,
+            },
+          },
+          create: {
+            seriesId: watchThrough.seriesId,
+            userId: watchThrough.userId,
+            spoilerAvoidance: watchThrough.spoilerAvoidance,
+          },
+          update: {},
+        }),
       prisma.watch.create({
         data: {
           userId: watchThrough.userId,
@@ -73,6 +97,18 @@ export async function updateWatchThrough(
     ]);
 
     return updatedWatchThrough;
+  }
+
+  if (nextEpisode.season !== season.number && finishedLastEpisodeOfSeason) {
+    await prisma.watch.create({
+      data: {
+        userId: watchThrough.userId,
+        seasonId: episode.seasonId,
+        watchThroughId: watchThrough.id,
+        finishedAt:
+          'watch' in action ? action.watch.finishedAt : action.skip.at,
+      },
+    });
   }
 
   return prisma.watchThrough.update({

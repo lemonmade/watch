@@ -137,16 +137,19 @@ type WatchThrough {
   to: EpisodeEndpoint!
   episodeSelection: [EpisodeSelectionSelector!]!
   episodeRanges: [EpisodeRange!]!
-  startedAt: Date
+  startedAt: Date!
   createdAt: Date!
   updatedAt: Date!
   finishedAt: Date
   status: WatchThroughStatus!
   watches: [Watch!]!
   actions: [Action!]!
-  nextEpisode: Episode
+  nextEpisode(inSelection: Boolean = true): Episode
+  nextSeason(inSelection: Boolean = true): Season
   unfinishedEpisodeCount: Int!
   settings: WatchThroughSettings!
+  lastAction: Action
+  lastSeasonAction: Action
 }
 
 type WatchThroughSettings {

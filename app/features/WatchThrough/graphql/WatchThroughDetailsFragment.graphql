@@ -3,6 +3,7 @@
 fragment WatchThroughDetails on WatchThrough {
   id
   url
+  episodeSelection
   from {
     season
     episode
@@ -15,8 +16,18 @@ fragment WatchThroughDetails on WatchThrough {
     id
     name
     handle
+    status
+    seasonCount
+    poster {
+      source
+    }
+    subscription {
+      id
+    }
   }
   status
+  startedAt
+  finishedAt
   actions {
     ... on Skip {
       id
@@ -30,9 +41,7 @@ fragment WatchThroughDetails on WatchThrough {
           id
           title
           number
-          season {
-            number
-          }
+          seasonNumber
         }
         ... on Season {
           id
@@ -53,13 +62,36 @@ fragment WatchThroughDetails on WatchThrough {
           id
           title
           number
-          season {
-            number
-          }
+          seasonNumber
         }
         ... on Season {
           id
           number
+        }
+      }
+    }
+  }
+  lastAction {
+    ... on Watch {
+      id
+      finishedAt
+      notes {
+        content
+        containsSpoilers
+      }
+      media {
+        ... on Season {
+          id
+          number
+          poster {
+            source
+          }
+          nextSeason {
+            id
+            number
+            status
+            selector
+          }
         }
       }
     }
@@ -78,6 +110,12 @@ fragment WatchThroughDetails on WatchThrough {
       id
       number
     }
+  }
+  nextSeason(inSelection: false) {
+    id
+    number
+    selector
+    isUpcoming
   }
   settings {
     spoilerAvoidance

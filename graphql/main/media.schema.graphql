@@ -42,6 +42,7 @@ type Episode {
   hasAired: Boolean!
   still: Image
   overview: String
+  nextEpisode: Episode
 }
 
 type EpisodeRange {
@@ -94,6 +95,7 @@ type Season {
   isUpcoming: Boolean!
   isCurrentlyAiring: Boolean!
   status: SeasonStatus!
+  nextSeason: Season
 }
 
 enum SeriesStatus {
@@ -118,6 +120,7 @@ type Series {
   status: SeriesStatus!
   seasons: [Season!]!
   season(selector: SeasonSelector, number: Int): Season
+  seasonCount: Int!
   episodes: [Episode!]!
   episode(selector: EpisodeSelector, number: Int, season: Int): Episode
 }

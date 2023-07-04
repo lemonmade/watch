@@ -292,6 +292,9 @@ export const Mutation = createMutationResolver({
 
 export const WatchThrough = createResolverWithGid('WatchThrough', {
   url: ({id}, _, {request}) => new URL(`/app/watching/${id}`, request.url).href,
+  startedAt({createdAt}) {
+    return createdAt.toISOString();
+  },
   series({seriesId}, _, {prisma}) {
     return prisma.series.findFirst({
       where: {id: seriesId},
@@ -336,15 +339,63 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
       ...watches.map((watch) => addResolvedType('Watch', watch)),
       ...skips.map((skip) => addResolvedType('Skip', skip)),
     ].sort((actionOne, actionTwo) => {
-      const {season: seasonOne, episode: episodeOne = 0} =
+      const {season: seasonOne, episode: episodeOne = 1_000} =
         getSeasonAndEpisode(actionOne);
-      const {season: seasonTwo, episode: episodeTwo = 0} =
+      const {season: seasonTwo, episode: episodeTwo = 1_000} =
         getSeasonAndEpisode(actionTwo);
 
       return seasonOne !== seasonTwo
         ? seasonTwo - seasonOne
         : episodeTwo - episodeOne;
     });
+  },
+  async lastAction({id}, __, {prisma, user}) {
+    const [watch, skip] = await Promise.all([
+      prisma.watch.findFirst({
+        where: {watchThroughId: id, userId: user.id},
+        orderBy: {createdAt: 'desc'},
+        take: 1,
+      }),
+      prisma.skip.findFirst({
+        where: {watchThroughId: id, userId: user.id},
+        orderBy: {createdAt: 'desc'},
+        take: 1,
+      }),
+    ]);
+
+    return watch && skip
+      ? watch.createdAt.getTime() < skip.createdAt.getTime()
+        ? addResolvedType('Watch', watch)
+        : addResolvedType('Skip', skip)
+      : watch
+      ? addResolvedType('Watch', watch)
+      : skip
+      ? addResolvedType('Skip', skip)
+      : null;
+  },
+  async lastSeasonAction({id}, __, {prisma, user}) {
+    const [watch, skip] = await Promise.all([
+      prisma.watch.findFirst({
+        where: {watchThroughId: id, userId: user.id, seasonId: {not: null}},
+        orderBy: {createdAt: 'desc'},
+        take: 1,
+      }),
+      prisma.skip.findFirst({
+        where: {watchThroughId: id, userId: user.id, seasonId: {not: null}},
+        orderBy: {createdAt: 'desc'},
+        take: 1,
+      }),
+    ]);
+
+    return watch && skip
+      ? watch.createdAt.getTime() < skip.createdAt.getTime()
+        ? addResolvedType('Watch', watch)
+        : addResolvedType('Skip', skip)
+      : watch
+      ? addResolvedType('Watch', watch)
+      : skip
+      ? addResolvedType('Skip', skip)
+      : null;
   },
   watches({id}, _, {user, prisma}) {
     return prisma.watch.findMany({
@@ -399,8 +450,20 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
 
     return unfinishedEpisodeCount;
   },
-  nextEpisode({nextEpisode, seriesId}, _, {prisma}) {
-    if (nextEpisode == null) return null;
+  nextEpisode(
+    {nextEpisode, includeEpisodes, seriesId},
+    {inSelection},
+    {prisma},
+  ) {
+    if (nextEpisode == null) {
+      if (inSelection) return null;
+
+      const to = new EpisodeSelection(...(includeEpisodes as any)).to!;
+
+      return prisma.episode.findFirst({
+        where: {number: 1, seasonNumber: to.season + 1, seriesId},
+      });
+    }
 
     const {season, episode} = EpisodeSelection.parse(
       nextEpisode as EpisodeSelector,
@@ -408,9 +471,35 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
 
     return prisma.episode.findFirst({
       where: {
+        seriesId,
         number: episode,
-        season: {number: season, seriesId},
+        seasonNumber: season,
       },
+    });
+  },
+  nextSeason(
+    {nextEpisode, includeEpisodes, seriesId},
+    {inSelection},
+    {prisma},
+  ) {
+    const selection = new EpisodeSelection(...(includeEpisodes as any));
+    const to = selection.to!;
+
+    if (nextEpisode) {
+      const next = EpisodeSelection.parse(nextEpisode as EpisodeSelector);
+      const nextSeason = selection.nextEpisode({season: next.season + 1});
+
+      if (nextSeason) {
+        return prisma.season.findFirst({
+          where: {seriesId, number: nextSeason.season},
+        });
+      }
+    }
+
+    if (inSelection) return null;
+
+    return prisma.season.findFirst({
+      where: {seriesId, number: to.season + 1},
     });
   },
   settings({spoilerAvoidance}) {
@@ -425,6 +514,7 @@ export const Series = createResolver('Series', {
   watchThroughs({id}, _, {prisma, user}) {
     return prisma.watchThrough.findMany({
       take: 50,
+      orderBy: {updatedAt: 'desc'},
       where: {seriesId: id, userId: user.id},
     });
   },

@@ -167,6 +167,11 @@ export const Season = createResolverWithGid('Season', {
       Date.now() > firstAired.getTime()
     );
   },
+  nextSeason({seriesId, number}, _, {prisma}) {
+    return prisma.season.findFirst({
+      where: {seriesId, number: number + 1},
+    });
+  },
   ...SeasonLists,
   ...SeasonWatching,
 });

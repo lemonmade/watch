@@ -1,4 +1,4 @@
-import {useMemo, type PropsWithChildren} from 'react';
+import {useMemo, type PropsWithChildren, ReactNode} from 'react';
 import {
   signal,
   useSignal,
@@ -7,6 +7,7 @@ import {
   createOptionalContext,
   createUseContextHook,
   usePerformanceNavigation,
+  useLocalizedFormatting,
 } from '@quilted/quilt';
 
 import {
@@ -34,6 +35,7 @@ import {
   IconHighlight,
   PrettyDate,
   EpisodeImage,
+  Poster,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -51,6 +53,12 @@ import type {WatchThroughSkipNextEpisodeMutationVariables} from './graphql/Watch
 import stopWatchThroughMutation from './graphql/StopWatchThroughMutation.graphql';
 import deleteWatchThroughMutation from './graphql/DeleteWatchThroughMutation.graphql';
 import updateWatchThroughSettingsMutation from './graphql/UpdateWatchThroughSettingsMutation.graphql';
+import startWatchThroughFromWatchThroughMutation, {
+  type StartWatchThroughFromWatchThroughMutationVariables,
+} from './graphql/StartWatchThroughFromWatchThroughMutation.graphql';
+import subscribeToWatchThroughSeriesMutation from './graphql/SubscribeToWatchThroughSeriesMutation.graphql';
+import unsubscribeToWatchThroughSeriesMutation from './graphql/UnsubscribeToWatchThroughSeriesMutation.graphql';
+import {EpisodeSelection} from '@watching/api';
 
 export interface Props {
   id: string;
@@ -134,11 +142,11 @@ function WatchThroughWithData({
     );
   }
 
-  const nextEpisodeDetailContent = nextEpisode
-    ? watchingSingleSeason
-      ? `Watching Season ${to.season}`
-      : `Watching Seasons ${from.season}–${to.season}`
-    : null;
+  const episodeRangeContentPrefix = status === 'ONGOING' ? 'Watching ' : '';
+
+  const episodeRangeContent = watchingSingleSeason
+    ? `${episodeRangeContentPrefix}Season ${to.season}`
+    : `${episodeRangeContentPrefix}Seasons ${from.season}–${to.season}`;
 
   const statusDetailContent =
     status === 'FINISHED' ? (
@@ -147,18 +155,47 @@ function WatchThroughWithData({
       <Tag>Stopped</Tag>
     ) : null;
 
+  let content: ReactNode = null;
+
+  switch (status) {
+    case 'FINISHED': {
+      content = (
+        <Finished watchThrough={watchThrough} onUpdate={() => onUpdate()} />
+      );
+      break;
+    }
+    case 'STOPPED': {
+      content = <Stopped />;
+      break;
+    }
+    case 'ONGOING': {
+      content = nextEpisode?.hasAired ? (
+        <NextEpisode
+          form={nextEpisodeForm}
+          watchThroughId={id}
+          watchingSingleSeason={watchingSingleSeason}
+          onUpdate={() => onUpdate()}
+        />
+      ) : (
+        <UpToDate nextEpisode={nextEpisode} />
+      );
+
+      break;
+    }
+  }
+
   return (
     <PageDetailsContext.Provider value={pageDetails}>
       <Page
         heading={series.name}
         detail={
-          nextEpisodeDetailContent && statusDetailContent ? (
+          episodeRangeContent && statusDetailContent ? (
             <InlineStack spacing="small">
+              {episodeRangeContent}
               {statusDetailContent}
-              {nextEpisodeDetailContent}
             </InlineStack>
           ) : (
-            nextEpisodeDetailContent ?? statusDetailContent
+            episodeRangeContent ?? statusDetailContent
           )
         }
         menu={
@@ -172,16 +209,7 @@ function WatchThroughWithData({
         }
       >
         <BlockStack spacing="large.2">
-          {nextEpisode != null && nextEpisode.hasAired ? (
-            <NextEpisode
-              form={nextEpisodeForm}
-              watchThroughId={id}
-              watchingSingleSeason={watchingSingleSeason}
-              onUpdate={() => onUpdate()}
-            />
-          ) : nextEpisode != null || status === 'ONGOING' ? (
-            <UpToDate nextEpisode={nextEpisode} />
-          ) : null}
+          {content}
 
           <AccessoryClips
             id={id}
@@ -193,7 +221,9 @@ function WatchThroughWithData({
 
           {actions.length > 0 && <PreviousEpisodesSection actions={actions} />}
 
-          <SettingsSection id={id} settings={settings} onUpdate={onUpdate} />
+          {status === 'ONGOING' && (
+            <SettingsSection id={id} settings={settings} onUpdate={onUpdate} />
+          )}
         </BlockStack>
       </Page>
     </PageDetailsContext.Provider>
@@ -236,6 +266,180 @@ function UpToDate({nextEpisode}: {nextEpisode?: WatchThrough['nextEpisode']}) {
         )}
       </BlockStack>
     </Section>
+  );
+}
+
+function Stopped() {
+  return (
+    <Section padding="large" border="subdued" cornerRadius>
+      <BlockStack spacing blockAlignment="center">
+        <Heading level={4}>You’ve finished this watch through!</Heading>
+      </BlockStack>
+    </Section>
+  );
+}
+
+function Finished({
+  watchThrough,
+  onUpdate,
+}: {
+  watchThrough: WatchThrough;
+  onUpdate(): Promise<void>;
+}) {
+  const {
+    from,
+    to,
+    series,
+    lastAction,
+    nextSeason,
+    startedAt,
+    episodeSelection,
+  } = watchThrough;
+  const {formatDate} = useLocalizedFormatting();
+
+  const lastActionWatch =
+    lastAction?.__typename === 'Watch' ? lastAction : null;
+  const lastActionSeason =
+    lastActionWatch?.media.__typename === 'Season'
+      ? lastActionWatch.media
+      : null;
+
+  const finishedAt = watchThrough.finishedAt ?? lastActionWatch?.finishedAt;
+
+  return (
+    <Section>
+      <BlockStack spacing="small">
+        <BlockStack
+          spacing="small"
+          background="subdued"
+          border="subdued"
+          padding="small"
+          cornerRadius
+        >
+          <Text emphasis="subdued">Watched {episodeSelection.join(', ')}</Text>
+          <Text emphasis="subdued">
+            Started{' '}
+            {formatDate(new Date(startedAt), {
+              dateStyle: 'long',
+            })}
+          </Text>
+          <Text emphasis="subdued">
+            {finishedAt
+              ? `Finished ${formatDate(new Date(finishedAt), {
+                  dateStyle: 'long',
+                })}`
+              : null}
+          </Text>
+        </BlockStack>
+        {nextSeason && !nextSeason.isUpcoming && (
+          <WatchAgainAction
+            watchThrough={watchThrough}
+            episodes={[nextSeason.selector]}
+          >
+            Watch Next Season
+          </WatchAgainAction>
+        )}
+        {nextSeason &&
+          !nextSeason.isUpcoming &&
+          nextSeason.number !== series.seasonCount && (
+            <WatchAgainAction
+              watchThrough={watchThrough}
+              episodes={[
+                EpisodeSelection.stringify({
+                  from: {season: nextSeason.number},
+                  to: {season: series.seasonCount},
+                }),
+              ]}
+            >
+              Watch Rest of Series
+            </WatchAgainAction>
+          )}
+        <WatchAgainAction watchThrough={watchThrough}>
+          Watch Again
+        </WatchAgainAction>
+        {from.season !== to.season && (
+          <WatchAgainAction
+            watchThrough={watchThrough}
+            episodes={[`S${to.season}`]}
+          >
+            Watch Season {to.season} Again
+          </WatchAgainAction>
+        )}
+        {(series.status === 'RETURNING' ||
+          series.status === 'IN_PRODUCTION') && (
+          <SeriesSubscription watchThrough={watchThrough} onUpdate={onUpdate} />
+        )}
+      </BlockStack>
+    </Section>
+  );
+}
+
+function WatchAgainAction({
+  children,
+  watchThrough,
+  episodes,
+}: PropsWithChildren<{
+  watchThrough: WatchThrough;
+  episodes?: StartWatchThroughFromWatchThroughMutationVariables['episodes'];
+}>) {
+  const navigate = useNavigate();
+  const startWatchThroughFromWatchThrough = useMutation(
+    startWatchThroughFromWatchThroughMutation,
+  );
+
+  return (
+    <Action
+      onPress={async () => {
+        const {startWatchThrough} =
+          await startWatchThroughFromWatchThrough.mutateAsync({
+            series: watchThrough.series.id,
+            // @ts-expect-error Fixing this in Quilt
+            episodes: episodes ?? watchThrough.episodeSelection,
+          });
+
+        if (startWatchThrough?.watchThrough) {
+          navigate(startWatchThrough.watchThrough.url);
+        }
+      }}
+    >
+      {children}
+    </Action>
+  );
+}
+
+function SeriesSubscription({
+  watchThrough,
+  onUpdate,
+}: {
+  watchThrough: WatchThrough;
+  onUpdate(): void | Promise<void>;
+}) {
+  const subscribed = watchThrough.series.subscription != null;
+  const subscribeToSeries = useMutation(subscribeToWatchThroughSeriesMutation);
+  const unsubscribeToSeries = useMutation(
+    unsubscribeToWatchThroughSeriesMutation,
+  );
+
+  return (
+    <Checkbox
+      checked={subscribed}
+      onChange={async () => {
+        if (subscribed) {
+          await unsubscribeToSeries.mutateAsync({
+            id: watchThrough.series.id,
+          });
+        } else {
+          await subscribeToSeries.mutateAsync({
+            id: watchThrough.series.id,
+          });
+        }
+
+        await onUpdate();
+      }}
+      helpText="Automatically start watching new seasons as they air"
+    >
+      Subscribed
+    </Checkbox>
   );
 }
 
@@ -671,12 +875,24 @@ function PreviousEpisodesSection({
 function PreviousActionWatch({action}: {action: WatchAction}) {
   const {media, rating, notes} = action;
 
-  if (media.__typename !== 'Episode') return null;
-
   const ratingContent =
     rating != null ? <Rating value={rating} readonly /> : null;
 
   const notesContent = notes ? <Tag>Notes</Tag> : null;
+
+  const mediaContent =
+    media.__typename === 'Episode' ? (
+      <>
+        <Text emphasis>{media.title}</Text>
+        <Text emphasis="subdued">
+          Season {media.seasonNumber}, Episode {media.number}
+          {action.finishedAt ? ' • ' : ''}
+          {action.finishedAt && <PrettyDate date={action.finishedAt} />}
+        </Text>
+      </>
+    ) : media.__typename === 'Season' ? (
+      <Text emphasis>Season {media.number}</Text>
+    ) : null;
 
   return (
     <Action
@@ -690,14 +906,9 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
       overlay={<PreviousActionWatchEditModal action={action} />}
     >
       <BlockStack spacing="small.2">
-        <Text emphasis>{media.title}</Text>
-        <Text emphasis="subdued">
-          Season {media.season.number}, Episode {media.number}
-          {action.finishedAt ? ' • ' : ''}
-          {action.finishedAt && <PrettyDate date={action.finishedAt} />}
-        </Text>
+        {mediaContent}
         {ratingContent || notesContent ? (
-          <InlineStack spacing="small">
+          <InlineStack spacing="small" inlineAlignment="start">
             {ratingContent}
             {notesContent}
           </InlineStack>
@@ -714,7 +925,19 @@ function PreviousActionWatchEditModal({action}: {action: WatchAction}) {
 function PreviousActionSkip({action}: {action: SkipAction}) {
   const {media, at, notes} = action;
 
-  if (media.__typename !== 'Episode') return null;
+  const mediaContent =
+    media.__typename === 'Episode' ? (
+      <>
+        <Text emphasis>{media.title}</Text>
+        <Text emphasis="subdued">
+          Season {media.seasonNumber}, Episode {media.number}
+          {at ? ' • ' : ''}
+          {at && <PrettyDate date={at} />}
+        </Text>
+      </>
+    ) : media.__typename === 'Season' ? (
+      <Text emphasis>Season {media.number}</Text>
+    ) : null;
 
   return (
     <Action
@@ -728,13 +951,12 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
       overlay={<PreviousActionSkipEditModal action={action} />}
     >
       <BlockStack spacing="small">
-        <Text emphasis>{media.title}</Text>
-        <Text emphasis="subdued">
-          Season {media.season.number}, Episode {media.number}
-          {at ? ' • ' : ''}
-          {at && <PrettyDate date={at} />}
-        </Text>
-        {notes ? <Tag>Notes</Tag> : null}
+        {mediaContent}
+        {notes ? (
+          <InlineStack>
+            <Tag>Notes</Tag>
+          </InlineStack>
+        ) : null}
       </BlockStack>
     </Action>
   );

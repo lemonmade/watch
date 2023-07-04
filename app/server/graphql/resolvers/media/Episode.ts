@@ -94,6 +94,11 @@ export const Episode = createResolverWithGid('Episode', {
 
     return season.status !== 'CONTINUING';
   },
+  nextEpisode({seasonId, number}, _, {prisma}) {
+    return prisma.episode.findFirst({
+      where: {seasonId, number: number + 1},
+    });
+  },
   ...EpisodeWatching,
   ...EpisodeLists,
 });

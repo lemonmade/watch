@@ -1,0 +1,11 @@
+mutation StartWatchThroughFromWatchThrough(
+  $series: ID!
+  $episodes: [EpisodeSelectionSelector!]!
+) {
+  startWatchThrough(series: {id: $series}, episodes: $episodes) {
+    watchThrough {
+      id
+      url
+    }
+  }
+}
