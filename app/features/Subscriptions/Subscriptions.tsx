@@ -8,7 +8,9 @@ import {useQuery} from '~/shared/graphql.ts';
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
 export default function Subscriptions() {
-  const {data, isLoading} = useQuery(subscriptionsQuery);
+  const {data, isLoading} = useQuery(subscriptionsQuery, {
+    refetchOnMount: 'always',
+  });
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
