@@ -35,7 +35,6 @@ import {
   IconHighlight,
   PrettyDate,
   EpisodeImage,
-  Poster,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -299,10 +298,6 @@ function Finished({
 
   const lastActionWatch =
     lastAction?.__typename === 'Watch' ? lastAction : null;
-  const lastActionSeason =
-    lastActionWatch?.media.__typename === 'Season'
-      ? lastActionWatch.media
-      : null;
 
   const finishedAt = watchThrough.finishedAt ?? lastActionWatch?.finishedAt;
 
