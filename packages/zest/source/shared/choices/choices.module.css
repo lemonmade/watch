@@ -21,7 +21,7 @@
 }
 
 .cornerRadiusBase {
-  --z-internal-Choice-corner-radius: var(--z-corner-radius-base);
+  --z-internal-Choice-corner-radius: var(--z-corner-radius-small-1);
 }
 
 .cornerRadiusFullyRounded {
