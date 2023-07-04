@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build 🏗
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
@@ -44,6 +46,7 @@ jobs:
     name: Deploy updated packages 📦
     needs: [checks, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
@@ -65,6 +68,7 @@ jobs:
     name: Deploy assets to Cloudflare 🌥
     needs: [checks, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
@@ -88,6 +92,7 @@ jobs:
     name: Deploy to Cloudflare 🌥
     needs: [checks, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     strategy:
       matrix:
@@ -118,6 +123,7 @@ jobs:
     name: Deploy to Fly.io 🦋
     needs: [checks, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v3
@@ -183,6 +189,7 @@ jobs:
       - deploy-cloudflare-assets
       - deploy-cloudflare-workers
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
