@@ -20,3 +20,4 @@ max_retries = 10
 
 # Needs the following environment variables:
 # - JWT_SECRET
+# - SENDGRID_API_KEY

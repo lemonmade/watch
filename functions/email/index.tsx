@@ -127,14 +127,14 @@ const handleQueue: ExportedHandlerQueueHandler<Environment, Message> =
             Authorization: `Bearer ${env.SENDGRID_API_KEY}`,
           },
           body: JSON.stringify({
+            from: sender,
+            subject,
+            content,
             personalizations: [
               {
-                from: sender,
                 to: to.map((email) => ({email})),
                 cc: cc?.map((email) => ({email})),
                 bcc: bcc?.map((email) => ({email})),
-                subject,
-                content,
               },
             ],
           }),
