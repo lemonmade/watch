@@ -144,7 +144,7 @@ export const Mutation = createMutationResolver({
     }
 
     const data: Parameters<
-      typeof prisma['seriesSubscription']['update']
+      (typeof prisma)['seriesSubscription']['update']
     >[0]['data'] = {};
 
     if (spoilerAvoidance != null) {

@@ -224,7 +224,7 @@ export const Mutation = createMutationResolver({
     };
   },
   async updateUserSettings(_, {spoilerAvoidance}, {user: {id}, prisma}) {
-    const data: Parameters<typeof prisma['user']['update']>[0]['data'] = {};
+    const data: Parameters<(typeof prisma)['user']['update']>[0]['data'] = {};
 
     if (spoilerAvoidance != null) {
       data.spoilerAvoidance = spoilerAvoidance;

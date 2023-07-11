@@ -272,8 +272,9 @@ export const Mutation = createMutationResolver({
       return {watchThrough: null};
     }
 
-    const data: Parameters<typeof prisma['watchThrough']['update']>[0]['data'] =
-      {};
+    const data: Parameters<
+      (typeof prisma)['watchThrough']['update']
+    >[0]['data'] = {};
 
     if (spoilerAvoidance != null) {
       data.spoilerAvoidance = spoilerAvoidance;

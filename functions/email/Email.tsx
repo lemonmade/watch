@@ -18,7 +18,7 @@ export const EMAILS = {
 };
 
 export type EmailPropsMap = {
-  [Email in keyof typeof EMAILS]: ComponentProps<typeof EMAILS[Email]>;
+  [Email in keyof typeof EMAILS]: ComponentProps<(typeof EMAILS)[Email]>;
 };
 
 export type EmailType = keyof EmailPropsMap;
