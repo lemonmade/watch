@@ -18,7 +18,7 @@ import {VIRTUAL_WATCH_LATER_LIST} from '../lists.ts';
 import {updateWatchThrough} from './shared.ts';
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     Watch: DatabaseWatch;
   }
 }

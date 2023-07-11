@@ -2,8 +2,8 @@ import {
   createOptionalContext,
   createUseContextHook,
   createUseOptionalValueHook,
-  type GraphQLFetch,
 } from '@quilted/quilt';
+import {type GraphQLFetch} from '@quilted/quilt/graphql';
 import {type QueryClient} from '@tanstack/react-query';
 
 export interface AppContext {

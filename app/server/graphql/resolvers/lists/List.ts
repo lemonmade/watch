@@ -16,7 +16,7 @@ import {
 } from '../shared/interfaces.ts';
 
 declare module '../types.ts' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     List: DatabaseList | typeof VIRTUAL_WATCH_LATER_LIST;
     ListItem: DatabaseListItem;
   }

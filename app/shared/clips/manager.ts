@@ -1,15 +1,12 @@
 import {createRenderer} from '@watching/thread-render';
 
 import {type ApiCore} from '@watching/clips';
+import {signal, createEmitter, type Signal, type Emitter} from '@quilted/quilt';
 import {
-  signal,
-  createEmitter,
-  type Signal,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
-  type Emitter,
-} from '@quilted/quilt';
+} from '@quilted/quilt/graphql';
 import {createThreadSignal} from '@watching/thread-signals';
 import {
   createThread,

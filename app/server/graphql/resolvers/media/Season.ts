@@ -14,7 +14,7 @@ import {Season as SeasonWatching} from '../watching.ts';
 import {EpisodeSelection} from '@watching/api';
 
 declare module '../types.ts' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     Season: DatabaseSeason;
   }
 }

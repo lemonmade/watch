@@ -18,7 +18,7 @@ import {
 } from '@watching/api';
 
 declare module '../types.ts' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     Episode: DatabaseEpisode;
     EpisodeRange: EpisodeRangeSelectorObject;
     EpisodeEndpoint: EpisodeEndpointSelectorObject;

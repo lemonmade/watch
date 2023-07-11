@@ -9,7 +9,7 @@ import {
 import {fromGid} from '../shared/id.ts';
 
 declare module '../types.ts' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     SeriesSubscription: DatabaseSeriesSubscription;
   }
 }

@@ -1,12 +1,10 @@
 import {useMemo, useEffect} from 'react';
+import {signal, useComputed, type Signal} from '@quilted/quilt';
 import {
-  signal,
-  useComputed,
-  type Signal,
   type GraphQLResult,
   type GraphQLOperation,
   type GraphQLVariableOptions,
-} from '@quilted/quilt';
+} from '@quilted/quilt/graphql';
 import {type ExtensionPoint} from '@watching/clips';
 
 import {createUseAppContextHook} from '~/shared/context.ts';

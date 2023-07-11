@@ -1,4 +1,5 @@
-import type {Router, GraphQLFetch} from '@quilted/quilt';
+import type {Router} from '@quilted/quilt';
+import type {GraphQLFetch} from '@quilted/quilt/graphql';
 import {
   type ExtensionPoint,
   type SharedGraphQLApi,

@@ -4,16 +4,18 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {
   useRoutes,
   useRouter,
-  createGraphQLHttpFetch,
   QuiltApp,
   Redirect,
-  GraphQLContext,
   RoutePreloading,
   type RouteDefinition,
-  type GraphQLFetch,
   type PropsWithChildren,
 } from '@quilted/quilt';
 import {useSerialized} from '@quilted/quilt/html';
+import {
+  createGraphQLHttpFetch,
+  GraphQLContext,
+  type GraphQLFetch,
+} from '@quilted/quilt/graphql';
 import {Canvas} from '@lemon/zest';
 
 import {toGid} from '~/shared/graphql';

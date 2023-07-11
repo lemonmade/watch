@@ -7,7 +7,7 @@ import {
   type EnhancedRequest,
   type CookieOptions,
 } from '@quilted/quilt/request-router';
-import {createGraphQLHttpFetch} from '@quilted/quilt';
+import {createGraphQLHttpFetch} from '@quilted/quilt/graphql';
 import {stripIndent} from 'common-tags';
 import type {Prisma as PrismaData} from '@prisma/client';
 

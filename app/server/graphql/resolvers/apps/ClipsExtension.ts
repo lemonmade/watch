@@ -34,7 +34,7 @@ declare module '@quilted/quilt/env' {
 }
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     ClipsExtension: DatabaseClipsExtension;
     ClipsExtensionVersion: DatabaseClipsExtensionVersion;
     ClipsExtensionInstallation: DatabaseClipsExtensionInstallation;

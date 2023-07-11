@@ -15,7 +15,7 @@ import {toHandle} from '../shared/handle.ts';
 import {fromGid} from '../shared/id.ts';
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     App: DatabaseApp;
     AppInstallation: DatabaseAppInstallation;
   }

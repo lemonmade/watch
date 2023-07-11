@@ -39,7 +39,7 @@
   "devDependencies": {
     "@watching/clips": "workspace:^",
     "p-limit": "^4.0.0",
-    "preact": "^10.15.1",
+    "preact": "^10.16.0",
     "terser": "^5.15.1"
   },
   "eslintConfig": {

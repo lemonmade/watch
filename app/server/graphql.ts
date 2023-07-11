@@ -82,23 +82,18 @@ router.post(async (request) => {
 
 export default router;
 
-let schemaPromise: Promise<any>;
+let schemaPromise: Promise<import('graphql').GraphQLSchema>;
 
 function loadSchema() {
   schemaPromise ??= (async () => {
-    const [{makeExecutableSchema}, resolvers, {default: schemaSource}] =
+    const [{createGraphQLSchema}, resolvers, {default: schemaSource}] =
       await Promise.all([
-        import('@graphql-tools/schema'),
+        import('@quilted/quilt/graphql/server'),
         import('./graphql/resolvers.ts'),
         import('./graphql/schema.ts'),
       ]);
 
-    const schema = makeExecutableSchema({
-      resolvers,
-      typeDefs: schemaSource,
-    });
-
-    return schema;
+    return createGraphQLSchema(schemaSource, resolvers);
   })();
 
   return schemaPromise;

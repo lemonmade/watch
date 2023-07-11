@@ -11,7 +11,7 @@ import {
 const PASSKEY_CHALLENGE_COOKIE = 'PasskeyChallenge';
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     Passkey: DatabasePasskey;
   }
 }

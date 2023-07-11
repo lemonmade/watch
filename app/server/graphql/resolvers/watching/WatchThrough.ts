@@ -22,7 +22,7 @@ import {WatchThrough as WatchThroughApp} from '../apps.ts';
 import {VIRTUAL_WATCH_LATER_LIST, addSeriesToWatchLater} from '../lists.ts';
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     WatchThrough: DatabaseWatchThrough;
   }
 }

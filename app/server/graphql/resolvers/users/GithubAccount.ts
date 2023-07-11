@@ -6,7 +6,7 @@ import {
 } from '../shared/resolvers.ts';
 
 declare module '../types' {
-  export interface ValueMap {
+  export interface GraphQLValues {
     GithubAccount: DatabaseGithubAccount;
   }
 }

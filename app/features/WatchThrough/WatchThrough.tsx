@@ -70,6 +70,10 @@ interface PageDetails {
   initialActionDate: Signal<Date | undefined>;
 }
 
+type Writable<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+
 export interface WatchForm {
   readonly media: NonNullable<WatchThrough['nextEpisode']>;
   readonly at: Signal<Date | undefined>;
@@ -539,9 +543,11 @@ function WatchEpisodeForm({
   const {at, notes, rating} = form;
 
   const watchEpisode = async () => {
-    const optionalArguments: Omit<
-      WatchThroughWatchNextEpisodeMutationVariables,
-      'episode' | 'watchThrough'
+    const optionalArguments: Writable<
+      Omit<
+        WatchThroughWatchNextEpisodeMutationVariables,
+        'episode' | 'watchThrough'
+      >
     > = {
       finishedAt: at.value?.toISOString(),
     };
@@ -723,9 +729,11 @@ function useSkipEpisode({form, watchThroughId, onUpdate}: SkipEpisodeOptions) {
   const {at, notes} = form;
 
   const skipEpisode = async () => {
-    const optionalArguments: Omit<
-      WatchThroughSkipNextEpisodeMutationVariables,
-      'episode' | 'watchThrough'
+    const optionalArguments: Writable<
+      Omit<
+        WatchThroughSkipNextEpisodeMutationVariables,
+        'episode' | 'watchThrough'
+      >
     > = {at: at?.value?.toISOString()};
 
     if (notes.content.value) {

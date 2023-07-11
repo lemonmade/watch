@@ -12,7 +12,6 @@
     {"path": "../clips-preact"},
     {"path": "../clips-react"},
     {"path": "../clips-svelte"},
-    {"path": "../graphql"},
     {"path": "../tools"}
   ]
 }

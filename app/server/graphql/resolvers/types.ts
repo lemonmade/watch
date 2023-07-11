@@ -1,27 +1,36 @@
 import type {
   GraphQLResolver,
-  GraphQLResolverOptions,
-  GraphQLBaseResolverValueMap,
-} from '@watching/graphql/server';
+  GraphQLQueryResolver,
+  GraphQLMutationResolver,
+} from '@quilted/quilt/graphql/server';
 
 import type {Context} from '../context.ts';
 import type {Schema} from '../schema.ts';
 
-export type {Context as ResolverContext};
+export type {Schema, Context as ResolverContext};
 
-export interface ValueMap extends GraphQLBaseResolverValueMap {}
+export interface GraphQLValues {}
 
-export type ResolverOptions = GraphQLResolverOptions<Schema, ValueMap, Context>;
-
-export type Resolver<Type extends keyof ResolverOptions['types']> =
-  GraphQLResolver<Type, ResolverOptions>;
+export type Resolver<Type extends keyof Schema> = GraphQLResolver<
+  Schema[Type],
+  GraphQLValues,
+  Context
+>;
 
 export type Resolvers = {
-  [Type in keyof ResolverOptions['types']]: Resolver<Type>;
+  [Type in keyof Schema]: Resolver<Type>;
 };
 
-export type QueryResolver = Resolver<'Query'>;
-export type MutationResolver = Resolver<'Mutation'>;
+export type QueryResolver = GraphQLQueryResolver<
+  Schema,
+  GraphQLValues,
+  Context
+>;
+export type MutationResolver = GraphQLMutationResolver<
+  Schema,
+  GraphQLValues,
+  Context
+>;
 
 export interface InterfaceResolver {
   __resolveType(value: unknown): string;
