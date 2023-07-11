@@ -35,6 +35,7 @@ import {
   IconHighlight,
   PrettyDate,
   EpisodeImage,
+  Divider,
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -175,7 +176,6 @@ function WatchThroughWithData({
         <NextEpisode
           form={nextEpisodeForm}
           watchThroughId={id}
-          watchingSingleSeason={watchingSingleSeason}
           onUpdate={() => onUpdate()}
         />
       ) : (
@@ -437,17 +437,15 @@ function SeriesSubscription({
 function NextEpisode({
   form: {value: form},
   watchThroughId,
-  watchingSingleSeason,
   onUpdate,
 }: {
   form: Signal<WatchForm | undefined>;
   watchThroughId: string;
-  watchingSingleSeason: boolean;
   onUpdate(): void | Promise<void>;
 }) {
   if (form == null) return null;
 
-  const {id, title, number, season, firstAired, still} = form.media;
+  const {id, title, selector, firstAired, still} = form.media;
 
   const image = still?.source;
 
@@ -461,28 +459,31 @@ function NextEpisode({
       <BlockStack spacing>
         {image && <EpisodeImage source={image} />}
         <BlockStack spacing>
-          <InlineGrid sizes={['fill', 'auto']} spacing blockAlignment="start">
-            <BlockStack spacing="small">
-              <Heading>{title}</Heading>
+          <Heading>{title}</Heading>
 
-              <BlockStack spacing="small.2">
-                {watchingSingleSeason ? (
-                  <Text emphasis="subdued">Episode {number}</Text>
-                ) : (
-                  <Text emphasis="subdued">
-                    Season {season.number}, Episode {number}
-                  </Text>
-                )}
-                {firstAired && (
-                  <Text emphasis="subdued">
-                    <PrettyDate date={firstAired} />
-                  </Text>
-                )}
-              </BlockStack>
-            </BlockStack>
+          <InlineStack
+            spacing="small"
+            background="emphasized"
+            cornerRadius
+            padding="small"
+            border="subdued"
+            blockAlignment="stretch"
+          >
+            <Text emphasis="subdued">{selector}</Text>
+            {firstAired && (
+              <>
+                <Divider emphasis="subdued" />
+                <Text emphasis="subdued">
+                  Aired <PrettyDate date={firstAired} />
+                </Text>
+              </>
+            )}
+          </InlineStack>
 
+          <InlineStack spacing>
             <Action
               emphasis
+              size="large"
               icon="watch"
               perform="submit"
               accessory={
@@ -510,7 +511,7 @@ function NextEpisode({
             >
               Watch
             </Action>
-          </InlineGrid>
+          </InlineStack>
 
           <InlineStack spacing>
             <EpisodeRating value={form.rating} />

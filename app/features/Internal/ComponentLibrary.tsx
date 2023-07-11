@@ -103,6 +103,7 @@ function ActionComponents() {
 
           <Action overlay={<ActionExampleModal />}>Action (modal)</Action>
           <Action size="small">Action (small)</Action>
+          <Action size="large">Action (large)</Action>
           <Action detail={<Icon source="arrow.end" />}>Action (detail)</Action>
           <Pressable>Pressable</Pressable>
           <Pressable to="#">Pressable (link)</Pressable>

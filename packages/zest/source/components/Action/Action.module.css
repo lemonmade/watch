@@ -14,13 +14,14 @@
     var(--z-spacing-small-2)
   );
   --z-internal-Action-alignment: center;
+  --z-internal-Action-minimum-block-size: var(--z-Action-minimum-size);
 
   --z-internal-Action-loading-indicator-opacity: 0;
   --z-internal-Action-loading-content-opacity: 1;
   --z-internal-Action-loading-opacity-transition: opacity 0.2s ease;
 
   position: relative;
-  min-block-size: var(--z-Action-minimum-size);
+  min-block-size: var(--z-internal-Action-minimum-block-size);
   margin: calc(-1 * var(--z-internal-Action-inset-block-nudge, 0)) 0;
   padding: calc(
       var(--z-internal-Action-inset-block-size, 0px) +
@@ -508,6 +509,11 @@
   );
 
   --z-internal-Action-inline-padding: var(--z-spacing-small-1);
+}
+
+.sizeLarge {
+  --z-internal-Action-inline-padding: var(--z-spacing-large-1);
+  --z-internal-Action-minimum-block-size: 3.25rem;
 }
 
 .inlineSizeFill {
