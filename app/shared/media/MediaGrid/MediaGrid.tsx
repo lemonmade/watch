@@ -47,8 +47,8 @@ export interface MediaGridItemProps {
   to?: PressableProps['to'];
   image?: ReactNode;
   menu?: ReactNode;
-  title?: string;
-  subtitle?: string;
+  title?: ReactNode;
+  subtitle?: ReactNode;
 }
 
 export function MediaGridItem({

@@ -1,11 +1,11 @@
-import {useMemo} from 'react';
+import {useMemo, type ReactNode} from 'react';
 
 import {useLocalizedFormatting, usePerformanceNavigation} from '@quilted/quilt';
 import {Menu, Action, Poster, Spacer, Tag} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {useQuery, type ListItemType} from '~/shared/graphql.ts';
-import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
+import {MediaGrid, MediaGridItem, MediaSelectorText} from '~/shared/media.ts';
 
 import watchingQuery, {
   WatchingQueryData,
@@ -66,15 +66,24 @@ function WatchThroughItem({watchThrough}: {watchThrough: WatchThrough}) {
   const {url, series, nextEpisode, unfinishedEpisodeCount} = watchThrough;
   const {formatDate} = useLocalizedFormatting();
 
-  let subtitle: string | undefined;
+  let subtitle: ReactNode = null;
 
   if (nextEpisode) {
-    subtitle = `S${nextEpisode.season.number}E${nextEpisode.number}`;
+    subtitle = (
+      <MediaSelectorText emphasis="subdued">
+        {nextEpisode.selector}
+      </MediaSelectorText>
+    );
 
     if (nextEpisode.firstAired) {
-      subtitle += ` • ${formatDate(new Date(nextEpisode.firstAired), {
-        dateStyle: 'medium',
-      })}`;
+      subtitle = (
+        <>
+          {subtitle} •{' '}
+          {formatDate(new Date(nextEpisode.firstAired), {
+            dateStyle: 'medium',
+          })}
+        </>
+      );
     }
   }
 

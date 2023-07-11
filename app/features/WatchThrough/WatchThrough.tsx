@@ -42,6 +42,7 @@ import {Page} from '~/shared/page.ts';
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
 import {useQuery, useMutation, type PickTypename} from '~/shared/graphql.ts';
 import {Clip, useClips} from '~/shared/clips.ts';
+import {MediaSelectorText} from '~/shared/media.ts';
 
 import watchThroughQuery, {
   type WatchThroughQueryData,
@@ -469,7 +470,7 @@ function NextEpisode({
             border="subdued"
             blockAlignment="stretch"
           >
-            <Text emphasis="subdued">{selector}</Text>
+            <MediaSelectorText emphasis="subdued">{selector}</MediaSelectorText>
             {firstAired && (
               <>
                 <Divider emphasis="subdued" />
