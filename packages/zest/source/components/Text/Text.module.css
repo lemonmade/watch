@@ -28,3 +28,11 @@
   color: var(--z-text-emphasized-color);
   font-weight: var(--z-text-emphasized-weight);
 }
+
+.tabularNumbers {
+  font-variant-numeric: tabular-nums;
+}
+
+.transformUppercase {
+  text-transform: uppercase;
+}

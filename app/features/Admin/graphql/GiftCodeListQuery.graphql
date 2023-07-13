@@ -1,0 +1,9 @@
+query GiftCodeList {
+  giftCodes {
+    id
+    code
+    createdAt
+    redeemedAt
+    createAccountUrl
+  }
+}

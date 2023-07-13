@@ -11,7 +11,6 @@ import {
   AppExtensionInstallation,
   Query as AppsQuery,
   Mutation as AppsMutation,
-  User as AppsUser,
 } from './resolvers/apps.ts';
 import {
   Series,
@@ -46,9 +45,11 @@ import {
   Mutation as WatchesMutation,
 } from './resolvers/watching.ts';
 import {
-  User as BaseUser,
+  User,
+  AccountGiftCode,
   PersonalAccessToken,
   Passkey,
+  GoogleAccount,
   GithubAccount,
   Subscription,
   Query as UsersQuery,
@@ -78,12 +79,8 @@ export const Mutation: MutationResolver = {
   ...WatchesMutation,
 };
 
-const User = {
-  ...BaseUser,
-  ...AppsUser,
-};
-
 export {
+  AccountGiftCode,
   Action,
   App,
   AppExtension,
@@ -99,6 +96,7 @@ export {
   EpisodeEndpoint,
   EpisodeRange,
   GithubAccount,
+  GoogleAccount,
   List,
   Listable,
   ListItem,

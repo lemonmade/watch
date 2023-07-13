@@ -261,7 +261,7 @@ function MemberAccountSection({
 
             <Text emphasis="subdued">
               Gift code <Text emphasis>{giftCode.code}</Text> redeemed on{' '}
-              {formatDate(new Date(giftCode.redeemedAt), {dateStyle: 'short'})}
+              {formatDate(new Date(giftCode.redeemedAt!), {dateStyle: 'short'})}
             </Text>
           </InlineStack>
         )}

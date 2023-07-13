@@ -3,6 +3,7 @@
 extend type Query {
   me: User!
   my: User!
+  giftCodes: [AccountGiftCode!]!
 }
 
 extend type Mutation {
@@ -69,7 +70,7 @@ type User {
   passkeys: [Passkey!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
-  giftCode: RedeemedAccountGiftCode
+  giftCode: AccountGiftCode
   subscription: Subscription
 }
 
@@ -122,9 +123,12 @@ type PersonalAccessToken {
   lastFourCharacters: String!
 }
 
-type RedeemedAccountGiftCode {
+type AccountGiftCode {
+  id: ID!
   code: String!
-  redeemedAt: Date!
+  createdAt: Date!
+  redeemedAt: Date
+  createAccountUrl: Url!
 }
 
 # Mutation
@@ -138,11 +142,11 @@ type DeleteAccountPayload {
 }
 
 type CreateAccountGiftCodePayload {
-  code: String!
+  giftCode: AccountGiftCode
 }
 
 type RedeemAccountCodePayload {
-  giftCode: RedeemedAccountGiftCode
+  giftCode: AccountGiftCode
 }
 
 type PrepareSubscriptionPayload {

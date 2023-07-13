@@ -1,4 +1,9 @@
 import {
+  AccountGiftCode,
+  Query as AccountGiftCodeQuery,
+  Mutation as AccountGiftCodeMutation,
+} from './users/AccountGiftCode.ts';
+import {
   User,
   Query as UserQuery,
   Mutation as UserMutation,
@@ -27,10 +32,11 @@ export {
   Subscription,
   GithubAccount,
   GoogleAccount,
+  AccountGiftCode,
   PersonalAccessToken,
 };
 
-export const Query = {...UserQuery};
+export const Query = {...UserQuery, ...AccountGiftCodeQuery};
 
 export const Mutation = {
   ...UserMutation,
@@ -38,5 +44,6 @@ export const Mutation = {
   ...SubscriptionMutation,
   ...GithubAccountMutation,
   ...GoogleAccountMutation,
+  ...AccountGiftCodeMutation,
   ...PersonalAccessTokenMutation,
 };

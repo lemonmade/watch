@@ -1,5 +1,4 @@
 import type {User as DatabaseUser} from '@prisma/client';
-import {customAlphabet} from 'nanoid';
 
 import {createSignedToken, removeAuthCookies} from '../../../shared/auth.ts';
 
@@ -74,10 +73,7 @@ export const User = createResolverWithGid('User', {
 
     if (giftCode == null) return null;
 
-    return {
-      code: giftCode.code,
-      redeemedAt: giftCode.redeemedAt!.toISOString(),
-    };
+    return giftCode;
   },
   subscription({id}, _, {prisma}) {
     return prisma.stripeSubscription.findFirst({
@@ -86,9 +82,6 @@ export const User = createResolverWithGid('User', {
   },
   ...AppsUser,
 });
-
-// @see https://github.com/CyberAP/nanoid-dictionary#nolookalikes
-const createCode = customAlphabet('346789ABCDEFGHJKLMNPQRTUVWXY', 8);
 
 export const Mutation = createMutationResolver({
   async signIn(_, {email, redirectTo}, {prisma, request}) {
@@ -157,71 +150,6 @@ export const Mutation = createMutationResolver({
   async deleteAccount(_, __, {prisma, user}) {
     const deleted = await prisma.user.delete({where: {id: user.id}});
     return {deletedId: toGid(deleted.id, 'User')};
-  },
-  async createAccountGiftCode(_, __, {prisma, user}) {
-    const {role} = await prisma.user.findFirstOrThrow({
-      where: {id: user.id},
-    });
-
-    if (role !== 'ADMIN') {
-      throw new Error(`Can’t create an account gift code`);
-    }
-
-    const {code} = await prisma.accountGiftCode.create({
-      data: {
-        code: createCode(),
-      },
-    });
-
-    return {
-      code,
-    };
-  },
-  async redeemAccountGiftCode(_, {code}, {prisma, user}) {
-    const [giftCode, existingCodeForUser] = await Promise.all([
-      prisma.accountGiftCode.findFirst({
-        where: {code},
-      }),
-      prisma.accountGiftCode.findFirst({
-        where: {redeemedById: user.id},
-      }),
-    ]);
-
-    if (giftCode == null) {
-      // eslint-disable-next-line no-console
-      console.log(`Could not find gift code ${code} for user ${user.id}`);
-
-      return {giftCode: null};
-    }
-
-    if (giftCode.redeemedById != null) {
-      // eslint-disable-next-line no-console
-      console.log(`Gift code ${code} has already been used`);
-
-      return {giftCode: null};
-    }
-
-    if (existingCodeForUser != null) {
-      // eslint-disable-next-line no-console
-      console.log(`User ${user.id} already has applied a gift code`);
-
-      return {giftCode: null};
-    }
-
-    const [updatedGiftCode] = await prisma.$transaction([
-      prisma.accountGiftCode.update({
-        where: {id: giftCode.id},
-        data: {redeemedById: user.id, redeemedAt: new Date()},
-      }),
-      prisma.user.update({where: {id: user.id}, data: {level: 'PATRON'}}),
-    ]);
-
-    return {
-      giftCode: {
-        code: updatedGiftCode.code,
-        redeemedAt: updatedGiftCode.redeemedAt!.toISOString(),
-      },
-    };
   },
   async updateUserSettings(_, {spoilerAvoidance}, {user: {id}, prisma}) {
     const data: Parameters<(typeof prisma)['user']['update']>[0]['data'] = {};

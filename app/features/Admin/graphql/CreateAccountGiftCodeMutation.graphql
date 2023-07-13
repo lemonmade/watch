@@ -1,5 +1,11 @@
 mutation CreateAccountGiftCode {
   createAccountGiftCode {
-    code
+    giftCode {
+      id
+      code
+      createdAt
+      redeemedAt
+      createAccountUrl
+    }
   }
 }

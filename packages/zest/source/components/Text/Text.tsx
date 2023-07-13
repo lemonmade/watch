@@ -10,6 +10,10 @@ export interface TextProps {
   size?: 'small.2' | 'small.1' | 'small' | 'base';
   emphasis?: boolean | 'strong' | 'subdued';
   accessibilityRole?: 'code' | 'heading';
+  /** @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric */
+  numericVariant?: 'tabular-numbers';
+  /** @see https://developer.mozilla.org/en-US/docs/Web/CSS/text-transform */
+  transform?: 'uppercase';
 }
 
 export function Text(props: PropsWithChildren<TextProps>) {
@@ -44,6 +48,8 @@ function classesForText({
   emphasis,
   accessibilityRole,
   className,
+  transform,
+  numericVariant,
 }: TextProps) {
   return [
     styles.Text,
@@ -56,6 +62,8 @@ function classesForText({
         )
       ],
     accessibilityRole === 'code' && styles.code,
+    transform && styles[variation('transform', transform)],
+    numericVariant === 'tabular-numbers' && styles.tabularNumbers,
     className,
   ];
 }

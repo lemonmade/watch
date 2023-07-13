@@ -85,12 +85,16 @@ function CreateAccountWithEmail() {
         );
       }}
     >
-      <TextField
-        label="Email"
-        value={email}
-        keyboardType="email"
-        autocomplete="email"
-      />
+      <BlockStack spacing="small">
+        <TextField
+          label="Email"
+          value={email}
+          keyboardType="email"
+          autocomplete="email"
+        />
+
+        <Action perform="submit">Create account with email</Action>
+      </BlockStack>
     </Form>
   );
 }
