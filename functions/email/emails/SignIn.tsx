@@ -12,7 +12,7 @@ interface Props {
 
 export function SignIn({token, userEmail}: Props) {
   useSubject('Sign in to Watch');
-  useSender({name: 'Sign in Bot', email: 'accounts@lemon.tools'});
+  useSender({name: 'Sign in Bot', email: 'hello@lemon.tools'});
   useSendTo(userEmail);
 
   const url = new URL('https://watch.lemon.tools/internal/auth/email/sign-in');

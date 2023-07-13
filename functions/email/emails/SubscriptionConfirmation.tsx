@@ -11,7 +11,7 @@ interface Props {
 
 export function SubscriptionConfirmation({userEmail}: Props) {
   useSubject('Thanks for subscribing!');
-  useSender({name: 'Subscription Bot', email: 'accounts@lemon.tools'});
+  useSender({name: 'Subscription Bot', email: 'hello@lemon.tools'});
   useSendTo(userEmail);
 
   const url = new URL('https://watch.lemon.tools/app');

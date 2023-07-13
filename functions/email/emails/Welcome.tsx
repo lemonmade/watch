@@ -12,7 +12,7 @@ interface Props {
 
 export function Welcome({token, userEmail}: Props) {
   useSubject('Welcome to Watch!');
-  useSender({name: 'Welcome Bot', email: 'welcome@lemon.tools'});
+  useSender({name: 'Welcome Bot', email: 'hello@lemon.tools'});
   useSendTo(userEmail);
 
   const url = new URL(

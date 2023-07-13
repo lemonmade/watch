@@ -11,7 +11,7 @@ interface Props {
 
 export function SubscriptionCancellation({userEmail}: Props) {
   useSubject('Your subscription has been cancelled');
-  useSender({name: 'Subscription Bot', email: 'accounts@lemon.tools'});
+  useSender({name: 'Subscription Bot', email: 'hello@lemon.tools'});
   useSendTo(userEmail);
 
   usePlainTextContent(() => `Thanks for being a subscriber!`);
