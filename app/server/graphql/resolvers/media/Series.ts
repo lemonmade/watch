@@ -53,16 +53,44 @@ export const Query = createQueryResolver({
 });
 
 export const Mutation = createMutationResolver({
-  async deleteSeries(_, {id: gid}, {prisma}) {
+  async deleteSeries(_, {id: gid}, {prisma, user, response}) {
+    if (user.role !== 'ADMIN') {
+      response.status = 401;
+
+      return {
+        deletedId: null,
+        errors: [
+          {
+            code: 'NOT_AUTHORIZED',
+            message: 'You must be an admin to delete a series.',
+          },
+        ],
+      };
+    }
+
     const {id} = fromGid(gid);
     await prisma.series.delete({where: {id}});
-    return {deletedId: gid};
+    return {deletedId: gid, errors: []};
   },
-  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma}) {
+  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma, user, response}) {
+    if (user.role !== 'ADMIN') {
+      response.status = 401;
+
+      return {
+        series: null,
+        errors: [
+          {
+            code: 'NOT_AUTHORIZED',
+            message: 'You must be an admin to synchronize a series with TMDB.',
+          },
+        ],
+      };
+    }
+
     const {id} = fromGid(gid);
     const {tmdbId, name} = await prisma.series.findFirstOrThrow({where: {id}});
     const {series} = await updateSeries({id, name, tmdbId, prisma});
-    return {series};
+    return {series, errors: []};
   },
 });
 

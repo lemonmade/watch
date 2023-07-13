@@ -26,9 +26,10 @@ import {
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
-
 import {useQuery, useMutation} from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
+import {MediaGrid, MediaGridItem} from '~/shared/media';
+import {useUser} from '~/shared/user';
 
 import seriesQuery, {type SeriesQueryData} from './graphql/SeriesQuery.graphql';
 import seasonEpisodesQuery, {
@@ -43,7 +44,6 @@ import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSett
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 import watchEpisodeFromSeasonMutation from './graphql/WatchEpisodeFromSeasonMutation.graphql';
-import {MediaGrid, MediaGridItem} from '~/shared/media';
 
 export interface Props {
   id?: string;
@@ -80,6 +80,7 @@ function SeriesWithData({
   series: NonNullable<SeriesQueryData['series']>;
   onUpdate(): Promise<void>;
 }) {
+  const user = useUser();
   const {seasons, watchThroughs, subscription} = series;
 
   const regularSeasons = series.seasons
@@ -136,13 +137,15 @@ function SeriesWithData({
                         )}
                       </Menu>
 
-                      <Menu label="Internal…">
-                        <SynchronizeSeriesWithTmdbAction
-                          seriesId={series.id}
-                          onUpdate={onUpdate}
-                        />
-                        <DeleteSeriesAction seriesId={series.id} />
-                      </Menu>
+                      {user.role === 'ADMIN' && (
+                        <Menu label="Admin">
+                          <SynchronizeSeriesWithTmdbAction
+                            seriesId={series.id}
+                            onUpdate={onUpdate}
+                          />
+                          <DeleteSeriesAction seriesId={series.id} />
+                        </Menu>
+                      )}
                     </Popover>
                   }
                 >

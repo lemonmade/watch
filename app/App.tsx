@@ -51,6 +51,7 @@ import {
   Console,
 } from './features/Developer.ts';
 import {ComponentLibrary} from './features/Internal.ts';
+import {Admin} from './features/Admin.ts';
 
 import {EXTENSION_POINTS} from './clips.ts';
 
@@ -255,6 +256,7 @@ const routes: RouteDefinition[] = [
           },
         ],
       },
+      {match: 'admin', render: <Admin />},
     ],
   },
   {

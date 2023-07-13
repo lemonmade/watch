@@ -133,8 +133,10 @@ type UpdateSeasonPayload {
 
 type DeleteSeriesPayload {
   deletedId: ID
+  errors: [Error!]!
 }
 
 type SynchronizeSeriesWithTmdbPayload {
   series: Series
+  errors: [Error!]!
 }

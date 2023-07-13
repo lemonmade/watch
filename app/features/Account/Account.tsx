@@ -50,7 +50,6 @@ import startPasskeyCreateMutation from './graphql/StartPasskeyCreateMutation.gra
 import finishPasskeyCreateMutation from './graphql/FinishPasskeyCreateMutation.graphql';
 import deletePasskeyMutation from './graphql/DeletePasskeyMutation.graphql';
 import redeemAccountGiftCardMutation from './graphql/RedeemAccountGiftCodeMutation.graphql';
-import createAccountGiftCardMutation from './graphql/CreateAccountGiftCodeMutation.graphql';
 import cancelSubscriptionMutation from './graphql/CancelSubscriptionMutation.graphql';
 import prepareSubscriptionMutation, {
   type PrepareSubscriptionMutationVariables,
@@ -69,7 +68,6 @@ export default function Account() {
   const {
     email,
     level,
-    role,
     giftCode,
     subscription,
     githubAccount,
@@ -104,7 +102,6 @@ export default function Account() {
           spoilerAvoidance={settings.spoilerAvoidance}
           refetch={refetch}
         />
-        {role === 'ADMIN' && <AdminZone />}
       </BlockStack>
     </Page>
   );
@@ -766,40 +763,5 @@ function SpoilerAvoidanceSection({
         />
       </BlockStack>
     </Section>
-  );
-}
-
-function AdminZone() {
-  return (
-    <Section>
-      <BlockStack spacing>
-        <Heading divider>Admin zone</Heading>
-        <CreateGiftCodeSection />
-      </BlockStack>
-    </Section>
-  );
-}
-
-function CreateGiftCodeSection() {
-  const createAccountGiftCard = useMutation(createAccountGiftCardMutation);
-
-  return (
-    <BlockStack spacing>
-      {createAccountGiftCard.isSuccess && (
-        <Banner>
-          Code:{' '}
-          <Text emphasis>
-            {createAccountGiftCard.data.createAccountGiftCode.code}
-          </Text>
-        </Banner>
-      )}
-      <Action
-        onPress={async () => {
-          await createAccountGiftCard.mutateAsync({});
-        }}
-      >
-        Create gift code
-      </Action>
-    </BlockStack>
   );
 }

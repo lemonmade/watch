@@ -5,6 +5,7 @@ import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 import {Navigation, NavigationItem} from './components/Navigation.ts';
 
 import styles from './Frame.module.css';
+import {useUser} from '~/shared/user.ts';
 
 export interface Props {}
 
@@ -29,6 +30,8 @@ export default function Frame({children}: PropsWithChildren<Props>) {
 }
 
 function NavigationMenu() {
+  const user = useUser();
+
   return (
     <Navigation>
       <NavigationItem
@@ -56,11 +59,18 @@ function NavigationMenu() {
       <NavigationItem to="/app/me" icon="user">
         Me
       </NavigationItem>
+      {user.role === 'ADMIN' && (
+        <NavigationItem to="/app/admin" icon="developer">
+          Admin
+        </NavigationItem>
+      )}
     </Navigation>
   );
 }
 
 function GoModal() {
+  const user = useUser();
+
   return (
     <Modal>
       <Menu>
@@ -85,6 +95,7 @@ function GoModal() {
         <Action to="/app/me" icon="user">
           Me
         </Action>
+        {user.role === 'ADMIN' && <Action to="/app/admin">Admin</Action>}
       </Menu>
     </Modal>
   );

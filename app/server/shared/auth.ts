@@ -5,6 +5,8 @@ import type {
 } from '@quilted/quilt/request-router';
 import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
+import type {UserRole} from '~/graphql/types.ts';
+
 import {createPrisma, type Prisma} from './database.ts';
 
 declare module '@quilted/quilt/env' {
@@ -21,16 +23,21 @@ export enum Header {
   Token = 'Watch-Token',
 }
 
+export interface AuthenticatedUser {
+  readonly id: string;
+  readonly role: UserRole;
+}
+
 export type Authentication =
   | {
       type: 'unauthenticated';
       user?: never;
     }
-  | {type: 'cookie'; user: {readonly id: string}}
+  | {type: 'cookie'; user: AuthenticatedUser}
   | {
       type: 'accessToken';
       token: {readonly id: string};
-      user: {readonly id: string};
+      user: AuthenticatedUser;
     };
 
 export const ACCESS_TOKEN_HEADER = 'X-Access-Token';
@@ -48,8 +55,15 @@ export async function authenticate(
 
   const prisma = explicitPrisma ?? (await createPrisma());
 
-  if (cookieAuthUserId) {
-    return {type: 'cookie', user: {id: cookieAuthUserId}};
+  const userFromCookie = cookieAuthUserId
+    ? await prisma.user.findFirst({
+        where: {id: cookieAuthUserId},
+      })
+    : undefined;
+
+  if (userFromCookie) {
+    const {id, role} = userFromCookie;
+    return {type: 'cookie', user: {id, role}};
   }
 
   if (accessToken == null) {
@@ -58,6 +72,7 @@ export async function authenticate(
 
   const token = await prisma.personalAccessToken.findFirst({
     where: {token: accessToken},
+    include: {user: true},
   });
 
   if (token == null) {
@@ -71,7 +86,7 @@ export async function authenticate(
 
   return {
     type: 'accessToken',
-    user: {id: token.userId},
+    user: {id: token.user.id, role: token.user.role},
     token: {id: token.id},
   };
 }

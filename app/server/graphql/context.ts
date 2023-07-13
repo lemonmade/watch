@@ -3,11 +3,13 @@ import type {
   EnhancedResponse,
 } from '@quilted/quilt/request-router';
 
+import {type UserRole} from '~/graphql/types.ts';
+
 import {type Prisma} from '../shared/database';
 import {type Authentication} from '../shared/auth';
 
 export interface Context {
-  readonly user: {id: string};
+  readonly user: {id: string; role: UserRole};
   readonly prisma: Prisma;
   readonly request: EnhancedRequest;
   readonly response: MutableResponse;
@@ -33,7 +35,7 @@ export function createContext(
         throw new Error('No user exists for this request!');
       }
 
-      return {id: auth.user.id};
+      return auth.user;
     },
     request,
     response,
