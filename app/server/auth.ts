@@ -17,11 +17,16 @@ import {
   handleGoogleOAuthCreateAccount,
   handleGoogleOAuthConnect,
 } from './auth/google.ts';
+import {handleAppleCallback} from './auth/apple.ts';
 
 const router = createRequestRouter();
 
 router.get('/email/sign-in', signInFromEmail);
 router.get('/email/create-account', createAccountFromEmail);
+
+router.get('/apple/sign-in/callback', handleAppleCallback);
+router.get('/apple/create-account/callback', handleAppleCallback);
+router.get('/apple/connect/callback', handleAppleCallback);
 
 router.get('/github/sign-in', startGithubOAuth);
 router.get('/github/sign-in/callback', handleGithubOAuthSignIn);

@@ -195,6 +195,9 @@ importers:
       graphql:
         specifier: ^16.7.0
         version: 16.7.1
+      jose:
+        specifier: ^4.14.4
+        version: 4.14.4
       jsonwebtoken:
         specifier: ^8.0.0
         version: 8.5.1
@@ -467,7 +470,7 @@ importers:
         version: 0.1.34
       '@lemonmade/remote-ui-react':
         specifier: ^0.1.21
-        version: 0.1.21(@quilted/react@18.2.4)
+        version: 0.1.21(react@18.0.0)
       '@preact/signals-core':
         specifier: ^1.3.1
         version: 1.3.1
@@ -4420,6 +4423,21 @@ packages:
       htm: 3.1.1
       react: /@quilted/react@18.2.4
 
+  /@lemonmade/remote-ui-react@0.1.21(react@18.0.0):
+    resolution: {integrity: sha512-CPPDCK+Mc3zGPjjJAHfOgFBE9Ty3ezd6nUhNph6wj3yO/KsuAhkKHMV40J4/xZ7noi+IK+1cZ+3ZLxpWLl/v2g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      '@lemonmade/remote-ui': 0.1.34
+      '@types/react': 18.2.0
+      htm: 3.1.1
+      react: 18.0.0
+    dev: false
+
   /@lemonmade/remote-ui@0.1.34:
     resolution: {integrity: sha512-eIRbqhNQIdr7g0BSSDjYNE8tfytRQoi5e+qhIg19piYYwVOjiYr2c03QAt1JX0Yr1KhrZXkRlj4CJr70pZnp3A==}
     engines: {node: '>=14.0.0'}
@@ -6862,7 +6880,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 
@@ -9028,7 +9046,6 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
@@ -9848,6 +9865,10 @@ packages:
     resolution: {integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==}
     engines: {node: '>= 0.6.0'}
     dev: false
+
+  /jose@4.14.4:
+    resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
+    dev: true
 
   /joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}

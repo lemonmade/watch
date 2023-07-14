@@ -21,6 +21,22 @@ extend type Mutation {
   signOut: SignOutPayload!
   disconnectGithubAccount: DisconnectGithubAccountPayload!
   disconnectGoogleAccount: DisconnectGoogleAccountPayload!
+  createAccountWithApple(
+    idToken: String!
+    authorizationCode: String!
+    code: String
+    redirectTo: Url
+  ): CreateAccountWithApplePayload!
+  signInWithApple(
+    idToken: String!
+    authorizationCode: String!
+    redirectTo: Url
+  ): SignInWithApplePayload!
+  connectAppleAccount(
+    idToken: String!
+    authorizationCode: String!
+  ): ConnectAppleAccountPayload!
+  disconnectAppleAccount: DisconnectAppleAccountPayload!
   createPersonalAccessToken(label: String): CreatePersonalAccessTokenPayload!
   deletePersonalAccessToken(
     id: ID
@@ -67,6 +83,7 @@ type User {
   email: Email!
   githubAccount: GithubAccount
   googleAccount: GoogleAccount
+  appleAccount: AppleAccount
   passkeys: [Passkey!]!
   accessTokens: [PersonalAccessToken!]!
   settings: UserSettings!
@@ -101,6 +118,15 @@ type GithubAccount {
   username: String!
   profileUrl: Url!
   avatarImage: Image
+}
+
+scalar AppleID
+
+type AppleAccount {
+  id: AppleID!
+  email: Email
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 scalar GoogleID
@@ -165,12 +191,37 @@ type SignOutPayload {
   userId: ID!
 }
 
+type SignInWithApplePayload {
+  user: User
+  appleAccount: AppleAccount
+  nextStepUrl: Url
+  errors: [Error!]!
+}
+
+type CreateAccountWithApplePayload {
+  user: User
+  appleAccount: AppleAccount
+  nextStepUrl: Url
+  errors: [Error!]!
+}
+
+type ConnectAppleAccountPayload {
+  user: User!
+  appleAccount: AppleAccount
+  errors: [Error!]!
+}
+
+type DisconnectAppleAccountPayload {
+  deletedAccountId: AppleID
+  errors: [Error!]!
+}
+
 type DisconnectGithubAccountPayload {
   deletedAccount: GithubAccount
 }
 
 type DisconnectGoogleAccountPayload {
-  deletedAccountId: ID
+  deletedAccountId: GoogleID
 }
 
 type CreatePersonalAccessTokenPayload {

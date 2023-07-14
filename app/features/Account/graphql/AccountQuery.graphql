@@ -7,6 +7,10 @@ query Account {
     passkeys {
       id
     }
+    appleAccount {
+      id
+      email
+    }
     googleAccount {
       id
       email

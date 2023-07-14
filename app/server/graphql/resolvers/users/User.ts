@@ -36,6 +36,11 @@ export const Query = createQueryResolver({
 export const User = createResolverWithGid('User', {
   role: ({role}) => role,
   level: ({level}) => level,
+  appleAccount({id}, _, {prisma}) {
+    return prisma.appleAccount.findFirst({
+      where: {userId: id},
+    });
+  },
   githubAccount({id}, _, {prisma}) {
     return prisma.githubAccount.findFirst({
       where: {userId: id},

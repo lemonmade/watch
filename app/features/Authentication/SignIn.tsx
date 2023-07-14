@@ -24,10 +24,12 @@ import {SignInErrorReason} from '~/global/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useMutation} from '~/shared/graphql.ts';
+import {SignInWithAppleAction} from '~/shared/auth.ts';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 import startPasskeySignInMutation from './graphql/StartPasskeySignInMutation.graphql';
 import finishPasskeySignInMutation from './graphql/FinishPasskeySignInMutation.graphql';
+import signInWithAppleMutation from './graphql/SignInWithAppleMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
@@ -60,6 +62,7 @@ function SignInForm() {
 
       <TextBlock>or...</TextBlock>
 
+      <SignInWithApple onError={setReason} />
       <SignInWithGithub onError={setReason} />
       <SignInWithGoogle onError={setReason} />
     </BlockStack>
@@ -182,6 +185,40 @@ function useSignInWithEmail() {
       },
     );
   };
+}
+
+function SignInWithApple({
+  onError,
+}: {
+  onError(reason: SignInErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const signInWithApple = useMutation(signInWithAppleMutation);
+
+  return (
+    <SignInWithAppleAction
+      redirectUrl={new URL('/internal/auth/apple/sign-in/callback', currentUrl)}
+      onPress={async ({idToken, authorizationCode}) => {
+        const result = await signInWithApple.mutateAsync({
+          idToken,
+          authorizationCode,
+          redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+        });
+
+        const targetUrl = result.signInWithApple.nextStepUrl;
+
+        if (targetUrl == null) {
+          onError(SignInErrorReason.Generic);
+          return;
+        }
+
+        navigate(targetUrl, {replace: true});
+      }}
+    >
+      Sign in with Apple
+    </SignInWithAppleAction>
+  );
 }
 
 function SignInWithGithub({

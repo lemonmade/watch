@@ -17,11 +17,13 @@ import {
 } from '@lemon/zest';
 
 import {CreateAccountErrorReason} from '~/global/auth.ts';
+import {SignInWithAppleAction} from '~/shared/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useMutation} from '~/shared/graphql.ts';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
+import createAccountWithAppleMutation from './graphql/CreateAccountWithAppleMutation.graphql';
 
 enum SearchParam {
   Reason = 'reason',
@@ -56,6 +58,7 @@ export default function CreateAccount() {
 
       <TextBlock>or...</TextBlock>
 
+      <CreateAccountWithApple onError={setReason} />
       <CreateAccountWithGithub onError={setReason} />
       <CreateAccountWithGoogle onError={setReason} />
     </BlockStack>
@@ -96,6 +99,43 @@ function CreateAccountWithEmail() {
         <Action perform="submit">Create account with email</Action>
       </BlockStack>
     </Form>
+  );
+}
+
+function CreateAccountWithApple({
+  onError,
+}: {
+  onError(reason: CreateAccountErrorReason): void;
+}) {
+  const navigate = useNavigate();
+  const currentUrl = useCurrentUrl();
+  const createAccountWithApple = useMutation(createAccountWithAppleMutation);
+
+  return (
+    <SignInWithAppleAction
+      redirectUrl={
+        new URL('/internal/auth/apple/create-account/callback', currentUrl)
+      }
+      onPress={async ({idToken, authorizationCode}) => {
+        const result = await createAccountWithApple.mutateAsync({
+          idToken,
+          authorizationCode,
+          code: currentUrl.searchParams.get(SearchParam.GiftCode),
+          redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+        });
+
+        const targetUrl = result.createAccountWithApple.nextStepUrl;
+
+        if (targetUrl == null) {
+          onError(CreateAccountErrorReason.Generic);
+          return;
+        }
+
+        navigate(targetUrl, {replace: true});
+      }}
+    >
+      Create account with Apple
+    </SignInWithAppleAction>
   );
 }
 

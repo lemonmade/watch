@@ -1,0 +1,14 @@
+mutation ConnectAppleAccount($idToken: String!, $authorizationCode: String!) {
+  connectAppleAccount(
+    idToken: $idToken
+    authorizationCode: $authorizationCode
+  ) {
+    user {
+      id
+      appleAccount {
+        id
+        email
+      }
+    }
+  }
+}

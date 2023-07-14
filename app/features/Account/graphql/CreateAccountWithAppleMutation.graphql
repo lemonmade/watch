@@ -1,0 +1,15 @@
+mutation CreateAccountWithApple(
+  $idToken: String!
+  $authorizationCode: String!
+  $code: String
+  $redirectTo: Url
+) {
+  createAccountWithApple(
+    code: $code
+    idToken: $idToken
+    authorizationCode: $authorizationCode
+    redirectTo: $redirectTo
+  ) {
+    nextStepUrl
+  }
+}
