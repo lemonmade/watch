@@ -43,6 +43,7 @@ model User {
   passkeys      Passkey[]
   githubAccount GithubAccount?
   googleAccount GoogleAccount?
+  appleAccount  AppleAccount?
 
   skips                       Skip[]
   watches                     Watch[]
@@ -112,6 +113,19 @@ model Passkey {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+}
+
+model AppleAccount {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email          String?
+  emailVerified  Boolean?
+  isPrivateEmail Boolean?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model GoogleAccount {

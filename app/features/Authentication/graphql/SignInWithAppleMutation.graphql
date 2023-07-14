@@ -1,0 +1,13 @@
+mutation SignInWithApple(
+  $idToken: String!
+  $authorizationCode: String!
+  $redirectTo: Url
+) {
+  signInWithApple(
+    idToken: $idToken
+    authorizationCode: $authorizationCode
+    redirectTo: $redirectTo
+  ) {
+    nextStepUrl
+  }
+}

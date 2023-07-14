@@ -1,4 +1,4 @@
-import {ReactNode, useState} from 'react';
+import {type ReactNode, useState} from 'react';
 import {
   useNavigate,
   useCurrentUrl,
@@ -35,6 +35,7 @@ import {Page} from '~/shared/page.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {SignInWithAppleAction} from '~/shared/auth.ts';
 
 import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
 
@@ -54,6 +55,8 @@ import cancelSubscriptionMutation from './graphql/CancelSubscriptionMutation.gra
 import prepareSubscriptionMutation, {
   type PrepareSubscriptionMutationVariables,
 } from './graphql/PrepareSubscriptionMutation.graphql';
+import connectAppleAccountMutation from './graphql/ConnectAppleAccountMutation.graphql';
+import disconnectAppleAccountMutation from './graphql/DisconnectAppleAccountMutation.graphql';
 
 const MEMBER_COST = {amount: 3, currency: 'CAD'};
 const PATRON_COST = {amount: 5, currency: 'CAD'};
@@ -70,6 +73,7 @@ export default function Account() {
     level,
     giftCode,
     subscription,
+    appleAccount,
     githubAccount,
     googleAccount,
     settings,
@@ -91,6 +95,7 @@ export default function Account() {
           onUpdate={handleUpdate}
         />
         <PasskeySection passkeys={passkeys} onUpdate={handleUpdate} />
+        <AppleSection account={appleAccount} onUpdate={handleUpdate} />
         <GoogleSection account={googleAccount} onUpdate={handleUpdate} />
         <GithubSection
           account={githubAccount ?? undefined}
@@ -574,6 +579,53 @@ function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
         </Action>
       </Menu>
     </Popover>
+  );
+}
+
+function AppleSection({
+  account,
+  onUpdate,
+}: {
+  account?: AccountQueryData.Me.AppleAccount | null;
+  onUpdate(): Promise<void>;
+}) {
+  const currentUrl = useCurrentUrl();
+  const connectAppleAccount = useMutation(connectAppleAccountMutation);
+  const disconnectAppleAccount = useMutation(disconnectAppleAccountMutation);
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        <Heading divider>Apple account</Heading>
+        {account?.email ? <Text>email: {account.email}</Text> : null}
+        {account ? (
+          <Action
+            onPress={async () => {
+              await disconnectAppleAccount.mutateAsync({});
+              await onUpdate();
+            }}
+          >
+            Disconnect
+          </Action>
+        ) : (
+          <SignInWithAppleAction
+            redirectUrl={
+              new URL('/internal/auth/apple/connect/callback', currentUrl)
+            }
+            onPress={async ({idToken, authorizationCode}) => {
+              await connectAppleAccount.mutateAsync({
+                idToken,
+                authorizationCode,
+              });
+
+              await onUpdate();
+            }}
+          >
+            Connect
+          </SignInWithAppleAction>
+        )}
+      </BlockStack>
+    </Section>
   );
 }
 

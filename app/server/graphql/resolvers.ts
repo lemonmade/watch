@@ -49,6 +49,7 @@ import {
   AccountGiftCode,
   PersonalAccessToken,
   Passkey,
+  AppleAccount,
   GoogleAccount,
   GithubAccount,
   Subscription,
@@ -82,6 +83,7 @@ export const Mutation: MutationResolver = {
 export {
   AccountGiftCode,
   Action,
+  AppleAccount,
   App,
   AppExtension,
   AppExtensionInstallation,

@@ -1,0 +1,5 @@
+mutation DisconnectAppleAccount {
+  disconnectAppleAccount {
+    deletedAccountId
+  }
+}

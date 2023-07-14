@@ -10,6 +10,10 @@ import {
 } from './users/User.ts';
 import {Passkey, Mutation as PasskeyMutation} from './users/Passkey.ts';
 import {
+  AppleAccount,
+  Mutation as AppleAccountMutation,
+} from './users/AppleAccount.ts';
+import {
   GithubAccount,
   Mutation as GithubAccountMutation,
 } from './users/GithubAccount.ts';
@@ -30,6 +34,7 @@ export {
   User,
   Passkey,
   Subscription,
+  AppleAccount,
   GithubAccount,
   GoogleAccount,
   AccountGiftCode,
@@ -42,6 +47,7 @@ export const Mutation = {
   ...UserMutation,
   ...PasskeyMutation,
   ...SubscriptionMutation,
+  ...AppleAccountMutation,
   ...GithubAccountMutation,
   ...GoogleAccountMutation,
   ...AccountGiftCodeMutation,

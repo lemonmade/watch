@@ -4,7 +4,7 @@ import {type Prisma} from './database.ts';
 
 export async function createAccountWithGiftCode(
   data: PrismaData.UserCreateInput,
-  {giftCode, prisma}: {giftCode: string; prisma: Prisma},
+  {giftCode, prisma}: {giftCode?: string; prisma: Prisma},
 ) {
   const code = giftCode
     ? await prisma.accountGiftCode.findFirstOrThrow({
@@ -18,7 +18,7 @@ export async function createAccountWithGiftCode(
 
   const user = await prisma.user.create({
     data: {
-      level: giftCode ? 'PATRON' : undefined,
+      level: code ? 'PATRON' : undefined,
       ...data,
     },
   });
