@@ -23,10 +23,10 @@ const DEFAULT_SENDER: Sender = {
 };
 
 const DEFAULT_HEADERS = {
-  Allow: 'PUT',
+  Allow: 'POST',
   'Cache-Control': 'no-store',
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'PUT',
+  'Access-Control-Allow-Methods': 'POST',
   'Timing-Allow-Origin': '*',
 };
 
@@ -40,9 +40,9 @@ async function handleRequest(request: Request, env: Environment) {
     return noContent({headers: DEFAULT_HEADERS});
   }
 
-  if (request.method !== 'PUT') {
+  if (request.method !== 'POST') {
     return json(
-      {error: 'Must use PUT'},
+      {error: 'Must use POST'},
       {status: 405, headers: DEFAULT_HEADERS},
     );
   }

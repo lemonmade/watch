@@ -17,7 +17,7 @@ export async function sendEmail<T extends EmailType>(
   };
 
   const response = await fetch(new URL('/internal/email/queue', request.url), {
-    method: 'PUT',
+    method: 'POST',
     body: JSON.stringify(email),
     headers: {
       [Header.Token]: await createSignedToken({}, {expiresIn: '5 minutes'}),
