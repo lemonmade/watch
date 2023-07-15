@@ -1,4 +1,4 @@
-import type {User as DatabaseUser} from '@prisma/client';
+import type {User as DatabaseUser, Prisma} from '@prisma/client';
 
 import {createSignedToken, removeAuthCookies} from '../../../shared/auth.ts';
 
@@ -20,15 +20,18 @@ declare module '../types' {
 
 export const Query = createQueryResolver({
   me(_, __, {prisma, user}) {
-    return prisma.user.findFirst({
+    return prisma.user.findFirstOrThrow({
       where: {id: user.id},
-      rejectOnNotFound: true,
     });
   },
   my(_, __, {prisma, user}) {
-    return prisma.user.findFirst({
+    return prisma.user.findFirstOrThrow({
       where: {id: user.id},
-      rejectOnNotFound: true,
+    });
+  },
+  viewer(_, __, {prisma, user}) {
+    return prisma.user.findFirstOrThrow({
+      where: {id: user.id},
     });
   },
 });
@@ -157,7 +160,7 @@ export const Mutation = createMutationResolver({
     return {deletedId: toGid(deleted.id, 'User')};
   },
   async updateUserSettings(_, {spoilerAvoidance}, {user: {id}, prisma}) {
-    const data: Parameters<(typeof prisma)['user']['update']>[0]['data'] = {};
+    const data: Prisma.UserUncheckedUpdateInput = {};
 
     if (spoilerAvoidance != null) {
       data.spoilerAvoidance = spoilerAvoidance;

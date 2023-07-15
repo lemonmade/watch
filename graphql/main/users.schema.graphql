@@ -3,6 +3,7 @@
 extend type Query {
   me: User!
   my: User!
+  viewer: User!
   giftCodes: [AccountGiftCode!]!
 }
 
