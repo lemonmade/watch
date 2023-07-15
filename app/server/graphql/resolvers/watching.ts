@@ -19,6 +19,7 @@ import {
   Query as WatchThroughQuery,
   Mutation as WatchThroughMutation,
   Series as WatchThroughSeries,
+  User as WatchThroughUser,
 } from './watching/WatchThrough.ts';
 
 export {Action, Watch, Watchable, Skip, Skippable, WatchThrough};
@@ -36,3 +37,5 @@ export const Series = {...WatchThroughSeries};
 export const Season = {...WatchSeason, ...SkipSeason};
 
 export const Episode = {...WatchEpisode, ...SkipEpisode};
+
+export const User = {...WatchThroughUser};

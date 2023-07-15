@@ -3,6 +3,7 @@ import type {User as DatabaseUser, Prisma} from '@prisma/client';
 import {createSignedToken, removeAuthCookies} from '../../../shared/auth.ts';
 
 import {User as AppsUser} from '../apps.ts';
+import {User as WatchThroughUser} from '../watching.ts';
 
 import {toGid} from '../shared/id.ts';
 import {enqueueSendEmail} from '../shared/email.ts';
@@ -89,6 +90,7 @@ export const User = createResolverWithGid('User', {
     });
   },
   ...AppsUser,
+  ...WatchThroughUser,
 });
 
 export const Mutation = createMutationResolver({

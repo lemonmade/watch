@@ -1,6 +1,7 @@
 #import "./shared.schema.graphql"
 #import "./media.schema.graphql"
 #import "./lists.schema.graphql"
+#import "./users.schema.graphql"
 
 extend type Query {
   watch(id: ID!): Watch
@@ -25,6 +26,11 @@ extend type Season implements Watchable & Skippable {
 
 extend type Series {
   watchThroughs: [WatchThrough!]!
+}
+
+extend type User {
+  hasStartedWatchThrough: Boolean!
+  hasFinishedWatchThrough: Boolean!
 }
 
 extend type Mutation {

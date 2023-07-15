@@ -272,9 +272,7 @@ export const Mutation = createMutationResolver({
       return {watchThrough: null};
     }
 
-    const data: Parameters<
-      (typeof prisma)['watchThrough']['update']
-    >[0]['data'] = {};
+    const data: Prisma.WatchThroughUncheckedUpdateInput = {};
 
     if (spoilerAvoidance != null) {
       data.spoilerAvoidance = spoilerAvoidance;
@@ -518,6 +516,23 @@ export const Series = createResolver('Series', {
       orderBy: {updatedAt: 'desc'},
       where: {seriesId: id, userId: user.id},
     });
+  },
+});
+
+export const User = createResolver('User', {
+  async hasStartedWatchThrough({id}, _, {prisma}) {
+    const firstWatchThrough = await prisma.watchThrough.findFirst({
+      where: {userId: id},
+    });
+
+    return firstWatchThrough != null;
+  },
+  async hasFinishedWatchThrough({id}, _, {prisma}) {
+    const firstWatchThrough = await prisma.watchThrough.findFirst({
+      where: {userId: id, status: 'FINISHED'},
+    });
+
+    return firstWatchThrough != null;
   },
 });
 
