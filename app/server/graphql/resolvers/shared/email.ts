@@ -1,25 +1,24 @@
 import {createSignedToken, Header} from '../../../shared/auth.ts';
 
 import type {
-  Message,
+  Email,
   EmailType,
   PropsForEmail,
 } from '../../../../../functions/email/index.tsx';
 
-// TODO
-export async function enqueueSendEmail<T extends EmailType>(
+export async function sendEmail<T extends EmailType>(
   type: T,
   props: PropsForEmail<T>,
   {request}: {request: Request},
 ) {
-  const message: Message = {
+  const email: Email = {
     type,
     props,
   };
 
   const response = await fetch(new URL('/internal/email/queue', request.url), {
     method: 'PUT',
-    body: JSON.stringify(message),
+    body: JSON.stringify(email),
     headers: {
       [Header.Token]: await createSignedToken({}, {expiresIn: '5 minutes'}),
       'Content-Type': 'application/json',
@@ -29,6 +28,6 @@ export async function enqueueSendEmail<T extends EmailType>(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to enqueue email: ${await response.text()}`);
+    throw new Error(`Failed to send email: ${await response.text()}`);
   }
 }

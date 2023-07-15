@@ -8,7 +8,7 @@ interface Environment {
   APP_ASSETS: R2Bucket;
   CLIPS_ASSETS: R2Bucket;
   SERVICE_UPLOAD_CLIPS: Fetcher;
-  SERVICE_EMAIL_QUEUE: Fetcher;
+  SERVICE_EMAIL: Fetcher;
   SERVICE_STRIPE: Fetcher;
   SERVICE_METRICS: Fetcher;
   SERVICE_IMAGES: Fetcher;
@@ -67,10 +67,7 @@ router.any(
 router.any(
   'internal/email/queue',
   (request, {env}) =>
-    env.SERVICE_EMAIL_QUEUE.fetch(
-      new URL('/', request.url),
-      request as any,
-    ) as any,
+    env.SERVICE_EMAIL.fetch(new URL('/', request.url), request as any) as any,
 );
 
 router.any((request) => {

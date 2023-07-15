@@ -1,5 +1,7 @@
 import {type Stripe} from 'stripe';
+import jwt from '@tsndr/cloudflare-worker-jwt';
 import {redirect, createRequestRouter} from '@quilted/request-router';
+import type {Fetcher} from '@cloudflare/workers-types';
 import type {} from '@quilted/cloudflare';
 
 import {
@@ -8,13 +10,14 @@ import {
   SUBSCRIPTION_LEVELS,
 } from '~/global/subscriptions.ts';
 
-import type {EmailQueue} from '../email/index.tsx';
+import type {Email, EmailType, PropsForEmail} from '../email/index.tsx';
 
 interface Environment {
   STRIPE_SECRET: string;
   STRIPE_API_KEY: string;
   DATABASE_URL: string;
-  EMAIL_QUEUE: EmailQueue;
+  JWT_SECRET: string;
+  EMAIL_SERVICE: Fetcher;
 }
 
 declare module '@quilted/cloudflare' {
@@ -149,12 +152,13 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
           }),
         ]);
 
-        await env.EMAIL_QUEUE.send({
-          type: 'subscriptionConfirmation',
-          props: {
+        await sendEmail(
+          'subscriptionConfirmation',
+          {
             userEmail: user.email,
           },
-        });
+          {request, env},
+        );
 
         break;
       }
@@ -188,10 +192,13 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
           ]);
         }
 
-        await env.EMAIL_QUEUE.send({
-          type: 'subscriptionCancellation',
-          props: {userEmail: user.email},
-        });
+        await sendEmail(
+          'subscriptionCancellation',
+          {
+            userEmail: user.email,
+          },
+          {request, env},
+        );
 
         break;
       }
@@ -220,4 +227,33 @@ async function createStripe(env: Environment) {
   });
 
   return stripe;
+}
+
+export async function sendEmail<T extends EmailType>(
+  type: T,
+  props: PropsForEmail<T>,
+  {request, env}: {request: Request; env: Environment},
+) {
+  const email: Email = {
+    type,
+    props,
+  };
+
+  const response = await fetch(new URL('/internal/email/queue', request.url), {
+    method: 'PUT',
+    body: JSON.stringify(email),
+    headers: {
+      'Watch-Token': await jwt.sign(
+        {exp: Date.now() + 5 * 60 * 1000},
+        env.JWT_SECRET,
+      ),
+      'Content-Type': 'application/json',
+    },
+    // @see https://github.com/nodejs/node/issues/46221
+    ...{duplex: 'half'},
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to send email: ${await response.text()}`);
+  }
 }

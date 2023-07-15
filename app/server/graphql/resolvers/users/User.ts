@@ -6,7 +6,7 @@ import {User as AppsUser} from '../apps.ts';
 import {User as WatchThroughUser} from '../watching.ts';
 
 import {toGid} from '../shared/id.ts';
-import {enqueueSendEmail} from '../shared/email.ts';
+import {sendEmail} from '../shared/email.ts';
 import {
   createResolverWithGid,
   createQueryResolver,
@@ -103,7 +103,7 @@ export const Mutation = createMutationResolver({
       return {email};
     }
 
-    await enqueueSendEmail(
+    await sendEmail(
       'signIn',
       {
         token: await createSignedToken(
@@ -128,7 +128,7 @@ export const Mutation = createMutationResolver({
     });
 
     if (user != null) {
-      await enqueueSendEmail(
+      await sendEmail(
         'signIn',
         {
           token: await createSignedToken(
@@ -143,7 +143,7 @@ export const Mutation = createMutationResolver({
       return {email};
     }
 
-    await enqueueSendEmail(
+    await sendEmail(
       'welcome',
       {
         token: await createSignedToken(

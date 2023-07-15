@@ -9,9 +9,5 @@
   },
   "include": ["**/*"],
   "exclude": ["quilt.project.ts", "build"],
-  "references": [
-    {"path": "../email"},
-    {"path": "../shared"},
-    {"path": "../../global"}
-  ]
+  "references": [{"path": "../email"}, {"path": "../../global"}]
 }

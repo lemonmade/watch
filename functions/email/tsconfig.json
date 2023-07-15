@@ -8,5 +8,5 @@
   },
   "include": ["**/*"],
   "exclude": ["quilt.project.ts", "build"],
-  "references": [{"path": "../shared"}]
+  "references": []
 }

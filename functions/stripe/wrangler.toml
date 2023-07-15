@@ -8,11 +8,12 @@ usage_model = "unbound"
 node_compat = true
 workers_dev = false
 
-# @see https://developers.cloudflare.com/queues/configuration/
-[[queues.producers]]
-queue = "watch-email"
-binding = "EMAIL_QUEUE"
+[[services]]
+binding = "EMAIL_SERVICE"
+service = "watch-email"
+environment = "production"
 
 # Needs the following environment variables:
 # - DATABASE_URL
 # - STRIPE_SECRET
+# - JWT_SECRET

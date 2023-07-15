@@ -249,6 +249,9 @@ importers:
       react-dom:
         specifier: npm:@quilted/react-dom@^18.2.0
         version: /@quilted/react-dom@18.2.5
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
 
   functions/images:
     devDependencies:
@@ -298,6 +301,9 @@ importers:
       '@quilted/request-router':
         specifier: ^0.1.6
         version: 0.1.6
+      '@tsndr/cloudflare-worker-jwt':
+        specifier: ^2.1.0
+        version: 2.1.4
       stripe:
         specifier: ^11.4.0
         version: 11.4.0

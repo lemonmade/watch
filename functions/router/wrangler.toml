@@ -18,7 +18,7 @@ service = "watch-internal-upload-clips"
 environment = "production"
 
 [[services]]
-binding = "SERVICE_EMAIL_QUEUE"
+binding = "SERVICE_EMAIL"
 service = "watch-email"
 environment = "production"
 

@@ -20,7 +20,6 @@
     {"path": "./functions/images"},
     {"path": "./functions/metrics"},
     {"path": "./functions/router"},
-    {"path": "./functions/shared"},
     {"path": "./functions/stripe"},
     {"path": "./functions/tmdb-refresher"},
     {"path": "./functions/tmdb-refresher-scheduler"},
