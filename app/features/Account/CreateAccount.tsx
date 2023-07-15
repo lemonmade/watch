@@ -107,7 +107,6 @@ function CreateAccountWithApple({
 }: {
   onError(reason: CreateAccountErrorReason): void;
 }) {
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
   const createAccountWithApple = useMutation(createAccountWithAppleMutation);
 
@@ -131,7 +130,8 @@ function CreateAccountWithApple({
           return;
         }
 
-        navigate(targetUrl, {replace: true});
+        // TODO: update app context with new user
+        window.location.replace(targetUrl);
       }}
     >
       Create account with Apple

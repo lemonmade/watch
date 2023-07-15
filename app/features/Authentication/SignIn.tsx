@@ -192,7 +192,6 @@ function SignInWithApple({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const navigate = useNavigate();
   const currentUrl = useCurrentUrl();
   const signInWithApple = useMutation(signInWithAppleMutation);
 
@@ -213,7 +212,8 @@ function SignInWithApple({
           return;
         }
 
-        navigate(targetUrl, {replace: true});
+        // TODO: update app context with new user
+        window.location.replace(targetUrl);
       }}
     >
       Sign in with Apple
