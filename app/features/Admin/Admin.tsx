@@ -11,9 +11,11 @@ import {
   Menu,
   Icon,
 } from '@lemon/zest';
+import {Redirect} from '@quilted/quilt';
 
 import {useQuery, useMutation} from '~/shared/graphql';
-import {Page} from '~/shared/page';
+import {Page} from '~/shared/page.ts';
+import {useUser} from '~/shared/user.ts';
 
 import createAccountGiftCardMutation from './graphql/CreateAccountGiftCodeMutation.graphql';
 import giftCodeListQuery, {
@@ -21,6 +23,10 @@ import giftCodeListQuery, {
 } from './graphql/GiftCodeListQuery.graphql';
 
 export default function Admin() {
+  const user = useUser();
+
+  if (user.role !== 'ADMIN') return <Redirect to="/app" />;
+
   return (
     <Page heading="Admin">
       <CreateGiftCodeSection />

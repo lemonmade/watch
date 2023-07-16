@@ -95,7 +95,11 @@ function GoModal() {
         <Action to="/app/me" icon="user">
           Me
         </Action>
-        {user.role === 'ADMIN' && <Action to="/app/admin">Admin</Action>}
+        {user.role === 'ADMIN' && (
+          <Action to="/app/admin" icon="developer">
+            Admin
+          </Action>
+        )}
       </Menu>
     </Modal>
   );
