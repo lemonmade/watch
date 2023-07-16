@@ -53,7 +53,8 @@ export default function Search() {
     <Page heading="Search">
       <BlockStack spacing>
         <TextField
-          label="Search"
+          label="Find a TV show"
+          labelStyle="placeholder"
           value={search}
           onChange={(value) => {
             setSearch(value);

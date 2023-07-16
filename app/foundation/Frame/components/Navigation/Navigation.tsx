@@ -14,12 +14,14 @@ export interface NavigationItemProps {
   to: NavigateTo;
   icon: ComponentProps<typeof Icon>['source'];
   matches?: (string | RegExp)[];
+  emphasis?: ComponentProps<typeof Action>['emphasis'];
 }
 
 export function NavigationItem({
   to,
   icon,
   matches,
+  emphasis,
   children,
 }: PropsWithChildren<NavigationItemProps>) {
   const selected = useItemSelected(to, matches);
@@ -31,6 +33,7 @@ export function NavigationItem({
       inlineAlignment="start"
       inlineSize="fill"
       icon={icon}
+      emphasis={emphasis}
     >
       {children}
     </Action>
