@@ -1,5 +1,14 @@
 # @lemon/zest
 
+## 0.1.19
+
+### Patch Changes
+
+- Updated dependencies [[`ff7377e2`](https://github.com/lemonmade/watch/commit/ff7377e24f3ee3b97b88c8493eb6fa4d86450902), [`5254b411`](https://github.com/lemonmade/watch/commit/5254b4119867c8b859432a24b5faa0b890f0d7a8), [`b6330854`](https://github.com/lemonmade/watch/commit/b6330854b4cd12d4a948c1ec22ed83dfb9d23506)]:
+  - @watching/clips@0.4.18
+  - @watching/react-signals@0.1.7
+  - @watching/thread-signals@0.1.11
+
 ## 0.1.18
 
 ### Patch Changes
