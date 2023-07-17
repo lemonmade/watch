@@ -1,4 +1,7 @@
-import type {SeriesSubscription as DatabaseSeriesSubscription} from '@prisma/client';
+import type {
+  Prisma,
+  SeriesSubscription as DatabaseSeriesSubscription,
+} from '@prisma/client';
 
 import {
   createResolver,
@@ -38,9 +41,8 @@ export const Mutation = createMutationResolver({
     const spoilerAvoidance =
       explicitSpoilerAvoidance ??
       (
-        await prisma.user.findFirst({
+        await prisma.user.findFirstOrThrow({
           where: {id: user.id},
-          rejectOnNotFound: true,
         })
       ).spoilerAvoidance;
 
@@ -77,9 +79,8 @@ export const Mutation = createMutationResolver({
     const spoilerAvoidance =
       explicitSpoilerAvoidance ??
       (
-        await prisma.user.findFirst({
+        await prisma.user.findFirstOrThrow({
           where: {id: user.id},
-          rejectOnNotFound: true,
         })
       ).spoilerAvoidance;
 
@@ -143,9 +144,7 @@ export const Mutation = createMutationResolver({
       return {subscription: null};
     }
 
-    const data: Parameters<
-      (typeof prisma)['seriesSubscription']['update']
-    >[0]['data'] = {};
+    const data: Prisma.SeriesSubscriptionUncheckedUpdateInput = {};
 
     if (spoilerAvoidance != null) {
       data.spoilerAvoidance = spoilerAvoidance;
@@ -165,9 +164,8 @@ export const Mutation = createMutationResolver({
 export const SeriesSubscription = createResolverWithGid('SeriesSubscription', {
   subscribedOn: ({createdAt}) => createdAt.toISOString(),
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirst({
+    return prisma.series.findFirstOrThrow({
       where: {id: seriesId},
-      rejectOnNotFound: true,
     });
   },
   settings({spoilerAvoidance}) {

@@ -36,9 +36,8 @@ export const Mutation = createMutationResolver({
 
     const validatedWatchThroughId = watchThroughId
       ? (
-          await prisma.watchThrough.findFirst({
+          await prisma.watchThrough.findFirstOrThrow({
             where: {id: watchThroughId, userId: user.id},
-            rejectOnNotFound: true,
           })
         ).id
       : undefined;
@@ -99,9 +98,8 @@ export const Skip = createResolverWithGid('Skip', {
           })
         : Promise.resolve(null),
       seasonId
-        ? prisma.season.findFirst({
+        ? prisma.season.findFirstOrThrow({
             where: {id: seasonId},
-            rejectOnNotFound: true,
           })
         : Promise.resolve(null),
     ]);
@@ -116,9 +114,8 @@ export const Skip = createResolverWithGid('Skip', {
   },
   watchThrough({watchThroughId}, _, {prisma, user}) {
     return watchThroughId
-      ? prisma.watchThrough.findFirst({
+      ? prisma.watchThrough.findFirstOrThrow({
           where: {id: watchThroughId, userId: user.id},
-          rejectOnNotFound: true,
         })
       : null;
   },

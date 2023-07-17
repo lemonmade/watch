@@ -43,7 +43,6 @@ export const Query = createQueryResolver({
   randomWatchThrough(_, __, {prisma, user}) {
     return prisma.watchThrough.findFirst({
       where: {status: 'ONGOING', userId: user.id},
-      rejectOnNotFound: false,
     });
   },
 });
@@ -52,10 +51,9 @@ export const Mutation = createMutationResolver({
   async stopWatchThrough(_, {id: gid, watchLater = false}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+    const validatedWatchThrough = await prisma.watchThrough.findFirstOrThrow({
       where: {id, userId: user.id},
       select: {id: true, series: {select: {id: true}}},
-      rejectOnNotFound: true,
     });
 
     const watchThrough = await prisma.watchThrough.update({
@@ -102,7 +100,7 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide either series.id or series.handle`);
     }
 
-    const series = await prisma.series.findFirst({
+    const series = await prisma.series.findFirstOrThrow({
       where: seriesCondition,
       include: {
         seasons: {
@@ -114,7 +112,6 @@ export const Mutation = createMutationResolver({
           },
         },
       },
-      rejectOnNotFound: true,
     });
 
     const lastStartedSeason = Math.max(
@@ -228,10 +225,9 @@ export const Mutation = createMutationResolver({
   async deleteWatchThrough(_, {id: gid, watchLater = false}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    const validatedWatchThrough = await prisma.watchThrough.findFirst({
+    const validatedWatchThrough = await prisma.watchThrough.findFirstOrThrow({
       where: {id, userId: user.id},
       select: {id: true, series: {select: {id: true}}},
-      rejectOnNotFound: true,
     });
 
     await prisma.watchThrough.delete({
@@ -295,9 +291,8 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
     return createdAt.toISOString();
   },
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirst({
+    return prisma.series.findFirstOrThrow({
       where: {id: seriesId},
-      rejectOnNotFound: true,
     });
   },
   from({includeEpisodes}) {

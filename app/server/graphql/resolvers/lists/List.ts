@@ -33,9 +33,8 @@ export const Query = createQueryResolver({
     });
   },
   async lists(_, __, {user, prisma}) {
-    const {watchLaterId} = await prisma.user.findFirst({
+    const {watchLaterId} = await prisma.user.findFirstOrThrow({
       where: {id: user.id},
-      rejectOnNotFound: true,
     });
 
     return prisma.list.findMany({
@@ -126,9 +125,8 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide a seriesId`);
     }
 
-    const series = await prisma.series.findFirst({
+    const series = await prisma.series.findFirstOrThrow({
       where: {id: fromGid(seriesId).id},
-      rejectOnNotFound: true,
     });
 
     const list = await prisma.list.findFirst({
@@ -155,14 +153,12 @@ export const Mutation = createMutationResolver({
     return {series, list, item};
   },
   async removeFromList(_, {id, itemId}, {user, prisma}) {
-    const list = await prisma.list.findFirst({
+    const list = await prisma.list.findFirstOrThrow({
       where: {id: fromGid(id).id, userId: user.id},
-      rejectOnNotFound: true,
     });
 
-    const item = await prisma.listItem.findFirst({
+    const item = await prisma.listItem.findFirstOrThrow({
       where: {id: fromGid(itemId).id},
-      rejectOnNotFound: true,
     });
 
     if (item.listId !== list.id) {
@@ -178,9 +174,8 @@ export const Mutation = createMutationResolver({
     const series =
       item.seriesId == null
         ? null
-        : await prisma.series.findFirst({
+        : await prisma.series.findFirstOrThrow({
             where: {id: item.seriesId},
-            rejectOnNotFound: true,
           });
 
     await prisma.$transaction([

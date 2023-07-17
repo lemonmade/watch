@@ -54,9 +54,8 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide a seriesId`);
     }
 
-    const series = await prisma.series.findFirst({
+    const series = await prisma.series.findFirstOrThrow({
       where: {id: fromGid(seriesId).id},
-      rejectOnNotFound: true,
     });
 
     const list =
@@ -86,9 +85,8 @@ export const Mutation = createMutationResolver({
         },
       }));
 
-    const item = await prisma.listItem.findFirst({
+    const item = await prisma.listItem.findFirstOrThrow({
       where: {listId: list.id, seriesId: series.id},
-      rejectOnNotFound: true,
     });
 
     const itemsToShiftInList = await prisma.listItem.findMany({
@@ -116,9 +114,8 @@ export async function addSeriesToWatchLater(
   id: string,
   {prisma, user}: Pick<ResolverContext, 'prisma' | 'user'>,
 ) {
-  const series = await prisma.series.findFirst({
+  const series = await prisma.series.findFirstOrThrow({
     where: {id},
-    rejectOnNotFound: true,
   });
 
   const list =
