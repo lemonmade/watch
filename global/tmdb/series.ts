@@ -67,9 +67,8 @@ export async function updateSeries({
 
   log(`Updating series (tmdb: ${tmdbId}, id: ${seriesId})`);
 
-  const series = await prisma.series.findFirst({
+  const series = await prisma.series.findFirstOrThrow({
     where: {id: seriesId},
-    rejectOnNotFound: true,
   });
 
   const seasons = await prisma.season.findMany({
