@@ -86,9 +86,8 @@ function SeriesWithData({
   const regularSeasons = series.seasons
     .filter(({isSpecials}) => !isSpecials)
     .sort((a, b) => a.number - b.number);
-  const firstAired = regularSeasons.find(
-    ({firstAired}) => firstAired != null,
-  )?.firstAired;
+  const firstAired = regularSeasons.find(({firstAired}) => firstAired != null)
+    ?.firstAired;
   const lastAired = regularSeasons
     .reverse()
     .find(({firstAired}) => firstAired != null)?.firstAired;

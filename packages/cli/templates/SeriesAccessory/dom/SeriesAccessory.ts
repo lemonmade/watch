@@ -11,14 +11,12 @@ export default extension<'series.details.accessory', SeriesQueryData>(
       seriesNameText.data = series.name;
     });
 
-    root.append(
-      html<Elements.TextBlock>`
-        <ui-text-block>
-          You are rendering in the
-          <ui-text emphasis>${target}</ui-text> extension point, on a series
-          named ${seriesNameText}!
-        </ui-text-block>
-      `,
-    );
+    root.append(html<Elements.TextBlock>`
+      <ui-text-block>
+        You are rendering in the
+        <ui-text emphasis>${target}</ui-text> extension point, on a series named
+        ${seriesNameText}!
+      </ui-text-block>
+    `);
   },
 );

@@ -432,9 +432,8 @@ export const ClipsExtensionInstallation = createResolverWithGid(
 
       const extend = (extension.activeVersion?.extends ?? []) as any[];
 
-      const loading = extend.find(
-        (extend) => extend.target === target,
-      )?.loading;
+      const loading = extend.find((extend) => extend.target === target)
+        ?.loading;
 
       if (loading == null) return null;
 
