@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.1.9
+
+### Patch Changes
+
+- [#274](https://github.com/lemonmade/watch/pull/274) [`b6330854`](https://github.com/lemonmade/watch/commit/b6330854b4cd12d4a948c1ec22ed83dfb9d23506) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt dependencies
+
 ## 0.1.8
 
 ### Patch Changes
