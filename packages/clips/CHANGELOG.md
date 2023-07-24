@@ -1,5 +1,14 @@
 # @watching/clips
 
+## 0.4.19
+
+### Patch Changes
+
+- [`fb4b067c`](https://github.com/lemonmade/watch/commit/fb4b067c430cd064ec2bb68e4ac3691175035c38) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
+- Updated dependencies [[`fb4b067c`](https://github.com/lemonmade/watch/commit/fb4b067c430cd064ec2bb68e4ac3691175035c38)]:
+  - @watching/thread-signals@0.1.12
+
 ## 0.4.18
 
 ### Patch Changes
