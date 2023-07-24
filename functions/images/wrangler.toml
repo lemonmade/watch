@@ -4,5 +4,6 @@ main = "./build/runtime/runtime.js"
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2023-02-06"
 
+logpush = true
 usage_model = "unbound"
 workers_dev = false
