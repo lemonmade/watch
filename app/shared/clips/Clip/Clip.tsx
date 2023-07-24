@@ -200,11 +200,13 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
 
   const restarting = receiver !== resolvedReceiver;
 
+  const Renderer = RemoteRootRenderer as any;
+
   return lastRenderedReceiver != null && resolvedReceiver && components ? (
     <Section
       className={classes(styles.Content, restarting && styles.restarting)}
     >
-      <RemoteRootRenderer components={components as any} receiver={resolvedReceiver} />
+      <Renderer components={components} receiver={resolvedReceiver} />
     </Section>
   ) : (
     <ClipsInstanceRendererLoading instance={instance} />
