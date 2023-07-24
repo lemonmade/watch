@@ -1,5 +1,18 @@
 # @watching/clips
 
+## 0.4.18
+
+### Patch Changes
+
+- [`ff7377e2`](https://github.com/lemonmade/watch/commit/ff7377e24f3ee3b97b88c8493eb6fa4d86450902) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt GraphQL dependency
+
+* [`5254b411`](https://github.com/lemonmade/watch/commit/5254b4119867c8b859432a24b5faa0b890f0d7a8) Thanks [@lemonmade](https://github.com/lemonmade)! - Update GraphQL dependencies
+
+- [#274](https://github.com/lemonmade/watch/pull/274) [`b6330854`](https://github.com/lemonmade/watch/commit/b6330854b4cd12d4a948c1ec22ed83dfb9d23506) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt dependencies
+
+- Updated dependencies [[`b6330854`](https://github.com/lemonmade/watch/commit/b6330854b4cd12d4a948c1ec22ed83dfb9d23506)]:
+  - @watching/thread-signals@0.1.11
+
 ## 0.4.17
 
 ### Patch Changes
