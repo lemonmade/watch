@@ -1,7 +1,5 @@
-import {
-  RemoteFragmentRenderer,
-  type RemoteComponentRendererMap,
-} from '@lemonmade/remote-ui-react/host';
+import {RemoteFragmentRenderer} from '@lemonmade/remote-ui-preact/host';
+import {type RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
 
 import {Action} from './components/Action.tsx';
 import {BlockGrid} from './components/BlockGrid.tsx';

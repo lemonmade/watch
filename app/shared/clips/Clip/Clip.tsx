@@ -1,6 +1,6 @@
 import {ComponentType, useEffect, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
-import {RemoteRootRenderer} from '@lemonmade/remote-ui-react/host';
+import {RemoteRootRenderer} from '@lemonmade/remote-ui-preact/host';
 import {
   Style,
   Popover,
@@ -204,7 +204,7 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
     <Section
       className={classes(styles.Content, restarting && styles.restarting)}
     >
-      <RemoteRootRenderer components={components} receiver={resolvedReceiver} />
+      <RemoteRootRenderer components={components as any} receiver={resolvedReceiver} />
     </Section>
   ) : (
     <ClipsInstanceRendererLoading instance={instance} />

@@ -5,7 +5,7 @@ import {
   type SharedGraphQLApi,
   type GraphQLApiForExtensionPoint,
 } from '@watching/clips';
-import {RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
+import type {RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
 import {
   type GraphQLLiveResolverCreateHelper,
   type GraphQLLiveResolverObject,

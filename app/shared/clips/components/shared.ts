@@ -6,8 +6,8 @@ import {
 } from 'react';
 import {type Elements} from '@watching/clips';
 import {type RemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteComponentRenderer} from '@lemonmade/remote-ui-preact/host';
 import {
-  createRemoteComponentRenderer,
   type RemoteComponentType,
   type RemoteComponentProps,
   type RemoteComponentRendererProps,
@@ -37,7 +37,9 @@ export function createClipsComponent<Element extends keyof Elements>(
     ReactComponentPropsForClipsElement<Element>
   >,
 ): ForwardRefExoticComponent<RemoteComponentRendererProps> {
-  return createRemoteComponentRenderer(Component, {name: `Clips(${element})`});
+  return createRemoteComponentRenderer(Component, {
+    name: `Clips(${element})`,
+  }) as any;
 }
 
 export function usePossibleThreadSignals<T extends Record<string, any>>(

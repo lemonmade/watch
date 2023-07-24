@@ -28,7 +28,7 @@
   "sideEffects": false,
   "peerDependenciesMeta": {},
   "devDependencies": {
-    "@quilted/testing": "^0.1.5"
+    "@quilted/testing": "^0.1.6"
   },
   "eslintConfig": {
     "extends": [
