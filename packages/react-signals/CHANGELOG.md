@@ -1,5 +1,11 @@
 # @watching/react-signals
 
+## 0.1.8
+
+### Patch Changes
+
+- [`fb4b067c`](https://github.com/lemonmade/watch/commit/fb4b067c430cd064ec2bb68e4ac3691175035c38) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
 ## 0.1.7
 
 ### Patch Changes
