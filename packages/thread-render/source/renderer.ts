@@ -1,6 +1,6 @@
 import {retain, release} from '@quilted/threads';
 import {createEmitter, raceAgainstAbortSignal} from '@quilted/events';
-import {SignalRemoteReceiver} from '@lemonmade/remote-ui-preact/host';
+import {SignalRemoteReceiver} from '@lemonmade/remote-ui/signals';
 import {signal, computed} from '@preact/signals-core';
 
 import {
