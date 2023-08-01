@@ -1,6 +1,6 @@
 import {type ReadonlySignal} from '@preact/signals-core';
 import {type Emitter} from '@quilted/events';
-import {type SignalRemoteReceiver} from '@lemonmade/remote-ui-preact/host';
+import {type SignalRemoteReceiver} from '@lemonmade/remote-ui/signals';
 
 export interface ThreadRenderer<Context = Record<string, never>> {
   readonly signal: AbortSignal;
