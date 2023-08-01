@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.1.11
+
+### Patch Changes
+
+- [`feac215d`](https://github.com/lemonmade/watch/commit/feac215d46e96adb671247283164cfd63d8e965d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
 ## 0.1.10
 
 ### Patch Changes

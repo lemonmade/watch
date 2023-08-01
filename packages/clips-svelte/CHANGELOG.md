@@ -1,5 +1,14 @@
 # @watching/clips-svelte
 
+## 0.1.13
+
+### Patch Changes
+
+- [`feac215d`](https://github.com/lemonmade/watch/commit/feac215d46e96adb671247283164cfd63d8e965d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update remote-ui dependencies
+
+- Updated dependencies [[`feac215d`](https://github.com/lemonmade/watch/commit/feac215d46e96adb671247283164cfd63d8e965d)]:
+  - @watching/clips@0.4.20
+
 ## 0.1.12
 
 ### Patch Changes
