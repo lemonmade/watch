@@ -22,7 +22,6 @@ function createGlobalEventManager(): GlobalEventManager {
   const emitter = new EventEmitter<GlobalEventMap>();
   const abortByEvent = new Map<GlobalEvent, AbortController>();
 
-  // @ts-expect-error
   emitter.internal.on('add', ({event: eventName}) => {
     if (abortByEvent.has(eventName)) return;
 
@@ -38,7 +37,6 @@ function createGlobalEventManager(): GlobalEventManager {
     );
   });
 
-  // @ts-expect-error
   emitter.internal.on('remove', ({event, all}) => {
     if (all.size > 0) return;
 
