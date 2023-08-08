@@ -1,6 +1,6 @@
 import * as path from 'path';
 import {readFile, access} from 'fs/promises';
-import {createEmitter, type Emitter} from '@quilted/events';
+import {EventEmitter} from '@quilted/events';
 import type {FSWatcher} from 'chokidar';
 
 import type {ExtensionPoint} from '@watching/clips';
@@ -29,7 +29,8 @@ export interface LocalApp {
   readonly root: string;
   readonly extensions: readonly LocalExtension[];
   readonly configurationFile: LocalConfigurationFile<LocalAppConfiguration>;
-  readonly on: Emitter<{change: Omit<LocalApp, 'on'>}>['on'];
+  readonly on: EventEmitter<{change: Omit<LocalApp, 'on'>}>['on'];
+  readonly once: EventEmitter<{change: Omit<LocalApp, 'once'>}>['once'];
 }
 
 interface LocalExtensionConfigurationTranslatedString {
@@ -123,7 +124,7 @@ export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
 
   validateAppConfig(configuration);
 
-  let currentApp: Omit<LocalApp, 'on'> = {
+  let currentApp: Omit<LocalApp, 'on' | 'once'> = {
     id: configuration.id ?? `gid://watch/LocalApp/${configuration.handle}`,
     name: configuration.name,
     handle: configuration.handle,
@@ -138,7 +139,7 @@ export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
   const {watch} = await import('chokidar');
   let watcher: FSWatcher;
 
-  const emitter = createEmitter<{change: Omit<LocalApp, 'on'>}>();
+  const emitter = new EventEmitter<{change: Omit<LocalApp, 'on' | 'once'>}>();
 
   return {
     get id() {
@@ -160,31 +161,36 @@ export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
       return currentApp.configurationFile;
     },
     on(...args: any[]) {
-      watcher =
-        watcher ??
-        (() => {
-          const fsWatcher = watch(
-            [
-              configurationPath,
-              ...currentApp.extensions.map(
-                (extension) => extension.configurationFile.path,
-              ),
-            ],
-            {ignoreInitial: true},
-          );
-
-          fsWatcher.on('change', async () => {
-            const newApp = await loadAppFromFileSystem();
-            currentApp = newApp;
-            emitter.emit('change', newApp);
-          });
-
-          return fsWatcher;
-        })();
-
+      createWatcher();
       return (emitter as any).on(...args);
     },
+    once(...args: any[]) {
+      createWatcher();
+      return (emitter as any).once(...args);
+    },
   };
+
+  function createWatcher() {
+    if (watcher != null) return;
+
+    const fsWatcher = watch(
+      [
+        configurationPath,
+        ...currentApp.extensions.map(
+          (extension) => extension.configurationFile.path,
+        ),
+      ],
+      {ignoreInitial: true},
+    );
+
+    fsWatcher.on('change', async () => {
+      const newApp = await loadAppFromFileSystem();
+      currentApp = newApp;
+      emitter.emit('change', newApp);
+    });
+
+    watcher = fsWatcher;
+  }
 }
 
 export async function loadLocalExtension(
@@ -216,7 +222,7 @@ export async function loadLocalExtension(
   };
 }
 
-async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on'>> {
+async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on' | 'once'>> {
   const configurationPath = path.resolve(APP_CONFIGURATION_FILE_NAME);
   const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
     configurationPath,

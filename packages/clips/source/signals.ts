@@ -1,8 +1,5 @@
-import {
-  acceptThreadSignal,
-  type ThreadSignal,
-  type Signal,
-} from '@watching/thread-signals';
+import {type Signal} from '@preact/signals-core';
+import {acceptThreadSignal, type ThreadSignal} from '@quilted/threads/signals';
 
 export {type Signal};
 

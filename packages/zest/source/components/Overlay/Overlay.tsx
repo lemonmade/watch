@@ -487,7 +487,7 @@ function useOverlayTransitionController({
     function nextOverlayTransition() {
       return once(overlay.value!, 'transitionend', {
         signal: currentTransition?.abort.signal,
-        abort: 'returns',
+        abort: 'resolve',
       });
     }
 

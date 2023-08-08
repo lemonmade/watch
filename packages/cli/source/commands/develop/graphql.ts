@@ -3,7 +3,7 @@ import {readFile, readdir} from 'fs/promises';
 import {parse} from 'graphql';
 import {watch} from 'chokidar';
 
-import {createEmitter} from '@quilted/cli-kit';
+import {EventEmitter} from '@quilted/cli-kit';
 import {
   run,
   createQueryResolver as createQueryResolverForSchema,
@@ -256,10 +256,10 @@ async function readDirectoryContents(directory: string) {
 function createWatchEmitter(path: string, {signal}: {signal: AbortSignal}) {
   const watcher = watch(path, {ignoreInitial: true});
 
-  const emitter = createEmitter<{change: void}>();
+  const events = new EventEmitter<{change: void}>();
 
   const handler = () => {
-    emitter.emit('change');
+    events.emit('change');
   };
 
   watcher.on('add', handler);
@@ -276,5 +276,5 @@ function createWatchEmitter(path: string, {signal}: {signal: AbortSignal}) {
     {once: true},
   );
 
-  return emitter;
+  return events;
 }

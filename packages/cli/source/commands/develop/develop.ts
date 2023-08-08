@@ -6,7 +6,7 @@ import {emitKeypressEvents} from 'readline';
 import {stat, readFile} from 'fs/promises';
 import {
   on,
-  createEmitter,
+  EventEmitter,
   AbortError,
   NestedAbortController,
 } from '@quilted/cli-kit';
@@ -406,7 +406,7 @@ async function createBuilder(
   {ui, outputRoot}: {ui: Ui; outputRoot: string},
 ): Promise<Builder> {
   const buildStateByExtension = new Map<string, BuildState>();
-  const emitter = createEmitter<{
+  const emitter = new EventEmitter<{
     update: {readonly extension: LocalExtension; readonly state: BuildState};
   }>();
 
@@ -501,15 +501,15 @@ function threadTargetFromWebSocket(socket: WebSocket): ThreadTarget {
     send(message) {
       socket.send(JSON.stringify(message));
     },
-    async *listen({signal}) {
-      const messages = on<{message: {data: WebSocket.Data}}>(
-        socket,
-        'message',
-        {signal},
-      );
+    listen(listen, {signal}) {
+      socket.addEventListener('message', handleEvent);
 
-      for await (const {data} of messages) {
-        yield JSON.parse(data.toString());
+      signal?.addEventListener('abort', () => {
+        socket.removeEventListener('message', handleEvent);
+      });
+
+      function handleEvent(event: {data: any}) {
+        listen(JSON.parse(event.data.toString()));
       }
     },
   };

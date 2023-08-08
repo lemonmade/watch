@@ -1,6 +1,6 @@
 import {type PropsWithChildren} from 'react';
 import {signal, type Signal, type ReadonlySignal} from '@preact/signals-core';
-import {createEmitter, type Emitter} from '@quilted/events';
+import {EventEmitter} from '@quilted/events';
 import {
   createUseContextHook,
   createOptionalContext,
@@ -14,7 +14,8 @@ export interface OverlayEvents {
 
 export type OverlayState = 'open' | 'closed';
 
-export interface OverlayController extends Pick<Emitter<OverlayEvents>, 'on'> {
+export interface OverlayController
+  extends Pick<EventEmitter<OverlayEvents>, 'on' | 'once'> {
   readonly id: string;
   readonly state: ReadonlySignal<OverlayState>;
   readonly trigger: Signal<HTMLElement | null>;
@@ -64,7 +65,7 @@ export function createOverlayController({
   targetId,
   id = `${targetId}Overlay`,
 }: OverlayControllerOptions) {
-  const emitter = createEmitter<OverlayEvents>();
+  const emitter = new EventEmitter<OverlayEvents>();
   const trigger: OverlayController['trigger'] = signal(null);
   const overlay: OverlayController['overlay'] = signal(null);
   const state = signal<OverlayState>('closed');
@@ -75,6 +76,7 @@ export function createOverlayController({
     trigger,
     overlay,
     on: emitter.on,
+    once: emitter.once,
     target: {id: targetId},
     open() {
       if (state.value === 'open') return;

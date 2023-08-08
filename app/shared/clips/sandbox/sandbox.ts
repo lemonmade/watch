@@ -1,10 +1,9 @@
 import {
   retain,
-  createThread,
-  targetFromWebWorker,
-  createBasicEncoderWithOverrides,
+  createThreadSignal,
+  createBasicEncoder,
+  createThreadFromWebWorker,
 } from '@quilted/quilt/threads';
-import {createThreadSignal} from '@watching/thread-signals';
 import {type RemoteMutationCallback} from '@lemonmade/remote-ui';
 
 import type {
@@ -43,21 +42,23 @@ const sandboxApi = {
 
 export type Sandbox = typeof sandboxApi;
 
-const createSignalEncoder = createBasicEncoderWithOverrides({
-  encode(value, {encode}) {
+const createSignalEncoder = createBasicEncoder({
+  encode(value, defaultEncode) {
     if (
       value != null &&
       typeof (value as any).peek === 'function' &&
       typeof (value as any).subscribe === 'function'
     ) {
-      return encode(createThreadSignal(value as any, {writable: true}));
+      return defaultEncode(createThreadSignal(value as any, {writable: true}));
     }
+
+    return defaultEncode(value);
   },
 });
 
-createThread<Sandbox>(targetFromWebWorker(self as any), {
+createThreadFromWebWorker<Sandbox>(self as any, {
   encoder: createSignalEncoder,
-  expose: sandboxApi as any,
+  expose: sandboxApi,
 });
 
 export async function load(script: string, _: Version) {

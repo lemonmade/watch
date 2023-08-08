@@ -11,14 +11,13 @@
     "@lemon/css": "workspace:*",
     "@lemonmade/remote-ui": "^0.2.0",
     "@lemonmade/remote-ui-react": "^0.2.0",
-    "@preact/signals-core": "^1.3.1",
-    "@quilted/events": "^0.1.18",
+    "@preact/signals-core": "^1.4.0",
+    "@quilted/events": "^1.0.1",
     "@quilted/react-utilities": "^0.1.12",
-    "@types/react": "^18.0.0",
+    "@types/react": "^18.2.18",
     "@types/react-dom": "^18.0.0",
     "@watching/clips": "workspace:*",
     "@watching/react-signals": "workspace:*",
-    "@watching/thread-signals": "workspace:*",
     "date-fns": "^2.29.3"
   },
   "devDependencies": {

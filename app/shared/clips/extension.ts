@@ -1,9 +1,9 @@
+import {type Signal} from '@quilted/quilt';
 import {type ThreadCallable} from '@quilted/quilt/threads';
 import {type ThreadRenderer} from '@watching/thread-render';
 import {type RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
 
 import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
-import {type Signal} from '@watching/thread-signals';
 
 import {type OptionsForExtensionPoint} from './extension-points.ts';
 import {type Sandbox} from './sandbox.ts';

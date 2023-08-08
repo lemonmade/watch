@@ -58,9 +58,10 @@
   ],
   "dependencies": {
     "@lemonmade/remote-ui": "^0.2.0",
+    "@preact/signals-core": "^1.4.0",
     "@quilted/graphql": "^1.1.0",
     "@quilted/localize": "^0.1.10",
-    "@watching/thread-signals": "workspace:^"
+    "@quilted/threads": "^1.0.1"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"

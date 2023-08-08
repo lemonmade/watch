@@ -12,13 +12,12 @@ import {
   type RemoteComponentProps,
   type RemoteComponentRendererProps,
 } from '@lemonmade/remote-ui-react/host';
-import {createThreadAbortSignal} from '@quilted/quilt/threads';
+import {signal, type Signal} from '@quilted/quilt';
 import {
-  signal,
   isThreadSignal,
-  type Signal,
+  createThreadAbortSignal,
   type ThreadSignal,
-} from '@watching/thread-signals';
+} from '@quilted/quilt/threads';
 
 export type ReactComponentPropsForClipsElement<Element extends keyof Elements> =
   Elements[Element] extends RemoteElement<infer Properties, infer Slots>

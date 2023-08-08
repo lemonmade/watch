@@ -1,5 +1,5 @@
 import {parse} from 'graphql';
-import {signal, type Signal, anyAbortSignal} from '@quilted/quilt';
+import {signal, NestedAbortController, type Signal} from '@quilted/quilt';
 import {type ExtensionPoint} from '@watching/clips';
 import {run, createQueryResolver} from '@lemonmade/graphql-live';
 
@@ -41,7 +41,10 @@ export function createLiveQueryRunner<Point extends ExtensionPoint>(
       if (runPromise != null) return runPromise;
 
       runAbortController = new AbortController();
-      const signal = anyAbortSignal(runAbortController.signal, abortSignal);
+      const {signal} = new NestedAbortController(
+        runAbortController.signal,
+        abortSignal,
+      );
 
       const currentQuery = query.peek() ?? '';
 

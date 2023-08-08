@@ -1,5 +1,5 @@
 import {createContext, useContext, useEffect} from 'react';
-import {createEmitterWithInternals, type Emitter} from '@quilted/events';
+import {EventEmitter} from '@quilted/events';
 
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown' | 'keyup';
 
@@ -8,7 +8,7 @@ type GlobalEventMap = {
 };
 
 export interface GlobalEventManager
-  extends Pick<Emitter<GlobalEventMap>, 'on'> {}
+  extends Pick<EventEmitter<GlobalEventMap>, 'on'> {}
 
 export const GlobalEventContext = createContext<GlobalEventManager>(
   createGlobalEventManager(),
@@ -19,9 +19,10 @@ export function useGlobalEvents() {
 }
 
 function createGlobalEventManager(): GlobalEventManager {
-  const emitter = createEmitterWithInternals<GlobalEventMap>();
+  const emitter = new EventEmitter<GlobalEventMap>();
   const abortByEvent = new Map<GlobalEvent, AbortController>();
 
+  // @ts-expect-error
   emitter.internal.on('add', ({event: eventName}) => {
     if (abortByEvent.has(eventName)) return;
 
@@ -37,6 +38,7 @@ function createGlobalEventManager(): GlobalEventManager {
     );
   });
 
+  // @ts-expect-error
   emitter.internal.on('remove', ({event, all}) => {
     if (all.size > 0) return;
 

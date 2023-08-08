@@ -1,5 +1,4 @@
-import {type Signal} from '@quilted/quilt';
-import {signalToIterator} from '@watching/thread-signals';
+import {signalToIterator, type Signal} from '@quilted/quilt';
 
 import {
   CommonComponents,

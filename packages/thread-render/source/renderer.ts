@@ -1,5 +1,5 @@
 import {retain, release} from '@quilted/threads';
-import {createEmitter, raceAgainstAbortSignal} from '@quilted/events';
+import {EventEmitter, raceAgainstAbortSignal} from '@quilted/events';
 import {SignalRemoteReceiver} from '@lemonmade/remote-ui/signals';
 import {signal, computed} from '@preact/signals-core';
 
@@ -56,10 +56,11 @@ export function createRenderer<Context = Record<string, never>>({
     return {signal: internals.abort.signal, ...rest};
   });
 
-  const emitter = createEmitter<ThreadRendererEventMap>();
+  const events = new EventEmitter<ThreadRendererEventMap>();
   const renderer: ThreadRenderer<Context> = {
     signal: abort.signal,
-    on: emitter.on,
+    on: events.on,
+    once: events.once,
     instance,
     start,
     stop,
@@ -77,14 +78,15 @@ export function createRenderer<Context = Record<string, never>>({
     const state = signal<ThreadRendererInstanceState>('preparing');
     const timings = signal<ThreadRendererInstanceTimings>({});
 
-    const instanceEmitter = createEmitter<ThreadRendererInstanceEventMap>();
+    const instanceEvents = new EventEmitter<ThreadRendererInstanceEventMap>();
 
     const partialInstance: PartialThreadRendererInstance = {
       signal: abort.signal,
       timings,
       receiver,
       state,
-      on: instanceEmitter.on,
+      on: instanceEvents.on,
+      once: instanceEvents.once,
     };
 
     const context =
@@ -96,12 +98,13 @@ export function createRenderer<Context = Record<string, never>>({
       context,
       receiver,
       state,
-      on: instanceEmitter.on,
+      on: instanceEvents.on,
+      once: instanceEvents.once,
     };
 
     instanceInternals.value = internals;
 
-    emitter.emit('start');
+    events.emit('start');
 
     const currentInstance = instance.value!;
 
@@ -109,14 +112,14 @@ export function createRenderer<Context = Record<string, never>>({
       state.value = 'preparing';
       timings.value = {...timings.value, prepareStart: Date.now()};
 
-      instanceEmitter.emit('prepare:start');
+      instanceEvents.emit('prepare:start');
 
       await raceAgainstAbortSignal(
         () => Promise.resolve(prepare(currentInstance, renderer)),
         {
           signal: currentInstance.signal,
-          ifAborted() {
-            instanceEmitter.emit('prepare:abort');
+          onAbort() {
+            instanceEvents.emit('prepare:abort');
           },
         },
       );
@@ -127,14 +130,14 @@ export function createRenderer<Context = Record<string, never>>({
     state.value = 'rendering';
     timings.value = {...timings.value, renderStart: Date.now()};
 
-    instanceEmitter.emit('render:start');
+    instanceEvents.emit('render:start');
 
     await raceAgainstAbortSignal(
       () => Promise.resolve(render(currentInstance, renderer)),
       {
         signal: currentInstance.signal,
-        ifAborted() {
-          instanceEmitter.emit('render:abort');
+        onAbort() {
+          instanceEvents.emit('render:abort');
         },
       },
     );
@@ -142,7 +145,7 @@ export function createRenderer<Context = Record<string, never>>({
     state.value = 'rendered';
     timings.value = {...timings.value, renderEnd: Date.now()};
 
-    instanceEmitter.emit('render:end');
+    instanceEvents.emit('render:end');
   }
 
   async function stop() {
@@ -155,18 +158,18 @@ export function createRenderer<Context = Record<string, never>>({
       instanceInternals.value = undefined;
     }
 
-    emitter.emit('stop');
+    events.emit('stop');
   }
 
   async function destroy() {
     await stop();
     abort.abort();
-    emitter.emit('destroy');
+    events.emit('destroy');
   }
 
   async function restart() {
     await stop();
     await start();
-    emitter.emit('restart');
+    events.emit('restart');
   }
 }

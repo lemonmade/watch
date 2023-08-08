@@ -1,17 +1,16 @@
 import {createRenderer} from '@watching/thread-render';
 
 import {type ApiCore} from '@watching/clips';
-import {signal, createEmitter, type Signal, type Emitter} from '@quilted/quilt';
+import {signal, EventEmitter, type Signal} from '@quilted/quilt';
 import {
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
 } from '@quilted/quilt/graphql';
-import {createThreadSignal} from '@watching/thread-signals';
 import {
-  createThread,
+  createThreadSignal,
   createThreadAbortSignal,
-  targetFromBrowserWebSocket,
+  createThreadFromBrowserWebSocket,
   type Thread,
   type ThreadAbortSignal,
 } from '@quilted/quilt/threads';
@@ -49,11 +48,14 @@ export interface ClipsManager {
   ): ClipsExtensionPointInstance<Point>;
 }
 
-export interface ClipsLocalDevelopmentServer {
+export interface ClipsLocalDevelopmentServer
+  extends Pick<
+    EventEmitter<ClipsLocalDevelopmentServerEventMap>,
+    'on' | 'once'
+  > {
   readonly url: Signal<URL | undefined>;
   readonly connected: Signal<boolean>;
   readonly extensions: Signal<readonly ClipsLocalDevelopmentServerExtension[]>;
-  readonly on: Emitter<ClipsLocalDevelopmentServerEventMap>['on'];
   connect(url: URL): Promise<void>;
   query<Data, Variables>(
     operation: GraphQLOperation<Data, Variables>,
@@ -191,7 +193,7 @@ export function createClipsManager(
   ) {
     const extensionPoint = extensionPoints[options.target];
 
-    const emitter = createEmitter<{script: string}>();
+    const events = new EventEmitter<{script: string}>();
     const script = signal<string | undefined>(undefined);
     const translations = signal<string | undefined>(undefined);
     const settings = signal({});
@@ -226,8 +228,7 @@ export function createClipsManager(
         };
       },
       async prepare({context: {sandbox, liveQuery}}) {
-        const localScript =
-          script.value ?? (await emitter.on('script', {once: true}));
+        const localScript = script.value ?? (await events.once('script'));
 
         await Promise.all([
           sandbox.load(localScript, 'unstable'),
@@ -292,7 +293,7 @@ export function createClipsManager(
           needsRestart = lastSuccessfulBuild != null;
           lastSuccessfulBuild = build;
 
-          emitter.emit('script', newScript);
+          events.emit('script', newScript);
         }
 
         if (needsRestart) {
@@ -324,7 +325,7 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
   }>();
 
   const url: ClipsLocalDevelopmentServer['url'] = signal(undefined);
-  const emitter = createEmitter<ClipsLocalDevelopmentServerEventMap>();
+  const events = new EventEmitter<ClipsLocalDevelopmentServerEventMap>();
   const connected = signal(false);
   const extensions: ClipsLocalDevelopmentServer['extensions'] = signal([]);
 
@@ -349,33 +350,33 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
     query,
     connect,
     extensions,
-    on: emitter.on,
+    on: events.on,
+    once: events.once,
   };
 
   async function connect(newUrl: URL) {
     connected.value = false;
     url.value = new URL(newUrl);
 
-    emitter.emit('connect:start');
+    events.emit('connect:start');
 
     try {
       const socket = new WebSocket(newUrl.href);
-      const target = targetFromBrowserWebSocket(socket);
-      const thread = createThread<
+      const thread = createThreadFromBrowserWebSocket<
         Record<string, never>,
         ClipsLocalDevelopmentServerThreadApi
-      >(target);
+      >(socket);
 
       threadPromise.resolve({thread});
       connected.value = true;
 
-      emitter.emit('connect:end');
+      events.emit('connect:end');
 
       queryLocalExtensions();
     } catch (error) {
       threadPromise.reject(error);
-      emitter.emit('connect:error');
-      emitter.emit('connect:end');
+      events.emit('connect:error');
+      events.emit('connect:end');
 
       throw error;
     }

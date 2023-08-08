@@ -3,7 +3,8 @@ import {
   type GraphQLVariableOptions,
 } from '@quilted/graphql';
 import {type Translate} from '@quilted/localize';
-import {type Signal, type ThreadSignal} from '@watching/thread-signals';
+import {type ThreadSignal} from '@quilted/threads/signals';
+import {type Signal} from '@preact/signals-core';
 
 import {type ExtensionPoint} from './extension-points';
 
