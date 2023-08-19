@@ -28,8 +28,8 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@quilted/react-signals": "^0.1.9",
-    "@types/react": "^18.2.18"
+    "@quilted/react-signals": "^0.1.10",
+    "@types/react": "^18.2.20"
   },
   "peerDependencies": {
     "@babel/runtime": ">=7.0.0 <8.0.0",

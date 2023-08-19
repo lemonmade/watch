@@ -6,7 +6,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
     "@quilted/react-email": "^0.2.34",
-    "@quilted/request-router": "^0.1.6",
+    "@quilted/request-router": "^0.1.7",
     "@tsndr/cloudflare-worker-jwt": "^2.1.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
