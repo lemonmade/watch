@@ -19,6 +19,7 @@ const operationEntries = Object.entries(combinedManifest);
 
 console.log(`Sending ${operationEntries.length} operations to Cloudflare...`);
 
+// @see https://developers.cloudflare.com/api/operations/workers-kv-namespace-write-multiple-key-value-pairs
 const result = await cloudflareApi(
   `/accounts/9bfdb755def60e50760e33036c6f1624/storage/kv/namespaces/7f89119bd9ff4c40874fa5616b35cba9/bulk`,
   {
