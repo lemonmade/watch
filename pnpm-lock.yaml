@@ -136,8 +136,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(@preact/signals-core@1.4.0)(@quilted/react@18.2.5)(preact@10.17.1)
       '@quilted/graphql':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       '@quilted/graphql-tools':
         specifier: ^0.1.5
         version: 0.1.5
@@ -319,8 +319,8 @@ importers:
         specifier: ^0.1.10
         version: 0.1.10
       '@quilted/graphql':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       '@quilted/graphql-tools':
         specifier: ^0.1.5
         version: 0.1.5
@@ -417,7 +417,7 @@ importers:
         version: 1.4.0
       '@quilted/graphql':
         specifier: ^1.2.0
-        version: 1.2.1
+        version: 1.2.2
       '@quilted/localize':
         specifier: ^0.1.10
         version: 0.1.10
@@ -4326,7 +4326,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/events': 1.0.1
-      '@quilted/graphql': 1.2.1
+      '@quilted/graphql': 1.2.2
       graphql: 16.7.1
 
   /@lemonmade/remote-ui-preact@0.3.0(@preact/signals-core@1.4.0)(preact@10.17.1):
@@ -5144,7 +5144,7 @@ packages:
       '@graphql-tools/graphql-file-loader': 8.0.0(graphql@16.7.1)
       '@graphql-tools/json-file-loader': 8.0.0(graphql@16.7.1)
       '@graphql-tools/load': 8.0.0(graphql@16.7.1)
-      '@quilted/graphql': 1.2.1
+      '@quilted/graphql': 1.2.2
       '@quilted/useful-types': 1.0.0
       arg: 5.0.2
       chokidar: 3.5.3
@@ -5157,8 +5157,8 @@ packages:
       is-glob: 4.0.3
       p-limit: 4.0.0
 
-  /@quilted/graphql@1.2.1:
-    resolution: {integrity: sha512-EGY2laQhOV0RXBstu/Nxrutz1NwDekC+ZmjGpDhL3RmNZuSWG9o8SvfR8AlIUp8Ki8gk6tn/qpKNRgXaw28iEQ==}
+  /@quilted/graphql@1.2.2:
+    resolution: {integrity: sha512-qifStaoaQTgPko+tg+RivVUB5or4gd8Brghb+dHHyw/4JF/tPIHUWPlhNV6IAv3ps1/EJseLpI7FkD4mHML7AA==}
     dependencies:
       '@quilted/useful-types': 1.0.0
       '@types/chance': 1.1.3
@@ -5227,7 +5227,7 @@ packages:
       '@quilted/assets': 0.0.3(rollup@3.26.2)
       '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
       '@quilted/events': 1.0.1
-      '@quilted/graphql': 1.2.1
+      '@quilted/graphql': 1.2.2
       '@quilted/polyfills': 0.2.34
       '@quilted/react': 18.2.5
       '@quilted/react-assets': 0.0.4(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(rollup@3.26.2)
@@ -5340,7 +5340,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
-      '@quilted/graphql': 1.2.1
+      '@quilted/graphql': 1.2.2
       '@quilted/react-utilities': 0.1.12(@quilted/react@18.2.5)
       '@quilted/useful-types': 1.0.0
       react: /@quilted/react@18.2.5
@@ -6851,7 +6851,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.2.1
+      ieee754: 1.1.13
       isarray: 1.0.0
     dev: false
 
@@ -9057,6 +9057,7 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
