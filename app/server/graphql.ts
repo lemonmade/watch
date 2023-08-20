@@ -15,6 +15,7 @@ const router = createRequestRouter();
 router.options('/', () =>
   noContent({
     headers: {
+      'Timing-Allow-Origin': '*',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Method': 'GET, POST',
       'Access-Control-Allow-Headers': 'Content-Type',
@@ -64,6 +65,11 @@ router.get('/', async (request) => {
       {errors: [{message: 'Missing operation'}]},
       {
         status: 400,
+        headers: {
+          'Timing-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store',
+        },
       },
     );
   }
@@ -101,7 +107,11 @@ async function runGraphQLRequest(
     {},
     {
       status: 200,
-      headers: {'Access-Control-Allow-Origin': '*'},
+      headers: {
+        'Timing-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-store',
+      },
     },
   );
 
@@ -141,7 +151,11 @@ async function runGraphQLRequest(
       {message: (error as any).message},
       {
         status: (error as any).statusCode ?? 500,
-        headers: {'Access-Control-Allow-Origin': '*'},
+        headers: {
+          'Timing-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store',
+        },
       },
     );
   }
