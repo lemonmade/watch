@@ -285,8 +285,8 @@ export function AppContext({
               operation.source.startsWith('mutation ') ? 'POST' : 'GET',
             url: (operation) => {
               const url = new URL(`/api/graphql`, router.currentUrl);
-              url.searchParams.set('id', operation.id);
               if (operation.name) url.searchParams.set('name', operation.name);
+              url.searchParams.set('id', operation.id);
               return url;
             },
             source: false,

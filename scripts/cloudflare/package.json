@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "scripts-docker",
+  "name": "scripts-cloudflare",
   "version": "0.0.0",
   "private": true,
   "devDependencies": {

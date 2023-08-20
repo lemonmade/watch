@@ -23,12 +23,22 @@ router.options('/', () =>
 );
 
 router.post('/', async (request) => {
-  const {operationName, query, variables, extensions} =
-    (await request.json()) as any;
+  const {
+    name,
+    operationName,
+    query,
+    mutation,
+    operation,
+    variables,
+    extensions,
+  } = (await request.json()) as any;
+
+  const resolvedOperation = operation ?? query ?? mutation;
+  const resolvedName = name ?? operationName;
 
   const response = await runGraphQLRequest(request, {
-    operation: query,
-    operationName,
+    operation: resolvedOperation,
+    operationName: resolvedName,
     variables,
     extensions,
   });
@@ -38,7 +48,10 @@ router.post('/', async (request) => {
 
 router.get('/', async (request) => {
   const {searchParams} = request.URL;
-  const query = searchParams.get('query');
+  const operation =
+    searchParams.get('operation') ??
+    searchParams.get('query') ??
+    searchParams.get('mutation');
   const variables = searchParams.get('variables');
   const extensions = searchParams.get('extensions');
   const operationName =
@@ -46,9 +59,9 @@ router.get('/', async (request) => {
     searchParams.get('operationName') ??
     searchParams.get('operation-name');
 
-  if (query == null) {
+  if (operation == null) {
     return json(
-      {errors: [{message: 'Missing query'}]},
+      {errors: [{message: 'Missing operation'}]},
       {
         status: 400,
       },
@@ -56,7 +69,7 @@ router.get('/', async (request) => {
   }
 
   const response = await runGraphQLRequest(request, {
-    operation: query,
+    operation: operation!,
     operationName,
     variables: variables ? JSON.parse(variables) : undefined,
     extensions: extensions ? JSON.parse(extensions) : undefined,

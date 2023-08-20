@@ -105,14 +105,10 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
         headers: request.headers,
         keepalive: request.keepalive,
         body: JSON.stringify({
-          query: source,
-          operationName,
-          variables: variables
-            ? JSON.stringify(JSON.parse(variables))
-            : undefined,
-          extensions: extensions
-            ? JSON.stringify(JSON.parse(extensions))
-            : undefined,
+          operation: source,
+          name: operationName,
+          variables: variables ? JSON.parse(variables) : undefined,
+          extensions: extensions ? JSON.parse(extensions) : undefined,
         }),
       });
     } else {

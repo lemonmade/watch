@@ -28,7 +28,7 @@
     "@lemonmade/remote-ui": "^0.2.0",
     "@lemonmade/remote-ui-preact": "^0.3.0",
     "@lemonmade/remote-ui-react": "^0.2.0",
-    "@quilted/graphql": "^1.2.0",
+    "@quilted/graphql": "^1.2.1",
     "@quilted/graphql-tools": "^0.1.5",
     "@quilted/localize": "^0.1.10",
     "@quilted/quilt": "^0.5.150",
