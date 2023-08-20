@@ -100,8 +100,9 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
       undefined;
 
     resolvedRequest = new Request(request.url, {
-      ...request,
       method: 'POST',
+      headers: request.headers,
+      keepalive: request.keepalive,
       body: JSON.stringify({
         query: source,
         operationName,

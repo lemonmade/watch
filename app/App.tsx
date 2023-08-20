@@ -281,15 +281,21 @@ export function AppContext({
     const fetch =
       process.env.NODE_ENV === 'production'
         ? createGraphQLHttpFetch({
-            url: (operation) =>
-              new URL(`/api/graphql?id=${operation.id}`, router.currentUrl),
-            method: (operation) =>
-              operation.source.startsWith('query ') ? 'GET' : 'POST',
+            url: (operation) => {
+              const url = new URL(`/api/graphql`, router.currentUrl);
+              url.searchParams.set('id', operation.id);
+              if (operation.name) url.searchParams.set('name', operation.name);
+              return url;
+            },
             source: false,
             credentials: 'include',
           })
         : createGraphQLHttpFetch({
-            url: new URL(`/api/graphql`, router.currentUrl),
+            url: (operation) => {
+              const url = new URL(`/api/graphql`, router.currentUrl);
+              if (operation.name) url.searchParams.set('name', operation.name);
+              return url;
+            },
             credentials: 'include',
           });
 
