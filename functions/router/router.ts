@@ -1,5 +1,8 @@
-import {createRequestRouter} from '@quilted/request-router';
-import type {R2Bucket, Fetcher} from '@cloudflare/workers-types';
+import {
+  createRequestRouter,
+  type RequestHandler,
+} from '@quilted/request-router';
+import type {KVNamespace, R2Bucket, Fetcher} from '@cloudflare/workers-types';
 import type {CloudflareRequestContext} from '@quilted/cloudflare';
 
 const APP_HOST = 'watch-test-app.fly.dev';
@@ -12,6 +15,7 @@ interface Environment {
   SERVICE_STRIPE: Fetcher;
   SERVICE_METRICS: Fetcher;
   SERVICE_IMAGES: Fetcher;
+  PERSISTED_QUERIES: KVNamespace;
 }
 
 declare module '@quilted/cloudflare' {
@@ -69,6 +73,55 @@ router.any(
   (request, {env}) =>
     env.SERVICE_EMAIL.fetch(new URL('/', request.url), request as any) as any,
 );
+
+const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
+  request,
+  {env},
+) => {
+  const {searchParams} = request.URL;
+
+  let source: string | undefined;
+  const id = searchParams.get('id');
+
+  if (id) {
+    const {default: manifest} = await import('MAGIC/graphql-manifest.js');
+    source = manifest[id] ?? (await env.PERSISTED_QUERIES.get(id)) ?? undefined;
+  }
+
+  let resolvedRequest: Request = request;
+
+  if (source != null) {
+    const variables = searchParams.get('variables');
+    const extensions = searchParams.get('extensions');
+    const operationName =
+      searchParams.get('name') ??
+      searchParams.get('operationName') ??
+      searchParams.get('operation-name') ??
+      undefined;
+
+    resolvedRequest = new Request(request.url, {
+      ...request,
+      method: 'POST',
+      body: JSON.stringify({
+        query: source,
+        operationName,
+        variables: variables
+          ? JSON.stringify(JSON.parse(variables))
+          : undefined,
+        extensions: extensions
+          ? JSON.stringify(JSON.parse(extensions))
+          : undefined,
+      }),
+    });
+  }
+
+  return rewriteAndFetch(resolvedRequest, (url) => {
+    url.host = APP_HOST;
+  });
+};
+
+router.get('api/graphql', handleGraphQLRequest);
+router.post('api/graphql', handleGraphQLRequest);
 
 router.any((request) => {
   return rewriteAndFetch(request, (url) => {

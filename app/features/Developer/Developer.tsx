@@ -13,7 +13,7 @@ export default function Developer() {
           <Action to="apps">Apps</Action>
           <Action to="access-tokens">Access tokens</Action>
           <Action to="console">Console</Action>
-          <Action to="/api/graphql" target="current">
+          <Action to="/api/graphql/explorer" target="current">
             GraphQL
           </Action>
           <Action to="/internal/components">Component library</Action>

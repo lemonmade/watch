@@ -3,6 +3,7 @@ import {
   json,
   noContent,
   createRequestRouter,
+  EnhancedRequest,
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
 
@@ -11,7 +12,7 @@ import {createPrisma} from './shared/database.ts';
 
 const router = createRequestRouter();
 
-router.options(() =>
+router.options('/', () =>
   noContent({
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -21,13 +22,66 @@ router.options(() =>
   }),
 );
 
-router.post(async (request) => {
-  const {operationName, query, variables} = (await request.json()) as any;
+router.post('/', async (request) => {
+  const {operationName, query, variables, extensions} =
+    (await request.json()) as any;
 
+  const response = await runGraphQLRequest(request, {
+    operation: query,
+    operationName,
+    variables,
+    extensions,
+  });
+
+  return response;
+});
+
+router.get('/', async (request) => {
+  const {searchParams} = request.URL;
+  const query = searchParams.get('query');
+  const variables = searchParams.get('variables');
+  const extensions = searchParams.get('extensions');
+  const operationName =
+    searchParams.get('name') ??
+    searchParams.get('operationName') ??
+    searchParams.get('operation-name');
+
+  if (query == null) {
+    return json(
+      {errors: [{message: 'Missing query'}]},
+      {
+        status: 400,
+      },
+    );
+  }
+
+  const response = await runGraphQLRequest(request, {
+    operation: query,
+    operationName,
+    variables: variables ? JSON.parse(variables) : undefined,
+    extensions: extensions ? JSON.parse(extensions) : undefined,
+  });
+
+  return response;
+});
+
+async function runGraphQLRequest(
+  request: EnhancedRequest,
+  {
+    operation,
+    variables,
+    operationName,
+  }: {
+    operation: string;
+    operationName?: string | null;
+    variables?: Record<string, unknown> | null;
+    extensions?: Record<string, unknown> | null;
+  },
+) {
   /* eslint-disable no-console */
   console.log(`Performing operation: ${operationName}`);
   console.log(`Variables:\n${JSON.stringify(variables ?? {}, null, 2)}`);
-  console.log(`Document:\n${query}`);
+  console.log(`Document:\n${operation}`);
   /* eslint-enable no-console */
 
   const {headers, cookies} = json(
@@ -56,7 +110,7 @@ router.post(async (request) => {
   try {
     const result = await graphql({
       schema,
-      source: query,
+      source: operation,
       operationName,
       variableValues: variables,
       contextValue: createContext(auth, prisma, request, response),
@@ -78,9 +132,7 @@ router.post(async (request) => {
       },
     );
   }
-});
-
-export default router;
+}
 
 let schemaPromise: Promise<import('graphql').GraphQLSchema>;
 
@@ -99,7 +151,7 @@ function loadSchema() {
   return schemaPromise;
 }
 
-router.get(() => {
+router.get('/explorer', () => {
   return html(
     stripIndent`
       <!DOCTYPE html>
@@ -144,7 +196,7 @@ router.get(() => {
             ReactDOM.render(
               React.createElement(GraphiQL, {
                 fetcher: GraphiQL.createFetcher({
-                  url: window.location.href,
+                  url: new URL('/api/graphql', window.location.href),
                 }),
                 defaultEditorToolsVisibility: true,
               }),
@@ -161,3 +213,5 @@ router.get(() => {
     },
   );
 });
+
+export default router;

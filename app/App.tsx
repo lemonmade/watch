@@ -62,11 +62,6 @@ import {
 } from './shared/context';
 import {createClipsManager, ClipsLocalDevelopment} from './shared/clips';
 
-const fetch = createGraphQLHttpFetch({
-  url: '/api/graphql',
-  credentials: 'include',
-});
-
 export default function App(props: AppContextProps) {
   return (
     <QuiltApp
@@ -282,6 +277,20 @@ export function AppContext({
 
   const context = useMemo<AppContextType>(() => {
     const user = serializedContext?.user ?? explicitUser;
+
+    const fetch =
+      process.env.NODE_ENV === 'production'
+        ? createGraphQLHttpFetch({
+            url: (operation) => `/api/graphql?id=${operation.id}`,
+            method: (operation) =>
+              operation.source.startsWith('query ') ? 'GET' : 'POST',
+            source: false,
+            credentials: 'include',
+          })
+        : createGraphQLHttpFetch({
+            url: '/api/graphql',
+            credentials: 'include',
+          });
 
     const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
       // @ts-expect-error "excessively deep" ...

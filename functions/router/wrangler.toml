@@ -40,3 +40,7 @@ bucket_name = "watch-assets"
 [[r2_buckets]]
 binding = "CLIPS_ASSETS"
 bucket_name = "watch-clips-assets"
+
+[[kv_namespaces]]
+binding = "PERSISTED_QUERIES"
+id = "8d2c337f0ed342f7a89108831b11cd0e"

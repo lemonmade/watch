@@ -48,7 +48,7 @@
     "@lemonmade/graphql-live": "^0.2.1",
     "@quilted/cli-kit": "^0.1.10",
     "@quilted/graphql": "^1.2.0",
-    "@quilted/graphql-tools": "^0.1.4",
+    "@quilted/graphql-tools": "^0.1.5",
     "@quilted/polyfills": "^0.2.34",
     "@quilted/request-router": "^0.1.7",
     "@quilted/threads": "^1.0.1",
