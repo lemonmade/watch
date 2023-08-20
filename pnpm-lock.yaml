@@ -331,8 +331,8 @@ importers:
         specifier: ^0.1.7
         version: 0.1.7
       '@quilted/threads':
-        specifier: ^1.0.1
-        version: 1.0.1(@preact/signals-core@1.4.0)
+        specifier: ^1.0.2
+        version: 1.0.2(@preact/signals-core@1.4.0)
       '@types/mime':
         specifier: ^2.0.0
         version: 2.0.3
@@ -422,8 +422,8 @@ importers:
         specifier: ^0.1.10
         version: 0.1.10
       '@quilted/threads':
-        specifier: ^1.0.1
-        version: 1.0.1(@preact/signals-core@1.4.0)
+        specifier: ^1.0.2
+        version: 1.0.2(@preact/signals-core@1.4.0)
 
   packages/clips-preact:
     dependencies:
@@ -530,8 +530,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@quilted/threads':
-        specifier: ^1.0.1
-        version: 1.0.1(@preact/signals-core@1.4.0)
+        specifier: ^1.0.2
+        version: 1.0.2(@preact/signals-core@1.4.0)
     devDependencies:
       '@quilted/testing':
         specifier: ^0.1.6
@@ -5248,7 +5248,7 @@ packages:
       '@quilted/request-router': 0.1.7
       '@quilted/signals': 0.1.9
       '@quilted/testing': 0.1.6
-      '@quilted/threads': 1.0.1(@preact/signals-core@1.4.0)
+      '@quilted/threads': 1.0.2(@preact/signals-core@1.4.0)
       '@quilted/useful-react-types': 1.0.0
       '@types/jest': 27.5.2
       graphql: 16.7.1
@@ -5609,8 +5609,8 @@ packages:
       '@types/jest': 27.5.2
     dev: true
 
-  /@quilted/threads@1.0.1(@preact/signals-core@1.4.0):
-    resolution: {integrity: sha512-r926c4ZWsX34nR+7WkJR8sBI01PpPjayWlEnsFpIziX9HbawkLojHSlZdZ6pxZJ4J+/I1woaJdFnOn9zajyBYA==}
+  /@quilted/threads@1.0.2(@preact/signals-core@1.4.0):
+    resolution: {integrity: sha512-H0Rz72nZiBv/zXcf/yYeqBRnF2HrCsXilT/Clvb3ltfo1k3vY4HL5Dd7WqPhpSJ8eSkLCWQSi2KPSyOhbH3ERQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals-core': ^1.4.0
@@ -5644,7 +5644,7 @@ packages:
         optional: true
     dependencies:
       '@babel/core': 7.22.8
-      '@quilted/threads': 1.0.1(@preact/signals-core@1.4.0)
+      '@quilted/threads': 1.0.2(@preact/signals-core@1.4.0)
       common-tags: 1.8.2
     transitivePeerDependencies:
       - '@preact/signals-core'
@@ -6851,7 +6851,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 
@@ -9057,7 +9057,6 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-    dev: true
 
   /ignore-by-default@1.0.1:
     resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}

@@ -51,7 +51,7 @@
     "@quilted/graphql-tools": "^0.1.5",
     "@quilted/polyfills": "^0.2.34",
     "@quilted/request-router": "^0.1.7",
-    "@quilted/threads": "^1.0.1",
+    "@quilted/threads": "^1.0.2",
     "@types/mime": "^2.0.0",
     "@watching/tools": "workspace:^",
     "ansi-escapes": "^4.0.0",
