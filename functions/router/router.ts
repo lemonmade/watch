@@ -91,29 +91,43 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
   let resolvedRequest: Request = request;
 
   if (source != null) {
-    const variables = searchParams.get('variables');
-    const extensions = searchParams.get('extensions');
-    const operationName =
-      searchParams.get('name') ??
-      searchParams.get('operationName') ??
-      searchParams.get('operation-name') ??
-      undefined;
+    if (request.method === 'GET') {
+      const variables = searchParams.get('variables');
+      const extensions = searchParams.get('extensions');
+      const operationName =
+        searchParams.get('name') ??
+        searchParams.get('operationName') ??
+        searchParams.get('operation-name') ??
+        undefined;
 
-    resolvedRequest = new Request(request.url, {
-      method: 'POST',
-      headers: request.headers,
-      keepalive: request.keepalive,
-      body: JSON.stringify({
-        query: source,
-        operationName,
-        variables: variables
-          ? JSON.stringify(JSON.parse(variables))
-          : undefined,
-        extensions: extensions
-          ? JSON.stringify(JSON.parse(extensions))
-          : undefined,
-      }),
-    });
+      resolvedRequest = new Request(request.url, {
+        method: 'POST',
+        headers: request.headers,
+        keepalive: request.keepalive,
+        body: JSON.stringify({
+          query: source,
+          operationName,
+          variables: variables
+            ? JSON.stringify(JSON.parse(variables))
+            : undefined,
+          extensions: extensions
+            ? JSON.stringify(JSON.parse(extensions))
+            : undefined,
+        }),
+      });
+    } else {
+      const body = await request.json<any>();
+
+      resolvedRequest = new Request(request.url, {
+        method: 'POST',
+        headers: request.headers,
+        keepalive: request.keepalive,
+        body: JSON.stringify({
+          query: source,
+          ...body,
+        }),
+      });
+    }
   }
 
   return rewriteAndFetch(resolvedRequest, (url) => {

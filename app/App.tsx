@@ -281,6 +281,8 @@ export function AppContext({
     const fetch =
       process.env.NODE_ENV === 'production'
         ? createGraphQLHttpFetch({
+            method: (operation) =>
+              operation.source.startsWith('mutation ') ? 'POST' : 'GET',
             url: (operation) => {
               const url = new URL(`/api/graphql`, router.currentUrl);
               url.searchParams.set('id', operation.id);
