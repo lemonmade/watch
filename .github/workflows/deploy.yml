@@ -200,6 +200,9 @@ jobs:
         with:
           name: build
 
+      # TODO: you can get in a weird state where the app server might send pages with
+      # new queries before the router is updated, and before we do this push. Going to
+      # just leave it in place until I can bring persisted queries into the app server.
       - name: Push persisted GraphQL operations
         run: pnpm run run:typescript ./scripts/cloudflare/put-graphql-persisted-operations.ts
         env:

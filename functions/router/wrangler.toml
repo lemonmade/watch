@@ -43,4 +43,4 @@ bucket_name = "watch-clips-assets"
 
 [[kv_namespaces]]
 binding = "PERSISTED_QUERIES"
-id = "8d2c337f0ed342f7a89108831b11cd0e"
+id = "7f89119bd9ff4c40874fa5616b35cba9"
