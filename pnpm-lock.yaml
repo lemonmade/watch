@@ -22,16 +22,16 @@ importers:
         version: 5.0.0(prisma@5.0.0)
       '@quilted/aws':
         specifier: ^0.3.43
-        version: 0.3.43(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150)
+        version: 0.3.43(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150)
       '@quilted/browserslist-config':
         specifier: ^0.1.9
         version: 0.1.9
       '@quilted/cloudflare':
         specifier: ^0.1.55
-        version: 0.1.55(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150)
+        version: 0.1.55(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150)
       '@quilted/craft':
-        specifier: ^0.1.228
-        version: 0.1.228(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
+        specifier: ^0.1.229
+        version: 0.1.229(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
       '@quilted/eslint-config':
         specifier: ^0.2.2
         version: 0.2.2(typescript@5.1.6)
@@ -124,8 +124,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/zest
       '@lemonmade/graphql-live':
-        specifier: ^0.2.1
-        version: 0.2.1(graphql@16.7.1)
+        specifier: ^0.2.2
+        version: 0.2.2(graphql@16.7.1)
       '@lemonmade/remote-ui':
         specifier: ^0.2.0
         version: 0.2.0(@preact/signals-core@1.4.0)(preact@10.17.1)
@@ -149,7 +149,7 @@ importers:
         version: 0.5.150(@babel/core@7.22.8)(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.7.1)(preact@10.17.1)(prettier@3.0.0)(rollup@3.26.2)
       '@quilted/react-query':
         specifier: ^0.1.20
-        version: 0.1.20(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@tanstack/react-query@4.20.4)
+        version: 0.1.20(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@tanstack/react-query@4.20.4)
       '@simplewebauthn/browser':
         specifier: ^6.2.0
         version: 6.2.1
@@ -313,8 +313,8 @@ importers:
   packages/cli:
     dependencies:
       '@lemonmade/graphql-live':
-        specifier: ^0.2.1
-        version: 0.2.1(graphql@16.7.1)
+        specifier: ^0.2.2
+        version: 0.2.2(graphql@16.7.1)
       '@quilted/cli-kit':
         specifier: ^0.1.10
         version: 0.1.10
@@ -4316,8 +4316,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  /@lemonmade/graphql-live@0.2.1(graphql@16.7.1):
-    resolution: {integrity: sha512-8O3rgY4ajv2zov+uwDlrVJye4qP0haZBv/HMorgahJyAYQmGjO/Tn6Gk2/yvuKDiAc/qxswQmylGaQ0XQRQnkQ==}
+  /@lemonmade/graphql-live@0.2.2(graphql@16.7.1):
+    resolution: {integrity: sha512-8BPbmgFDfDlXn+iSvovdoUf8mzh6icC3s7QDwpPUv1sjbY5J8LLkS8yPVQOGuGhAm1RIJMSX5Pepf2dD3cUqEg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       graphql: ^16.0.0
@@ -4916,8 +4916,8 @@ packages:
       rollup: 3.26.2
     dev: true
 
-  /@quilted/async@0.3.43(@babel/core@7.22.8)(rollup@3.26.2):
-    resolution: {integrity: sha512-jX5/TZbwVkr3P0XAX+IHdNkixImIMKrJ0RhqUK27lrWzR2zqtzKwX5V83YAPDYdZ+etiRlBTdE4B7+Kiy3J5Lw==}
+  /@quilted/async@0.3.44(@babel/core@7.22.8)(rollup@3.26.2):
+    resolution: {integrity: sha512-+ADApixrwMOtskDBCaDroWohnJ4ZVIu9agERoj6CHcCDlekC/srnBadCRRTzhlF2qGNuqH6qAF/3k0r27U77bQ==}
     peerDependencies:
       '@babel/core': '>=7.0.0 <8.0.0'
       '@babel/traverse': '>=7.0.0 <8.0.0'
@@ -4941,7 +4941,7 @@ packages:
       - rollup
     dev: true
 
-  /@quilted/aws@0.3.43(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150):
+  /@quilted/aws@0.3.43(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150):
     resolution: {integrity: sha512-OezJ5TQdjsx2IwUvvTFGbr+jGMB5CJ2WcCBT0Twr5sRaeriwe7ON42jjWjf3KCkCUrAmV2FJ0FKJTZkFsbOO0g==}
     peerDependencies:
       '@quilted/craft': ^0.1.176
@@ -4952,7 +4952,7 @@ packages:
       '@quilted/quilt':
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.228(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
+      '@quilted/craft': 0.1.229(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
       '@quilted/quilt': 0.5.150(@babel/core@7.22.8)(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.7.1)(preact@10.17.1)(prettier@3.0.0)(rollup@3.26.2)
       '@types/aws-lambda': 8.10.119
       common-tags: 1.8.2
@@ -4978,7 +4978,7 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare@0.1.55(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150):
+  /@quilted/cloudflare@0.1.55(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150):
     resolution: {integrity: sha512-7AK1h2BffVvKAEUpeD+LsWaXsjaEfnN/nVwniYYCFWzy24p+Ze7ChaKHKu0zU5n93Z27iPYceC+YmQXB/alFGA==}
     peerDependencies:
       '@quilted/craft': ^0.1.215
@@ -4991,7 +4991,7 @@ packages:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.0
       '@cloudflare/workers-types': 4.20230628.0
-      '@quilted/craft': 0.1.228(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
+      '@quilted/craft': 0.1.229(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
       '@quilted/quilt': 0.5.150(@babel/core@7.22.8)(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.7.1)(preact@10.17.1)(prettier@3.0.0)(rollup@3.26.2)
       common-tags: 1.8.2
       mime: 2.6.0
@@ -5004,8 +5004,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@quilted/craft@0.1.228(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6):
-    resolution: {integrity: sha512-paQjfBWNZJf1qPQwlkyHBBGnAs0oy/aIphpW/+98wxZkkL+QgsocqWb63piXGXt5vD5ujxn2cdaNAk9xyni+jw==}
+  /@quilted/craft@0.1.229(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6):
+    resolution: {integrity: sha512-3i1UvVE9RnV0w8dFokuOqshzH/Mf3EIfzfrGz9PcBUxdd/aXUu1CMbFVH7xzBQ4PAoK9QbhMqFBOqcTm/IC1mA==}
     hasBin: true
     peerDependencies:
       '@quilted/quilt': ^0.5.148
@@ -5028,7 +5028,7 @@ packages:
       '@jest/types': 29.6.1
       '@prefresh/vite': 2.4.1(preact@10.17.1)(vite@4.4.2)
       '@quilted/assets': 0.0.3(rollup@3.26.2)
-      '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
+      '@quilted/async': 0.3.44(@babel/core@7.22.8)(rollup@3.26.2)
       '@quilted/browserslist-config': 0.1.9
       '@quilted/eslint-config': 0.2.2(typescript@5.1.6)
       '@quilted/graphql-tools': 0.1.5
@@ -5225,7 +5225,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/assets': 0.0.3(rollup@3.26.2)
-      '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
+      '@quilted/async': 0.3.44(@babel/core@7.22.8)(rollup@3.26.2)
       '@quilted/events': 1.0.1
       '@quilted/graphql': 1.2.2
       '@quilted/polyfills': 0.2.34
@@ -5295,7 +5295,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
+      '@quilted/async': 0.3.44(@babel/core@7.22.8)(rollup@3.26.2)
       '@quilted/react-assets': 0.0.4(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(rollup@3.26.2)
       '@quilted/react-server-render': 0.3.29(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)
       react: /@quilted/react@18.2.5
@@ -5339,7 +5339,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/async': 0.3.43(@babel/core@7.22.8)(rollup@3.26.2)
+      '@quilted/async': 0.3.44(@babel/core@7.22.8)(rollup@3.26.2)
       '@quilted/graphql': 1.2.2
       '@quilted/react-utilities': 0.1.12(@quilted/react@18.2.5)
       '@quilted/useful-types': 1.0.0
@@ -5437,7 +5437,7 @@ packages:
       react: /@quilted/react@18.2.5
     dev: true
 
-  /@quilted/react-query@0.1.20(@quilted/craft@0.1.228)(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@tanstack/react-query@4.20.4):
+  /@quilted/react-query@0.1.20(@quilted/craft@0.1.229)(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@tanstack/react-query@4.20.4):
     resolution: {integrity: sha512-yv8mTMdhn8bnrw0TDF2gzc44/yOhLlGyVdXjD1C4RTgM8Cy4rBKihDU59WsCO/n08If1rLxUWZOYddCq+HYpgA==}
     peerDependencies:
       '@quilted/craft': ^0.1.219
@@ -5452,7 +5452,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@quilted/craft': 0.1.228(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
+      '@quilted/craft': 0.1.229(@quilted/quilt@0.5.150)(@quilted/react@18.2.5)(@types/node@16.11.26)(typescript@5.1.6)
       '@quilted/quilt': 0.5.150(@babel/core@7.22.8)(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.7.1)(preact@10.17.1)(prettier@3.0.0)(rollup@3.26.2)
       '@quilted/useful-types': 1.0.0
       '@tanstack/react-query': 4.20.4(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)
