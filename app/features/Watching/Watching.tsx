@@ -24,22 +24,19 @@ export default function Watching(_: Props) {
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
 
-  const [availableWatchThroughs] = useMemo(() => {
-    const [available, unavailable] = (data?.watchThroughs ?? []).reduce<
-      [WatchThrough[], WatchThrough[]]
-    >(
-      ([available, unavailable], watchThrough) => {
-        return watchThrough.unfinishedEpisodeCount === 0
-          ? [available, [...unavailable, watchThrough]]
-          : [[...available, watchThrough], unavailable];
-      },
-      [[], []],
-    );
+  const availableWatchThroughs = useMemo(() => {
+    const watchThroughs = data?.watchThroughs;
+    if (watchThroughs == null) return [];
 
-    return [
-      available.sort(sortWatchThroughs),
-      unavailable.sort(sortWatchThroughs),
-    ] as const;
+    const availableWatchThroughs: WatchThrough[] = [];
+
+    for (const watchThrough of watchThroughs) {
+      if (watchThrough.nextEpisode?.hasAired) {
+        availableWatchThroughs.push(watchThrough);
+      }
+    }
+
+    return availableWatchThroughs.sort(sortWatchThroughs);
   }, [data?.watchThroughs]);
 
   return (

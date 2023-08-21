@@ -18,6 +18,7 @@ query Watching {
       title
       number
       firstAired
+      hasAired
       season {
         id
         number
