@@ -58,6 +58,21 @@ extend type Mutation {
     ranges: [EpisodeRangeInput!]
     updateWatchLater: Boolean
   ): WatchEpisodesFromSeriesPayload!
+  watchSeason(
+    season: ID!
+    rating: Int
+    notes: NotesInput
+    startedAt: Date
+    finishedAt: Date
+    updateWatchLater: Boolean
+  ): WatchSeasonPayload!
+  watchSeasons(
+    series: SeriesSelectorInput!
+    from: SeasonSelector
+    to: SeasonSelector
+    seasons: [SeasonSelector!]
+    updateWatchLater: Boolean
+  ): WatchSeasonsPayload!
   startWatchThrough(
     series: SeriesSelectorInput!
     from: EpisodeEndpointInput
@@ -180,6 +195,20 @@ type SkipEpisodePayload {
   skip: Skip
   episode: Episode
   watchThrough: WatchThrough
+  watchLater: List!
+}
+
+type WatchSeasonPayload {
+  watch: Watch
+  series: Series
+  season: Season
+  watchLater: List!
+}
+
+type WatchSeasonsPayload {
+  watch: Watch
+  series: Series
+  seasons: [Season!]
   watchLater: List!
 }
 

@@ -1,0 +1,19 @@
+mutation MarkSeasonAsWatched(
+  $season: ID!
+  $rating: Int
+  $notes: NotesInput
+  $startedAt: Date
+  $finishedAt: Date
+) {
+  watchSeason(
+    season: $season
+    rating: $rating
+    notes: $notes
+    startedAt: $startedAt
+    finishedAt: $finishedAt
+  ) {
+    season {
+      id
+    }
+  }
+}

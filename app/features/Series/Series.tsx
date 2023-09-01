@@ -23,6 +23,8 @@ import {
   Disclosure,
   EpisodeImage,
   Checkbox,
+  Form,
+  Spacer,
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
@@ -44,6 +46,7 @@ import updateSubscriptionSettingsMutation from './graphql/UpdateSubscriptionSett
 import watchSeriesLaterMutation from './graphql/WatchSeriesLaterMutation.graphql';
 import removeSeriesFromWatchLaterMutation from './graphql/RemoveSeriesFromWatchLaterMutation.graphql';
 import watchEpisodeFromSeasonMutation from './graphql/WatchEpisodeFromSeasonMutation.graphql';
+import markSeasonAsWatchedMutation from './graphql/MarkSeasonAsWatchedMutation.graphql';
 
 export interface Props {
   id?: string;
@@ -426,51 +429,50 @@ function SeasonsSection({
               >
                 <Poster source={poster?.source} />
 
-                <BlockStack spacing="small.2">
-                  <InlineStack spacing="small">
-                    <TextAction
-                      emphasis
-                      overlay={
-                        <SeasonActionPopover
-                          season={season}
-                          onUpdate={onUpdate}
-                        />
-                      }
-                    >
-                      {isSpecials ? 'Specials' : `Season ${number}`}
-                    </TextAction>
-                  </InlineStack>
-
-                  <Text emphasis="subdued">
-                    {episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'}
-                  </Text>
-
-                  {firstAired || status === 'CONTINUING' ? (
+                <BlockStack spacing>
+                  <BlockStack spacing="small.2">
                     <InlineStack spacing="small">
-                      {firstAired && (
-                        <Text emphasis="subdued">
-                          {new Date(firstAired).getFullYear()}
-                        </Text>
-                      )}
+                      <TextAction
+                        emphasis
+                        overlay={
+                          <SeasonActionPopover
+                            season={season}
+                            onUpdate={onUpdate}
+                          />
+                        }
+                      >
+                        {isSpecials ? 'Specials' : `Season ${number}`}
+                      </TextAction>
+                    </InlineStack>
 
+                    <InlineStack spacing="small">
+                      <Text emphasis="subdued">
+                        {firstAired
+                          ? `${new Date(firstAired).getFullYear()} • `
+                          : ''}
+                        {episodeCount}{' '}
+                        {episodeCount === 1 ? 'episode' : 'episodes'}
+                      </Text>
                       {isCurrentlyAiring ? (
                         <Tag>Ongoing</Tag>
                       ) : isUpcoming ? (
                         <Tag>Upcoming</Tag>
                       ) : null}
                     </InlineStack>
-                  ) : null}
-                </BlockStack>
+                  </BlockStack>
 
-                {isUpcoming ? null : (
-                  <SeasonWatchThroughAction
-                    seriesId={seriesId}
-                    season={season}
-                    lastSeason={lastSeason}
-                  />
-                )}
+                  {isUpcoming ? null : (
+                    <InlineStack spacing="small">
+                      <SeasonWatchThroughAction
+                        seriesId={seriesId}
+                        season={season}
+                        lastSeason={lastSeason}
+                      />
+                    </InlineStack>
+                  )}
+                </BlockStack>
               </InlineGrid>
-              <SeasonEpisodesSection id={id} seriesId={seriesId} />
+              {/* <SeasonEpisodesSection id={id} seriesId={seriesId} /> */}
             </BlockStack>
           );
         })}
@@ -530,14 +532,20 @@ function SeasonWatchThroughAction({
   const navigate = useNavigate();
   const startWatchThrough = useMutation(startWatchThroughMutation);
 
-  const accessory =
-    season.id === lastSeason.id ? null : (
-      <Action
-        icon="more"
-        accessibilityLabel="More actions…"
-        overlay={
-          <Popover>
-            <Menu>
+  const accessory = (
+    <Action
+      icon="more"
+      accessibilityLabel="More actions…"
+      overlay={
+        <Popover>
+          <Menu>
+            <Action
+              icon="watch"
+              overlay={<MarkSeasonAsWatchedModal season={season} />}
+            >
+              Mark season as watched…
+            </Action>
+            {season.id !== lastSeason.id && (
               <Action
                 icon="watch"
                 onPress={async () => {
@@ -558,11 +566,12 @@ function SeasonWatchThroughAction({
               >
                 Watch from season {season.number} to {lastSeason.number}
               </Action>
-            </Menu>
-          </Popover>
-        }
-      />
-    );
+            )}
+          </Menu>
+        </Popover>
+      }
+    />
+  );
 
   return (
     <Action
@@ -585,6 +594,65 @@ function SeasonWatchThroughAction({
     >
       Watch
     </Action>
+  );
+}
+
+function MarkSeasonAsWatchedModal({
+  season,
+}: {
+  season: SeriesQueryData.Series.Seasons;
+}) {
+  // const {initialActionDate} = usePageDetails();
+
+  // const form = useMemo(
+  //   () => watchFormFromNextEpisode(watchForm.media, initialActionDate)!,
+  //   [watchForm.media, initialActionDate],
+  // );
+
+  // const skipEpisode = useSkipEpisode({...options, form});
+
+  // const {title, number, season, still} = form.media;
+  // const image = still?.source;
+
+  const markSeasonAsWatched = useMutation(markSeasonAsWatchedMutation);
+
+  return (
+    <Modal padding>
+      <Form
+        onSubmit={async () => {
+          await markSeasonAsWatched.mutateAsync({
+            season: season.id,
+          });
+        }}
+      >
+        <BlockStack spacing>
+          <Heading>Mark as watched</Heading>
+
+          <InlineGrid
+            sizes={[Style.css`8rem`, 'fill']}
+            border="subdued"
+            cornerRadius
+          >
+            <Poster source={season.poster?.source} />
+            <BlockStack spacing="small" padding>
+              <Text emphasis>Season {season.number}</Text>
+              {/* <Text emphasis="subdued">
+                Season {season.number}, Episode {number}
+              </Text> */}
+            </BlockStack>
+          </InlineGrid>
+
+          {/* <DetailedReview notes={form.notes} /> */}
+
+          <InlineStack alignment="spaceBetween" spacing="small">
+            {/* <EpisodeDatePicker action="skip" value={form.at} /> */}
+            <Action emphasis perform="submit">
+              Mark as watched
+            </Action>
+          </InlineStack>
+        </BlockStack>
+      </Form>
+    </Modal>
   );
 }
 
