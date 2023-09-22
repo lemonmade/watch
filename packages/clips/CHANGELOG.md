@@ -1,5 +1,13 @@
 # @watching/clips
 
+## 0.4.21
+
+### Patch Changes
+
+- [`7735f9ed`](https://github.com/lemonmade/watch/commit/7735f9ed836eca5a149bbedf55ccde4323c9ac2e) Thanks [@lemonmade](https://github.com/lemonmade)! - Update quilt and Preaact dependencies
+
+* [`acaed5a4`](https://github.com/lemonmade/watch/commit/acaed5a41dcf777e499bceabf3ac4e410f02cc0a) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Preact and Quilt
+
 ## 0.4.20
 
 ### Patch Changes
