@@ -13,6 +13,7 @@ interface Environment {
   SERVICE_UPLOAD_CLIPS: Fetcher;
   SERVICE_EMAIL: Fetcher;
   SERVICE_STRIPE: Fetcher;
+  SERVICE_TMDB_REFRESHER: Fetcher;
   SERVICE_METRICS: Fetcher;
   SERVICE_IMAGES: Fetcher;
   PERSISTED_QUERIES: KVNamespace;
@@ -63,6 +64,15 @@ router.any(
   'internal/upload/clips',
   (request, {env}) =>
     env.SERVICE_UPLOAD_CLIPS.fetch(
+      new URL('/', request.url),
+      request as any,
+    ) as any,
+);
+
+router.any(
+  'internal/tmdb/refresh',
+  (request, {env}) =>
+    env.SERVICE_TMDB_REFRESHER.fetch(
       new URL('/', request.url),
       request as any,
     ) as any,
