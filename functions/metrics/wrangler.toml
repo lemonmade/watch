@@ -14,11 +14,11 @@ binding = "PERFORMANCE_NAVIGATIONS"
 
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
-queue = "watch-metrics"
+queue = "watch-metrics-new"
 binding = "METRICS_QUEUE"
 
 [[queues.consumers]]
-queue = "watch-metrics"
+queue = "watch-metrics-new"
 max_batch_size = 10
 max_batch_timeout = 30
 max_retries = 10
