@@ -10,7 +10,7 @@
     "@tsndr/cloudflare-worker-jwt": "^2.1.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "eslintConfig": {
     "extends": "@quilted/eslint-config/project"
