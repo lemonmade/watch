@@ -23,7 +23,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
 
       - name: Create Prisma client
-        run: pnpm prisma generate --data-proxy
+        run: pnpm prisma generate --no-engine
 
       - uses: quilt-framework/action-build@v2
         with:

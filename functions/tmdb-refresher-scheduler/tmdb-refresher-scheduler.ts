@@ -14,7 +14,10 @@ interface Environment {
 
 const scheduled: ExportedHandlerScheduledHandler<Environment> =
   async function scheduled(event, env) {
-    const {PrismaClient} = await import('@prisma/client/edge');
+    const [{PrismaClient}, {withAccelerate}] = await Promise.all([
+      import('@prisma/client/edge'),
+      import('@prisma/extension-accelerate'),
+    ]);
 
     const prisma = new PrismaClient({
       datasources: {
@@ -22,7 +25,7 @@ const scheduled: ExportedHandlerScheduledHandler<Environment> =
           url: env.DATABASE_URL,
         },
       },
-    });
+    }).$extends(withAccelerate());
 
     console.log(event);
 

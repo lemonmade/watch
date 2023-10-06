@@ -79,17 +79,20 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
   // eslint-disable-next-line no-console
   console.log(event);
 
-  const {PrismaClient} = await import('@prisma/client/edge');
+  const [{PrismaClient}, {withAccelerate}] = await Promise.all([
+    import('@prisma/client/edge'),
+    import('@prisma/extension-accelerate'),
+  ]);
+
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: env.DATABASE_URL,
+      },
+    },
+  }).$extends(withAccelerate());
 
   try {
-    const prisma = new PrismaClient({
-      datasources: {
-        db: {
-          url: env.DATABASE_URL,
-        },
-      },
-    });
-
     // @see https://stripe.com/docs/webhooks/stripe-events
     // @see https://stripe.com/docs/api/subscriptions
     // @see https://stripe.com/docs/billing/subscriptions/build-subscriptions

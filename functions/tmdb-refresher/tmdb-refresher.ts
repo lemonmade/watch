@@ -172,15 +172,18 @@ let prismaPromise:
 
 async function createPrisma(url: string) {
   prismaPromise ??= (async () => {
-    const {PrismaClient} = await import('@prisma/client/edge');
+    const [{PrismaClient}, {withAccelerate}] = await Promise.all([
+      import('@prisma/client/edge'),
+      import('@prisma/extension-accelerate'),
+    ]);
 
     const prisma = new PrismaClient({
       datasources: {
         db: {url},
       },
-    });
+    }).$extends(withAccelerate());
 
-    return prisma;
+    return prisma as any;
   })();
 
   return await prismaPromise;
