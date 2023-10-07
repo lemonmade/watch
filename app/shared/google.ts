@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef} from 'react';
-import {useRouter} from '@quilted/quilt';
+import {useRouter} from '@quilted/quilt/navigate';
 
 import {
   GoogleOAuthFlow,

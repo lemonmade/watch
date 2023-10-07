@@ -1,5 +1,5 @@
 import {useMemo, useEffect} from 'react';
-import {signal, useComputed, type Signal} from '@quilted/quilt';
+import {signal, useComputed, type Signal} from '@quilted/quilt/signals';
 import {
   type GraphQLResult,
   type GraphQLOperation,

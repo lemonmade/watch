@@ -1,5 +1,6 @@
 import {parse} from 'graphql';
-import {signal, NestedAbortController, type Signal} from '@quilted/quilt';
+import {NestedAbortController} from '@quilted/quilt/events';
+import {signal, type Signal} from '@quilted/quilt/signals';
 import {type ExtensionPoint} from '@watching/clips';
 import {run, createQueryResolver} from '@lemonmade/graphql-live';
 

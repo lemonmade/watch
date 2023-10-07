@@ -1,6 +1,7 @@
 import {useMemo, type ReactNode} from 'react';
 
-import {useLocalizedFormatting, usePerformanceNavigation} from '@quilted/quilt';
+import {useLocalizedFormatting} from '@quilted/quilt/localize';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {Menu, Action, Poster, Spacer, Tag} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';

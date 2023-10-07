@@ -1,4 +1,4 @@
-import {createAsyncComponent} from '@quilted/quilt';
+import {createAsyncComponent} from '@quilted/quilt/async';
 
 export const Watching = createAsyncComponent(
   () => import('./Watching/Watching.tsx'),

@@ -46,7 +46,7 @@ const handleFetch: ExportedHandlerFetchHandler = async function handleRequest(
     },
   );
 
-  const response = new Response(tmdbResponse.body as any, tmdbResponse);
+  const response = new Response(tmdbResponse.body as any, tmdbResponse as any);
 
   for (const header of response.headers.keys()) {
     if (!PRESERVE_HEADERS.has(header.toLowerCase())) {

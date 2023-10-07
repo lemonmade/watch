@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import {usePerformanceNavigation} from '@quilted/quilt';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page';

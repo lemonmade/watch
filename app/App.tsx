@@ -1,25 +1,26 @@
-import {useMemo} from 'react';
+import {useMemo, type PropsWithChildren} from 'react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 import {
   useRoutes,
   useRouter,
-  QuiltApp,
   Redirect,
+  Routing,
   RoutePreloading,
   type RouteDefinition,
-  type PropsWithChildren,
-} from '@quilted/quilt';
-import {useSerialized} from '@quilted/quilt/html';
+} from '@quilted/quilt/navigate';
+import {useSerialized, HTML} from '@quilted/quilt/html';
+import {Localization} from '@quilted/quilt/localize';
 import {
-  createGraphQLHttpFetch,
   GraphQLContext,
+  createGraphQLFetchOverHTTP,
   type GraphQLFetch,
 } from '@quilted/quilt/graphql';
+import {PerformanceContext} from '@quilted/quilt/performance';
 import {Canvas} from '@lemon/zest';
 
-import {toGid} from '~/shared/graphql';
-import {SearchParam} from '~/global/auth';
+import {toGid} from '~/shared/graphql.ts';
+import {SearchParam} from '~/global/auth.ts';
 
 import {Head} from './foundation/Head.ts';
 import {Http} from './foundation/Http.ts';
@@ -64,20 +65,23 @@ import {createClipsManager, ClipsLocalDevelopment} from './shared/clips';
 
 export default function App(props: AppContextProps) {
   return (
-    <QuiltApp
-      http={<Http />}
-      html={<Head />}
-      localization="en-CA"
-      routing={{isExternal: urlIsExternal}}
-    >
-      <RoutePreloading>
-        <AppContext {...props}>
-          <Canvas>
-            <Routes />
-          </Canvas>
-        </AppContext>
-      </RoutePreloading>
-    </QuiltApp>
+    <PerformanceContext>
+      <HTML>
+        <Localization locale="en-CA">
+          <Routing isExternal={urlIsExternal}>
+            <RoutePreloading>
+              <AppContext {...props}>
+                <Http />
+                <Head />
+                <Canvas>
+                  <Routes />
+                </Canvas>
+              </AppContext>
+            </RoutePreloading>
+          </Routing>
+        </Localization>
+      </HTML>
+    </PerformanceContext>
   );
 }
 
@@ -280,7 +284,7 @@ export function AppContext({
 
     const fetch =
       process.env.NODE_ENV === 'production'
-        ? createGraphQLHttpFetch({
+        ? createGraphQLFetchOverHTTP({
             method: (operation) =>
               operation.source.startsWith('mutation ') ? 'POST' : 'GET',
             url: (operation) => {
@@ -292,7 +296,7 @@ export function AppContext({
             source: false,
             credentials: 'include',
           })
-        : createGraphQLHttpFetch({
+        : createGraphQLFetchOverHTTP({
             url: (operation) => {
               const url = new URL(`/api/graphql`, router.currentUrl);
               if (operation.name) url.searchParams.set('name', operation.name);
@@ -302,7 +306,6 @@ export function AppContext({
           });
 
     const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
-      // @ts-expect-error "excessively deep" ...
       const result = await fetch(...args);
 
       if (result.errors?.some((error) => (error as any).status === 401)) {

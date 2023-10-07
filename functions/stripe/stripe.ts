@@ -1,6 +1,6 @@
 import {type Stripe} from 'stripe';
 import jwt from '@tsndr/cloudflare-worker-jwt';
-import {redirect, createRequestRouter} from '@quilted/request-router';
+import {RedirectResponse, RequestRouter} from '@quilted/request-router';
 import type {Fetcher} from '@cloudflare/workers-types';
 import type {} from '@quilted/cloudflare';
 
@@ -24,14 +24,14 @@ declare module '@quilted/cloudflare' {
   interface CloudflareRequestEnvironment extends Environment {}
 }
 
-const router = createRequestRouter();
+const router = new RequestRouter();
 
 router.get('internal/stripe/return', async (request, {env}) => {
   const paymentIntent = request.URL.searchParams.get('payment_intent');
 
   // TODO
   if (paymentIntent == null) {
-    return redirectWithStatus('/app/me', PaymentStatus.Failed);
+    return new RedirectWithStatusResponse('/app/me', PaymentStatus.Failed);
   }
 
   const stripe = await createStripe(env);
@@ -42,22 +42,27 @@ router.get('internal/stripe/return', async (request, {env}) => {
 
   switch (foundPaymentIntent.status) {
     case 'succeeded': {
-      return redirectWithStatus('/app/me', PaymentStatus.Success);
+      return new RedirectWithStatusResponse('/app/me', PaymentStatus.Success);
     }
     case 'processing': {
-      return redirectWithStatus('/app/me', PaymentStatus.Pending);
+      return new RedirectWithStatusResponse('/app/me', PaymentStatus.Pending);
     }
     default: {
-      return redirectWithStatus('/app/my/payment', PaymentStatus.Failed);
+      return new RedirectWithStatusResponse(
+        '/app/my/payment',
+        PaymentStatus.Failed,
+      );
     }
   }
-
-  function redirectWithStatus(to: string, status: PaymentStatus) {
-    const url = new URL(to, request.url);
-    url.searchParams.set(SearchParam.PaymentStatus, status);
-    return redirect(url);
-  }
 });
+
+class RedirectWithStatusResponse extends RedirectResponse {
+  constructor(to: string, status: PaymentStatus) {
+    const url = new URL(to);
+    url.searchParams.set(SearchParam.PaymentStatus, status);
+    super(url);
+  }
+}
 
 router.post('internal/stripe/webhooks', async (request, {env}) => {
   const stripe = await createStripe(env);

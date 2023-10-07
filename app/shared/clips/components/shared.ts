@@ -12,7 +12,7 @@ import {
   type RemoteComponentProps,
   type RemoteComponentRendererProps,
 } from '@lemonmade/remote-ui-react/host';
-import {signal, type Signal} from '@quilted/quilt';
+import {signal, type Signal} from '@quilted/quilt/signals';
 import {
   isThreadSignal,
   createThreadAbortSignal,

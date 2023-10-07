@@ -5,8 +5,7 @@ import * as path from 'path';
 import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import open from 'open';
 
-import type {GraphQLFetch} from '@quilted/graphql';
-import {createGraphQLHttpFetch} from '@quilted/graphql';
+import {createGraphQLFetchOverHTTP, type GraphQLFetch} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -100,7 +99,7 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
 }
 
 function graphqlFromAccessToken(accessToken: string) {
-  return createGraphQLHttpFetch({
+  return createGraphQLFetchOverHTTP({
     url: watchUrl('/api/graphql'),
     headers: {
       'X-Access-Token': accessToken,
@@ -176,21 +175,23 @@ async function performWebAuthentication<Result = unknown>({
     reject = rejectPromise;
   });
 
-  const [{createRequestRouter, json, noContent}, {createHttpServer}] =
+  const [{RequestRouter, JSONResponse, NoContentResponse}, {createHttpServer}] =
     await Promise.all([
       import('@quilted/request-router'),
       import('@quilted/request-router/node'),
     ]);
 
-  const router = createRequestRouter();
+  const router = new RequestRouter();
 
-  router.options('/', () =>
-    noContent({
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    }),
+  router.options(
+    '/',
+    () =>
+      new NoContentResponse({
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      }),
   );
 
   router.post('/', async (request) => {
@@ -206,7 +207,7 @@ async function performWebAuthentication<Result = unknown>({
       }
     }, 0);
 
-    return json(
+    return new JSONResponse(
       {},
       {
         headers: {

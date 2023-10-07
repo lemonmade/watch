@@ -1,10 +1,7 @@
 import {useState, useRef, useEffect, useCallback} from 'react';
-import {
-  usePerformanceNavigation,
-  useCurrentUrl,
-  useNavigate,
-} from '@quilted/quilt';
 
+import {useCurrentUrl, useNavigate} from '@quilted/quilt/navigate';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextField, Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';

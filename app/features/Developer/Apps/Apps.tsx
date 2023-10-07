@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import {usePerformanceNavigation} from '@quilted/quilt';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
 import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
 

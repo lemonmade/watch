@@ -19,11 +19,11 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.2.0",
+    "@lemonmade/remote-ui": "^0.2.1",
     "@lemonmade/remote-ui-react": "^0.2.0",
-    "@preact/signals-core": "^1.4.0",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.0.0"
+    "@preact/signals-core": "^1.5.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
   },
   "peerDependencies": {
     "@watching/clips": "workspace:^",

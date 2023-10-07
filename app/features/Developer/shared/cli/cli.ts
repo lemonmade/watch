@@ -1,6 +1,6 @@
 import {useMutation as useBasicMutation} from '@tanstack/react-query';
 
-import {useCurrentUrl} from '@quilted/quilt';
+import {useCurrentUrl} from '@quilted/quilt/navigate';
 
 import {useMutation} from '~/shared/graphql.ts';
 

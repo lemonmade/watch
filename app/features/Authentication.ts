@@ -1,4 +1,4 @@
-import {createAsyncComponent} from '@quilted/quilt';
+import {createAsyncComponent} from '@quilted/quilt/async';
 
 export const SignIn = createAsyncComponent(
   () => import('./Authentication/SignIn.tsx'),

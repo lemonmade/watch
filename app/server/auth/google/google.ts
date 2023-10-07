@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import Env from '@quilted/quilt/env';
 import {
-  redirect,
-  html,
+  RedirectResponse,
+  HTMLResponse,
   EnhancedResponse,
   type EnhancedRequest,
   type CookieOptions,
@@ -94,7 +94,7 @@ export async function startGoogleOAuth<State extends {} = {}>(
 
   googleOAuthUrl.searchParams.set(GoogleSearchParam.Redirect, callbackUrl.href);
 
-  const response = redirect(googleOAuthUrl, {
+  const response = new RedirectResponse(googleOAuthUrl, {
     headers: {
       'Cache-Control': 'no-store',
     },
@@ -600,7 +600,7 @@ function modalAuthResponse({
   `;
 
   return deleteOAuthCookies(
-    html(content, {
+    new HTMLResponse(content, {
       headers: {
         'Cache-Control': 'no-store',
       },

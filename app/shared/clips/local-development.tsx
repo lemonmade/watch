@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {useInitialUrl} from '@quilted/quilt';
+import {useInitialUrl} from '@quilted/quilt/navigate';
 
 import {type ClipsManager} from './manager.ts';
 

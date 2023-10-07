@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {type Signal, signal} from '@quilted/quilt';
+import {signal, type Signal} from '@quilted/quilt/signals';
 import {createTranslate} from '@quilted/localize';
 import {Action, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
 

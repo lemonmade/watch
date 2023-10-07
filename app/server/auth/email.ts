@@ -1,4 +1,4 @@
-import {redirect} from '@quilted/quilt/request-router';
+import {RedirectResponse} from '@quilted/quilt/request-router';
 
 import {
   SearchParam,
@@ -138,7 +138,7 @@ export function completeAuth(
 ) {
   const redirectTarget = validateRedirectTo(redirectTo, request) ?? '/app';
 
-  return addAuthCookies({id: userId}, redirect(redirectTarget));
+  return addAuthCookies({id: userId}, new RedirectResponse(redirectTarget));
 }
 
 export function restartSignIn({
@@ -162,7 +162,7 @@ export function restartSignIn({
     signInUrl.searchParams.set(SearchParam.RedirectTo, normalizedRedirectTo);
   }
 
-  return redirect(signInUrl, {
+  return new RedirectResponse(signInUrl, {
     headers: {
       'Cache-Control': 'no-store',
     },
@@ -199,7 +199,7 @@ export function restartCreateAccount({
     createAccountUrl.searchParams.set('gift-code', giftCode);
   }
 
-  return redirect(createAccountUrl, {
+  return new RedirectResponse(createAccountUrl, {
     headers: {
       'Cache-Control': 'no-store',
     },

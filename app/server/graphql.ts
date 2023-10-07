@@ -1,8 +1,8 @@
 import {
-  html,
-  json,
-  noContent,
-  createRequestRouter,
+  HTMLResponse,
+  JSONResponse,
+  NoContentResponse,
+  RequestRouter,
   EnhancedRequest,
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
@@ -10,17 +10,19 @@ import {stripIndent} from 'common-tags';
 import {authenticate} from './shared/auth.ts';
 import {createPrisma} from './shared/database.ts';
 
-const router = createRequestRouter();
+const router = new RequestRouter();
 
-router.options('/', () =>
-  noContent({
-    headers: {
-      'Timing-Allow-Origin': '*',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Method': 'GET, POST',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  }),
+router.options(
+  '/',
+  () =>
+    new NoContentResponse({
+      headers: {
+        'Timing-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Method': 'GET, POST',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    }),
 );
 
 router.post('/', async (request) => {
@@ -61,7 +63,7 @@ router.get('/', async (request) => {
     searchParams.get('operation-name');
 
   if (operation == null) {
-    return json(
+    return new JSONResponse(
       {errors: [{message: 'Missing operation'}]},
       {
         status: 400,
@@ -103,7 +105,7 @@ async function runGraphQLRequest(
   console.log(`Document:\n${operation}`);
   /* eslint-enable no-console */
 
-  const {headers, cookies} = json(
+  const {headers, cookies} = new JSONResponse(
     {},
     {
       status: 200,
@@ -139,7 +141,7 @@ async function runGraphQLRequest(
       contextValue: createContext(auth, prisma, request, response),
     });
 
-    return json(result, {
+    return new JSONResponse(result, {
       status: response.status,
       headers: response.headers,
     });
@@ -147,7 +149,7 @@ async function runGraphQLRequest(
     // eslint-disable-next-line no-console
     console.log(error);
 
-    return json(
+    return new JSONResponse(
       {message: (error as any).message},
       {
         status: (error as any).statusCode ?? 500,
@@ -179,7 +181,7 @@ function loadSchema() {
 }
 
 router.get('/explorer', () => {
-  return html(
+  return new HTMLResponse(
     stripIndent`
       <!DOCTYPE html>
       <html>
