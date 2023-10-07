@@ -64,7 +64,7 @@
   "dependencies": {
     "@iarna/toml": "^3.0.0",
     "@quilted/events": "^1.0.1",
-    "@quilted/graphql-tools": "^0.1.5",
+    "@quilted/graphql-tools": "^0.1.7",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-replace": "^5.0.0",

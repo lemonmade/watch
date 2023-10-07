@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import type {Sender} from '@quilted/react-email';
 import jwt from '@tsndr/cloudflare-worker-jwt';
-import {json, noContent} from '@quilted/request-router';
+import {JSONResponse, NoContentResponse} from '@quilted/request-router';
 import {renderEmail} from '@quilted/react-email/server';
 
 import {Email, type EmailType, type PropsForEmail} from './Email.tsx';
@@ -37,11 +37,11 @@ const EmailSchema = z.object({
 
 async function handleRequest(request: Request, env: Environment) {
   if (request.method === 'OPTIONS') {
-    return noContent({headers: DEFAULT_HEADERS});
+    return new NoContentResponse({headers: DEFAULT_HEADERS});
   }
 
   if (request.method !== 'POST') {
-    return json(
+    return new JSONResponse(
       {error: 'Must use POST'},
       {status: 405, headers: DEFAULT_HEADERS},
     );
@@ -54,7 +54,7 @@ async function handleRequest(request: Request, env: Environment) {
   );
 
   if (!valid) {
-    return json(
+    return new JSONResponse(
       {error: 'Invalid token'},
       {status: 401, headers: DEFAULT_HEADERS},
     );
@@ -66,7 +66,7 @@ async function handleRequest(request: Request, env: Environment) {
     const json = await request.json();
     email = EmailSchema.parse(json) as Email;
   } catch {
-    return json(
+    return new JSONResponse(
       {error: 'Invalid email'},
       {status: 422, headers: DEFAULT_HEADERS},
     );
@@ -85,7 +85,7 @@ async function handleRequest(request: Request, env: Environment) {
   } = await renderEmail(<Email type={type} props={props} />);
 
   if (to == null || to.length === 0 || subject == null) {
-    return json(
+    return new JSONResponse(
       {error: 'Invalid email'},
       {status: 500, headers: DEFAULT_HEADERS},
     );
@@ -134,13 +134,13 @@ async function handleRequest(request: Request, env: Environment) {
       throw new Error();
     }
   } catch {
-    return json(
+    return new JSONResponse(
       {error: 'Failed to send email'},
       {status: 500, headers: DEFAULT_HEADERS},
     );
   }
 
-  return json({success: true}, {headers: DEFAULT_HEADERS});
+  return new JSONResponse({success: true}, {headers: DEFAULT_HEADERS});
 }
 
 export default {fetch: handleRequest};

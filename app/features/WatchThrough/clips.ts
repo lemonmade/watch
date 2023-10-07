@@ -1,4 +1,4 @@
-import {signalToIterator, type Signal} from '@quilted/quilt';
+import {signalToIterator, type Signal} from '@quilted/quilt/signals';
 
 import {
   CommonComponents,

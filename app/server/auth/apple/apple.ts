@@ -1,4 +1,4 @@
-import type {EnhancedRequest} from '@quilted/quilt/server';
+import type {EnhancedRequest} from '@quilted/quilt/request-router';
 
 export async function handleAppleCallback(request: EnhancedRequest) {
   // eslint-disable-next-line no-console

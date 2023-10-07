@@ -7,7 +7,7 @@ import {
   type MouseEvent,
 } from 'react';
 import {classes, variation} from '@lemon/css';
-import {Link, type NavigateTo} from '@quilted/quilt';
+import {Link, type NavigateTo} from '@quilted/quilt/navigate';
 import {
   resolveSignalOrValue,
   type SignalOrValue,

@@ -11,7 +11,7 @@ import {
   Menu,
   Icon,
 } from '@lemon/zest';
-import {Redirect} from '@quilted/quilt';
+import {Redirect} from '@quilted/quilt/navigate';
 
 import {useQuery, useMutation} from '~/shared/graphql';
 import {Page} from '~/shared/page.ts';

@@ -1,5 +1,5 @@
 import {useState, type ReactNode} from 'react';
-import {usePerformanceNavigation} from '@quilted/quilt';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,
   TextBlock,

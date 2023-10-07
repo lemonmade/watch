@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 import Env from '@quilted/quilt/env';
 import {
-  redirect,
-  html,
+  HTMLResponse,
+  RedirectResponse,
   EnhancedResponse,
   type EnhancedRequest,
   type CookieOptions,
 } from '@quilted/quilt/request-router';
-import {createGraphQLHttpFetch} from '@quilted/quilt/graphql';
+import {createGraphQLFetchOverHTTP} from '@quilted/quilt/graphql';
 import {stripIndent} from 'common-tags';
 import type {Prisma as PrismaData} from '@prisma/client';
 
@@ -88,7 +88,7 @@ export function startGithubOAuth(
     finalCallbackUrl.href,
   );
 
-  const response = redirect(githubOAuthUrl, {
+  const response = new RedirectResponse(githubOAuthUrl, {
     headers: {
       'Cache-Control': 'no-store',
     },
@@ -410,7 +410,7 @@ async function handleGithubOAuthCallback(
 
   const {access_token: accessToken} = accessTokenJson;
 
-  const queryGithub = createGraphQLHttpFetch({
+  const queryGithub = createGraphQLFetchOverHTTP({
     url: 'https://api.github.com/graphql',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -570,7 +570,7 @@ function modalAuthResponse({
   `;
 
   return deleteOAuthCookies(
-    html(content, {
+    new HTMLResponse(content, {
       headers: {
         'Cache-Control': 'no-store',
       },

@@ -1,4 +1,4 @@
-import {usePerformanceNavigation} from '@quilted/quilt';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, InlineStack, Action} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';

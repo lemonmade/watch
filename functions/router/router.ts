@@ -1,7 +1,4 @@
-import {
-  createRequestRouter,
-  type RequestHandler,
-} from '@quilted/request-router';
+import {RequestRouter, type RequestHandler} from '@quilted/request-router';
 import type {KVNamespace, R2Bucket, Fetcher} from '@cloudflare/workers-types';
 import type {CloudflareRequestContext} from '@quilted/cloudflare';
 
@@ -24,7 +21,7 @@ declare module '@quilted/cloudflare' {
 }
 
 // TODO: caching
-const router = createRequestRouter<CloudflareRequestContext>();
+const router = new RequestRouter<CloudflareRequestContext>();
 
 router.any(
   'assets/app',

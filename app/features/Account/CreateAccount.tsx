@@ -1,10 +1,7 @@
 import {useState} from 'react';
-import {
-  useNavigate,
-  useCurrentUrl,
-  useSignal,
-  usePerformanceNavigation,
-} from '@quilted/quilt';
+import {useSignal} from '@quilted/quilt/signals';
+import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   Action,
   Banner,

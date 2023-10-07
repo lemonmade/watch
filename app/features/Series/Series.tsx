@@ -1,5 +1,7 @@
 import {type ComponentProps} from 'react';
-import {useNavigate, usePerformanceNavigation, useSignal} from '@quilted/quilt';
+import {useSignal} from '@quilted/quilt/signals';
+import {useNavigate} from '@quilted/quilt/navigate';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   Action,
   ActionList,

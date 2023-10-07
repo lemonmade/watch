@@ -1,3 +1,3 @@
-import {createAsyncComponent} from '@quilted/quilt';
+import {createAsyncComponent} from '@quilted/quilt/async';
 
 export const Search = createAsyncComponent(() => import('./Search/Search.tsx'));

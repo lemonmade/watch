@@ -1,7 +1,8 @@
 import {createRenderer} from '@watching/thread-render';
 
 import {type ApiCore} from '@watching/clips';
-import {signal, EventEmitter, type Signal} from '@quilted/quilt';
+import {signal, type Signal} from '@quilted/quilt/signals';
+import {EventEmitter} from '@quilted/quilt/events';
 import {
   type GraphQLOperation,
   type GraphQLResult,

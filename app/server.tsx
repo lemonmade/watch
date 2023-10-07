@@ -1,15 +1,15 @@
-import '@quilted/quilt/global';
+import '@quilted/quilt/globals';
 
-import {createRequestRouter} from '@quilted/quilt/server';
+import {RequestRouter} from '@quilted/quilt/request-router';
 
-import app from './server/app.tsx';
+import {handleApp} from './server/app.tsx';
 import auth from './server/auth.ts';
 import graphql from './server/graphql.ts';
 
-const router = createRequestRouter();
+const router = new RequestRouter();
 
 router.any('/api/graphql', graphql);
 router.any('/internal/auth', auth);
-router.get(app);
+router.get(handleApp);
 
 export default router;

@@ -1,5 +1,5 @@
 import type {R2Bucket} from '@cloudflare/workers-types';
-import {json, noContent} from '@quilted/request-router';
+import {JSONResponse, NoContentResponse} from '@quilted/request-router';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 
 interface Environment {
@@ -17,13 +17,13 @@ const DEFAULT_HEADERS = {
 
 async function handleRequest(request: Request, env: Environment) {
   if (request.method === 'OPTIONS') {
-    return noContent({
+    return new NoContentResponse({
       headers: DEFAULT_HEADERS,
     });
   }
 
   if (request.method !== 'PUT') {
-    return json(
+    return new JSONResponse(
       {error: 'You must call this API with a PUT method'},
       {
         status: 405,
@@ -36,7 +36,7 @@ async function handleRequest(request: Request, env: Environment) {
   const valid = await jwt.verify(token, env.JWT_SECRET);
 
   if (!valid) {
-    return json(
+    return new JSONResponse(
       {error: 'Invalid token'},
       {
         status: 401,
@@ -51,7 +51,7 @@ async function handleRequest(request: Request, env: Environment) {
   };
 
   if (typeof path !== 'string' || typeof code !== 'string') {
-    return json(
+    return new JSONResponse(
       {
         error:
           'You must call this API with a token that contains `path` and `code` properties',
@@ -70,7 +70,7 @@ async function handleRequest(request: Request, env: Environment) {
     },
   });
 
-  return json({path}, {headers: DEFAULT_HEADERS});
+  return new JSONResponse({path}, {headers: DEFAULT_HEADERS});
 }
 
 export default {fetch: handleRequest};

@@ -1,4 +1,4 @@
-import {createRequestRouter, redirect} from '@quilted/quilt/request-router';
+import {RequestRouter, RedirectResponse} from '@quilted/quilt/request-router';
 
 import {SearchParam} from '~/global/auth.ts';
 
@@ -19,7 +19,7 @@ import {
 } from './auth/google.ts';
 import {handleAppleCallback} from './auth/apple.ts';
 
-const router = createRequestRouter();
+const router = new RequestRouter();
 
 router.get('/email/sign-in', signInFromEmail);
 router.get('/email/create-account', createAccountFromEmail);
@@ -55,7 +55,7 @@ router.get((request) => {
     loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
   }
 
-  return redirect(loginUrl);
+  return new RedirectResponse(loginUrl);
 });
 
 export default router;

@@ -1,4 +1,4 @@
-import type {Router} from '@quilted/quilt';
+import type {Router} from '@quilted/quilt/navigate';
 import type {GraphQLFetch} from '@quilted/quilt/graphql';
 import {
   type ExtensionPoint,

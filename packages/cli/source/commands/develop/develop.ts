@@ -14,10 +14,10 @@ import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
 import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
 
 import {
-  json,
-  noContent,
-  notFound,
-  createRequestRouter,
+  JSONResponse,
+  NoContentResponse,
+  NotFoundResponse,
+  RequestRouter,
 } from '@quilted/request-router';
 import {createHttpServer} from '@quilted/request-router/node';
 
@@ -237,29 +237,33 @@ async function prompt(prompt: Omit<PromptObject, 'name'>) {
 }
 
 async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
-  const router = createRequestRouter();
+  const router = new RequestRouter();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
   const builder = await createBuilder(app, {ui, outputRoot});
   const resolver = createQueryResolver(app, {builder});
 
-  router.get('/', () =>
-    json(app, {
-      headers: {
-        'Cache-Control': 'no-store',
-        'Content-Type': 'application/json',
-      },
-    }),
+  router.get(
+    '/',
+    () =>
+      new JSONResponse(app, {
+        headers: {
+          'Cache-Control': 'no-store',
+          'Content-Type': 'application/json',
+        },
+      }),
   );
 
-  router.options('/graphql', () =>
-    noContent({
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    }),
+  router.options(
+    '/graphql',
+    () =>
+      new NoContentResponse({
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      }),
   );
 
   router.post('/graphql', async (request) => {
@@ -271,7 +275,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
         context: {rootUrl: new URL('/', request.url)},
       }).untilAvailable();
 
-      return json(result, {
+      return new JSONResponse(result, {
         headers: {
           'Timing-Allow-Origin': '*',
           'Access-Control-Allow-Origin': '*',
@@ -280,7 +284,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
         },
       });
     } catch (error) {
-      return json(
+      return new JSONResponse(
         {errors: [{message: (error as any).message}]},
         {
           headers: {
@@ -314,10 +318,10 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
             },
           });
         } else {
-          return notFound();
+          return new NotFoundResponse();
         }
       } catch {
-        return notFound();
+        return new NotFoundResponse();
       }
     },
     {exact: false},

@@ -1,5 +1,9 @@
 import {useMemo, type ComponentProps, type PropsWithChildren} from 'react';
-import {useCurrentUrl, useRouter, type NavigateTo} from '@quilted/quilt';
+import {
+  useCurrentUrl,
+  useRouter,
+  type NavigateTo,
+} from '@quilted/quilt/navigate';
 import {View, Action, Icon} from '@lemon/zest';
 
 import styles from './Navigation.module.css';

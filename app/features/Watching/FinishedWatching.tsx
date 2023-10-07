@@ -1,4 +1,5 @@
-import {usePerformanceNavigation, useLocalizedFormatting} from '@quilted/quilt';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
+import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';

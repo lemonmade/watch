@@ -1,4 +1,4 @@
-import {createRequestRouter, noContent} from '@quilted/request-router';
+import {RequestRouter, NoContentResponse} from '@quilted/request-router';
 import type {
   Queue,
   KVNamespace,
@@ -60,7 +60,7 @@ const handleMessage: ExportedHandlerQueueHandler<
   );
 };
 
-const router = createRequestRouter();
+const router = new RequestRouter();
 
 router.post('internal/metrics/navigation', async (request, {env}) => {
   const {navigations} = (await request.json()) as {navigations: Navigation[]};
@@ -74,7 +74,7 @@ router.post('internal/metrics/navigation', async (request, {env}) => {
     }),
   );
 
-  return noContent();
+  return new NoContentResponse();
 });
 
 const handleRequest = createFetchHandler(router);

@@ -1,4 +1,5 @@
-import {usePerformanceNavigation, useSignal} from '@quilted/quilt';
+import {useSignal} from '@quilted/quilt/signals';
+import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,
   TextField,
