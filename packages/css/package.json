@@ -2,6 +2,7 @@
   "name": "@lemon/css",
   "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
   "private": true,
   "main": "source/index.ts",
   "sideEffects": false,

@@ -1,6 +1,7 @@
 {
   "name": "@watching/clips",
   "version": "0.4.21",
+  "license": "MIT",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -11,7 +12,6 @@
     "graphql",
     "build"
   ],
-  "license": "MIT",
   "exports": {
     ".": {
       "types": "./build/typescript/index.d.ts",

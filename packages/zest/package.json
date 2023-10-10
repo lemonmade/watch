@@ -2,6 +2,7 @@
   "name": "@lemon/zest",
   "version": "0.1.22",
   "type": "module",
+  "license": "MIT",
   "private": true,
   "main": "source/index.ts",
   "sideEffects": [

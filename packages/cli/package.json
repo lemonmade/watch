@@ -1,13 +1,13 @@
 {
   "name": "@watching/cli",
   "description": "A CLI to develop apps for watch.lemon.tools",
+  "license": "MIT",
   "version": "2.0.28",
   "type": "module",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
   },
-  "license": "MIT",
   "bin": {
     "watchapp": "./bin/watchapp.mjs"
   },

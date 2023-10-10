@@ -1,12 +1,12 @@
 {
   "name": "@watching/clips-preact",
   "version": "0.1.21",
+  "license": "MIT",
   "type": "module",
   "publishConfig": {
     "access": "public",
     "@watching:registry": "https://registry.npmjs.org"
   },
-  "license": "MIT",
   "exports": {
     ".": {
       "types": "./build/typescript/index.d.ts",
