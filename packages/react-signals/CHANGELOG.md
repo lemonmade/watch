@@ -1,5 +1,11 @@
 # @watching/react-signals
 
+## 0.1.10
+
+### Patch Changes
+
+- [#289](https://github.com/lemonmade/watch/pull/289) [`c5e7763a`](https://github.com/lemonmade/watch/commit/c5e7763aab442f39587c07fea84f9d76d9403c1a) Thanks [@lemonmade](https://github.com/lemonmade)! - Update GraphQL libraries
+
 ## 0.1.9
 
 ### Patch Changes

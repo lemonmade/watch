@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 2.0.29
+
+### Patch Changes
+
+- [#289](https://github.com/lemonmade/watch/pull/289) [`c5e7763a`](https://github.com/lemonmade/watch/commit/c5e7763aab442f39587c07fea84f9d76d9403c1a) Thanks [@lemonmade](https://github.com/lemonmade)! - Update GraphQL libraries
+
+- Updated dependencies [[`c5e7763a`](https://github.com/lemonmade/watch/commit/c5e7763aab442f39587c07fea84f9d76d9403c1a)]:
+  - @watching/clips@0.4.22
+  - @watching/tools@0.1.13
+
 ## 2.0.28
 
 ### Patch Changes
