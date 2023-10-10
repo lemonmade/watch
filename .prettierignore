@@ -6,3 +6,4 @@ packages/clips/graphql/**/*.graphql
 cdk.context.json
 cdk.out/
 pnpm-lock.yaml
+LICENSE.md
