@@ -1,12 +1,12 @@
 {
   "name": "@watching/api",
-  "type": "module",
+  "version": "0.0.3",
   "license": "MIT",
+  "type": "module",
   "publishConfig": {
     "access": "public",
     "@watching/registry": "https://registry.npmjs.org"
   },
-  "version": "0.0.3",
   "engines": {
     "node": ">=14.0.0"
   },
