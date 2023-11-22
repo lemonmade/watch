@@ -17,22 +17,19 @@
       "types": "./build/typescript/index.d.ts",
       "quilt:source": "./source/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
-      "import": "./build/esm/index.mjs",
-      "require": "./build/cjs/index.cjs"
+      "import": "./build/esm/index.mjs"
     },
     "./elements": {
       "types": "./build/typescript/elements.d.ts",
       "quilt:source": "./source/elements.ts",
       "quilt:esnext": "./build/esnext/elements.esnext",
-      "import": "./build/esm/elements.mjs",
-      "require": "./build/cjs/elements.cjs"
+      "import": "./build/esm/elements.mjs"
     },
     "./styles": {
       "types": "./build/typescript/styles.d.ts",
       "quilt:source": "./source/styles.ts",
       "quilt:esnext": "./build/esnext/styles.esnext",
-      "import": "./build/esm/styles.mjs",
-      "require": "./build/cjs/styles.cjs"
+      "import": "./build/esm/styles.mjs"
     }
   },
   "types": "./build/typescript/index.d.ts",
@@ -56,14 +53,14 @@
     "./build/cjs/elements.cjs",
     "./build/cjs/elements/**/*.cjs"
   ],
-  "dependencies": {
-    "@lemonmade/remote-ui": "^0.2.1",
-    "@preact/signals-core": "^1.5.0",
-    "@quilted/graphql": "^2.0.2",
-    "@quilted/localize": "^0.1.10",
-    "@quilted/threads": "^1.0.3"
+  "scripts": {
+    "build": "rollup --config configuration/rollup.config.js"
   },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
+  "dependencies": {
+    "@lemonmade/remote-ui": "^0.3.3",
+    "@preact/signals-core": "^1.5.0",
+    "@quilted/graphql": "^3.0.1",
+    "@quilted/localize": "^0.2.0",
+    "@quilted/threads": "^2.1.0"
   }
 }

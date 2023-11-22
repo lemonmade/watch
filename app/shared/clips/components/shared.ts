@@ -142,7 +142,6 @@ export function usePossibleThreadSignals<T extends Record<string, any>>(
         signals.get(threadSignal)?.abort.abort();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, threadSignals);
 
   return newValues as T;

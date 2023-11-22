@@ -181,7 +181,6 @@ export const Mutation = createMutationResolver({
       },
     );
 
-    // eslint-disable-next-line no-console
     console.log(deleteResult);
 
     const updatedSubscription = await prisma.stripeSubscription.update({

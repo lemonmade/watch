@@ -88,7 +88,6 @@ export function extensionGraphQLProjects(): Record<string, GraphQLProject> {
 
     return projects;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     return {};
   }

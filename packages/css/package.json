@@ -5,8 +5,5 @@
   "license": "MIT",
   "private": true,
   "main": "source/index.ts",
-  "sideEffects": false,
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
-  }
+  "sideEffects": false
 }

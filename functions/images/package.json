@@ -5,8 +5,5 @@
   "private": true,
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1"
-  },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
   }
 }

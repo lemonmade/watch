@@ -5,10 +5,5 @@
   "private": true,
   "devDependencies": {
     "globby": "^13.2.0"
-  },
-  "eslintConfig": {
-    "rules": {
-      "no-console": "off"
-    }
   }
 }

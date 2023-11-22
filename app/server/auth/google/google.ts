@@ -121,7 +121,6 @@ export function handleGoogleOAuthSignIn(request: EnhancedRequest) {
     },
     onSuccess({userIdFromExistingAccount, redirectTo}) {
       if (userIdFromExistingAccount) {
-        // eslint-disable-next-line no-console
         console.log(
           `Found existing user during sign-in: ${userIdFromExistingAccount}`,
         );
@@ -131,7 +130,6 @@ export function handleGoogleOAuthSignIn(request: EnhancedRequest) {
           request,
         });
       } else {
-        // eslint-disable-next-line no-console
         console.log(`No user found!`);
 
         return restartSignIn({
@@ -191,7 +189,6 @@ export function handleGoogleOAuthCreateAccount(request: EnhancedRequest) {
       userIdFromExistingAccount,
     }) {
       if (userIdFromExistingAccount) {
-        // eslint-disable-next-line no-console
         console.log(
           `Found existing user during sign-up: ${userIdFromExistingAccount}`,
         );
@@ -232,7 +229,6 @@ export function handleGoogleOAuthCreateAccount(request: EnhancedRequest) {
               },
             });
 
-        // eslint-disable-next-line no-console
         console.log(`Created new user during sign-up: ${updatedUserId}`);
 
         return completeCreateAccount(updatedUserId, {redirectTo, request});
@@ -267,7 +263,6 @@ export function handleGoogleOAuthConnect(request: EnhancedRequest) {
 
       if (userIdFromExistingAccount) {
         if (userIdFromRequest === userIdFromExistingAccount) {
-          // eslint-disable-next-line no-console
           console.log(
             `Found existing Google account while connecting (user: ${userIdFromExistingAccount})`,
           );
@@ -277,7 +272,6 @@ export function handleGoogleOAuthConnect(request: EnhancedRequest) {
             redirectTo,
           });
         } else {
-          // eslint-disable-next-line no-console
           console.log(
             `Attempted to connect a Google account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
           );
@@ -305,7 +299,6 @@ export function handleGoogleOAuthConnect(request: EnhancedRequest) {
           },
         });
 
-        // eslint-disable-next-line no-console
         console.log(
           `Connected Google account ${email} to user: ${userIdFromRequest}`,
         );
@@ -452,7 +445,6 @@ async function handleGoogleOAuthCallback<State extends {} = {}>(
   const {sub, exp, email} = accessTokenInfo;
 
   if (sub == null || exp == null || Date.now() > Number.parseInt(exp) * 1_000) {
-    // eslint-disable-next-line no-console
     console.log('No result fetched from Google!');
     return onFailure({
       request,

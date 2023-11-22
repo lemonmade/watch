@@ -7,8 +7,5 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
     "buffer-polyfill": "npm:buffer@^6.0.0"
-  },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
   }
 }

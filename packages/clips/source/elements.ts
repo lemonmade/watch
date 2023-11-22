@@ -13,7 +13,6 @@ export type AnyElement = Extract<keyof HTMLElementTagNameMap, `ui-${string}`>;
 
 export type Elements = Pick<HTMLElementTagNameMap, AnyElement>;
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Elements {
   export type Text = HTMLElementTagNameMap['ui-text'];
   export type TextBlock = HTMLElementTagNameMap['ui-text-block'];

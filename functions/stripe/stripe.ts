@@ -76,12 +76,10 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
       env.STRIPE_SECRET,
     );
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     return new Response(null, {status: 400});
   }
 
-  // eslint-disable-next-line no-console
   console.log(event);
 
   const [{PrismaClient}, {withAccelerate}] = await Promise.all([
@@ -212,7 +210,6 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
       }
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     return new Response(null, {status: 400});
   }

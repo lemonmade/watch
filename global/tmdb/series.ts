@@ -1,5 +1,3 @@
-/* eslint no-console: off */
-
 import type {Prisma, PrismaClient, SeasonStatus} from '@prisma/client';
 import {EpisodeSelection} from '@watching/api';
 

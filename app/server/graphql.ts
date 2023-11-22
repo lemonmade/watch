@@ -99,11 +99,9 @@ async function runGraphQLRequest(
     extensions?: Record<string, unknown> | null;
   },
 ) {
-  /* eslint-disable no-console */
   console.log(`Performing operation: ${operationName}`);
   console.log(`Variables:\n${JSON.stringify(variables ?? {}, null, 2)}`);
   console.log(`Document:\n${operation}`);
-  /* eslint-enable no-console */
 
   const {headers, cookies} = new JSONResponse(
     {},
@@ -146,7 +144,6 @@ async function runGraphQLRequest(
       headers: response.headers,
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.log(error);
 
     return new JSONResponse(

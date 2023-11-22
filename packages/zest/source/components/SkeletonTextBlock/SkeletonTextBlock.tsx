@@ -32,7 +32,6 @@ export function SkeletonTextBlock({
   return (
     <p {...resolveStackProps(stack)}>
       {lineSizes.map((size, index) => (
-        // eslint-disable-next-line react/no-array-index-key
         <SkeletonText key={`${index}${size}`} size={size} />
       ))}
     </p>

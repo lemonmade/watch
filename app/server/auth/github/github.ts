@@ -115,7 +115,6 @@ export function handleGithubOAuthSignIn(request: EnhancedRequest) {
     },
     onSuccess({userIdFromExistingAccount, redirectTo}) {
       if (userIdFromExistingAccount) {
-        // eslint-disable-next-line no-console
         console.log(
           `Found existing user during sign-in: ${userIdFromExistingAccount}`,
         );
@@ -125,7 +124,6 @@ export function handleGithubOAuthSignIn(request: EnhancedRequest) {
           request,
         });
       } else {
-        // eslint-disable-next-line no-console
         console.log(`No user found!`);
 
         return restartSignIn({
@@ -181,7 +179,6 @@ export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
     },
     async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
       if (userIdFromExistingAccount) {
-        // eslint-disable-next-line no-console
         console.log(
           `Found existing user during sign-up: ${userIdFromExistingAccount}`,
         );
@@ -229,7 +226,6 @@ export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
               },
             });
 
-        // eslint-disable-next-line no-console
         console.log(`Created new user during sign-up: ${updatedUserId}`);
 
         return completeCreateAccount(updatedUserId, {redirectTo, request});
@@ -264,7 +260,6 @@ export function handleGithubOAuthConnect(request: EnhancedRequest) {
 
       if (userIdFromExistingAccount) {
         if (userIdFromRequest === userIdFromExistingAccount) {
-          // eslint-disable-next-line no-console
           console.log(
             `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
           );
@@ -274,7 +269,6 @@ export function handleGithubOAuthConnect(request: EnhancedRequest) {
             redirectTo,
           });
         } else {
-          // eslint-disable-next-line no-console
           console.log(
             `Attempted to connect a Github account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
           );
@@ -308,7 +302,6 @@ export function handleGithubOAuthConnect(request: EnhancedRequest) {
           },
         });
 
-        // eslint-disable-next-line no-console
         console.log(
           `Connected Github account ${login} to user: ${userIdFromRequest}`,
         );
@@ -422,14 +415,11 @@ async function handleGithubOAuthCallback(
   );
 
   if (githubErrors != null) {
-    // eslint-disable-next-line no-console
     console.error('Github error');
-    // eslint-disable-next-line no-console
     console.error(githubErrors);
   }
 
   if (githubResult == null) {
-    // eslint-disable-next-line no-console
     console.log('No result fetched from Github!');
     return onFailure({
       request,

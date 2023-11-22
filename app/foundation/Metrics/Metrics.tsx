@@ -5,9 +5,7 @@ import Env from '@quilted/quilt/env';
 export function Metrics({children}: PropsWithChildren) {
   usePerformanceNavigationEvent(async (navigation) => {
     if (Env.MODE === 'development') {
-      // eslint-disable-next-line no-console
       console.log('Navigation');
-      // eslint-disable-next-line no-console
       console.log(navigation);
       return;
     }
