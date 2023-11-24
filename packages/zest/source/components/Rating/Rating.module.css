@@ -11,11 +11,15 @@
   touch-action: none;
   user-select: none;
   padding: var(--z-spacing-small-2) 0;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .interactive {
-  --z-internal-Rating-star-size: calc(var(--z-Action-minimum-size) - (2 * var(--z-spacing-small-1)));
+  --z-internal-Rating-star-size: calc(
+    var(--z-Action-minimum-size) - (2 * var(--z-spacing-small-1))
+  );
 
   border-radius: var(--z-corner-radius-base);
   background: var(--z-Action-background);
@@ -61,7 +65,9 @@
 .Star-fillFullInverse > .StarIcon,
 .Star-fillPartialInverse > .StarIcon:first-of-type,
 .Star-fillHalfAndHalf > .StarIcon:not(:first-of-type) {
-  --z-internal-Rating-star-color: var(--z-internal-Rating-star-was-filled-color);
+  --z-internal-Rating-star-color: var(
+    --z-internal-Rating-star-was-filled-color
+  );
 }
 
 .StarIcon {

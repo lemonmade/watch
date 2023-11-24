@@ -410,9 +410,8 @@ async function handleGithubOAuthCallback(
     },
   });
 
-  const {data: githubResult, errors: githubErrors} = await queryGithub(
-    viewerQuery,
-  );
+  const {data: githubResult, errors: githubErrors} =
+    await queryGithub(viewerQuery);
 
   if (githubErrors != null) {
     console.error('Github error');

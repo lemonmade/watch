@@ -36,9 +36,8 @@ router.get('internal/stripe/return', async (request, {env}) => {
 
   const stripe = await createStripe(env);
 
-  const foundPaymentIntent = await stripe.paymentIntents.retrieve(
-    paymentIntent,
-  );
+  const foundPaymentIntent =
+    await stripe.paymentIntents.retrieve(paymentIntent);
 
   switch (foundPaymentIntent.status) {
     case 'succeeded': {
@@ -152,8 +151,8 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
                 user.giftCodes.length > 0
                   ? user.level
                   : active
-                  ? level.id
-                  : 'FREE',
+                    ? level.id
+                    : 'FREE',
             },
           }),
         ]);

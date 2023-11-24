@@ -118,9 +118,8 @@ interface LocalExtensionEntry {
 
 export async function loadLocalApp(root = process.cwd()): Promise<LocalApp> {
   const configurationPath = path.resolve(root, APP_CONFIGURATION_FILE_NAME);
-  const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
-    configurationPath,
-  );
+  const configuration =
+    await tryLoad<Partial<LocalAppConfiguration>>(configurationPath);
 
   validateAppConfig(configuration);
 
@@ -200,9 +199,8 @@ export async function loadLocalExtension(
     root,
     EXTENSION_CONFIGURATION_FILE_NAME,
   );
-  const configuration = await tryLoad<Partial<LocalExtensionConfiguration>>(
-    configurationPath,
-  );
+  const configuration =
+    await tryLoad<Partial<LocalExtensionConfiguration>>(configurationPath);
 
   validateExtensionConfig(configuration);
 
@@ -224,9 +222,8 @@ export async function loadLocalExtension(
 
 async function loadAppFromFileSystem(): Promise<Omit<LocalApp, 'on' | 'once'>> {
   const configurationPath = path.resolve(APP_CONFIGURATION_FILE_NAME);
-  const configuration = await tryLoad<Partial<LocalAppConfiguration>>(
-    configurationPath,
-  );
+  const configuration =
+    await tryLoad<Partial<LocalAppConfiguration>>(configurationPath);
 
   validateAppConfig(configuration);
 

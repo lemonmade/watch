@@ -38,8 +38,8 @@ export const Query = createQueryResolver({
       const seriesOption = handle
         ? {series: {handle}}
         : seriesId
-        ? {seriesId: fromGid(seriesId).id}
-        : {};
+          ? {seriesId: fromGid(seriesId).id}
+          : {};
 
       if (season != null && number != null) {
         return prisma.episode.findFirst({

@@ -726,8 +726,8 @@ function WatchThroughsSection({
                         new Date(watchThrough.finishedAt),
                       )}`
                     : watchThrough.unfinishedEpisodeCount > 0
-                    ? `${watchThrough.unfinishedEpisodeCount} episodes left`
-                    : 'Still watching'}
+                      ? `${watchThrough.unfinishedEpisodeCount} episodes left`
+                      : 'Still watching'}
                 </Text>
               </BlockStack>
             </Action>

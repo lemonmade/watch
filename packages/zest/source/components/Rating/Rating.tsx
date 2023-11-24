@@ -255,8 +255,8 @@ function fillForValueInRange(
     largerValue >= end
       ? StarFill.Full
       : largerValue > start
-      ? StarFill.Partial
-      : StarFill.None;
+        ? StarFill.Partial
+        : StarFill.None;
 
   if (increasing) {
     return largerFill;

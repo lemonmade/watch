@@ -211,8 +211,8 @@ async function updateUserWithSubscription(
     user.giftCodes.length > 0
       ? user.level
       : subscription.status === 'ACTIVE'
-      ? subscription.level
-      : 'FREE';
+        ? subscription.level
+        : 'FREE';
 
   if (level !== user.level) {
     await prisma.user.update({

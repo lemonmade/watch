@@ -604,8 +604,8 @@ function EpisodeDatePicker({
             ? 'Watched'
             : 'Skipped'
           : action === 'watch'
-          ? 'Watched on…'
-          : 'Skipped on…'
+            ? 'Watched on…'
+            : 'Skipped on…'
       }
       value={at}
       onChange={(newDate) => {

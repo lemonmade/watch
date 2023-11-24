@@ -6,7 +6,8 @@
   top: 0;
   left: 0;
   pointer-events: none;
-  transform-origin: var(--z-internal-Overlay-transform-origin-inline) var(--z-internal-Overlay-transform-origin-block);
+  transform-origin: var(--z-internal-Overlay-transform-origin-inline)
+    var(--z-internal-Overlay-transform-origin-block);
 }
 
 .transitionOpenEnd,

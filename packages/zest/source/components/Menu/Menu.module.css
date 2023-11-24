@@ -12,7 +12,10 @@
 
   display: var(--z-implicit-display-none, grid);
   grid-template-columns: 1fr;
-  padding: calc(var(--z-spacing-small-2) + var(--z-internal-Action-inset-block-size)) var(--z-spacing-small-1);
+  padding: calc(
+      var(--z-spacing-small-2) + var(--z-internal-Action-inset-block-size)
+    )
+    var(--z-spacing-small-1);
   align-items: center;
   min-inline-size: 12rem;
 }
@@ -23,7 +26,8 @@
 
 .Label {
   position: relative;
-  padding: var(--z-spacing-small-2) var(--z-spacing-small-1) calc(var(--z-spacing-small-1) + var(--z-internal-Action-inset-block-size));
+  padding: var(--z-spacing-small-2) var(--z-spacing-small-1)
+    calc(var(--z-spacing-small-1) + var(--z-internal-Action-inset-block-size));
   font-size: 0.9em;
   color: var(--z-text-subdued-color);
 

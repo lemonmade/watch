@@ -74,9 +74,8 @@ export async function userFromLocalAuthentication() {
 
   if (accessTokenFromRoot == null) return;
 
-  const userFromRootAccessToken = await userFromAccessToken(
-    accessTokenFromRoot,
-  );
+  const userFromRootAccessToken =
+    await userFromAccessToken(accessTokenFromRoot);
 
   if (userFromRootAccessToken == null) {
     await remove(USER_CACHE_DIRECTORY, {recursive: true, force: true});

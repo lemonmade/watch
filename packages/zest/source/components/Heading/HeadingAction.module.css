@@ -62,7 +62,8 @@
 
 .Pressable {
   position: relative;
-  padding: var(--z-internal-HeadingAction-block-padding) var(--z-spacing-small-1);
+  padding: var(--z-internal-HeadingAction-block-padding)
+    var(--z-spacing-small-1);
 
   &::after {
     content: '';

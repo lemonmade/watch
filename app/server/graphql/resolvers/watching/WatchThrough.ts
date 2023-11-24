@@ -362,10 +362,10 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
         ? addResolvedType('Watch', watch)
         : addResolvedType('Skip', skip)
       : watch
-      ? addResolvedType('Watch', watch)
-      : skip
-      ? addResolvedType('Skip', skip)
-      : null;
+        ? addResolvedType('Watch', watch)
+        : skip
+          ? addResolvedType('Skip', skip)
+          : null;
   },
   async lastSeasonAction({id}, __, {prisma, user}) {
     const [watch, skip] = await Promise.all([
@@ -386,10 +386,10 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
         ? addResolvedType('Watch', watch)
         : addResolvedType('Skip', skip)
       : watch
-      ? addResolvedType('Watch', watch)
-      : skip
-      ? addResolvedType('Skip', skip)
-      : null;
+        ? addResolvedType('Watch', watch)
+        : skip
+          ? addResolvedType('Skip', skip)
+          : null;
   },
   watches({id}, _, {user, prisma}) {
     return prisma.watch.findMany({

@@ -32,8 +32,8 @@ export const Query = createQueryResolver({
       const seriesOption = handle
         ? {series: {handle}}
         : seriesId
-        ? {seriesId: fromGid(seriesId).id}
-        : {};
+          ? {seriesId: fromGid(seriesId).id}
+          : {};
 
       if (number != null) {
         return prisma.season.findFirst({

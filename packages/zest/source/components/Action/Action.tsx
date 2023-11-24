@@ -207,8 +207,8 @@ export const Action = forwardRef<
             ? 'grid'
             : 'inlineGrid'
           : inlineSize === 'fill'
-          ? 'flex'
-          : 'inlineFlex'
+            ? 'flex'
+            : 'inlineFlex'
       }
       perform={perform}
       onPress={handlePressWithActionScope}

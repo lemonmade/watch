@@ -325,10 +325,10 @@ function stringify<
 ): SelectorObject extends EpisodeRangeSelectorObject
   ? EpisodeSelectionSelector
   : SeasonSelectorObject extends SelectorObject
-  ? SeasonSelector
-  : SelectorObject extends EpisodeSelectorObject
-  ? EpisodeSelector
-  : EpisodeEndpointSelector {
+    ? SeasonSelector
+    : SelectorObject extends EpisodeSelectorObject
+      ? EpisodeSelector
+      : EpisodeEndpointSelector {
   if ('season' in selector) {
     const {season, episode} = selector as EpisodeEndpointSelectorObject;
     return (episode == null ? `S${season}` : `S${season}E${episode}`) as any;
@@ -352,8 +352,8 @@ function parse<
 ): Selector extends EpisodeRangeSelector
   ? EpisodeRangeSelectorObject
   : Selector extends EpisodeSelector
-  ? EpisodeSelectorObject
-  : SeasonSelectorObject {
+    ? EpisodeSelectorObject
+    : SeasonSelectorObject {
   EPISODE_SELECTOR_REGEX.lastIndex = 0;
   const matched = selector.match(EPISODE_SELECTOR_REGEX);
 
@@ -395,8 +395,8 @@ function parse<
     toSeason == null
       ? undefined
       : toEpisode == null
-      ? {season: toSeason}
-      : {season: toSeason, episode: toEpisode};
+        ? {season: toSeason}
+        : {season: toSeason, episode: toEpisode};
 
   const range: EpisodeRangeSelectorObject = {};
   if (from) range.from = from;
