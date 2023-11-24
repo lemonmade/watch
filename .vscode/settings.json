@@ -2,5 +2,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.ignoreWords": ["imdb", "routable", "tmdb"],
-  "cSpell.words": ["signup"]
+  "cSpell.words": ["signup"],
+  "[postcss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
