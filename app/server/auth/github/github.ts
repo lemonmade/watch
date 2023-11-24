@@ -7,7 +7,7 @@ import {
   type EnhancedRequest,
   type CookieOptions,
 } from '@quilted/quilt/request-router';
-import {createGraphQLFetchOverHTTP} from '@quilted/quilt/graphql';
+import {createGraphQLFetch} from '@quilted/quilt/graphql';
 import {stripIndent} from 'common-tags';
 import type {Prisma as PrismaData} from '@prisma/client';
 
@@ -403,7 +403,7 @@ async function handleGithubOAuthCallback(
 
   const {access_token: accessToken} = accessTokenJson;
 
-  const queryGithub = createGraphQLFetchOverHTTP({
+  const queryGithub = createGraphQLFetch({
     url: 'https://api.github.com/graphql',
     headers: {
       Authorization: `Bearer ${accessToken}`,

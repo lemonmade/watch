@@ -42,8 +42,8 @@ export function useAuthenticateCliWithAccessToken<
 
   const createAccessTokenForCli = useMutation(createAccessTokenForCliMutation);
 
-  const pingCli = useBasicMutation(
-    async (result: CreateAccessTokenForCliMutationData) => {
+  const pingCli = useBasicMutation({
+    mutationFn: async (result: CreateAccessTokenForCliMutationData) => {
       const message = await handleToken(result);
       const response = await fetch(connectTo!, {
         method: 'POST',
@@ -60,7 +60,7 @@ export function useAuthenticateCliWithAccessToken<
       const json = await response.json();
       return json as Result;
     },
-  );
+  });
 
   return {
     target: connectTo,

@@ -1,7 +1,7 @@
 import {createAsyncComponent} from '@quilted/quilt/async';
 import {renderToResponse} from '@quilted/quilt/server';
 import {RequestHandler} from '@quilted/quilt/request-router';
-import {BrowserAssets} from '@quilted/quilt/magic/assets';
+import {BrowserAssets} from 'quilt:module/assets';
 
 import {authenticate} from './shared/auth.ts';
 

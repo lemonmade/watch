@@ -13,7 +13,7 @@ import {useSerialized, HTML} from '@quilted/quilt/html';
 import {Localization} from '@quilted/quilt/localize';
 import {
   GraphQLContext,
-  createGraphQLFetchOverHTTP,
+  createGraphQLFetch,
   type GraphQLFetch,
 } from '@quilted/quilt/graphql';
 import {PerformanceContext} from '@quilted/quilt/performance';
@@ -284,7 +284,7 @@ export function AppContext({
 
     const fetch =
       process.env.NODE_ENV === 'production'
-        ? createGraphQLFetchOverHTTP({
+        ? createGraphQLFetch({
             method: (operation) =>
               operation.source.startsWith('mutation ') ? 'POST' : 'GET',
             url: (operation) => {
@@ -296,7 +296,7 @@ export function AppContext({
             source: false,
             credentials: 'include',
           })
-        : createGraphQLFetchOverHTTP({
+        : createGraphQLFetch({
             url: (operation) => {
               const url = new URL(`/api/graphql`, router.currentUrl);
               if (operation.name) url.searchParams.set('name', operation.name);

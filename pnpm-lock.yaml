@@ -29,6 +29,9 @@ importers:
       '@quilted/craft':
         specifier: ^0.2.3
         version: 0.2.3(@babel/template@7.22.15)(preact@10.19.2)(rollup@4.5.1)(typescript@5.3.2)(vite@5.0.2)(vitest@0.34.6)
+      '@quilted/graphql-tools':
+        specifier: ^0.2.0
+        version: 0.2.0(typescript@5.3.2)
       '@quilted/prettier':
         specifier: ^0.2.11
         version: 0.2.11
