@@ -4,13 +4,24 @@
   "type": "module",
   "private": true,
   "engines": {
-    "node": ">=14.18.0"
+    "node": ">=18.0.0"
   },
   "license": "Apache-2.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "format": "prettier --write --cache .",
+    "lint": "prettier --check --cache .",
+    "test": "vitest",
+    "type-check": "tsc --build --pretty",
+    "packages.version": "changeset version && pnpm install --no-frozen-lockfile",
+    "packages.deploy": "pnpm -r publish",
+    "packages.deploy.preview": "changeset version --snapshot preview && changeset publish --tag preview --no-git-tag",
+    "typescript.run": "tsx --conditions quilt:source",
+    "typescript.watch": "tsx watch --conditions quilt:source"
+  },
   "devDependencies": {
-    "@babel/runtime": "^7.18.9",
     "@changesets/changelog-github": "^0.4.3",
-    "@changesets/cli": "^2.21.1",
+    "@changesets/cli": "^2.26.2",
     "@prisma/client": "^5.4.0",
     "@prisma/extension-accelerate": "^0.6.2",
     "@quilted/browserslist-config": "^0.1.9",
@@ -26,7 +37,7 @@
     "@types/react-dom": "^18.2.0",
     "@watching/api": "workspace:*",
     "dotenv": "^16.0.0",
-    "esbuild": "^0.15.18",
+    "esbuild": "^0.19.0",
     "nodemon": "^2.0.0",
     "preact": "^10.19.2",
     "prisma": "^5.4.0",
@@ -39,22 +50,9 @@
     "vite": "^5.0.2",
     "vitest": "^0.34.6"
   },
+  "packageManager": "pnpm@8.10.5+sha256.a4bd9bb7b48214bbfcd95f264bd75bb70d100e5d4b58808f5cd6ab40c6ac21c5",
   "prettier": "@quilted/prettier",
   "browserslist": [
     "defaults and not dead"
-  ],
-  "scripts": {
-    "build": "pnpm -r run build",
-    "format": "prettier --write --cache .",
-    "lint": "prettier --check --cache .",
-    "test": "vitest",
-    "type-check": "tsc --build --pretty",
-    "packages:version": "changeset version && pnpm install --no-frozen-lockfile",
-    "packages:deploy": "pnpm -r publish",
-    "packages:deploy:preview": "changeset version --snapshot preview && changeset publish --tag preview --no-git-tag",
-    "run:typescript": "node --no-warnings --experimental-specifier-resolution=node --experimental-vm-modules --loader \"./scripts/esbuild-module-loader.js\" --conditions quilt:source",
-    "watch:typescript": "nodemon --ext json,js,ts,tsx --no-warnings --experimental-specifier-resolution=node --experimental-vm-modules --loader \"./scripts/esbuild-module-loader.js\" --conditions quilt:source",
-    "deploy:wrangler": "wrangler"
-  },
-  "packageManager": "pnpm@8.10.5+sha256.a4bd9bb7b48214bbfcd95f264bd75bb70d100e5d4b58808f5cd6ab40c6ac21c5"
+  ]
 }

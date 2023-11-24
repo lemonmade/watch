@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - uses: quilt-framework/action-lint@v2
+      - run: pnpm run lint
 
   type-check:
     name: Type check 🧮
@@ -20,11 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - name: Create Prisma client
-        run: pnpm prisma generate --no-engine
-      - uses: quilt-framework/action-type-check@v2
-        with:
-          cache-key: ${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: pnpm exec prisma generate --no-engine
+      - uses: ./.github/workflows/actions/type-check-with-cache
 
   unit-tests:
     name: Unit tests 🧪
@@ -33,4 +30,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - uses: quilt-framework/action-test@v2
+      - run: pnpm run test

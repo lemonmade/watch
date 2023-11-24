@@ -60,7 +60,7 @@ jobs:
       - name: Deploy updated packages
         run: |
           echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-          pnpm packages:deploy --no-git-checks
+          pnpm run packages.deploy --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -115,7 +115,7 @@ jobs:
           name: build
 
       - name: Deploy worker to Cloudflare
-        run: pnpm run deploy:wrangler publish --config functions/${{ matrix.worker }}/wrangler.toml
+        run: pnpm exec wrangler publish --config functions/${{ matrix.worker }}/wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
@@ -204,11 +204,11 @@ jobs:
       # new queries before the router is updated, and before we do this push. Going to
       # just leave it in place until I can bring persisted queries into the app server.
       - name: Push persisted GraphQL operations
-        run: pnpm run run:typescript ./scripts/cloudflare/put-graphql-persisted-operations.ts
+        run: pnpm run typescript.run ./scripts/cloudflare/put-graphql-persisted-operations.ts
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy application code to Cloudflare
-        run: pnpm run deploy:wrangler publish --config functions/router/wrangler.toml
+        run: pnpm exec wrangler publish --config functions/router/wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
