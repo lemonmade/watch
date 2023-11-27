@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prisma": "prisma",
-    "build": "rollup --config configuration/rollup.config.js",
-    "start": "node ./build/runtime/runtime.js"
+    "build": "rollup --config ./configuration/rollup.config.js",
+    "develop": "vite --config ./configuration/vite.config.js",
+    "start": "node ./build/server/server.js"
   },
   "sideEffects": [
     "*.css",
@@ -33,7 +33,7 @@
     "@quilted/graphql-tools": "^0.2.0",
     "@quilted/localize": "^0.2.0",
     "@quilted/quilt": "^0.6.5",
-    "@quilted/react-query": "^0.3.0",
+    "@quilted/react-query": "^0.3.1",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",
     "@stripe/stripe-js": "^1.46.0",

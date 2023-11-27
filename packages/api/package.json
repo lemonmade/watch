@@ -28,12 +28,5 @@
   "sideEffects": false,
   "scripts": {
     "build": "rollup --config configuration/rollup.config.js"
-  },
-  "peerDependenciesMeta": {},
-  "devDependencies": {
-    "@quilted/testing": "^0.1.6"
-  },
-  "browserslist": [
-    "extends @quilted/browserslist-config/defaults"
-  ]
+  }
 }

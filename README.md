@@ -24,7 +24,7 @@ If you have not already, install the global dependencies:
 brew install mkcert
 brew install caddy
 mkcert -install
-mkcert -cert-file config/local/tls/watch.lemon.dev.pem -key-file config/local/tls/watch.lemon.dev-key.pem "watch.lemon.dev"
+mkcert -cert-file configuration/caddy/tls/watch.lemon.dev.pem -key-file configuration/caddy/tls/watch.lemon.dev-key.pem "watch.lemon.dev"
 
 nvm install
 pnpm install
