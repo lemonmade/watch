@@ -10,7 +10,8 @@
   },
   "sideEffects": [
     "*.css",
-    "browser.tsx"
+    "browser.tsx",
+    "shared/clips/sandbox/sandbox.ts"
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
@@ -32,7 +33,7 @@
     "@quilted/graphql": "^3.0.1",
     "@quilted/graphql-tools": "^0.2.0",
     "@quilted/localize": "^0.2.0",
-    "@quilted/quilt": "^0.6.5",
+    "@quilted/quilt": "^0.6.6",
     "@quilted/react-query": "^0.3.1",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",

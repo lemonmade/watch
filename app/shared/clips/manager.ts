@@ -145,8 +145,8 @@ export function createClipsManager(
       },
     );
     const mutate = createMutateRunner(
-      ((helpers) =>
-        extensionPoint.mutate?.(options.options as never, helpers)) ?? {},
+      (helpers) =>
+        extensionPoint.mutate?.(options.options as never, helpers) ?? {},
       {
         context: appContext,
       },
@@ -207,8 +207,8 @@ export function createClipsManager(
       },
     );
     const mutate = createMutateRunner(
-      ((helpers) =>
-        extensionPoint.mutate?.(options.options as never, helpers)) ?? {},
+      (helpers) =>
+        extensionPoint.mutate?.(options.options as never, helpers) ?? {},
       {
         context: appContext,
       },

@@ -1,4 +1,4 @@
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 import {
   CacheControl,
   ResponseHeader,

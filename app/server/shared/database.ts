@@ -1,5 +1,5 @@
 import type {PrismaClient} from '@prisma/client';
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
@@ -15,6 +15,8 @@ export function createPrisma() {
   prismaPromise ??= (async () => {
     const {default: prisma} = await import('@prisma/client');
     const {PrismaClient} = prisma;
+
+    console.log(Env);
 
     return new PrismaClient({
       datasources: {

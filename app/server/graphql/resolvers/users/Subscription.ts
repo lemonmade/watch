@@ -1,4 +1,4 @@
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 import type {PrismaClient, StripeSubscription} from '@prisma/client';
 import type {Stripe} from 'stripe';
 

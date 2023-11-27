@@ -1,6 +1,6 @@
 import type {PropsWithChildren} from 'react';
 import {usePerformanceNavigationEvent} from '@quilted/quilt/performance';
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 
 export function Metrics({children}: PropsWithChildren) {
   usePerformanceNavigationEvent(async (navigation) => {
