@@ -1,5 +1,6 @@
 packages:
   - app
+  - global
   - functions/*
   - packages/*
   - scripts/*

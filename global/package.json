@@ -1,0 +1,7 @@
+{
+  "name": "watch-globally-shared",
+  "type": "module",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {}
+}
