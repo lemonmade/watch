@@ -1,4 +1,4 @@
-import {describe} from '@quilted/testing';
+import {it, expect, describe} from 'vitest';
 
 import {EpisodeSelection} from '../episodes.ts';
 
