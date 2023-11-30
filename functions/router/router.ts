@@ -91,7 +91,7 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
   const id = searchParams.get('id');
 
   if (id) {
-    const {default: manifest} = await import('MAGIC/graphql-manifest.js');
+    const {default: manifest} = await import('watch:module/graphql-manifest');
     source = manifest[id] ?? (await env.PERSISTED_QUERIES.get(id)) ?? undefined;
   }
 
