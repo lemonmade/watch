@@ -1,4 +1,4 @@
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 
 import {
   seasonStatus,
@@ -108,9 +108,7 @@ export async function loadTmdbSeries(
 
     return series;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.log(error);
-    // eslint-disable-next-line no-console
     console.log({seriesResult, seriesIds});
     throw error;
   }

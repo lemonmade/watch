@@ -1,5 +1,3 @@
-/* eslint no-console: off */
-
 import {Buffer} from 'buffer-polyfill';
 
 import type {ExportedHandlerQueueHandler} from '@cloudflare/workers-types';

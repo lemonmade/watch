@@ -1,5 +1,3 @@
-/* eslint no-console: off */
-
 import 'dotenv/config';
 import '@quilted/quilt/polyfills/fetch';
 

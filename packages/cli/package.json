@@ -17,15 +17,13 @@
       "types": "./build/typescript/tools/graphql.d.ts",
       "quilt:source": "./source/tools/graphql.ts",
       "quilt:esnext": "./build/esnext/tools/graphql.esnext",
-      "import": "./build/esm/tools/graphql.mjs",
-      "require": "./build/cjs/tools/graphql.cjs"
+      "import": "./build/esm/tools/graphql.mjs"
     },
     "./tools/rollup": {
       "types": "./build/typescript/tools/rollup.d.ts",
       "quilt:source": "./source/tools/rollup.ts",
       "quilt:esnext": "./build/esnext/tools/rollup.esnext",
-      "import": "./build/esm/tools/rollup.mjs",
-      "require": "./build/cjs/tools/rollup.cjs"
+      "import": "./build/esm/tools/rollup.mjs"
     }
   },
   "typesVersions": {
@@ -44,14 +42,17 @@
     "build",
     "bin"
   ],
+  "scripts": {
+    "build": "rollup --config configuration/rollup.config.js"
+  },
   "dependencies": {
-    "@lemonmade/graphql-live": "^0.3.0",
+    "@lemonmade/graphql-live": "^0.4.1",
     "@quilted/cli-kit": "^0.1.12",
-    "@quilted/graphql": "^2.0.2",
-    "@quilted/graphql-tools": "^0.1.7",
+    "@quilted/graphql": "^3.0.1",
+    "@quilted/graphql-tools": "^0.2.0",
     "@quilted/polyfills": "^0.2.35",
-    "@quilted/request-router": "^0.1.8",
-    "@quilted/threads": "^1.0.3",
+    "@quilted/request-router": "^0.2.0",
+    "@quilted/threads": "^2.1.0",
     "@types/mime": "^2.0.0",
     "@watching/tools": "workspace:^",
     "ansi-escapes": "^4.0.0",
@@ -66,7 +67,7 @@
     "prettier": "^2.8.0",
     "pretty-bytes": "^5.6.0",
     "prompts": "^2.4.0",
-    "rollup": "^3.20.0",
+    "rollup": "^4.6.0",
     "strip-ansi": "^6.0.0",
     "ws": "^7.0.0"
   },
@@ -85,14 +86,6 @@
   "peerDependenciesMeta": {
     "@watching/clips": {
       "optional": true
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "@quilted/eslint-config/project"
-    ],
-    "env": {
-      "node": true
     }
   }
 }

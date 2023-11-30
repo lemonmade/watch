@@ -78,11 +78,11 @@
   float: right;
   position: relative;
   top: calc(
-    (
-        var(--z-internal-TextAction-minimum-block-size) -
-          var(--z-Icon-base-size)
-      ) / 2
+    (var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size)) /
+      2
   );
   margin-inline-start: var(--z-internal-TextAction-icon-margin);
-  margin-block-end: calc(var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size));
+  margin-block-end: calc(
+    var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size)
+  );
 }

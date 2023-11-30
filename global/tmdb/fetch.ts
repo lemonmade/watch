@@ -1,4 +1,6 @@
-import Env from '@quilted/quilt/env';
+/// <reference types="@quilted/quilt/modules" />
+
+import Env from 'quilt:module/env';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {

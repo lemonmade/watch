@@ -45,7 +45,6 @@ export async function signInFromEmail(request: Request) {
       });
     }
 
-    // eslint-disable-next-line no-console
     console.log(
       `Signing in user with email: ${email}, redirect to: ${redirectTo}`,
     );
@@ -62,7 +61,6 @@ export async function signInFromEmail(request: Request) {
       redirectTo: redirectTo ?? undefined,
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     restartSignIn({request});
   }
@@ -110,7 +108,6 @@ export async function createAccountFromEmail(request: Request) {
           data: {email},
         });
 
-    // eslint-disable-next-line no-console
     console.log(
       `Finished account creation for user with email: ${email}, redirect to: ${redirectTo}`,
     );
@@ -120,7 +117,6 @@ export async function createAccountFromEmail(request: Request) {
       redirectTo: redirectTo ?? undefined,
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(error);
     restartCreateAccount({request});
   }

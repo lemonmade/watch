@@ -1,7 +1,6 @@
-/* eslint no-console: off */
-
 import type {Prisma, PrismaClient, SeasonStatus} from '@prisma/client';
-import {EpisodeSelection} from '@watching/api';
+
+import {EpisodeSelection} from '../../packages/api/source/index.ts';
 
 import {tmdbFetch as baseTmdbFetch} from './fetch.ts';
 import {seriesToHandle} from './handle.ts';

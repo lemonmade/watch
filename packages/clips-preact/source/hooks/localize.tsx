@@ -31,7 +31,6 @@ export function useTranslate() {
 
       return (
         <Fragment
-          // eslint-disable-next-line react/no-children-prop
           children={translation.map((child, index) =>
             isValidElement(child) ? cloneElement(child, {key: index}) : child,
           )}

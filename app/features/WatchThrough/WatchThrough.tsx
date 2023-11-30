@@ -134,7 +134,6 @@ function WatchThroughWithData({
       signal<WatchForm | undefined>(
         watchFormFromNextEpisode(nextEpisode, pageDetails.initialActionDate),
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -605,8 +604,8 @@ function EpisodeDatePicker({
             ? 'Watched'
             : 'Skipped'
           : action === 'watch'
-          ? 'Watched on…'
-          : 'Skipped on…'
+            ? 'Watched on…'
+            : 'Skipped on…'
       }
       value={at}
       onChange={(newDate) => {

@@ -5,7 +5,7 @@ import * as path from 'path';
 import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import open from 'open';
 
-import {createGraphQLFetchOverHTTP, type GraphQLFetch} from '@quilted/graphql';
+import {createGraphQLFetch, type GraphQLFetch} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -74,9 +74,8 @@ export async function userFromLocalAuthentication() {
 
   if (accessTokenFromRoot == null) return;
 
-  const userFromRootAccessToken = await userFromAccessToken(
-    accessTokenFromRoot,
-  );
+  const userFromRootAccessToken =
+    await userFromAccessToken(accessTokenFromRoot);
 
   if (userFromRootAccessToken == null) {
     await remove(USER_CACHE_DIRECTORY, {recursive: true, force: true});
@@ -99,7 +98,7 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
 }
 
 function graphqlFromAccessToken(accessToken: string) {
-  return createGraphQLFetchOverHTTP({
+  return createGraphQLFetch({
     url: watchUrl('/api/graphql'),
     headers: {
       'X-Access-Token': accessToken,

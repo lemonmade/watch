@@ -523,9 +523,8 @@ function PasskeySection({
               result.startPasskeyCreate.result,
             );
 
-            const registrationResult = await startRegistration(
-              registrationOptions,
-            );
+            const registrationResult =
+              await startRegistration(registrationOptions);
 
             await finishPasskeyCreate.mutateAsync({
               credential: JSON.stringify(registrationResult),

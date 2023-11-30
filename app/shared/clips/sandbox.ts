@@ -4,10 +4,10 @@ import type {Sandbox} from './sandbox/sandbox.ts';
 
 export type {Sandbox};
 
-const createSandboxWorker = createWorker(() => import('./sandbox/sandbox.ts'));
+const SandboxWorker = createWorker(() => import('./sandbox/sandbox.ts'));
 
 export function createSandbox({signal}: {signal: AbortSignal}) {
-  const worker = createSandboxWorker();
+  const worker = new SandboxWorker();
 
   signal.addEventListener(
     'abort',

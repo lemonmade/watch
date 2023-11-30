@@ -1,0 +1,22 @@
+name = "watch-tmdb-refresher-scheduler"
+main = "./build/server/server.js"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+logpush = true
+usage_model = "unbound"
+workers_dev = false
+
+# @see https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
+[triggers]
+# Every 12 hours
+crons = ["0 */12 * * *"]
+
+# @see https://developers.cloudflare.com/queues/configuration/
+[[queues.producers]]
+queue = "watch-tmdb-refresher"
+binding = "TMDB_REFRESHER_QUEUE"
+
+# Needs the following environment variables:
+# - DATABASE_URL

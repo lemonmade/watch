@@ -9,7 +9,7 @@
   },
   "version": "0.1.13",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "repository": {
     "type": "git",
@@ -21,29 +21,25 @@
       "types": "./build/typescript/index.d.ts",
       "quilt:source": "./source/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
-      "import": "./build/esm/index.mjs",
-      "require": "./build/cjs/index.cjs"
+      "import": "./build/esm/index.mjs"
     },
     "./graphql": {
       "types": "./build/typescript/graphql.d.ts",
       "quilt:source": "./source/graphql.ts",
       "quilt:esnext": "./build/esnext/graphql.esnext",
-      "import": "./build/esm/graphql.mjs",
-      "require": "./build/cjs/graphql.cjs"
+      "import": "./build/esm/graphql.mjs"
     },
     "./loading": {
       "types": "./build/typescript/loading.d.ts",
       "quilt:source": "./source/loading.ts",
       "quilt:esnext": "./build/esnext/loading.esnext",
-      "import": "./build/esm/loading.mjs",
-      "require": "./build/cjs/loading.cjs"
+      "import": "./build/esm/loading.mjs"
     },
     "./rollup": {
       "types": "./build/typescript/rollup.d.ts",
       "quilt:source": "./source/rollup.ts",
       "quilt:esnext": "./build/esnext/rollup.esnext",
-      "import": "./build/esm/rollup.mjs",
-      "require": "./build/cjs/rollup.cjs"
+      "import": "./build/esm/rollup.mjs"
     }
   },
   "types": "./build/typescript/index.d.ts",
@@ -61,19 +57,22 @@
     }
   },
   "sideEffects": false,
+  "scripts": {
+    "build": "rollup --config configuration/rollup.config.js"
+  },
   "dependencies": {
     "@iarna/toml": "^3.0.0",
-    "@quilted/events": "^1.0.1",
-    "@quilted/graphql-tools": "^0.1.7",
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/plugin-replace": "^5.0.0",
+    "@quilted/events": "^2.0.0",
+    "@quilted/graphql-tools": "^0.2.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-replace": "^5.0.5",
     "chokidar": "^3.5.0",
-    "esbuild": "^0.17.19",
+    "esbuild": "^0.19.0",
     "glob": "^10.0.0",
     "htm": "^3.1.1",
-    "rollup": "^3.20.0",
-    "rollup-plugin-esbuild": "^5.0.0",
+    "rollup": "^4.6.0",
+    "rollup-plugin-esbuild": "^6.1.0",
     "zod": "^3.21.4"
   },
   "peerDependencies": {
@@ -85,15 +84,6 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.6",
     "@watching/clips": "workspace:*"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@quilted/eslint-config/project"
-    ]
-  },
-  "browserslist": [
-    "extends @quilted/browserslist-config/defaults"
-  ]
+  }
 }

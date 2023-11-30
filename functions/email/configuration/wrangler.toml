@@ -1,0 +1,13 @@
+name = "watch-email"
+main = "./build/server/server.js"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+logpush = true
+usage_model = "unbound"
+workers_dev = false
+
+# Needs the following environment variables:
+# - JWT_SECRET
+# - SENDGRID_API_KEY

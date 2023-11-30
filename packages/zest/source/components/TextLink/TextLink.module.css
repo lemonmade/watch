@@ -17,6 +17,6 @@
 }
 
 .emphasisStrong {
-color: var(--z-text-emphasized-color);
+  color: var(--z-text-emphasized-color);
   font-weight: var(--z-text-emphasized-weight);
 }

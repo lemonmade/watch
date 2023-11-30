@@ -59,7 +59,6 @@ export function createLiveQueryRunner<Point extends ExtensionPoint>(
         context,
       });
 
-      // eslint-disable-next-line no-async-promise-executor
       runPromise = new Promise(async (resolve) => {
         let resolved = false;
 

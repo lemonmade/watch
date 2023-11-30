@@ -3,7 +3,10 @@
   --z-internal-Choice-corner-radius: 50%;
   --z-internal-Choice-text-line-block-size: var(--z-text-base-line-height);
   --z-internal-Choice-block-inset: calc(
-    (var(--z-Action-minimum-size) - var(--z-internal-Choice-text-line-block-size)) * -0.5
+    (
+        var(--z-Action-minimum-size) -
+          var(--z-internal-Choice-text-line-block-size)
+      ) * -0.5
   );
   --z-internal-Choice-overlay-opacity: 0;
   --z-internal-Choice-overlay-scale: 0.25;
@@ -38,13 +41,14 @@
   inline-size: var(--z-internal-Choice-input-size);
   border-radius: var(--z-internal-Choice-corner-radius);
   background-color: var(--z-Choice-background);
-  border: var(--z-Choice-border-size) solid var(--z-internal-Choice-border-color);
+  border: var(--z-Choice-border-size) solid
+    var(--z-internal-Choice-border-color);
 
   &:checked {
     --z-internal-Choice-overlay-opacity: 1;
     --z-internal-Choice-overlay-scale: 1;
   }
-  
+
   &:focus-visible {
     --z-internal-Choice-focus-ring-opacity: 1;
     outline: 1px solid transparent;
@@ -54,9 +58,15 @@
     content: '';
     pointer-events: none;
     position: absolute;
-    inset: calc(-1 * (var(--z-internal-Choice-focus-ring-inset) + var(--z-Choice-border-size)));
+    inset: calc(
+      -1 * (var(--z-internal-Choice-focus-ring-inset) +
+            var(--z-Choice-border-size))
+    );
     box-shadow: 0 0 0 0.125rem var(--z-Choice-focused-border-color);
-    border-radius: calc(var(--z-internal-Choice-corner-radius) + var(--z-internal-Choice-focus-ring-inset));
+    border-radius: calc(
+      var(--z-internal-Choice-corner-radius) +
+        var(--z-internal-Choice-focus-ring-inset)
+    );
     opacity: var(--z-internal-Choice-focus-ring-opacity);
     transition: opacity 0.2s ease;
   }
@@ -66,14 +76,17 @@
     pointer-events: none;
     position: absolute;
     inset: calc(-1 * var(--z-Choice-border-size));
-    border: var(--z-Choice-border-size) solid var(--z-Choice-focused-border-color);
+    border: var(--z-Choice-border-size) solid
+      var(--z-Choice-focused-border-color);
     background-color: var(--z-Choice-focused-background);
     background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E");
     background-size: cover;
     border-radius: var(--z-internal-Choice-corner-radius);
     opacity: var(--z-internal-Choice-overlay-opacity);
     transform: var(--z-internal-Choice-overlay-scale);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 }
 

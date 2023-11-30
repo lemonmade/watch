@@ -1,5 +1,3 @@
-/* eslint no-console: off */
-
 import {
   type Queue,
   type ExportedHandlerScheduledHandler,

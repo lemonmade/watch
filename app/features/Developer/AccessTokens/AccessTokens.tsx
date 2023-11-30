@@ -104,9 +104,8 @@ export default function AccessTokens() {
         )}
         {accessTokens}
         <Action
-          loading={createAccessToken.isLoading}
-          onPress={() => {
-            createAccessToken.mutate({});
+          onPress={async () => {
+            await createAccessToken.mutateAsync({});
           }}
         >
           Create access token

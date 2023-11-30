@@ -1,5 +1,3 @@
-/* eslint react/jsx-no-useless-fragment: off */
-
 import {ImgHTMLAttributes} from 'react';
 import {classes, variation} from '@lemon/css';
 
@@ -66,7 +64,6 @@ export function Image({
       )
 
       .map((props, index) => (
-        // eslint-disable-next-line react/no-array-index-key
         <source key={`${props.srcSet}${index}`} {...props} />
       ));
 

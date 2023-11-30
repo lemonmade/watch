@@ -15,7 +15,9 @@
 
 .transitionOpenEnd,
 .transitionCloseEnd {
-  transition: transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88), opacity 0.15s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.29, 1.66, 0.51, 0.88),
+    opacity 0.15s ease;
 }
 
 .transitionOpenStart,

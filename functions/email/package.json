@@ -3,16 +3,17 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "build": "rollup --config ./configuration/rollup.config.js",
+    "deploy": "wrangler publish --config ./configuration/wrangler.toml"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",
-    "@quilted/react-email": "^0.2.35",
-    "@quilted/request-router": "^0.1.8",
+    "@quilted/react-email": "^0.3.0",
+    "@quilted/request-router": "^0.2.0",
     "@tsndr/cloudflare-worker-jwt": "^2.1.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
     "zod": "^3.21.4"
-  },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
   }
 }

@@ -8,7 +8,7 @@
   pointer-events: none;
   color: var(--z-internal-Icon-color);
 
-  &  > svg {
+  & > svg {
     display: block;
     inline-size: var(--z-internal-Icon-size);
     aspect-ratio: 1;

@@ -5,7 +5,7 @@ import type {
   ClipsExtensionVersion as DatabaseClipsExtensionVersion,
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 import {z} from 'zod';
 
 import type {

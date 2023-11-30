@@ -45,7 +45,6 @@ router.get('/google/connect/callback', handleGoogleOAuthConnect);
 router.get((request) => {
   const url = new URL(request.url);
 
-  // eslint-disable-next-line no-console
   console.log('Fallback route', url.href);
 
   const loginUrl = new URL('/login', url);

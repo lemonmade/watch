@@ -1,0 +1,20 @@
+name = "watch-stripe"
+main = "./build/server/server.js"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+logpush = true
+usage_model = "unbound"
+node_compat = true
+workers_dev = false
+
+[[services]]
+binding = "EMAIL_SERVICE"
+service = "watch-email"
+environment = "production"
+
+# Needs the following environment variables:
+# - DATABASE_URL
+# - STRIPE_SECRET
+# - JWT_SECRET

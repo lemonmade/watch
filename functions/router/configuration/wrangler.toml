@@ -1,0 +1,51 @@
+name = "watch-router"
+main = "./build/server/server.js"
+
+account_id = "9bfdb755def60e50760e33036c6f1624"
+compatibility_date = "2022-06-04"
+
+logpush = true
+usage_model = "unbound"
+workers_dev = false
+
+[[services]]
+binding = "SERVICE_IMAGES"
+service = "watch-images"
+environment = "production"
+
+[[services]]
+binding = "SERVICE_UPLOAD_CLIPS"
+service = "watch-internal-upload-clips"
+environment = "production"
+
+[[services]]
+binding = "SERVICE_EMAIL"
+service = "watch-email"
+environment = "production"
+
+[[services]]
+binding = "SERVICE_METRICS"
+service = "watch-metrics"
+environment = "production"
+
+[[services]]
+binding = "SERVICE_STRIPE"
+service = "watch-stripe"
+environment = "production"
+
+[[services]]
+binding = "SERVICE_TMDB_REFRESHER"
+service = "watch-tmdb-refresher"
+environment = "production"
+
+[[r2_buckets]]
+binding = "APP_ASSETS"
+bucket_name = "watch-assets"
+
+[[r2_buckets]]
+binding = "CLIPS_ASSETS"
+bucket_name = "watch-clips-assets"
+
+[[kv_namespaces]]
+binding = "PERSISTED_QUERIES"
+id = "7f89119bd9ff4c40874fa5616b35cba9"

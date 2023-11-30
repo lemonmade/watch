@@ -8,7 +8,7 @@
   },
   "version": "0.1.15",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "repository": {
     "type": "git",
@@ -20,14 +20,16 @@
       "types": "./build/typescript/index.d.ts",
       "quilt:source": "./source/index.ts",
       "quilt:esnext": "./build/esnext/index.esnext",
-      "import": "./build/esm/index.mjs",
-      "require": "./build/cjs/index.cjs"
+      "import": "./build/esm/index.mjs"
     }
   },
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
+  "scripts": {
+    "build": "rollup --config configuration/rollup.config.js"
+  },
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.2.1",
+    "@lemonmade/remote-ui": "^0.3.3",
     "@preact/signals-core": "^1.5.0"
   },
   "peerDependencies": {
@@ -43,16 +45,7 @@
     }
   },
   "devDependencies": {
-    "@quilted/testing": "^0.1.6",
     "@watching/clips": "workspace:^",
     "svelte": "^3.59.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@quilted/eslint-config/project"
-    ]
-  },
-  "browserslist": [
-    "extends @quilted/browserslist-config/defaults"
-  ]
+  }
 }

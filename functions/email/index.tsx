@@ -91,9 +91,7 @@ async function handleRequest(request: Request, env: Environment) {
     );
   }
 
-  // eslint-disable-next-line no-console
   console.log(`Sending ${type} email:`);
-  // eslint-disable-next-line no-console
   console.log({sender, subject, to, cc, bcc});
 
   const content = [{type: 'text/html', value: html}];
@@ -126,9 +124,7 @@ async function handleRequest(request: Request, env: Environment) {
     });
 
     if (!response.ok) {
-      // eslint-disable-next-line no-console
       console.log('Sendgrid returned error:');
-      // eslint-disable-next-line no-console
       console.log(await response.json());
 
       throw new Error();

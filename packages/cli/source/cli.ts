@@ -23,7 +23,6 @@ async function run() {
     _: [command, ...remainingArgs],
   } = args;
 
-  // eslint-disable-next-line no-console
   console.log(
     `${magenta(`watch ${bold(command!)}`)} ${magenta('●')}${red('●')}${blue(
       '●',
@@ -97,7 +96,6 @@ async function run() {
       }
     }
 
-    // eslint-disable-next-line no-console
     console.log();
   } catch (error) {
     if (error instanceof AbortError) {
@@ -114,10 +112,8 @@ async function run() {
           )} so we can figure out how to stop this from happening again.`,
       ).print(ui);
 
-      /* eslint-disable no-console */
       console.log();
       console.log(dim((error as any).stack));
-      /* eslint-enable no-console */
     }
 
     process.exitCode = 1;

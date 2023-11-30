@@ -4,18 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prisma": "prisma",
-    "start": "node ./build/runtime/runtime.js"
+    "build": "rollup --config ./configuration/rollup.config.js",
+    "develop": "vite --config ./configuration/vite.config.js",
+    "start": "node ./build/server/server.js"
   },
   "sideEffects": [
     "*.css",
-    "browser.tsx"
+    "browser.tsx",
+    "shared/clips/sandbox/sandbox.ts"
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
     "@prisma/client": "^5.4.0",
-    "@types/react": "^18.2.25",
+    "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.0",
     "aws-sdk": "^2.935.0",
     "prisma": "^5.4.0",
@@ -24,19 +26,19 @@
   "devDependencies": {
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
-    "@lemonmade/graphql-live": "^0.3.0",
-    "@lemonmade/remote-ui": "^0.2.1",
-    "@lemonmade/remote-ui-preact": "^0.3.1",
-    "@lemonmade/remote-ui-react": "^0.2.0",
-    "@quilted/graphql": "^2.0.2",
-    "@quilted/graphql-tools": "^0.1.7",
-    "@quilted/localize": "^0.1.10",
-    "@quilted/quilt": "^0.5.156",
-    "@quilted/react-query": "^0.1.21",
+    "@lemonmade/graphql-live": "^0.4.1",
+    "@lemonmade/remote-ui": "^0.3.3",
+    "@lemonmade/remote-ui-preact": "^0.4.1",
+    "@lemonmade/remote-ui-react": "^0.3.1",
+    "@quilted/graphql": "^3.0.1",
+    "@quilted/graphql-tools": "^0.2.0",
+    "@quilted/localize": "^0.2.0",
+    "@quilted/quilt": "^0.6.6",
+    "@quilted/react-query": "^0.3.1",
     "@simplewebauthn/browser": "^6.2.0",
     "@simplewebauthn/server": "^6.2.0",
     "@stripe/stripe-js": "^1.46.0",
-    "@tanstack/react-query": "^4.20.0",
+    "@tanstack/react-query": "^5.8.0",
     "@types/common-tags": "^1.8.0",
     "@types/jsonwebtoken": "^8.0.0",
     "@watching/api": "workspace:*",
@@ -55,26 +57,18 @@
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
     "zod": "^3.19.1"
   },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/app",
-    "rules": {
-      "jsx-a11y/aria-role": [
-        "error",
-        {
-          "ignoreNonDOM": true
-        }
-      ]
-    }
-  },
   "browserslist": {
     "defaults": [
-      "extends @quilted/browserslist-config/defaults"
+      "defaults and not dead"
     ],
     "modules": [
-      "extends @quilted/browserslist-config/modules"
+      "defaults and fully supports es6-module-dynamic-import"
     ],
     "evergreen": [
-      "extends @quilted/browserslist-config/evergreen"
+      "last 1 chrome version",
+      "last 1 safari version",
+      "last 1 firefox version",
+      "last 1 edge version"
     ]
   }
 }

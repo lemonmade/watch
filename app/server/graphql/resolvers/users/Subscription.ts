@@ -1,4 +1,4 @@
-import Env from '@quilted/quilt/env';
+import Env from 'quilt:module/env';
 import type {PrismaClient, StripeSubscription} from '@prisma/client';
 import type {Stripe} from 'stripe';
 
@@ -181,7 +181,6 @@ export const Mutation = createMutationResolver({
       },
     );
 
-    // eslint-disable-next-line no-console
     console.log(deleteResult);
 
     const updatedSubscription = await prisma.stripeSubscription.update({
@@ -212,8 +211,8 @@ async function updateUserWithSubscription(
     user.giftCodes.length > 0
       ? user.level
       : subscription.status === 'ACTIVE'
-      ? subscription.level
-      : 'FREE';
+        ? subscription.level
+        : 'FREE';
 
   if (level !== user.level) {
     await prisma.user.update({

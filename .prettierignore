@@ -1,9 +1,13 @@
 build/
 node_modules/
 .quilt/
-packages/*/bin/
-packages/clips/graphql/**/*.graphql
-cdk.context.json
-cdk.out/
 pnpm-lock.yaml
 LICENSE.md
+tsconfig.json
+app/server/graphql/schema.d.ts
+app/server/graphql/schema.ts
+app/server/auth/github/graphql/schema.d.ts
+packages/*/bin/
+packages/cli/source/commands/develop/schema.d.ts
+packages/clips/graphql/**/*.graphql
+

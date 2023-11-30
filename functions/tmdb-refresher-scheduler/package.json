@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "build": "rollup --config ./configuration/rollup.config.js"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1"
-  },
-  "eslintConfig": {
-    "extends": "@quilted/eslint-config/project"
   }
 }

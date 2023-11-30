@@ -1,5 +1,3 @@
-/* eslint prefer-const: off, @typescript-eslint/ban-ts-comment: off, @typescript-eslint/no-empty-function: off, @typescript-eslint/no-this-alias: off, react-hooks/exhaustive-deps: off */
-
 import {options, Component} from 'preact';
 import {useRef, useMemo, useEffect} from 'preact/hooks';
 import {

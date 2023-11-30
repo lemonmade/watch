@@ -160,7 +160,6 @@ export function useLocalDevelopmentServerQuerySignal<Data, Variables>(
     return () => {
       abort.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [server, resultSignal, query, JSON.stringify(options?.variables)]);
 
   return resultSignal;
