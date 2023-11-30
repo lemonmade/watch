@@ -26,9 +26,8 @@ jobs:
           git fetch origin main
           git checkout origin/main -- .changeset
 
-      - uses: quilt-framework/action-build@v2
-        with:
-          cache-key: ${{ hashFiles('**/pnpm-lock.yaml') }}
+      - uses: ./.github/workflows/actions/type-check-with-cache
+      - run: pnpm run build
 
       - name: Deploy preview versions to NPM
         run: pnpm run packages.deploy.preview
