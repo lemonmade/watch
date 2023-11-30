@@ -61,6 +61,8 @@ jobs:
         with:
           name: build-app
 
+      - run: ls -R
+
       - name: Configure R2 credentials for AWS CLI
         run: |
           aws configure set region us-east-1
