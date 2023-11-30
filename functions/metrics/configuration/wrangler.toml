@@ -1,5 +1,5 @@
 name = "watch-metrics"
-main = "./build/server/server.js"
+main = "../build/server/metrics.js"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2022-06-04"

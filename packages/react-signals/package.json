@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@quilted/react-signals": "^0.2.1",
-    "@types/react": "^18.2.38"
+    "@types/react": "^18.2.39"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0"
