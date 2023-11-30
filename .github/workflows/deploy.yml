@@ -13,8 +13,8 @@ jobs:
     name: Checks 📝
     uses: ./.github/workflows/checks.yml
 
-  build:
-    name: Build 🏗
+  build-app:
+    name: Build app 🏗
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -23,35 +23,23 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - run: pnpm exec prisma generate --no-engine
       - uses: ./.github/workflows/actions/type-check-with-cache
-      - run: pnpm run build
-
-      - name: Save build artifacts
-        uses: actions/upload-artifact@v2
+      - run: pnpm --filter app run build
+      - uses: actions/upload-artifact@v3
         with:
-          name: build
-          path: |
-            ./build/
-            ./app/build/
-            ./functions/*/build/
-            ./packages/*/build/
-            ./packages/*/bin/
-            ./packages/clips/graphql/
-            ./packages/clips/source/graphql/
+          name: build-app
+          path: app/build
 
   deploy-packages:
     name: Deploy updated packages 📦
-    needs: [checks, build]
+    needs: [checks]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build
+      - uses: ./.github/workflows/actions/type-check-with-cache
+      - run: pnpm --filter "@watching/*" run build
 
       - name: Deploy updated packages
         run: |
@@ -62,17 +50,16 @@ jobs:
 
   deploy-cloudflare-assets:
     name: Deploy assets to Cloudflare 🌥
-    needs: [checks, build]
+    needs: [checks, build-app]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: build
+          name: build-app
 
       - name: Configure R2 credentials for AWS CLI
         run: |
@@ -86,7 +73,7 @@ jobs:
 
   deploy-cloudflare-workers:
     name: Deploy to Cloudflare 🌥
-    needs: [checks, build]
+    needs: [checks]
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -104,30 +91,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-
-      - name: Deploy worker to Cloudflare
-        run: pnpm --filter ${{ matrix.worker }} run deploy
+      - run: pnpm exec prisma generate --no-engine
+      - uses: ./.github/workflows/actions/type-check-with-cache
+      - run: pnpm --filter ${{ matrix.worker }} run build
+      - run: pnpm --filter ${{ matrix.worker }} run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
   deploy-fly:
     name: Deploy to Fly.io 🦋
-    needs: [checks, build]
+    needs: [checks, build-app]
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/prepare
 
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: build
+          name: build-app
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -191,20 +174,19 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
 
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: build
+          name: build-app
+
+      - run: pnpm --filter router run build
 
       # TODO: you can get in a weird state where the app server might send pages with
       # new queries before the router is updated, and before we do this push. Going to
       # just leave it in place until I can bring persisted queries into the app server.
-      - name: Push persisted GraphQL operations
-        run: pnpm run typescript.run ./scripts/cloudflare/put-graphql-persisted-operations.ts
+      - run: pnpm run typescript.run ./scripts/cloudflare/put-graphql-persisted-operations.ts
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      - name: Deploy application code to Cloudflare
-        run: pnpm exec wrangler publish --config functions/router/wrangler.toml
+      - run: pnpm --filter router run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
