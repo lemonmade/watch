@@ -24,8 +24,8 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9
       '@quilted/cloudflare':
-        specifier: ^0.2.3
-        version: 0.2.3(@quilted/craft@0.2.4)(@quilted/quilt@0.6.6)
+        specifier: ^0.2.4
+        version: 0.2.4(@quilted/craft@0.2.4)(@quilted/quilt@0.6.6)
       '@quilted/craft':
         specifier: ^0.2.4
         version: 0.2.4(@babel/template@7.22.15)(preact@10.19.2)(rollup@4.6.0)(typescript@5.3.2)(vite@5.0.2)(vitest@0.34.6)
@@ -39,8 +39,8 @@ importers:
         specifier: ^0.6.6
         version: 0.6.6(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.8.1)(preact@10.19.2)(prettier@3.1.0)(vitest@0.34.6)
       '@quilted/rollup':
-        specifier: ^0.2.17
-        version: 0.2.17(@babel/template@7.22.15)(rollup@4.6.0)
+        specifier: ^0.2.18
+        version: 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
       '@quilted/typescript':
         specifier: ^0.3.0
         version: 0.3.0(typescript@5.3.2)
@@ -4120,8 +4120,8 @@ packages:
       prompts: 2.4.2
     dev: false
 
-  /@quilted/cloudflare@0.2.3(@quilted/craft@0.2.4)(@quilted/quilt@0.6.6):
-    resolution: {integrity: sha512-f3WFaH/6xZQ8DvyzLq1B5yTz01jwZ2XjqPlWMMS8veDK65aNwv+PEbns2z7qsAcc325n8Fkkq0zVNqzvYkRnEQ==}
+  /@quilted/cloudflare@0.2.4(@quilted/craft@0.2.4)(@quilted/quilt@0.6.6):
+    resolution: {integrity: sha512-TNP0lARF7t3E1ZHt4ceZHLk6zeI8OOEfzj2tMBhBbmMyIa5kMancg9X4dR20CmyQ92Us0D7+iQiZGYLL+UhxSw==}
     peerDependencies:
       '@quilted/craft': ^0.2.0
       '@quilted/quilt': ^0.6.0
@@ -4162,7 +4162,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/graphql-tools': 0.2.0(typescript@5.3.2)
-      '@quilted/rollup': 0.2.17(@babel/template@7.22.15)(rollup@4.6.0)
+      '@quilted/rollup': 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
       '@quilted/vite': 0.1.13(@babel/template@7.22.15)(preact@10.19.2)(rollup@4.6.0)(vite@5.0.2)(vitest@0.34.6)
       pkg-dir: 7.0.0
       rollup: 4.6.0
@@ -4631,8 +4631,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@quilted/rollup@0.2.17(@babel/template@7.22.15)(rollup@4.6.0):
-    resolution: {integrity: sha512-UbVKEY4SRaThyTiiVbHFb+3yCPuGE/aejlN5cwOfAgx+iFR5YjNOPnQY00/ApYs19IlP+tb/znVlYdBuMCdTSg==}
+  /@quilted/rollup@0.2.18(@babel/template@7.22.15)(rollup@4.6.0):
+    resolution: {integrity: sha512-sY/I3JWcAOW5F9+mQdKXxCwO4hIdbFewwpih363QF+nbRCwhp0otSbEKS40LJ9dHDEeQSyZt0NBtvBep4ZqRCA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^4.0.0
@@ -4731,7 +4731,7 @@ packages:
       '@prefresh/vite': 2.4.4(preact@10.19.2)(vite@5.0.2)
       '@quilted/babel': 0.2.1(@babel/core@7.23.5)(@babel/template@7.22.15)
       '@quilted/request-router': 0.2.0
-      '@quilted/rollup': 0.2.17(@babel/template@7.22.15)(rollup@4.6.0)
+      '@quilted/rollup': 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
       vite: 5.0.2(@types/node@20.9.4)
       vitest: 0.34.6
     transitivePeerDependencies:
