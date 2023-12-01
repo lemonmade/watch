@@ -39,8 +39,8 @@ importers:
         specifier: ^0.6.6
         version: 0.6.6(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)(graphql@16.8.1)(preact@10.19.2)(prettier@3.1.0)(vitest@0.34.6)
       '@quilted/rollup':
-        specifier: ^0.2.18
-        version: 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
+        specifier: ^0.2.19
+        version: 0.2.19(@babel/template@7.22.15)(rollup@4.6.0)
       '@quilted/typescript':
         specifier: ^0.3.0
         version: 0.3.0(typescript@5.3.2)
@@ -155,7 +155,7 @@ importers:
         version: 0.4.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@lemonmade/remote-ui-react':
         specifier: ^0.3.1
-        version: 0.3.1(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
+        version: 0.3.1(@quilted/react@18.2.5)(preact@10.19.2)
       '@quilted/graphql':
         specifier: ^3.0.1
         version: 3.0.1
@@ -479,7 +479,7 @@ importers:
         version: 0.3.3(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@lemonmade/remote-ui-react':
         specifier: ^0.3.1
-        version: 0.3.1(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0)
+        version: 0.3.1(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
       '@preact/signals-core':
         specifier: ^1.5.0
         version: 1.5.0
@@ -3712,8 +3712,9 @@ packages:
     transitivePeerDependencies:
       - '@preact/signals-core'
       - preact
+    dev: false
 
-  /@lemonmade/remote-ui-react@0.3.1(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0):
+  /@lemonmade/remote-ui-react@0.3.1(@quilted/react@18.2.5)(preact@10.19.2):
     resolution: {integrity: sha512-2fl6ewvi3gQd2DbuA6QnzceMlFZX6VCKuc3BEeNiUSFCLc/JV1EsclZvUjV89ZJyT0EYLpsq/LifIhj3uP0buQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3725,11 +3726,11 @@ packages:
       '@lemonmade/remote-ui': 0.3.3(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@types/react': 18.2.39
       htm: 3.1.1
-      react: 18.0.0
+      react: /@quilted/react@18.2.5
     transitivePeerDependencies:
       - '@preact/signals-core'
       - preact
-    dev: false
+    dev: true
 
   /@lemonmade/remote-ui@0.3.3(@preact/signals-core@1.5.0)(preact@10.19.2):
     resolution: {integrity: sha512-iR7SeKdRtes3uApLStQ2cjr6Dj3SPzdDiKp7qMdp+tJ1qyy0cvHOWPm4Hl/ld7vJphMQUjzz/USHGHAmrzVQAg==}
@@ -4362,7 +4363,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/graphql-tools': 0.2.0(typescript@5.3.2)
-      '@quilted/rollup': 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
+      '@quilted/rollup': 0.2.19(@babel/template@7.22.15)(rollup@4.6.0)
       '@quilted/vite': 0.1.13(@babel/template@7.22.15)(preact@10.19.2)(rollup@4.6.0)(vite@5.0.2)(vitest@0.34.6)
       pkg-dir: 7.0.0
       rollup: 4.6.0
@@ -4831,8 +4832,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@quilted/rollup@0.2.18(@babel/template@7.22.15)(rollup@4.6.0):
-    resolution: {integrity: sha512-sY/I3JWcAOW5F9+mQdKXxCwO4hIdbFewwpih363QF+nbRCwhp0otSbEKS40LJ9dHDEeQSyZt0NBtvBep4ZqRCA==}
+  /@quilted/rollup@0.2.19(@babel/template@7.22.15)(rollup@4.6.0):
+    resolution: {integrity: sha512-jQ1QkrSsurX3h/t0c/GIOjPWRoVRCmvCXScPTXk92VLdvoSCaqV5TKzpMXbsBybEXk+XXfGuDv3P0+KI2Bipbg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^4.0.0
@@ -4931,7 +4932,7 @@ packages:
       '@prefresh/vite': 2.4.4(preact@10.19.2)(vite@5.0.2)
       '@quilted/babel': 0.2.1(@babel/core@7.23.5)(@babel/template@7.22.15)
       '@quilted/request-router': 0.2.0
-      '@quilted/rollup': 0.2.18(@babel/template@7.22.15)(rollup@4.6.0)
+      '@quilted/rollup': 0.2.19(@babel/template@7.22.15)(rollup@4.6.0)
       vite: 5.0.2(@types/node@20.9.4)
       vitest: 0.34.6
     transitivePeerDependencies:
@@ -5785,7 +5786,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001565
-      electron-to-chromium: 1.4.597
+      electron-to-chromium: 1.4.600
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
 
@@ -6302,8 +6303,8 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /electron-to-chromium@1.4.597:
-    resolution: {integrity: sha512-0XOQNqHhg2YgRVRUrS4M4vWjFCFIP2ETXcXe/0KIQBjXE9Cpy+tgzzYfuq6HGai3hWq0YywtG+5XK8fyG08EjA==}
+  /electron-to-chromium@1.4.600:
+    resolution: {integrity: sha512-KD6CWjf1BnQG+NsXuyiTDDT1eV13sKuYsOUioXkQweYTQIbgHkXPry9K7M+7cKtYHnSUPitVaLrXYB1jTkkYrw==}
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}

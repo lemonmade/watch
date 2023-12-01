@@ -31,7 +31,7 @@
     "@quilted/graphql-tools": "^0.2.0",
     "@quilted/prettier": "^0.2.11",
     "@quilted/quilt": "^0.6.6",
-    "@quilted/rollup": "^0.2.18",
+    "@quilted/rollup": "^0.2.19",
     "@quilted/typescript": "^0.3.0",
     "@quilted/vite": "^0.1.13",
     "@types/common-tags": "^1.8.1",

@@ -5,7 +5,6 @@ import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
 const {input, plugins, output} = await quiltServer({
   entry: './router.ts',
-  format: 'custom',
   runtime: cloudflareWorkers(),
 });
 
