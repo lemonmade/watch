@@ -62,7 +62,11 @@ createThreadFromWebWorker<Sandbox>(self as any, {
 });
 
 export async function load(script: string, _: Version) {
-  importScripts(script);
+  if (isModuleWorker()) {
+    await import(script);
+  } else {
+    importScripts(script);
+  }
 }
 
 export async function render<T extends ExtensionPoint>(
@@ -99,4 +103,19 @@ export async function getResourceTimingEntries() {
     .map(
       (entry) => entry.toJSON() as Omit<PerformanceResourceTiming, 'toJSON'>,
     );
+}
+
+let isModuleWorkerResult: boolean | undefined;
+
+function isModuleWorker() {
+  isModuleWorkerResult ??= (() => {
+    try {
+      importScripts('data:,');
+      return false;
+    } catch {
+      return true;
+    }
+  })();
+
+  return isModuleWorkerResult;
 }
