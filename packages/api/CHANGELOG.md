@@ -1,5 +1,11 @@
 # @watching/api
 
+## 0.1.0
+
+### Minor Changes
+
+- [#295](https://github.com/lemonmade/watch/pull/295) [`8920e5c9`](https://github.com/lemonmade/watch/commit/8920e5c921988992b7c83c78b135fe6d694d788e) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade Quilt
+
 ## 0.0.3
 
 ### Patch Changes

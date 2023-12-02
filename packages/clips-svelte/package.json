@@ -6,7 +6,7 @@
     "access": "public",
     "@watching/registry": "https://registry.npmjs.org"
   },
-  "version": "0.1.15",
+  "version": "0.2.0",
   "engines": {
     "node": ">=18.0.0"
   },
