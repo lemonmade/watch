@@ -1,6 +1,6 @@
 {
   "name": "@watching/clips-react",
-  "version": "0.3.26",
+  "version": "1.0.0",
   "license": "MIT",
   "type": "module",
   "publishConfig": {

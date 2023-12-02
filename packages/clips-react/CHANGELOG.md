@@ -1,5 +1,16 @@
 # @watching/clips-react
 
+## 1.0.0
+
+### Minor Changes
+
+- [#295](https://github.com/lemonmade/watch/pull/295) [`8920e5c9`](https://github.com/lemonmade/watch/commit/8920e5c921988992b7c83c78b135fe6d694d788e) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade Quilt
+
+### Patch Changes
+
+- Updated dependencies [[`8920e5c9`](https://github.com/lemonmade/watch/commit/8920e5c921988992b7c83c78b135fe6d694d788e)]:
+  - @watching/clips@0.5.0
+
 ## 0.3.26
 
 ### Patch Changes

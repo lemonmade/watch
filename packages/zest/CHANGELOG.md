@@ -1,5 +1,13 @@
 # @lemon/zest
 
+## 0.1.24
+
+### Patch Changes
+
+- Updated dependencies [[`8920e5c9`](https://github.com/lemonmade/watch/commit/8920e5c921988992b7c83c78b135fe6d694d788e)]:
+  - @watching/react-signals@0.2.0
+  - @watching/clips@0.5.0
+
 ## 0.1.23
 
 ### Patch Changes
