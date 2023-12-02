@@ -1,4 +1,4 @@
-FROM node:18.16.0-bullseye-slim as base
+FROM node:20.10.0-bullseye-slim as base
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl && apt-get install -y ca-certificates
@@ -17,7 +17,7 @@ FROM base as dependencies
 
 WORKDIR /workspace
 
-RUN npm install -g pnpm@8.5.0
+RUN corepack enable && pnpm -v
 
 # Copy the lockfile, which is the only file `pnpm fetch` needs to run
 COPY pnpm-lock.yaml .
@@ -37,11 +37,11 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.pnpm-store\
 
 COPY prisma/schema.prisma ./app/prisma/schema.prisma
 
-RUN PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm --filter app run prisma generate
+RUN PRISMA_GENERATE_SKIP_AUTOINSTALL=true pnpm --filter app exec prisma generate
 
 RUN node ./scripts/docker/cleanup.js app
 
-RUN tree . -a -L 2
+RUN tree . -a -L 3
 
 ENV NODE_ENV production
 
