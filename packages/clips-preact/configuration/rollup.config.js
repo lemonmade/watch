@@ -38,8 +38,6 @@ export default quiltPackage({
             module: true,
           });
 
-          console.log(minifiedCode);
-
           return minifiedCode;
         },
       },

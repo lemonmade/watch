@@ -18,6 +18,9 @@
   },
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
+  "scripts": {
+    "build": "rollup --config configuration/rollup.config.js"
+  },
   "dependencies": {
     "@lemonmade/remote-ui": "^0.3.3",
     "@lemonmade/remote-ui-preact": "^0.4.1",
