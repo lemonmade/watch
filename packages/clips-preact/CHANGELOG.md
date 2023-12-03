@@ -1,5 +1,11 @@
 # @watching/clips-preact
 
+## 0.2.1
+
+### Patch Changes
+
+- [`bdf29662`](https://github.com/lemonmade/watch/commit/bdf29662ed949cb88671098f8249e5b7670e0f6b) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix missing build outputs
+
 ## 0.2.0
 
 ### Minor Changes
