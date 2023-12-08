@@ -145,8 +145,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/zest
       '@lemonmade/graphql-live':
-        specifier: ^0.4.1
-        version: 0.4.1(graphql@16.8.1)
+        specifier: ^0.4.2
+        version: 0.4.2(graphql@16.8.1)
       '@lemonmade/remote-ui':
         specifier: ^0.3.3
         version: 0.3.3(@preact/signals-core@1.5.0)(preact@10.19.2)
@@ -335,8 +335,8 @@ importers:
   packages/cli:
     dependencies:
       '@lemonmade/graphql-live':
-        specifier: ^0.4.1
-        version: 0.4.1(graphql@16.8.1)
+        specifier: ^0.4.2
+        version: 0.4.2(graphql@16.8.1)
       '@quilted/cli-kit':
         specifier: ^0.1.12
         version: 0.1.12
@@ -3666,8 +3666,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lemonmade/graphql-live@0.4.1(graphql@16.8.1):
-    resolution: {integrity: sha512-N4n+ezyBhOCeIhejwi/rQEFTKmN1JOXy6UHPrFBgSqV/jRmvSs9KTmukOFUi9B2AFYbO9alU7YoctV7ycjtYXg==}
+  /@lemonmade/graphql-live@0.4.2(graphql@16.8.1):
+    resolution: {integrity: sha512-wIGOQkXF510AT87G6aW1OtMVR3wDMTMtZhoY0MINajljyOHfvij8qeJWfkJ42974N7WPZDOFqXy2YKEfdbo0YQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       graphql: ^16.0.0

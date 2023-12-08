@@ -4,6 +4,8 @@ import * as path from 'path';
 import type {Server} from 'http';
 import {emitKeypressEvents} from 'readline';
 import {stat, readFile} from 'fs/promises';
+import {setMaxListeners} from 'events';
+
 import {
   on,
   EventEmitter,
@@ -75,6 +77,10 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
 
   await ensureRootOutputDirectory(app);
   const devServer = await createDevServer(app, {ui});
+
+  // The development server adds lots of event listeners to abort controllers,
+  // which causes unnecessary warnings in Node.
+  setMaxListeners(Number.POSITIVE_INFINITY);
   const result = await devServer.listen();
 
   const localUrl = new URL(proxy ?? `http://localhost:${result.port}`);
@@ -313,8 +319,9 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
           return new Response(await readFile(assetPath, {encoding: 'utf8'}), {
             headers: {
               'Cache-Control': 'no-store',
-              'Timing-Allow-Origin': '*',
               'Content-Type': mime.getType(assetPath)!,
+              'Timing-Allow-Origin': '*',
+              'Access-Control-Allow-Origin': '*',
             },
           });
         } else {

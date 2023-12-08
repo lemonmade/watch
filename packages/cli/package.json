@@ -46,7 +46,7 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@lemonmade/graphql-live": "^0.4.1",
+    "@lemonmade/graphql-live": "^0.4.2",
     "@quilted/cli-kit": "^0.1.12",
     "@quilted/graphql": "^3.0.1",
     "@quilted/graphql-tools": "^0.2.0",
