@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.1.1
+
+### Patch Changes
+
+- [`110fe32e`](https://github.com/lemonmade/watch/commit/110fe32e3a2d8043a669080d007a435c20261ee4) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix development server
+
 ## 2.1.0
 
 ### Minor Changes
