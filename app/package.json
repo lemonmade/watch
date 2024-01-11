@@ -26,7 +26,7 @@
   "devDependencies": {
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
-    "@lemonmade/graphql-live": "^0.4.2",
+    "@lemonmade/graphql-live": "^0.4.3",
     "@lemonmade/remote-ui": "^0.3.3",
     "@lemonmade/remote-ui-preact": "^0.4.1",
     "@lemonmade/remote-ui-react": "^0.3.1",

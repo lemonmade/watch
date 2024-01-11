@@ -201,9 +201,19 @@ function WatchThroughWithData({
         }
         menu={
           <Menu>
-            <Action icon="arrow.end" to={`/app/series/${series.handle}`}>
+            <Action icon="arrow.end" to={series.url}>
               More about {series.name}
             </Action>
+            {series.tmdbUrl && (
+              <Action icon="arrow.end" target="new" to={series.tmdbUrl}>
+                TMDB
+              </Action>
+            )}
+            {series.imdbUrl && (
+              <Action icon="arrow.end" target="new" to={series.imdbUrl}>
+                IMDB
+              </Action>
+            )}
             {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
             <DeleteWatchThroughAction id={id} name={series.name} />
           </Menu>

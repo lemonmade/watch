@@ -145,8 +145,8 @@ importers:
         specifier: workspace:*
         version: link:../packages/zest
       '@lemonmade/graphql-live':
-        specifier: ^0.4.2
-        version: 0.4.2(graphql@16.8.1)
+        specifier: ^0.4.3
+        version: 0.4.3(graphql@16.8.1)
       '@lemonmade/remote-ui':
         specifier: ^0.3.3
         version: 0.3.3(@preact/signals-core@1.5.0)(preact@10.19.2)
@@ -335,8 +335,8 @@ importers:
   packages/cli:
     dependencies:
       '@lemonmade/graphql-live':
-        specifier: ^0.4.2
-        version: 0.4.2(graphql@16.8.1)
+        specifier: ^0.4.3
+        version: 0.4.3(graphql@16.8.1)
       '@quilted/cli-kit':
         specifier: ^0.1.12
         version: 0.1.12
@@ -3675,8 +3675,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lemonmade/graphql-live@0.4.2(graphql@16.8.1):
-    resolution: {integrity: sha512-wIGOQkXF510AT87G6aW1OtMVR3wDMTMtZhoY0MINajljyOHfvij8qeJWfkJ42974N7WPZDOFqXy2YKEfdbo0YQ==}
+  /@lemonmade/graphql-live@0.4.3(graphql@16.8.1):
+    resolution: {integrity: sha512-2ODgz0YvJrFcCwoW7ZCGUylL6yKi1KskJVvHVNChv3FFKBWQPoMIyYBmGJRf1V1uUaw/qudZkNFQe6LAEVGR9Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       graphql: ^16.0.0
@@ -3684,8 +3684,8 @@ packages:
       graphql:
         optional: true
     dependencies:
-      '@quilted/events': 1.0.1
-      '@quilted/graphql': 2.0.2
+      '@quilted/events': 2.0.0
+      '@quilted/graphql': 3.0.1
       graphql: 16.8.1
 
   /@lemonmade/remote-ui-preact@0.4.1(@preact/signals-core@1.5.0)(preact@10.19.2):
@@ -4390,6 +4390,7 @@ packages:
   /@quilted/events@1.0.1:
     resolution: {integrity: sha512-vsT8QPNyu00Dr99yuSE4ls9MJpVRuAOI+k81beSndWsfWcmfQLRPhCakPuogZuCGc2pNXONb0qrUu+2w6sqzHQ==}
     engines: {node: '>=14.0.0'}
+    dev: false
 
   /@quilted/events@2.0.0:
     resolution: {integrity: sha512-0Q5w7jgHPj3nD8sTh1o7oa7LFxATK+dH0i4p8Y6BgKBLDOkr9/m01IDUXsbZdZ98XvxQaVkxBF/HUNAFfg/KfA==}
@@ -4418,13 +4419,6 @@ packages:
       p-limit: 4.0.0
     transitivePeerDependencies:
       - typescript
-
-  /@quilted/graphql@2.0.2:
-    resolution: {integrity: sha512-9/LVZK/Ek1mrhWkejtLeDmMV1pQuz0seRZjwyEgFz8HDzDatOWMmtHCcTn39qzBsEEy+/hTUKUh2B6xgxD01FQ==}
-    dependencies:
-      '@types/chance': 1.1.6
-      chance: 1.1.11
-      graphql: 16.8.1
 
   /@quilted/graphql@3.0.1:
     resolution: {integrity: sha512-RiceUjn9f78WfhvBMHIr7IU2KNr0syZ5nB3YYdNkn7nPoF8I+uDtR5PDqTEfJyybVmc4FWAg17oNzBjK8ZplXQ==}
