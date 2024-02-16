@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 
 /**
  * A visual heading level, which corresponds to a theme-dependent visual design.

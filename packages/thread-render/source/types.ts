@@ -1,6 +1,6 @@
 import {type ReadonlySignal} from '@preact/signals-core';
 import {type EventEmitter} from '@quilted/events';
-import {type SignalRemoteReceiver} from '@lemonmade/remote-ui/signals';
+import {type SignalRemoteReceiver} from '@remote-dom/signals';
 
 export interface ThreadRenderer<Context = Record<string, never>>
   extends Pick<EventEmitter<ThreadRendererEventMap>, 'on' | 'once'> {

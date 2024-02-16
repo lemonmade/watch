@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 
 export interface DisclosureProperties {
   label?: string;
@@ -18,6 +18,7 @@ export interface DisclosureSlots {
  */
 export const Disclosure = createRemoteElement<
   DisclosureProperties,
+  {},
   DisclosureSlots
 >({
   properties: {label: {type: String}},

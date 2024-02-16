@@ -5,7 +5,7 @@ import {
   type ExtensionPoint,
   type WithThreadSignals,
 } from '@watching/clips';
-import {type RemoteRootElement} from '@lemonmade/remote-ui/elements';
+import {type RemoteRootElement} from '@remote-dom/core/elements';
 
 export interface ClipRenderDetails<
   Point extends ExtensionPoint = ExtensionPoint,

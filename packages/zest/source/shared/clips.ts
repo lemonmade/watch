@@ -2,7 +2,7 @@ import {type ElementConstructors} from '@watching/clips';
 import {
   type RemoteComponentPropsFromElementConstructor,
   type RemoteComponentTypeFromElementConstructor,
-} from '@lemonmade/remote-ui-react';
+} from '@remote-dom/react';
 
 export type ReactComponentPropsForClipsElement<
   Element extends keyof ElementConstructors,

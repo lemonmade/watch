@@ -1,7 +1,7 @@
 import {
   BooleanOrString,
   type RemoteElementPropertyType,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 import {type SpacingValue, type CornerRadiusValue} from '../styles.ts';
 

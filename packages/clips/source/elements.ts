@@ -1,11 +1,11 @@
-import '@lemonmade/remote-ui/polyfill';
+import '@remote-dom/core/polyfill';
 
 import {
   type RemoteElement,
   type RemoteElementConstructor,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
-export {html} from '@lemonmade/remote-ui/html';
+export {html} from '@remote-dom/core/html';
 
 export * from './elements/elements.ts';
 
@@ -44,9 +44,10 @@ export namespace Elements {
 export type ElementConstructors = {
   [Key in keyof Elements]: Elements[Key] extends RemoteElement<
     infer Properties,
+    infer Methods,
     infer Slots
   >
-    ? RemoteElementConstructor<Properties, Slots>
+    ? RemoteElementConstructor<Properties, Methods, Slots>
     : never;
 };
 

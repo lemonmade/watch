@@ -1,4 +1,4 @@
-import {createRemoteComponent} from '@lemonmade/remote-ui-preact';
+import {createRemoteComponent} from '@remote-dom/preact';
 import {InlineGrid as InlineGridElement} from '@watching/clips/elements';
 
 export const InlineGrid = createRemoteComponent(

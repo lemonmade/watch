@@ -2,7 +2,7 @@ import {
   createRemoteElement,
   BooleanOrString,
   type RemoteElementPropertyType,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 export interface TextProperties {
   emphasis?: boolean | 'strong' | 'subdued';

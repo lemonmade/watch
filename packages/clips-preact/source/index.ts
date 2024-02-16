@@ -1,6 +1,6 @@
 export * from '@watching/clips';
 export * from '@preact/signals-core';
-export {html} from '@lemonmade/remote-ui-preact/html';
+export {html} from '@remote-dom/preact/html';
 
 export {extension} from './extension.tsx';
 export {
