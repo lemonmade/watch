@@ -1,5 +1,11 @@
 # @watching/clips
 
+## 0.5.1
+
+### Patch Changes
+
+- [#309](https://github.com/lemonmade/watch/pull/309) [`a9e6367f`](https://github.com/lemonmade/watch/commit/a9e6367f09a36944d56ef2273a528e4367d018e2) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade to real remote-dom library
+
 ## 0.5.0
 
 ### Minor Changes
