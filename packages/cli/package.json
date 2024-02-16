@@ -2,7 +2,7 @@
   "name": "@watching/cli",
   "description": "A CLI to develop apps for watch.lemon.tools",
   "license": "MIT",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "type": "module",
   "publishConfig": {
     "access": "public",
@@ -81,7 +81,7 @@
     "@watching/clips-svelte": "workspace:*"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.5.0"
+    "@watching/clips": "^0.5.1"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {

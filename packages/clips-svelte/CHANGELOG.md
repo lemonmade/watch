@@ -1,5 +1,14 @@
 # @watching/clips-svelte
 
+## 0.2.1
+
+### Patch Changes
+
+- [#309](https://github.com/lemonmade/watch/pull/309) [`a9e6367f`](https://github.com/lemonmade/watch/commit/a9e6367f09a36944d56ef2273a528e4367d018e2) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade to real remote-dom library
+
+- Updated dependencies [[`a9e6367f`](https://github.com/lemonmade/watch/commit/a9e6367f09a36944d56ef2273a528e4367d018e2)]:
+  - @watching/clips@0.5.1
+
 ## 0.2.0
 
 ### Minor Changes
