@@ -1,7 +1,7 @@
 import {
   createRemoteElement,
   type RemoteElementPropertiesDefinition,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
 import type {

@@ -1,7 +1,7 @@
 import {type Signal} from '@quilted/quilt/signals';
 import {type ThreadCallable} from '@quilted/quilt/threads';
 import {type ThreadRenderer} from '@watching/thread-render';
-import {type RemoteComponentRendererMap} from '@lemonmade/remote-ui-react/host';
+import {type RemoteComponentRendererMap} from '@remote-dom/react/host';
 
 import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
 

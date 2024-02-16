@@ -1,4 +1,4 @@
-import {createRemoteComponent} from '@lemonmade/remote-ui-preact';
+import {createRemoteComponent} from '@remote-dom/preact';
 import {TextBlock as TextBlockElement} from '@watching/clips/elements';
 
 export const TextBlock = createRemoteComponent(

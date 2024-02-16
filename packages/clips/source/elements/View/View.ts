@@ -1,7 +1,7 @@
 import {
   createRemoteElement,
   type RemoteElementPropertiesDefinition,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 import {RemoteElementSpacingValue} from '../shared.ts';
 import {type SpacingKeyword} from '../../styles.ts';

@@ -182,7 +182,7 @@ export function createClipsManager(
           mutate: mutate as any,
         };
 
-        await sandbox.render(options.target, receiver.receive, api as any);
+        await sandbox.render(options.target, receiver.connection, api as any);
       },
     });
 
@@ -248,7 +248,7 @@ export function createClipsManager(
           mutate: mutate as any,
         };
 
-        await sandbox.render(options.target, receiver.receive, api as any);
+        await sandbox.render(options.target, receiver.connection, api as any);
       },
     });
 

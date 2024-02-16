@@ -1,4 +1,4 @@
-import {createRemoteComponent} from '@lemonmade/remote-ui-preact';
+import {createRemoteComponent} from '@remote-dom/preact';
 import {Disclosure as DisclosureElement} from '@watching/clips/elements';
 
 export const Disclosure = createRemoteComponent(

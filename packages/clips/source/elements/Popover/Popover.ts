@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 
 export type PopoverBlockAttachment = 'start' | 'end';
 export type PopoverInlineAttachment = 'start' | 'center' | 'end';

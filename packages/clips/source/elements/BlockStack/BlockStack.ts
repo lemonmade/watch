@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 
 import {COMMON_STACK_PROPERTIES, type StackProperties} from '../Stack.ts';
 

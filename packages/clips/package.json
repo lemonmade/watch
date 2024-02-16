@@ -57,10 +57,10 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@lemonmade/remote-ui": "^0.3.3",
     "@preact/signals-core": "^1.5.0",
     "@quilted/graphql": "^3.0.1",
     "@quilted/localize": "^0.2.0",
-    "@quilted/threads": "^2.1.0"
+    "@quilted/threads": "^2.1.0",
+    "@remote-dom/core": "^0.1.0"
   }
 }

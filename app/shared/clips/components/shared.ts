@@ -4,14 +4,13 @@ import {
   type ForwardRefExoticComponent,
   type ForwardRefRenderFunction,
 } from 'react';
-import {type Elements} from '@watching/clips';
-import {type RemoteElement} from '@lemonmade/remote-ui/elements';
-import {createRemoteComponentRenderer} from '@lemonmade/remote-ui-preact/host';
+import {ElementConstructors, type Elements} from '@watching/clips';
+import {createRemoteComponentRenderer} from '@remote-dom/preact/host';
 import {
-  type RemoteComponentType,
-  type RemoteComponentProps,
   type RemoteComponentRendererProps,
-} from '@lemonmade/remote-ui-react/host';
+  type RemoteComponentTypeFromElementConstructor,
+  type RemoteComponentPropsFromElementConstructor,
+} from '@remote-dom/react/host';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {
   isThreadSignal,
@@ -20,14 +19,10 @@ import {
 } from '@quilted/quilt/threads';
 
 export type ReactComponentPropsForClipsElement<Element extends keyof Elements> =
-  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
-    ? RemoteComponentProps<Properties, Slots>
-    : never;
+  RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
 
 export type ReactComponentTypeForClipsElement<Element extends keyof Elements> =
-  Elements[Element] extends RemoteElement<infer Properties, infer Slots>
-    ? RemoteComponentType<Properties, Slots>
-    : never;
+  RemoteComponentTypeFromElementConstructor<ElementConstructors[Element]>;
 
 export function createClipsComponent<Element extends keyof Elements>(
   element: Element,
@@ -36,7 +31,7 @@ export function createClipsComponent<Element extends keyof Elements>(
     ReactComponentPropsForClipsElement<Element>
   >,
 ): ForwardRefExoticComponent<RemoteComponentRendererProps> {
-  return createRemoteComponentRenderer(Component, {
+  return createRemoteComponentRenderer(Component as any, {
     name: `Clips(${element})`,
   }) as any;
 }

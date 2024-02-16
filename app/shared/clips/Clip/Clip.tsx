@@ -1,6 +1,6 @@
 import {ComponentType, useEffect, useRef} from 'react';
 import {type ExtensionPoint} from '@watching/clips';
-import {RemoteRootRenderer} from '@lemonmade/remote-ui-preact/host';
+import {RemoteRootRenderer} from '@remote-dom/preact/host';
 import {
   Style,
   Popover,

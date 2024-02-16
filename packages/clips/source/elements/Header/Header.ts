@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
 
 export interface HeaderProperties extends ViewProperties {}

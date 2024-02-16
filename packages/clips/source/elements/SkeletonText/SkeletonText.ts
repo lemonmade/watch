@@ -2,7 +2,7 @@ import {
   createRemoteElement,
   BooleanOrString,
   type RemoteElementPropertyType,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 import type {CSSLiteralValue} from '../../styles.ts';
 

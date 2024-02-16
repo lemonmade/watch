@@ -1,4 +1,4 @@
-import {createRemoteElement} from '@lemonmade/remote-ui/elements';
+import {createRemoteElement} from '@remote-dom/core/elements';
 
 import {type SignalOrValue} from '../../signals.ts';
 
@@ -145,6 +145,7 @@ export interface TextFieldSlots {
  */
 export const TextField = createRemoteElement<
   TextFieldProperties,
+  {},
   TextFieldSlots
 >({
   slots: ['label'],

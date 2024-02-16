@@ -4,7 +4,7 @@ import {
   createBasicEncoder,
   createThreadFromWebWorker,
 } from '@quilted/quilt/threads';
-import {type RemoteMutationCallback} from '@lemonmade/remote-ui';
+import {type RemoteConnection} from '@remote-dom/core';
 
 import type {
   Api,
@@ -71,14 +71,14 @@ export async function load(script: string, _: Version) {
 
 export async function render<T extends ExtensionPoint>(
   id: T,
-  callback: RemoteMutationCallback,
+  connection: RemoteConnection,
   api: Api<T>,
 ) {
-  retain(callback);
+  retain(connection);
   retain(api);
 
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
-  return runExtensionPoint(id, callback, api);
+  return runExtensionPoint(id, connection, api);
 }
 
 type ArgumentsForExtensionPoint<T extends ExtensionPoint> = Parameters<

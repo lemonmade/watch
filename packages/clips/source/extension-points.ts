@@ -1,7 +1,7 @@
 import type {
+  RemoteConnection,
   RemoteRootElement,
-  RemoteMutationCallback,
-} from '@lemonmade/remote-ui/elements';
+} from '@remote-dom/core/elements';
 
 import type {Api, ApiCore} from './api.ts';
 import type {
@@ -71,7 +71,7 @@ export interface RenderExtensionCore<
   _GraphQLApi = SharedGraphQLApi,
 > {
   (
-    callback: RemoteMutationCallback,
+    connection: RemoteConnection,
     api: ApiCore<Point, Query, Settings>,
   ): void | Promise<void>;
 }

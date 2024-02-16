@@ -1,9 +1,9 @@
-import '@lemonmade/remote-ui/polyfill';
+import '@remote-dom/core/polyfill';
 import {
   RemoteRootElement,
   RemoteFragmentElement,
-  type RemoteMutationCallback,
-} from '@lemonmade/remote-ui/elements';
+  type RemoteConnection,
+} from '@remote-dom/core/elements';
 import {createTranslate} from '@quilted/localize';
 
 import type {LocalizeApi, ApiCore} from './api.ts';
@@ -31,7 +31,7 @@ export function extension<
 >(
   run: RenderExtension<Target, Query, Settings>,
 ): RenderExtensionCore<Target, Query, Settings> {
-  async function extension(callback: RemoteMutationCallback, api: any) {
+  async function extension(connection: RemoteConnection, api: any) {
     const root = document.createElement('remote-root');
 
     const hydratedApi = acceptSignals<any>(api as any);
@@ -46,7 +46,7 @@ export function extension<
     hydratedApi.localize = localize;
 
     await (run as any)(root, hydratedApi);
-    root.connect(callback);
+    root.connect(connection);
   }
 
   return extension;
