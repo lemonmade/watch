@@ -1,5 +1,6 @@
 import {extension as domExtension} from '@watching/clips';
 import type {Api, ExtensionPoint} from '@watching/clips';
+import '@remote-dom/react/polyfill';
 
 import {type ReactNode} from 'react';
 import {createRoot} from 'react-dom/client';
