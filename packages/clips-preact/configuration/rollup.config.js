@@ -20,6 +20,8 @@ export default quiltPackage({
           const {code: minifiedCode} = await minify(code, {
             nameCache,
             mangle: {
+              reserved: ['useSignal', 'useComputed', 'useSignalEffect'],
+              keep_classnames: true,
               properties: {
                 regex: '^_[^_]',
                 reserved: [
@@ -27,12 +29,15 @@ export default quiltPackage({
                   '__REACT_DEVTOOLS_GLOBAL_HOOK__',
                   '__PREACT_DEVTOOLS__',
                   '_renderers',
-                  '__source',
-                  '__self',
+                  '_',
                 ],
               },
             },
-            compress: false,
+            compress: {
+              conditionals: false,
+              loops: false,
+              sequences: false,
+            },
             ecma: 2017,
             toplevel: true,
             module: true,

@@ -1,4 +1,4 @@
-import {options, Component} from 'preact';
+import {options, Component, isValidElement} from 'preact';
 import {useRef, useMemo, useEffect} from 'preact/hooks';
 import {
   signal,
@@ -79,8 +79,8 @@ export function installHooks() {
   hasInstalledHooks = true;
 
   Object.defineProperties(Signal.prototype, {
-    constructor: {configurable: true},
-    type: {configurable: true, value: Text},
+    constructor: {configurable: true, value: undefined},
+    type: {configurable: true, value: SignalValue},
     props: {
       configurable: true,
       get() {
@@ -161,7 +161,7 @@ export function installHooks() {
   //       if (value instanceof Signal) {
   //         if (!signalProps) vnode.__np = signalProps = {};
   //         signalProps[i] = value;
-  //         // props[i] = value.peek();
+  //         props[i] = value.peek();
   //       }
   //     }
   //   }
@@ -246,18 +246,20 @@ export function installHooks() {
   /** Unsubscribe from Signals when unmounting components/vnodes */
   hook(OptionsTypes.UNMOUNT, (old, vnode: VNode) => {
     if (typeof vnode.type === 'string') {
-      // let dom = vnode.__e as Element | undefined;
-      // // vnode._dom is undefined during string rendering
-      // if (dom) {
-      //   const updaters = dom._updaters;
-      //   if (updaters) {
-      //     dom._updaters = undefined;
-      //     for (let prop in updaters) {
-      //       let updater = updaters[prop];
-      //       if (updater) updater._dispose();
-      //     }
-      //   }
-      // }
+      let dom = vnode.__e as
+        | (Element & {_updaters?: Record<string, Effect>})
+        | undefined;
+      // vnode._dom is undefined during string rendering
+      if (dom) {
+        const updaters = dom._updaters;
+        if (updaters) {
+          dom._updaters = undefined;
+          for (let prop in updaters) {
+            let updater = updaters[prop];
+            if (updater) updater._dispose();
+          }
+        }
+      }
     } else {
       let component = vnode.__c;
       if (component) {
@@ -273,7 +275,7 @@ export function installHooks() {
 
   /** Mark components that use hook state so we can skip sCU optimization. */
   hook(OptionsTypes.HOOK, (old, component, index, type) => {
-    if (type < 3)
+    if (type < 3 || type === 9)
       (component as AugmentedComponent)._updateFlags |= HAS_HOOK_STATE;
     old(component, index, type);
   });
@@ -418,7 +420,7 @@ export function update<T extends SignalOrReactive>(
  * A wrapper component that renders a Signal directly as a Text node.
  * @todo: in Preact 11, just decorate Signal with `type:null`
  */
-function Text(this: AugmentedComponent, {data}: {data: Signal}) {
+function SignalValue(this: AugmentedComponent, {data}: {data: Signal}) {
   // hasComputeds.add(this);
 
   // Store the props.data signal in another signal so that
@@ -436,8 +438,13 @@ function Text(this: AugmentedComponent, {data}: {data: Signal}) {
       }
     }
 
-    // Replace this component's vdom updater with a direct text one:
     this._updater!._callback = () => {
+      if (isValidElement(s.peek()) || this.base?.nodeType !== 3) {
+        this._updateFlags |= HAS_PENDING_UPDATE;
+        this.setState({});
+        return;
+      }
+
       (this.base as Text).data = s.peek();
     };
 
@@ -450,4 +457,4 @@ function Text(this: AugmentedComponent, {data}: {data: Signal}) {
 
   return s.value;
 }
-Text.displayName = '_st';
+SignalValue.displayName = '_st';
