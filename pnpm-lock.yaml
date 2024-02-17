@@ -163,14 +163,14 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(@quilted/quilt@0.6.9)(@quilted/react@18.2.5)(@tanstack/react-query@5.8.4)
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/preact':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2)
       '@remote-dom/react':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
       '@simplewebauthn/browser':
         specifier: ^6.2.0
         version: 6.2.1
@@ -444,8 +444,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(@preact/signals-core@1.5.0)
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
 
   packages/clips-preact:
     dependencies:
@@ -453,11 +453,11 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/preact':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2)
     devDependencies:
       '@watching/clips':
         specifier: workspace:^
@@ -478,11 +478,11 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/react':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0)
       '@types/react':
         specifier: ^18.2.39
         version: 18.2.39
@@ -506,8 +506,8 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
     devDependencies:
       '@watching/clips':
         specifier: workspace:^
@@ -543,11 +543,11 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(@preact/signals-core@1.5.0)
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/signals':
-        specifier: ^1.0.0
-        version: 1.0.0(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.1)
 
   packages/tools:
     dependencies:
@@ -610,11 +610,11 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0(@quilted/react@18.2.5)
       '@remote-dom/core':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/react':
-        specifier: ^0.1.0
-        version: 0.1.0(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
+        specifier: ^0.1.1
+        version: 0.1.1(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2)
       '@types/react':
         specifier: ^18.2.39
         version: 18.2.39
@@ -4929,8 +4929,8 @@ packages:
       web-streams-polyfill: 3.2.1
     dev: false
 
-  /@remote-dom/core@0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2):
-    resolution: {integrity: sha512-piiSMOYFQ0s57AiIw9hDRp4n20keQfu+LOyT8oJ1NsaHRVrafBAZ+WqM2cjsgirMK5ZkCKoPVO9RffoaEl7OUg==}
+  /@remote-dom/core@0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2):
+    resolution: {integrity: sha512-LkCQlE5GbJ7e/fltGzo6WnkkDFQn3Joa+H2nHRZix84MGs+AqygzrXd3DigCT+h1a3PZ7J/6oNNOPCciIb+SSg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals-core': ^1.3.0
@@ -4950,8 +4950,8 @@ packages:
     resolution: {integrity: sha512-VW+JjT2mdwxdvj1RrEEbTMZERYUkRr5ASno92NpeHbp+FgTZXOzTSgkiQ7S00Aqp+kk45ZcipwbIgclUSEAUhg==}
     engines: {node: '>=14.0.0'}
 
-  /@remote-dom/preact@0.1.0(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2):
-    resolution: {integrity: sha512-ZcSCcUe4SD8g6uEnlOIpGcUIcV7t2nnqKAuAhDdS4xcPJU0PjOLbpL/PTVpLG9RqNbB/dhH6hXUSUphmPPh8nQ==}
+  /@remote-dom/preact@0.1.1(@preact/signals-core@1.5.0)(@preact/signals@1.2.2)(preact@10.19.2):
+    resolution: {integrity: sha512-AXSCmEFrybwA9XYwhaDVYphlUkRZsaA90w3psZKTjy0TUeRkW+3pY8kt9Y6pj36U6PQyTLZGczruZiQRqQx4Cw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals': ^1.2.0
@@ -4965,13 +4965,13 @@ packages:
     dependencies:
       '@preact/signals': 1.2.2(preact@10.19.2)
       '@preact/signals-core': 1.5.0
-      '@remote-dom/core': 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
-      '@remote-dom/signals': 1.0.0(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.0)
+      '@remote-dom/core': 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
+      '@remote-dom/signals': 1.0.1(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.1)
       htm: 3.1.1
       preact: 10.19.2
 
-  /@remote-dom/react@0.1.0(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2):
-    resolution: {integrity: sha512-n1YtY4suQXoSmPGUsBC4quiNGsw6ZCYpE/KJ/ZJubrM9CN0rYusct7n8PnhCzKDhbZdLAraE2hogVoZvwIMSHw==}
+  /@remote-dom/react@0.1.1(@preact/signals-core@1.5.0)(@quilted/react@18.2.5)(preact@10.19.2):
+    resolution: {integrity: sha512-4H0E79DgkbdDwXGtRvJuHVCEJL+t3A/DC+qk6VSa1Akx6Gw3s6bj4Z2iEM0LsRYi24/wYONH2rK3/xNgCQ0FYQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
@@ -4979,7 +4979,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@remote-dom/core': 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+      '@remote-dom/core': 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@types/react': 18.2.39
       htm: 3.1.1
       react: /@quilted/react@18.2.5
@@ -4987,8 +4987,8 @@ packages:
       - '@preact/signals-core'
       - preact
 
-  /@remote-dom/react@0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0):
-    resolution: {integrity: sha512-n1YtY4suQXoSmPGUsBC4quiNGsw6ZCYpE/KJ/ZJubrM9CN0rYusct7n8PnhCzKDhbZdLAraE2hogVoZvwIMSHw==}
+  /@remote-dom/react@0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0):
+    resolution: {integrity: sha512-4H0E79DgkbdDwXGtRvJuHVCEJL+t3A/DC+qk6VSa1Akx6Gw3s6bj4Z2iEM0LsRYi24/wYONH2rK3/xNgCQ0FYQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
@@ -4996,7 +4996,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@remote-dom/core': 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+      '@remote-dom/core': 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@types/react': 18.2.39
       htm: 3.1.1
       react: 18.0.0
@@ -5005,12 +5005,12 @@ packages:
       - preact
     dev: false
 
-  /@remote-dom/signals@1.0.0(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.0):
-    resolution: {integrity: sha512-LwV81Tq9UGMAmkcKE0ozj3DUECN6wL36JnGqeHB7cd1MJFDnPPz7kXIPrfxf46fWKPogU8g/NC0ZG00onnewJQ==}
+  /@remote-dom/signals@1.0.1(@preact/signals-core@1.5.0)(@remote-dom/core@0.1.1):
+    resolution: {integrity: sha512-JMUNBD2E65L8tZTJS0eRWDtBUDVZuNawyCVeAarKz8HQWZoIAYoEUQkaEU9DvkloERP8waa55eQd/5EB+Jab8Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals-core': ^1.3.0
-      '@remote-dom/core': ^0.1.0
+      '@remote-dom/core': ^0.1.1
     peerDependenciesMeta:
       '@preact/signals-core':
         optional: true
@@ -5018,7 +5018,7 @@ packages:
         optional: true
     dependencies:
       '@preact/signals-core': 1.5.0
-      '@remote-dom/core': 0.1.0(@preact/signals-core@1.5.0)(preact@10.19.2)
+      '@remote-dom/core': 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
 
   /@rollup/plugin-alias@5.1.0(rollup@4.6.0):
     resolution: {integrity: sha512-lpA3RZ9PdIG7qqhEfv79tBffNaoDuukFDrmhLqg9ifv99u/ehn+lOg30x2zmhf8AQqQUZaMk/B9fZraQ6/acDQ==}
