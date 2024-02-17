@@ -76,7 +76,7 @@
     "zod": "^3.21.4"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.5.1"
+    "@watching/clips": "^0.5.2"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {

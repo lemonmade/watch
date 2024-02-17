@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.2
+
+### Patch Changes
+
+- [`c7cf8857`](https://github.com/lemonmade/watch/commit/c7cf885785297bd16e9085f3ae25b98fff02b0f4) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix RemoteRootElement initial mutation
+
 ## 0.2.1
 
 ### Patch Changes
