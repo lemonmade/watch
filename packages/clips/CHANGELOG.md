@@ -1,5 +1,13 @@
 # @watching/clips
 
+## 0.5.2
+
+### Patch Changes
+
+- [`fa2bcf46`](https://github.com/lemonmade/watch/commit/fa2bcf46f19fd2c0e49d8131505f35ddaddbde08) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix Action component props
+
+- [`c7cf8857`](https://github.com/lemonmade/watch/commit/c7cf885785297bd16e9085f3ae25b98fff02b0f4) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix RemoteRootElement initial mutation
+
 ## 0.5.1
 
 ### Patch Changes
