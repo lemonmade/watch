@@ -481,8 +481,8 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1(@preact/signals-core@1.5.0)(preact@10.19.2)
       '@remote-dom/react':
-        specifier: ^0.1.2
-        version: 0.1.2(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0)
+        specifier: ^0.1.3
+        version: 0.1.3(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0)
       '@types/react':
         specifier: ^18.2.39
         version: 18.2.39
@@ -4987,8 +4987,8 @@ packages:
       - '@preact/signals-core'
       - preact
 
-  /@remote-dom/react@0.1.2(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0):
-    resolution: {integrity: sha512-+dv2Fl57vKxKFOXumh2nZTmHlmhvjAyMWhCfudYbTixFev/I5HmTvdwQL9Wj/mpCMwHyXJPTEBuPTwnrc7NFnA==}
+  /@remote-dom/react@0.1.3(@preact/signals-core@1.5.0)(preact@10.19.2)(react@18.0.0):
+    resolution: {integrity: sha512-wDrAV32RozCDtSkHVv4cQpcKDDl32fKuduVgjYm+bcv82NvEOJfBDk27IasluGJFhNLrPyYocCfUlE4eCDzdQQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
