@@ -1,5 +1,13 @@
 # @watching/clips-react
 
+## 0.4.3
+
+### Patch Changes
+
+- [`e407f147`](https://github.com/lemonmade/watch/commit/e407f1474591c0a2c624fc8a7447bc3223eb5f34) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade to fixed React DOM version
+
+- [`4d65a6f1`](https://github.com/lemonmade/watch/commit/4d65a6f1aa950e0bfa62fd799e41cdf942efecc5) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix React polyfill, again
+
 ## 0.4.2
 
 ### Patch Changes

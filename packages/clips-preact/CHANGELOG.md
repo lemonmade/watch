@@ -1,5 +1,11 @@
 # @watching/clips-preact
 
+## 0.2.4
+
+### Patch Changes
+
+- [`8cff03b0`](https://github.com/lemonmade/watch/commit/8cff03b09e845abbb904c529ed70120e6f623073) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix Preact package signal integration
+
 ## 0.2.3
 
 ### Patch Changes
