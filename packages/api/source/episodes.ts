@@ -77,7 +77,10 @@ export class EpisodeSelection {
   }
 
   nextEpisode(
-    current: EpisodeSelector | SeasonSelector | EpisodeEndpointSelectorObject,
+    current:
+      | EpisodeSelector
+      | SeasonSelector
+      | EpisodeEndpointSelectorObject = {season: 1},
   ): EpisodeSelectorObject | undefined {
     const {episode, season} =
       typeof current === 'string'

@@ -164,8 +164,7 @@ export const Mutation = createMutationResolver({
       );
     }
 
-    const firstRange = ranges[0]!;
-    const lastRange = ranges[ranges.length - 1]!;
+    const lastRange = ranges.at(-1)!;
 
     const toSeason = series.seasons.find(
       (season) => season.number === lastRange.to!.season,
@@ -197,10 +196,7 @@ export const Mutation = createMutationResolver({
       data: {
         seriesId: series.id,
         userId: user.id,
-        nextEpisode: EpisodeSelection.stringify({
-          episode: firstRange.from!.episode ?? 1,
-          season: firstRange.from!.season,
-        }),
+        nextEpisode: EpisodeSelection.stringify(selection.nextEpisode()!),
         includeEpisodes: selection.selectors(),
         spoilerAvoidance,
       },
@@ -553,5 +549,5 @@ function episodeRangeSelectorObjectFromGraphQLInputWithMaxSeason(
 ) {
   const {from, to} = episodeRangeSelectorObjectFromGraphQLInput(range);
 
-  return {from, to: to ?? {season: maxSeason}};
+  return {from: from ?? {season: 1}, to: to ?? {season: maxSeason}};
 }
