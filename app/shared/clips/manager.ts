@@ -4,6 +4,7 @@ import {type ApiCore} from '@watching/clips';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {EventEmitter} from '@quilted/quilt/events';
 import {
+  createGraphQLFetch,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
@@ -135,12 +136,29 @@ export function createClipsManager(
   ) {
     const extensionPoint = extensionPoints[options.target];
 
+    const extensionGraphQL = createGraphQLFetch({
+      url: ({name}) => {
+        const url = new URL('/api/graphql/clips', appContext.router.currentUrl);
+
+        if (name) url.searchParams.set('name', name);
+        url.searchParams.set('extension', options.extension.id);
+
+        return url;
+      },
+      credentials: 'include',
+    });
+
+    const extensionContext: ExtensionPointDefinitionContext = {
+      ...appContext,
+      graphql: extensionGraphQL,
+    };
+
     const settings = signal(JSON.parse(options.settings ?? '{}'));
     const liveQuery = createLiveQueryRunner(
       options.liveQuery,
       (helpers) => extensionPoint.query(options.options as never, helpers),
       {
-        context: appContext,
+        context: extensionContext,
         signal: new AbortController().signal,
       },
     );
@@ -148,7 +166,7 @@ export function createClipsManager(
       (helpers) =>
         extensionPoint.mutate?.(options.options as never, helpers) ?? {},
       {
-        context: appContext,
+        context: extensionContext,
       },
     );
     const loadingUi = signal(options.loadingUi);
@@ -162,6 +180,7 @@ export function createClipsManager(
           mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
+          graphql: extensionGraphQL,
         };
       },
       async prepare({context: {sandbox, liveQuery}}) {
@@ -194,6 +213,23 @@ export function createClipsManager(
   ) {
     const extensionPoint = extensionPoints[options.target];
 
+    const extensionGraphQL = createGraphQLFetch({
+      url: ({name}) => {
+        const url = new URL('/api/graphql/clips', appContext.router.currentUrl);
+
+        if (name) url.searchParams.set('name', name);
+        url.searchParams.set('extension', options.extension.id);
+
+        return url;
+      },
+      credentials: 'include',
+    });
+
+    const extensionContext: ExtensionPointDefinitionContext = {
+      ...appContext,
+      graphql: extensionGraphQL,
+    };
+
     const events = new EventEmitter<{script: string}>();
     const script = signal<string | undefined>(undefined);
     const translations = signal<string | undefined>(undefined);
@@ -202,7 +238,7 @@ export function createClipsManager(
       undefined,
       (helpers) => extensionPoint.query(options.options as never, helpers),
       {
-        context: appContext,
+        context: extensionContext,
         signal: new AbortController().signal,
       },
     );
@@ -210,7 +246,7 @@ export function createClipsManager(
       (helpers) =>
         extensionPoint.mutate?.(options.options as never, helpers) ?? {},
       {
-        context: appContext,
+        context: extensionContext,
       },
     );
     const loadingUi = signal<
@@ -226,6 +262,7 @@ export function createClipsManager(
           mutate,
           sandbox: createSandbox({signal}),
           components: extensionPoint.components(),
+          graphql: extensionGraphQL,
         };
       },
       async prepare({context: {sandbox, liveQuery}}) {

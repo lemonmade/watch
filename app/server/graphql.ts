@@ -49,6 +49,48 @@ router.post('/', async (request) => {
   return response;
 });
 
+router.post('/clips', async (request) => {
+  const extension = request.URL.searchParams.get('extension');
+
+  if (extension) {
+    console.log(`Running GraphQL operation for extension ${extension}`);
+  } else {
+    return new JSONResponse(
+      {errors: [{message: 'Missing extension'}]},
+      {
+        status: 400,
+        headers: {
+          'Timing-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store',
+        },
+      },
+    );
+  }
+
+  const {
+    name,
+    operationName,
+    query,
+    mutation,
+    operation,
+    variables,
+    extensions,
+  } = (await request.json()) as any;
+
+  const resolvedOperation = operation ?? query ?? mutation;
+  const resolvedName = name ?? operationName;
+
+  const response = await runGraphQLRequest(request, {
+    operation: resolvedOperation,
+    operationName: resolvedName,
+    variables,
+    extensions,
+  });
+
+  return response;
+});
+
 router.get('/', async (request) => {
   const {searchParams} = request.URL;
   const operation =
