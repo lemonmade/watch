@@ -4,7 +4,7 @@
 
   display: grid;
   grid-template-columns: repeat(
-    auto-fit,
+    auto-fill,
     minmax(var(--w-internal-MediaGrid-item-min-inline-size), 1fr)
   );
   row-gap: var(--w-internal-MediaGrid-block-spacing);
