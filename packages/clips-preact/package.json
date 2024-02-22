@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@preact/signals-core": "^1.5.0",
-    "@remote-dom/core": "^0.1.1",
-    "@remote-dom/preact": "^0.1.1"
+    "@remote-dom/core": "^1.0.0",
+    "@remote-dom/preact": "^1.0.0"
   },
   "peerDependencies": {
     "@watching/clips": "workspace:^",
