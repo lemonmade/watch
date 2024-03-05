@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.3
+
+### Patch Changes
+
+- [`307b366a`](https://github.com/lemonmade/watch/commit/307b366a13e3d00bd257be70cc977c4f048b5dd7) Thanks [@lemonmade](https://github.com/lemonmade)! - Upgrade Remote DOM to 1.0
+
 ## 0.2.2
 
 ### Patch Changes
