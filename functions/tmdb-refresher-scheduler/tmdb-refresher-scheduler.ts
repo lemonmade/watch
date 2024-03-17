@@ -3,6 +3,8 @@ import {
   type ExportedHandlerScheduledHandler,
 } from '@cloudflare/workers-types';
 
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
+
 import {type Message} from '../tmdb-refresher/tmdb-refresher.ts';
 
 interface Environment {
@@ -12,20 +14,9 @@ interface Environment {
 
 const scheduled: ExportedHandlerScheduledHandler<Environment> =
   async function scheduled(event, env) {
-    const [{PrismaClient}, {withAccelerate}] = await Promise.all([
-      import('@prisma/client/edge'),
-      import('@prisma/extension-accelerate'),
-    ]);
-
-    const prisma = new PrismaClient({
-      datasources: {
-        db: {
-          url: env.DATABASE_URL,
-        },
-      },
-    }).$extends(withAccelerate());
-
     console.log(event);
+
+    const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
 
     const series = await prisma.series.findMany({
       where: {status: 'RETURNING'},

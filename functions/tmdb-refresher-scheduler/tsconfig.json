@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "build/typescript",
     "paths": {
+      "~/global/*": ["../../global/*"],
       "~/shared/*": ["../shared/*"]
     }
   },

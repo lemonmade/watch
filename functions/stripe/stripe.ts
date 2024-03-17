@@ -9,6 +9,7 @@ import {
   PaymentStatus,
   SUBSCRIPTION_LEVELS,
 } from '~/global/subscriptions.ts';
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
 
 import type {Email, EmailType, PropsForEmail} from '../email/index.tsx';
 
@@ -81,18 +82,7 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
 
   console.log(event);
 
-  const [{PrismaClient}, {withAccelerate}] = await Promise.all([
-    import('@prisma/client/edge'),
-    import('@prisma/extension-accelerate'),
-  ]);
-
-  const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: env.DATABASE_URL,
-      },
-    },
-  }).$extends(withAccelerate());
+  const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
 
   try {
     // @see https://stripe.com/docs/webhooks/stripe-events
