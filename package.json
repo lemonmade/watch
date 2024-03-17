@@ -23,8 +23,9 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.3",
     "@changesets/cli": "^2.26.2",
-    "@prisma/client": "^5.4.0",
-    "@prisma/extension-accelerate": "^0.6.2",
+    "@planetscale/database": "^1.16.0",
+    "@prisma/client": "^5.11.0",
+    "@prisma/adapter-planetscale": "^5.11.0",
     "@quilted/browserslist-config": "^0.1.9",
     "@quilted/cloudflare": "^0.2.4",
     "@quilted/craft": "^0.2.5",
@@ -45,7 +46,7 @@
     "nodemon": "^2.0.0",
     "preact": "^10.19.2",
     "prettier": "^3.1.0",
-    "prisma": "^5.4.0",
+    "prisma": "^5.11.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
     "rollup": "^4.6.0",
@@ -56,7 +57,7 @@
     "vitest": "^1.1.1",
     "wrangler": "^3.28.4"
   },
-  "packageManager": "pnpm@8.10.5+sha256.a4bd9bb7b48214bbfcd95f264bd75bb70d100e5d4b58808f5cd6ab40c6ac21c5",
+  "packageManager": "pnpm@8.15.4+sha256.cea6d0bdf2de3a0549582da3983c70c92ffc577ff4410cbf190817ddc35137c2",
   "prettier": "@quilted/prettier",
   "browserslist": [
     "defaults and not dead"

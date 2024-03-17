@@ -3,6 +3,7 @@ import {Buffer} from 'buffer-polyfill';
 import type {ExportedHandlerQueueHandler} from '@cloudflare/workers-types';
 
 import {updateSeries} from '~/global/tmdb.ts';
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
 
 interface Environment {
   DATABASE_URL: string;
@@ -169,20 +170,6 @@ let prismaPromise:
   | undefined;
 
 async function createPrisma(url: string) {
-  prismaPromise ??= (async () => {
-    const [{PrismaClient}, {withAccelerate}] = await Promise.all([
-      import('@prisma/client/edge'),
-      import('@prisma/extension-accelerate'),
-    ]);
-
-    const prisma = new PrismaClient({
-      datasources: {
-        db: {url},
-      },
-    }).$extends(withAccelerate());
-
-    return prisma as any;
-  })();
-
+  prismaPromise ??= createEdgeDatabaseConnection({url});
   return await prismaPromise;
 }

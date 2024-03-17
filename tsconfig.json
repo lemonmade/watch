@@ -1,10 +1,6 @@
 {
   "extends": "@quilted/typescript/workspace.json",
-  "include": [
-    "configuration/**/*.ts",
-    "scripts/**/*.ts",
-    "graphql.config.ts"
-  ],
+  "include": ["configuration/**/*.ts", "scripts/**/*.ts", "graphql.config.ts"],
   "compilerOptions": {
     "outDir": "build/typescript/workspace",
     "module": "ESNext",
