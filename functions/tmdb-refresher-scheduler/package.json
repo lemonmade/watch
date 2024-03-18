@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "rollup --config ./configuration/rollup.config.js"
+    "build": "rollup --config ./configuration/rollup.config.js",
+    "deploy": "wrangler deploy --config ./configuration/wrangler.toml"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1"
