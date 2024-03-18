@@ -11,7 +11,7 @@ workers_dev = false
 # @see https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
 [triggers]
 # Every 12 hours
-crons = ["0 */12 * * *"]
+crons = ["0 */12 * * *", "*/20 * * * *"]
 
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
