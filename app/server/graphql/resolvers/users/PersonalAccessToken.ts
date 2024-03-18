@@ -49,7 +49,7 @@ export const Mutation = createMutationResolver({
     {id, token: plaintextToken},
     {user, prisma},
   ) {
-    const token = await prisma.personalAccessToken.findFirst({
+    const token = await prisma.personalAccessToken.findUnique({
       where: {
         id: id ? fromGid(id).id : undefined,
         token: plaintextToken ?? undefined,

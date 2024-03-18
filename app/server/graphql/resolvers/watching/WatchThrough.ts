@@ -29,7 +29,7 @@ declare module '../types' {
 
 export const Query = createQueryResolver({
   watchThrough(_, {id}, {prisma, user}) {
-    return prisma.watchThrough.findFirst({
+    return prisma.watchThrough.findUnique({
       where: {id: fromGid(id).id, userId: user.id},
     });
   },
@@ -51,7 +51,7 @@ export const Mutation = createMutationResolver({
   async stopWatchThrough(_, {id: gid, watchLater = false}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    const validatedWatchThrough = await prisma.watchThrough.findFirstOrThrow({
+    const validatedWatchThrough = await prisma.watchThrough.findUniqueOrThrow({
       where: {id, userId: user.id},
       select: {id: true, series: {select: {id: true}}},
     });
@@ -90,7 +90,7 @@ export const Mutation = createMutationResolver({
     },
     {user, prisma},
   ) {
-    const seriesCondition: Prisma.SeriesWhereInput = {};
+    const seriesCondition: Prisma.SeriesWhereUniqueInput = {} as any;
 
     if (seriesInput.id) {
       seriesCondition.id = fromGid(seriesInput.id).id;
@@ -100,7 +100,7 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide either series.id or series.handle`);
     }
 
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: seriesCondition,
       include: {
         seasons: {
@@ -175,7 +175,7 @@ export const Mutation = createMutationResolver({
     if (spoilerAvoidance == null) {
       const [{spoilerAvoidance: userSpoilerAvoidance}, lastSeasonWatch] =
         await Promise.all([
-          prisma.user.findFirstOrThrow({
+          prisma.user.findUniqueOrThrow({
             where: {id: user.id},
           }),
           prisma.watch.findFirst({
@@ -221,7 +221,7 @@ export const Mutation = createMutationResolver({
   async deleteWatchThrough(_, {id: gid, watchLater = false}, {prisma, user}) {
     const {id} = fromGid(gid);
 
-    const validatedWatchThrough = await prisma.watchThrough.findFirstOrThrow({
+    const validatedWatchThrough = await prisma.watchThrough.findUniqueOrThrow({
       where: {id, userId: user.id},
       select: {id: true, series: {select: {id: true}}},
     });
@@ -252,7 +252,7 @@ export const Mutation = createMutationResolver({
   ) {
     const {id} = fromGid(gid);
 
-    const watchThroughForUser = await prisma.watchThrough.findFirst({
+    const watchThroughForUser = await prisma.watchThrough.findUnique({
       select: {id: true},
       where: {
         id,
@@ -287,7 +287,7 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
     return createdAt.toISOString();
   },
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirstOrThrow({
+    return prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
     });
   },
@@ -410,7 +410,7 @@ export const WatchThrough = createResolverWithGid('WatchThrough', {
     // This logic is a bit incorrect right now, because there can be
     // episodes that are in the future. For now, the client can query
     // `nextEpisode` to check for that case
-    const {seasons} = await prisma.series.findFirstOrThrow({
+    const {seasons} = await prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
       select: {
         seasons: {

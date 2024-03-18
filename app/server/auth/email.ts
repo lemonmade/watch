@@ -50,7 +50,7 @@ export async function signInFromEmail(request: Request) {
     );
 
     const prisma = await createPrisma();
-    const user = await prisma.user.findFirst({where: {email}});
+    const user = await prisma.user.findUnique({where: {email}});
 
     if (user == null) {
       throw new Error(`No user found for email ${email}`);

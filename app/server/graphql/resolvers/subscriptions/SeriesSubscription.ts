@@ -19,7 +19,7 @@ declare module '../types.ts' {
 
 export const Query = createQueryResolver({
   subscription(_, {id}, {prisma, user}) {
-    return prisma.seriesSubscription.findFirst({
+    return prisma.seriesSubscription.findUnique({
       where: {id: fromGid(id).id, userId: user.id},
     });
   },
@@ -41,7 +41,7 @@ export const Mutation = createMutationResolver({
     const spoilerAvoidance =
       explicitSpoilerAvoidance ??
       (
-        await prisma.user.findFirstOrThrow({
+        await prisma.user.findUniqueOrThrow({
           where: {id: user.id},
         })
       ).spoilerAvoidance;
@@ -79,7 +79,7 @@ export const Mutation = createMutationResolver({
     const spoilerAvoidance =
       explicitSpoilerAvoidance ??
       (
-        await prisma.user.findFirstOrThrow({
+        await prisma.user.findUniqueOrThrow({
           where: {id: user.id},
         })
       ).spoilerAvoidance;
@@ -164,7 +164,7 @@ export const Mutation = createMutationResolver({
 export const SeriesSubscription = createResolverWithGid('SeriesSubscription', {
   subscribedOn: ({createdAt}) => createdAt.toISOString(),
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirstOrThrow({
+    return prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
     });
   },

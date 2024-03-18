@@ -25,7 +25,7 @@ declare module '../types' {
 
 export const Query = createQueryResolver({
   watch(_, {id}, {prisma, user}) {
-    return prisma.watch.findFirst({
+    return prisma.watch.findUnique({
       where: {id: fromGid(id).id, userId: user.id},
     });
   },
@@ -50,7 +50,7 @@ export const Mutation = createMutationResolver({
 
     const validatedWatchThroughId = watchThroughId
       ? (
-          await prisma.watchThrough.findFirstOrThrow({
+          await prisma.watchThrough.findUniqueOrThrow({
             where: {id: watchThroughId, userId: user.id},
           })
         ).id
@@ -138,7 +138,7 @@ export const Mutation = createMutationResolver({
     const firstRange = ranges[0]!;
     const lastRange = ranges[ranges.length - 1]!;
 
-    const seriesCondition: Prisma.SeriesWhereInput = {};
+    const seriesCondition: Prisma.SeriesWhereUniqueInput = {} as any;
 
     if (seriesInput.id) {
       seriesCondition.id = fromGid(seriesInput.id).id;
@@ -148,7 +148,7 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide either series.id or series.handle`);
     }
 
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: seriesCondition,
       include: {
         seasons: {
@@ -215,7 +215,7 @@ export const Mutation = createMutationResolver({
   async deleteWatch(_, {id: gid}, {user, prisma}) {
     const {id} = fromGid(gid);
 
-    const validatedWatch = await prisma.watch.findFirstOrThrow({
+    const validatedWatch = await prisma.watch.findUniqueOrThrow({
       where: {id, userId: user.id},
       select: {id: true},
     });
@@ -238,12 +238,12 @@ export const Watch = createResolverWithGid('Watch', {
   async media({id, episodeId, seasonId}, _, {prisma}) {
     const [episode, season] = await Promise.all([
       episodeId
-        ? prisma.episode.findFirst({
+        ? prisma.episode.findUnique({
             where: {id: episodeId},
           })
         : Promise.resolve(null),
       seasonId
-        ? prisma.season.findFirstOrThrow({
+        ? prisma.season.findUniqueOrThrow({
             where: {id: seasonId},
           })
         : Promise.resolve(null),
@@ -259,7 +259,7 @@ export const Watch = createResolverWithGid('Watch', {
   },
   watchThrough({watchThroughId}, _, {prisma, user}) {
     return watchThroughId
-      ? prisma.watchThrough.findFirstOrThrow({
+      ? prisma.watchThrough.findUniqueOrThrow({
           where: {id: watchThroughId, userId: user.id},
         })
       : null;

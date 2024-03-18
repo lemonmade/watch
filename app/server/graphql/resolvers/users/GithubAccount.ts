@@ -19,7 +19,7 @@ export const GithubAccount = createResolverWithGid('GithubAccount', {
 
 export const Mutation = createMutationResolver({
   async disconnectGithubAccount(_, __, {prisma, user}) {
-    const githubAccount = await prisma.githubAccount.findFirst({
+    const githubAccount = await prisma.githubAccount.findUnique({
       where: {userId: user.id},
     });
 

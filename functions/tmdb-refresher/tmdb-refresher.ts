@@ -84,7 +84,7 @@ const handleFetch = async function handleFetch(
     }
 
     const prisma = await createPrisma(env.DATABASE_URL);
-    const {id, name, tmdbId} = await prisma.series.findFirstOrThrow({
+    const {id, name, tmdbId} = await prisma.series.findUniqueOrThrow({
       where: idOption ? {id: idOption} : {handle: handleOption},
       select: {id: true, name: true, tmdbId: true},
     });

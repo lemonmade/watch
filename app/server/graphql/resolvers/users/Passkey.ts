@@ -24,7 +24,7 @@ export const Mutation = createMutationResolver({
       '@simplewebauthn/server'
     );
 
-    const {email} = await prisma.user.findFirstOrThrow({
+    const {email} = await prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
 
@@ -203,7 +203,7 @@ export const Mutation = createMutationResolver({
     }
   },
   async deletePasskey(_, {id}, {user, prisma}) {
-    const passkey = await prisma.passkey.findFirstOrThrow({
+    const passkey = await prisma.passkey.findUniqueOrThrow({
       where: {
         id: fromGid(id).id,
         userId: user.id,

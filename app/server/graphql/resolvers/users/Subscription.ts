@@ -48,11 +48,11 @@ export const Mutation = createMutationResolver({
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const existingSubscription = await prisma.stripeSubscription.findFirst({
+    const existingSubscription = await prisma.stripeSubscription.findUnique({
       where: {userId: user.id},
     });
 
-    const {email} = await prisma.user.findFirstOrThrow({
+    const {email} = await prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
 
@@ -159,7 +159,7 @@ export const Mutation = createMutationResolver({
     };
   },
   async cancelSubscription(_, __, {prisma, user}) {
-    const subscription = await prisma.stripeSubscription.findFirst({
+    const subscription = await prisma.stripeSubscription.findUnique({
       where: {userId: user.id},
     });
 
@@ -202,7 +202,7 @@ async function updateUserWithSubscription(
   subscription: StripeSubscription,
   prisma: PrismaClient,
 ) {
-  const user = await prisma.user.findFirstOrThrow({
+  const user = await prisma.user.findUniqueOrThrow({
     where: {id: subscription.userId},
     include: {giftCodes: {take: 1}},
   });

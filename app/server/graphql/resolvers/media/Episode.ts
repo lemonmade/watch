@@ -30,7 +30,7 @@ export type EpisodeResolver = Resolver<'Episode'>;
 export const Query = createQueryResolver({
   episode(_, {id, series, season, number, selector}, {prisma}) {
     if (id) {
-      return prisma.episode.findFirst({
+      return prisma.episode.findUnique({
         where: {id: fromGid(id).id},
       });
     } else if (series) {
@@ -71,12 +71,12 @@ export const Episode = createResolverWithGid('Episode', {
     return EpisodeSelection.stringify({episode: number, season: seasonNumber});
   },
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirstOrThrow({
+    return prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
     });
   },
   season({seasonId}, _, {prisma}) {
-    return prisma.season.findFirstOrThrow({
+    return prisma.season.findUniqueOrThrow({
       where: {id: seasonId},
     });
   },
@@ -88,7 +88,7 @@ export const Episode = createResolverWithGid('Episode', {
       return firstAired.getTime() < Date.now();
     }
 
-    const season = await prisma.season.findFirstOrThrow({
+    const season = await prisma.season.findUniqueOrThrow({
       where: {id: seasonId},
     });
 

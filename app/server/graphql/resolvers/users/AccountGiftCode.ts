@@ -41,7 +41,7 @@ export const Query = createQueryResolver({
 
 export const Mutation = createMutationResolver({
   async createAccountGiftCode(_, __, {prisma, user}) {
-    const {role} = await prisma.user.findFirstOrThrow({
+    const {role} = await prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
 
@@ -61,7 +61,7 @@ export const Mutation = createMutationResolver({
   },
   async redeemAccountGiftCode(_, {code}, {prisma, user}) {
     const [giftCode, existingCodeForUser] = await Promise.all([
-      prisma.accountGiftCode.findFirst({
+      prisma.accountGiftCode.findUnique({
         where: {code},
       }),
       prisma.accountGiftCode.findFirst({

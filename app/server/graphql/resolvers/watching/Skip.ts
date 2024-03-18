@@ -36,7 +36,7 @@ export const Mutation = createMutationResolver({
 
     const validatedWatchThroughId = watchThroughId
       ? (
-          await prisma.watchThrough.findFirstOrThrow({
+          await prisma.watchThrough.findUniqueOrThrow({
             where: {id: watchThroughId, userId: user.id},
           })
         ).id
@@ -93,12 +93,12 @@ export const Skip = createResolverWithGid('Skip', {
   async media({id, episodeId, seasonId}, _, {prisma}) {
     const [episode, season] = await Promise.all([
       episodeId
-        ? prisma.episode.findFirst({
+        ? prisma.episode.findUnique({
             where: {id: episodeId},
           })
         : Promise.resolve(null),
       seasonId
-        ? prisma.season.findFirstOrThrow({
+        ? prisma.season.findUniqueOrThrow({
             where: {id: seasonId},
           })
         : Promise.resolve(null),
@@ -114,7 +114,7 @@ export const Skip = createResolverWithGid('Skip', {
   },
   watchThrough({watchThroughId}, _, {prisma, user}) {
     return watchThroughId
-      ? prisma.watchThrough.findFirstOrThrow({
+      ? prisma.watchThrough.findUniqueOrThrow({
           where: {id: watchThroughId, userId: user.id},
         })
       : null;

@@ -20,7 +20,7 @@ export const GoogleAccount = createResolverWithGid('GoogleAccount', {
 
 export const Mutation = createMutationResolver({
   async disconnectGoogleAccount(_, __, {prisma, user}) {
-    const googleAccount = await prisma.googleAccount.findFirst({
+    const googleAccount = await prisma.googleAccount.findUnique({
       where: {userId: user.id},
     });
 

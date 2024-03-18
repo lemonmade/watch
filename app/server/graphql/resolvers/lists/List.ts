@@ -28,12 +28,12 @@ export const VIRTUAL_WATCH_LATER_LIST = {
 
 export const Query = createQueryResolver({
   list(_, {id}: {id: string}, {prisma, user}) {
-    return prisma.list.findFirst({
+    return prisma.list.findUnique({
       where: {id: fromGid(id).id, userId: user.id},
     });
   },
   async lists(_, __, {user, prisma}) {
-    const {watchLaterId} = await prisma.user.findFirstOrThrow({
+    const {watchLaterId} = await prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
 
@@ -69,7 +69,7 @@ export const ListItem = createResolverWithGid('ListItem', {
     const series =
       seriesId == null
         ? null
-        : await prisma.series.findFirst({
+        : await prisma.series.findUnique({
             where: {id: seriesId},
           });
 
@@ -125,11 +125,11 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide a seriesId`);
     }
 
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: {id: fromGid(seriesId).id},
     });
 
-    const list = await prisma.list.findFirst({
+    const list = await prisma.list.findUnique({
       where: {id: fromGid(id).id, userId: user.id},
       include: {
         items: {
@@ -153,11 +153,11 @@ export const Mutation = createMutationResolver({
     return {series, list, item};
   },
   async removeFromList(_, {id, itemId}, {user, prisma}) {
-    const list = await prisma.list.findFirstOrThrow({
+    const list = await prisma.list.findUniqueOrThrow({
       where: {id: fromGid(id).id, userId: user.id},
     });
 
-    const item = await prisma.listItem.findFirstOrThrow({
+    const item = await prisma.listItem.findUniqueOrThrow({
       where: {id: fromGid(itemId).id},
     });
 
@@ -174,7 +174,7 @@ export const Mutation = createMutationResolver({
     const series =
       item.seriesId == null
         ? null
-        : await prisma.series.findFirstOrThrow({
+        : await prisma.series.findUniqueOrThrow({
             where: {id: item.seriesId},
           });
 

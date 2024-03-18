@@ -428,7 +428,7 @@ async function handleGithubOAuthCallback(
   }
 
   const prisma = await createPrisma();
-  const account = await prisma.githubAccount.findFirst({
+  const account = await prisma.githubAccount.findUnique({
     where: {id: githubResult.viewer.id},
     select: {userId: true},
   });

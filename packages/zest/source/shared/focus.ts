@@ -1,7 +1,7 @@
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-export function findFirstFocusable(
+export function findUniqueFocusable(
   element: Element | null,
 ): HTMLElement | null {
   if (element == null) return null;
@@ -14,5 +14,5 @@ export function findFirstFocusable(
 }
 
 export function focusFirstFocusable(element: HTMLElement | null) {
-  findFirstFocusable(element)?.focus();
+  findUniqueFocusable(element)?.focus();
 }

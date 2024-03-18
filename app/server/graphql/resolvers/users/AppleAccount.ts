@@ -35,7 +35,7 @@ export const Mutation = createMutationResolver({
       normalizedRedirectTo = new URL('/app', request.url);
     }
 
-    const existingAccount = await prisma.appleAccount.findFirst({
+    const existingAccount = await prisma.appleAccount.findUnique({
       where: {id: token.id},
       include: {user: true},
     });
@@ -81,7 +81,7 @@ export const Mutation = createMutationResolver({
       normalizedRedirectTo = new URL('/app', request.url);
     }
 
-    const existingAccount = await prisma.appleAccount.findFirst({
+    const existingAccount = await prisma.appleAccount.findUnique({
       where: {id: token.id},
       include: {user: true},
     });
@@ -126,7 +126,7 @@ export const Mutation = createMutationResolver({
   async connectAppleAccount(_, {idToken}, {prisma, user}) {
     const token = await validateIdToken(idToken);
 
-    const existingAccount = await prisma.appleAccount.findFirst({
+    const existingAccount = await prisma.appleAccount.findUnique({
       where: {userId: user.id},
       include: {user: true},
     });
@@ -180,7 +180,7 @@ export const Mutation = createMutationResolver({
     };
   },
   async disconnectAppleAccount(_, __, {prisma, user}) {
-    const appleAccount = await prisma.appleAccount.findFirst({
+    const appleAccount = await prisma.appleAccount.findUnique({
       where: {userId: user.id},
     });
 

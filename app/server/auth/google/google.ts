@@ -460,7 +460,7 @@ async function handleGoogleOAuthCallback<State extends {} = {}>(
   };
 
   const prisma = await createPrisma();
-  const account = await prisma.googleAccount.findFirst({
+  const account = await prisma.googleAccount.findUnique({
     where: {id: googleAccount.id},
     select: {userId: true},
   });

@@ -56,7 +56,7 @@ export async function authenticate(
   const prisma = explicitPrisma ?? (await createPrisma());
 
   const userFromCookie = cookieAuthUserId
-    ? await prisma.user.findFirst({
+    ? await prisma.user.findUnique({
         where: {id: cookieAuthUserId},
       })
     : undefined;
@@ -70,7 +70,7 @@ export async function authenticate(
     return {type: 'unauthenticated'};
   }
 
-  const token = await prisma.personalAccessToken.findFirst({
+  const token = await prisma.personalAccessToken.findUnique({
     where: {token: accessToken},
     include: {user: true},
   });

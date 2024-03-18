@@ -7,7 +7,7 @@ export async function createAccountWithGiftCode(
   {giftCode, prisma}: {giftCode?: string; prisma: Prisma},
 ) {
   const code = giftCode
-    ? await prisma.accountGiftCode.findFirstOrThrow({
+    ? await prisma.accountGiftCode.findUniqueOrThrow({
         where: {code: giftCode},
       })
     : undefined;

@@ -17,13 +17,13 @@ export async function updateWatchThrough(
     episode: DatabaseEpisode;
   } & ({watch: DatabaseWatch} | {skip: DatabaseSkip}),
 ) {
-  const watchThrough = await prisma.watchThrough.findFirstOrThrow({
+  const watchThrough = await prisma.watchThrough.findUniqueOrThrow({
     where: {id},
   });
 
   const episodeNumber = episode.number;
 
-  const season = await prisma.season.findFirstOrThrow({
+  const season = await prisma.season.findUniqueOrThrow({
     where: {id: episode.seasonId},
     select: {
       status: true,

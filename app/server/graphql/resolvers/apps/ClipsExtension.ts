@@ -67,7 +67,7 @@ export const Query = createQueryResolver({
     });
   },
   clipsInstallation(_, {id}, {prisma}) {
-    return prisma.clipsExtensionInstallation.findFirst({
+    return prisma.clipsExtensionInstallation.findUniqueOrThrow({
       where: {id: fromGid(id).id},
     });
   },
@@ -143,7 +143,7 @@ export const Mutation = createMutationResolver({
       select: {id: true},
     });
 
-    const extension = await prisma.clipsExtension.findFirstOrThrow({
+    const extension = await prisma.clipsExtension.findUniqueOrThrow({
       where: {id},
     });
 
@@ -208,7 +208,7 @@ export const Mutation = createMutationResolver({
     };
   },
   async installClipsExtension(_, {id, target, settings}, {user, prisma}) {
-    const extension = await prisma.clipsExtension.findFirstOrThrow({
+    const extension = await prisma.clipsExtension.findUniqueOrThrow({
       where: {id: fromGid(id).id},
       include: {
         activeVersion: {select: {extends: true}},
@@ -257,7 +257,7 @@ export const Mutation = createMutationResolver({
   },
   async uninstallClipsExtension(_, {id}, {user, prisma}) {
     const installation =
-      await prisma.clipsExtensionInstallation.findFirstOrThrow({
+      await prisma.clipsExtensionInstallation.findUniqueOrThrow({
         where: {id: fromGid(id).id, userId: user.id},
         select: {
           id: true,
@@ -276,14 +276,10 @@ export const Mutation = createMutationResolver({
   },
   async updateClipsExtensionInstallation(_, {id, settings}, {user, prisma}) {
     const installationDetails =
-      await prisma.clipsExtensionInstallation.findFirstOrThrow({
-        where: {id: fromGid(id).id},
+      await prisma.clipsExtensionInstallation.findUniqueOrThrow({
+        where: {id: fromGid(id).id, userId: user.id},
         select: {id: true, userId: true},
       });
-
-    if (installationDetails.userId !== user.id) {
-      throw new Error();
-    }
 
     const {extension, ...installation} =
       await prisma.clipsExtensionInstallation.update({
@@ -306,10 +302,12 @@ export const Mutation = createMutationResolver({
 
 export const ClipsExtension = createResolverWithGid('ClipsExtension', {
   app: ({appId}, _, {prisma}) =>
-    prisma.app.findFirstOrThrow({where: {id: appId}}),
+    prisma.app.findUniqueOrThrow({where: {id: appId}}),
   latestVersion({activeVersionId}, _, {prisma}) {
     return activeVersionId
-      ? prisma.clipsExtensionVersion.findFirst({where: {id: activeVersionId}})
+      ? prisma.clipsExtensionVersion.findUniqueOrThrow({
+          where: {id: activeVersionId},
+        })
       : null;
   },
   async versions({id}, _, {prisma}) {
@@ -334,7 +332,7 @@ export const ClipsExtensionVersion = createResolverWithGid(
   'ClipsExtensionVersion',
   {
     extension: ({extensionId}, _, {prisma}) =>
-      prisma.clipsExtension.findFirstOrThrow({
+      prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
       }),
     assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
@@ -389,15 +387,15 @@ export const ClipsExtensionInstallation = createResolverWithGid(
   {
     id: ({id}) => toGid(id, 'ClipsExtensionInstallation'),
     extension: ({extensionId}, _, {prisma}) =>
-      prisma.clipsExtension.findFirstOrThrow({
+      prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
       }),
     appInstallation: ({appInstallationId}, _, {prisma}) =>
-      prisma.appInstallation.findFirstOrThrow({
+      prisma.appInstallation.findUniqueOrThrow({
         where: {id: appInstallationId},
       }),
     async version({extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findFirstOrThrow({
+      const extension = await prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
       });
@@ -405,7 +403,7 @@ export const ClipsExtensionInstallation = createResolverWithGid(
       return extension.activeVersion!;
     },
     async translations({extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findFirstOrThrow({
+      const extension = await prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
       });
@@ -415,7 +413,7 @@ export const ClipsExtensionInstallation = createResolverWithGid(
       return translations ? JSON.stringify(translations) : null;
     },
     async liveQuery({target, extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findFirstOrThrow({
+      const extension = await prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
       });
@@ -425,7 +423,7 @@ export const ClipsExtensionInstallation = createResolverWithGid(
       return extend.find((extend) => extend.target === target)?.liveQuery;
     },
     async loading({target, extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findFirstOrThrow({
+      const extension = await prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
         select: {activeVersion: true},
       });
@@ -497,7 +495,7 @@ export const WatchThrough = createResolver('WatchThrough', {
     }
 
     const [series, installations] = await Promise.all([
-      prisma.series.findFirstOrThrow({
+      prisma.series.findUniqueOrThrow({
         where: {id: seriesId},
         select: {handle: true},
       }),
@@ -715,7 +713,7 @@ async function resolveConditions(
       }
 
       if (condition.series.id != null) {
-        const series = await prisma.series.findFirstOrThrow({
+        const series = await prisma.series.findUniqueOrThrow({
           where: {id: fromGid(condition.series.id).id},
         });
 
@@ -723,7 +721,7 @@ async function resolveConditions(
       }
 
       if (condition.series.handle != null) {
-        const series = await prisma.series.findFirstOrThrow({
+        const series = await prisma.series.findUniqueOrThrow({
           where: {handle: condition.series.handle},
         });
 

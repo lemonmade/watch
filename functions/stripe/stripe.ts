@@ -112,7 +112,7 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
         }
 
         const {user, ...subscription} =
-          await prisma.stripeSubscription.findFirstOrThrow({
+          await prisma.stripeSubscription.findUniqueOrThrow({
             where: {subscriptionId: stripeSubscription.id},
             include: {user: {include: {giftCodes: {take: 1}}}},
           });
@@ -161,7 +161,7 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
         const stripeSubscription = event.data.object as Stripe.Subscription;
 
         const {user, ...subscription} =
-          await prisma.stripeSubscription.findFirstOrThrow({
+          await prisma.stripeSubscription.findUniqueOrThrow({
             where: {subscriptionId: stripeSubscription.id},
             include: {user: {include: {giftCodes: {take: 1}}}},
           });

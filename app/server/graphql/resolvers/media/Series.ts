@@ -33,11 +33,11 @@ export type SeriesResolver = Resolver<'Series'>;
 export const Query = createQueryResolver({
   series(_, {id, handle}, {prisma}) {
     if (id) {
-      return prisma.series.findFirst({
+      return prisma.series.findUnique({
         where: {id: fromGid(id).id},
       });
     } else if (handle) {
-      return prisma.series.findFirst({
+      return prisma.series.findUnique({
         where: {handle},
       });
     }
@@ -46,7 +46,7 @@ export const Query = createQueryResolver({
   },
   randomSeries(_, __, {prisma}) {
     // TODO: make it more random
-    return prisma.series.findFirstOrThrow();
+    return prisma.series.findUniqueOrThrow();
   },
 });
 
@@ -86,7 +86,7 @@ export const Mutation = createMutationResolver({
     }
 
     const {id} = fromGid(gid);
-    const {tmdbId, name} = await prisma.series.findFirstOrThrow({where: {id}});
+    const {tmdbId, name} = await prisma.series.findUniqueOrThrow({where: {id}});
     const {series} = await updateSeries({id, name, tmdbId, prisma});
     return {series, errors: []};
   },

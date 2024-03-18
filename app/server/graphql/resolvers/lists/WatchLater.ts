@@ -54,7 +54,7 @@ export const Mutation = createMutationResolver({
       throw new Error(`You must provide a seriesId`);
     }
 
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: {id: fromGid(seriesId).id},
     });
 
@@ -114,7 +114,7 @@ export async function addSeriesToWatchLater(
   id: string,
   {prisma, user}: Pick<ResolverContext, 'prisma' | 'user'>,
 ) {
-  const series = await prisma.series.findFirstOrThrow({
+  const series = await prisma.series.findUniqueOrThrow({
     where: {id},
   });
 

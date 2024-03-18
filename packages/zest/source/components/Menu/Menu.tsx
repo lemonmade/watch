@@ -13,7 +13,7 @@ import {
   MenuControllerContext,
   type MenuController,
 } from '../../shared/menus.ts';
-import {findFirstFocusable} from '../../shared/focus.ts';
+import {findUniqueFocusable} from '../../shared/focus.ts';
 
 import systemStyles from '../../system.module.css';
 
@@ -51,7 +51,7 @@ export function Menu({
             internals.current.menu.firstElementChild;
 
           while (element != null) {
-            const focusable = findFirstFocusable(element);
+            const focusable = findUniqueFocusable(element);
 
             if (focusable) {
               focused.value = focusable;
@@ -70,7 +70,7 @@ export function Menu({
             internals.current.menu.lastElementChild;
 
           while (element != null) {
-            const focusable = findFirstFocusable(element);
+            const focusable = findUniqueFocusable(element);
 
             if (focusable) {
               focused.value = focusable;

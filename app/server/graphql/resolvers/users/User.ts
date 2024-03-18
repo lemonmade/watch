@@ -21,17 +21,17 @@ declare module '../types' {
 
 export const Query = createQueryResolver({
   me(_, __, {prisma, user}) {
-    return prisma.user.findFirstOrThrow({
+    return prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
   },
   my(_, __, {prisma, user}) {
-    return prisma.user.findFirstOrThrow({
+    return prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
   },
   viewer(_, __, {prisma, user}) {
-    return prisma.user.findFirstOrThrow({
+    return prisma.user.findUniqueOrThrow({
       where: {id: user.id},
     });
   },
@@ -41,17 +41,17 @@ export const User = createResolverWithGid('User', {
   role: ({role}) => role,
   level: ({level}) => level,
   appleAccount({id}, _, {prisma}) {
-    return prisma.appleAccount.findFirst({
+    return prisma.appleAccount.findUnique({
       where: {userId: id},
     });
   },
   githubAccount({id}, _, {prisma}) {
-    return prisma.githubAccount.findFirst({
+    return prisma.githubAccount.findUnique({
       where: {userId: id},
     });
   },
   googleAccount({id}, _, {prisma}) {
-    return prisma.googleAccount.findFirst({
+    return prisma.googleAccount.findUnique({
       where: {userId: id},
     });
   },
@@ -85,7 +85,7 @@ export const User = createResolverWithGid('User', {
     return giftCode;
   },
   subscription({id}, _, {prisma}) {
-    return prisma.stripeSubscription.findFirst({
+    return prisma.stripeSubscription.findUnique({
       where: {userId: id},
     });
   },
@@ -95,7 +95,7 @@ export const User = createResolverWithGid('User', {
 
 export const Mutation = createMutationResolver({
   async signIn(_, {email, redirectTo}, {prisma, request}) {
-    const user = await prisma.user.findFirst({where: {email}});
+    const user = await prisma.user.findUnique({where: {email}});
 
     if (user == null) {
       // Need to make this take roughly the same amount of time as
@@ -122,7 +122,7 @@ export const Mutation = createMutationResolver({
     return {userId: toGid(user.id, 'User')};
   },
   async createAccount(_, {email, code, redirectTo}, {prisma, request}) {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {email},
       select: {id: true},
     });

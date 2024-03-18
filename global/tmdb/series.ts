@@ -66,7 +66,7 @@ export async function updateSeries({
 
   log(`Updating series (tmdb: ${tmdbId}, id: ${seriesId})`);
 
-  const series = await prisma.series.findFirstOrThrow({
+  const series = await prisma.series.findUniqueOrThrow({
     where: {id: seriesId},
   });
 

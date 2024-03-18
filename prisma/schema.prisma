@@ -8,7 +8,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -190,7 +190,7 @@ model Series {
   tmdbId      String       @unique
   imdbId      String?
   name        String
-  handle      String?
+  handle      String?      @unique
   firstAired  DateTime?
   status      SeriesStatus
   overview    String?      @db.VarChar(2000)

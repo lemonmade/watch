@@ -23,7 +23,7 @@ declare module '../types' {
 
 export const Query = createQueryResolver({
   app(_, {id}, {prisma}) {
-    return prisma.app.findFirst({where: {id: fromGid(id).id}});
+    return prisma.app.findUnique({where: {id: fromGid(id).id}});
   },
   apps(_, __, {prisma}) {
     return prisma.app.findMany({take: 50});
@@ -98,7 +98,7 @@ export const App = createResolverWithGid('App', {
 
 export const AppInstallation = createResolverWithGid('AppInstallation', {
   app: ({appId}, _, {prisma}) =>
-    prisma.app.findFirstOrThrow({where: {id: appId}}),
+    prisma.app.findUniqueOrThrow({where: {id: appId}}),
   async extensions({id}, _, {prisma}) {
     const installations = await prisma.clipsExtensionInstallation.findMany({
       where: {appInstallationId: id},
@@ -122,7 +122,7 @@ export const User = createResolver('User', {
       throw new Error('You must supply either an id or a handle');
     }
 
-    return prisma.app.findFirst({
+    return prisma.app.findUnique({
       where: {
         id: id ? fromGid(id).id : undefined,
         handle: handle || undefined,

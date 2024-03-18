@@ -24,7 +24,7 @@ export type SeasonResolver = Resolver<'Season'>;
 export const Query = createQueryResolver({
   season(_, {id, series, number, selector}, {prisma}) {
     if (id) {
-      return prisma.season.findFirst({
+      return prisma.season.findUnique({
         where: {id: fromGid(id).id},
       });
     } else if (series) {
@@ -117,12 +117,12 @@ export const Season = createResolverWithGid('Season', {
     return EpisodeSelection.stringify({season: number});
   },
   series({seriesId}, _, {prisma}) {
-    return prisma.series.findFirstOrThrow({
+    return prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
     });
   },
   async tmdbUrl({seriesId, number}, _, {prisma}) {
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
       select: {tmdbId: true},
     });
@@ -130,7 +130,7 @@ export const Season = createResolverWithGid('Season', {
     return `https://www.themoviedb.org/tv/${series.tmdbId}/season/${number}`;
   },
   async imdbUrl({seriesId, number}, _, {prisma}) {
-    const series = await prisma.series.findFirstOrThrow({
+    const series = await prisma.series.findUniqueOrThrow({
       where: {id: seriesId},
       select: {imdbId: true},
     });
