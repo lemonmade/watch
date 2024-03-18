@@ -521,8 +521,6 @@ importers:
 
   packages/css: {}
 
-  packages/database: {}
-
   packages/react-signals:
     dependencies:
       '@quilted/react-signals':
