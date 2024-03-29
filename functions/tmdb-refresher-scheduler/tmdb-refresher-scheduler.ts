@@ -16,23 +16,30 @@ const scheduled: ExportedHandlerScheduledHandler<Environment> =
   async function scheduled(event, env) {
     console.log(event);
 
-    const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
+    try {
+      const prisma = await createEdgeDatabaseConnection({
+        url: env.DATABASE_URL,
+      });
 
-    const series = await prisma.series.findMany({
-      where: {status: 'RETURNING'},
-    });
+      const series = await prisma.series.findMany({
+        where: {status: 'RETURNING'},
+      });
 
-    console.log(series);
+      console.log(series);
 
-    await Promise.all(
-      series.map(async (series) => {
-        await env.TMDB_REFRESHER_QUEUE.send({
-          id: series.id,
-          name: series.name,
-          tmdbId: series.tmdbId,
-        });
-      }),
-    );
+      await Promise.all(
+        series.map(async (series) => {
+          await env.TMDB_REFRESHER_QUEUE.send({
+            id: series.id,
+            name: series.name,
+            tmdbId: series.tmdbId,
+          });
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
 export default {
