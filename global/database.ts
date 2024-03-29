@@ -2,7 +2,7 @@ export async function createEdgeDatabaseConnection({url}: {url: string}) {
   const [{Client: PlanetScaleClient}, {PrismaClient}, {PrismaPlanetScale}] =
     await Promise.all([
       import('@planetscale/database'),
-      import('@prisma/client/edge'),
+      import('@prisma/client'),
       import('@prisma/adapter-planetscale'),
     ]);
 
