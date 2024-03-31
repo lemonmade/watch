@@ -373,7 +373,8 @@ function Finished({
           </WatchAgainAction>
         )}
         {(series.status === 'RETURNING' ||
-          series.status === 'IN_PRODUCTION') && (
+          series.status === 'IN_PRODUCTION' ||
+          series.status === 'PLANNED') && (
           <SeriesSubscription watchThrough={watchThrough} onUpdate={onUpdate} />
         )}
       </BlockStack>

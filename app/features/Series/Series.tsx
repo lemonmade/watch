@@ -240,6 +240,8 @@ function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {
       return <Tag>Continuing</Tag>;
     case 'IN_PRODUCTION':
       return <Tag>In production</Tag>;
+    case 'PLANNED':
+      return <Tag>Planned</Tag>;
   }
 }
 

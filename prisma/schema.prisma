@@ -183,6 +183,7 @@ enum SeriesStatus {
   CANCELLED
   RETURNING
   IN_PRODUCTION
+  PLANNED
 }
 
 model Series {

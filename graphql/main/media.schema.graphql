@@ -103,6 +103,7 @@ enum SeriesStatus {
   ENDED
   CANCELLED
   IN_PRODUCTION
+  PLANNED
 }
 
 type Series {

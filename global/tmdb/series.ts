@@ -324,7 +324,7 @@ function tmdbSeasonToSeasonInput(
   };
 }
 
-function tmdbStatusToEnum(status: string) {
+export function tmdbStatusToEnum(status: TmdbSeries['status']) {
   switch (status) {
     case 'Returning Series':
       return 'RETURNING';
@@ -332,6 +332,10 @@ function tmdbStatusToEnum(status: string) {
       return 'ENDED';
     case 'Canceled':
       return 'CANCELLED';
+    case 'In Production':
+      return 'IN_PRODUCTION';
+    case 'Planned':
+      return 'PLANNED';
     default: {
       throw new Error(`Unrecognized status: ${status}`);
     }

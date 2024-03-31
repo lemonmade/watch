@@ -3,6 +3,7 @@ import Env from 'quilt:module/env';
 import {
   seasonStatus,
   seriesToHandle,
+  tmdbStatusToEnum,
   type TmdbSeries,
   type TmdbSeason,
   type TmdbExternalIds,
@@ -133,20 +134,4 @@ function tmdbAirDateToDate(date?: string) {
     parseInt(month!, 10) - 1,
     parseInt(day!, 10),
   );
-}
-
-function tmdbStatusToEnum(status: TmdbSeries['status']) {
-  switch (status) {
-    case 'Returning Series':
-      return 'RETURNING';
-    case 'Ended':
-      return 'ENDED';
-    case 'Canceled':
-      return 'CANCELLED';
-    case 'In Production':
-      return 'IN_PRODUCTION';
-    default: {
-      throw new Error(`Unrecognized status: ${status}`);
-    }
-  }
 }

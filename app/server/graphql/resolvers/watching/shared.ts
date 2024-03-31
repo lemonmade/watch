@@ -70,7 +70,8 @@ export async function updateWatchThrough(
         },
       }),
       (season.series.status === 'RETURNING' ||
-        season.series.status === 'IN_PRODUCTION') &&
+        season.series.status === 'IN_PRODUCTION' ||
+        season.series.status === 'PLANNED') &&
         prisma.seriesSubscription.upsert({
           where: {
             seriesId_userId: {
