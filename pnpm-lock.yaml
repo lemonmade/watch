@@ -138,8 +138,8 @@ importers:
         specifier: ^5.11.0
         version: 5.11.0
       stripe:
-        specifier: ^11.4.0
-        version: 11.4.0
+        specifier: ^14.23.0
+        version: 14.23.0
     devDependencies:
       '@lemon/css':
         specifier: workspace:*
@@ -313,8 +313,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.4
       stripe:
-        specifier: ^11.4.0
-        version: 11.4.0
+        specifier: ^14.23.0
+        version: 14.23.0
 
   functions/tmdb-refresher:
     devDependencies:
@@ -5501,6 +5501,7 @@ packages:
     resolution: {integrity: sha512-wmyg8HUhcn6ACjsn8oKYjkN/zUzQeNtMy44weTJSM6p4MMzEOuKbA3OjJ267uPCOW7Xex9dyrNTful8XTQYoDA==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -9206,11 +9207,11 @@ packages:
       acorn: 8.11.2
     dev: true
 
-  /stripe@11.4.0:
-    resolution: {integrity: sha512-8feL70RhzN6i8rpUG5SC4ZN5KcPYCUfRYRk/yUcnHG8uLdS26AgKXAEozqddDGUUufRPKYuqs44kPg21/P5JRg==}
+  /stripe@14.23.0:
+    resolution: {integrity: sha512-OPD7LqBmni6uDdqA05GGgMZyyRWxJOehONBNC9tYgY4Uh089EtXd6QLIgRGrqTDlQH3cA2BXo848nxwa/zsQzw==}
     engines: {node: '>=12.*'}
     dependencies:
-      '@types/node': 20.9.4
+      '@types/node': 20.10.1
       qs: 6.11.0
 
   /supports-color@5.5.0:

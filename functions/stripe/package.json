@@ -11,6 +11,6 @@
     "@cloudflare/workers-types": "^4.20221111.1",
     "@quilted/request-router": "^0.2.0",
     "@tsndr/cloudflare-worker-jwt": "^2.1.0",
-    "stripe": "^11.4.0"
+    "stripe": "^14.23.0"
   }
 }

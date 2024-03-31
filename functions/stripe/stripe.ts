@@ -1,4 +1,4 @@
-import {type Stripe} from 'stripe';
+import type {Stripe} from 'stripe';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import {RedirectResponse, RequestRouter} from '@quilted/request-router';
 import type {Fetcher} from '@cloudflare/workers-types';
@@ -216,7 +216,7 @@ async function createStripe(env: Environment) {
   const {Stripe} = await import('stripe');
 
   const stripe = new Stripe(env.STRIPE_API_KEY, {
-    apiVersion: '2022-11-15',
+    apiVersion: '2023-10-16',
     httpClient: Stripe.createFetchHttpClient(),
   });
 

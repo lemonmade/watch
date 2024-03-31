@@ -44,7 +44,7 @@ export const Mutation = createMutationResolver({
     const {default: Stripe} = await import('stripe');
 
     const stripe = new Stripe(Env.STRIPE_API_KEY, {
-      apiVersion: '2022-11-15',
+      apiVersion: '2023-10-16',
       httpClient: Stripe.createFetchHttpClient(),
     });
 
@@ -170,24 +170,24 @@ export const Mutation = createMutationResolver({
     const {default: Stripe} = await import('stripe');
 
     const stripe = new Stripe(Env.STRIPE_API_KEY, {
-      apiVersion: '2022-11-15',
+      apiVersion: '2023-10-16',
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const deleteResult = await stripe.subscriptions.del(
+    const cancelResult = await stripe.subscriptions.cancel(
       subscription.subscriptionId,
       {
         prorate: true,
       },
     );
 
-    console.log(deleteResult);
+    console.log(cancelResult);
 
     const updatedSubscription = await prisma.stripeSubscription.update({
       where: {id: subscription.id},
       data: {
         status: 'INACTIVE',
-        endedAt: new Date(),
+        endedAt: new Date(cancelResult.canceled_at ?? Date.now()),
         paymentFlow: undefined,
       },
     });
