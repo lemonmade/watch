@@ -1,8 +1,12 @@
-import {quiltServer} from '@quilted/rollup/server';
+import {quiltModule} from '@quilted/rollup/module';
 import {cloudflareWorkers} from '@quilted/cloudflare/craft';
+import {prismaFromEdge} from '../../../configuration/rollup/prisma.js';
 
-export default quiltServer({
+const config = await quiltModule({
   entry: './tmdb-refresher-scheduler.ts',
-  format: 'custom',
   runtime: cloudflareWorkers(),
 });
+
+config.plugins.push(prismaFromEdge());
+
+export default config;

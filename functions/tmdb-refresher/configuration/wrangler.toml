@@ -5,7 +5,6 @@ account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2024-03-29"
 
 logpush = true
-node_compat = true
 workers_dev = false
 
 # @see https://developers.cloudflare.com/queues/configuration/

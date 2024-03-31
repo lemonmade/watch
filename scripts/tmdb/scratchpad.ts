@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 // console.log(await tmdbSearch('survivor'));
-// console.log(await tmdbSeries({id: 138757}));
+// console.log(await tmdbSeries({id: 213810}));
 
 // Utilities
 

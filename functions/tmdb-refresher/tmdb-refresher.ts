@@ -165,9 +165,7 @@ const handleQueue: ExportedHandlerQueueHandler<Environment, Message> =
 
 export default {fetch: handleFetch, queue: handleQueue};
 
-let prismaPromise:
-  | Promise<import('@prisma/client/edge').PrismaClient>
-  | undefined;
+let prismaPromise: Promise<import('@prisma/client').PrismaClient> | undefined;
 
 async function createPrisma(url: string) {
   prismaPromise ??= createEdgeDatabaseConnection({url});

@@ -8,6 +8,6 @@
     }
   },
   "include": ["**/*"],
-  "exclude": ["quilt.project.ts", "build"],
+  "exclude": ["configuration", "build"],
   "references": [{"path": "../tmdb-refresher"}]
 }

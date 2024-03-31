@@ -14,7 +14,7 @@ interface Environment {
 
 const scheduled: ExportedHandlerScheduledHandler<Environment> =
   async function scheduled(event, env) {
-    console.log(event);
+    console.log(JSON.stringify(event, null, 2));
 
     try {
       const prisma = await createEdgeDatabaseConnection({
