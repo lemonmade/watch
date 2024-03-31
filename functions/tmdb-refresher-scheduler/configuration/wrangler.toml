@@ -12,6 +12,9 @@ workers_dev = false
 # Every 12 hours
 crons = ["0 */12 * * *", "*/5 * * * *"]
 
+[limits]
+cpu_ms = 500
+
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
 queue = "watch-tmdb-refresher"

@@ -7,6 +7,9 @@ compatibility_date = "2024-03-29"
 logpush = true
 workers_dev = false
 
+[limits]
+cpu_ms = 500
+
 # @see https://developers.cloudflare.com/queues/configuration/
 [[queues.consumers]]
 queue = "watch-tmdb-refresher"
