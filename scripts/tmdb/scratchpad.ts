@@ -1,8 +1,7 @@
 import 'dotenv/config';
-import '@quilted/quilt/polyfills/fetch';
 
 // console.log(await tmdbSearch('survivor'));
-// console.log(await tmdbSeasonForSeries({id: 14658, season: 44}));
+// console.log(await tmdbSeries({id: 138757}));
 
 // Utilities
 

@@ -90,6 +90,16 @@ export async function updateSeries({
 
   const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
 
+  // TODO: should be putting this on a queue to be deleted in our database?
+  // @see https://www.themoviedb.org/talk/64d72becb6c2641157536806
+  if (
+    (seriesResult as any).success === false &&
+    (seriesResult as any).status === 34
+  ) {
+    log(`Series not found on TMDB`);
+    return {series, results: [] as string[]};
+  }
+
   for (const season of seasonsToUpdate) {
     if (season > seriesResult.number_of_seasons) {
       log(`Deleting season ${season} (no longer exists)`);
