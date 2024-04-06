@@ -40,7 +40,7 @@ function wasm(options = {}) {
       const existingCopy = copies.get(file);
       if (existingCopy) {
         return {
-          id: existingCopy.filename,
+          id: `./${existingCopy.filename}`,
           external: true,
         };
       }
@@ -68,7 +68,7 @@ function wasm(options = {}) {
       });
 
       return {
-        id: outputFileName,
+        id: `./${outputFileName}`,
         external: true,
       };
     },
