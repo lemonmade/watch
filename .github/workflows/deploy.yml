@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - run: pnpm exec prisma generate --no-engine
+      - run: pnpm exec prisma generate
       - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm --filter app run build
       - uses: actions/upload-artifact@v3
@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - run: pnpm exec prisma generate --no-engine
+      - run: pnpm exec prisma generate
       - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm --filter "@watching/*" run build
 
@@ -89,7 +89,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - run: pnpm exec prisma generate --no-engine
+      - run: pnpm exec prisma generate
       - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm --filter ${{ matrix.worker }} run build
       - run: pnpm --filter ${{ matrix.worker }} run deploy

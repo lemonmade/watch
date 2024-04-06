@@ -22,6 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/actions/prepare
-      - run: pnpm exec prisma generate --no-engine
+      - run: pnpm exec prisma generate
       - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm run build
