@@ -82,7 +82,7 @@ jobs:
           - images
           - clips-upload
           - metrics
-          - stripe
+          - stripe-hooks
           - tmdb-refresher
           - tmdb-refresher-scheduler
 

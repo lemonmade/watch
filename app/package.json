@@ -21,7 +21,7 @@
     "@types/react-dom": "^18.2.0",
     "aws-sdk": "^2.935.0",
     "prisma": "^5.11.0",
-    "stripe": "^14.23.0"
+    "stripe": "^14.24.0"
   },
   "devDependencies": {
     "@lemon/css": "workspace:*",

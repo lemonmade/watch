@@ -138,8 +138,8 @@ importers:
         specifier: ^5.11.0
         version: 5.11.0
       stripe:
-        specifier: ^14.23.0
-        version: 14.23.0
+        specifier: ^14.24.0
+        version: 14.24.0
     devDependencies:
       '@lemon/css':
         specifier: workspace:*
@@ -313,8 +313,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.4
       stripe:
-        specifier: ^14.23.0
-        version: 14.23.0
+        specifier: ^14.24.0
+        version: 14.24.0
 
   functions/tmdb-refresher:
     devDependencies:
@@ -9207,8 +9207,8 @@ packages:
       acorn: 8.11.2
     dev: true
 
-  /stripe@14.23.0:
-    resolution: {integrity: sha512-OPD7LqBmni6uDdqA05GGgMZyyRWxJOehONBNC9tYgY4Uh089EtXd6QLIgRGrqTDlQH3cA2BXo848nxwa/zsQzw==}
+  /stripe@14.24.0:
+    resolution: {integrity: sha512-r0JWz2quThXsFbp1pevkAAoDk4sw3kFMQEc2qvxMFUOhw/SFGqtAGz4vQgP/fMWzO28ljBNEiz68KqRx0JS3dw==}
     engines: {node: '>=12.*'}
     dependencies:
       '@types/node': 20.10.1

@@ -5,8 +5,13 @@ import {prismaFromEdge} from '../../../configuration/rollup/prisma.js';
 const config = await quiltModule({
   entry: './stripe.ts',
   runtime: cloudflareWorkers(),
+  assets: {
+    minify: false,
+  },
 });
 
 config.plugins.push(prismaFromEdge());
+
+console.log(config);
 
 export default config;
