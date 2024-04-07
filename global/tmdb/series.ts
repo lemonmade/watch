@@ -94,7 +94,7 @@ export async function updateSeries({
   // @see https://www.themoviedb.org/talk/64d72becb6c2641157536806
   if (
     (seriesResult as any).success === false &&
-    (seriesResult as any).status === 34
+    (seriesResult as any).status_code === 34
   ) {
     log(`Series not found on TMDB`);
     return {series, results: [] as string[]};
