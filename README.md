@@ -9,7 +9,6 @@ Important links:
   - [metrics worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-metrics/production)
   - [stripe worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-stripe/production)
   - [tmdb-refresher worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher/production)
-  - [tmdb-refresher-scheduler worker](https://dash.cloudflare.com/9bfdb755def60e50760e33036c6f1624/workers/services/view/watch-tmdb-refresher-scheduler/production)
 - [Fly.io dashboard](https://fly.io/apps/watch-test-app)
 - [PlanetScale dashboard](https://app.planetscale.com/chris-sauve/watch-test-db)
 - [Google Cloud dashboard](https://console.cloud.google.com/welcome?project=watch-353105&_ga=2.12737845.383552117.1655603476-570853528.1655012838) ([Dev OAuth app](https://console.cloud.google.com/apis/credentials/oauthclient/357202806916-9ed7sce9ddqkb5hia8tvkl0pshleih2h.apps.googleusercontent.com?project=watch-353105))

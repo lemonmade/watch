@@ -1,5 +1,5 @@
-name = "watch-tmdb-refresher-scheduler"
-main = "../build/output/tmdb-refresher-scheduler.js"
+name = "watch-tmdb-refresher"
+main = "./build/output/tmdb-refresher.js"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2024-03-29"
@@ -13,9 +13,17 @@ workers_dev = false
 crons = ["0 */12 * * *"]
 
 # @see https://developers.cloudflare.com/queues/configuration/
+[[queues.consumers]]
+queue = "watch-tmdb-refresher"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+
+# @see https://developers.cloudflare.com/queues/configuration/
 [[queues.producers]]
 queue = "watch-tmdb-refresher"
 binding = "TMDB_REFRESHER_QUEUE"
 
 # Needs the following environment variables:
 # - DATABASE_URL
+# - TMDB_ACCESS_TOKEN

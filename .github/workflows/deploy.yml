@@ -84,7 +84,6 @@ jobs:
           - metrics
           - stripe-hooks
           - tmdb-refresher
-          - tmdb-refresher-scheduler
 
     steps:
       - uses: actions/checkout@v3

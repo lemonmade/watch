@@ -325,12 +325,6 @@ importers:
         specifier: npm:buffer@^6.0.0
         version: /buffer@6.0.3
 
-  functions/tmdb-refresher-scheduler:
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
-
   global: {}
 
   packages/api: {}

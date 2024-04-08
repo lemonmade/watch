@@ -5,8 +5,8 @@
   "private": true,
   "types": "./tmdb-refresher.ts",
   "scripts": {
-    "build": "rollup --config ./configuration/rollup.config.js",
-    "deploy": "wrangler deploy --config ./configuration/wrangler.toml"
+    "build": "rollup --config ./rollup.config.js",
+    "deploy": "wrangler deploy --config ./wrangler.toml"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20221111.1",

@@ -16,7 +16,6 @@
     {"path": "./functions/router"},
     {"path": "./functions/stripe-hooks"},
     {"path": "./functions/tmdb-refresher"},
-    {"path": "./functions/tmdb-refresher-scheduler"},
     {"path": "./global"},
     {"path": "./packages/api"},
     {"path": "./packages/cli"},
