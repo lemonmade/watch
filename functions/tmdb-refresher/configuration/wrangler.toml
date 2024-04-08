@@ -12,7 +12,7 @@ workers_dev = false
 queue = "watch-tmdb-refresher"
 max_batch_size = 10
 max_batch_timeout = 30
-max_retries = 10
+max_retries = 3
 
 # Needs the following environment variables:
 # - DATABASE_URL
