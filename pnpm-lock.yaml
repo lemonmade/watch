@@ -241,8 +241,8 @@ importers:
   functions/clips-upload:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       '@quilted/request-router':
         specifier: ^0.2.0
         version: 0.2.0
@@ -253,8 +253,8 @@ importers:
   functions/email:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       '@quilted/react-email':
         specifier: ^0.3.1
         version: 0.3.1(@quilted/react-dom@18.2.6)(@quilted/react@18.2.5)
@@ -277,14 +277,14 @@ importers:
   functions/images:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
 
   functions/metrics:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       '@quilted/request-router':
         specifier: ^0.2.0
         version: 0.2.0
@@ -292,8 +292,8 @@ importers:
   functions/router:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       '@quilted/request-router':
         specifier: ^0.2.0
         version: 0.2.0
@@ -304,8 +304,8 @@ importers:
   functions/stripe-hooks:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20231121.0
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       '@quilted/request-router':
         specifier: ^0.2.0
         version: 0.2.0
@@ -319,8 +319,8 @@ importers:
   functions/tmdb-refresher:
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20221111.1
-        version: 4.20221111.1
+        specifier: ^4.20240405.0
+        version: 4.20240405.0
       buffer-polyfill:
         specifier: npm:buffer@^6.0.0
         version: /buffer@6.0.3
@@ -3145,12 +3145,12 @@ packages:
     dev: true
     optional: true
 
-  /@cloudflare/workers-types@4.20221111.1:
-    resolution: {integrity: sha512-BNV2wN8V6Zduvo7UzxcdjBbLQ906D2KhS804PDufLgx/sanGJCHVJMOIaLvS/b61JKtot1U7P/l1fjrjZ7/E3A==}
-    dev: true
-
   /@cloudflare/workers-types@4.20231121.0:
     resolution: {integrity: sha512-+kWfpCkqiepwAKXyHoE0gnkPgkLhz0/9HOBIGhHRsUvUKvhUtm3mbqqoGRWgF1qcjzrDUBbrrOq4MYHfFtc2RA==}
+    dev: true
+
+  /@cloudflare/workers-types@4.20240405.0:
+    resolution: {integrity: sha512-sEVOhyOgXUwfLkgHqbLZa/sfkSYrh7/zLmI6EZNibPaVPvAnAcItbNNl3SAlLyLKuwf8m4wAIAgu9meKWCvXjg==}
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:

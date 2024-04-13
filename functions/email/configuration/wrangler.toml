@@ -2,10 +2,9 @@ name = "watch-email"
 main = "../build/output/index.js"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
-compatibility_date = "2022-06-04"
+compatibility_date = "2024-04-05"
 
 logpush = true
-usage_model = "unbound"
 workers_dev = false
 
 # Needs the following environment variables:

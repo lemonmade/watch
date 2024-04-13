@@ -2,6 +2,8 @@ import {updateSeries} from '~/global/tmdb.ts';
 import {createPrisma, type Environment} from './shared.ts';
 
 export async function handleFetch(request: Request, env: Environment) {
+  console.log(`Handling fetch request: ${request.url}`);
+
   if (request.method !== 'POST') {
     // response with method not allowed status
     return new Response(
