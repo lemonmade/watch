@@ -309,9 +309,6 @@ importers:
       '@quilted/request-router':
         specifier: ^0.2.0
         version: 0.2.0
-      '@tsndr/cloudflare-worker-jwt':
-        specifier: ^2.1.0
-        version: 2.1.4
       stripe:
         specifier: ^14.24.0
         version: 14.24.0

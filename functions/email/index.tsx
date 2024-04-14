@@ -4,6 +4,8 @@ import jwt from '@tsndr/cloudflare-worker-jwt';
 import {JSONResponse, NoContentResponse} from '@quilted/request-router';
 import {renderEmail} from '@quilted/react-email/server';
 
+import {WorkerEntrypoint} from 'cloudflare:workers';
+
 import {Email, type EmailType, type PropsForEmail} from './Email.tsx';
 
 export type {EmailType, PropsForEmail};
@@ -140,3 +142,64 @@ async function handleRequest(request: Request, env: Environment) {
 }
 
 export default {fetch: handleRequest};
+
+export class EmailService extends WorkerEntrypoint<Environment> {
+  async send(email: Email) {
+    const {type, props} = email;
+
+    const {
+      subject,
+      to,
+      cc,
+      bcc,
+      html,
+      plainText,
+      sender = DEFAULT_SENDER,
+    } = await renderEmail(<Email type={type} props={props} />);
+
+    if (to == null || to.length === 0 || subject == null) {
+      return new JSONResponse(
+        {error: 'Invalid email'},
+        {status: 500, headers: DEFAULT_HEADERS},
+      );
+    }
+
+    console.log(`Sending ${type} email:`);
+    console.log({sender, subject, to, cc, bcc});
+
+    const content = [{type: 'text/html', value: html}];
+
+    if (plainText != null) {
+      content.unshift({type: 'text/plain', value: plainText});
+    }
+
+    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.env.SENDGRID_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: sender,
+        subject,
+        content,
+        personalizations: [
+          {
+            to: to.map((email) => ({email})),
+            cc: cc?.map((email) => ({email})),
+            bcc: bcc?.map((email) => ({email})),
+          },
+        ],
+      }),
+      // @see https://github.com/nodejs/node/issues/46221
+      ...{duplex: 'half'},
+    });
+
+    if (!response.ok) {
+      console.log('Sendgrid returned error:');
+      console.log(await response.json());
+
+      throw new Error('Sendgrid returned error');
+    }
+  }
+}

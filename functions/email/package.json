@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "exports": "./index.tsx",
   "scripts": {
     "build": "rollup --config ./configuration/rollup.config.js",
     "deploy": "wrangler deploy --config ./configuration/wrangler.toml"

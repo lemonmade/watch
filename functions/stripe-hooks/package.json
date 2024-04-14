@@ -10,7 +10,6 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240405.0",
     "@quilted/request-router": "^0.2.0",
-    "@tsndr/cloudflare-worker-jwt": "^2.1.0",
     "stripe": "^14.24.0"
   }
 }

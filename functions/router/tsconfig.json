@@ -5,5 +5,5 @@
   },
   "include": ["**/*"],
   "exclude": ["build"],
-  "references": []
+  "references": [{"path": "../email"}]
 }

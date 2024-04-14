@@ -11,6 +11,7 @@ workers_dev = false
 [[services]]
 binding = "EMAIL_SERVICE"
 service = "watch-email"
+entrypoint = "EmailService"
 environment = "production"
 
 # Needs the following environment variables:

@@ -1,6 +1,14 @@
 import {RequestRouter, type RequestHandler} from '@quilted/request-router';
-import type {KVNamespace, R2Bucket, Fetcher} from '@cloudflare/workers-types';
+import type {
+  KVNamespace,
+  R2Bucket,
+  Fetcher,
+  Service,
+  Rpc,
+} from '@cloudflare/workers-types';
 import type {CloudflareRequestContext} from '@quilted/cloudflare';
+
+import type {EmailService} from '../email';
 
 const APP_HOST = 'watch-test-app.fly.dev';
 
@@ -8,7 +16,7 @@ interface Environment {
   APP_ASSETS: R2Bucket;
   CLIPS_ASSETS: R2Bucket;
   SERVICE_UPLOAD_CLIPS: Fetcher;
-  SERVICE_EMAIL: Fetcher;
+  SERVICE_EMAIL: Service<EmailService & Rpc.WorkerEntrypointBranded>;
   SERVICE_STRIPE: Fetcher;
   SERVICE_TMDB_REFRESHER: Fetcher;
   SERVICE_METRICS: Fetcher;

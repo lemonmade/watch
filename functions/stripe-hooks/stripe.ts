@@ -1,7 +1,6 @@
 import type {Stripe} from 'stripe';
-import jwt from '@tsndr/cloudflare-worker-jwt';
 import {RedirectResponse, RequestRouter} from '@quilted/request-router';
-import type {Fetcher} from '@cloudflare/workers-types';
+import type {Service, Rpc} from '@cloudflare/workers-types';
 import type {} from '@quilted/cloudflare';
 
 import {
@@ -11,14 +10,14 @@ import {
 } from '~/global/subscriptions.ts';
 import {createEdgeDatabaseConnection} from '~/global/database.ts';
 
-import type {Email, EmailType, PropsForEmail} from '../email/index.tsx';
+import type {EmailService} from '../email';
 
 interface Environment {
   STRIPE_SECRET: string;
   STRIPE_API_KEY: string;
   DATABASE_URL: string;
   JWT_SECRET: string;
-  EMAIL_SERVICE: Fetcher;
+  EMAIL_SERVICE: Service<EmailService & Rpc.WorkerEntrypointBranded>;
 }
 
 declare module '@quilted/cloudflare' {
@@ -147,13 +146,12 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
           }),
         ]);
 
-        await sendEmail(
-          'subscriptionConfirmation',
-          {
+        await env.EMAIL_SERVICE.send({
+          type: 'subscriptionConfirmation',
+          props: {
             userEmail: user.email,
           },
-          {request, env},
-        );
+        });
 
         break;
       }
@@ -187,13 +185,12 @@ router.post('internal/stripe/webhooks', async (request, {env}) => {
           ]);
         }
 
-        await sendEmail(
-          'subscriptionCancellation',
-          {
+        await env.EMAIL_SERVICE.send({
+          type: 'subscriptionCancellation',
+          props: {
             userEmail: user.email,
           },
-          {request, env},
-        );
+        });
 
         break;
       }
@@ -221,33 +218,4 @@ async function createStripe(env: Environment) {
   });
 
   return stripe;
-}
-
-export async function sendEmail<T extends EmailType>(
-  type: T,
-  props: PropsForEmail<T>,
-  {request, env}: {request: Request; env: Environment},
-) {
-  const email: Email = {
-    type,
-    props,
-  };
-
-  const response = await fetch(new URL('/internal/email/queue', request.url), {
-    method: 'POST',
-    body: JSON.stringify(email),
-    headers: {
-      'Watch-Token': await jwt.sign(
-        {exp: Date.now() + 5 * 60 * 1000},
-        env.JWT_SECRET,
-      ),
-      'Content-Type': 'application/json',
-    },
-    // @see https://github.com/nodejs/node/issues/46221
-    ...{duplex: 'half'},
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to send email: ${await response.text()}`);
-  }
 }
