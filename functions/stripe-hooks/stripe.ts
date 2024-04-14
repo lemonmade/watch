@@ -2,6 +2,7 @@ import type {Stripe} from 'stripe';
 import {RedirectResponse, RequestRouter} from '@quilted/request-router';
 import type {Service, Rpc} from '@cloudflare/workers-types';
 import type {} from '@quilted/cloudflare';
+import {createFetchHandler} from '@quilted/cloudflare/request-router';
 
 import {
   SearchParam,
@@ -207,7 +208,9 @@ router.any('internal/stripe/webhooks', () => {
   return new Response(null, {status: 400});
 });
 
-export default router;
+export default {
+  fetch: createFetchHandler(router),
+};
 
 async function createStripe(env: Environment) {
   const {Stripe} = await import('stripe');
