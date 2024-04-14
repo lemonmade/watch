@@ -3,6 +3,7 @@ main = "../build/output/stripe.js"
 
 account_id = "9bfdb755def60e50760e33036c6f1624"
 compatibility_date = "2024-04-05"
+compatibility_flags = ["nodejs_compat"]
 
 logpush = true
 workers_dev = false
