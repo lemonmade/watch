@@ -102,7 +102,8 @@ router.get('/', async (request) => {
   const operationName =
     searchParams.get('name') ??
     searchParams.get('operationName') ??
-    searchParams.get('operation-name');
+    searchParams.get('operation-name') ??
+    undefined;
 
   if (operation == null) {
     return new JSONResponse(
@@ -128,7 +129,7 @@ router.get('/', async (request) => {
   return response;
 });
 
-async function runGraphQLRequest(
+export async function runGraphQLRequest(
   request: EnhancedRequest,
   {
     operation,
@@ -136,7 +137,7 @@ async function runGraphQLRequest(
     operationName,
   }: {
     operation: string;
-    operationName?: string | null;
+    operationName?: string;
     variables?: Record<string, unknown> | null;
     extensions?: Record<string, unknown> | null;
   },
@@ -163,22 +164,30 @@ async function runGraphQLRequest(
     cookies,
   };
 
-  const prisma = await createPrisma();
-  const auth = await authenticate(request, prisma);
-
-  const [schema, {graphql}, {createContext}] = await Promise.all([
-    loadSchema(),
-    import('graphql'),
-    import('./graphql/context.ts'),
+  const [prisma, {fetchGraphQL}] = await Promise.all([
+    createPrisma(),
+    import('./graphql/fetch.ts'),
   ]);
 
+  const auth = await authenticate(request, prisma);
+
   try {
-    const result = await graphql({
-      schema,
-      source: operation,
+    const result = await fetchGraphQL(operation, {
+      variables,
       operationName,
-      variableValues: variables,
-      contextValue: createContext(auth, prisma, request, response),
+      context: {
+        prisma,
+        request,
+        response,
+        get user() {
+          if (auth.user == null) {
+            response.status = 401;
+            throw new Error('No user exists for this request!');
+          }
+
+          return auth.user;
+        },
+      },
     });
 
     return new JSONResponse(result, {
@@ -200,23 +209,6 @@ async function runGraphQLRequest(
       },
     );
   }
-}
-
-let schemaPromise: Promise<import('graphql').GraphQLSchema>;
-
-function loadSchema() {
-  schemaPromise ??= (async () => {
-    const [{createGraphQLSchema}, resolvers, {default: schemaSource}] =
-      await Promise.all([
-        import('@quilted/quilt/graphql/server'),
-        import('./graphql/resolvers.ts'),
-        import('./graphql/schema.ts'),
-      ]);
-
-    return createGraphQLSchema(schemaSource, resolvers);
-  })();
-
-  return schemaPromise;
 }
 
 router.get('/explorer', () => {

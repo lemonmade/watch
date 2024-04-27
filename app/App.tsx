@@ -1,5 +1,6 @@
 import {useMemo, type PropsWithChildren} from 'react';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {QueryClient} from '@tanstack/react-query';
+import {ReactQueryContext} from '@quilted/react-query';
 
 import {
   useRoutes,
@@ -11,11 +12,7 @@ import {
 } from '@quilted/quilt/navigate';
 import {useSerialized, HTML} from '@quilted/quilt/html';
 import {Localization} from '@quilted/quilt/localize';
-import {
-  GraphQLContext,
-  createGraphQLFetch,
-  type GraphQLFetch,
-} from '@quilted/quilt/graphql';
+import {GraphQLContext} from '@quilted/quilt/graphql';
 import {PerformanceContext} from '@quilted/quilt/performance';
 import {Canvas} from '@lemon/zest';
 
@@ -268,10 +265,12 @@ export function Routes() {
   return useRoutes(routes);
 }
 
-export interface AppContextProps extends Pick<AppContextType, 'user'> {}
+export interface AppContextProps
+  extends Pick<AppContextType, 'user' | 'fetchGraphQL'> {}
 
 export function AppContext({
   user: explicitUser,
+  fetchGraphQL,
   children,
 }: PropsWithChildren<AppContextProps>) {
   const router = useRouter();
@@ -281,39 +280,6 @@ export function AppContext({
 
   const context = useMemo<AppContextType>(() => {
     const user = serializedContext?.user ?? explicitUser;
-
-    const fetch =
-      process.env.NODE_ENV === 'production'
-        ? createGraphQLFetch({
-            method: (operation) =>
-              operation.source.startsWith('mutation ') ? 'POST' : 'GET',
-            url: (operation) => {
-              const url = new URL(`/api/graphql`, router.currentUrl);
-              if (operation.name) url.searchParams.set('name', operation.name);
-              url.searchParams.set('id', operation.id);
-              return url;
-            },
-            source: false,
-            credentials: 'include',
-          })
-        : createGraphQLFetch({
-            url: (operation) => {
-              const url = new URL(`/api/graphql`, router.currentUrl);
-              if (operation.name) url.searchParams.set('name', operation.name);
-              return url;
-            },
-            credentials: 'include',
-          });
-
-    const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
-      const result = await fetch(...args);
-
-      if (result.errors?.some((error) => (error as any).status === 401)) {
-        router.navigate(createSignInRedirect);
-      }
-
-      return result;
-    };
 
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -340,16 +306,16 @@ export function AppContext({
       queryClient,
       clipsManager,
     };
-  }, [serializedContext, router, explicitUser]);
+  }, [serializedContext, router, explicitUser, fetchGraphQL]);
 
   return (
     <Metrics>
       <AppContextReact.Provider value={context}>
-        <QueryClientProvider client={context.queryClient}>
+        <ReactQueryContext client={context.queryClient}>
           <GraphQLContext fetch={context.fetchGraphQL}>
             {children}
           </GraphQLContext>
-        </QueryClientProvider>
+        </ReactQueryContext>
         {context.clipsManager && (
           <ClipsLocalDevelopment manager={context.clipsManager} />
         )}

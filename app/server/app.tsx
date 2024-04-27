@@ -1,9 +1,11 @@
 import {createAsyncComponent} from '@quilted/quilt/async';
 import {renderToResponse} from '@quilted/quilt/server';
 import {RequestHandler} from '@quilted/quilt/request-router';
+import type {GraphQLFetch} from '@quilted/quilt/graphql';
 import {BrowserAssets} from 'quilt:module/assets';
 
 import {authenticate} from './shared/auth.ts';
+import {createPrisma} from './shared/database.ts';
 
 const App = createAsyncComponent(() => import('../App.tsx'));
 
@@ -14,19 +16,48 @@ export const handleApp: RequestHandler = async function handleApp(request) {
     return new Response(null, {status: 405, headers: {Allow: 'GET'}});
   }
 
-  const [authentication] = await Promise.all([authenticate(request)]);
+  const [auth] = await Promise.all([authenticate(request)]);
 
-  const user = authentication.user
+  const user = auth.user
     ? {
-        ...authentication.user,
-        id: `gid://watch/User/${authentication.user.id}`,
+        ...auth.user,
+        id: `gid://watch/User/${auth.user.id}`,
       }
     : undefined;
 
-  const response = await renderToResponse(<App user={user} />, {
-    assets,
-    request,
-  });
+  const fetchGraphQL: GraphQLFetch = async (operation, {variables} = {}) => {
+    const [prisma, {fetchGraphQL: fetchGraphQLBase}] = await Promise.all([
+      createPrisma(),
+      import('./graphql/fetch.ts'),
+    ]);
+
+    const result = await fetchGraphQLBase(operation, {
+      variables,
+      context: {
+        prisma,
+        request,
+        response: {} as any,
+        get user() {
+          if (auth.user == null) {
+            // TODO
+            throw new Error('No user exists for this request!');
+          }
+
+          return auth.user;
+        },
+      },
+    });
+
+    return result;
+  };
+
+  const response = await renderToResponse(
+    <App user={user} fetchGraphQL={fetchGraphQL} />,
+    {
+      assets,
+      request,
+    },
+  );
 
   return response;
 };
