@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import {type RenderableProps} from 'preact';
 
 import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 
@@ -13,7 +13,7 @@ const ROOT_NAVIGATION_ITEM_MATCHES = [
   /[/]app[/]?($|finished[/]?$|watch-?through[/]|watching[/])/,
 ];
 
-export default function Frame({children}: PropsWithChildren<Props>) {
+export default function Frame({children}: RenderableProps<Props>) {
   return (
     <View display="grid" className={styles.Frame}>
       <View className={styles.GoMenu}>

@@ -1,4 +1,4 @@
-import {useMemo, type PropsWithChildren, ReactNode} from 'react';
+import {useMemo, type RenderableProps, ReactNode} from 'preact';
 
 import {signal, useSignal, type Signal} from '@quilted/quilt/signals';
 import {useNavigate} from '@quilted/quilt/navigate';
@@ -386,7 +386,7 @@ function WatchAgainAction({
   children,
   watchThrough,
   episodes,
-}: PropsWithChildren<{
+}: RenderableProps<{
   watchThrough: WatchThrough;
   episodes?: StartWatchThroughFromWatchThroughMutationVariables['episodes'];
 }>) {
@@ -548,7 +548,7 @@ function WatchEpisodeForm({
   watchThroughId,
   children,
   onUpdate,
-}: PropsWithChildren<WatchEpisodeFormProps>) {
+}: RenderableProps<WatchEpisodeFormProps>) {
   const {mutateAsync} = useMutation(watchNextEpisodeMutation);
 
   const {at, notes, rating} = form;

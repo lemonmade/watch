@@ -1,4 +1,4 @@
-import {useState, type ReactNode, type PropsWithChildren} from 'react';
+import {useState, type ReactNode, type RenderableProps} from 'preact';
 import {useSignal} from '@quilted/quilt/signals';
 import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
@@ -405,7 +405,7 @@ function SubscribeSection({
   cost,
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   heading: string;
   cost: {amount: number; currency: string};
   level: PrepareSubscriptionMutationVariables['level'];
@@ -441,7 +441,7 @@ function SubscribeSection({
 function SubscribeAction({
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   level: PrepareSubscriptionMutationVariables['level'];
 }>) {
   const navigate = useNavigate();

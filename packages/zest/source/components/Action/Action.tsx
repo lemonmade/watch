@@ -1,17 +1,12 @@
-import {
-  forwardRef,
-  type ReactNode,
-  type ReactElement,
-  type PropsWithChildren,
-  useMemo,
-} from 'react';
+import type {VNode, ComponentChild, RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {classes, variation} from '@lemon/css';
 import {
   signal,
   resolveSignalOrValue,
   type SignalOrValue,
   computed,
-} from '@watching/react-signals';
+} from '@quilted/preact-signals';
 
 import {Icon, type IconSource} from '../Icon.tsx';
 import {Pressable, type PressableProps} from '../Pressable.tsx';
@@ -37,44 +32,39 @@ import styles from './Action.module.css';
 export type ActionProps = Omit<PressableProps, 'className' | 'display'> & {
   emphasis?: EmphasisValue;
   loading?: SignalOrValue<boolean>;
-  icon?: IconSource | ReactElement;
+  icon?: IconSource | VNode<any>;
   iconAlignment?: BasicAlignmentKeyword;
-  detail?: ReactElement;
+  detail?: ComponentChild;
   role?: ActionRoleKeyword;
   size?: 'small' | 'base' | 'large';
-  accessory?: ReactNode;
+  accessory?: ComponentChild;
   inlineSize?: 'content' | 'fill';
 };
 
-export const Action = forwardRef<
-  HTMLButtonElement | HTMLAnchorElement,
-  PropsWithChildren<ActionProps>
->(function Action(
-  {
-    role,
-    disabled,
-    emphasis,
-    icon,
-    iconAlignment,
-    detail,
-    children,
-    size,
-    accessory,
-    loading,
-    inlineSize,
-    selected,
-    id: explicitId,
-    overlay,
-    perform,
-    onPress,
-    ...rest
-  },
+export function Action({
   ref,
-) {
+  role,
+  disabled,
+  emphasis,
+  icon,
+  iconAlignment,
+  detail,
+  children,
+  size,
+  accessory,
+  loading,
+  inlineSize,
+  selected,
+  id: explicitId,
+  overlay,
+  perform,
+  onPress,
+  ...rest
+}: RenderableProps<ActionProps, HTMLButtonElement | HTMLAnchorElement>) {
   const needsGrid = Boolean(children) && Boolean(detail || icon);
   const connectedAccessory = useConnectedAccessory();
-  const menu = useMenuController({required: false});
-  const actionScope = useActionScope({required: false});
+  const menu = useMenuController({optional: true});
+  const actionScope = useActionScope({optional: true});
   const form = useContainingForm();
 
   let finalEmphasis = emphasis;
@@ -123,7 +113,7 @@ export const Action = forwardRef<
     </span>
   );
 
-  let iconContent: ReactNode = null;
+  let iconContent: ComponentChild = null;
   let needsContentWrapperForLoading = false;
 
   if (icon) {
@@ -196,7 +186,7 @@ export const Action = forwardRef<
         Boolean(detail) && styles.hasDetail,
         needsGrid && styles.spacing,
         size && styles[variation('size', size)],
-        accessory && styles.connectedMain,
+        Boolean(accessory) && styles.connectedMain,
         Boolean(connectedAccessory) && styles.connectedAccessory,
       )}
       disabled={finalDisabled}
@@ -231,9 +221,9 @@ export const Action = forwardRef<
   ) : (
     pressable
   );
-});
+}
 
-function resolveIcon(icon: IconSource | ReactElement) {
+function resolveIcon(icon: IconSource | VNode<any>) {
   return typeof icon === 'string' ? <Icon source={icon} /> : icon;
 }
 

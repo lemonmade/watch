@@ -43,7 +43,7 @@
     "@types/jsonwebtoken": "^8.0.0",
     "@watching/api": "workspace:*",
     "@watching/clips": "workspace:*",
-    "@watching/react-signals": "workspace:*",
+    "@quilted/preact-signals": "workspace:*",
     "@watching/thread-render": "workspace:*",
     "@watching/tools": "workspace:*",
     "base64url": "^3.0.1",

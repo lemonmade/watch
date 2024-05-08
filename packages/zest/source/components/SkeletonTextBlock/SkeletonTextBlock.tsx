@@ -1,4 +1,5 @@
-import {useMemo, type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 
 import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
 import {Style} from '../../system.ts';
@@ -10,7 +11,7 @@ export type SkeletonTextBlockProps =
 
 export function SkeletonTextBlock({
   lines = 3,
-}: PropsWithChildren<SkeletonTextBlockProps>) {
+}: RenderableProps<SkeletonTextBlockProps>) {
   const stack = useStackProps({direction: 'block'});
 
   const lineSizes = useMemo(() => {

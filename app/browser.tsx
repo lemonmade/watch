@@ -1,6 +1,6 @@
 import '@quilted/quilt/globals';
-import {hydrateRoot} from 'react-dom/client';
-import {createAsyncComponent} from '@quilted/quilt/async';
+import {hydrate} from 'preact';
+import {AsyncComponent} from '@quilted/quilt/async';
 import {type GraphQLFetch, createGraphQLFetch} from '@quilted/quilt/graphql';
 import {SearchParam} from '~/global/auth.ts';
 
@@ -39,8 +39,8 @@ const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
   return result;
 };
 
-const App = createAsyncComponent(() => import('./App.tsx'));
+const App = AsyncComponent.from(() => import('./App.tsx'));
 
 const element = document.querySelector('#app')!;
 
-hydrateRoot(element, <App fetchGraphQL={fetchGraphQL} />);
+hydrate(<App fetchGraphQL={fetchGraphQL} />, element);

@@ -1,5 +1,5 @@
 {
-  "name": "@watching/react-signals",
+  "name": "@quilted/preact-signals",
   "description": "<YOUR DESCRIPTION HERE>",
   "type": "module",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@quilted/react-signals": "^0.2.5",
+    "@preact/signals-core": "^1.6.0",
     "@types/react": "^18.3.1"
   },
   "peerDependencies": {

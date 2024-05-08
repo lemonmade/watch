@@ -2,7 +2,7 @@ import {
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@watching/react-signals';
+} from '@quilted/preact-signals';
 
 import {useUniqueId} from '../../shared/id.ts';
 

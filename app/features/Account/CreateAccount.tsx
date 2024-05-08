@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState} from 'preact';
 import {useSignal} from '@quilted/quilt/signals';
 import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';

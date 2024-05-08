@@ -3,7 +3,7 @@ import {
   useEffect,
   type ForwardRefExoticComponent,
   type ForwardRefRenderFunction,
-} from 'react';
+} from 'preact';
 import {ElementConstructors, type Elements} from '@watching/clips';
 import {createRemoteComponentRenderer} from '@remote-dom/preact/host';
 import {

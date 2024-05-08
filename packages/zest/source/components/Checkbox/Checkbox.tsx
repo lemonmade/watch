@@ -1,8 +1,8 @@
-import {type ReactNode, type PropsWithChildren} from 'react';
+import type {ComponentChild, RenderableProps} from 'preact';
 import {
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@watching/react-signals';
+} from '@quilted/preact-signals';
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
@@ -15,7 +15,7 @@ export interface CheckboxProps {
   disabled?: SignalOrValue<boolean>;
   readonly?: SignalOrValue<boolean>;
   checked: SignalOrValue<boolean>;
-  helpText?: ReactNode;
+  helpText?: ComponentChild;
   onChange?(checked: boolean): void;
 }
 
@@ -27,7 +27,7 @@ export function Checkbox({
   children,
   helpText,
   onChange,
-}: PropsWithChildren<CheckboxProps>) {
+}: RenderableProps<CheckboxProps>) {
   const id = useUniqueId('Checkbox', explicitId);
 
   const resolvedChecked = resolveSignalOrValue(checked);

@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 
 import {Overlay} from '../Overlay';
 
@@ -8,7 +8,7 @@ import styles from './Popover.module.css';
 
 export type PopoverProps = ReactComponentPropsForClipsElement<'ui-popover'>;
 
-export function Popover(props: PropsWithChildren<PopoverProps>) {
+export function Popover(props: RenderableProps<PopoverProps>) {
   return (
     <Overlay
       {...props}

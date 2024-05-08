@@ -1,4 +1,4 @@
-import {ComponentType, useEffect, useRef} from 'react';
+import {ComponentType, useEffect, useRef} from 'preact';
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRootRenderer} from '@remote-dom/preact/host';
 import {

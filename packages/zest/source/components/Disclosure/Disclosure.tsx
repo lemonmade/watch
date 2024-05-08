@@ -1,5 +1,5 @@
 import {classes} from '@lemon/css';
-import {useSignal} from '@watching/react-signals';
+import {useSignal} from '@quilted/preact-signals';
 
 import {useUniqueId} from '../../shared/id.ts';
 import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';

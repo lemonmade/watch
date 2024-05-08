@@ -1,4 +1,4 @@
-import type {PropsWithChildren, ReactNode} from 'react';
+import type {RenderableProps, ReactNode} from 'preact';
 
 import {
   Text,
@@ -23,7 +23,7 @@ export function Page({
   menu,
   heading,
   detail,
-}: PropsWithChildren<Props>) {
+}: RenderableProps<Props>) {
   const headingContent = menu ? (
     <HeadingAction overlay={<Popover inlineAttachment="start">{menu}</Popover>}>
       {heading}

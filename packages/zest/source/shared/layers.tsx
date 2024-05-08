@@ -1,9 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  type PropsWithChildren,
-} from 'react';
+import {createContext, type RenderableProps} from 'preact';
+import {useContext, useMemo} from 'preact/hooks';
 
 import {signal, type Signal} from '@preact/signals-core';
 
@@ -29,10 +25,7 @@ export function useLayer({required = true}: {required?: boolean} = {}):
   return layer;
 }
 
-export function RootLayer({
-  layer,
-  children,
-}: PropsWithChildren<{layer: Layer}>) {
+export function RootLayer({layer, children}: RenderableProps<{layer: Layer}>) {
   const layers = useMemo(() => [layer], [layer]);
 
   return (
@@ -40,7 +33,7 @@ export function RootLayer({
   );
 }
 
-export function StackedLayer({children}: PropsWithChildren<{}>) {
+export function StackedLayer({children}: RenderableProps<{}>) {
   const ancestors = useContext(LayerContext);
 
   const layers = useMemo(() => {

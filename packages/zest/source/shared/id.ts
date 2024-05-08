@@ -1,4 +1,5 @@
-import {createContext, useContext, useMemo} from 'react';
+import {createContext} from 'preact';
+import {useContext, useMemo} from 'preact/hooks';
 
 export class UniqueIdFactory {
   private readonly counters = new Map<string, number>();

@@ -1,4 +1,5 @@
-import {createContext, useContext, useEffect} from 'react';
+import {createContext} from 'preact';
+import {useContext, useEffect} from 'preact/hooks';
 import {EventEmitter} from '@quilted/events';
 
 type GlobalEvent = 'resize' | 'scroll' | 'pointerdown' | 'keyup';

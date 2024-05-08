@@ -1,4 +1,4 @@
-import {PropsWithChildren, type ComponentType} from 'react';
+import type {RenderableProps, ComponentType} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import styles from './Icon.module.css';
@@ -79,9 +79,7 @@ export function Icon({source, size, emphasis}: IconProps) {
 
 export interface IconHighlightProps {}
 
-export function IconHighlight({
-  children,
-}: PropsWithChildren<IconHighlightProps>) {
+export function IconHighlight({children}: RenderableProps<IconHighlightProps>) {
   return <span className={styles.IconHighlight}>{children}</span>;
 }
 

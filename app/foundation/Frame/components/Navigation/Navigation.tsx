@@ -1,4 +1,4 @@
-import {useMemo, type ComponentProps, type PropsWithChildren} from 'react';
+import {useMemo, type ComponentProps, type RenderableProps} from 'preact';
 import {
   useCurrentUrl,
   useRouter,
@@ -10,7 +10,7 @@ import styles from './Navigation.module.css';
 
 export interface NavigationProps {}
 
-export function Navigation({children}: PropsWithChildren<NavigationProps>) {
+export function Navigation({children}: RenderableProps<NavigationProps>) {
   return <View className={styles.Navigation}>{children}</View>;
 }
 
@@ -27,7 +27,7 @@ export function NavigationItem({
   matches,
   emphasis,
   children,
-}: PropsWithChildren<NavigationItemProps>) {
+}: RenderableProps<NavigationItemProps>) {
   const selected = useItemSelected(to, matches);
 
   return (

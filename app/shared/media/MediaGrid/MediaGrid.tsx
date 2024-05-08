@@ -1,4 +1,4 @@
-import {type ReactNode, type PropsWithChildren} from 'react';
+import {type ReactNode, type RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 import {
   Text,
@@ -22,7 +22,7 @@ export function MediaGrid({
   children,
   blockSpacing,
   minInlineSize,
-}: PropsWithChildren<Props>) {
+}: RenderableProps<Props>) {
   const style = minInlineSize
     ? ({
         '--w-internal-MediaGrid-item-min-inline-size':
@@ -58,7 +58,7 @@ export function MediaGridItem({
   title,
   subtitle,
   children,
-}: PropsWithChildren<MediaGridItemProps>) {
+}: RenderableProps<MediaGridItemProps>) {
   const hasImage = Boolean(image);
 
   let actionProps: PressableProps | undefined;

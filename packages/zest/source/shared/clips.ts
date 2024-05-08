@@ -2,7 +2,7 @@ import {type ElementConstructors} from '@watching/clips';
 import {
   type RemoteComponentPropsFromElementConstructor,
   type RemoteComponentTypeFromElementConstructor,
-} from '@remote-dom/react';
+} from '@remote-dom/preact';
 
 export type ReactComponentPropsForClipsElement<
   Element extends keyof ElementConstructors,

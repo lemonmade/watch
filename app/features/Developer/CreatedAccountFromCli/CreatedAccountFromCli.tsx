@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import type {ReactNode} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
 

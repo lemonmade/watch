@@ -518,7 +518,7 @@
 - Updated dependencies [[`2de545d`](https://github.com/lemonmade/watch/commit/2de545d17240518b47a1933336a14f5ca8626f11), [`507675c`](https://github.com/lemonmade/watch/commit/507675cf02c2ac0b8d68c4e663188d2bba79a1ad), [`260a663`](https://github.com/lemonmade/watch/commit/260a6636fdc376c0e8a8fda3867b19c2abf0e972)]:
   - @watching/clips@0.2.11
   - @watching/remote-react-utilities@0.1.2
-  - @watching/react-signals@0.1.1
+  - @quilted/preact-signals@0.1.1
   - @watching/thread-signals@0.1.3
 
 ## 0.2.11

@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
@@ -14,7 +14,7 @@ export function Label({
   target,
   visibility,
   children,
-}: PropsWithChildren<LabelProps>) {
+}: RenderableProps<LabelProps>) {
   return (
     <label
       htmlFor={target}

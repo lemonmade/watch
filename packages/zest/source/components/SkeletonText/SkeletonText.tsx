@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import {CSSLiteral} from '../../system.ts';
@@ -15,7 +15,7 @@ const SIZE_CLASS_MAP = new Map<string, string | undefined>([
   ['large', styles.sizeLarge],
 ]);
 
-export function SkeletonText({size}: PropsWithChildren<SkeletonTextProps>) {
+export function SkeletonText({size}: RenderableProps<SkeletonTextProps>) {
   return (
     <span
       className={classes(styles.SkeletonText, size && SIZE_CLASS_MAP.get(size))}

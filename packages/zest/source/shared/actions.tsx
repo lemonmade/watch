@@ -1,14 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  type PropsWithChildren,
-} from 'react';
-import {computed, signal, type Signal} from '@watching/react-signals';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/react-utilities';
+import {createContext, type RenderableProps} from 'preact';
+import {useContext, useMemo} from 'preact/hooks';
+import {computed, signal, type Signal} from '@quilted/preact-signals';
+import {createOptionalContext} from '@quilted/preact-context';
 
 import type {EmphasisValue, ActionRoleKeyword} from '../system';
 import {removeFromSet} from './sets';
@@ -21,7 +14,7 @@ export interface ActionScope {
 }
 
 const ScopeContext = createOptionalContext<ActionScope>();
-export const useActionScope = createUseContextHook(ScopeContext);
+export const useActionScope = ScopeContext.use;
 
 export function createActionScope({id}: {id: string}): ActionScope {
   const inProgress: ActionScope['inProgress'] = signal(new Set());
@@ -65,13 +58,13 @@ export function createActionScope({id}: {id: string}): ActionScope {
 export function ActionScopeContext({
   scope,
   children,
-}: PropsWithChildren<{scope: ActionScope}>) {
+}: RenderableProps<{scope: ActionScope}>) {
   return (
     <ScopeContext.Provider value={scope}>{children}</ScopeContext.Provider>
   );
 }
 
-export function ActionScopeReset({children}: PropsWithChildren<{}>) {
+export function ActionScopeReset({children}: RenderableProps<{}>) {
   return (
     <ScopeContext.Provider value={undefined}>{children}</ScopeContext.Provider>
   );
@@ -87,7 +80,7 @@ const ActionConnectedAccessoryContext = createContext<
   ActionConnectedAccessory | false
 >(false);
 
-export function ConnectedAccessoryReset({children}: PropsWithChildren<{}>) {
+export function ConnectedAccessoryReset({children}: RenderableProps<{}>) {
   return (
     <ActionConnectedAccessoryContext.Provider value={false}>
       {children}
@@ -100,7 +93,7 @@ export function ConnectedAccessoryContext({
   role,
   emphasis,
   inert,
-}: PropsWithChildren<{
+}: RenderableProps<{
   inert?: boolean;
   role?: ActionRoleKeyword;
   emphasis?: EmphasisValue;

@@ -1,11 +1,12 @@
-import {useMemo, type ReactNode} from 'react';
+import type {ComponentChild} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {
   useComputed,
   useSignal,
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@watching/react-signals';
+} from '@quilted/preact-signals';
 import {
   isToday,
   isYesterday,
@@ -36,7 +37,7 @@ import styles from './DatePicker.module.css';
 
 export interface DatePickerProps {
   id?: string;
-  label: ReactNode;
+  label: ComponentChild;
   value?: SignalOrValue<Date | undefined>;
   onChange?(value: Date | undefined): void;
 }

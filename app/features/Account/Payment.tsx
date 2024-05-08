@@ -4,8 +4,8 @@ import {
   createRef,
   type RefObject,
   type ComponentProps,
-  type PropsWithChildren,
-} from 'react';
+  type RenderableProps,
+} from 'preact';
 import type {Stripe, StripeElements} from '@stripe/stripe-js';
 import {useRouter, Redirect, useCurrentUrl} from '@quilted/quilt/navigate';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
@@ -123,7 +123,7 @@ function StripeForm({
   clientSecret,
   children,
   onSubmit,
-}: PropsWithChildren<
+}: RenderableProps<
   {
     apiKey?: string;
     clientSecret?: string;

@@ -1,4 +1,4 @@
-import {type ReactNode} from 'react';
+import type {ComponentChild} from 'preact';
 
 import {useStackProps, resolveStackProps} from '../Stack.tsx';
 
@@ -6,7 +6,7 @@ import styles from './DateField.module.css';
 
 export interface DateFieldProps {
   id?: string;
-  label: ReactNode;
+  label: ComponentChild;
   value: Date;
   onChange(value: Date): void;
 }

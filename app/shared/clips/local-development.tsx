@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect} from 'preact';
 import {useInitialUrl} from '@quilted/quilt/navigate';
 
 import {type ClipsManager} from './manager.ts';

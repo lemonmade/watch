@@ -2,13 +2,17 @@
   "extends": "@quilted/typescript/tsconfig.project.json",
   "compilerOptions": {
     "rootDir": "source",
-    "outDir": "build/typescript"
+    "outDir": "build/typescript",
+    "jsxImportSource": "preact",
+    "types": [
+      // We need Quilt’s types for CSS modules
+      "@quilted/quilt/globals",
+    ],
   },
   "include": ["source"],
   "exclude": ["quilt.project.ts"],
   "references": [
     {"path": "../clips"},
-    {"path": "../css"},
-    {"path": "../react-signals"}
+    {"path": "../css"}
   ]
 }

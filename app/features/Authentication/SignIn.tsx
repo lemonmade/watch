@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'preact';
 import {useSignal, useComputed} from '@quilted/quilt/signals';
 import {
   Link,

@@ -1,5 +1,5 @@
 import {Action} from '@lemon/zest';
-import {type PropsWithChildren} from 'react';
+import {type RenderableProps} from 'preact';
 
 export interface SignInWithActionResponse {
   idToken: string;
@@ -15,7 +15,7 @@ export function SignInWithAppleAction({
   children,
   redirectUrl,
   onPress,
-}: PropsWithChildren<SignInWithAppleActionProps>) {
+}: RenderableProps<SignInWithAppleActionProps>) {
   return (
     <Action
       onPress={async () => {

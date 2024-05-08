@@ -1,4 +1,4 @@
-import type {ComponentType, PropsWithChildren} from 'react';
+import type {ComponentType, RenderableProps} from 'preact';
 import {variation} from '@lemon/css';
 import type {
   StackProperties as BaseStackProps,
@@ -41,19 +41,19 @@ const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['spaceBetween', styles.blockAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
-export function Stack(props: PropsWithChildren<StackProps>) {
+export function Stack(props: RenderableProps<StackProps>) {
   const stack = useStackProps(props);
   return <div {...resolveViewProps(stack)}>{props.children}</div>;
 }
 
 export type BlockStackProps = Omit<StackProps, 'direction'>;
 
-export const BlockStack: ComponentType<PropsWithChildren<BlockStackProps>> =
+export const BlockStack: ComponentType<RenderableProps<BlockStackProps>> =
   Stack;
 
 export type InlineStackProps = Omit<StackProps, 'direction'>;
 
-export function InlineStack(props: PropsWithChildren<InlineStackProps>) {
+export function InlineStack(props: RenderableProps<InlineStackProps>) {
   const stack = useStackProps({...props, direction: 'inline'});
   return <div {...resolveViewProps(stack)}>{props.children}</div>;
 }

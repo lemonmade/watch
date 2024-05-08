@@ -1,4 +1,4 @@
-# @watching/react-signals
+# @quilted/preact-signals
 
 ## 0.2.0
 

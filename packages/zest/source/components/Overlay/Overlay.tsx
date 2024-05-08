@@ -1,10 +1,5 @@
-import {
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-  type PropsWithChildren,
-} from 'react';
+import type {RenderableProps} from 'preact';
+import {useEffect, useRef, useMemo, useCallback} from 'preact/hooks';
 import {classes, variation} from '@lemon/css';
 import {
   signal,
@@ -12,7 +7,7 @@ import {
   useSignalValue,
   type Signal,
   type ReadonlySignal,
-} from '@watching/react-signals';
+} from '@quilted/preact-signals';
 import {once} from '@quilted/events';
 
 import {ConnectedAccessoryReset} from '../../shared/actions.tsx';
@@ -48,7 +43,7 @@ export function Overlay({
   blockAttachment = 'end',
   inlineAttachment = 'center',
   ...rest
-}: PropsWithChildren<OverlayProps>) {
+}: RenderableProps<OverlayProps>) {
   const overlay = useOverlayTransitionController({
     modal,
     relativeTo,
@@ -83,7 +78,7 @@ function OverlaySheet({
   classNameOpenEnd,
   classNameCloseStart,
   classNameCloseEnd,
-}: PropsWithChildren<
+}: RenderableProps<
   Required<Pick<OverlayProps, 'blockAttachment' | 'inlineAttachment'>> &
     Omit<OverlayProps, 'blockAttachment' | 'inlineAttachment'> & {
       overlay: OverlayTransitionController;

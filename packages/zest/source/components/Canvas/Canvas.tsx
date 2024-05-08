@@ -1,5 +1,5 @@
-import {useEffect, useMemo} from 'react';
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
+import {useEffect, useMemo} from 'preact/hooks';
 import {signal, effect} from '@preact/signals-core';
 
 import {
@@ -17,7 +17,7 @@ import styles from './Canvas.module.css';
 
 export interface CanvasProps {}
 
-export function Canvas({children}: PropsWithChildren<CanvasProps>) {
+export function Canvas({children}: RenderableProps<CanvasProps>) {
   const {canvas, idFactory} = useMemo(() => {
     const canvas: CanvasType = {
       level: 0,

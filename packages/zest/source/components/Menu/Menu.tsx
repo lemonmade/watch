@@ -1,10 +1,5 @@
-import {
-  useMemo,
-  useRef,
-  type ReactNode,
-  type PropsWithChildren,
-  type HTMLAttributes,
-} from 'react';
+import type {ComponentChild, RenderableProps, JSX} from 'preact';
+import {useMemo, useRef} from 'preact/hooks';
 import {signal} from '@preact/signals-core';
 import {classes} from '@lemon/css';
 
@@ -21,8 +16,8 @@ import styles from './Menu.module.css';
 
 export interface MenuProps {
   id?: string;
-  label?: ReactNode;
-  filter?: ReactNode;
+  label?: ComponentChild;
+  filter?: ComponentChild;
 }
 
 export function Menu({
@@ -30,7 +25,7 @@ export function Menu({
   label,
   filter,
   children,
-}: PropsWithChildren<MenuProps>) {
+}: RenderableProps<MenuProps>) {
   const id = useUniqueId('Menu', explicitId);
   const internals = useRef<any>({});
 
@@ -86,7 +81,7 @@ export function Menu({
     };
   }, [id]);
 
-  const menuProps: HTMLAttributes<HTMLDivElement> = {
+  const menuProps: JSX.HTMLAttributes<HTMLDivElement> = {
     role: filter ? 'combobox' : 'menu',
     'aria-activedescendant': menu.focused.value?.id,
   };

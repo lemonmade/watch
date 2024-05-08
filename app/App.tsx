@@ -1,4 +1,4 @@
-import {useMemo, type PropsWithChildren} from 'react';
+import {useMemo, type RenderableProps} from 'preact';
 import {QueryClient} from '@tanstack/react-query';
 import {ReactQueryContext} from '@quilted/react-query';
 
@@ -272,7 +272,7 @@ export function AppContext({
   user: explicitUser,
   fetchGraphQL,
   children,
-}: PropsWithChildren<AppContextProps>) {
+}: RenderableProps<AppContextProps>) {
   const router = useRouter();
   const serializedContext = useSerialized('AppContext', () => ({
     user: explicitUser,
@@ -324,7 +324,7 @@ export function AppContext({
   );
 }
 
-function Authenticated({children}: PropsWithChildren) {
+function Authenticated({children}: RenderableProps) {
   const {user} = useAppContext();
 
   if (user == null) {

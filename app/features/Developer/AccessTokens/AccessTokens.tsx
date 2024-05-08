@@ -1,4 +1,4 @@
-import {useState, type ReactNode} from 'react';
+import {useState, type ReactNode} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,

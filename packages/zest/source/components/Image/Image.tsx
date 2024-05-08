@@ -1,4 +1,4 @@
-import {ImgHTMLAttributes} from 'react';
+import type {JSX} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
@@ -109,7 +109,7 @@ export function Image({
 
 function normalizeLoading(
   loading: NonNullable<ImageProps['loading']>,
-): ImgHTMLAttributes<HTMLImageElement>['loading'] {
+): JSX.HTMLAttributes<HTMLImageElement>['loading'] {
   switch (loading) {
     case 'immediate':
       return 'eager';

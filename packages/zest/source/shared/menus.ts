@@ -1,16 +1,12 @@
-import {type KeyboardEvent, type Context} from 'react';
-import {type Signal} from '@preact/signals-core';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/react-utilities';
+import type {JSX} from 'preact';
+import type {Signal} from '@preact/signals-core';
+import {createOptionalContext} from '@quilted/preact-context';
 
 export interface MenuController {
   id: string;
   focused: Signal<HTMLElement | undefined>;
-  keypress(event: KeyboardEvent<HTMLElement>): void;
+  keypress: JSX.KeyboardEventHandler<HTMLElement>;
 }
 
-export const MenuControllerContext: Context<MenuController | undefined> =
-  createOptionalContext();
-export const useMenuController = createUseContextHook(MenuControllerContext);
+export const MenuControllerContext = createOptionalContext<MenuController>();
+export const useMenuController = MenuControllerContext.use;

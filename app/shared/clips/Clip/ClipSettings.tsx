@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useMemo} from 'preact';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {createTranslate} from '@quilted/localize';
 import {Action, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
