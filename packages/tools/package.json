@@ -63,7 +63,7 @@
   "dependencies": {
     "@iarna/toml": "^3.0.0",
     "@quilted/events": "^2.0.0",
-    "@quilted/graphql-tools": "^0.2.0",
+    "@quilted/graphql-tools": "^0.2.2",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.0",
     "@rollup/plugin-replace": "^5.0.5",
@@ -71,7 +71,7 @@
     "esbuild": "^0.19.0",
     "glob": "^10.0.0",
     "htm": "^3.1.1",
-    "rollup": "^4.6.0",
+    "rollup": "^4.17.2",
     "rollup-plugin-esbuild": "^6.1.0",
     "zod": "^3.21.4"
   },
