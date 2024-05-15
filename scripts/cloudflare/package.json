@@ -4,6 +4,6 @@
   "version": "0.0.0",
   "private": true,
   "devDependencies": {
-    "globby": "^13.2.0"
+    "globby": "^13.2.2"
   }
 }

@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useCallback} from 'preact';
+import {useState, useRef, useEffect, useCallback} from 'preact/hooks';
 
 import {useCurrentUrl, useNavigate} from '@quilted/quilt/navigate';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
@@ -38,7 +38,8 @@ export default function Search() {
   });
 
   const {data, isLoading} = useQuery(searchQuery, {
-    enabled: committedSearch.length > 0,
+    // enabled: committedSearch.length > 0,
+
     variables: {query: committedSearch},
   });
 

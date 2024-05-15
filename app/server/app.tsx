@@ -1,4 +1,3 @@
-import {createAsyncComponent} from '@quilted/quilt/async';
 import {renderToResponse} from '@quilted/quilt/server';
 import {RequestHandler} from '@quilted/quilt/request-router';
 import type {GraphQLFetch} from '@quilted/quilt/graphql';
@@ -7,8 +6,6 @@ import {BrowserAssets} from 'quilt:module/assets';
 import {authenticate} from './shared/auth.ts';
 import {createPrisma} from './shared/database.ts';
 
-const App = createAsyncComponent(() => import('../App.tsx'));
-
 const assets = new BrowserAssets();
 
 export const handleApp: RequestHandler = async function handleApp(request) {
@@ -16,7 +13,10 @@ export const handleApp: RequestHandler = async function handleApp(request) {
     return new Response(null, {status: 405, headers: {Allow: 'GET'}});
   }
 
-  const [auth] = await Promise.all([authenticate(request)]);
+  const [{App}, auth] = await Promise.all([
+    import('../App.tsx'),
+    authenticate(request),
+  ]);
 
   const user = auth.user
     ? {
@@ -52,7 +52,7 @@ export const handleApp: RequestHandler = async function handleApp(request) {
   };
 
   const response = await renderToResponse(
-    <App user={user} fetchGraphQL={fetchGraphQL} />,
+    <App context={{user, fetchGraphQL}} />,
     {
       assets,
       request,

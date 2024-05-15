@@ -1,4 +1,5 @@
-import {useMemo, type ComponentProps, type RenderableProps} from 'preact';
+import type {ComponentProps, RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {
   useCurrentUrl,
   useRouter,

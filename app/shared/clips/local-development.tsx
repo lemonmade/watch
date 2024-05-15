@@ -1,5 +1,5 @@
-import {useEffect} from 'preact';
-import {useInitialUrl} from '@quilted/quilt/navigate';
+import {useEffect} from 'preact/hooks';
+import {useBrowserRequest} from '@quilted/quilt/browser';
 
 import {type ClipsManager} from './manager.ts';
 
@@ -11,10 +11,10 @@ export function ClipsLocalDevelopment({manager}: {manager: ClipsManager}) {
 }
 
 function useClipsLocalDevelopment(manager: ClipsManager) {
-  const initialUrl = useInitialUrl();
+  const {url} = useBrowserRequest();
 
   useEffect(() => {
-    const localDevelopmentConnectUrl = getDevelopmentServerUrl(initialUrl);
+    const localDevelopmentConnectUrl = getDevelopmentServerUrl(url);
 
     const abort = new AbortController();
 
@@ -33,13 +33,14 @@ function useClipsLocalDevelopment(manager: ClipsManager) {
     return () => {
       abort.abort();
     };
-  }, [initialUrl, manager]);
+  }, [manager]);
 }
 
 const VALID_PROTOCOLS = new Set(['ws:', 'wss:']);
 
-function getDevelopmentServerUrl(initialUrl?: URL): URL | undefined {
-  const connectParam = initialUrl?.searchParams.get('connect');
+function getDevelopmentServerUrl(initialUrl: string | URL): URL | undefined {
+  const searchParams = new URL(initialUrl).searchParams;
+  const connectParam = searchParams?.get('connect');
 
   if (connectParam == null) return getPersistedLocalDevelopmentServerUrl();
 

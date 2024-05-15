@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'preact';
+import {useCallback, useEffect, useRef} from 'preact/hooks';
 import {useRouter} from '@quilted/quilt/navigate';
 
 import {

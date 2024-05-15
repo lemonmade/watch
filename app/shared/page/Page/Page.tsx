@@ -1,4 +1,4 @@
-import type {RenderableProps, ReactNode} from 'preact';
+import type {RenderableProps, ComponentChild} from 'preact';
 
 import {
   Text,
@@ -13,9 +13,9 @@ import {
 import styles from './Page.module.css';
 
 interface Props {
-  heading: ReactNode;
-  detail?: ReactNode;
-  menu?: ReactNode;
+  heading: ComponentChild;
+  detail?: ComponentChild;
+  menu?: ComponentChild;
 }
 
 export function Page({

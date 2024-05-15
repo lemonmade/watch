@@ -1,4 +1,4 @@
-import {type ReactNode, type RenderableProps} from 'preact';
+import type {ComponentChild, RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 import {
   Text,
@@ -45,10 +45,10 @@ export function MediaGrid({
 
 export interface MediaGridItemProps {
   to?: PressableProps['to'];
-  image?: ReactNode;
-  menu?: ReactNode;
-  title?: ReactNode;
-  subtitle?: ReactNode;
+  image?: ComponentChild;
+  menu?: ComponentChild;
+  title?: ComponentChild;
+  subtitle?: ComponentChild;
 }
 
 export function MediaGridItem({
@@ -73,7 +73,7 @@ export function MediaGridItem({
     actionProps.overlay = <Popover inlineAttachment="end">{menu}</Popover>;
   }
 
-  let titleContent: ReactNode = null;
+  let titleContent: ComponentChild = null;
 
   if (title || subtitle) {
     titleContent = (

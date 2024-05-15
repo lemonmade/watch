@@ -3,7 +3,7 @@ import {
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@quilted/preact-signals';
+} from '@quilted/quilt/signals';
 
 import {type SpoilerAvoidance as SpoilerAvoidanceValue} from '~/graphql/types';
 

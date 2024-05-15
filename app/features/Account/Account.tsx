@@ -1,4 +1,5 @@
-import {useState, type ReactNode, type RenderableProps} from 'preact';
+import type {ComponentChild, RenderableProps} from 'preact';
+import {useState} from 'preact/hooks';
 import {useSignal} from '@quilted/quilt/signals';
 import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
@@ -126,7 +127,7 @@ function AccountSection({
 
   const paymentStatus = currentUrl.searchParams.get(SearchParam.PaymentStatus);
 
-  let paymentBanner: ReactNode = null;
+  let paymentBanner: ComponentChild = null;
 
   switch (paymentStatus) {
     case PaymentStatus.Success: {
@@ -146,7 +147,7 @@ function AccountSection({
     }
   }
 
-  let accountContent: ReactNode = null;
+  let accountContent: ComponentChild = null;
 
   if (level === 'FREE') {
     accountContent = <FreeAccountSection onUpdate={onUpdate} />;

@@ -3,7 +3,8 @@ export * from './clips/Clip.tsx';
 export * from './clips/react.tsx';
 export {
   CommonComponents,
-  type ReactComponentPropsForClipsElement,
+  type ComponentPropsForClipsElement,
+  type ComponentTypeForClipsElement,
 } from './clips/components.ts';
 export * from './clips/manager.ts';
 export * from './clips/local-development.tsx';

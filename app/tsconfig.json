@@ -18,7 +18,6 @@
     {"path": "../packages/api"},
     {"path": "../packages/clips"},
     {"path": "../packages/css"},
-    {"path": "../packages/react-signals"},
     {"path": "../packages/thread-render"},
     {"path": "../packages/tools"},
     {"path": "../packages/zest"}

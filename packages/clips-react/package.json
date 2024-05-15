@@ -25,7 +25,7 @@
     "@remote-dom/core": "^1.0.0",
     "@remote-dom/react": "^1.0.0",
     "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.2.0"
+    "@types/react-dom": "^18.3.0"
   },
   "peerDependencies": {
     "@watching/clips": "workspace:^",

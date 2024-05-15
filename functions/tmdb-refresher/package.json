@@ -9,7 +9,7 @@
     "deploy": "wrangler deploy --config ./wrangler.toml"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240405.0",
-    "buffer-polyfill": "npm:buffer@^6.0.0"
+    "@cloudflare/workers-types": "^4.20240502.0",
+    "buffer-polyfill": "npm:buffer@^6.0.3"
   }
 }

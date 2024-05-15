@@ -1,4 +1,4 @@
-import type {ReactNode} from 'preact';
+import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
 import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
@@ -20,7 +20,7 @@ export default function Apps() {
     onSettled: () => refetch(),
   });
 
-  let content: ReactNode = null;
+  let content: ComponentChild = null;
 
   if (isLoading) {
     content = <Text>Loading...</Text>;

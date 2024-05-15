@@ -1,13 +1,11 @@
-import {useMemo, type RenderableProps, ReactNode} from 'preact';
+import type {RenderableProps, ComponentChild} from 'preact';
+import {useMemo} from 'preact/hooks';
 
 import {signal, useSignal, type Signal} from '@quilted/quilt/signals';
 import {useNavigate} from '@quilted/quilt/navigate';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/quilt/react/tools';
+import {createOptionalContext} from '@quilted/quilt/context';
 
 import {
   Style,
@@ -86,7 +84,7 @@ export interface WatchForm {
 }
 
 const PageDetailsContext = createOptionalContext<PageDetails>();
-const usePageDetails = createUseContextHook(PageDetailsContext);
+const usePageDetails = PageDetailsContext.use;
 
 export default function WatchThroughDetails({id}: Props) {
   const {data, refetch, isLoading} = useQuery(watchThroughQuery, {
@@ -157,7 +155,7 @@ function WatchThroughWithData({
       <Tag>Stopped</Tag>
     ) : null;
 
-  let content: ReactNode = null;
+  let content: ComponentChild = null;
 
   switch (status) {
     case 'FINISHED': {

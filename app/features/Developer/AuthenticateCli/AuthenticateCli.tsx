@@ -1,4 +1,4 @@
-import type {ReactNode} from 'preact';
+import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextBlock, Text, Action, TextLink} from '@lemon/zest';
 
@@ -11,7 +11,7 @@ export default function AuthenticateCli() {
 
   const authenticateCliWithAccessToken = useAuthenticateCliWithAccessToken();
 
-  let content: ReactNode;
+  let content: ComponentChild;
 
   if (authenticateCliWithAccessToken.isSuccess) {
     content = (

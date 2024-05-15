@@ -1,5 +1,5 @@
-import {createAsyncComponent} from '@quilted/quilt/async';
+import {AsyncComponent} from '@quilted/quilt/async';
 
-export const WatchLater = createAsyncComponent(
+export const WatchLater = AsyncComponent.from(
   () => import('./WatchLater/WatchLater.tsx'),
 );

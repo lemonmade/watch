@@ -8,8 +8,8 @@
     "deploy": "wrangler deploy --config ./configuration/wrangler.toml"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240405.0",
+    "@cloudflare/workers-types": "^4.20240502.0",
     "@quilted/request-router": "^0.2.0",
-    "globby": "^14.0.0"
+    "globby": "^14.0.1"
   }
 }

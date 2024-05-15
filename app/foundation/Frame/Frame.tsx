@@ -1,11 +1,12 @@
 import {type RenderableProps} from 'preact';
+import {Suspense} from 'preact/compat';
+import {useUser} from '~/shared/user.ts';
 
 import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
 
 import {Navigation, NavigationItem} from './components/Navigation.ts';
 
 import styles from './Frame.module.css';
-import {useUser} from '~/shared/user.ts';
 
 export interface Props {}
 
@@ -24,7 +25,9 @@ export default function Frame({children}: RenderableProps<Props>) {
       <View className={styles.Navigation}>
         <NavigationMenu />
       </View>
-      <View className={styles.Content}>{children}</View>
+      <View className={styles.Content}>
+        <Suspense fallback={null}>{children}</Suspense>
+      </View>
     </View>
   );
 }

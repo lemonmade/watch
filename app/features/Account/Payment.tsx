@@ -1,11 +1,10 @@
 import {
-  useEffect,
-  useMemo,
   createRef,
   type RefObject,
   type ComponentProps,
   type RenderableProps,
 } from 'preact';
+import {useEffect, useMemo} from 'preact/hooks';
 import type {Stripe, StripeElements} from '@stripe/stripe-js';
 import {useRouter, Redirect, useCurrentUrl} from '@quilted/quilt/navigate';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
@@ -16,10 +15,7 @@ import {
   useSignalEffect,
   type Signal,
 } from '@quilted/quilt/signals';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/quilt/react/tools';
+import {createOptionalContext} from '@quilted/quilt/context';
 import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -106,7 +102,7 @@ interface StripeForm {
 }
 
 const StripeFormContext = createOptionalContext<StripeForm>();
-const useStripeForm = createUseContextHook(StripeFormContext);
+const useStripeForm = StripeFormContext.use;
 
 function StripeContent() {
   const {elements, content} = useStripeForm();

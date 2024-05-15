@@ -1,4 +1,6 @@
-import {useMemo, type RenderableProps} from 'preact';
+import type {RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
+import {Suspense} from 'preact/compat';
 import {QueryClient} from '@tanstack/react-query';
 import {ReactQueryContext} from '@quilted/react-query';
 
@@ -10,19 +12,18 @@ import {
   RoutePreloading,
   type RouteDefinition,
 } from '@quilted/quilt/navigate';
-import {useSerialized, HTML} from '@quilted/quilt/html';
+import {useSerialized} from '@quilted/quilt/browser';
 import {Localization} from '@quilted/quilt/localize';
 import {GraphQLContext} from '@quilted/quilt/graphql';
 import {PerformanceContext} from '@quilted/quilt/performance';
+import {Serialize} from '@quilted/quilt/server';
 import {Canvas} from '@lemon/zest';
 
 import {toGid} from '~/shared/graphql.ts';
 import {SearchParam} from '~/global/auth.ts';
 
-import {Head} from './foundation/Head.ts';
-import {Http} from './foundation/Http.ts';
-import {Metrics} from './foundation/Metrics.ts';
-import {Frame} from './foundation/Frame.ts';
+import {Frame} from './foundation/frame.ts';
+import {HTML} from './foundation/html.ts';
 
 import {Start} from './features/Start.ts';
 import {Watching, FinishedWatching} from './features/Watching.ts';
@@ -60,25 +61,29 @@ import {
 } from './shared/context';
 import {createClipsManager, ClipsLocalDevelopment} from './shared/clips';
 
-export default function App(props: AppContextProps) {
+export interface AppProps {
+  context: Pick<AppContextType, 'fetchGraphQL' | 'user'>;
+}
+
+export function App({context}: AppProps) {
   return (
-    <PerformanceContext>
-      <HTML>
-        <Localization locale="en-CA">
-          <Routing isExternal={urlIsExternal}>
-            <RoutePreloading>
-              <AppContext {...props}>
-                <Http />
-                <Head />
+    <Routing isExternal={urlIsExternal}>
+      <RoutePreloading>
+        <AppContext context={context}>
+          <HTML>
+            <PerformanceContext>
+              <Localization locale="en-CA">
                 <Canvas>
-                  <Routes />
+                  <Suspense fallback={null}>
+                    <Routes />
+                  </Suspense>
                 </Canvas>
-              </AppContext>
-            </RoutePreloading>
-          </Routing>
-        </Localization>
-      </HTML>
-    </PerformanceContext>
+              </Localization>
+            </PerformanceContext>
+          </HTML>
+        </AppContext>
+      </RoutePreloading>
+    </Routing>
   );
 }
 
@@ -268,18 +273,18 @@ export function Routes() {
 export interface AppContextProps
   extends Pick<AppContextType, 'user' | 'fetchGraphQL'> {}
 
-export function AppContext({
-  user: explicitUser,
-  fetchGraphQL,
-  children,
-}: RenderableProps<AppContextProps>) {
-  const router = useRouter();
-  const serializedContext = useSerialized('AppContext', () => ({
-    user: explicitUser,
-  }));
+interface SerializedAppContext {
+  user: NonNullable<AppContextType['user']>;
+}
 
-  const context = useMemo<AppContextType>(() => {
-    const user = serializedContext?.user ?? explicitUser;
+export function AppContext({children, context}: RenderableProps<AppProps>) {
+  const router = useRouter();
+  const serializedContext = useSerialized<SerializedAppContext | undefined>(
+    'AppContext',
+  );
+
+  const fullContext = useMemo<AppContextType>(() => {
+    const user = serializedContext?.user ?? context.user;
 
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -293,7 +298,7 @@ export function AppContext({
 
     const clipsManager = user
       ? createClipsManager(
-          {user, graphql: fetchGraphQL, router},
+          {user, graphql: context.fetchGraphQL, router},
           EXTENSION_POINTS,
         )
       : undefined;
@@ -302,29 +307,34 @@ export function AppContext({
       ...serializedContext,
 
       user,
-      fetchGraphQL,
       queryClient,
       clipsManager,
+      ...context,
     };
-  }, [serializedContext, router, explicitUser, fetchGraphQL]);
+  }, [serializedContext, router, context]);
+
+  const contextToSerialize: SerializedAppContext | undefined = context.user
+    ? {user: context.user}
+    : undefined;
 
   return (
-    <Metrics>
-      <AppContextReact.Provider value={context}>
-        <ReactQueryContext client={context.queryClient}>
-          <GraphQLContext fetch={context.fetchGraphQL}>
-            {children}
-          </GraphQLContext>
-        </ReactQueryContext>
-        {context.clipsManager && (
-          <ClipsLocalDevelopment manager={context.clipsManager} />
-        )}
-      </AppContextReact.Provider>
-    </Metrics>
+    <AppContextReact.Provider value={fullContext}>
+      <ReactQueryContext client={fullContext.queryClient}>
+        <GraphQLContext fetch={fullContext.fetchGraphQL}>
+          {children}
+        </GraphQLContext>
+      </ReactQueryContext>
+      {fullContext.clipsManager && (
+        <ClipsLocalDevelopment manager={fullContext.clipsManager} />
+      )}
+      {contextToSerialize && (
+        <Serialize id="AppContext" value={contextToSerialize} />
+      )}
+    </AppContextReact.Provider>
   );
 }
 
-function Authenticated({children}: RenderableProps) {
+function Authenticated({children}: RenderableProps<{}>) {
   const {user} = useAppContext();
 
   if (user == null) {

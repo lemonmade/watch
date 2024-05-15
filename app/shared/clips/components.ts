@@ -1,5 +1,7 @@
-import {RemoteFragmentRenderer} from '@remote-dom/preact/host';
-import {type RemoteComponentRendererMap} from '@remote-dom/react/host';
+import {
+  RemoteFragmentRenderer,
+  type RemoteComponentRendererMap,
+} from '@remote-dom/preact/host';
 
 import {Action} from './components/Action.tsx';
 import {BlockGrid} from './components/BlockGrid.tsx';
@@ -25,15 +27,12 @@ import {TextBlock} from './components/TextBlock.tsx';
 import {TextField} from './components/TextField.tsx';
 import {View} from './components/View.tsx';
 
-import {
-  type ReactComponentTypeForClipsElement,
-  type ReactComponentPropsForClipsElement,
+import type {
+  ComponentTypeForClipsElement,
+  ComponentPropsForClipsElement,
 } from './components/shared.ts';
 
-export {
-  type ReactComponentTypeForClipsElement,
-  type ReactComponentPropsForClipsElement,
-};
+export type {ComponentTypeForClipsElement, ComponentPropsForClipsElement};
 
 export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-image', Image],

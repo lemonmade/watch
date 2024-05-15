@@ -1,4 +1,5 @@
-import {useState, type ReactNode} from 'preact';
+import type {ComponentChild} from 'preact';
+import {useState} from 'preact/hooks';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,
@@ -19,7 +20,7 @@ import deleteAccessTokenMutation from './graphql/DeleteAccessTokenMutation.graph
 export default function AccessTokens() {
   const [createResult, setCreateResult] = useState<{
     type: 'error' | 'success';
-    message: ReactNode;
+    message: ComponentChild;
   }>();
 
   const {data, refetch, isLoading} = useQuery(accessTokensQuery);
