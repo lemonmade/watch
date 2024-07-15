@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import '@quilted/quilt/polyfills/fetch';
 import {PrismaClient} from '@prisma/client';
 
 // import {updateSeries} from '../../global/tmdb.ts';
