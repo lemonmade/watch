@@ -88,7 +88,7 @@ export async function updateSeries({
       if (season.air_date == null) return false;
 
       const airDate = new Date(season.air_date);
-      return airDate.getTime() > Date.now() - 6 * 30 * 24 * 60 * 60 * 100;
+      return airDate.getTime() > Date.now() - 6 * 30 * 24 * 60 * 60 * 1000;
     })
     .map((season) => season.season_number);
   log(
