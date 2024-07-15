@@ -80,15 +80,34 @@ export async function updateSeries({
     },
   });
 
+  const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
+
+  // Update anything that has aired in the last six months
+  const seasonsInTheLastSixMonths = seriesResult.seasons
+    .filter((season) => {
+      if (season.air_date == null) return false;
+
+      const airDate = new Date(season.air_date);
+      return airDate.getTime() > Date.now() - 6 * 30 * 24 * 60 * 60 * 100;
+    })
+    .map((season) => season.season_number);
+  log(
+    `Updating seasons from the last six months: ${JSON.stringify(
+      seasonsInTheLastSixMonths,
+    )}`,
+  );
+
   const seasonToId = new Map(seasons.map(({id, number}) => [number, id]));
   const seasonNumbers = new Set(seasons.map((season) => season.number));
   const continuingSeasons = seasons
     .filter((season) => season.status === 'CONTINUING')
     .map((season) => season.number);
-  const seasonsToUpdate = new Set(continuingSeasons);
-  const seasonsToDelete = new Set<number>();
+  log(`Updating continuing seasons: ${JSON.stringify(continuingSeasons)}`);
 
-  const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
+  const seasonsToUpdate = new Set(
+    [...continuingSeasons, ...seasonsInTheLastSixMonths].sort(),
+  );
+  const seasonsToDelete = new Set<number>();
 
   // TODO: should be putting this on a queue to be deleted in our database?
   // @see https://www.themoviedb.org/talk/64d72becb6c2641157536806
@@ -150,6 +169,7 @@ export async function updateSeries({
 
     if (id) {
       if (status === 'ENDED') {
+        // TODO: this should definitely just enqueue a job
         const watchThroughsToUpdate = await prisma.watchThrough.findMany({
           where: {
             seriesId,
