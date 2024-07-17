@@ -115,6 +115,7 @@ export function extensionRollupConfiguration(
         minify: false,
         target: 'es2019',
         loaders: {'.esnext': 'js'},
+        tsconfig: false,
       }),
     );
 
