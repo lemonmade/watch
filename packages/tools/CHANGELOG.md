@@ -1,5 +1,11 @@
 # @watching/tools
 
+## 0.2.1
+
+### Patch Changes
+
+- [`763608d1`](https://github.com/lemonmade/watch/commit/763608d1925e1f345da1ee4b391f0127827a4618) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix errors when `.esnext` dependencies have tsconfig files
+
 ## 1.0.0
 
 ### Minor Changes
