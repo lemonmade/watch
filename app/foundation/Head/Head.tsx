@@ -1,4 +1,4 @@
-import {Title, Viewport, Favicon} from '@quilted/quilt/html';
+import {Title, Viewport, Favicon, ThemeColor} from '@quilted/quilt/html';
 
 export function Head() {
   return (
@@ -6,6 +6,7 @@ export function Head() {
       <Title>Watch</Title>
       <Viewport />
       <Favicon emoji="📺" />
+      <ThemeColor value="rgb(26, 21, 34)" />
     </>
   );
 }
