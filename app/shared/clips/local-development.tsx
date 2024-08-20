@@ -1,5 +1,5 @@
-import {useEffect} from 'react';
-import {useInitialUrl} from '@quilted/quilt/navigate';
+import {useEffect} from 'preact/hooks';
+import {useBrowserRequest} from '@quilted/quilt/browser';
 
 import {type ClipsManager} from './manager.ts';
 
@@ -11,10 +11,12 @@ export function ClipsLocalDevelopment({manager}: {manager: ClipsManager}) {
 }
 
 function useClipsLocalDevelopment(manager: ClipsManager) {
-  const initialUrl = useInitialUrl();
+  const initialUrl = useBrowserRequest().url;
 
   useEffect(() => {
-    const localDevelopmentConnectUrl = getDevelopmentServerUrl(initialUrl);
+    const localDevelopmentConnectUrl = getDevelopmentServerUrl(
+      new URL(initialUrl),
+    );
 
     const abort = new AbortController();
 

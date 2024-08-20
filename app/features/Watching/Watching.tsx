@@ -1,4 +1,5 @@
-import {useMemo, type ReactNode} from 'react';
+import {useMemo} from 'preact/hooks';
+import type {ComponentChild} from 'preact';
 
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
@@ -64,7 +65,7 @@ function WatchThroughItem({watchThrough}: {watchThrough: WatchThrough}) {
   const {url, series, nextEpisode, unfinishedEpisodeCount} = watchThrough;
   const {formatDate} = useLocalizedFormatting();
 
-  let subtitle: ReactNode = null;
+  let subtitle: ComponentChild = null;
 
   if (nextEpisode) {
     subtitle = (

@@ -1,13 +1,12 @@
 import {
-  useEffect,
-  useMemo,
   createRef,
   type RefObject,
   type ComponentProps,
-  type PropsWithChildren,
-} from 'react';
+  type RenderableProps,
+} from 'preact';
+import {useEffect, useMemo} from 'preact/hooks';
 import type {Stripe, StripeElements} from '@stripe/stripe-js';
-import {useRouter, Redirect, useCurrentUrl} from '@quilted/quilt/navigate';
+import {useRouter, Redirect, useCurrentURL} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   signal,
@@ -16,10 +15,7 @@ import {
   useSignalEffect,
   type Signal,
 } from '@quilted/quilt/signals';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/quilt/react/tools';
+import {createOptionalContext} from '@quilted/quilt/context';
 import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
@@ -30,7 +26,7 @@ import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql
 
 export default function Payment() {
   const router = useRouter();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const {data, isLoading, refetch} = useQuery(subscriptionPaymentQuery);
 
   usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
@@ -106,7 +102,7 @@ interface StripeForm {
 }
 
 const StripeFormContext = createOptionalContext<StripeForm>();
-const useStripeForm = createUseContextHook(StripeFormContext);
+const useStripeForm = StripeFormContext.use;
 
 function StripeContent() {
   const {elements, content} = useStripeForm();
@@ -123,7 +119,7 @@ function StripeForm({
   clientSecret,
   children,
   onSubmit,
-}: PropsWithChildren<
+}: RenderableProps<
   {
     apiKey?: string;
     clientSecret?: string;

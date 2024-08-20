@@ -5,7 +5,7 @@ import {
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@watching/react-signals';
+} from '@quilted/quilt/signals';
 import {
   isToday,
   isYesterday,

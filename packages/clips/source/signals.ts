@@ -1,5 +1,5 @@
 import {type Signal} from '@preact/signals-core';
-import {acceptThreadSignal, type ThreadSignal} from '@quilted/threads/signals';
+import {ThreadSignal} from '@quilted/threads/signals';
 
 export {type Signal};
 
@@ -19,7 +19,7 @@ export function acceptSignals<T extends {}>(value: WithThreadSignals<T>): T {
       'initial' in nestedValue &&
       typeof (nestedValue as any).start === 'function'
     ) {
-      acceptedValue[key] = acceptThreadSignal(nestedValue as any);
+      acceptedValue[key] = new ThreadSignal(nestedValue as any);
     } else {
       acceptedValue[key] = nestedValue;
     }

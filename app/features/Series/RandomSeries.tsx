@@ -1,4 +1,4 @@
-import {Redirect} from '@quilted/quilt/navigate';
+import {Redirect} from '@quilted/quilt/navigation';
 import {useQuery, parseGid} from '~/shared/graphql.ts';
 
 import randomSeriesQuery from './graphql/RandomSeriesQuery.graphql';

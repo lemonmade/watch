@@ -1,14 +1,14 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 
 import {Overlay} from '../Overlay';
 
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Popover.module.css';
 
-export type PopoverProps = ReactComponentPropsForClipsElement<'ui-popover'>;
+export type PopoverProps = PreactComponentPropsForClipsElement<'ui-popover'>;
 
-export function Popover(props: PropsWithChildren<PopoverProps>) {
+export function Popover(props: RenderableProps<PopoverProps>) {
   return (
     <Overlay
       {...props}

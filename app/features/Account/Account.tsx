@@ -1,6 +1,7 @@
-import {useState, type ReactNode, type PropsWithChildren} from 'react';
+import type {ComponentChild, RenderableProps} from 'preact';
+import {useState} from 'preact/hooks';
 import {useSignal} from '@quilted/quilt/signals';
-import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
+import {useNavigate, useCurrentURL} from '@quilted/quilt/navigation';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
@@ -121,12 +122,12 @@ function AccountSection({
   onUpdate(): Promise<void>;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const signOut = useMutation(signOutMutation);
 
   const paymentStatus = currentUrl.searchParams.get(SearchParam.PaymentStatus);
 
-  let paymentBanner: ReactNode = null;
+  let paymentBanner: ComponentChild = null;
 
   switch (paymentStatus) {
     case PaymentStatus.Success: {
@@ -146,7 +147,7 @@ function AccountSection({
     }
   }
 
-  let accountContent: ReactNode = null;
+  let accountContent: ComponentChild = null;
 
   if (level === 'FREE') {
     accountContent = <FreeAccountSection onUpdate={onUpdate} />;
@@ -405,7 +406,7 @@ function SubscribeSection({
   cost,
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   heading: string;
   cost: {amount: number; currency: string};
   level: PrepareSubscriptionMutationVariables['level'];
@@ -441,7 +442,7 @@ function SubscribeSection({
 function SubscribeAction({
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   level: PrepareSubscriptionMutationVariables['level'];
 }>) {
   const navigate = useNavigate();
@@ -584,7 +585,7 @@ function AppleSection({
   account?: AccountQueryData.Me.AppleAccount | null;
   onUpdate(): Promise<void>;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const connectAppleAccount = useMutation(connectAppleAccountMutation);
   const disconnectAppleAccount = useMutation(disconnectAppleAccountMutation);
 
@@ -658,7 +659,7 @@ function GoogleSection({
 }
 
 function ConnectGoogleAccount({onUpdate}: {onUpdate(): Promise<void>}) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const [error, setError] = useState(false);
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.Connect, (event) => {
@@ -741,7 +742,7 @@ function ConnectGithubAccount({
 }: {
   onConnectionChange?(): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const [error, setError] = useState(false);
 
   const open = useGithubOAuthModal(GithubOAuthFlow.Connect, (event) => {

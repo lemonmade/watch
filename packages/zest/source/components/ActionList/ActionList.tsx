@@ -1,5 +1,5 @@
 import {classes} from '@lemon/css';
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 
 import systemStyles from '../../system.module.css';
 
@@ -7,7 +7,7 @@ import styles from './ActionList.module.css';
 
 export interface ActionListProps {}
 
-export function ActionList({children}: PropsWithChildren<ActionListProps>) {
+export function ActionList({children}: RenderableProps<ActionListProps>) {
   return (
     <div
       className={classes(

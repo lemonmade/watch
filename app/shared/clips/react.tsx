@@ -1,4 +1,4 @@
-import {useMemo, useEffect} from 'react';
+import {useMemo, useEffect} from 'preact/hooks';
 import {signal, useComputed, type Signal} from '@quilted/quilt/signals';
 import {
   type GraphQLResult,

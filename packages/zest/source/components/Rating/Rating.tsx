@@ -1,16 +1,11 @@
-import {
-  useRef,
-  memo,
-  useCallback,
-  type KeyboardEventHandler,
-  type PointerEventHandler,
-} from 'react';
+import type {JSX} from 'preact';
+import {useRef, useCallback} from 'preact/hooks';
 import {classes, variation} from '@lemon/css';
 import {
   resolveSignalOrValue,
   useSignal,
   type SignalOrValue,
-} from '@watching/react-signals';
+} from '@quilted/quilt/signals';
 
 import styles from './Rating.module.css';
 
@@ -71,11 +66,7 @@ function ReadonlyRating({size, value}: Pick<RatingProps, 'size' | 'value'>) {
   );
 }
 
-export const EditableRating = memo(function Rating({
-  size,
-  value,
-  onChange,
-}: RatingProps) {
+export function EditableRating({size, value, onChange}: RatingProps) {
   const starContainer = useRef<null | HTMLDivElement>(null);
   const resolvedValue = resolveSignalOrValue(value);
   const inProgressValue = useSignal<number | undefined>(undefined);
@@ -97,7 +88,7 @@ export const EditableRating = memo(function Rating({
   const updateValueBySteps = (steps: number) =>
     updateValue(Math.max(0, Math.min(100, (resolvedValue ?? 0) + steps * 10)));
 
-  const handleKeyPress: KeyboardEventHandler<HTMLDivElement> = ({
+  const handleKeyPress: JSX.KeyboardEventHandler<HTMLDivElement> = ({
     key,
     shiftKey,
   }) => {
@@ -127,7 +118,9 @@ export const EditableRating = memo(function Rating({
     }
   };
 
-  const handlePointerDown = useCallback<PointerEventHandler<HTMLDivElement>>(
+  const handlePointerDown = useCallback<
+    JSX.PointerEventHandler<HTMLDivElement>
+  >(
     (event) => {
       if (starContainer.current == null) {
         return;
@@ -236,7 +229,7 @@ export const EditableRating = memo(function Rating({
       </div>
     </div>
   );
-});
+}
 
 function fillForValueInRange(
   currentValue: number | undefined,
@@ -281,7 +274,7 @@ interface StarProps {
   fill: StarFill;
 }
 
-const Star = memo(function Star({fill}: StarProps) {
+function Star({fill}: StarProps) {
   return (
     <span
       className={classes(
@@ -298,7 +291,7 @@ const Star = memo(function Star({fill}: StarProps) {
       <StarIcon />
     </span>
   );
-});
+}
 
 function StarIcon() {
   return (

@@ -1,5 +1,5 @@
-import {useCallback, useEffect, useRef} from 'react';
-import {useRouter} from '@quilted/quilt/navigate';
+import {useCallback, useEffect, useRef} from 'preact/hooks';
+import {useRouter} from '@quilted/quilt/navigation';
 
 import {
   GithubOAuthFlow,

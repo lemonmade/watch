@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import {View} from '../View.tsx';
@@ -21,7 +21,7 @@ export function Banner({
   tone,
   padding = true,
   children,
-}: PropsWithChildren<BannerProps>) {
+}: RenderableProps<BannerProps>) {
   return (
     <NestedHeadingLevel>
       <View

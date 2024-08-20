@@ -1,4 +1,5 @@
-import {useMemo, type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {QueryClient} from '@tanstack/react-query';
 import {ReactQueryContext} from '@quilted/react-query';
 
@@ -9,7 +10,7 @@ import {
   Routing,
   RoutePreloading,
   type RouteDefinition,
-} from '@quilted/quilt/navigate';
+} from '@quilted/quilt/navigation';
 import {useSerialized, HTML} from '@quilted/quilt/html';
 import {Localization} from '@quilted/quilt/localize';
 import {GraphQLContext} from '@quilted/quilt/graphql';
@@ -272,7 +273,7 @@ export function AppContext({
   user: explicitUser,
   fetchGraphQL,
   children,
-}: PropsWithChildren<AppContextProps>) {
+}: RenderableProps<AppContextProps>) {
   const router = useRouter();
   const serializedContext = useSerialized('AppContext', () => ({
     user: explicitUser,
@@ -324,7 +325,7 @@ export function AppContext({
   );
 }
 
-function Authenticated({children}: PropsWithChildren) {
+function Authenticated({children}: RenderableProps) {
   const {user} = useAppContext();
 
   if (user == null) {

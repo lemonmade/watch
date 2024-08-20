@@ -1,13 +1,11 @@
-import {useMemo, type ReactNode, type PropsWithChildren} from 'react';
+import type {ComponentChild, RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {
   isSignal,
   resolveSignalOrValue,
   type SignalOrValue,
-} from '@watching/react-signals';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/react-utilities';
+} from '@quilted/quilt/signals';
+import {createOptionalContext} from '@quilted/quilt/context';
 import {classes} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
@@ -22,7 +20,7 @@ interface ChoiceListContextValue {
 }
 
 const ChoiceListContext = createOptionalContext<ChoiceListContextValue>();
-const useChoiceListContext = createUseContextHook(ChoiceListContext);
+const useChoiceListContext = ChoiceListContext.use;
 
 export interface ChoiceListProps<Value extends string = string> {
   id?: string;
@@ -37,7 +35,7 @@ export function ChoiceList<Value extends string = string>({
   value,
   spacing = true,
   onChange,
-}: PropsWithChildren<ChoiceListProps<Value>>) {
+}: RenderableProps<ChoiceListProps<Value>>) {
   const id = useUniqueId('ChoiceList', explicitId);
 
   const contextValue = useMemo<ChoiceListContextValue>(
@@ -74,7 +72,7 @@ export interface ChoiceProps {
   value: string;
   disabled?: SignalOrValue<boolean>;
   readonly?: SignalOrValue<boolean>;
-  helpText?: ReactNode;
+  helpText?: ComponentChild;
 }
 
 export function Choice({
@@ -84,7 +82,7 @@ export function Choice({
   disabled,
   readonly,
   helpText,
-}: PropsWithChildren<ChoiceProps>) {
+}: RenderableProps<ChoiceProps>) {
   const id = useUniqueId('ChoiceListOption', explicitId);
   const choiceListContext = useChoiceListContext();
   const resolvedDisabled = resolveSignalOrValue(disabled);
@@ -99,7 +97,7 @@ export function Choice({
       className={classes(
         choiceStyles.Choice,
         choiceStyles.cornerRadiusFullyRounded,
-        helpText && choiceStyles.hasHelpText,
+        Boolean(helpText) && choiceStyles.hasHelpText,
       )}
     >
       <input

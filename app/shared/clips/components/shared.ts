@@ -1,16 +1,12 @@
-import {
-  useRef,
-  useEffect,
-  type ForwardRefExoticComponent,
-  type ForwardRefRenderFunction,
-} from 'react';
+import type {ComponentType} from 'preact';
+import {useRef, useEffect} from 'preact/hooks';
 import {ElementConstructors, type Elements} from '@watching/clips';
-import {createRemoteComponentRenderer} from '@remote-dom/preact/host';
 import {
+  createRemoteComponentRenderer,
   type RemoteComponentRendererProps,
   type RemoteComponentTypeFromElementConstructor,
   type RemoteComponentPropsFromElementConstructor,
-} from '@remote-dom/react/host';
+} from '@remote-dom/preact/host';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {
   isThreadSignal,
@@ -18,19 +14,17 @@ import {
   type ThreadSignal,
 } from '@quilted/quilt/threads';
 
-export type ReactComponentPropsForClipsElement<Element extends keyof Elements> =
-  RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
+export type PreactComponentPropsForClipsElement<
+  Element extends keyof Elements,
+> = RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
 
-export type ReactComponentTypeForClipsElement<Element extends keyof Elements> =
+export type PreactComponentTypeForClipsElement<Element extends keyof Elements> =
   RemoteComponentTypeFromElementConstructor<ElementConstructors[Element]>;
 
 export function createClipsComponent<Element extends keyof Elements>(
   element: Element,
-  Component: ForwardRefRenderFunction<
-    any,
-    ReactComponentPropsForClipsElement<Element>
-  >,
-): ForwardRefExoticComponent<RemoteComponentRendererProps> {
+  Component: ComponentType<PreactComponentPropsForClipsElement<Element>>,
+): ComponentType<RemoteComponentRendererProps> {
   return createRemoteComponentRenderer(Component as any, {
     name: `Clips(${element})`,
   }) as any;

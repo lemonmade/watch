@@ -1,8 +1,8 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {usePerformanceNavigationEvent} from '@quilted/quilt/performance';
 import Env from 'quilt:module/env';
 
-export function Metrics({children}: PropsWithChildren) {
+export function Metrics({children}: RenderableProps) {
   usePerformanceNavigationEvent(async (navigation) => {
     if (Env.MODE === 'development') {
       console.log('Navigation');

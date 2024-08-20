@@ -77,6 +77,6 @@ router.post('internal/metrics/navigation', async (request, {env}) => {
   return new NoContentResponse();
 });
 
-const handleRequest = createFetchHandler(router);
+const handleRequest = createFetchHandler(router as any);
 
 export default {fetch: handleRequest, queue: handleMessage};

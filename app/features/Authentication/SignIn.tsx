@@ -1,12 +1,12 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'preact/hooks';
 import {useSignal, useComputed} from '@quilted/quilt/signals';
 import {
   Link,
   useRouter,
   useRoutes,
   useNavigate,
-  useCurrentUrl,
-} from '@quilted/quilt/navigate';
+  useCurrentURL,
+} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   View,
@@ -45,7 +45,7 @@ export default function SignIn() {
 function SignInForm() {
   usePerformanceNavigation({state: 'complete'});
 
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const [reason, setReason] = useState<SignInErrorReason | undefined>(
     (currentUrl.searchParams.get(SearchParam.Reason) as any) ?? undefined,
@@ -167,7 +167,7 @@ function useSignInWithPasskey() {
 
 function useSignInWithEmail() {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const signInWithEmail = useMutation(signInWithEmailMutation);
 
   return async function doSignInWithEmail({email}: {email: string}) {
@@ -190,7 +190,7 @@ function SignInWithApple({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const signInWithApple = useMutation(signInWithAppleMutation);
 
   return (
@@ -224,7 +224,7 @@ function SignInWithGithub({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGithubOAuthModal(GithubOAuthFlow.SignIn, (event) => {
     if (event.success) {
@@ -254,7 +254,7 @@ function SignInWithGoogle({
 }: {
   onError(reason: SignInErrorReason): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.SignIn, (event) => {
     if (event.success) {

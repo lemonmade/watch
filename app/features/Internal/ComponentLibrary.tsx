@@ -1,4 +1,4 @@
-import {type ComponentProps} from 'react';
+import type {ComponentProps} from 'preact';
 import {useSignal} from '@quilted/quilt/signals';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {

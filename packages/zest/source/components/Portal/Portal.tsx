@@ -1,5 +1,5 @@
-import type {PropsWithChildren, ReactElement} from 'react';
-import {createPortal} from 'react-dom';
+import type {RenderableProps} from 'preact';
+import {createPortal} from 'preact/compat';
 
 import {useUniqueId} from '../../shared/id.ts';
 import {useCanvas} from '../../shared/canvas.tsx';
@@ -9,10 +9,7 @@ export interface PortalProps {
   layer?: boolean;
 }
 
-export function Portal({
-  layer = true,
-  children,
-}: PropsWithChildren<PortalProps>): ReactElement | null {
+export function Portal({layer = true, children}: RenderableProps<PortalProps>) {
   const id = useUniqueId('Portal');
   const {portal} = useCanvas();
   const container = portal.container.value;

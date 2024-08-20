@@ -27,10 +27,10 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@preact/signals-core": "^1.5.0",
-    "@quilted/events": "^2.0.0",
-    "@quilted/threads": "^2.1.0",
-    "@remote-dom/core": "^1.0.0",
-    "@remote-dom/signals": "^1.0.2"
+    "@preact/signals-core": "^1.8.0",
+    "@quilted/events": "^2.1.1",
+    "@quilted/threads": "^3.0.0",
+    "@remote-dom/core": "^1.4.0",
+    "@remote-dom/signals": "^1.1.0"
   }
 }

@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import {Icon} from '../Icon.tsx';
@@ -22,7 +22,7 @@ export function TextAction({
   emphasis,
   accessibilityRole,
   ...pressableProps
-}: PropsWithChildren<TextActionProps>) {
+}: RenderableProps<TextActionProps>) {
   return (
     <div className={classes(systemStyles.displayInlineFlex, styles.TextAction)}>
       <Pressable

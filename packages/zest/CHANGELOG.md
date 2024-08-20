@@ -26,7 +26,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`8920e5c9`](https://github.com/lemonmade/watch/commit/8920e5c921988992b7c83c78b135fe6d694d788e)]:
-  - @watching/react-signals@0.2.0
+  - @quilted/quilt/signals@0.2.0
   - @watching/clips@0.5.0
 
 ## 0.1.23
@@ -35,7 +35,7 @@
 
 - Updated dependencies [[`c5e7763a`](https://github.com/lemonmade/watch/commit/c5e7763aab442f39587c07fea84f9d76d9403c1a)]:
   - @watching/clips@0.4.22
-  - @watching/react-signals@0.1.10
+  - @quilted/quilt/signals@0.1.10
 
 ## 0.1.22
 
@@ -45,7 +45,7 @@
 
 - Updated dependencies [[`7735f9ed`](https://github.com/lemonmade/watch/commit/7735f9ed836eca5a149bbedf55ccde4323c9ac2e), [`acaed5a4`](https://github.com/lemonmade/watch/commit/acaed5a41dcf777e499bceabf3ac4e410f02cc0a)]:
   - @watching/clips@0.4.21
-  - @watching/react-signals@0.1.9
+  - @quilted/quilt/signals@0.1.9
 
 ## 0.1.21
 
@@ -60,7 +60,7 @@
 
 - Updated dependencies [[`fb4b067c`](https://github.com/lemonmade/watch/commit/fb4b067c430cd064ec2bb68e4ac3691175035c38)]:
   - @watching/clips@0.4.19
-  - @watching/react-signals@0.1.8
+  - @quilted/quilt/signals@0.1.8
   - @watching/thread-signals@0.1.12
 
 ## 0.1.19
@@ -69,7 +69,7 @@
 
 - Updated dependencies [[`ff7377e2`](https://github.com/lemonmade/watch/commit/ff7377e24f3ee3b97b88c8493eb6fa4d86450902), [`5254b411`](https://github.com/lemonmade/watch/commit/5254b4119867c8b859432a24b5faa0b890f0d7a8), [`b6330854`](https://github.com/lemonmade/watch/commit/b6330854b4cd12d4a948c1ec22ed83dfb9d23506)]:
   - @watching/clips@0.4.18
-  - @watching/react-signals@0.1.7
+  - @quilted/quilt/signals@0.1.7
   - @watching/thread-signals@0.1.11
 
 ## 0.1.18
@@ -198,7 +198,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`31831a4`](https://github.com/lemonmade/watch/commit/31831a4814c291ab9a0ff564a075324ac45c9ba4), [`fa3eceb`](https://github.com/lemonmade/watch/commit/fa3eceb9d492ae37636683de0c2356e5919fa5e8)]:
-  - @watching/react-signals@0.1.6
+  - @quilted/quilt/signals@0.1.6
   - @watching/clips@0.4.0
 
 ## 0.1.0
@@ -212,7 +212,7 @@
 - [`56d6af7`](https://github.com/lemonmade/watch/commit/56d6af7685722d31becef445969b8c2f62a2855d) Thanks [@lemonmade](https://github.com/lemonmade)! - Add better styling primitives
 
 - Updated dependencies [[`c176a45`](https://github.com/lemonmade/watch/commit/c176a45a7289e1fedcd88d45510cd042285d4436), [`9488b9c`](https://github.com/lemonmade/watch/commit/9488b9c5e07161aeac8ff4d1f29666fe9aa76a0d), [`7415002`](https://github.com/lemonmade/watch/commit/74150021db9431ab8d84435482d5dc6e1fc00883), [`6e1fe5e`](https://github.com/lemonmade/watch/commit/6e1fe5e33121d2373e5c40727b926b10efa22d53), [`cf151b0`](https://github.com/lemonmade/watch/commit/cf151b0f1bb61e2873a33fce7710f0d09f97f087), [`9488b9c`](https://github.com/lemonmade/watch/commit/9488b9c5e07161aeac8ff4d1f29666fe9aa76a0d), [`042979e`](https://github.com/lemonmade/watch/commit/042979e719f4877342e60fa16cdafc10e8c295bc), [`56d6af7`](https://github.com/lemonmade/watch/commit/56d6af7685722d31becef445969b8c2f62a2855d)]:
-  - @watching/react-signals@0.1.5
+  - @quilted/quilt/signals@0.1.5
   - @watching/thread-signals@0.1.8
   - @watching/clips@0.3.0
 
@@ -222,7 +222,7 @@
 
 - Updated dependencies [[`4b1a621`](https://github.com/lemonmade/watch/commit/4b1a62199c4595cc5c9a781e0151808f2332f472)]:
   - @watching/clips@0.2.27
-  - @watching/react-signals@0.1.4
+  - @quilted/quilt/signals@0.1.4
 
 ## 0.0.13
 
@@ -237,7 +237,7 @@
 
 - Updated dependencies [[`58e6646`](https://github.com/lemonmade/watch/commit/58e664658378424779f2cc9700f6565deb48de08)]:
   - @watching/clips@0.2.26
-  - @watching/react-signals@0.1.3
+  - @quilted/quilt/signals@0.1.3
   - @watching/thread-signals@0.1.6
 
 ## 0.0.11
@@ -310,7 +310,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`b1a8f4c`](https://github.com/lemonmade/watch/commit/b1a8f4cfa46c74ceda4eab09c4277626e16de2c3)]:
-  - @watching/react-signals@0.1.2
+  - @quilted/quilt/signals@0.1.2
 
 ## 0.0.1
 
@@ -319,4 +319,4 @@
 - [#179](https://github.com/lemonmade/watch/pull/179) [`507675c`](https://github.com/lemonmade/watch/commit/507675cf02c2ac0b8d68c4e663188d2bba79a1ad) Thanks [@lemonmade](https://github.com/lemonmade)! - Many UI improvements
 
 - Updated dependencies [[`260a663`](https://github.com/lemonmade/watch/commit/260a6636fdc376c0e8a8fda3867b19c2abf0e972)]:
-  - @watching/react-signals@0.1.1
+  - @quilted/quilt/signals@0.1.1

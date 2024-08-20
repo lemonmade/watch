@@ -1,6 +1,6 @@
 import {useMutation as useBasicMutation} from '@tanstack/react-query';
 
-import {useCurrentUrl} from '@quilted/quilt/navigate';
+import {useCurrentURL} from '@quilted/quilt/navigation';
 
 import {useMutation} from '~/shared/graphql.ts';
 
@@ -30,7 +30,7 @@ export function useAuthenticateCliWithAccessToken<
   connect: explicitConnectTo,
   handleToken = handleTokenDefault as any,
 }: AuthenticateWithCliAccessTokenOptions<Message> = {}) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const connectTo =
     explicitConnectTo ?? currentUrl.searchParams.get(SearchParams.Connect);
 

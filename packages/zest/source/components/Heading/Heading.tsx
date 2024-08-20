@@ -2,11 +2,11 @@ import {classes} from '@lemon/css';
 
 import {useHeadingDomDetails} from './shared.ts';
 
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Heading.module.css';
 
-export type HeadingProps = ReactComponentPropsForClipsElement<'ui-heading'>;
+export type HeadingProps = PreactComponentPropsForClipsElement<'ui-heading'>;
 
 export function Heading({
   level: explicitLevel,

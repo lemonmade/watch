@@ -1,4 +1,4 @@
-import {Redirect} from '@quilted/quilt/navigate';
+import {Redirect} from '@quilted/quilt/navigation';
 
 import {useQuery} from '~/shared/graphql.ts';
 

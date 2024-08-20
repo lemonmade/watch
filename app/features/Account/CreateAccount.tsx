@@ -1,6 +1,6 @@
-import {useState} from 'react';
+import {useState} from 'preact/hooks';
 import {useSignal} from '@quilted/quilt/signals';
-import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
+import {useNavigate, useCurrentURL} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   Action,
@@ -31,7 +31,7 @@ enum SearchParam {
 export default function CreateAccount() {
   usePerformanceNavigation({state: 'complete'});
 
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const giftCode = currentUrl.searchParams.get(SearchParam.GiftCode);
 
@@ -65,7 +65,7 @@ export default function CreateAccount() {
 function CreateAccountWithEmail() {
   const email = useSignal('');
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
 
   return (
@@ -104,7 +104,7 @@ function CreateAccountWithApple({
 }: {
   onError(reason: CreateAccountErrorReason): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const createAccountWithApple = useMutation(createAccountWithAppleMutation);
 
   return (
@@ -142,7 +142,7 @@ function CreateAccountWithGithub({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGithubOAuthModal(GithubOAuthFlow.CreateAccount, (event) => {
     if (event.success) {
@@ -181,7 +181,7 @@ function CreateAccountWithGoogle({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.CreateAccount, (event) => {
     if (event.success) {

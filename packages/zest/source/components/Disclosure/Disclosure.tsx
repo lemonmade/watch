@@ -1,13 +1,13 @@
 import {classes} from '@lemon/css';
-import {useSignal} from '@watching/react-signals';
+import {useSignal} from '@quilted/quilt/signals';
 
 import {useUniqueId} from '../../shared/id.ts';
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Disclosure.module.css';
 
 export type DisclosureProps =
-  ReactComponentPropsForClipsElement<'ui-disclosure'>;
+  PreactComponentPropsForClipsElement<'ui-disclosure'>;
 
 export function Disclosure({label, children}: DisclosureProps) {
   const id = useUniqueId('Disclosure');

@@ -1,11 +1,11 @@
 {
-  "extends": "@quilted/typescript/project.json",
+  "extends": "@quilted/typescript/tsconfig.project.json",
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "../build/typescript-templates"
   },
   "include": ["."],
-  "exclude": ["quilt.project.ts", "build", "./*/preact/**/*"],
+  "exclude": ["build", "./*/preact/**/*"],
   "references": [
     {"path": "../../clips"},
     {"path": "../../clips-react"},

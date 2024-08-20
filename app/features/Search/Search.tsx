@@ -1,6 +1,6 @@
-import {useState, useRef, useEffect, useCallback} from 'react';
+import {useState, useRef, useEffect, useCallback} from 'preact/hooks';
 
-import {useCurrentUrl, useNavigate} from '@quilted/quilt/navigate';
+import {useCurrentURL, useNavigate} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextField, Poster} from '@lemon/zest';
 
@@ -14,7 +14,7 @@ const QUERY_PARAM = 'query';
 
 export default function Search() {
   const navigate = useNavigate();
-  const committedSearch = useCurrentUrl().searchParams.get(QUERY_PARAM) ?? '';
+  const committedSearch = useCurrentURL().searchParams.get(QUERY_PARAM) ?? '';
   const [search, setSearch] = useState(committedSearch);
 
   function updateCommittedSearch(search: string) {

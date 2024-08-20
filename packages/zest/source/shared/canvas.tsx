@@ -1,8 +1,8 @@
-import {useEffect, createContext} from 'react';
-import {createUseContextHook} from '@quilted/react-utilities';
-import {type Signal} from '@preact/signals-core';
+import {useEffect} from 'preact/hooks';
+import {createOptionalContext} from '@quilted/quilt/context';
+import type {Signal} from '@preact/signals-core';
 
-import {type Layer} from './layers';
+import type {Layer} from './layers.tsx';
 
 export interface Canvas extends Layer {
   readonly scroll: Signal<'locked' | 'auto'>;
@@ -11,8 +11,8 @@ export interface Canvas extends Layer {
   };
 }
 
-export const CanvasContext = createContext<Canvas | null>(null);
-export const useCanvas = createUseContextHook(CanvasContext);
+export const CanvasContext = createOptionalContext<Canvas>();
+export const useCanvas = CanvasContext.use;
 
 export function LockCanvas() {
   const canvas = useCanvas();

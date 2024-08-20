@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import {Icon} from '../Icon.tsx';
@@ -17,7 +17,7 @@ export interface ContentActionProps
 export function ContentAction({
   children,
   ...pressableProps
-}: PropsWithChildren<ContentActionProps>) {
+}: RenderableProps<ContentActionProps>) {
   return (
     <Pressable
       {...pressableProps}

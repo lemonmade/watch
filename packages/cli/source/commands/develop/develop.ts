@@ -12,8 +12,11 @@ import {
   AbortError,
   NestedAbortController,
 } from '@quilted/cli-kit';
-import {createThread, acceptThreadAbortSignal} from '@quilted/threads';
-import type {ThreadTarget, ThreadAbortSignal} from '@quilted/threads';
+import {
+  Thread,
+  ThreadAbortSignal,
+  type ThreadMessageTarget,
+} from '@quilted/threads';
 
 import {
   JSONResponse,
@@ -376,7 +379,7 @@ function createWebSocketServer(
       }`,
     );
 
-    const expose = {
+    const exports = {
       query(
         query: string,
         {
@@ -388,21 +391,22 @@ function createWebSocketServer(
         } = {},
       ) {
         const resolvedSignal = threadSignal
-          ? acceptThreadAbortSignal(threadSignal)
+          ? new ThreadAbortSignal(threadSignal)
           : new NestedAbortController(signal).signal;
 
         return (async function* () {
           yield* run(parse(query) as any, resolver, {
             variables,
-            signal: resolvedSignal,
+            // TODO
+            signal: resolvedSignal as any,
             context: {rootUrl: new URL('/', connectionUrl)},
           });
         })();
       },
     };
 
-    createThread<typeof expose>(threadTargetFromWebSocket(socket), {
-      expose,
+    new Thread(threadTargetFromWebSocket(socket), {
+      exports,
       signal,
     });
 
@@ -507,7 +511,7 @@ async function createBuilder(
   }
 }
 
-function threadTargetFromWebSocket(socket: WebSocket): ThreadTarget {
+function threadTargetFromWebSocket(socket: WebSocket): ThreadMessageTarget {
   return {
     send(message) {
       socket.send(JSON.stringify(message));

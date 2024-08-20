@@ -1,23 +1,25 @@
 {
-  "extends": "@quilted/typescript/project.json",
+  "extends": "@quilted/typescript/tsconfig.project.json",
   "compilerOptions": {
-    "outDir": "build/typescript",
     "lib": ["ESNext", "DOM"],
+    "jsxImportSource": "preact",
     "paths": {
       "~/graphql/*": ["./graphql/*"],
       "~/shared/*": ["./shared/*"],
-      "~/global/*": ["../global/*"]
+      "~/global/*": ["../global/*"],
+      "~/tests/*": ["./tests/*"],
+      "react": ["./node_modules/preact/compat"],
+      "react-dom": ["./node_modules/preact/compat"]
     }
   },
   "include": ["**/*"],
-  "exclude": ["quilt.project.ts", "infrastructure", "build"],
+  "exclude": ["infrastructure", "build"],
   "references": [
     {"path": "../functions/email"},
     {"path": "../global"},
     {"path": "../packages/api"},
     {"path": "../packages/clips"},
     {"path": "../packages/css"},
-    {"path": "../packages/react-signals"},
     {"path": "../packages/thread-render"},
     {"path": "../packages/tools"},
     {"path": "../packages/zest"}

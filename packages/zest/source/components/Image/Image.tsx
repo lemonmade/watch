@@ -1,12 +1,12 @@
-import {ImgHTMLAttributes} from 'react';
+import type {JSX} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import systemStyles from '../../system.module.css';
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import type {PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
 
-export type ImageProps = ReactComponentPropsForClipsElement<'ui-image'>;
+export type ImageProps = PreactComponentPropsForClipsElement<'ui-image'>;
 
 export enum Media {
   Medium = '(min-width: 601px)',
@@ -109,7 +109,7 @@ export function Image({
 
 function normalizeLoading(
   loading: NonNullable<ImageProps['loading']>,
-): ImgHTMLAttributes<HTMLImageElement>['loading'] {
+): JSX.HTMLAttributes<HTMLImageElement>['loading'] {
   switch (loading) {
     case 'immediate':
       return 'eager';
