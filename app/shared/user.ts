@@ -1,4 +1,4 @@
-import {createUseAppContextHook} from '~/shared/context.ts';
+import {useAppContext} from '~/shared/context.ts';
 import type {UserRole} from '~/graphql/types';
 
 export interface User {
@@ -12,4 +12,12 @@ declare module '~/shared/context.ts' {
   }
 }
 
-export const useUser = createUseAppContextHook(({user}) => user);
+export function useUser() {
+  const {user} = useAppContext();
+
+  if (user == null) {
+    throw new Error('No user found in context');
+  }
+
+  return user;
+}

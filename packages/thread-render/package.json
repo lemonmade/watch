@@ -29,7 +29,7 @@
   "dependencies": {
     "@preact/signals-core": "^1.8.0",
     "@quilted/events": "^2.1.1",
-    "@quilted/threads": "^3.0.0",
+    "@quilted/threads": "^3.1.0",
     "@remote-dom/core": "^1.4.0",
     "@remote-dom/signals": "^1.1.0"
   }

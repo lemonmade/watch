@@ -1,8 +1,35 @@
 import '@quilted/quilt/globals';
-import {hydrateRoot} from 'react-dom/client';
-import {createAsyncComponent} from '@quilted/quilt/async';
+import {hydrate} from 'preact';
+import {AsyncComponent} from '@quilted/quilt/async';
+import {Browser, BrowserContext} from '@quilted/quilt/browser';
+import {Router} from '@quilted/quilt/navigation';
+import {createPerformance} from '@quilted/quilt/performance';
 import {type GraphQLFetch, createGraphQLFetch} from '@quilted/quilt/graphql';
+import {QueryClient} from '@tanstack/react-query';
+
+import Env from 'quilt:module/env';
+
+import type {AppContext} from '~/shared/context.ts';
 import {SearchParam} from '~/global/auth.ts';
+import {createClipsManager} from '~/shared/clips.ts';
+
+import {EXTENSION_POINTS} from './clips.ts';
+
+const browser = new Browser();
+
+const user = browser.serializations.get('app.user');
+
+const router = new Router(browser.request.url, {
+  isExternal(url, currentURL) {
+    return (
+      url.origin !== currentURL.origin ||
+      url.pathname.startsWith('/internal/auth') ||
+      url.pathname.startsWith('/api')
+    );
+  },
+});
+
+const performance = createPerformance();
 
 const fetchGraphQLBase =
   process.env.NODE_ENV === 'production'
@@ -39,8 +66,51 @@ const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
   return result;
 };
 
-const App = createAsyncComponent(() => import('./App.tsx'));
+const App = AsyncComponent.from(() => import('./App.tsx'));
 
 const element = document.querySelector('#app')!;
 
-hydrateRoot(element, <App fetchGraphQL={fetchGraphQL} />);
+const context = {
+  user,
+  router,
+  fetchGraphQL,
+  queryClient: new QueryClient(),
+  performance,
+  clipsManager: user
+    ? createClipsManager(
+        {user, graphql: fetchGraphQL, router},
+        EXTENSION_POINTS,
+      )
+    : undefined,
+} satisfies AppContext;
+
+performance.on('navigation', async (navigation) => {
+  if (Env.MODE === 'development') {
+    console.log('Navigation');
+    console.log(navigation);
+    return;
+  }
+
+  const requestData = JSON.stringify({
+    navigations: [navigation.toJSON()],
+  });
+
+  if (typeof navigator.sendBeacon === 'function') {
+    navigator.sendBeacon('/internal/metrics/navigation', requestData);
+  } else {
+    await fetch('/internal/metrics/navigation', {
+      method: 'POST',
+      body: requestData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+});
+
+hydrate(
+  <BrowserContext browser={browser}>
+    <App context={context} />
+  </BrowserContext>,
+  element,
+);

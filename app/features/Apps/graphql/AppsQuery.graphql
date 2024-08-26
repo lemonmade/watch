@@ -5,6 +5,7 @@ query Apps {
     isInstalled
     extensions {
       ... on ClipsExtension {
+        __typename
         id
         name
         isInstalled

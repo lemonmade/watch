@@ -1,4 +1,4 @@
-import type {ComponentProps} from 'preact';
+import type {ComponentProps, RenderableProps} from 'preact';
 import {useSignal} from '@quilted/quilt/signals';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
@@ -557,7 +557,7 @@ function TextFieldExample(
 }
 
 function CheckboxExample(
-  props: Omit<ComponentProps<typeof Checkbox>, 'checked'>,
+  props: RenderableProps<Omit<ComponentProps<typeof Checkbox>, 'checked'>>,
 ) {
   const checked = useSignal(false);
 

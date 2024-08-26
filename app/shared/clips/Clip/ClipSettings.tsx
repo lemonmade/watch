@@ -166,6 +166,7 @@ function useTranslate(translations?: string | null) {
         }
       }
 
+      // @ts-expect-error
       throw new Error(`Unknown type: ${field.__typename}`);
     };
   }, [translations]);

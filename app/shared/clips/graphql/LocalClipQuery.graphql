@@ -27,6 +27,7 @@ query LocalClip($id: ID!) {
         }
       }
       build {
+        __typename
         ... on ExtensionBuildSuccess {
           id
           startedAt

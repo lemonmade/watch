@@ -3,6 +3,7 @@ query LocalClipsExtensions {
     id
     name
     extensions {
+      __typename
       ... on ClipsExtension {
         id
         name

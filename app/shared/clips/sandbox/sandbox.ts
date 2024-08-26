@@ -1,8 +1,8 @@
 import {
   retain,
-  createThreadSignal,
-  createBasicEncoder,
-  createThreadFromWebWorker,
+  ThreadSignal,
+  ThreadWebWorker,
+  ThreadSerializationStructuredClone,
 } from '@quilted/quilt/threads';
 import {type RemoteConnection} from '@remote-dom/core';
 
@@ -34,31 +34,31 @@ Reflect.defineProperty(self, 'clips', {
 
 declare const importScripts: (script: string) => void;
 
-const sandboxApi = {
+const sandboxAPI = {
   load,
   render,
   getResourceTimingEntries,
 };
 
-export type Sandbox = typeof sandboxApi;
+export type Sandbox = typeof sandboxAPI;
 
-const createSignalEncoder = createBasicEncoder({
-  encode(value, defaultEncode) {
+const serialization = new ThreadSerializationStructuredClone({
+  serialize(value, serializeDefault) {
     if (
       value != null &&
       typeof (value as any).peek === 'function' &&
       typeof (value as any).subscribe === 'function'
     ) {
-      return defaultEncode(createThreadSignal(value as any, {writable: true}));
+      return serializeDefault(
+        ThreadSignal.serialize(value as any, {writable: true}),
+      );
     }
-
-    return defaultEncode(value);
   },
 });
 
-createThreadFromWebWorker<Sandbox>(self as any, {
-  encoder: createSignalEncoder,
-  expose: sandboxApi,
+new ThreadWebWorker<never, Sandbox>(self as any, {
+  exports: sandboxAPI,
+  serialization,
 });
 
 export async function load(script: string, _: Version) {

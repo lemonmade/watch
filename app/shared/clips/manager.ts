@@ -10,11 +10,11 @@ import {
   type GraphQLVariableOptions,
 } from '@quilted/quilt/graphql';
 import {
-  createThreadSignal,
-  createThreadAbortSignal,
-  createThreadFromBrowserWebSocket,
+  ThreadSignal,
+  ThreadAbortSignal,
+  ThreadBrowserWebSocket,
   type Thread,
-  type ThreadAbortSignal,
+  type ThreadAbortSignalSerialization,
 } from '@quilted/quilt/threads';
 
 import {createResolvablePromise} from '../promises.ts';
@@ -138,7 +138,10 @@ export function createClipsManager(
 
     const extensionGraphQL = createGraphQLFetch({
       url: ({name}) => {
-        const url = new URL('/api/graphql/clips', appContext.router.currentUrl);
+        const url = new URL(
+          '/api/graphql/clips',
+          appContext.router.currentRequest.url,
+        );
 
         if (name) url.searchParams.set('name', name);
         url.searchParams.set('extension', options.extension.id);
@@ -185,7 +188,7 @@ export function createClipsManager(
       },
       async prepare({context: {sandbox, liveQuery}}) {
         await Promise.all([
-          sandbox.load(options.script.url, options.version),
+          sandbox.imports.load(options.script.url, options.version),
           liveQuery.run(),
         ]);
       },
@@ -195,13 +198,17 @@ export function createClipsManager(
         const api: ApiCore<Point> = {
           target: options.target,
           version: options.version,
-          settings: createThreadSignal(settings, {signal}),
+          settings: ThreadSignal.serialize(settings, {signal}),
           localize: {locale: 'en', translations: options.translations},
-          query: createThreadSignal(liveQuery.result, {signal}),
+          query: ThreadSignal.serialize(liveQuery.result, {signal}),
           mutate: mutate as any,
         };
 
-        await sandbox.render(options.target, receiver.connection, api as any);
+        await sandbox.imports.render(
+          options.target,
+          receiver.connection,
+          api as any,
+        );
       },
     });
 
@@ -215,7 +222,10 @@ export function createClipsManager(
 
     const extensionGraphQL = createGraphQLFetch({
       url: ({name}) => {
-        const url = new URL('/api/graphql/clips', appContext.router.currentUrl);
+        const url = new URL(
+          '/api/graphql/clips',
+          appContext.router.currentRequest.url,
+        );
 
         if (name) url.searchParams.set('name', name);
         url.searchParams.set('extension', options.extension.id);
@@ -269,7 +279,7 @@ export function createClipsManager(
         const localScript = script.value ?? (await events.once('script'));
 
         await Promise.all([
-          sandbox.load(localScript, 'unstable'),
+          sandbox.imports.load(localScript, 'unstable'),
           liveQuery.run(),
         ]);
       },
@@ -279,13 +289,17 @@ export function createClipsManager(
         const api: ApiCore<Point> = {
           target: options.target,
           version: 'unstable',
-          settings: createThreadSignal(settings, {signal}),
+          settings: ThreadSignal.serialize(settings, {signal}),
           localize: {locale: 'en', translations: translations.value},
-          query: createThreadSignal(liveQuery.result, {signal}),
+          query: ThreadSignal.serialize(liveQuery.result, {signal}),
           mutate: mutate as any,
         };
 
-        await sandbox.render(options.target, receiver.connection, api as any);
+        await sandbox.imports.render(
+          options.target,
+          receiver.connection,
+          api as any,
+        );
       },
     });
 
@@ -353,7 +367,7 @@ export function createClipsManager(
 interface ClipsLocalDevelopmentServerThreadApi {
   query<Data, Variables>(
     query: string,
-    options?: {variables?: Variables; signal?: ThreadAbortSignal},
+    options?: {variables?: Variables; signal?: ThreadAbortSignalSerialization},
   ): AsyncGenerator<{data?: Data}, void, void>;
 }
 
@@ -400,10 +414,10 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
 
     try {
       const socket = new WebSocket(newUrl.href);
-      const thread = createThreadFromBrowserWebSocket<
-        Record<string, never>,
-        ClipsLocalDevelopmentServerThreadApi
-      >(socket);
+      const thread =
+        new ThreadBrowserWebSocket<ClipsLocalDevelopmentServerThreadApi>(
+          socket,
+        );
 
       threadPromise.resolve({thread});
       connected.value = true;
@@ -429,9 +443,9 @@ function createLocalDevelopmentServer(): ClipsLocalDevelopmentServer {
     const signal = options?.signal;
     const variables = options?.variables as any;
 
-    const results = thread.query(graphql.source, {
+    const results = thread.imports.query(graphql.source, {
       variables,
-      signal: signal && createThreadAbortSignal(signal),
+      signal: signal && ThreadAbortSignal.serialize(signal),
     }) as AsyncGenerator<any>;
 
     for await (const result of results) {

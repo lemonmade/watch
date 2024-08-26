@@ -1,6 +1,6 @@
-import type {Configuration} from '@quilted/craft/graphql';
+import type {Configuration} from '@quilted/graphql-tools/configuration';
 
-const config: Configuration = {
+const config = {
   projects: {
     default: {
       schema: 'graphql/main/*schema.graphql',
@@ -44,6 +44,7 @@ const config: Configuration = {
               outputPath: 'app/server/graphql/schema.ts',
             },
             {kind: 'inputTypes', outputPath: 'app/graphql/types.d.ts'},
+            {kind: 'definitions', outputPath: 'app/graphql/schema.ts'},
           ],
         },
       },
@@ -138,6 +139,6 @@ const config: Configuration = {
       },
     },
   },
-};
+} satisfies Configuration;
 
 export default config;

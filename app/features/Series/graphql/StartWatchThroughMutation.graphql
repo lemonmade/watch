@@ -13,9 +13,11 @@ mutation SeriesStartWatchThrough(
     spoilerAvoidance: $spoilerAvoidance
   ) {
     watchThrough {
+      __typename
       id
       url
       series {
+        __typename
         id
         name
       }

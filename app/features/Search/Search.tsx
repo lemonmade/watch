@@ -38,7 +38,8 @@ export default function Search() {
   });
 
   const {data, isLoading} = useQuery(searchQuery, {
-    enabled: committedSearch.length > 0,
+    // TODO
+    // enabled: committedSearch.length > 0,
     variables: {query: committedSearch},
   });
 

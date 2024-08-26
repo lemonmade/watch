@@ -9,9 +9,9 @@ import {
 } from '@remote-dom/preact/host';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {
-  isThreadSignal,
-  createThreadAbortSignal,
-  type ThreadSignal,
+  ThreadSignal,
+  ThreadAbortSignal,
+  type ThreadSignalSerialization,
 } from '@quilted/quilt/threads';
 
 export type PreactComponentPropsForClipsElement<
@@ -35,7 +35,7 @@ export function usePossibleThreadSignals<T extends Record<string, any>>(
 ): T {
   const internals = useRef<{
     signals: WeakMap<
-      ThreadSignal<unknown>,
+      ThreadSignalSerialization<unknown>,
       {
         signal: Signal<unknown>;
         abort: AbortController;
@@ -43,7 +43,7 @@ export function usePossibleThreadSignals<T extends Record<string, any>>(
         set(value: unknown): void;
       }
     >;
-    active: Set<ThreadSignal<unknown>>;
+    active: Set<ThreadSignalSerialization<unknown>>;
   }>();
 
   internals.current ??= {
@@ -56,7 +56,7 @@ export function usePossibleThreadSignals<T extends Record<string, any>>(
   const newValues: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(values)) {
-    if (isThreadSignal(value)) {
+    if (ThreadSignal.isSerialized(value)) {
       let signalDetails = internals.current.signals.get(value);
 
       if (signalDetails == null) {
@@ -116,7 +116,7 @@ export function usePossibleThreadSignals<T extends Record<string, any>>(
 
       signalDetails.started = true;
 
-      const threadAbortSignal = createThreadAbortSignal(
+      const threadAbortSignal = ThreadAbortSignal.serialize(
         signalDetails.abort.signal,
       );
 

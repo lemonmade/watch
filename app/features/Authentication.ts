@@ -1,9 +1,9 @@
-import {createAsyncComponent} from '@quilted/quilt/async';
+import {AsyncComponent} from '@quilted/quilt/async';
 
-export const SignIn = createAsyncComponent(
+export const SignIn = AsyncComponent.from(
   () => import('./Authentication/SignIn.tsx'),
 );
 
-export const SignedOut = createAsyncComponent(
+export const SignedOut = AsyncComponent.from(
   () => import('./Authentication/SignedOut.tsx'),
 );

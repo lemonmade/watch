@@ -2,10 +2,12 @@ query DeveloperConsole {
   app {
     name
     extensions {
+      __typename
       ... on ClipsExtension {
         id
         name
         build {
+          __typename
           ... on ExtensionBuildSuccess {
             id
             startedAt

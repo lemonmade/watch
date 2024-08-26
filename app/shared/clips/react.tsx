@@ -7,7 +7,7 @@ import {
 } from '@quilted/quilt/graphql';
 import {type ExtensionPoint} from '@watching/clips';
 
-import {createUseAppContextHook} from '~/shared/context.ts';
+import {useAppContext} from '~/shared/context.ts';
 
 import {type ClipsManager} from './manager.ts';
 import {type ClipsExtensionPoint} from './extension';
@@ -23,9 +23,15 @@ declare module '~/shared/context.ts' {
   }
 }
 
-export const useClipsManager = createUseAppContextHook(
-  ({clipsManager}) => clipsManager,
-);
+export function useClipsManager() {
+  const {clipsManager} = useAppContext();
+
+  if (clipsManager == null) {
+    throw new Error('No clips manager available in the app context');
+  }
+
+  return clipsManager;
+}
 
 export function useClips<Point extends ExtensionPoint>(
   point: Point,

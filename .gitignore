@@ -5,6 +5,7 @@ node_modules
 build
 cdk.out
 app/graphql/types*
+app/graphql/schema.ts
 **/*.graphql.d.ts
 **/*.graphql.ts
 packages/cli/source/commands/develop/schema.ts
