@@ -1,3 +1,4 @@
+import {GraphQLCache} from '@quilted/quilt/graphql';
 import {
   GraphQLTesting,
   GraphQLController,
@@ -10,4 +11,4 @@ import schemaSource from '../graphql/schema.ts';
 export const schema = createGraphQLSchema(schemaSource);
 export const fillGraphQL = createGraphQLFiller(schema);
 
-export {GraphQLController, GraphQLTesting};
+export {GraphQLController, GraphQLTesting, GraphQLCache};

@@ -1,10 +1,13 @@
 import '@quilted/quilt/globals';
 import {hydrate} from 'preact';
-import {AsyncComponent} from '@quilted/quilt/async';
 import {Browser, BrowserContext} from '@quilted/quilt/browser';
 import {Router} from '@quilted/quilt/navigation';
 import {createPerformance} from '@quilted/quilt/performance';
-import {type GraphQLFetch, createGraphQLFetch} from '@quilted/quilt/graphql';
+import {
+  GraphQLCache,
+  createGraphQLFetch,
+  type GraphQLFetch,
+} from '@quilted/quilt/graphql';
 import {QueryClient} from '@tanstack/react-query';
 
 import Env from 'quilt:module/env';
@@ -13,6 +16,7 @@ import type {AppContext} from '~/shared/context.ts';
 import {SearchParam} from '~/global/auth.ts';
 import {createClipsManager} from '~/shared/clips.ts';
 
+import App from './App.tsx';
 import {EXTENSION_POINTS} from './clips.ts';
 
 const browser = new Browser();
@@ -66,14 +70,12 @@ const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
   return result;
 };
 
-const App = AsyncComponent.from(() => import('./App.tsx'));
-
 const element = document.querySelector('#app')!;
 
 const context = {
   user,
   router,
-  fetchGraphQL,
+  graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
   queryClient: new QueryClient(),
   performance,
   clipsManager: user

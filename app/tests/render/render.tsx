@@ -6,7 +6,7 @@ import {QueryClient} from '@tanstack/react-query';
 
 import {AppContextReact} from '~/shared/context.ts';
 
-import {GraphQLTesting, GraphQLController} from '../graphql.ts';
+import {GraphQLTesting, GraphQLController, GraphQLCache} from '../graphql.ts';
 
 import {RenderOptions, RenderContext, RenderActions} from './types.ts';
 
@@ -32,7 +32,7 @@ export const renderApp = createRender<
       router,
       browser,
       queryClient: new QueryClient(),
-      fetchGraphQL: graphql.fetch,
+      graphql: {cache: new GraphQLCache(), fetch: graphql.fetch},
       graphQLController: graphql,
     };
   },

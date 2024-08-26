@@ -2,6 +2,20 @@ import {useGraphQLQuery, useGraphQLMutation} from '@quilted/react-query';
 
 export {useGraphQLQuery as useQuery, useGraphQLMutation as useMutation};
 
+
+import type {GraphQLFetch, GraphQLCache} from '@quilted/quilt/graphql';
+
+export {useGraphQLQuery, useGraphQLMutation} from '@quilted/quilt/graphql';
+
+declare module '~/shared/context.ts' {
+  interface AppContext {
+    readonly graphql: {
+      readonly fetch: GraphQLFetch;
+      readonly cache: GraphQLCache;
+    };
+  }
+}
+
 export type PickTypename<
   Type extends {__typename: string},
   Typename extends Type['__typename'],

@@ -1,4 +1,6 @@
 import type {RenderableProps} from 'preact';
+import {Suspense} from 'preact/compat';
+
 import {ReactQueryContext} from '@quilted/react-query';
 
 import {
@@ -57,12 +59,14 @@ export interface AppProps {
   context: AppContextType;
 }
 
-export default function App(props: AppProps) {
+export default function App({context}: AppProps) {
   return (
-    <AppContext {...props}>
+    <AppContext context={context}>
       <HTML>
         <Canvas>
-          <Routes />
+          <Suspense fallback={null}>
+            <Routes />
+          </Suspense>
         </Canvas>
       </HTML>
     </AppContext>
@@ -109,7 +113,9 @@ const routes: RouteDefinition[] = [
     match: 'app',
     render: (children) => (
       <Authenticated>
-        <Frame>{children}</Frame>
+        <Frame>
+          <Suspense fallback={null}>{children}</Suspense>
+        </Frame>
       </Authenticated>
     ),
     children: [
@@ -229,9 +235,6 @@ export function Routes() {
   return useRoutes(routes);
 }
 
-export interface AppContextProps
-  extends Pick<AppContextType, 'user' | 'fetchGraphQL'> {}
-
 export function AppContext({children, context}: RenderableProps<AppProps>) {
   return (
     <PerformanceContext>
@@ -239,8 +242,11 @@ export function AppContext({children, context}: RenderableProps<AppProps>) {
         <Navigation router={context.router}>
           <AppContextReact.Provider value={context}>
             <ReactQueryContext client={context.queryClient}>
-              <GraphQLContext fetch={context.fetchGraphQL}>
-                {children}
+              <GraphQLContext
+                fetch={context.graphql.fetch}
+                cache={context.graphql.cache}
+              >
+                <Suspense fallback={null}>{children}</Suspense>
               </GraphQLContext>
             </ReactQueryContext>
             {context.clipsManager && (
