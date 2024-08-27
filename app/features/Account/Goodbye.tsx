@@ -2,7 +2,7 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {TextBlock, BlockStack, Action} from '@lemon/zest';
 
 export default function Goodbye() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
   return (
     <BlockStack padding spacing>

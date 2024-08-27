@@ -28,7 +28,12 @@ import {
 } from '@lemon/zest';
 
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
-import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLMutation,
+} from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media';
 import {useUser} from '~/shared/user';
@@ -53,23 +58,24 @@ export interface Props {
 }
 
 export default function Series({id, handle}: Props) {
-  const {data, refetch, isLoading} = useQuery(seriesQuery, {
+  const query = useGraphQLQuery(seriesQuery, {
     variables: {id, handle},
   });
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {series} = useGraphQLQueryData(query);
 
-  if (data?.series == null) {
+  usePerformanceNavigation();
+
+  if (series == null) {
     return null;
   }
-
-  const {series} = data;
 
   return (
     <SeriesWithData
       series={series}
       onUpdate={async () => {
-        await refetch();
+        await query.rerun();
       }}
     />
   );
@@ -250,7 +256,7 @@ function WatchSeriesAction({
   watchThroughs,
 }: Pick<SeriesQueryData.Series, 'id' | 'watchThroughs'>) {
   const navigate = useNavigate();
-  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const startWatchThrough = useGraphQLMutation(startWatchThroughMutation);
   const ongoingWatchThrough = watchThroughs.find(
     ({status}) => status === 'ONGOING',
   );
@@ -269,18 +275,13 @@ function WatchSeriesAction({
     <Action
       icon="watch"
       onPress={async () => {
-        await startWatchThrough.mutateAsync(
-          {
-            series: id,
-            from: {season: 1},
-          },
-          {
-            onSuccess({startWatchThrough}) {
-              const url = startWatchThrough?.watchThrough?.url;
-              if (url) navigate(url);
-            },
-          },
-        );
+        const result = await startWatchThrough.run({
+          series: id,
+          from: {season: 1},
+        });
+
+        const url = result.data?.startWatchThrough?.watchThrough?.url;
+        if (url) navigate(url);
       }}
     >
       {watchThroughs.length > 0 ? 'Watch again' : 'Watch'}
@@ -295,8 +296,8 @@ function WatchlistAction({
 }: Pick<SeriesQueryData.Series, 'id' | 'inWatchLater'> & {
   onUpdate(): Promise<void>;
 }) {
-  const watchSeriesLater = useMutation(watchSeriesLaterMutation);
-  const removeSeriesFromWatchLater = useMutation(
+  const watchSeriesLater = useGraphQLMutation(watchSeriesLaterMutation);
+  const removeSeriesFromWatchLater = useGraphQLMutation(
     removeSeriesFromWatchLaterMutation,
   );
 
@@ -312,13 +313,12 @@ function WatchlistAction({
         inWatchList.value = !isInWatchList;
 
         if (isInWatchList) {
-          await removeSeriesFromWatchLater.mutateAsync(
-            {id},
-            {onSuccess: onUpdate},
-          );
+          await removeSeriesFromWatchLater.run({id});
         } else {
-          await watchSeriesLater.mutateAsync({id}, {onSuccess: onUpdate});
+          await watchSeriesLater.run({id});
         }
+
+        await onUpdate();
       }}
     >
       Watchlist
@@ -333,13 +333,13 @@ function SynchronizeSeriesWithTmdbAction({
   seriesId: string;
   onUpdate(): Promise<void>;
 }) {
-  const sync = useMutation(synchronizeSeriesWithTmdbMutation);
+  const sync = useGraphQLMutation(synchronizeSeriesWithTmdbMutation);
 
   return (
     <Action
       icon="sync"
       onPress={async () => {
-        await sync.mutateAsync({id: seriesId});
+        await sync.run({id: seriesId});
         await onUpdate();
       }}
     >
@@ -362,7 +362,7 @@ function DeleteSeriesAction(props: ComponentProps<typeof DeleteSeriesModal>) {
 
 function DeleteSeriesModal({seriesId}: {seriesId: string}) {
   const navigate = useNavigate();
-  const deleteSeries = useMutation(deleteSeriesMutation);
+  const deleteSeries = useGraphQLMutation(deleteSeriesMutation);
 
   return (
     <Modal padding>
@@ -375,9 +375,9 @@ function DeleteSeriesModal({seriesId}: {seriesId: string}) {
           <Action
             role="destructive"
             onPress={async () => {
-              const result = await deleteSeries.mutateAsync({id: seriesId});
+              const result = await deleteSeries.run({id: seriesId});
 
-              if (result?.deleteSeries.deletedId == null) {
+              if (result.data?.deleteSeries.deletedId == null) {
                 // TODO: handle error
                 return;
               }
@@ -490,7 +490,7 @@ function SeasonActionPopover({
   season: SeriesQueryData.Series.Seasons;
   onUpdate(): Promise<void>;
 }) {
-  const markSeasonAsFinished = useMutation(markSeasonAsFinishedMutation);
+  const markSeasonAsFinished = useGraphQLMutation(markSeasonAsFinishedMutation);
 
   return (
     <Popover inlineAttachment="start">
@@ -508,10 +508,8 @@ function SeasonActionPopover({
           <Action
             icon="stop"
             onPress={async () => {
-              await markSeasonAsFinished.mutateAsync(
-                {id: season.id},
-                {onSuccess: onUpdate},
-              );
+              await markSeasonAsFinished.run({id: season.id});
+              await onUpdate();
             }}
           >
             Mark finished
@@ -532,7 +530,7 @@ function SeasonWatchThroughAction({
   lastSeason: SeriesQueryData.Series.Seasons;
 }) {
   const navigate = useNavigate();
-  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const startWatchThrough = useGraphQLMutation(startWatchThroughMutation);
 
   const accessory =
     season.id === lastSeason.id ? null : (
@@ -545,19 +543,14 @@ function SeasonWatchThroughAction({
               <Action
                 icon="watch"
                 onPress={async () => {
-                  await startWatchThrough.mutateAsync(
-                    {
-                      series: seriesId,
-                      from: {season: season.number},
-                      to: {season: lastSeason.number},
-                    },
-                    {
-                      onSuccess({startWatchThrough}) {
-                        const url = startWatchThrough?.watchThrough?.url;
-                        if (url) navigate(url);
-                      },
-                    },
-                  );
+                  const result = await startWatchThrough.run({
+                    series: seriesId,
+                    from: {season: season.number},
+                    to: {season: lastSeason.number},
+                  });
+
+                  const url = result.data?.startWatchThrough?.watchThrough?.url;
+                  if (url) navigate(url);
                 }}
               >
                 Watch from season {season.number} to {lastSeason.number}
@@ -572,19 +565,14 @@ function SeasonWatchThroughAction({
     <Action
       accessory={accessory}
       onPress={async () => {
-        await startWatchThrough.mutateAsync(
-          {
-            series: seriesId,
-            from: {season: season.number},
-            to: {season: season.number},
-          },
-          {
-            onSuccess({startWatchThrough}) {
-              const url = startWatchThrough?.watchThrough?.url;
-              if (url) navigate(url);
-            },
-          },
-        );
+        const result = await startWatchThrough.run({
+          series: seriesId,
+          from: {season: season.number},
+          to: {season: season.number},
+        });
+
+        const url = result.data?.startWatchThrough?.watchThrough?.url;
+        if (url) navigate(url);
       }}
     >
       Watch
@@ -601,8 +589,8 @@ function SeasonEpisodesSection({id, seriesId}: {id: string; seriesId: string}) {
 }
 
 function SeasonEpisodesList({id, seriesId}: {id: string; seriesId: string}) {
-  const {data} = useQuery(seasonEpisodesQuery, {variables: {id}});
-  const season = data?.season;
+  const query = useGraphQLQuery(seasonEpisodesQuery, {variables: {id}});
+  const {season} = useGraphQLQueryData(query);
 
   if (season == null) return null;
 
@@ -644,13 +632,15 @@ function WatchEpisodeAction({
 }: {
   episode: SeasonEpisodesQueryData.Season.Episodes;
 }) {
-  const watchEpisodeFromSeason = useMutation(watchEpisodeFromSeasonMutation);
+  const watchEpisodeFromSeason = useGraphQLMutation(
+    watchEpisodeFromSeasonMutation,
+  );
 
   return (
     <Action
       icon="watch"
       onPress={async () => {
-        await watchEpisodeFromSeason.mutateAsync({episode: episode.id});
+        await watchEpisodeFromSeason.run({episode: episode.id});
       }}
     >
       Mark as watched…
@@ -667,26 +657,21 @@ function WatchSeasonFromEpisodeAction({
   season: SeasonEpisodesQueryData.Season;
   seriesId: string;
 }) {
-  const startWatchThrough = useMutation(startWatchThroughMutation);
+  const startWatchThrough = useGraphQLMutation(startWatchThroughMutation);
   const navigate = useNavigate();
 
   return (
     <Action
       icon="watch"
       onPress={async () => {
-        await startWatchThrough.mutateAsync(
-          {
-            series: seriesId,
-            from: {season: season.number, episode: episode.number},
-            to: {season: season.number},
-          },
-          {
-            onSuccess({startWatchThrough}) {
-              const url = startWatchThrough?.watchThrough?.url;
-              if (url) navigate(url);
-            },
-          },
-        );
+        const result = await startWatchThrough.run({
+          series: seriesId,
+          from: {season: season.number, episode: episode.number},
+          to: {season: season.number},
+        });
+
+        const url = result.data?.startWatchThrough?.watchThrough?.url;
+        if (url) navigate(url);
       }}
     >
       Watch from Episode {episode.number}
@@ -747,7 +732,7 @@ function SettingsSection({
 }: Pick<SeriesQueryData.Series, 'id' | 'subscription'> & {
   onUpdate(): Promise<void>;
 }) {
-  const toggleSubscriptionToSeries = useMutation(
+  const toggleSubscriptionToSeries = useGraphQLMutation(
     toggleSubscriptionToSeriesMutation,
   );
 
@@ -758,7 +743,7 @@ function SettingsSection({
         <Checkbox
           checked={subscription != null}
           onChange={async () => {
-            await toggleSubscriptionToSeries.mutateAsync({id});
+            await toggleSubscriptionToSeries.run({id});
             await onUpdate();
           }}
           helpText="Automatically start watching new seasons as they air"
@@ -805,7 +790,7 @@ function SpoilerAvoidanceSection({
     spoilerAvoidance,
   ]);
 
-  const updateSubscriptionSettings = useMutation(
+  const updateSubscriptionSettings = useGraphQLMutation(
     updateSubscriptionSettingsMutation,
   );
 
@@ -815,7 +800,7 @@ function SpoilerAvoidanceSection({
       onChange={async (spoilerAvoidance) => {
         spoilerAvoidanceSignal.value = spoilerAvoidance;
 
-        await updateSubscriptionSettings.mutateAsync({
+        await updateSubscriptionSettings.run({
           id,
           spoilerAvoidance,
         });

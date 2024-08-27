@@ -51,7 +51,7 @@ import {
 } from '@lemon/zest';
 
 export default function ComponentLibrary() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
   return (
     <BlockStack spacing padding>

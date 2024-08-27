@@ -2,7 +2,7 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {View, TextBlock} from '@lemon/zest';
 
 export default function CheckYourEmail() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
   return (
     <View padding="base">

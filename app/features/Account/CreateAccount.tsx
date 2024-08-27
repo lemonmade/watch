@@ -17,7 +17,7 @@ import {CreateAccountErrorReason} from '~/global/auth.ts';
 import {SignInWithAppleAction} from '~/shared/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
-import {useMutation} from '~/shared/graphql.ts';
+import {useGraphQLMutation} from '~/shared/graphql.ts';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 import createAccountWithAppleMutation from './graphql/CreateAccountWithAppleMutation.graphql';
@@ -29,7 +29,7 @@ enum SearchParam {
 }
 
 export default function CreateAccount() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
   const currentUrl = useCurrentURL();
 
@@ -66,23 +66,20 @@ function CreateAccountWithEmail() {
   const email = useSignal('');
   const navigate = useNavigate();
   const currentUrl = useCurrentURL();
-  const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
+  const createAccountWithEmail = useGraphQLMutation(
+    createAccountWithEmailMutation,
+  );
 
   return (
     <Form
-      onSubmit={() => {
-        createAccountWithEmail.mutate(
-          {
-            email: email.value,
-            code: currentUrl.searchParams.get(SearchParam.GiftCode),
-            redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-          },
-          {
-            onSuccess() {
-              navigate('check-your-email');
-            },
-          },
-        );
+      onSubmit={async () => {
+        await createAccountWithEmail.run({
+          email: email.value,
+          code: currentUrl.searchParams.get(SearchParam.GiftCode),
+          redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+        });
+
+        navigate('check-your-email');
       }}
     >
       <BlockStack spacing="small">
@@ -105,7 +102,7 @@ function CreateAccountWithApple({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const currentUrl = useCurrentURL();
-  const createAccountWithApple = useMutation(createAccountWithAppleMutation);
+  const createAccountWithApple = useGraphQLMutation(createAccountWithAppleMutation);
 
   return (
     <SignInWithAppleAction
@@ -113,14 +110,14 @@ function CreateAccountWithApple({
         new URL('/internal/auth/apple/create-account/callback', currentUrl)
       }
       onPress={async ({idToken, authorizationCode}) => {
-        const result = await createAccountWithApple.mutateAsync({
+        const result = await createAccountWithApple.run({
           idToken,
           authorizationCode,
           code: currentUrl.searchParams.get(SearchParam.GiftCode),
           redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
         });
 
-        const targetUrl = result.createAccountWithApple.nextStepUrl;
+        const targetUrl = result.data?.createAccountWithApple.nextStepUrl;
 
         if (targetUrl == null) {
           onError(CreateAccountErrorReason.Generic);

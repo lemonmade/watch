@@ -1,11 +1,15 @@
-import {useGraphQLQuery, useGraphQLMutation} from '@quilted/react-query';
+import type {
+  GraphQLFetch,
+  GraphQLCache,
+} from '@quilted/quilt/graphql';
 
-export {useGraphQLQuery as useQuery, useGraphQLMutation as useMutation};
-
-
-import type {GraphQLFetch, GraphQLCache} from '@quilted/quilt/graphql';
-
-export {useGraphQLQuery, useGraphQLMutation} from '@quilted/quilt/graphql';
+export {useAsyncCacheControl as useGraphQLCacheControl} from '@quilted/quilt/async';
+export {
+  useGraphQLQuery,
+  useGraphQLMutation,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '@quilted/quilt/graphql';
 
 declare module '~/shared/context.ts' {
   interface AppContext {

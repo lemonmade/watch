@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config ./configuration/rollup.config.js",
-    "develop": "vite --config ./configuration/vite.config.js",
+    "develop": "vite --config ./configuration/vite.config.js --force",
     "start": "node ./build/server/server.js"
   },
   "sideEffects": [
@@ -27,7 +27,7 @@
     "@lemon/css": "workspace:*",
     "@lemon/zest": "workspace:*",
     "@lemonmade/graphql-live": "^0.4.4",
-    "@quilted/graphql": "^3.3.5",
+    "@quilted/graphql": "^3.3.6",
     "@quilted/graphql-tools": "^0.2.11",
     "@quilted/localize": "^0.2.1",
     "@quilted/quilt": "^0.8.1",

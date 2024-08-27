@@ -22,7 +22,7 @@ import {
 import {SignInErrorReason} from '~/global/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
-import {useMutation} from '~/shared/graphql.ts';
+import {useGraphQLMutation} from '~/shared/graphql.ts';
 import {SignInWithAppleAction} from '~/shared/auth.ts';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
@@ -43,7 +43,7 @@ export default function SignIn() {
 }
 
 function SignInForm() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
   const currentUrl = useCurrentURL();
 
@@ -107,8 +107,8 @@ function SignInWithEmail() {
 
 function useSignInWithPasskey() {
   const router = useRouter();
-  const startPasskeySignIn = useMutation(startPasskeySignInMutation);
-  const finishPasskeySignIn = useMutation(finishPasskeySignInMutation);
+  const startPasskeySignIn = useGraphQLMutation(startPasskeySignInMutation);
+  const finishPasskeySignIn = useGraphQLMutation(finishPasskeySignInMutation);
 
   const {signInWithPasskey, prepareBrowserAutocomplete} = useMemo(() => {
     return {signInWithPasskey, prepareBrowserAutocomplete};
@@ -119,21 +119,26 @@ function useSignInWithPasskey() {
     }: {email?: string; browserAutocomplete?: boolean} = {}) {
       const [{startAuthentication}, options] = await Promise.all([
         import('@simplewebauthn/browser'),
-        startPasskeySignIn.mutateAsync({
+        startPasskeySignIn.run({
           email,
         }),
       ]);
 
+      if (options.data == null) {
+        // TODO: handle error
+        return;
+      }
+
       const authenticationResult = await startAuthentication(
-        JSON.parse(options.startPasskeySignIn.result),
+        JSON.parse(options.data.startPasskeySignIn.result),
         browserAutocomplete,
       );
 
-      const result = await finishPasskeySignIn.mutateAsync({
+      const result = await finishPasskeySignIn.run({
         credential: JSON.stringify(authenticationResult),
       });
 
-      if (result.finishPasskeySignIn.user?.id) {
+      if (result.data?.finishPasskeySignIn.user?.id) {
         const {url} = router.resolve(
           (currentUrl) =>
             currentUrl.searchParams.get(SearchParam.RedirectTo) ?? '/app',
@@ -168,20 +173,15 @@ function useSignInWithPasskey() {
 function useSignInWithEmail() {
   const navigate = useNavigate();
   const currentUrl = useCurrentURL();
-  const signInWithEmail = useMutation(signInWithEmailMutation);
+  const signInWithEmail = useGraphQLMutation(signInWithEmailMutation);
 
   return async function doSignInWithEmail({email}: {email: string}) {
-    await signInWithEmail.mutateAsync(
-      {
-        email,
-        redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-      },
-      {
-        onSuccess() {
-          navigate('check-your-email');
-        },
-      },
-    );
+    await signInWithEmail.run({
+      email,
+      redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+    });
+
+    navigate('/check-your-email');
   };
 }
 
@@ -191,19 +191,19 @@ function SignInWithApple({
   onError(reason: SignInErrorReason): void;
 }) {
   const currentUrl = useCurrentURL();
-  const signInWithApple = useMutation(signInWithAppleMutation);
+  const signInWithApple = useGraphQLMutation(signInWithAppleMutation);
 
   return (
     <SignInWithAppleAction
       redirectUrl={new URL('/internal/auth/apple/sign-in/callback', currentUrl)}
       onPress={async ({idToken, authorizationCode}) => {
-        const result = await signInWithApple.mutateAsync({
+        const result = await signInWithApple.run({
           idToken,
           authorizationCode,
           redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
         });
 
-        const targetUrl = result.signInWithApple.nextStepUrl;
+        const targetUrl = result.data?.signInWithApple.nextStepUrl;
 
         if (targetUrl == null) {
           onError(SignInErrorReason.Generic);

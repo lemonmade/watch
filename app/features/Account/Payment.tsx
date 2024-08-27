@@ -19,7 +19,11 @@ import {createOptionalContext} from '@quilted/quilt/context';
 import {Action, BlockStack, Form, Banner} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '~/shared/graphql.ts';
 import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
 
 import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql';
@@ -27,20 +31,24 @@ import subscriptionPaymentQuery from './graphql/SubscriptionPaymentQuery.graphql
 export default function Payment() {
   const router = useRouter();
   const currentUrl = useCurrentURL();
-  const {data, isLoading, refetch} = useQuery(subscriptionPaymentQuery);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const query = useGraphQLQuery(subscriptionPaymentQuery);
+  useGraphQLQueryRefetchOnMount(query);
+
+  const {my} = useGraphQLQueryData(query);
+
+  usePerformanceNavigation();
 
   const error = useSignal(
     currentUrl.searchParams.get(SearchParam.PaymentStatus) ===
       PaymentStatus.Failed,
   );
 
-  const subscription = data?.my.subscription;
+  const subscription = my.subscription;
   const paymentFlow = subscription?.paymentFlow;
 
   // TODO: show subscription picker inline
-  if (paymentFlow == null && !isLoading) {
+  if (paymentFlow == null) {
     return <Redirect to="/app/me" />;
   }
 
@@ -60,7 +68,7 @@ export default function Payment() {
 
           if (result.error) {
             error.value = true;
-            await refetch();
+            await query.rerun();
           } else {
             router.navigate(
               (url) => {

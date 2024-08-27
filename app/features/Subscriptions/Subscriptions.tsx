@@ -3,25 +3,26 @@ import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '~/shared/graphql.ts';
 
 import subscriptionsQuery from './graphql/SubscriptionsQuery.graphql';
 
 export default function Subscriptions() {
-  const {data, isLoading} = useQuery(subscriptionsQuery, {
-    refetchOnMount: 'always',
-  });
+  const query = useGraphQLQuery(subscriptionsQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {subscriptions} = useGraphQLQueryData(query);
 
-  if (data == null) {
-    return null;
-  }
+  usePerformanceNavigation();
 
   return (
     <Page heading="Subscriptions">
       <MediaGrid>
-        {data.subscriptions.map(({id, series}) => (
+        {subscriptions.map(({id, series}) => (
           <MediaGridItem
             key={id}
             to={`/app/series/${series.handle}`}

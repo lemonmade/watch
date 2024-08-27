@@ -4,20 +4,28 @@ import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '~/shared/graphql.ts';
 
 import finishedWatchingQuery from './graphql/FinishedWatchingQuery.graphql';
 
 export default function FinishedWatching() {
-  const {data, isLoading} = useQuery(finishedWatchingQuery);
-  const {formatDate} = useLocalizedFormatting();
+  const query = useGraphQLQuery(finishedWatchingQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {watchThroughs} = useGraphQLQueryData(query);
+
+  usePerformanceNavigation();
+
+  const {formatDate} = useLocalizedFormatting();
 
   return (
     <Page heading="Finished watching">
       <MediaGrid>
-        {data?.watchThroughs.map(({id, url, finishedAt, series}) => (
+        {watchThroughs.map(({id, url, finishedAt, series}) => (
           <MediaGridItem
             key={id}
             to={url}

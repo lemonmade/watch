@@ -11,7 +11,12 @@ import {
 } from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLMutation,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLQueryData,
+} from '~/shared/graphql.ts';
 
 import accessTokensQuery from './graphql/AccessTokensQuery.graphql';
 import createAccessTokenMutation from './graphql/CreateAccessTokenMutation.graphql';
@@ -23,45 +28,21 @@ export default function AccessTokens() {
     message: ComponentChild;
   }>();
 
-  const {data, refetch, isLoading} = useQuery(accessTokensQuery);
+  const query = useGraphQLQuery(accessTokensQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {me} = useGraphQLQueryData(query);
 
-  const createAccessToken = useMutation(createAccessTokenMutation, {
-    onSettled: () => refetch(),
-    onMutate: () => setCreateResult(undefined),
-    onSuccess: (data) => {
-      if (data?.createPersonalAccessToken?.plaintextToken == null) {
-        setCreateResult({
-          type: 'error',
-          message: 'Failed to create access token, please try again later.',
-        });
-      } else {
-        setCreateResult({
-          type: 'success',
-          message: (
-            <>
-              Your new access token is{' '}
-              <Text emphasis="strong">
-                {data.createPersonalAccessToken.plaintextToken}
-              </Text>
-              . Make sure you copy it now, because you won’t be able to see it
-              again!
-            </>
-          ),
-        });
-      }
-    },
-  });
-  const deleteAccessToken = useMutation(deleteAccessTokenMutation, {
-    onSettled: () => refetch(),
-  });
+  usePerformanceNavigation();
+
+  const createAccessToken = useGraphQLMutation(createAccessTokenMutation);
+  const deleteAccessToken = useGraphQLMutation(deleteAccessTokenMutation);
 
   const accessTokens =
-    (data?.me.accessTokens.length ?? 0) === 0 ? (
+    me.accessTokens.length === 0 ? (
       <TextBlock>No personal access tokens</TextBlock>
     ) : (
-      data!.me.accessTokens.map((accessToken) => (
+      me.accessTokens.map((accessToken) => (
         <InlineGrid sizes={['fill', 'auto']} key={accessToken.id}>
           <BlockStack spacing="small">
             <Text>
@@ -84,7 +65,8 @@ export default function AccessTokens() {
           </BlockStack>
           <Action
             onPress={async () => {
-              await deleteAccessToken.mutateAsync({id: accessToken.id});
+              await deleteAccessToken.run({id: accessToken.id});
+              await query.rerun();
             }}
           >
             Delete
@@ -106,7 +88,36 @@ export default function AccessTokens() {
         {accessTokens}
         <Action
           onPress={async () => {
-            await createAccessToken.mutateAsync({});
+            setCreateResult(undefined);
+            const result = await createAccessToken.run();
+
+            if (result.data) {
+              if (
+                result.data.createPersonalAccessToken?.plaintextToken == null
+              ) {
+                setCreateResult({
+                  type: 'error',
+                  message:
+                    'Failed to create access token, please try again later.',
+                });
+              } else {
+                setCreateResult({
+                  type: 'success',
+                  message: (
+                    <>
+                      Your new access token is{' '}
+                      <Text emphasis="strong">
+                        {result.data.createPersonalAccessToken.plaintextToken}
+                      </Text>
+                      . Make sure you copy it now, because you won’t be able to
+                      see it again!
+                    </>
+                  ),
+                });
+              }
+            }
+
+            await query.rerun();
           }}
         >
           Create access token

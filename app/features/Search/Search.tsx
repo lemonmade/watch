@@ -5,7 +5,7 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextField, Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {useGraphQLQuery} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import searchQuery from './graphql/SearchQuery.graphql';
@@ -37,15 +37,15 @@ export default function Search() {
     delay: 1_000,
   });
 
-  const {data, isLoading} = useQuery(searchQuery, {
-    // TODO
-    // enabled: committedSearch.length > 0,
+  const {value, isRunning} = useGraphQLQuery(searchQuery, {
+    suspend: false,
+    active: committedSearch.length > 0,
     variables: {query: committedSearch},
   });
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  usePerformanceNavigation({state: isRunning ? 'loading' : 'complete'});
 
-  const series = data?.search.series ?? [];
+  const series = value?.data?.search.series ?? [];
 
   return (
     <Page heading="Search">

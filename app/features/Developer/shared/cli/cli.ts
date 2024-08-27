@@ -1,8 +1,7 @@
-import {useMutation as useBasicMutation} from '@tanstack/react-query';
-
 import {useCurrentURL} from '@quilted/quilt/navigation';
+import {useAsyncMutation} from '@quilted/quilt/async';
 
-import {useMutation} from '~/shared/graphql.ts';
+import {useGraphQLMutation} from '~/shared/graphql.ts';
 
 import createAccessTokenForCliMutation, {
   type CreateAccessTokenForCliMutationData,
@@ -40,10 +39,12 @@ export function useAuthenticateCliWithAccessToken<
     );
   }
 
-  const createAccessTokenForCli = useMutation(createAccessTokenForCliMutation);
+  const createAccessTokenForCli = useGraphQLMutation(
+    createAccessTokenForCliMutation,
+  );
 
-  const pingCli = useBasicMutation({
-    mutationFn: async (result: CreateAccessTokenForCliMutationData) => {
+  const pingCli = useAsyncMutation(
+    async (result: CreateAccessTokenForCliMutationData) => {
       const message = await handleToken(result);
       const response = await fetch(connectTo!, {
         method: 'POST',
@@ -60,15 +61,21 @@ export function useAuthenticateCliWithAccessToken<
       const json = await response.json();
       return json as Result;
     },
-  });
+  );
 
   return {
     target: connectTo,
-    isError: createAccessTokenForCli.isError || pingCli.isError,
-    isSuccess: pingCli.isSuccess,
+    isError: Boolean(createAccessTokenForCli.error || pingCli.error),
+    isSuccess:
+      pingCli.finished != null && pingCli.finished.status === 'resolved',
     async perform() {
-      const tokenResult = await createAccessTokenForCli.mutateAsync({label});
-      const pingResult = await pingCli.mutateAsync(tokenResult);
+      const tokenResult = await createAccessTokenForCli.run({label});
+
+      if (tokenResult.data == null) {
+        throw new Error('Failed to create CLI access token');
+      }
+
+      const pingResult = await pingCli.run(tokenResult.data);
       return pingResult;
     },
   };

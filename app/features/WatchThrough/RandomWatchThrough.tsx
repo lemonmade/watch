@@ -1,17 +1,20 @@
 import {Redirect} from '@quilted/quilt/navigation';
 
-import {useQuery} from '~/shared/graphql.ts';
+import {useGraphQLQuery, useGraphQLQueryData, useGraphQLQueryRefetchOnMount} from '~/shared/graphql.ts';
 
 import randomWatchThroughQuery from './graphql/RandomWatchThroughQuery.graphql';
 
 export default function RandomWatchThrough() {
-  const {data} = useQuery(randomWatchThroughQuery);
+  const query = useGraphQLQuery(randomWatchThroughQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  if (data?.randomWatchThrough == null) {
+  const {randomWatchThrough} = useGraphQLQueryData(query);
+
+  if (randomWatchThrough == null) {
     return <Redirect to="/app" />;
   }
 
-  const {url} = data.randomWatchThrough;
+  const {url} = randomWatchThrough;
 
   return <Redirect to={url} />;
 }

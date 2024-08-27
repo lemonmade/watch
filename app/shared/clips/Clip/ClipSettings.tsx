@@ -3,7 +3,7 @@ import {signal, type Signal} from '@quilted/quilt/signals';
 import {createTranslate} from '@quilted/localize';
 import {Action, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
 
-import {useQuery, useMutation} from '~/shared/graphql';
+import {useGraphQLQuery, useGraphQLMutation} from '~/shared/graphql';
 
 import {type ClipsExtensionPointInstance} from '../extension';
 
@@ -21,15 +21,15 @@ export function ClipSettings({
   id: string;
   instance: NonNullable<ClipsExtensionPointInstance<any>['instance']['value']>;
 }) {
-  const {data, isFetching, refetch} = useQuery(clipsExtensionSettingsQuery, {
+  const query = useGraphQLQuery(clipsExtensionSettingsQuery, {
     variables: {id},
   });
 
-  if (data?.clipsInstallation == null) {
+  const {value, isRunning} = query;
+
+  if (value?.data?.clipsInstallation == null) {
     return (
-      <Text>
-        {isFetching ? 'Loading settings...' : 'Something went wrong!'}
-      </Text>
+      <Text>{isRunning ? 'Loading settings...' : 'Something went wrong!'}</Text>
     );
   }
 
@@ -38,7 +38,7 @@ export function ClipSettings({
       settings,
       version: {translations, settings: schema},
     },
-  } = data;
+  } = value.data;
 
   return (
     <InstalledClipLoadedSettings
@@ -50,7 +50,7 @@ export function ClipSettings({
         instance.context.settings.value = JSON.parse(
           data.updateClipsExtensionInstallation.installation?.settings ?? '{}',
         );
-        await refetch();
+        await query.rerun();
       }}
     />
   );
@@ -70,7 +70,7 @@ function InstalledClipLoadedSettings({
     schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
     onUpdate(data: UpdateClipsExtensionSettingsMutationData): Promise<void>;
   }) {
-  const updateClipsExtensionSettings = useMutation(
+  const updateClipsExtensionSettings = useGraphQLMutation(
     updateClipsExtensionSettingsMutation,
   );
 
@@ -96,12 +96,16 @@ function InstalledClipLoadedSettings({
       values[key] = value.value;
     }
 
-    const result = await updateClipsExtensionSettings.mutateAsync({
+    const result = await updateClipsExtensionSettings.run({
       id,
       settings: JSON.stringify(values),
     });
 
-    await onUpdate(result);
+    if (result.data == null) {
+      throw new Error('Failed to update settings');
+    }
+
+    await onUpdate(result.data);
   };
 
   return (

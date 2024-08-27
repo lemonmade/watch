@@ -6,7 +6,12 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {Menu, Action, Poster, Spacer, Tag} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery, type ListItemType} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+  type ListItemType,
+} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem, MediaSelectorText} from '~/shared/media.ts';
 
 import watchingQuery, {
@@ -20,16 +25,14 @@ export interface Props {}
 type WatchThrough = ListItemType<WatchingQueryData['watchThroughs']>;
 
 export default function Watching(_: Props) {
-  const {data, isLoading} = useQuery(watchingQuery, {
-    refetchOnMount: 'always',
-  });
+  const query = useGraphQLQuery(watchingQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {watchThroughs} = useGraphQLQueryData(query);
+
+  usePerformanceNavigation();
 
   const availableWatchThroughs = useMemo(() => {
-    const watchThroughs = data?.watchThroughs;
-    if (watchThroughs == null) return [];
-
     const availableWatchThroughs: WatchThrough[] = [];
 
     for (const watchThrough of watchThroughs) {
@@ -39,7 +42,7 @@ export default function Watching(_: Props) {
     }
 
     return availableWatchThroughs.sort(sortWatchThroughs);
-  }, [data?.watchThroughs]);
+  }, [watchThroughs]);
 
   return (
     <Page
