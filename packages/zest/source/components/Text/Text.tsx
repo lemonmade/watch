@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import {useHeadingDomDetails} from '../Heading.tsx';
@@ -16,7 +16,7 @@ export interface TextProps {
   transform?: 'uppercase';
 }
 
-export function Text(props: PropsWithChildren<TextProps>) {
+export function Text(props: RenderableProps<TextProps>) {
   const {children, accessibilityRole} = props;
 
   if (accessibilityRole === 'heading') {
@@ -27,7 +27,7 @@ export function Text(props: PropsWithChildren<TextProps>) {
 }
 
 function TextAsHeading(
-  props: Omit<PropsWithChildren<TextProps>, 'accessibilityRole'>,
+  props: Omit<RenderableProps<TextProps>, 'accessibilityRole'>,
 ) {
   const {children} = props;
   const {Element} = useHeadingDomDetails();

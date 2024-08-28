@@ -1,16 +1,17 @@
-import type {PropsWithChildren} from 'react';
-import {createContext, useContext} from 'react';
+import type {RenderableProps} from 'preact';
+import {createOptionalContext} from '@quilted/quilt/context';
 
 export type Display = 'block' | 'inline';
 
-const ImplicitDisplayContext = createContext<Display | undefined>(undefined);
+const ImplicitDisplayContext = createOptionalContext<Display>(undefined);
 
-export const useImplicitDisplay = () => useContext(ImplicitDisplayContext);
+export const useImplicitDisplay = () =>
+  ImplicitDisplayContext.use({optional: true});
 
 export function ImplicitDisplay({
   display,
   children,
-}: PropsWithChildren<{display?: Display}>) {
+}: RenderableProps<{display?: Display}>) {
   return (
     <ImplicitDisplayContext.Provider value={display}>
       {children}

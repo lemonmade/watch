@@ -1,11 +1,11 @@
-import {useState, useRef, useEffect, useCallback} from 'react';
+import {useState, useRef, useEffect, useCallback} from 'preact/hooks';
 
-import {useCurrentUrl, useNavigate} from '@quilted/quilt/navigate';
+import {useCurrentURL, useNavigate} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, TextField, Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {useGraphQLQuery} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import searchQuery from './graphql/SearchQuery.graphql';
@@ -14,7 +14,7 @@ const QUERY_PARAM = 'query';
 
 export default function Search() {
   const navigate = useNavigate();
-  const committedSearch = useCurrentUrl().searchParams.get(QUERY_PARAM) ?? '';
+  const committedSearch = useCurrentURL().searchParams.get(QUERY_PARAM) ?? '';
   const [search, setSearch] = useState(committedSearch);
 
   function updateCommittedSearch(search: string) {
@@ -37,14 +37,15 @@ export default function Search() {
     delay: 1_000,
   });
 
-  const {data, isLoading} = useQuery(searchQuery, {
-    enabled: committedSearch.length > 0,
+  const {value, isRunning} = useGraphQLQuery(searchQuery, {
+    suspend: false,
+    active: committedSearch.length > 0,
     variables: {query: committedSearch},
   });
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  usePerformanceNavigation({state: isRunning ? 'loading' : 'complete'});
 
-  const series = data?.search.series ?? [];
+  const series = value?.data?.search.series ?? [];
 
   return (
     <Page heading="Search">

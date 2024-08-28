@@ -1,16 +1,17 @@
-import {useMemo, type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 import {Style} from '../../system.ts';
 import {useStackProps, resolveStackProps} from '../Stack.tsx';
 import {SkeletonText} from '../SkeletonText.tsx';
 
 export type SkeletonTextBlockProps =
-  ReactComponentPropsForClipsElement<'ui-skeleton-text-block'>;
+  PreactComponentPropsForClipsElement<'ui-skeleton-text-block'>;
 
 export function SkeletonTextBlock({
   lines = 3,
-}: PropsWithChildren<SkeletonTextBlockProps>) {
+}: RenderableProps<SkeletonTextBlockProps>) {
   const stack = useStackProps({direction: 'block'});
 
   const lineSizes = useMemo(() => {

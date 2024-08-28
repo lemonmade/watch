@@ -1,5 +1,5 @@
 import {type Signal} from '@preact/signals-core';
-import {createContext, useContext} from 'react';
+import {createOptionalContext} from '@quilted/quilt/context';
 
 export interface FormDetails {
   readonly id: string;
@@ -8,6 +8,8 @@ export interface FormDetails {
   readonly submitting: Signal<boolean>;
 }
 
-export const FormContext = createContext<FormDetails | undefined>(undefined);
+export const FormContext = createOptionalContext<FormDetails | undefined>(
+  undefined,
+);
 
-export const useContainingForm = () => useContext(FormContext);
+export const useContainingForm = () => FormContext.use({optional: true});

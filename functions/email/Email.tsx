@@ -1,4 +1,4 @@
-import {type ComponentProps} from 'react';
+import type {ComponentProps} from 'preact';
 
 import {Welcome} from './emails/Welcome.tsx';
 import {SignIn} from './emails/SignIn.tsx';

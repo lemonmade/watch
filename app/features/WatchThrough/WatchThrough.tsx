@@ -1,13 +1,11 @@
-import {useMemo, type PropsWithChildren, ReactNode} from 'react';
+import {useMemo} from 'preact/hooks';
+import type {ComponentChild, RenderableProps} from 'preact';
 
 import {signal, useSignal, type Signal} from '@quilted/quilt/signals';
-import {useNavigate} from '@quilted/quilt/navigate';
+import {useNavigate} from '@quilted/quilt/navigation';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {
-  createOptionalContext,
-  createUseContextHook,
-} from '@quilted/quilt/react/tools';
+import {createOptionalContext} from '@quilted/quilt/context';
 
 import {
   Style,
@@ -39,7 +37,13 @@ import {
 
 import {Page} from '~/shared/page.ts';
 import {SpoilerAvoidance} from '~/shared/spoilers.ts';
-import {useQuery, useMutation, type PickTypename} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLMutation,
+  type PickTypename,
+} from '~/shared/graphql.ts';
 import {Clip, useClips} from '~/shared/clips.ts';
 import {MediaSelectorText} from '~/shared/media.ts';
 
@@ -86,19 +90,23 @@ export interface WatchForm {
 }
 
 const PageDetailsContext = createOptionalContext<PageDetails>();
-const usePageDetails = createUseContextHook(PageDetailsContext);
+const usePageDetails = PageDetailsContext.use;
 
 export default function WatchThroughDetails({id}: Props) {
-  const {data, refetch, isLoading} = useQuery(watchThroughQuery, {
-    variables: {id},
-  });
+  const query = useGraphQLQuery(watchThroughQuery, {variables: {id}});
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {watchThrough} = useGraphQLQueryData(query);
 
-  if (data?.watchThrough == null) return null;
+  usePerformanceNavigation();
+
+  if (watchThrough == null) return null;
 
   return (
-    <WatchThroughWithData watchThrough={data.watchThrough} onUpdate={refetch} />
+    <WatchThroughWithData
+      watchThrough={watchThrough}
+      onUpdate={() => query.rerun()}
+    />
   );
 }
 
@@ -157,7 +165,7 @@ function WatchThroughWithData({
       <Tag>Stopped</Tag>
     ) : null;
 
-  let content: ReactNode = null;
+  let content: ComponentChild = null;
 
   switch (status) {
     case 'FINISHED': {
@@ -386,27 +394,29 @@ function WatchAgainAction({
   children,
   watchThrough,
   episodes,
-}: PropsWithChildren<{
+}: RenderableProps<{
   watchThrough: WatchThrough;
   episodes?: StartWatchThroughFromWatchThroughMutationVariables['episodes'];
 }>) {
   const navigate = useNavigate();
-  const startWatchThroughFromWatchThrough = useMutation(
+  const startWatchThroughFromWatchThrough = useGraphQLMutation(
     startWatchThroughFromWatchThroughMutation,
   );
 
   return (
     <Action
       onPress={async () => {
-        const {startWatchThrough} =
-          await startWatchThroughFromWatchThrough.mutateAsync({
-            series: watchThrough.series.id,
-            // @ts-expect-error Fixing this in Quilt
-            episodes: episodes ?? watchThrough.episodeSelection,
-          });
+        const result = await startWatchThroughFromWatchThrough.run({
+          series: watchThrough.series.id,
+          // @ts-expect-error Fixing this in Quilt
+          episodes: episodes ?? watchThrough.episodeSelection,
+        });
 
-        if (startWatchThrough?.watchThrough) {
-          navigate(startWatchThrough.watchThrough.url);
+        const startedWatchThrough =
+          result?.data?.startWatchThrough?.watchThrough;
+
+        if (startedWatchThrough) {
+          navigate(startedWatchThrough.url);
         }
       }}
     >
@@ -423,7 +433,7 @@ function SeriesSubscription({
   onUpdate(): void | Promise<void>;
 }) {
   const subscribed = watchThrough.series.subscription != null;
-  const toggleSubscription = useMutation(
+  const toggleSubscription = useGraphQLMutation(
     toggleSubscriptionToWatchThroughSeriesMutation,
   );
 
@@ -431,7 +441,7 @@ function SeriesSubscription({
     <Checkbox
       checked={subscribed}
       onChange={async () => {
-        await toggleSubscription.mutateAsync({
+        await toggleSubscription.run({
           id: watchThrough.series.id,
         });
 
@@ -548,8 +558,8 @@ function WatchEpisodeForm({
   watchThroughId,
   children,
   onUpdate,
-}: PropsWithChildren<WatchEpisodeFormProps>) {
-  const {mutateAsync} = useMutation(watchNextEpisodeMutation);
+}: RenderableProps<WatchEpisodeFormProps>) {
+  const watchNextEpisode = useGraphQLMutation(watchNextEpisodeMutation);
 
   const {at, notes, rating} = form;
 
@@ -574,7 +584,7 @@ function WatchEpisodeForm({
       optionalArguments.rating = rating.value;
     }
 
-    await mutateAsync({
+    await watchNextEpisode.run({
       ...optionalArguments,
       episode: id,
       watchThrough: watchThroughId,
@@ -735,7 +745,7 @@ interface SkipEpisodeOptions {
 }
 
 function useSkipEpisode({form, watchThroughId, onUpdate}: SkipEpisodeOptions) {
-  const {mutateAsync} = useMutation(skipNextEpisodeMutation);
+  const skipNextEpisode = useGraphQLMutation(skipNextEpisodeMutation);
 
   const {at, notes} = form;
 
@@ -754,7 +764,7 @@ function useSkipEpisode({form, watchThroughId, onUpdate}: SkipEpisodeOptions) {
       };
     }
 
-    await mutateAsync({
+    await skipNextEpisode.run({
       ...optionalArguments,
       episode: form.media.id,
       watchThrough: watchThroughId,
@@ -785,7 +795,7 @@ function DeleteWatchThroughAction(props: DeleteWatchThroughActionProps) {
 
 function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
   const navigate = useNavigate();
-  const deleteWatchThrough = useMutation(deleteWatchThroughMutation);
+  const deleteWatchThrough = useGraphQLMutation(deleteWatchThroughMutation);
 
   return (
     <Modal padding>
@@ -805,16 +815,11 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
           <Action
             role="destructive"
             onPress={async () => {
-              await deleteWatchThrough.mutateAsync(
-                {id},
-                {
-                  onSuccess({deleteWatchThrough}) {
-                    if (deleteWatchThrough) {
-                      navigate('/app', {replace: true});
-                    }
-                  },
-                },
-              );
+              const result = await deleteWatchThrough.run({id});
+
+              if (result.data?.deleteWatchThrough?.deletedWatchThroughId) {
+                navigate('/app', {replace: true});
+              }
             }}
           >
             Delete
@@ -831,22 +836,17 @@ interface StopWatchThroughActionProps {
 
 function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
   const navigate = useNavigate();
-  const stopWatchThrough = useMutation(stopWatchThroughMutation);
+  const stopWatchThrough = useGraphQLMutation(stopWatchThroughMutation);
 
   return (
     <Action
       icon="stop"
       onPress={async () => {
-        await stopWatchThrough.mutateAsync(
-          {id},
-          {
-            onSuccess({stopWatchThrough}) {
-              if (stopWatchThrough.watchThrough?.id) {
-                navigate('/app');
-              }
-            },
-          },
-        );
+        const result = await stopWatchThrough.run({id});
+
+        if (result.data?.stopWatchThrough?.watchThrough?.id) {
+          navigate('/app');
+        }
       }}
     >
       Stop watching
@@ -981,7 +981,7 @@ function SettingsSection({
   settings: WatchThroughQueryData.WatchThrough.Settings;
   onUpdate(): void | Promise<void>;
 }) {
-  const updateWatchThroughSettings = useMutation(
+  const updateWatchThroughSettings = useGraphQLMutation(
     updateWatchThroughSettingsMutation,
   );
 
@@ -995,16 +995,14 @@ function SettingsSection({
         <Heading divider>Settings</Heading>
         <SpoilerAvoidance
           value={spoilerAvoidance}
-          onChange={(newSpoilerAvoidance) => {
+          onChange={async (newSpoilerAvoidance) => {
             spoilerAvoidance.value = newSpoilerAvoidance;
-            updateWatchThroughSettings.mutate(
-              {id, spoilerAvoidance: newSpoilerAvoidance},
-              {
-                onSuccess() {
-                  onUpdate();
-                },
-              },
-            );
+
+            await updateWatchThroughSettings.run({
+              id,
+              spoilerAvoidance: newSpoilerAvoidance,
+            });
+            await onUpdate();
           }}
         />
       </BlockStack>

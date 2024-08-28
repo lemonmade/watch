@@ -3,7 +3,7 @@ import {
   type GraphQLVariableOptions,
 } from '@quilted/graphql';
 import {type Translate} from '@quilted/localize';
-import {type ThreadSignal} from '@quilted/threads/signals';
+import {type ThreadSignalSerialization} from '@quilted/threads/signals';
 import {type Signal} from '@preact/signals-core';
 
 import {type ExtensionPoint} from './extension-points';
@@ -44,8 +44,8 @@ export interface ApiCore<
 > {
   readonly version: Version;
   readonly target: Point;
-  readonly settings: ThreadSignal<Settings>;
+  readonly settings: ThreadSignalSerialization<Settings>;
   readonly localize: {readonly locale: string; translations?: string};
-  readonly query: ThreadSignal<Query>;
+  readonly query: ThreadSignalSerialization<Query>;
   readonly mutate: MutateApi;
 }

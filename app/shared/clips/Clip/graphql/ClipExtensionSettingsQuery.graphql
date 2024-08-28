@@ -6,6 +6,7 @@ query ClipExtensionSettings($id: ID!) {
       translations
       settings {
         fields {
+          __typename
           ... on ClipsExtensionSettingsStringField {
             key
             stringDefault: default
@@ -40,6 +41,7 @@ query ClipExtensionSettings($id: ID!) {
 }
 
 fragment ClipsExtensionSettingsStringFragment on ClipsExtensionSettingsString {
+  __typename
   ... on ClipsExtensionSettingsStringStatic {
     value
   }

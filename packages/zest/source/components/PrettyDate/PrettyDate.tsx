@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useMemo} from 'preact/hooks';
 
 import {prettyDate} from '../../shared/dates.ts';
 

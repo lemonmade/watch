@@ -5,6 +5,7 @@ query WatchLater {
       id
       position
       media {
+        __typename
         ... on Series {
           id
           name

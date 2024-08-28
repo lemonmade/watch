@@ -26,13 +26,13 @@ import {TextField} from './components/TextField.tsx';
 import {View} from './components/View.tsx';
 
 import {
-  type ReactComponentTypeForClipsElement,
-  type ReactComponentPropsForClipsElement,
+  type PreactComponentTypeForClipsElement,
+  type PreactComponentPropsForClipsElement,
 } from './components/shared.ts';
 
 export {
-  type ReactComponentTypeForClipsElement,
-  type ReactComponentPropsForClipsElement,
+  type PreactComponentTypeForClipsElement,
+  type PreactComponentPropsForClipsElement,
 };
 
 export const CommonComponents: RemoteComponentRendererMap = new Map([

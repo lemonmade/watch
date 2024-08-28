@@ -1,5 +1,5 @@
 import {type Signal} from '@quilted/quilt/signals';
-import {type ThreadCallable} from '@quilted/quilt/threads';
+import {type Thread} from '@quilted/quilt/threads';
 import {type ThreadRenderer} from '@watching/thread-render';
 import {type RemoteComponentRendererMap} from '@remote-dom/react/host';
 import {type GraphQLFetch} from '@quilted/graphql';
@@ -53,7 +53,7 @@ export interface ClipsExtensionPointInstanceContext<
   >;
   readonly mutate: Api<Point>['mutate'];
   readonly components: RemoteComponentRendererMap;
-  readonly sandbox: ThreadCallable<Sandbox>;
+  readonly sandbox: Thread<Sandbox>;
   readonly graphql: GraphQLFetch;
 }
 

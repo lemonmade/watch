@@ -6,6 +6,7 @@ mutation CreateAppFromLocalApp($name: String!, $handle: String!) {
       handle
       extensions {
         ... on ClipsExtension {
+          __typename
           id
           name
           handle

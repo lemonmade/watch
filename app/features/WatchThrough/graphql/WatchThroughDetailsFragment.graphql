@@ -32,6 +32,7 @@ fragment WatchThroughDetails on WatchThrough {
   startedAt
   finishedAt
   actions {
+    __typename
     ... on Skip {
       id
       at
@@ -40,6 +41,7 @@ fragment WatchThroughDetails on WatchThrough {
         containsSpoilers
       }
       media {
+        __typename
         ... on Episode {
           id
           title
@@ -61,6 +63,7 @@ fragment WatchThroughDetails on WatchThrough {
         containsSpoilers
       }
       media {
+        __typename
         ... on Episode {
           id
           title
@@ -75,6 +78,7 @@ fragment WatchThroughDetails on WatchThrough {
     }
   }
   lastAction {
+    __typename
     ... on Watch {
       id
       finishedAt
@@ -83,6 +87,7 @@ fragment WatchThroughDetails on WatchThrough {
         containsSpoilers
       }
       media {
+        __typename
         ... on Season {
           id
           number

@@ -11,9 +11,14 @@ import {
   Menu,
   Icon,
 } from '@lemon/zest';
-import {Redirect} from '@quilted/quilt/navigate';
+import {Redirect} from '@quilted/quilt/navigation';
 
-import {useQuery, useMutation} from '~/shared/graphql';
+import {
+  useGraphQLQuery,
+  useGraphQLMutation,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLQueryData,
+} from '~/shared/graphql';
 import {Page} from '~/shared/page.ts';
 import {useUser} from '~/shared/user.ts';
 
@@ -35,30 +40,33 @@ export default function Admin() {
 }
 
 function CreateGiftCodeSection() {
-  const createAccountGiftCard = useMutation(createAccountGiftCardMutation);
-  const {data, refetch} = useQuery(giftCodeListQuery);
+  const query = useGraphQLQuery(giftCodeListQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  if (data == null) return null;
+  const {giftCodes} = useGraphQLQueryData(query);
 
-  const {giftCodes} = data;
+  const createAccountGiftCard = useGraphQLMutation(
+    createAccountGiftCardMutation,
+  );
 
   return (
     <BlockStack spacing>
-      {createAccountGiftCard.isSuccess &&
-        createAccountGiftCard.data.createAccountGiftCode.giftCode && (
-          <Banner>
-            <UnusedGiftCode
-              giftCode={
-                createAccountGiftCard.data.createAccountGiftCode.giftCode
-              }
-            />
-          </Banner>
-        )}
+      {createAccountGiftCard.latest.value?.data?.createAccountGiftCode
+        .giftCode && (
+        <Banner>
+          <UnusedGiftCode
+            giftCode={
+              createAccountGiftCard.latest.value.data?.createAccountGiftCode
+                .giftCode
+            }
+          />
+        </Banner>
+      )}
 
       <Action
         onPress={async () => {
-          await createAccountGiftCard.mutateAsync({});
-          await refetch();
+          await createAccountGiftCard.run();
+          await query.rerun();
         }}
       >
         Create gift code

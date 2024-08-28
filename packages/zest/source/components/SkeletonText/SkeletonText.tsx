@@ -1,13 +1,13 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import {CSSLiteral} from '../../system.ts';
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './SkeletonText.module.css';
 
 export type SkeletonTextProps =
-  ReactComponentPropsForClipsElement<'ui-skeleton-text'>;
+  PreactComponentPropsForClipsElement<'ui-skeleton-text'>;
 
 const SIZE_CLASS_MAP = new Map<string, string | undefined>([
   ['small', styles.sizeSmall],
@@ -15,7 +15,7 @@ const SIZE_CLASS_MAP = new Map<string, string | undefined>([
   ['large', styles.sizeLarge],
 ]);
 
-export function SkeletonText({size}: PropsWithChildren<SkeletonTextProps>) {
+export function SkeletonText({size}: RenderableProps<SkeletonTextProps>) {
   return (
     <span
       className={classes(styles.SkeletonText, size && SIZE_CLASS_MAP.get(size))}

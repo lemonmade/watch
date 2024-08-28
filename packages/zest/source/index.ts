@@ -1,3 +1,4 @@
+import type {} from '@quilted/quilt/assets';
 import './style.css';
 
 export {

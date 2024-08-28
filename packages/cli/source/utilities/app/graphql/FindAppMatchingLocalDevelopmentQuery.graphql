@@ -6,6 +6,7 @@ query FindAppMatchingLocalDevelopment($id: ID, $handle: String) {
       handle
       extensions {
         ... on ClipsExtension {
+          __typename
           id
           name
           handle

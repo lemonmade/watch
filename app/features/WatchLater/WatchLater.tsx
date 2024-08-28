@@ -2,22 +2,27 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {Poster} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '~/shared/graphql.ts';
 import {MediaGrid, MediaGridItem} from '~/shared/media.ts';
 
 import watchLaterQuery from './graphql/WatchLaterQuery.graphql';
 
 export default function WatchLater() {
-  const {data, isLoading} = useQuery(watchLaterQuery);
+  const query = useGraphQLQuery(watchLaterQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {watchLater} = useGraphQLQueryData(query);
 
-  const watchLater = data?.watchLater;
+  usePerformanceNavigation();
 
   return (
     <Page heading="Watch later">
       <MediaGrid>
-        {watchLater?.items.map(({id, media}) =>
+        {watchLater.items.map(({id, media}) =>
           media.__typename === 'Series' ? (
             <MediaGridItem
               key={id}

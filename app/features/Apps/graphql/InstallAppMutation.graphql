@@ -2,6 +2,7 @@ mutation InstallApp($id: ID!) {
   installApp(id: $id) {
     app {
       extensions {
+        __typename
         ... on ClipsExtension {
           id
           name

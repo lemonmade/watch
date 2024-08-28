@@ -1,16 +1,17 @@
-import {useMemo, type ComponentProps, type PropsWithChildren} from 'react';
+import type {ComponentProps, RenderableProps} from 'preact';
+import {useMemo} from 'preact/hooks';
 import {
-  useCurrentUrl,
+  useCurrentURL,
   useRouter,
   type NavigateTo,
-} from '@quilted/quilt/navigate';
+} from '@quilted/quilt/navigation';
 import {View, Action, Icon} from '@lemon/zest';
 
 import styles from './Navigation.module.css';
 
 export interface NavigationProps {}
 
-export function Navigation({children}: PropsWithChildren<NavigationProps>) {
+export function Navigation({children}: RenderableProps<NavigationProps>) {
   return <View className={styles.Navigation}>{children}</View>;
 }
 
@@ -27,7 +28,7 @@ export function NavigationItem({
   matches,
   emphasis,
   children,
-}: PropsWithChildren<NavigationItemProps>) {
+}: RenderableProps<NavigationItemProps>) {
   const selected = useItemSelected(to, matches);
 
   return (
@@ -49,7 +50,7 @@ function useItemSelected(
   matches?: NavigationItemProps['matches'],
 ) {
   const router = useRouter();
-  const {pathname} = useCurrentUrl();
+  const {pathname} = useCurrentURL();
 
   return useMemo(() => {
     const checkMatches = matches ?? [router.resolve(to).url.pathname];

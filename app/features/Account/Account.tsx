@@ -1,6 +1,7 @@
-import {useState, type ReactNode, type PropsWithChildren} from 'react';
+import type {ComponentChild, RenderableProps} from 'preact';
+import {useState} from 'preact/hooks';
 import {useSignal} from '@quilted/quilt/signals';
-import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
+import {useNavigate, useCurrentURL} from '@quilted/quilt/navigation';
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
@@ -30,7 +31,12 @@ import {SpoilerAvoidance} from '~/shared/spoilers.ts';
 import {Page} from '~/shared/page.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
-import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLQueryData,
+  useGraphQLMutation,
+} from '~/shared/graphql.ts';
 import {SignInWithAppleAction} from '~/shared/auth.ts';
 
 import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
@@ -58,11 +64,12 @@ const MEMBER_COST = {amount: 3, currency: 'CAD'};
 const PATRON_COST = {amount: 5, currency: 'CAD'};
 
 export default function Account() {
-  const {data, refetch, isLoading} = useQuery(accountQuery);
+  const query = useGraphQLQuery(accountQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {me} = useGraphQLQueryData(query);
 
-  if (data == null) return null;
+  usePerformanceNavigation();
 
   const {
     email,
@@ -74,10 +81,10 @@ export default function Account() {
     googleAccount,
     settings,
     passkeys,
-  } = data.me;
+  } = me;
 
   const handleUpdate = async () => {
-    await refetch();
+    await query.rerun();
   };
 
   return (
@@ -95,13 +102,11 @@ export default function Account() {
         <GoogleSection account={googleAccount} onUpdate={handleUpdate} />
         <GithubSection
           account={githubAccount ?? undefined}
-          onConnectionChange={() => {
-            refetch();
-          }}
+          onConnectionChange={() => query.rerun()}
         />
         <SpoilerAvoidanceSection
           spoilerAvoidance={settings.spoilerAvoidance}
-          refetch={refetch}
+          refetch={() => query.rerun()}
         />
       </BlockStack>
     </Page>
@@ -121,12 +126,12 @@ function AccountSection({
   onUpdate(): Promise<void>;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
-  const signOut = useMutation(signOutMutation);
+  const currentUrl = useCurrentURL();
+  const signOut = useGraphQLMutation(signOutMutation);
 
   const paymentStatus = currentUrl.searchParams.get(SearchParam.PaymentStatus);
 
-  let paymentBanner: ReactNode = null;
+  let paymentBanner: ComponentChild = null;
 
   switch (paymentStatus) {
     case PaymentStatus.Success: {
@@ -146,7 +151,7 @@ function AccountSection({
     }
   }
 
-  let accountContent: ReactNode = null;
+  let accountContent: ComponentChild = null;
 
   if (level === 'FREE') {
     accountContent = <FreeAccountSection onUpdate={onUpdate} />;
@@ -167,12 +172,8 @@ function AccountSection({
         <TextBlock>Email: {email}</TextBlock>
         <Action
           onPress={async () => {
-            signOut.mutateAsync(
-              {},
-              {
-                onSettled: () => navigate('/signed-out'),
-              },
-            );
+            await signOut.run();
+            navigate('/signed-out');
           }}
         >
           Sign out
@@ -314,7 +315,7 @@ function DeleteAccountAction() {
 
 function DeleteAccountModal() {
   const navigate = useNavigate();
-  const deleteAccount = useMutation(deleteAccountMutation);
+  const deleteAccount = useGraphQLMutation(deleteAccountMutation);
 
   return (
     <Modal padding>
@@ -326,12 +327,8 @@ function DeleteAccountModal() {
         <Action
           role="destructive"
           onPress={async () => {
-            await deleteAccount.mutateAsync(
-              {},
-              {
-                onSuccess: () => navigate('/goodbye'),
-              },
-            );
+            await deleteAccount.run();
+            navigate('/goodbye');
           }}
         >
           Delete account
@@ -350,7 +347,7 @@ function CancelSubscriptionAction({onUpdate}: {onUpdate(): Promise<void>}) {
 }
 
 function CancelSubscriptionModal({onUpdate}: {onUpdate(): Promise<void>}) {
-  const cancelSubscription = useMutation(cancelSubscriptionMutation);
+  const cancelSubscription = useGraphQLMutation(cancelSubscriptionMutation);
 
   return (
     <Modal padding>
@@ -363,7 +360,7 @@ function CancelSubscriptionModal({onUpdate}: {onUpdate(): Promise<void>}) {
         <Action
           role="destructive"
           onPress={async () => {
-            await cancelSubscription.mutateAsync({});
+            await cancelSubscription.run();
             await onUpdate();
           }}
         >
@@ -405,7 +402,7 @@ function SubscribeSection({
   cost,
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   heading: string;
   cost: {amount: number; currency: string};
   level: PrepareSubscriptionMutationVariables['level'];
@@ -441,18 +438,18 @@ function SubscribeSection({
 function SubscribeAction({
   level,
   children,
-}: PropsWithChildren<{
+}: RenderableProps<{
   level: PrepareSubscriptionMutationVariables['level'];
 }>) {
   const navigate = useNavigate();
-  const prepareSubscription = useMutation(prepareSubscriptionMutation);
+  const prepareSubscription = useGraphQLMutation(prepareSubscriptionMutation);
 
   return (
     <Action
       to="../my/payment"
       inlineSize="fill"
       onPress={async () => {
-        await prepareSubscription.mutateAsync({
+        await prepareSubscription.run({
           level,
         });
 
@@ -466,13 +463,15 @@ function SubscribeAction({
 
 function AccountGiftCodeModal({onUpdate}: {onUpdate(): Promise<void>}) {
   const code = useSignal('');
-  const redeemAccountGiftCard = useMutation(redeemAccountGiftCardMutation);
+  const redeemAccountGiftCard = useGraphQLMutation(
+    redeemAccountGiftCardMutation,
+  );
 
   return (
     <Modal padding>
       <Form
         onSubmit={async () => {
-          await redeemAccountGiftCard.mutateAsync({
+          await redeemAccountGiftCard.run({
             code: code.value,
           });
 
@@ -496,8 +495,8 @@ function PasskeySection({
   passkeys: AccountQueryData.Me['passkeys'];
   onUpdate(): Promise<void>;
 }) {
-  const startPasskeyCreate = useMutation(startPasskeyCreateMutation);
-  const finishPasskeyCreate = useMutation(finishPasskeyCreateMutation);
+  const startPasskeyCreate = useGraphQLMutation(startPasskeyCreateMutation);
+  const finishPasskeyCreate = useGraphQLMutation(finishPasskeyCreateMutation);
 
   return (
     <Section>
@@ -516,17 +515,22 @@ function PasskeySection({
           onPress={async () => {
             const [{startRegistration}, result] = await Promise.all([
               import('@simplewebauthn/browser'),
-              startPasskeyCreate.mutateAsync({}),
+              startPasskeyCreate.run(),
             ]);
 
+            if (result.data == null) {
+              // TODO: handle error
+              return;
+            }
+
             const registrationOptions = JSON.parse(
-              result.startPasskeyCreate.result,
+              result.data.startPasskeyCreate.result,
             );
 
             const registrationResult =
               await startRegistration(registrationOptions);
 
-            await finishPasskeyCreate.mutateAsync({
+            await finishPasskeyCreate.run({
               credential: JSON.stringify(registrationResult),
             });
 
@@ -557,7 +561,7 @@ function Passkey(props: PasskeyProps) {
 }
 
 function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
-  const deletePasskey = useMutation(deletePasskeyMutation);
+  const deletePasskey = useGraphQLMutation(deletePasskeyMutation);
 
   return (
     <Popover>
@@ -566,7 +570,7 @@ function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
           icon="delete"
           role="destructive"
           onPress={async () => {
-            await deletePasskey.mutateAsync({id});
+            await deletePasskey.run({id});
             await onUpdate();
           }}
         >
@@ -584,9 +588,11 @@ function AppleSection({
   account?: AccountQueryData.Me.AppleAccount | null;
   onUpdate(): Promise<void>;
 }) {
-  const currentUrl = useCurrentUrl();
-  const connectAppleAccount = useMutation(connectAppleAccountMutation);
-  const disconnectAppleAccount = useMutation(disconnectAppleAccountMutation);
+  const currentUrl = useCurrentURL();
+  const connectAppleAccount = useGraphQLMutation(connectAppleAccountMutation);
+  const disconnectAppleAccount = useGraphQLMutation(
+    disconnectAppleAccountMutation,
+  );
 
   return (
     <Section>
@@ -596,7 +602,7 @@ function AppleSection({
         {account ? (
           <Action
             onPress={async () => {
-              await disconnectAppleAccount.mutateAsync({});
+              await disconnectAppleAccount.run();
               await onUpdate();
             }}
           >
@@ -608,7 +614,7 @@ function AppleSection({
               new URL('/internal/auth/apple/connect/callback', currentUrl)
             }
             onPress={async ({idToken, authorizationCode}) => {
-              await connectAppleAccount.mutateAsync({
+              await connectAppleAccount.run({
                 idToken,
                 authorizationCode,
               });
@@ -631,7 +637,7 @@ function GoogleSection({
   account?: AccountQueryData.Me.GoogleAccount | null;
   onUpdate(): Promise<void>;
 }) {
-  const disconnectAccount = useMutation(disconnectGoogleAccountMutation);
+  const disconnectAccount = useGraphQLMutation(disconnectGoogleAccountMutation);
 
   if (account == null) {
     return <ConnectGoogleAccount onUpdate={onUpdate} />;
@@ -646,7 +652,7 @@ function GoogleSection({
         <TextBlock>username: {email}</TextBlock>
         <Action
           onPress={async () => {
-            await disconnectAccount.mutateAsync({});
+            await disconnectAccount.run();
             await onUpdate();
           }}
         >
@@ -658,7 +664,7 @@ function GoogleSection({
 }
 
 function ConnectGoogleAccount({onUpdate}: {onUpdate(): Promise<void>}) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const [error, setError] = useState(false);
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.Connect, (event) => {
@@ -701,7 +707,7 @@ function GithubSection({
   account?: AccountQueryData.Me.GithubAccount;
   onConnectionChange(): void;
 }) {
-  const disconnectAccount = useMutation(disconnectGithubAccountMutation);
+  const disconnectAccount = useGraphQLMutation(disconnectGithubAccountMutation);
 
   if (account == null) {
     return <ConnectGithubAccount onConnectionChange={onConnectionChange} />;
@@ -718,13 +724,9 @@ function GithubSection({
           Visit profile
         </Action>
         <Action
-          onPress={() => {
-            disconnectAccount.mutate(
-              {},
-              {
-                onSettled: () => onConnectionChange(),
-              },
-            );
+          onPress={async () => {
+            await disconnectAccount.run();
+            onConnectionChange();
           }}
         >
           <Text>
@@ -741,7 +743,7 @@ function ConnectGithubAccount({
 }: {
   onConnectionChange?(): void;
 }) {
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
   const [error, setError] = useState(false);
 
   const open = useGithubOAuthModal(GithubOAuthFlow.Connect, (event) => {
@@ -788,7 +790,7 @@ function SpoilerAvoidanceSection({
     spoilerAvoidance,
   ]);
 
-  const updateAccountSpoilerAvoidance = useMutation(
+  const updateAccountSpoilerAvoidance = useGraphQLMutation(
     updateAccountSpoilerAvoidanceMutation,
   );
 
@@ -798,14 +800,10 @@ function SpoilerAvoidanceSection({
         <Heading divider>Settings</Heading>
         <SpoilerAvoidance
           value={spoilerAvoidanceSignal}
-          onChange={(spoilerAvoidance) => {
+          onChange={async (spoilerAvoidance) => {
             spoilerAvoidanceSignal.value = spoilerAvoidance;
-            updateAccountSpoilerAvoidance.mutate(
-              {spoilerAvoidance},
-              {
-                onSettled: () => refetch(),
-              },
-            );
+            await updateAccountSpoilerAvoidance.run({spoilerAvoidance});
+            await refetch();
           }}
         />
       </BlockStack>

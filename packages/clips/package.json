@@ -57,10 +57,10 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@preact/signals-core": "^1.5.0",
-    "@quilted/graphql": "^3.0.1",
-    "@quilted/localize": "^0.2.0",
-    "@quilted/threads": "^2.1.0",
-    "@remote-dom/core": "^1.0.0"
+    "@preact/signals-core": "^1.8.0",
+    "@quilted/graphql": "^3.3.6",
+    "@quilted/localize": "^0.2.1",
+    "@quilted/threads": "^3.1.0",
+    "@remote-dom/core": "^1.4.0"
   }
 }

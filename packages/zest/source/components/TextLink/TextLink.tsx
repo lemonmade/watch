@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 
 import {Pressable, type PressableProps} from '../Pressable.tsx';
@@ -18,7 +18,7 @@ export function TextLink({
   size,
   emphasis,
   children,
-}: PropsWithChildren<TextLinkProps>) {
+}: RenderableProps<TextLinkProps>) {
   return (
     <Pressable
       id={id}

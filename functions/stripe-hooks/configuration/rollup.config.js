@@ -12,6 +12,4 @@ const config = await quiltModule({
 
 config.plugins.push(prismaFromEdge());
 
-console.log(config);
-
 export default config;

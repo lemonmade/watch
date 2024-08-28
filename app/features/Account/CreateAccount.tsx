@@ -1,6 +1,6 @@
-import {useState} from 'react';
+import {useState} from 'preact/hooks';
 import {useSignal} from '@quilted/quilt/signals';
-import {useNavigate, useCurrentUrl} from '@quilted/quilt/navigate';
+import {useNavigate, useCurrentURL} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   Action,
@@ -17,7 +17,7 @@ import {CreateAccountErrorReason} from '~/global/auth.ts';
 import {SignInWithAppleAction} from '~/shared/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
-import {useMutation} from '~/shared/graphql.ts';
+import {useGraphQLMutation} from '~/shared/graphql.ts';
 
 import createAccountWithEmailMutation from './graphql/CreateAccountWithEmailMutation.graphql';
 import createAccountWithAppleMutation from './graphql/CreateAccountWithAppleMutation.graphql';
@@ -29,9 +29,9 @@ enum SearchParam {
 }
 
 export default function CreateAccount() {
-  usePerformanceNavigation({state: 'complete'});
+  usePerformanceNavigation();
 
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const giftCode = currentUrl.searchParams.get(SearchParam.GiftCode);
 
@@ -65,24 +65,21 @@ export default function CreateAccount() {
 function CreateAccountWithEmail() {
   const email = useSignal('');
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
-  const createAccountWithEmail = useMutation(createAccountWithEmailMutation);
+  const currentUrl = useCurrentURL();
+  const createAccountWithEmail = useGraphQLMutation(
+    createAccountWithEmailMutation,
+  );
 
   return (
     <Form
-      onSubmit={() => {
-        createAccountWithEmail.mutate(
-          {
-            email: email.value,
-            code: currentUrl.searchParams.get(SearchParam.GiftCode),
-            redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
-          },
-          {
-            onSuccess() {
-              navigate('check-your-email');
-            },
-          },
-        );
+      onSubmit={async () => {
+        await createAccountWithEmail.run({
+          email: email.value,
+          code: currentUrl.searchParams.get(SearchParam.GiftCode),
+          redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
+        });
+
+        navigate('check-your-email');
       }}
     >
       <BlockStack spacing="small">
@@ -104,8 +101,10 @@ function CreateAccountWithApple({
 }: {
   onError(reason: CreateAccountErrorReason): void;
 }) {
-  const currentUrl = useCurrentUrl();
-  const createAccountWithApple = useMutation(createAccountWithAppleMutation);
+  const currentUrl = useCurrentURL();
+  const createAccountWithApple = useGraphQLMutation(
+    createAccountWithAppleMutation,
+  );
 
   return (
     <SignInWithAppleAction
@@ -113,14 +112,14 @@ function CreateAccountWithApple({
         new URL('/internal/auth/apple/create-account/callback', currentUrl)
       }
       onPress={async ({idToken, authorizationCode}) => {
-        const result = await createAccountWithApple.mutateAsync({
+        const result = await createAccountWithApple.run({
           idToken,
           authorizationCode,
           code: currentUrl.searchParams.get(SearchParam.GiftCode),
           redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
         });
 
-        const targetUrl = result.createAccountWithApple.nextStepUrl;
+        const targetUrl = result.data?.createAccountWithApple.nextStepUrl;
 
         if (targetUrl == null) {
           onError(CreateAccountErrorReason.Generic);
@@ -142,7 +141,7 @@ function CreateAccountWithGithub({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGithubOAuthModal(GithubOAuthFlow.CreateAccount, (event) => {
     if (event.success) {
@@ -181,7 +180,7 @@ function CreateAccountWithGoogle({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const navigate = useNavigate();
-  const currentUrl = useCurrentUrl();
+  const currentUrl = useCurrentURL();
 
   const open = useGoogleOAuthModal(GoogleOAuthFlow.CreateAccount, (event) => {
     if (event.success) {

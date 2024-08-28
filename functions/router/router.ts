@@ -127,7 +127,7 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
         }),
       });
     } else {
-      const body = await request.json<any>();
+      const body = (await request.json()) as any;
 
       resolvedRequest = new Request(request.url, {
         method: 'POST',

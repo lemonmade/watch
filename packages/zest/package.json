@@ -10,30 +10,21 @@
   ],
   "dependencies": {
     "@lemon/css": "workspace:*",
-    "@preact/signals-core": "^1.5.0",
-    "@quilted/events": "^2.0.0",
-    "@quilted/react-utilities": "^0.2.0",
-    "@remote-dom/core": "^1.0.0",
-    "@remote-dom/react": "^1.0.0",
-    "@types/react": "^18.2.39",
-    "@types/react-dom": "^18.0.0",
+    "@preact/signals-core": "^1.8.0",
+    "@quilted/events": "^2.1.1",
+    "@remote-dom/core": "^1.4.0",
+    "@remote-dom/preact": "^1.1.0",
     "@watching/clips": "workspace:*",
-    "@watching/react-signals": "workspace:*",
     "date-fns": "^2.29.3"
   },
   "devDependencies": {
-    "react": "npm:@quilted/react@^18.2.0",
-    "react-dom": "npm:@quilted/react-dom@^18.2.0"
+    "preact": "^10.23.2"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "preact": "^10.23.0"
   },
   "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
+    "preact": {
       "optional": true
     }
   }

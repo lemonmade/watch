@@ -1,51 +1,53 @@
-import type {ReactNode} from 'react';
+import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
 import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLMutation,
+} from '~/shared/graphql.ts';
 
 import myAppsQuery from './graphql/MyAppsQuery.graphql';
 import deleteMyAppMutation from './graphql/DeleteMyAppMutation.graphql';
 
 export default function Apps() {
-  const {data, isLoading, refetch} = useQuery(myAppsQuery);
+  const query = useGraphQLQuery(myAppsQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {my} = useGraphQLQueryData(query);
+  const {apps} = my;
 
-  const apps = data?.my.apps ?? [];
+  usePerformanceNavigation();
 
-  const deleteApp = useMutation(deleteMyAppMutation, {
-    onSettled: () => refetch(),
-  });
+  const deleteApp = useGraphQLMutation(deleteMyAppMutation);
 
-  let content: ReactNode = null;
-
-  if (isLoading) {
-    content = <Text>Loading...</Text>;
-  }
+  let content: ComponentChild = null;
 
   if (apps.length === 0) {
     content = <Text>No apps yet. Install @watching/cli to get started!</Text>;
+  } else {
+    content = apps.map((app) => (
+      <InlineStack key={app.id} spacing>
+        <View>
+          <TextBlock>id: {app.id}</TextBlock>
+          <TextBlock>name: {app.name}</TextBlock>
+          <TextBlock>extensions: {app.extensions.length}</TextBlock>
+        </View>
+        <Action
+          onPress={async () => {
+            await deleteApp.run({id: app.id});
+            await query.rerun();
+          }}
+        >
+          Delete
+        </Action>
+      </InlineStack>
+    ));
   }
-
-  content = apps.map((app) => (
-    <InlineStack key={app.id} spacing>
-      <View>
-        <TextBlock>id: {app.id}</TextBlock>
-        <TextBlock>name: {app.name}</TextBlock>
-        <TextBlock>extensions: {app.extensions.length}</TextBlock>
-      </View>
-      <Action
-        onPress={() => {
-          deleteApp.mutate({id: app.id});
-        }}
-      >
-        Delete
-      </Action>
-    </InlineStack>
-  ));
 
   return <Page heading="Apps">{content}</Page>;
 }

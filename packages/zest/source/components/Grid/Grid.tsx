@@ -1,4 +1,4 @@
-import type {PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {variation} from '@lemon/css';
 import type {
   DynamicValue,
@@ -86,7 +86,7 @@ export function Grid({
   inlineSizes,
   blockSizes,
   ...props
-}: PropsWithChildren<GridProps>) {
+}: RenderableProps<GridProps>) {
   const grid = useGridProps(props);
   const id = useUniqueId('Grid');
 
@@ -100,10 +100,7 @@ export function Grid({
   );
 }
 
-export function BlockGrid({
-  sizes,
-  ...props
-}: PropsWithChildren<BlockGridProps>) {
+export function BlockGrid({sizes, ...props}: RenderableProps<BlockGridProps>) {
   const grid = useGridProps({...props, blockSizes: sizes});
   const id = useUniqueId('BlockGrid');
 
@@ -120,7 +117,7 @@ export function BlockGrid({
 export function InlineGrid({
   sizes,
   ...props
-}: PropsWithChildren<InlineGridProps>) {
+}: RenderableProps<InlineGridProps>) {
   const grid = useGridProps({
     ...props,
     inlineSizes: sizes,

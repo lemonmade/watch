@@ -1,26 +1,19 @@
-import {
-  useState,
-  useRef,
-  type ChangeEvent,
-  type KeyboardEvent,
-  type HTMLAttributes,
-} from 'react';
+import type {JSX} from 'preact';
+import {useState, useRef} from 'preact/hooks';
+
 import {classes} from '@lemon/css';
-import {
-  resolveSignalOrValue,
-  type SignalOrValue,
-} from '@watching/react-signals';
+import {resolveSignalOrValue, type SignalOrValue} from '@quilted/quilt/signals';
 
 import {useUniqueId} from '../../shared/id.ts';
 import {useContainingForm} from '../../shared/forms.ts';
 import {useMenuController} from '../../shared/menus.ts';
 import {useActionScope} from '../../shared/actions.tsx';
-import {type ReactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Input.module.css';
 
 export type InputProps = Omit<
-  ReactComponentPropsForClipsElement<'ui-text-field'>,
+  PreactComponentPropsForClipsElement<'ui-text-field'>,
   'label' | 'labelStyle'
 >;
 
@@ -42,8 +35,8 @@ export function Input({
   const id = useUniqueId('Input', explicitId);
   const [value, setValue] = usePartiallyControlledState(currentValue);
   const containingForm = useContainingForm();
-  const menu = useMenuController({required: false});
-  const actionScope = useActionScope({required: false});
+  const menu = useMenuController({optional: true});
+  const actionScope = useActionScope({optional: true});
 
   const resolvedDisabled = resolveSignalOrValue(disabled);
   const resolvedReadonly = resolveSignalOrValue(readonly);
@@ -55,9 +48,9 @@ export function Input({
   const isMultiline = minimumLines > 1 || normalizedMaximumLines > 1;
   const needsAutogrow = minimumLines !== normalizedMaximumLines;
 
-  let inputMode: HTMLAttributes<HTMLElement>['inputMode'];
-  let autoCorrect: HTMLAttributes<HTMLElement>['autoCorrect'];
-  let autoCapitalize: HTMLAttributes<HTMLElement>['autoCapitalize'];
+  let inputMode: JSX.HTMLAttributes<HTMLElement>['inputMode'];
+  let autoCorrect: JSX.HTMLAttributes<HTMLElement>['autoCorrect'];
+  let autoCapitalize: JSX.HTMLAttributes<HTMLElement>['autoCapitalize'];
   const inlineStyles: Record<string, any> = {};
 
   if (keyboardType === 'email') {
@@ -104,9 +97,7 @@ export function Input({
         className={styles.Input}
         value={value}
         inputMode={inputMode}
-        onChange={({
-          currentTarget,
-        }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        onChange={({currentTarget}) => {
           const newValue = currentTarget.value;
           setValue(newValue);
           onInput?.(newValue);
@@ -116,9 +107,7 @@ export function Input({
         onKeyPress={
           isMultiline || changeTiming !== 'commit'
             ? undefined
-            : (
-                event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-              ) => {
+            : (event) => {
                 const {key, currentTarget} = event;
                 const newValue = currentTarget.value;
 

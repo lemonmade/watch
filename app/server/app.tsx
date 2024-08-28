@@ -1,13 +1,17 @@
-import {createAsyncComponent} from '@quilted/quilt/async';
 import {renderToResponse} from '@quilted/quilt/server';
 import {RequestHandler} from '@quilted/quilt/request-router';
-import type {GraphQLFetch} from '@quilted/quilt/graphql';
+import {GraphQLCache, type GraphQLFetch} from '@quilted/quilt/graphql';
+import {Router} from '@quilted/quilt/navigation';
 import {BrowserAssets} from 'quilt:module/assets';
+
+import type {AppContext} from '~/shared/context.ts';
+import {createClipsManager} from '~/shared/clips.ts';
+
+import App from '../App.tsx';
+import {EXTENSION_POINTS} from '../clips.ts';
 
 import {authenticate} from './shared/auth.ts';
 import {createPrisma} from './shared/database.ts';
-
-const App = createAsyncComponent(() => import('../App.tsx'));
 
 const assets = new BrowserAssets();
 
@@ -51,13 +55,28 @@ export const handleApp: RequestHandler = async function handleApp(request) {
     return result;
   };
 
-  const response = await renderToResponse(
-    <App user={user} fetchGraphQL={fetchGraphQL} />,
-    {
-      assets,
-      request,
-    },
-  );
+  const [{QueryClient}] = await Promise.all([import('@tanstack/react-query')]);
+
+  const router = new Router(request.url);
+
+  const context = {
+    user,
+    router,
+    graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
+    queryClient: new QueryClient(),
+    clipsManager: user
+      ? createClipsManager(
+          {user, graphql: fetchGraphQL, router},
+          EXTENSION_POINTS,
+        )
+      : undefined,
+  } satisfies AppContext;
+
+  const response = await renderToResponse(<App context={context} />, {
+    assets,
+    request,
+    serializations: [['app.user', user]],
+  });
 
   return response;
 };

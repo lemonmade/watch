@@ -2,35 +2,40 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
-import {useQuery, useMutation} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLMutation,
+  useGraphQLQueryRefetchOnMount,
+  useGraphQLQueryData,
+} from '~/shared/graphql.ts';
 
 import appsQuery, {type AppsQueryData} from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
 
 export default function Apps() {
-  const {data, refetch, isLoading} = useQuery(appsQuery);
+  const query = useGraphQLQuery(appsQuery);
+  useGraphQLQueryRefetchOnMount(query);
 
-  usePerformanceNavigation({state: isLoading ? 'loading' : 'complete'});
+  const {apps} = useGraphQLQueryData(query);
 
-  const installApp = useMutation(installAppMutation, {
-    onSettled: () => refetch(),
-  });
-  const installExtension = useMutation(installClipsExtensionMutation, {
-    onSettled: () => refetch(),
-  });
+  usePerformanceNavigation();
+
+  const installApp = useGraphQLMutation(installAppMutation);
+  const installExtension = useGraphQLMutation(installClipsExtensionMutation);
 
   return (
     <Page heading="Apps">
       <BlockStack spacing>
-        {data?.apps.map((app) => (
+        {apps.map((app) => (
           <View key={app.id}>
             <InlineStack spacing>
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
                 <Action
-                  onPress={() => {
-                    installApp.mutate({id: app.id});
+                  onPress={async () => {
+                    await installApp.run({id: app.id});
+                    await query.rerun();
                   }}
                 >
                   Install
@@ -55,12 +60,13 @@ export default function Apps() {
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
                             <Action
-                              onPress={() => {
-                                installExtension.mutate({
+                              onPress={async () => {
+                                await installExtension.run({
                                   id: extension.id,
                                   target:
                                     extension.latestVersion?.extends[0]?.target,
                                 });
+                                await query.rerun();
                               }}
                             >
                               Install

@@ -1,4 +1,6 @@
-import {ComponentType, useEffect, useRef} from 'react';
+import type {ComponentType} from 'preact';
+import {useEffect, useRef} from 'preact/hooks';
+
 import {type ExtensionPoint} from '@watching/clips';
 import {RemoteRootRenderer} from '@remote-dom/preact/host';
 import {
@@ -23,7 +25,7 @@ import {
 import {classes} from '@lemon/css';
 import type {ThreadRendererInstance} from '@watching/thread-render';
 
-import {useMutation} from '~/shared/graphql.ts';
+import {useGraphQLMutation} from '~/shared/graphql.ts';
 
 import {useClipsManager} from '../react.tsx';
 import {
@@ -136,7 +138,7 @@ function UninstallClipAction({
 }: {
   extension: ClipsExtensionPoint<any>;
 }) {
-  const uninstallClipsExtensionFromClip = useMutation(
+  const uninstallClipsExtensionFromClip = useGraphQLMutation(
     uninstallClipsExtensionFromClipMutation,
   );
 
@@ -146,7 +148,7 @@ function UninstallClipAction({
     <Action
       icon="delete"
       onPress={async () => {
-        await uninstallClipsExtensionFromClip.mutateAsync({id});
+        await uninstallClipsExtensionFromClip.run({id});
       }}
     >
       Uninstall

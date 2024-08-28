@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
 import {Icon} from '../Icon.tsx';
@@ -24,7 +24,7 @@ export function HeadingAction({
   children,
   accessibilityRole,
   ...pressableProps
-}: PropsWithChildren<HeadingActionProps>) {
+}: RenderableProps<HeadingActionProps>) {
   const {level, Element} = useHeadingDomDetails({
     level: explicitLevel,
     accessibilityRole,

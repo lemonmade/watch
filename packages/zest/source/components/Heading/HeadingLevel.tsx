@@ -1,4 +1,4 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {
   useHeadingLevel,
   toHeadingLevel,
@@ -9,7 +9,7 @@ import {
 export function HeadingLevelReset({
   level = 1,
   children,
-}: PropsWithChildren<{level?: HeadingLevel}>) {
+}: RenderableProps<{level?: HeadingLevel}>) {
   return (
     <HeadingLevelContext.Provider value={level}>
       {children}
@@ -17,7 +17,7 @@ export function HeadingLevelReset({
   );
 }
 
-export function NestedHeadingLevel({children}: PropsWithChildren<{}>) {
+export function NestedHeadingLevel({children}: RenderableProps<{}>) {
   return (
     <HeadingLevelContext.Provider value={toHeadingLevel(useHeadingLevel() + 1)}>
       {children}

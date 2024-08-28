@@ -1,4 +1,4 @@
-import {createWorker, createThreadFromWebWorker} from '@quilted/quilt/threads';
+import {createWorker, ThreadWebWorker} from '@quilted/quilt/threads';
 
 import type {Sandbox} from './sandbox/sandbox.ts';
 
@@ -17,7 +17,7 @@ export function createSandbox({signal}: {signal: AbortSignal}) {
     {once: true},
   );
 
-  return createThreadFromWebWorker<never, Sandbox>(worker, {
+  return new ThreadWebWorker<Sandbox>(worker, {
     signal,
   });
 }

@@ -1,4 +1,4 @@
-import type {CSSProperties, HTMLAttributes} from 'react';
+import type {JSX} from 'preact';
 import {variation} from '@lemon/css';
 
 import {
@@ -19,7 +19,7 @@ import styles from './View.module.css';
 export interface ViewProps {
   id?: string;
   className?: string;
-  style?: CSSProperties;
+  style?: JSX.CSSProperties;
   inert?: boolean;
   display?: 'block' | 'inline' | 'flex' | 'inlineFlex' | 'grid' | 'inlineGrid';
   padding?: boolean | SpacingKeyword | CSSLiteralValue;
@@ -77,19 +77,19 @@ const CORNER_RADIUS_CLASS_MAP = new Map<CornerRadiusKeyword, string | false>([
 ] as [CornerRadiusKeyword, string | false][]);
 
 export interface DOMPropController {
-  readonly styles: CSSProperties | undefined;
+  readonly styles: JSX.CSSProperties | undefined;
   readonly className: string;
-  readonly attributes: Omit<HTMLAttributes<any>, 'styles'>;
-  addStyles(styles: CSSProperties | Record<string, any>): void;
+  readonly attributes: Omit<JSX.HTMLAttributes<any>, 'styles'>;
+  addStyles(styles: JSX.CSSProperties | Record<string, any>): void;
   addClassName(...classNames: (string | undefined | null | false)[]): void;
-  addAttributes(attributes: Omit<HTMLAttributes<any>, 'styles'>): void;
+  addAttributes(attributes: Omit<JSX.HTMLAttributes<any>, 'styles'>): void;
 }
 
 export function resolveViewProps({
   styles,
   className,
   attributes,
-}: DOMPropController) {
+}: DOMPropController): JSX.HTMLAttributes<any> {
   return attributes
     ? {...attributes, style: styles, className}
     : {style: styles, className};

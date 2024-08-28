@@ -1,10 +1,7 @@
-import {type PropsWithChildren} from 'react';
+import type {RenderableProps} from 'preact';
 import {signal, type Signal, type ReadonlySignal} from '@preact/signals-core';
 import {EventEmitter} from '@quilted/events';
-import {
-  createUseContextHook,
-  createOptionalContext,
-} from '@quilted/react-utilities';
+import {createOptionalContext} from '@quilted/quilt/context';
 
 export interface OverlayEvents {
   open: void;
@@ -27,9 +24,7 @@ export interface OverlayController
 }
 
 const OverlayControllerContext = createOptionalContext<OverlayController>();
-export const useContainingOverlay = createUseContextHook(
-  OverlayControllerContext,
-);
+export const useContainingOverlay = OverlayControllerContext.use;
 
 export interface OverlayContextProps {
   controller: OverlayController;
@@ -38,7 +33,7 @@ export interface OverlayContextProps {
 export function OverlayContext({
   controller,
   children,
-}: PropsWithChildren<OverlayContextProps>) {
+}: RenderableProps<OverlayContextProps>) {
   return (
     <>
       <OverlayControllerContext.Provider value={controller}>
@@ -48,7 +43,7 @@ export function OverlayContext({
   );
 }
 
-export function OverlayContextReset({children}: PropsWithChildren<{}>) {
+export function OverlayContextReset({children}: RenderableProps<{}>) {
   return (
     <OverlayControllerContext.Provider value={undefined}>
       {children}

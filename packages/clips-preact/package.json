@@ -22,9 +22,9 @@
     "build": "rollup --config configuration/rollup.config.js"
   },
   "dependencies": {
-    "@preact/signals-core": "^1.5.0",
-    "@remote-dom/core": "^1.0.0",
-    "@remote-dom/preact": "^1.0.0"
+    "@preact/signals-core": "^1.8.0",
+    "@remote-dom/core": "^1.4.0",
+    "@remote-dom/preact": "^1.1.0"
   },
   "peerDependencies": {
     "@watching/clips": "workspace:^",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@watching/clips": "workspace:^",
     "p-limit": "^4.0.0",
-    "preact": "^10.19.2",
+    "preact": "^10.23.2",
     "terser": "^5.15.1"
   }
 }

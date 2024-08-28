@@ -1,19 +1,13 @@
-import {
-  createOptionalContext,
-  createUseContextHook,
-  createUseOptionalValueHook,
-} from '@quilted/quilt/react/tools';
-import {type GraphQLFetch} from '@quilted/quilt/graphql';
+import {createOptionalContext} from '@quilted/quilt/context';
 import {type QueryClient} from '@tanstack/react-query';
+import {type Router} from '@quilted/quilt/navigation';
+import {type Performance} from '@quilted/quilt/performance';
 
 export interface AppContext {
   readonly queryClient: QueryClient;
-  readonly fetchGraphQL: GraphQLFetch;
+  readonly router: Router;
+  readonly performance?: Performance;
 }
 
 export const AppContextReact = createOptionalContext<AppContext>();
-export const useAppContext = createUseContextHook(AppContextReact);
-
-export function createUseAppContextHook<T>(hook: (context: AppContext) => T) {
-  return createUseOptionalValueHook<T>(() => hook(useAppContext()));
-}
+export const useAppContext = AppContextReact.use;
