@@ -1,4 +1,4 @@
 export default [
-  // './app/configuration/vite.config.js',
-  './packages/*/configuration/vite.config.js',
+  './app/vite.config.js',
+  './packages/*/vite.config.js',
 ];

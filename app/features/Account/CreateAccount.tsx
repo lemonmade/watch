@@ -102,7 +102,9 @@ function CreateAccountWithApple({
   onError(reason: CreateAccountErrorReason): void;
 }) {
   const currentUrl = useCurrentURL();
-  const createAccountWithApple = useGraphQLMutation(createAccountWithAppleMutation);
+  const createAccountWithApple = useGraphQLMutation(
+    createAccountWithAppleMutation,
+  );
 
   return (
     <SignInWithAppleAction

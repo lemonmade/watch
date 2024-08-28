@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config ./configuration/rollup.config.js",
-    "develop": "vite --config ./configuration/vite.config.js --force",
+    "develop": "vite --config ./vite.config.js",
     "start": "node ./build/server/server.js"
   },
   "sideEffects": [
@@ -49,6 +49,7 @@
     "common-tags": "^1.8.0",
     "graphql": "^16.8.0",
     "jose": "^4.14.4",
+    "jsdom": "^25.0.0",
     "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
     "nanoid": "^4.0.0",

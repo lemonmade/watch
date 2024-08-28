@@ -1,6 +1,10 @@
 import {Redirect} from '@quilted/quilt/navigation';
 
-import {useGraphQLQuery, useGraphQLQueryData, useGraphQLQueryRefetchOnMount} from '~/shared/graphql.ts';
+import {
+  useGraphQLQuery,
+  useGraphQLQueryData,
+  useGraphQLQueryRefetchOnMount,
+} from '~/shared/graphql.ts';
 
 import randomWatchThroughQuery from './graphql/RandomWatchThroughQuery.graphql';
 

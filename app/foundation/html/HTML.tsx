@@ -131,7 +131,7 @@ function Head() {
   return (
     <>
       <Title>Watch</Title>
-      <Viewport />
+      <Viewport cover />
       <Favicon emoji="📺" />
       <ThemeColor value="rgb(26, 21, 34)" />
 

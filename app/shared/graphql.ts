@@ -1,7 +1,4 @@
-import type {
-  GraphQLFetch,
-  GraphQLCache,
-} from '@quilted/quilt/graphql';
+import type {GraphQLFetch, GraphQLCache} from '@quilted/quilt/graphql';
 
 export {useAsyncCacheControl as useGraphQLCacheControl} from '@quilted/quilt/async';
 export {
