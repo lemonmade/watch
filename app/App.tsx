@@ -19,7 +19,7 @@ import {toGid} from '~/shared/graphql.ts';
 import {SearchParam} from '~/global/auth.ts';
 
 import {HTML} from './foundation/html.ts';
-import {Frame} from './foundation/Frame.ts';
+import {Frame} from './foundation/frame.ts';
 
 import {Start} from './features/Start.ts';
 import {Watching, FinishedWatching} from './features/Watching.ts';

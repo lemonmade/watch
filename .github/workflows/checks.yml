@@ -30,4 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/workflows/actions/prepare
+      # We need to generate schema types before running tests
+      - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm run test
