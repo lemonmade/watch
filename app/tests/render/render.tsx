@@ -2,7 +2,6 @@ import {createRender} from '@quilted/quilt/testing';
 import {BrowserContext, BrowserTestMock} from '@quilted/quilt/browser/testing';
 import {Navigation, TestRouter} from '@quilted/quilt/navigation/testing';
 import {Localization} from '@quilted/quilt/localize';
-import {QueryClient} from '@tanstack/react-query';
 
 import {AppContextReact} from '~/shared/context.ts';
 
@@ -31,7 +30,6 @@ export const renderApp = createRender<
     return {
       router,
       browser,
-      queryClient: new QueryClient(),
       graphql: {cache: new GraphQLCache(), fetch: graphql.fetch},
       graphQLController: graphql,
     };

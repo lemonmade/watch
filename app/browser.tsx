@@ -1,3 +1,5 @@
+import 'preact/debug';
+
 import '@quilted/quilt/globals';
 import {hydrate} from 'preact';
 import {Browser, BrowserContext} from '@quilted/quilt/browser';
@@ -8,7 +10,6 @@ import {
   createGraphQLFetch,
   type GraphQLFetch,
 } from '@quilted/quilt/graphql';
-import {QueryClient} from '@tanstack/react-query';
 
 import Env from 'quilt:module/env';
 
@@ -76,7 +77,6 @@ const context = {
   user,
   router,
   graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
-  queryClient: new QueryClient(),
   performance,
   clipsManager: user
     ? createClipsManager(
@@ -109,6 +109,8 @@ performance.on('navigation', async (navigation) => {
     });
   }
 });
+
+Object.assign(globalThis, {app: {context}});
 
 hydrate(
   <BrowserContext browser={browser}>

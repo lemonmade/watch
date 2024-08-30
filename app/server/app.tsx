@@ -55,15 +55,12 @@ export const handleApp: RequestHandler = async function handleApp(request) {
     return result;
   };
 
-  const [{QueryClient}] = await Promise.all([import('@tanstack/react-query')]);
-
   const router = new Router(request.url);
 
   const context = {
     user,
     router,
     graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
-    queryClient: new QueryClient(),
     clipsManager: user
       ? createClipsManager(
           {user, graphql: fetchGraphQL, router},

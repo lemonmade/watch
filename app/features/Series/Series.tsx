@@ -31,7 +31,6 @@ import {SpoilerAvoidance} from '~/shared/spoilers.ts';
 import {
   useGraphQLQuery,
   useGraphQLQueryData,
-  useGraphQLQueryRefetchOnMount,
   useGraphQLMutation,
 } from '~/shared/graphql.ts';
 import {useClips, Clip} from '~/shared/clips.ts';
@@ -61,7 +60,6 @@ export default function Series({id, handle}: Props) {
   const query = useGraphQLQuery(seriesQuery, {
     variables: {id, handle},
   });
-  useGraphQLQueryRefetchOnMount(query);
 
   const {series} = useGraphQLQueryData(query);
 
@@ -589,8 +587,11 @@ function SeasonEpisodesSection({id, seriesId}: {id: string; seriesId: string}) {
 }
 
 function SeasonEpisodesList({id, seriesId}: {id: string; seriesId: string}) {
-  const query = useGraphQLQuery(seasonEpisodesQuery, {variables: {id}});
-  const {season} = useGraphQLQueryData(query);
+  const query = useGraphQLQuery(seasonEpisodesQuery, {
+    variables: {id},
+    suspend: false,
+  });
+  const season = query.value?.data?.season;
 
   if (season == null) return null;
 

@@ -1,8 +1,6 @@
 import type {RenderableProps} from 'preact';
 import {Suspense} from 'preact/compat';
 
-import {ReactQueryContext} from '@quilted/react-query';
-
 import {
   route,
   useRoutes,
@@ -241,14 +239,12 @@ export function AppContext({children, context}: RenderableProps<AppProps>) {
       <Localization locale="en-CA">
         <Navigation router={context.router}>
           <AppContextReact.Provider value={context}>
-            <ReactQueryContext client={context.queryClient}>
-              <GraphQLContext
-                fetch={context.graphql.fetch}
-                cache={context.graphql.cache}
-              >
-                <Suspense fallback={null}>{children}</Suspense>
-              </GraphQLContext>
-            </ReactQueryContext>
+            <GraphQLContext
+              fetch={context.graphql.fetch}
+              cache={context.graphql.cache}
+            >
+              <Suspense fallback={null}>{children}</Suspense>
+            </GraphQLContext>
             {context.clipsManager && (
               <ClipsLocalDevelopment manager={context.clipsManager} />
             )}
