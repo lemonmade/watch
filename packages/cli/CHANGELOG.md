@@ -1,5 +1,17 @@
 # @watching/cli
 
+## 2.1.5
+
+### Patch Changes
+
+- [`48b380ad`](https://github.com/lemonmade/watch/commit/48b380adc3475ab65528ad71f2eab3cd3ca186c7) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix asset URL for websocket connections
+
+- [`d584f189`](https://github.com/lemonmade/watch/commit/d584f189eaa7b42acddc61a1dee2961d55a00b4d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update threads dependency
+
+- Updated dependencies [[`d584f189`](https://github.com/lemonmade/watch/commit/d584f189eaa7b42acddc61a1dee2961d55a00b4d)]:
+  - @watching/clips@0.5.5
+  - @watching/tools@0.2.2
+
 ## 2.1.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.5
+
+### Patch Changes
+
+- [`d584f189`](https://github.com/lemonmade/watch/commit/d584f189eaa7b42acddc61a1dee2961d55a00b4d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update threads dependency
+
 ## 0.2.4
 
 ### Patch Changes
