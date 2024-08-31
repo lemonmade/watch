@@ -46,7 +46,7 @@ export const Query = createQueryResolver({
   },
   randomSeries(_, __, {prisma}) {
     // TODO: make it more random
-    return prisma.series.findUniqueOrThrow();
+    return prisma.series.findFirstOrThrow();
   },
 });
 
