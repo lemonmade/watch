@@ -1,5 +1,12 @@
 # @watching/clips-preact
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`9e587559`](https://github.com/lemonmade/watch/commit/9e5875593df7ee89ff211cfc181be0277dcf9259)]:
+  - @watching/clips@0.5.6
+
 ## 0.2.7
 
 ### Patch Changes
