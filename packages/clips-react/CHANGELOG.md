@@ -1,5 +1,14 @@
 # @watching/clips-react
 
+## 0.4.7
+
+### Patch Changes
+
+- [`a925d1c2`](https://github.com/lemonmade/watch/commit/a925d1c2488d9366936d9e17d8d85d534d49ab39) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix JSX import source
+
+- Updated dependencies [[`9e587559`](https://github.com/lemonmade/watch/commit/9e5875593df7ee89ff211cfc181be0277dcf9259)]:
+  - @watching/clips@0.5.6
+
 ## 0.4.6
 
 ### Patch Changes

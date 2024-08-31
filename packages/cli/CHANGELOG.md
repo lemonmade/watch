@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 2.1.6
+
+### Patch Changes
+
+- [`9e587559`](https://github.com/lemonmade/watch/commit/9e5875593df7ee89ff211cfc181be0277dcf9259) Thanks [@lemonmade](https://github.com/lemonmade)! - More thread bugfixes
+
+- Updated dependencies [[`9e587559`](https://github.com/lemonmade/watch/commit/9e5875593df7ee89ff211cfc181be0277dcf9259)]:
+  - @watching/clips@0.5.6
+  - @watching/tools@0.2.2
+
 ## 2.1.5
 
 ### Patch Changes
