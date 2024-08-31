@@ -335,8 +335,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0
       '@quilted/threads':
-        specifier: ^3.1.0
-        version: 3.1.0(@preact/signals-core@1.8.0)
+        specifier: ^3.1.1
+        version: 3.1.1(@preact/signals-core@1.8.0)
       '@types/mime':
         specifier: ^2.0.0
         version: 2.0.3
@@ -423,8 +423,8 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1
       '@quilted/threads':
-        specifier: ^3.1.0
-        version: 3.1.0(@preact/signals-core@1.8.0)
+        specifier: ^3.1.1
+        version: 3.1.1(@preact/signals-core@1.8.0)
       '@remote-dom/core':
         specifier: ^1.4.0
         version: 1.4.1(@preact/signals-core@1.8.0)(preact@10.23.2)
@@ -509,8 +509,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       '@quilted/threads':
-        specifier: ^3.1.0
-        version: 3.1.0(@preact/signals-core@1.8.0)
+        specifier: ^3.1.1
+        version: 3.1.1(@preact/signals-core@1.8.0)
       '@remote-dom/core':
         specifier: ^1.4.0
         version: 1.4.1(@preact/signals-core@1.8.0)(preact@10.23.2)
@@ -4596,8 +4596,8 @@ packages:
       preact: 10.23.2
     dev: true
 
-  /@quilted/preact-graphql@0.1.6(preact@10.23.2):
-    resolution: {integrity: sha512-z9dEXR4Np6lEESNIMjQRdmyfLEF0KvZI2XqBzmi+Hk66kAQFIdrBl9wTW/aNyYlL0NPYh34RlDjWj7GSAVOjpw==}
+  /@quilted/preact-graphql@0.1.7(preact@10.23.2):
+    resolution: {integrity: sha512-SobVpj7puzqQfZpdxDUaDfH48W12kZOYr8GVJmNLxPtUAdEHEyGB1whoBSgf/RhxJwO3FloBK9XGQen3jjyqew==}
     peerDependencies:
       preact: ^10.21.0
     peerDependenciesMeta:
@@ -4738,7 +4738,7 @@ packages:
       '@quilted/preact-async': 0.1.18(preact@10.23.2)
       '@quilted/preact-browser': 0.1.7(preact@10.23.2)
       '@quilted/preact-context': 0.1.2(preact@10.23.2)
-      '@quilted/preact-graphql': 0.1.6(preact@10.23.2)
+      '@quilted/preact-graphql': 0.1.7(preact@10.23.2)
       '@quilted/preact-localize': 0.3.3(@quilted/react@18.2.5)(@quilted/request-router@0.3.0)(preact@10.23.2)
       '@quilted/preact-performance': 0.1.0(@quilted/react@18.2.5)(preact@10.23.2)
       '@quilted/preact-router': 0.2.11(@quilted/react@18.2.5)(preact@10.23.2)
@@ -4749,7 +4749,7 @@ packages:
       '@quilted/react-dom': 18.2.14
       '@quilted/request-router': 0.3.0
       '@quilted/signals': 0.2.2
-      '@quilted/threads': 3.1.0(@preact/signals-core@1.8.0)
+      '@quilted/threads': 3.1.1(@preact/signals-core@1.8.0)
       graphql: 16.8.1
       jest-matcher-utils: 29.7.0
       preact: 10.23.2
@@ -4915,8 +4915,8 @@ packages:
       '@preact/signals-core': 1.8.0
       '@quilted/events': 2.1.1
 
-  /@quilted/threads@3.1.0(@preact/signals-core@1.8.0):
-    resolution: {integrity: sha512-0hdPH6qV7GpDb+X9rnWzdR6cPLeRf2I1MBguC8CieDrg6kbElLYoHdiUHMQmgvAQR34gtr2X9sl763J0Oi6WuQ==}
+  /@quilted/threads@3.1.1(@preact/signals-core@1.8.0):
+    resolution: {integrity: sha512-3W4hFjGJJ4fIO2T7hgJ3ArcxNhpJlfVgaO7Q+rOnGBQ0/r6XbN35jbknt4Yu5vSf4iyoWnz3fNDoExUUuG94wg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals-core': ^1.6.0
@@ -4967,7 +4967,7 @@ packages:
   /@quilted/workers@0.5.0:
     resolution: {integrity: sha512-G/mH4Z+zgDtQBgs/6E+KEPJSdLwnesZOYeSptDgix2xdRlloHEdRtdhmpimaCM1ChN7lP/QcGHfksJGl69nTMA==}
     dependencies:
-      '@quilted/threads': 3.1.0(@preact/signals-core@1.8.0)
+      '@quilted/threads': 3.1.1(@preact/signals-core@1.8.0)
     transitivePeerDependencies:
       - '@preact/signals-core'
     dev: true
