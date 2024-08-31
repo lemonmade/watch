@@ -1,7 +1,8 @@
 {
   "extends": "@quilted/typescript/tsconfig.package.json",
   "compilerOptions": {
-    "lib": ["WebWorker", "DOM", "DOM.Iterable", "esnext"]
+    "lib": ["WebWorker", "DOM", "DOM.Iterable", "esnext"],
+    "jsxImportSource": "react"
   },
   "references": [{"path": "../clips"}]
 }
