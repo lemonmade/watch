@@ -245,7 +245,10 @@ async function prompt(prompt: Omit<PromptObject, 'name'>) {
   return result.value;
 }
 
-async function createDevServer(app: LocalApp, {ui, proxy}: {ui: Ui; proxy?: string}) {
+async function createDevServer(
+  app: LocalApp,
+  {ui, proxy}: {ui: Ui; proxy?: string},
+) {
   const router = new RequestRouter();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
