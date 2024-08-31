@@ -79,7 +79,7 @@ export async function develop({ui, proxy}: {ui: Ui; proxy?: string}) {
   }
 
   await ensureRootOutputDirectory(app);
-  const devServer = await createDevServer(app, {ui});
+  const devServer = await createDevServer(app, {ui, proxy});
 
   // The development server adds lots of event listeners to abort controllers,
   // which causes unnecessary warnings in Node.
@@ -245,7 +245,7 @@ async function prompt(prompt: Omit<PromptObject, 'name'>) {
   return result.value;
 }
 
-async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
+async function createDevServer(app: LocalApp, {ui, proxy}: {ui: Ui; proxy?: string}) {
   const router = new RequestRouter();
   const outputRoot = path.resolve(rootOutputDirectory(app), 'develop');
 
@@ -344,7 +344,7 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
   return {
     async listen() {
       const port = await findPortAndListen(httpServer);
-      webSocketServer = createWebSocketServer(httpServer, {resolver});
+      webSocketServer = createWebSocketServer(httpServer, {resolver, proxy});
       return {port};
     },
     async close() {
@@ -356,7 +356,10 @@ async function createDevServer(app: LocalApp, {ui}: {ui: Ui}) {
 
 function createWebSocketServer(
   httpServer: Server,
-  {resolver}: {resolver: ReturnType<typeof createQueryResolver>},
+  {
+    resolver,
+    proxy,
+  }: {resolver: ReturnType<typeof createQueryResolver>; proxy?: string},
 ) {
   const webSocketServer = new WebSocket.Server({
     server: httpServer,
@@ -372,12 +375,14 @@ function createWebSocketServer(
       ? forwardedProtocolHeader[0]
       : forwardedProtocolHeader?.split(/\s*,\s*/)[0];
 
-    const connectionUrl = new URL(
-      request.url ?? '/',
-      `${forwardedProtocol ?? 'http'}://${
-        request.headers['x-forwarded-host'] ?? request.headers.host
-      }`,
-    );
+    const connectionUrl = proxy
+      ? new URL('/', proxy)
+      : new URL(
+          request.url ?? '/',
+          `${forwardedProtocol ?? 'http'}://${
+            request.headers['x-forwarded-host'] ?? request.headers.host
+          }`,
+        );
 
     const exports = {
       query(
