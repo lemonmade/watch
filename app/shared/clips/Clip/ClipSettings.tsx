@@ -23,6 +23,7 @@ export function ClipSettings({
 }) {
   const query = useGraphQLQuery(clipsExtensionSettingsQuery, {
     variables: {id},
+    suspend: false,
   });
 
   const {value, isRunning} = query;
