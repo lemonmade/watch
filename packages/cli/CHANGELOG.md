@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.1.7
+
+### Patch Changes
+
+- [`4b9d7e25`](https://github.com/lemonmade/watch/commit/4b9d7e25983fde2a2b2b6d609d29018d5005c009) Thanks [@lemonmade](https://github.com/lemonmade)! - Add `--debug` option for commands that run GraphQL queries
+
 ## 2.1.6
 
 ### Patch Changes
