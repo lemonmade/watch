@@ -125,7 +125,7 @@ export const User = createResolver('User', {
     return prisma.app.findUnique({
       where: {
         id: id ? fromGid(id).id : undefined,
-        handle: handle || undefined,
+        handle_userId: handle ? {handle, userId: user.id} : undefined,
         userId: user.id,
       },
     });
