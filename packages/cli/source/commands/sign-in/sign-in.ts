@@ -4,8 +4,8 @@ import {
   userFromLocalAuthentication,
 } from '../../utilities/authentication';
 
-export async function signIn({ui}: {ui: Ui}) {
-  const existingUser = await userFromLocalAuthentication();
+export async function signIn({ui, debug}: {ui: Ui; debug?: boolean}) {
+  const existingUser = await userFromLocalAuthentication({ui, debug});
 
   if (existingUser) {
     ui.Heading('success!', {style: (content, style) => style.green(content)});
@@ -19,7 +19,7 @@ export async function signIn({ui}: {ui: Ui}) {
     return;
   }
 
-  const user = await authenticate({ui});
+  const user = await authenticate({ui, debug});
 
   ui.Heading('success!', {style: (content, style) => style.green(content)});
   ui.TextBlock(

@@ -16,8 +16,8 @@ import type {
 
 import publishLatestClipsExtensionVersion from './graphql/PublishLatestClipsExtensionVersionMutation.graphql';
 
-export async function publish({ui}: {ui: Ui}) {
-  const {graphql} = await authenticate({ui});
+export async function publish({ui, debug}: {ui: Ui; debug?: boolean}) {
+  const {graphql} = await authenticate({ui, debug});
 
   const localApp = await loadLocalApp();
 

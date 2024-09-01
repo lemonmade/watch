@@ -1,8 +1,8 @@
 import type {Ui} from '../../ui';
 import {deleteAuthentication} from '../../utilities/authentication';
 
-export async function signOut({ui}: {ui: Ui}) {
-  await deleteAuthentication();
+export async function signOut({ui, debug}: {ui: Ui; debug?: boolean}) {
+  await deleteAuthentication({ui, debug});
 
   ui.Heading('success!', {style: (content, style) => style.green(content)});
   ui.TextBlock(

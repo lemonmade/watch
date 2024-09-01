@@ -5,7 +5,11 @@ import * as path from 'path';
 import {writeFile, mkdir, rm as remove, readFile} from 'fs/promises';
 import open from 'open';
 
-import {createGraphQLFetch, type GraphQLFetch} from '@quilted/graphql';
+import {
+  createGraphQLFetch,
+  type GraphQLFetch,
+  type GraphQLFetchContext,
+} from '@quilted/graphql';
 
 import {PrintableError} from '../../ui';
 import type {Ui} from '../../ui';
@@ -27,10 +31,17 @@ export interface User {
 const USER_CACHE_DIRECTORY = path.resolve(homedir(), '.watch');
 const CREDENTIALS_FILE = path.resolve(USER_CACHE_DIRECTORY, 'credentials');
 
-export async function authenticate({ui}: {ui: Ui}): Promise<User> {
+export async function authenticate({
+  ui,
+  debug,
+}: {
+  ui: Ui;
+  debug?: boolean;
+}): Promise<User> {
   if (process.env.WATCH_ACCESS_TOKEN) {
     const userFromEnvironmentAccessToken = await userFromAccessToken(
       process.env.WATCH_ACCESS_TOKEN,
+      {ui, debug},
     );
 
     if (userFromEnvironmentAccessToken == null) {
@@ -47,20 +58,29 @@ export async function authenticate({ui}: {ui: Ui}): Promise<User> {
     }
   }
 
-  const alreadyAuthenticatedUser = await userFromLocalAuthentication();
+  const alreadyAuthenticatedUser = await userFromLocalAuthentication({
+    ui,
+    debug,
+  });
 
   if (alreadyAuthenticatedUser) return alreadyAuthenticatedUser;
 
-  const user = await authenticateFromWebAuthentication({ui});
+  const user = await authenticateFromWebAuthentication({ui, debug});
 
   return user;
 }
 
-export async function deleteAuthentication() {
+export async function deleteAuthentication({
+  ui,
+  debug,
+}: {
+  ui: Ui;
+  debug?: boolean;
+}) {
   const accessToken = await accessTokenFromCacheDirectory();
 
   if (accessToken) {
-    const mutate = graphqlFromAccessToken(accessToken);
+    const mutate = graphqlFromAccessToken(accessToken, {ui, debug});
     await mutate(deleteAccessTokenForCliMutation, {
       variables: {token: accessToken},
     });
@@ -69,13 +89,21 @@ export async function deleteAuthentication() {
   }
 }
 
-export async function userFromLocalAuthentication() {
+export async function userFromLocalAuthentication({
+  ui,
+  debug,
+}: {
+  ui: Ui;
+  debug?: boolean;
+}) {
   const accessTokenFromRoot = await accessTokenFromCacheDirectory();
 
   if (accessTokenFromRoot == null) return;
 
-  const userFromRootAccessToken =
-    await userFromAccessToken(accessTokenFromRoot);
+  const userFromRootAccessToken = await userFromAccessToken(
+    accessTokenFromRoot,
+    {ui, debug},
+  );
 
   if (userFromRootAccessToken == null) {
     await remove(USER_CACHE_DIRECTORY, {recursive: true, force: true});
@@ -97,19 +125,66 @@ async function accessTokenFromCacheDirectory(): Promise<string | undefined> {
   }
 }
 
-function graphqlFromAccessToken(accessToken: string) {
-  return createGraphQLFetch({
+function graphqlFromAccessToken(
+  accessToken: string,
+  {ui, debug = false}: {ui: Ui; debug?: boolean},
+) {
+  const baseFetchGraphQL = createGraphQLFetch({
     url: watchUrl('/api/graphql'),
     headers: {
       'X-Access-Token': accessToken,
     },
   });
+
+  if (!debug) return baseFetchGraphQL;
+
+  return async function fetchGraphQL(query, options) {
+    const context: GraphQLFetchContext = {};
+
+    ui.TextBlock(`[debug] Performing GraphQL query: ${(query as any).name}`, {
+      style: (content, style) => style.dim(content),
+    });
+    ui.TextBlock((query as any).source, {
+      style: (content, style) => style.dim(content),
+    });
+    ui.TextBlock(`Variables: ${JSON.stringify(options?.variables ?? {})}`, {
+      style: (content, style) => style.dim(content),
+    });
+
+    const result = await baseFetchGraphQL(query, options, context);
+
+    if (context.request) {
+      ui.TextBlock(
+        `[debug] Performed GraphQL request: ${context.request.method.toUpperCase()} ${
+          context.request.url
+        }`,
+        {
+          style: (content, style) => style.dim(content),
+        },
+      );
+    }
+
+    ui.TextBlock(
+      `[debug] GraphQL response: ${(query as any).name} (status: ${
+        context.response?.status ?? 'unknown'
+      })`,
+      {
+        style: (content, style) => style.dim(content),
+      },
+    );
+    ui.TextBlock(JSON.stringify(result), {
+      style: (content, style) => style.dim(content),
+    });
+
+    return result;
+  } satisfies GraphQLFetch;
 }
 
 async function userFromAccessToken(
   accessToken: string,
+  {ui, debug = false}: {ui: Ui; debug?: boolean},
 ): Promise<User | undefined> {
-  const graphql = graphqlFromAccessToken(accessToken);
+  const graphql = graphqlFromAccessToken(accessToken, {ui, debug});
 
   const {data} = await graphql(checkAuthFromCliQuery);
 
@@ -119,17 +194,22 @@ async function userFromAccessToken(
 }
 
 export async function authenticateFromWebAuthentication({
+  ui,
   to = '/app/developer/cli/authenticate',
+  debug = false,
   ...rest
 }: Omit<PerformWebAuthenticationOptions, 'to'> & {
+  ui: Ui;
   to?: PerformWebAuthenticationOptions['to'];
+  debug?: boolean;
 }) {
   const {token} = await performWebAuthentication<{token: string}>({
+    ui,
     to,
     ...rest,
   });
 
-  const user = await userFromAccessToken(token);
+  const user = await userFromAccessToken(token, {ui, debug});
 
   if (user == null) {
     throw new PrintableError(

@@ -33,7 +33,7 @@ type ConfigurationField = NonNullable<
   ConfigurationFieldInput[keyof ConfigurationFieldInput]
 >;
 
-export async function push({ui}: {ui: Ui}) {
+export async function push({ui, debug = false}: {ui: Ui; debug?: boolean}) {
   const localApp = await loadLocalApp();
 
   if (localApp.extensions.length === 0) {
@@ -49,7 +49,7 @@ export async function push({ui}: {ui: Ui}) {
 
   verifyLocalBuild(localApp, ui);
 
-  const authenticatedContext = await authenticate({ui});
+  const authenticatedContext = await authenticate({ui, debug});
 
   const {graphql} = authenticatedContext;
 

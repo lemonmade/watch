@@ -44,12 +44,20 @@ async function run() {
     switch (command) {
       case 'sign-in': {
         const {signIn} = await import('./commands/sign-in');
-        await signIn({ui});
+        const {'--debug': debug} = arg(
+          {'--debug': Boolean},
+          {argv: remainingArgs, permissive: true},
+        );
+        await signIn({ui, debug});
         break;
       }
       case 'sign-out': {
         const {signOut} = await import('./commands/sign-out');
-        await signOut({ui});
+        const {'--debug': debug} = arg(
+          {'--debug': Boolean},
+          {argv: remainingArgs, permissive: true},
+        );
+        await signOut({ui, debug});
         break;
       }
       case 'create': {
@@ -74,12 +82,20 @@ async function run() {
       }
       case 'push': {
         const {push} = await import('./commands/push');
-        await push({ui});
+        const {'--debug': debug} = arg(
+          {'--debug': Boolean},
+          {argv: remainingArgs, permissive: true},
+        );
+        await push({ui, debug});
         break;
       }
       case 'publish': {
         const {publish} = await import('./commands/publish');
-        await publish({ui});
+        const {'--debug': debug} = arg(
+          {'--debug': Boolean},
+          {argv: remainingArgs, permissive: true},
+        );
+        await publish({ui, debug});
         break;
       }
       default: {
