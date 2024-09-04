@@ -1541,7 +1541,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.0.1
+      picocolors: 1.1.0
     dev: true
 
   /@babel/compat-data@7.23.5:
@@ -1827,7 +1827,7 @@ packages:
       '@babel/helper-validator-identifier': 7.24.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.0.1
+      picocolors: 1.1.0
     dev: true
 
   /@babel/parser@7.23.5:
@@ -4552,8 +4552,8 @@ packages:
       whatwg-fetch: 3.6.19
     dev: false
 
-  /@quilted/preact-async@0.1.18(preact@10.23.2):
-    resolution: {integrity: sha512-EHDIMr9J2Qe22Di5MggOi8LbPaUqOE3eTmMjcmlVXiPnN+e/Eraf93MrJd6PqacIymLS34SU9NtrZ/lvCcY01w==}
+  /@quilted/preact-async@0.1.19(preact@10.23.2):
+    resolution: {integrity: sha512-1Skrhh+g1SP1F1VUlk9HOagbuVfmkcjjG4EiYsmVVq4hWTLftN5n81DH3kzzK9UOoPTrSREjXsIbCYcvzUy70w==}
     peerDependencies:
       preact: ^10.21.0
     peerDependenciesMeta:
@@ -4605,7 +4605,7 @@ packages:
         optional: true
     dependencies:
       '@quilted/graphql': 3.3.7
-      '@quilted/preact-async': 0.1.18(preact@10.23.2)
+      '@quilted/preact-async': 0.1.19(preact@10.23.2)
       '@quilted/preact-context': 0.1.2(preact@10.23.2)
       '@quilted/preact-signals': 0.1.0(preact@10.23.2)
       '@quilted/useful-types': 2.0.0
@@ -4659,7 +4659,7 @@ packages:
     dependencies:
       '@quilted/async': 0.4.21
       '@quilted/http': 0.3.0
-      '@quilted/preact-async': 0.1.18(preact@10.23.2)
+      '@quilted/preact-async': 0.1.19(preact@10.23.2)
       '@quilted/preact-browser': 0.1.7(preact@10.23.2)
       '@quilted/preact-context': 0.1.2(preact@10.23.2)
       '@quilted/preact-performance': 0.1.0(@quilted/react@18.2.5)(preact@10.23.2)
@@ -4735,7 +4735,7 @@ packages:
       '@quilted/async': 0.4.21
       '@quilted/events': 2.1.1
       '@quilted/graphql': 3.3.7
-      '@quilted/preact-async': 0.1.18(preact@10.23.2)
+      '@quilted/preact-async': 0.1.19(preact@10.23.2)
       '@quilted/preact-browser': 0.1.7(preact@10.23.2)
       '@quilted/preact-context': 0.1.2(preact@10.23.2)
       '@quilted/preact-graphql': 0.1.7(preact@10.23.2)
@@ -8493,6 +8493,10 @@ packages:
 
   /picocolors@1.0.1:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
+    dev: true
+
+  /picocolors@1.1.0:
+    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
     dev: true
 
   /picomatch@2.3.1:
