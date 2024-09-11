@@ -1,6 +1,10 @@
 import type {ComponentType} from 'preact';
 import {useRef, useEffect} from 'preact/hooks';
-import {ElementConstructors, type Elements} from '@watching/clips';
+import {
+  ElementConstructors,
+  type Elements,
+  type ClipsElement,
+} from '@watching/clips';
 import {
   createRemoteComponentRenderer,
   type RemoteComponentRendererProps,
@@ -16,7 +20,9 @@ import {
 
 export type PreactComponentPropsForClipsElement<
   Element extends keyof Elements,
-> = RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
+> = Elements[Element] extends ClipsElement<infer Attributes, infer _Events>
+  ? Partial<Attributes>
+  : RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
 
 export type PreactComponentTypeForClipsElement<Element extends keyof Elements> =
   RemoteComponentTypeFromElementConstructor<ElementConstructors[Element]>;

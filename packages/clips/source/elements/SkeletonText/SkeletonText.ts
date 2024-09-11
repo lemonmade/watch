@@ -6,11 +6,11 @@ import {
 
 import type {CSSLiteralValue} from '../../styles.ts';
 
-import type {TextProperties} from '../Text.ts';
+import type {TextEmphasis} from '../Text.ts';
 
-export interface SkeletonTextProperties
-  extends Pick<TextProperties, 'emphasis'> {
+export interface SkeletonTextProperties  {
   size?: 'small' | 'medium' | 'large' | CSSLiteralValue;
+  emphasis?: TextEmphasis | boolean;
 }
 
 export const SkeletonText = createRemoteElement<SkeletonTextProperties>({

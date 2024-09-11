@@ -1,4 +1,19 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {Text as TextElement} from '@watching/clips/elements';
+import type {PropsWithChildren} from 'react';
 
-export const Text = createRemoteComponent('ui-text', TextElement);
+import type {TextEmphasis} from '@watching/clips/elements';
+
+export interface TextProps {
+  emphasis?: TextEmphasis | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-text': TextProps;
+    }
+  }
+}
+
+export function Text(props: PropsWithChildren<TextProps>) {
+  return <ui-text {...props} />;
+}

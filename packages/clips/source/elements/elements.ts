@@ -1,3 +1,5 @@
+export {ClipsElement} from './ClipsElement.ts';
+
 export {Footer, type FooterProperties} from './Footer.ts';
 export {Header, type HeaderProperties} from './Header.ts';
 export {
@@ -22,7 +24,7 @@ export {
   type PopoverInlineAttachment,
 } from './Popover.ts';
 export {Section, type SectionProperties} from './Section.ts';
-export {Text, type TextProperties} from './Text.ts';
+export {Text, type TextEmphasis, type TextAttributes, type TextEvents} from './Text.ts';
 export {TextBlock, type TextBlockProperties} from './TextBlock.ts';
 export {
   TextField,

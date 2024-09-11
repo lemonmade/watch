@@ -8,7 +8,7 @@ import styles from './Text.module.css';
 export interface TextProps {
   className?: string;
   size?: 'small.2' | 'small.1' | 'small' | 'base';
-  emphasis?: boolean | 'strong' | 'subdued';
+  emphasis?: boolean | 'strong' | 'auto' | 'subdued';
   accessibilityRole?: 'code' | 'heading';
   /** @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric */
   numericVariant?: 'tabular-numbers';

@@ -41,6 +41,12 @@ export namespace Elements {
   export type InlineGrid = HTMLElementTagNameMap['ui-inline-grid'];
 }
 
+declare namespace JSX {
+  interface IntrinsicElements {
+    'ui-text': Partial<Elements.Text>;
+  }
+}
+
 export type ElementConstructors = {
   [Key in keyof Elements]: Elements[Key] extends RemoteElement<
     infer Properties,

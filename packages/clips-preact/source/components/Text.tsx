@@ -1,4 +1,19 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Text as TextElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Text = createRemoteComponent('ui-text', TextElement);
+import type {TextEmphasis, Text as TextElement} from '@watching/clips/elements';
+
+export interface TextProps {
+  emphasis?: TextEmphasis | boolean;
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-text': TextProps;
+    }
+  }
+}
+
+export function Text(props: RenderableProps<TextProps, TextElement>) {
+  return <ui-text {...props} />;
+}
