@@ -3,6 +3,8 @@ query Apps {
     id
     name
     isInstalled
+    hasSecret
+    userDetailsJWT
     extensions {
       ... on ClipsExtension {
         __typename

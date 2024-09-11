@@ -347,6 +347,7 @@ model App {
   handle    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  secret    String?
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

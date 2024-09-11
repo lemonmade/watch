@@ -1,5 +1,14 @@
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {BlockStack, View, TextBlock, Action, InlineStack} from '@lemon/zest';
+import {
+  BlockStack,
+  View,
+  TextBlock,
+  Action,
+  InlineStack,
+  Section,
+  Banner,
+  Text,
+} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {
@@ -12,6 +21,7 @@ import {
 import appsQuery, {type AppsQueryData} from './graphql/AppsQuery.graphql';
 import installAppMutation from './graphql/InstallAppMutation.graphql';
 import installClipsExtensionMutation from './graphql/InstallClipsExtensionMutation.graphql';
+import createAppSecretMutation from './graphql/CreateAppSecretMutation.graphql';
 
 export default function Apps() {
   const query = useGraphQLQuery(appsQuery);
@@ -42,6 +52,9 @@ export default function Apps() {
                 </Action>
               )}
             </InlineStack>
+
+            <AppSecretSection app={app} />
+
             {app.isInstalled && (
               <View>
                 <BlockStack spacing>
@@ -82,5 +95,53 @@ export default function Apps() {
         ))}
       </BlockStack>
     </Page>
+  );
+}
+
+function AppSecretSection({app}: {app: AppsQueryData.Apps}) {
+  const createSecret = useGraphQLMutation(createAppSecretMutation);
+
+  const latestSecret =
+    createSecret.resolved?.value?.data?.createAppSecret.secret;
+
+  return (
+    <Section>
+      <BlockStack spacing>
+        {latestSecret ? (
+          <Banner>
+            <TextBlock>
+              A new secret has been created for your app. You will only see this
+              value once, so make sure to take note of it somewhere safe.
+            </TextBlock>
+
+            <TextBlock>
+              Secret: <Text emphasis>{latestSecret}</Text>
+            </TextBlock>
+          </Banner>
+        ) : (
+          <TextBlock>
+            {app.hasSecret
+              ? 'Has already created secret'
+              : 'App secret already created'}
+          </TextBlock>
+        )}
+
+        <TextBlock>
+          {app.userDetailsJWT}
+        </TextBlock>
+
+        <InlineStack>
+          <Action
+            onPress={async () => {
+              const result = await createSecret.run({id: app.id});
+              console.log(result);
+            }}
+            inlineSize="content"
+          >
+            Create secret
+          </Action>
+        </InlineStack>
+      </BlockStack>
+    </Section>
   );
 }
