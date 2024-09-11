@@ -126,9 +126,7 @@ function AppSecretSection({app}: {app: AppsQueryData.Apps}) {
           </TextBlock>
         )}
 
-        <TextBlock>
-          {app.userDetailsJWT}
-        </TextBlock>
+        <TextBlock>{app.userDetailsJWT}</TextBlock>
 
         <InlineStack>
           <Action
