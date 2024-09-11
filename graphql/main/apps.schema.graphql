@@ -16,6 +16,7 @@ extend type Mutation {
   createApp(name: String!, handle: String): CreateAppPayload!
   deleteApp(id: ID!): DeleteAppPayload!
   updateApp(id: ID!, name: String): UpdateAppPayload!
+  createAppSecret(id: ID!): CreateAppSecretPayload!
   createClipsExtension(
     appId: ID!
     name: String!
@@ -86,8 +87,9 @@ type App {
   handle: String!
   icon: Icon
   extensions: [AppExtension!]!
-
   isInstalled: Boolean!
+  hasSecret: Boolean!
+  userDetailsJWT: String
 }
 
 type ClipsExtension {
@@ -346,4 +348,9 @@ type UninstallClipsExtensionPayload {
 type UpdateClipsExtensionInstallationPayload {
   extension: ClipsExtension
   installation: ClipsExtensionInstallation
+}
+
+type CreateAppSecretPayload {
+  app: App
+  secret: String
 }

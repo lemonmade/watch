@@ -3,6 +3,8 @@ import type {
   AppInstallation as DatabaseAppInstallation,
 } from '@prisma/client';
 
+import Env from 'quilt:module/env';
+
 import {
   addResolvedType,
   createResolver,
@@ -12,12 +14,18 @@ import {
   createUnionResolver,
 } from '../shared/resolvers.ts';
 import {toHandle} from '../shared/handle.ts';
-import {fromGid} from '../shared/id.ts';
+import {fromGid, toGid} from '../shared/id.ts';
 
 declare module '../types' {
   export interface GraphQLValues {
     App: DatabaseApp;
     AppInstallation: DatabaseAppInstallation;
+  }
+}
+
+declare module '@quilted/quilt/env' {
+  interface EnvironmentVariables {
+    APP_SECRET_ENCRYPTION_KEY: string;
   }
 }
 
@@ -73,6 +81,25 @@ export const Mutation = createMutationResolver({
 
     return {app, installation};
   },
+  async createAppSecret(_, {id}, {prisma}) {
+    // Ensure the app exists
+    await prisma.app.findUniqueOrThrow({
+      where: {id: fromGid(id).id},
+    });
+
+    const secret = await createSecret();
+
+    const encryptedSecret = await encryptSecret(secret, {
+      key: Env.APP_SECRET_ENCRYPTION_KEY,
+    });
+
+    const app = await prisma.app.update({
+      where: {id: fromGid(id).id},
+      data: {secret: encryptedSecret},
+    });
+
+    return {app, secret};
+  },
 });
 
 export const App = createResolverWithGid('App', {
@@ -94,7 +121,128 @@ export const App = createResolverWithGid('App', {
 
     return installation != null;
   },
+  hasSecret({secret}) {
+    return secret != null;
+  },
+  async userDetailsJWT({secret: encryptedSecret}, _, {user}) {
+    if (encryptedSecret == null) {
+      return null;
+    }
+
+    const [{default: jwt}, secret] = await Promise.all([
+      import('jsonwebtoken'),
+      decryptSecret(encryptedSecret, {
+        key: Env.APP_SECRET_ENCRYPTION_KEY,
+      }),
+    ]);
+
+    const data = jwt.sign({user: {id: toGid(user.id, 'User')}}, secret, {
+      expiresIn: '5 minutes',
+    });
+
+    return data;
+  },
 });
+
+async function createSecret() {
+  // Generate a 256-bit (32-byte) random value for the shared secret
+  const sharedSecret = crypto.getRandomValues(new Uint8Array(32));
+
+  // Convert it to a base64 URL-safe string for easier storage and transfer
+  return btoa(String.fromCharCode(...sharedSecret));
+}
+
+async function encryptSecret(
+  secret: string,
+  {key: encryptionKey}: {key: string},
+) {
+  const iv = crypto.getRandomValues(new Uint8Array(16));
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+
+  const encoder = new TextEncoder();
+  const encodedText = encoder.encode(secret);
+
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(encryptionKey),
+    'PBKDF2',
+    false,
+    ['deriveBits', 'deriveKey'],
+  );
+
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt,
+      iterations: 100000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    {name: 'AES-CBC', length: 256},
+    false,
+    ['encrypt'],
+  );
+
+  const encrypted = await crypto.subtle.encrypt(
+    {name: 'AES-CBC', iv},
+    key,
+    encodedText,
+  );
+
+  // Concatenate salt, IV, and encrypted data into a single buffer
+  const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+  result.set(salt);
+  result.set(iv, salt.length);
+  result.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+  // Return Base64 encoded string
+  return btoa(String.fromCharCode(...result));
+}
+
+async function decryptSecret(
+  secret: string,
+  {key: encryptionKey}: {key: string},
+) {
+  const encryptedArray = new Uint8Array(
+    atob(secret)
+      .split('')
+      .map((char) => char.charCodeAt(0)),
+  );
+
+  const salt = encryptedArray.slice(0, 16);
+  const iv = encryptedArray.slice(16, 32);
+  const encrypted = encryptedArray.slice(32);
+
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(encryptionKey),
+    'PBKDF2',
+    false,
+    ['deriveBits', 'deriveKey'],
+  );
+
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt,
+      iterations: 100000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    {name: 'AES-CBC', length: 256},
+    false,
+    ['decrypt'],
+  );
+
+  const decrypted = await crypto.subtle.decrypt(
+    {name: 'AES-CBC', iv},
+    key,
+    encrypted,
+  );
+
+  return new TextDecoder().decode(decrypted);
+}
 
 export const AppInstallation = createResolverWithGid('AppInstallation', {
   app: ({appId}, _, {prisma}) =>
