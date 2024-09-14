@@ -1,24 +1,40 @@
-import {ClipsElement, restrictToAllowedValues} from '../ClipsElement.ts';
+import {
+  TEXT_EMPHASIS_KEYWORDS,
+  type TextEmphasisKeyword,
+} from '@watching/design';
 
-export type TextEmphasis = 'strong' | 'auto' | 'subdued';
+import {
+  ClipsElement,
+  backedByAttributeWithBooleanShorthand,
+  attributeRestrictedToAllowedValues,
+} from '../ClipsElement.ts';
 
 export interface TextAttributes {
-  emphasis?: TextEmphasis;
+  /**
+   * Custom emphasis values for the text element.
+   */
+  emphasis?: TextEmphasisKeyword;
+}
+
+export interface TextProperties {
+  /**
+   * Custom emphasis values for the text element.
+   *
+   * @default 'auto'
+   */
+  emphasis: TextEmphasisKeyword;
 }
 
 export interface TextEvents {}
-
-const ALLOWED_EMPHASIS_VALUES = new Set<TextEmphasis>([
-  'strong',
-  'auto',
-  'subdued',
-]);
 
 /**
  * Text is used to visually style and provide semantic value for a small piece of text
  * content.
  */
-export class Text extends ClipsElement<TextAttributes, TextEvents> {
+export class Text
+  extends ClipsElement<TextAttributes, TextEvents>
+  implements TextProperties
+{
   static get remoteAttributes() {
     return ['emphasis'];
   }
@@ -28,27 +44,14 @@ export class Text extends ClipsElement<TextAttributes, TextEvents> {
    * values you can use when setting the `emphasis` attribute, you can also set this
    * property to `true` as an alias for `'strong'`. This property is reflected to the
    * `emphasis` attribute.
+   *
+   * @default 'auto'
    */
-  get emphasis(): TextEmphasis | undefined {
-    return restrictToAllowedValues(
-      this.getAttribute('emphasis'),
-      ALLOWED_EMPHASIS_VALUES,
-    );
-  }
-
-  set emphasis(value: TextEmphasis | boolean) {
-    switch (value) {
-      case true:
-        this.setAttribute('emphasis', 'strong');
-        break;
-      case false:
-        this.removeAttribute('emphasis');
-        break;
-      default:
-        this.setAttribute('emphasis', value);
-        break;
-    }
-  }
+  @backedByAttributeWithBooleanShorthand<TextEmphasisKeyword>({
+    whenTrue: 'strong',
+    ...attributeRestrictedToAllowedValues(TEXT_EMPHASIS_KEYWORDS),
+  })
+  accessor emphasis: TextEmphasisKeyword = 'auto';
 }
 
 customElements.define('ui-text', Text);

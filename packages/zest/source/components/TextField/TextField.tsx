@@ -1,13 +1,19 @@
+import type {ComponentChild} from 'preact';
+import type {TextFieldProperties} from '@watching/clips';
+
 import {useUniqueId} from '../../shared/id.ts';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import {Label} from '../Label.tsx';
 import {BlockStack} from '../Stack.tsx';
 
 import {Input} from './Input.tsx';
 
-export type TextFieldProps =
-  PreactComponentPropsForClipsElement<'ui-text-field'>;
+export interface TextFieldProps
+  extends Omit<Partial<TextFieldProperties>, 'label'> {
+  label?: ComponentChild;
+  onChange?(value: string): void;
+  onInput?(value: string): void;
+}
 
 export function TextField({
   id: explicitId,

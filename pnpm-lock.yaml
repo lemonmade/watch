@@ -167,7 +167,7 @@ importers:
         version: 1.2.0(@preact/signals-core@1.8.0)(@preact/signals@1.3.0)(preact@10.23.2)
       '@remote-dom/react':
         specifier: ^1.2.0
-        version: 1.2.0(@preact/signals-core@1.8.0)(@quilted/react@18.2.5)(preact@10.23.2)
+        version: 1.2.0(@quilted/react@18.2.5)(preact@10.23.2)
       '@simplewebauthn/browser':
         specifier: ^6.2.0
         version: 6.2.1
@@ -189,6 +189,9 @@ importers:
       '@watching/clips':
         specifier: workspace:*
         version: link:../packages/clips
+      '@watching/design':
+        specifier: workspace:*
+        version: link:../packages/design
       '@watching/thread-render':
         specifier: workspace:*
         version: link:../packages/thread-render
@@ -428,6 +431,9 @@ importers:
       '@remote-dom/core':
         specifier: ^1.5.0
         version: 1.5.0(@preact/signals-core@1.8.0)(preact@10.23.2)
+      '@watching/design':
+        specifier: ^0.1.0
+        version: link:../design
 
   packages/clips-preact:
     dependencies:
@@ -464,7 +470,7 @@ importers:
         version: 1.5.0(@preact/signals-core@1.8.0)(preact@10.23.2)
       '@remote-dom/react':
         specifier: ^1.2.0
-        version: 1.2.0(@preact/signals-core@1.8.0)(@quilted/react@18.2.5)(preact@10.23.2)
+        version: 1.2.0(@preact/signals-core@1.8.0)(preact@10.23.2)(react@18.0.0)
       '@types/react':
         specifier: ^18.2.0
         version: 18.2.39
@@ -499,6 +505,8 @@ importers:
         version: 3.59.0
 
   packages/css: {}
+
+  packages/design: {}
 
   packages/thread-render:
     dependencies:
@@ -584,6 +592,9 @@ importers:
       '@watching/clips':
         specifier: workspace:*
         version: link:../clips
+      '@watching/design':
+        specifier: workspace:*
+        version: link:../design
       date-fns:
         specifier: ^2.29.3
         version: 2.29.3
@@ -4833,6 +4844,7 @@ packages:
     dependencies:
       '@types/react': 18.2.39
       preact: 10.23.2
+    dev: true
 
   /@quilted/request-router@0.2.0:
     resolution: {integrity: sha512-quwOFCI1LTNhyWNQ6ZUKNCG9tUIBvGJptMXfbDYgBPaO/VQiz81lcjkkIVkgoRC4Eb0o5qvoJbMGw4aEHV2x4Q==}
@@ -5052,7 +5064,25 @@ packages:
       htm: 3.1.1
       preact: 10.23.2
 
-  /@remote-dom/react@1.2.0(@preact/signals-core@1.8.0)(@quilted/react@18.2.5)(preact@10.23.2):
+  /@remote-dom/react@1.2.0(@preact/signals-core@1.8.0)(preact@10.23.2)(react@18.0.0):
+    resolution: {integrity: sha512-QU+70HPjafGV/oLVjq8SPPq8pGYsgvy9FJyDW2qYdmR7aDl3yKbmVRd6M4JvM2RmW8M3JXVSfOhM71kBPJrOdA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      '@remote-dom/core': 1.5.0(@preact/signals-core@1.8.0)(preact@10.23.2)
+      '@types/react': 18.2.39
+      htm: 3.1.1
+      react: 18.0.0
+    transitivePeerDependencies:
+      - '@preact/signals-core'
+      - preact
+    dev: false
+
+  /@remote-dom/react@1.2.0(@quilted/react@18.2.5)(preact@10.23.2):
     resolution: {integrity: sha512-QU+70HPjafGV/oLVjq8SPPq8pGYsgvy9FJyDW2qYdmR7aDl3yKbmVRd6M4JvM2RmW8M3JXVSfOhM71kBPJrOdA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
@@ -5068,6 +5098,7 @@ packages:
     transitivePeerDependencies:
       - '@preact/signals-core'
       - preact
+    dev: true
 
   /@remote-dom/signals@1.1.1(@preact/signals-core@1.8.0)(@remote-dom/core@1.5.0):
     resolution: {integrity: sha512-3J+YjjFy9f9EXieHHoh9S4JihhVXL3ntpVPFFwDfnhQtZY1qHoebZ5uVYLOx2uoPxaTEJdyB5fH+SPHt8wv9pw==}

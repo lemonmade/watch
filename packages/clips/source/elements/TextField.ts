@@ -1,9 +1,6 @@
 export {
   TextField,
+  type TextFieldAttributes,
   type TextFieldProperties,
-  type TextFieldSlots,
-  type TextFieldKeyboardType,
-  type TextFieldLabelStyle,
-  type TextFieldChangeTiming,
-  type TextFieldAutocompleteTarget,
+  type TextFieldEvents,
 } from './TextField/TextField.ts';

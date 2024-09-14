@@ -1,6 +1,6 @@
 export {
   Text,
-  type TextEmphasis,
   type TextAttributes,
+  type TextProperties,
   type TextEvents,
 } from './Text/Text.ts';

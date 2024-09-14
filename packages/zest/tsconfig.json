@@ -5,6 +5,7 @@
   },
   "references": [
     {"path": "../clips"},
+    {"path": "../design"},
     {"path": "../css"}
   ]
 }

@@ -19,6 +19,7 @@
     {"path": "../global"},
     {"path": "../packages/api"},
     {"path": "../packages/clips"},
+    {"path": "../packages/design"},
     {"path": "../packages/css"},
     {"path": "../packages/thread-render"},
     {"path": "../packages/tools"},

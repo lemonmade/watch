@@ -3,19 +3,21 @@ import {useState, useRef} from 'preact/hooks';
 
 import {classes} from '@lemon/css';
 import {resolveSignalOrValue, type SignalOrValue} from '@quilted/quilt/signals';
+import type {TextFieldProperties} from '@watching/clips';
 
 import {useUniqueId} from '../../shared/id.ts';
 import {useContainingForm} from '../../shared/forms.ts';
 import {useMenuController} from '../../shared/menus.ts';
 import {useActionScope} from '../../shared/actions.tsx';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Input.module.css';
 
-export type InputProps = Omit<
-  PreactComponentPropsForClipsElement<'ui-text-field'>,
-  'label' | 'labelStyle'
->;
+export interface InputProps
+  extends Omit<Partial<TextFieldProperties>, 'value'> {
+  value?: SignalOrValue<string | undefined>;
+  onChange?(value: string): void;
+  onInput?(value: string): void;
+}
 
 export function Input({
   id: explicitId,
@@ -26,7 +28,6 @@ export function Input({
   minimumLines = 1,
   maximumLines = minimumLines,
   placeholder,
-  changeTiming = 'commit',
   resize,
   autocomplete,
   onInput,
@@ -101,11 +102,10 @@ export function Input({
           const newValue = currentTarget.value;
           setValue(newValue);
           onInput?.(newValue);
-          if (changeTiming === 'input') handleChange?.(newValue);
         }}
         onKeyDown={menu?.keypress}
         onKeyPress={
-          isMultiline || changeTiming !== 'commit'
+          isMultiline
             ? undefined
             : (event) => {
                 const {key, currentTarget} = event;
@@ -117,11 +117,7 @@ export function Input({
                 }
               }
         }
-        onBlur={
-          changeTiming === 'commit'
-            ? () => handleChange?.(value ?? '')
-            : undefined
-        }
+        onBlur={() => handleChange?.(value ?? '')}
         form={containingForm?.nested ? containingForm.id : undefined}
         placeholder={placeholder}
         disabled={resolvedDisabled}

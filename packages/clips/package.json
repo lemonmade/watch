@@ -61,6 +61,7 @@
     "@quilted/graphql": "^3.3.7",
     "@quilted/localize": "^0.2.1",
     "@quilted/threads": "^3.1.2",
-    "@remote-dom/core": "^1.5.0"
+    "@remote-dom/core": "^1.5.0",
+    "@watching/design": "^0.1.0"
   }
 }

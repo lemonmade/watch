@@ -24,16 +24,18 @@ export {
   type PopoverInlineAttachment,
 } from './Popover.ts';
 export {Section, type SectionProperties} from './Section.ts';
-export {Text, type TextEmphasis, type TextAttributes, type TextEvents} from './Text.ts';
+export {
+  Text,
+  type TextAttributes,
+  type TextProperties,
+  type TextEvents,
+} from './Text.ts';
 export {TextBlock, type TextBlockProperties} from './TextBlock.ts';
 export {
   TextField,
-  type TextFieldSlots,
+  type TextFieldAttributes,
   type TextFieldProperties,
-  type TextFieldKeyboardType,
-  type TextFieldLabelStyle,
-  type TextFieldChangeTiming,
-  type TextFieldAutocompleteTarget,
+  type TextFieldEvents,
 } from './TextField.ts';
 export {View, type ViewProperties} from './View.ts';
 

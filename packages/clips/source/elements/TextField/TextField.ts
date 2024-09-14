@@ -1,51 +1,54 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import type {
+  RemoteEvent,
+  RemoteElementEventListenersDefinition,
+} from '@remote-dom/core/elements';
+import {
+  TEXT_FIELD_KEYBOARD_TYPE_KEYWORDS,
+  type TextFieldKeyboardTypeKeyword,
+  TEXT_FIELD_RESIZE_KEYWORDS,
+  type TextFieldResizeKeyword,
+  TEXT_FIELD_LABEL_STYLE_KEYWORDS,
+  type TextFieldLabelStyleKeyword,
+  type TextFieldAutocompleteValue,
+} from '@watching/design';
 
-import {type SignalOrValue} from '../../signals.ts';
+import {
+  ClipsElement,
+  backedByAttribute,
+  backedByAttributeAsBoolean,
+  backedByAttributeWithBooleanShorthand,
+  attributeRestrictedToAllowedValues,
+} from '../ClipsElement.ts';
+// import {type SignalOrValue} from '../../signals.ts';
 
-export type TextFieldKeyboardType = 'text' | 'email';
-export type TextFieldLabelStyle = 'default' | 'placeholder';
-export type TextFieldChangeTiming = 'commit' | 'input';
-export type TextFieldAutocompleteTarget = 'username' | 'email' | 'webauthn';
-
-export interface TextFieldProperties {
+export interface TextFieldAttributes {
   /**
-   * A unique identifier for the text field. If you do not provide one,
-   * one will be generated for you.
+   * A unique identifier for the text field.
    */
   id?: string;
 
   /**
    * A hint for the keyboard to use when entering text on a device with
    * a virtual keyboard.
-   *
-   * @default 'text'
    */
-  keyboardType?: TextFieldKeyboardType;
+  'keyboard-type'?: TextFieldKeyboardTypeKeyword;
 
   /**
    * The minimum number of lines of text that will be shown in the text field.
-   *
-   * @default 1
    */
-  minimumLines?: number;
+  'minimum-lines'?: string;
 
   /**
    * The maximum number of lines of text that will be shown in the text field.
-   * When this value is greater than `minimumLines`, the text field will grow
-   * to match the number of lines of text entered by the user for lines between
-   * the minimum and maximum limits. When set to `false` or `Infinity`, the
-   *  text field will grow to fit as much text as the user enters.
-   *
-   * @default 1
    */
-  maximumLines?: number | false;
+  'maximum-lines'?: string;
 
   /**
    * Whether this text field is resizable. If `true`, resize controls will be
    * shown on the field, and the user can resize the field between the minimum
    * and maximum number of lines allowed for this field.
    */
-  resize?: boolean;
+  resize?: TextFieldResizeKeyword;
 
   /**
    * The label to use for this text field. You **must** provide a label so that
@@ -64,7 +67,7 @@ export interface TextFieldProperties {
    * the placeholder. In this case, the `label` prop must be a `string`, and the
    * `placeholder` prop will be ignored.
    */
-  labelStyle?: TextFieldLabelStyle;
+  'label-style'?: TextFieldLabelStyleKeyword;
 
   /**
    * A hint for the content that the user should enter in the text field. This
@@ -74,99 +77,240 @@ export interface TextFieldProperties {
   placeholder?: string;
 
   /**
-   * The current `value` of the text field. This can be either a `string`, `undefined`,
-   * or a `Signal` containing one of these values. If you provide a signal, the text
-   * field will automatically the value of the signal on change — no `onChange` required!
+   * The default `value` for the text field.
    */
-  value?: SignalOrValue<string | undefined>;
+  value?: string;
 
   /**
    * Whether the text field is disabled. When `disabled`, the user will not be able to
    * edit the text field’s content, and can’t focus the input.
-   *
-   * @default false
    */
-  disabled?: SignalOrValue<boolean>;
+  disabled?: '';
 
   /**
    * Whether the text field is in a readonly mode. When `readonly`, the user will not
    * be able to edit the text field’s content, but they can focus the input.
-   *
-   * @default false
    */
-  readonly?: SignalOrValue<boolean>;
+  readonly?: '';
 
   /**
    * A hint to browsers about the content of the field, so that they can provide
    * appropriate autocomplete suggestions.
    */
-  autocomplete?:
-    | TextFieldAutocompleteTarget
-    | `${TextFieldAutocompleteTarget} ${TextFieldAutocompleteTarget}`;
-
-  /**
-   * By default, the text field will call `onChange` only when a change is “committed” by
-   * the user; that is, they either blur the field, or press the `enter` key (and the field
-   * is not multiline). In between commits, your component will not know the current value,
-   * but the text field will continue to show the in-progress state to the user. If you need
-   * to get the updated value as the user types, you can set this prop to `'input'`, which will
-   * cause `onChange` to be called on every keystroke. Additionally, if you pass a `Signal` as
-   * the value of the text field, the value of the signal will update as the user types.
-   *
-   * @default 'commit'
-   */
-  changeTiming?: TextFieldChangeTiming;
-
-  /**
-   * A callback that is run when the user changes the text field value. By default, `onChange`
-   * is only called when the user commits a change to the text field by blurring the field, or
-   * pressing `enter` in a single-line field. If you need this value to be called on every keystroke,
-   * you can set the `changeTiming` prop to `'input'`.
-   *
-   * If you provide this callback, and `value` is a `Signal`, the signal value will not be updated
-   * automatically for you. You can update the signal’s value, if appropriate.
-   */
-  onChange?(value: string): void;
-
-  /**
-   * A callback that is run every time the user types a character in the text field.
-   * If `changeTiming` is set to `'input'`, both `onChange` and `onInput` are run for every
-   * change. In this case, `onInput` is called first.
-   */
-  onInput?(value: string): void;
+  autocomplete?: TextFieldAutocompleteValue;
 }
 
-export interface TextFieldSlots {
-  label?: true;
+export interface TextFieldProperties {
+  /**
+   * A unique identifier for the text field.
+   */
+  id?: string;
+
+  /**
+   * A hint for the keyboard to use when entering text on a device with
+   * a virtual keyboard.
+   *
+   * @default 'text'
+   */
+  keyboardType: TextFieldKeyboardTypeKeyword;
+
+  /**
+   * The minimum number of lines of text that will be shown in the text field.
+   *
+   * @default 1
+   */
+  minimumLines: number;
+
+  /**
+   * The maximum number of lines of text that will be shown in the text field.
+   *
+   * @default 1
+   */
+  maximumLines: number;
+
+  /**
+   * Whether this text field is resizable. If `true`, resize controls will be
+   * shown on the field, and the user can resize the field between the minimum
+   * and maximum number of lines allowed for this field.
+   *
+   * @default 'none'
+   */
+  resize: TextFieldResizeKeyword;
+
+  /**
+   * The label to use for this text field. You **must** provide a label so that
+   * users get an accessible description of what content to enter in the field.
+   */
+  label?: string;
+
+  /**
+   * The visual style of the label. By default, the label is rendered above the
+   * input, so that it remains visible even when the user has entered content. In
+   * extremely rare cases, you may wish to make the label appear as a placeholder
+   * instead. This is typically done for text fields where the content the user can
+   * enter is highly variable, and where the user is expected to know exactly what
+   * they are doing based on the context of how they got to the text field. In these
+   * rare cases, you can use the `'placeholder'` style to make the label appear as
+   * the placeholder. In this case, the `label` prop must be a `string`, and the
+   * `placeholder` prop will be ignored.
+   *
+   * @default 'default'
+   */
+  labelStyle: TextFieldLabelStyleKeyword;
+
+  /**
+   * A hint for the content that the user should enter in the text field. This
+   * prop should always be used **in addition to** the `label` prop, and should
+   * not duplicate the content used for the label.
+   */
+  placeholder?: string;
+
+  /**
+   * The default `value` for the text field.
+   */
+  value: string;
+
+  /**
+   * Whether the text field is disabled. When `disabled`, the user will not be able to
+   * edit the text field’s content, and can’t focus the input.
+   */
+  disabled: boolean;
+
+  /**
+   * Whether the text field is in a readonly mode. When `readonly`, the user will not
+   * be able to edit the text field’s content, but they can focus the input.
+   */
+  readonly: boolean;
+
+  /**
+   * A hint to browsers about the content of the field, so that they can provide
+   * appropriate autocomplete suggestions.
+   */
+  autocomplete?: TextFieldAutocompleteValue;
+}
+
+export interface TextFieldEvents {
+  /**
+   * An that is run when the user changes the text field value.
+   *
+   * If you provide this callback, and `value` is set to a `Signal`, the signal value will not be updated
+   * automatically for you. You can update the signal’s value in this event, if appropriate.
+   */
+  change: RemoteEvent<string>;
+
+  /**
+   * An event that is run every time the user types a character in the text field.
+   * This event is triggered before the `change` event.
+   */
+  input: RemoteEvent<string>;
 }
 
 /**
  * TextField is used to collect text input from a user.
  */
-export const TextField = createRemoteElement<
-  TextFieldProperties,
-  {},
-  TextFieldSlots
->({
-  slots: ['label'],
-  properties: {
-    id: {type: String},
-    label: {type: String},
-    labelStyle: {type: String},
-    placeholder: {type: String},
-    value: {type: String},
-    disabled: {type: Boolean},
-    readonly: {type: Boolean},
-    autocomplete: {type: String},
-    changeTiming: {type: String},
-    keyboardType: {type: String},
-    resize: {type: Boolean},
-    minimumLines: {type: Number},
-    maximumLines: {type: Number},
-    onChange: {type: Function},
-    onInput: {type: Function},
-  },
-});
+export class TextField
+  extends ClipsElement<TextFieldAttributes, TextFieldEvents>
+  implements TextFieldProperties
+{
+  static get remoteEvents(): RemoteElementEventListenersDefinition<TextFieldEvents> {
+    return {
+      change: {
+        bubbles: true,
+      },
+      input: {
+        bubbles: true,
+        dispatchEvent(this: TextField, arg) {
+          this.value = arg;
+        },
+      },
+    };
+  }
+
+  static get remoteAttributes() {
+    return [
+      'id',
+      'keyboard-type',
+      'minimum-lines',
+      'maximum-lines',
+      'resize',
+      'label',
+      'label-style',
+      'placeholder',
+      'value',
+      'disabled',
+      'readonly',
+      'autocomplete',
+    ];
+  }
+
+  #value = '';
+
+  get value() {
+    return this.#value;
+  }
+
+  set value(value: string) {
+    this.#value = String(value);
+  }
+
+  @backedByAttribute()
+  accessor label: string | undefined;
+
+  @backedByAttribute({
+    name: 'label-style',
+    ...attributeRestrictedToAllowedValues(TEXT_FIELD_LABEL_STYLE_KEYWORDS),
+  })
+  accessor labelStyle: TextFieldLabelStyleKeyword = 'default';
+
+  @backedByAttributeAsBoolean()
+  accessor disabled: boolean = false;
+
+  @backedByAttributeAsBoolean()
+  accessor readonly: boolean = false;
+
+  @backedByAttributeWithBooleanShorthand({
+    name: 'resize',
+    whenTrue: 'block',
+    ...attributeRestrictedToAllowedValues(TEXT_FIELD_RESIZE_KEYWORDS),
+  })
+  accessor resize: TextFieldResizeKeyword = 'none';
+
+  @backedByAttribute({
+    name: 'keyboard-type',
+    ...attributeRestrictedToAllowedValues(TEXT_FIELD_KEYBOARD_TYPE_KEYWORDS),
+  })
+  accessor keyboardType: TextFieldKeyboardTypeKeyword = 'text';
+
+  @backedByAttribute()
+  accessor placeholder: string | undefined;
+
+  @backedByAttribute()
+  accessor autocomplete: TextFieldAutocompleteValue | undefined;
+
+  @backedByAttribute({
+    name: 'minimum-lines',
+    parse(value) {
+      return value ? Number(value) : undefined;
+    },
+    serialize(value, {current}) {
+      if (typeof value !== 'number' || value < 1) return current.toString();
+      return Math.round(value).toString();
+    },
+  })
+  accessor minimumLines: number = 1;
+
+  @backedByAttribute({
+    name: 'maximum-lines',
+    parse(value) {
+      return value ? Number(value) : undefined;
+    },
+    serialize(value, {current}) {
+      if (typeof value !== 'number' || value < 1) return current.toString();
+      return Math.round(value).toString();
+    },
+  })
+  accessor maximumLines: number = 1;
+}
 
 customElements.define('ui-text-field', TextField);
 
