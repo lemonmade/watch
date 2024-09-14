@@ -27,11 +27,9 @@ export {
 } from './Heading.ts';
 export {
   Image,
+  type ImageAttributes,
   type ImageProperties,
-  type ImageFit,
-  type ImageLoading,
-  type ImageSource,
-  type ViewportResolution,
+  type ImageEvents,
 } from './Image.ts';
 export {Modal, type ModalProperties} from './Modal.ts';
 export {

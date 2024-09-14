@@ -1,12 +1,15 @@
 import type {JSX} from 'preact';
 import {classes, variation} from '@lemon/css';
+import type {CornerRadiusKeyword} from '@watching/design';
+import type {ImageProperties} from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import type {PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
 
-export type ImageProps = PreactComponentPropsForClipsElement<'ui-image'>;
+export interface ImageProps extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
+  cornerRadius?: CornerRadiusKeyword | boolean;
+}
 
 export enum Media {
   Medium = '(min-width: 601px)',
@@ -24,8 +27,8 @@ const CORNER_RADIUS_CLASS_MAP = new Map<string | boolean, string | undefined>([
   ['none', systemStyles.cornerRadiusNone],
   ['small.1', systemStyles.cornerRadiusSmall1],
   ['small', systemStyles.cornerRadiusSmall1],
-  ['base', systemStyles.cornerRadiusBase],
-  [true, systemStyles.cornerRadiusBase],
+  ['auto', systemStyles.cornerRadiusAuto],
+  [true, systemStyles.cornerRadiusAuto],
   ['large', systemStyles.cornerRadiusLarge1],
   ['large', systemStyles.cornerRadiusLarge1],
 ]);

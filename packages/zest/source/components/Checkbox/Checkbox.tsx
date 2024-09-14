@@ -46,7 +46,7 @@ export function Checkbox({
       className={classes(
         systemStyles.displayInlineGrid,
         choiceStyles.Choice,
-        choiceStyles.cornerRadiusBase,
+        choiceStyles.cornerRadiusAuto,
         Boolean(helpText) && choiceStyles.hasHelpText,
       )}
     >

@@ -310,6 +310,10 @@
   border-radius: var(--z-corner-radius-small-1);
 }
 
+.cornerRadiusAuto {
+  border-radius: var(--z-corner-radius-base);
+}
+
 .cornerRadiusBase {
   border-radius: var(--z-corner-radius-base);
 }

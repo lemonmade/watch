@@ -1,8 +1,6 @@
 export {
   Image,
+  type ImageAttributes,
   type ImageProperties,
-  type ImageFit,
-  type ImageLoading,
-  type ImageSource,
-  type ViewportResolution,
+  type ImageEvents,
 } from './Image/Image.ts';

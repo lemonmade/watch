@@ -72,7 +72,7 @@ const BORDER_CLASS_MAP = new Map<BorderKeyword, string | false>([
 
 const CORNER_RADIUS_CLASS_MAP = new Map<CornerRadiusKeyword, string | false>([
   ['none', false],
-  ['base', styles.cornerRadiusBase],
+  ['auto', styles.cornerRadiusAuto],
   ['concentric', styles.cornerRadiusConcentric],
 ] as [CornerRadiusKeyword, string | false][]);
 

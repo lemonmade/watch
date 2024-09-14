@@ -17,6 +17,11 @@
   margin: 0;
 }
 
+.cornerRadiusAuto {
+  border-radius: var(--z-corner-radius-base);
+  overflow: hidden;
+}
+
 .cornerRadiusBase {
   border-radius: var(--z-corner-radius-base);
   overflow: hidden;
