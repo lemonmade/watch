@@ -68,7 +68,12 @@ export {BlockGrid, type BlockGridProperties} from './BlockGrid.ts';
 export {InlineGrid, type InlineGridProperties} from './InlineGrid.ts';
 
 // Interaction
-export {Action, type ActionProperties, type ActionSlots} from './Action.ts';
+export {
+  Action,
+  type ActionAttributes,
+  type ActionProperties,
+  type ActionEvents,
+} from './Action.ts';
 export {
   Disclosure,
   type DisclosureAttributes,

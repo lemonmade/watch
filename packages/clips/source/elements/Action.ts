@@ -1,5 +1,6 @@
 export {
   Action,
+  type ActionAttributes,
   type ActionProperties,
-  type ActionSlots,
+  type ActionEvents,
 } from './Action/Action.ts';
