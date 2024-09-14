@@ -222,7 +222,7 @@ export function useViewProps({
     let normalizedPadding: SpacingKeyword;
 
     if (typeof padding === 'boolean') {
-      normalizedPadding = 'base';
+      normalizedPadding = 'auto';
     } else {
       normalizedPadding = padding;
     }

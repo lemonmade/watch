@@ -36,7 +36,7 @@ export class Text
   implements TextProperties
 {
   static get remoteAttributes() {
-    return ['emphasis'];
+    return ['emphasis'] satisfies (keyof TextAttributes)[];
   }
 
   /**

@@ -1,1 +1,6 @@
-export {Header, type HeaderProperties} from './Header/Header.ts';
+export {
+  Header,
+  type HeaderAttributes,
+  type HeaderProperties,
+  type HeaderEvents,
+} from './Header/Header.ts';

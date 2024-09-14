@@ -1,7 +1,13 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
-import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
+import {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from '../View.ts';
 
+export interface FooterAttributes extends ViewAttributes {}
 export interface FooterProperties extends ViewProperties {}
+export interface FooterEvents extends ViewEvents {}
 
 /**
  * Footers are container elements that designates part of a section as being supplementary to the
@@ -12,9 +18,7 @@ export interface FooterProperties extends ViewProperties {}
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer
  */
-export const Footer = createRemoteElement<FooterProperties>({
-  properties: VIEW_PROPERTIES,
-});
+export class Footer extends View implements FooterProperties {}
 
 customElements.define('ui-footer', Footer);
 

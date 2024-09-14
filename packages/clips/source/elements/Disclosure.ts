@@ -1,5 +1,6 @@
 export {
   Disclosure,
+  type DisclosureAttributes,
   type DisclosureProperties,
-  type DisclosureSlots,
+  type DisclosureEvents,
 } from './Disclosure/Disclosure.ts';

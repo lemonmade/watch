@@ -1,7 +1,23 @@
 export {ClipsElement} from './ClipsElement.ts';
 
-export {Footer, type FooterProperties} from './Footer.ts';
-export {Header, type HeaderProperties} from './Header.ts';
+export {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from './View.ts';
+export {
+  Footer,
+  type FooterAttributes,
+  type FooterProperties,
+  type FooterEvents,
+} from './Footer.ts';
+export {
+  Header,
+  type HeaderAttributes,
+  type HeaderProperties,
+  type HeaderEvents,
+} from './Header.ts';
 export {
   Heading,
   type HeadingProperties,
@@ -37,7 +53,6 @@ export {
   type TextFieldProperties,
   type TextFieldEvents,
 } from './TextField.ts';
-export {View, type ViewProperties} from './View.ts';
 
 // Layout
 export {Stack, type StackProperties} from './Stack.ts';
@@ -52,8 +67,9 @@ export {InlineGrid, type InlineGridProperties} from './InlineGrid.ts';
 export {Action, type ActionProperties, type ActionSlots} from './Action.ts';
 export {
   Disclosure,
+  type DisclosureAttributes,
   type DisclosureProperties,
-  type DisclosureSlots,
+  type DisclosureEvents,
 } from './Disclosure.ts';
 
 // Skeletons

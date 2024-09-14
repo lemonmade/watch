@@ -11,6 +11,7 @@ export const Text = createClipsComponentRenderer(
   'ui-text',
   function Text(props) {
     const {children} = useRenderedChildren(props);
+
     const attributes = props.element.attributes.value;
 
     return (

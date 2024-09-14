@@ -24,6 +24,8 @@ import {
   type ThreadSignalSerialization,
 } from '@quilted/quilt/threads';
 
+export type {RemoteComponentRendererProps};
+
 export type PreactComponentPropsForClipsElement<
   Element extends keyof Elements,
 > = Elements[Element] extends ClipsElement<infer Attributes, infer _Events>

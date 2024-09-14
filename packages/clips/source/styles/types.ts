@@ -1,8 +1,12 @@
+import type {SpacingKeyword} from '@watching/design';
+
 import type {
   CSS_LITERAL_PREFIX,
   STYLE_DYNAMIC_VALUE_PREFIX,
   STYLE_DYNAMIC_VALUE_WHEN_PREFIX,
 } from './constants.ts';
+
+export type {SpacingKeyword};
 
 export type CSSLiteralValue = `${typeof CSS_LITERAL_PREFIX}${string}`;
 // It’s a list of `StyleValueCondition`s, as a string. Not sure how to type it well.
@@ -27,28 +31,6 @@ export interface DynamicValue<Value> {
   readonly value: Value;
   readonly viewport?: ViewportCondition;
 }
-
-export type SpacingKeyword =
-  | 'none'
-  | 'small.2'
-  /**
-   * @alias small
-   */
-  | 'small.1'
-  /**
-   * @alias small.1
-   */
-  | 'small'
-  | 'base'
-  /**
-   * @alias large.1
-   */
-  | 'large'
-  /**
-   * @alias large
-   */
-  | 'large.1'
-  | 'large.2';
 
 export type SpacingValue = SpacingKeyword | boolean;
 

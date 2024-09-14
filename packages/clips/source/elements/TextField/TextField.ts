@@ -240,7 +240,7 @@ export class TextField
       'disabled',
       'readonly',
       'autocomplete',
-    ];
+    ] satisfies (keyof TextFieldAttributes)[];
   }
 
   #value = '';

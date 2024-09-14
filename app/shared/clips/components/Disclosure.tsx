@@ -1,9 +1,18 @@
-import {Disclosure as UiDisclosure} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {Disclosure as UIDisclosure} from '@lemon/zest';
 
-export const Disclosure = createClipsComponent(
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
+
+export const Disclosure = createClipsComponentRenderer(
   'ui-disclosure',
-  function Disclosure({children, label}) {
-    return <UiDisclosure label={label}>{children}</UiDisclosure>;
+  function Disclosure(props) {
+    const {label, children} = useRenderedChildren(props, {
+      slotProps: ['label'],
+    });
+
+    const attributes = props.element.attributes.value;
+
+    return (
+      <UIDisclosure label={label ?? attributes.label}>{children}</UIDisclosure>
+    );
   },
 );

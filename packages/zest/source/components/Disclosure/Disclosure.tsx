@@ -1,15 +1,22 @@
+import type {ComponentChild, RenderableProps} from 'preact';
+
 import {classes} from '@lemon/css';
 import {useSignal} from '@quilted/quilt/signals';
+import type {DisclosureProperties} from '@watching/clips';
 
 import {useUniqueId} from '../../shared/id.ts';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Disclosure.module.css';
 
-export type DisclosureProps =
-  PreactComponentPropsForClipsElement<'ui-disclosure'>;
+export interface DisclosureProps
+  extends Omit<Partial<DisclosureProperties>, 'label'> {
+  label?: ComponentChild;
+}
 
-export function Disclosure({label, children}: DisclosureProps) {
+export function Disclosure({
+  label,
+  children,
+}: RenderableProps<DisclosureProps>) {
   const id = useUniqueId('Disclosure');
   const labelId = `${id}Label`;
 

@@ -1,1 +1,6 @@
-export {View, VIEW_PROPERTIES, type ViewProperties} from './View/View.ts';
+export {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from './View/View.ts';

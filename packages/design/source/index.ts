@@ -1,3 +1,38 @@
+// System
+
+export type SpacingKeyword =
+  | 'none'
+  | 'small.2'
+  /**
+   * @alias small
+   */
+  | 'small.1'
+  /**
+   * @alias small.1
+   */
+  | 'small'
+  | 'auto'
+  /**
+   * @alias large.1
+   */
+  | 'large'
+  /**
+   * @alias large
+   */
+  | 'large.1'
+  | 'large.2';
+
+export const SPACING_KEYWORDS = new Set<SpacingKeyword>([
+  'none',
+  'small.2',
+  'small.1',
+  'small',
+  'auto',
+  'large',
+  'large.1',
+  'large.2',
+]);
+
 // Text
 
 export type TextEmphasisKeyword = 'strong' | 'auto' | 'subdued';

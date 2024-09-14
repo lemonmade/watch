@@ -6,6 +6,10 @@
   gap: var(--z-spacing-small-1);
 }
 
+.spacingAuto {
+  gap: var(--z-spacing-base);
+}
+
 .spacingBase {
   gap: var(--z-spacing-base);
 }
