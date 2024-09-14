@@ -83,19 +83,17 @@ export function backedByAttributeAsBoolean({
   });
 }
 
-export function backedByAttributeWithBooleanShorthand<T>(
-  {
-    name,
-    whenTrue,
-    parse,
-    serialize,
-  }: {
-    name?: string;
-    whenTrue: T;
-    parse?(value: string | null): T | undefined;
-    serialize?(value: T, context: {current: T; default: T}): string | null;
-  },
-) {
+export function backedByAttributeWithBooleanShorthand<T>({
+  name,
+  whenTrue,
+  parse,
+  serialize,
+}: {
+  name?: string;
+  whenTrue: T;
+  parse?(value: string | null): T | undefined;
+  serialize?(value: T, context: {current: T; default: T}): string | null;
+}) {
   return function (
     _target: any,
     context: ClassAccessorDecoratorContext<HTMLElement, T>,

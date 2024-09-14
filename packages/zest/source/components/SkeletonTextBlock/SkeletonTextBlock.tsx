@@ -1,13 +1,14 @@
 import type {RenderableProps} from 'preact';
 import {useMemo} from 'preact/hooks';
 
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
-import {Style} from '../../system.ts';
-import {useStackProps, resolveStackProps} from '../Stack.tsx';
-import {SkeletonText} from '../SkeletonText.tsx';
+import type {SkeletonTextBlockProperties} from '@watching/clips';
 
-export type SkeletonTextBlockProps =
-  PreactComponentPropsForClipsElement<'ui-skeleton-text-block'>;
+import {Style} from '../../system.ts';
+import {SkeletonText} from '../SkeletonText/SkeletonText.tsx';
+import {useStackProps, resolveStackProps} from '../Stack.tsx';
+
+export interface SkeletonTextBlockProps
+  extends Partial<SkeletonTextBlockProperties> {}
 
 export function SkeletonTextBlock({
   lines = 3,

@@ -60,6 +60,16 @@ export const TEXT_EMPHASIS_KEYWORDS = new Set<TextEmphasisKeyword>([
   'subdued',
 ]);
 
+export type SkeletonTextSizeKeyword = 'small.1' | 'small' | 'auto' | 'large' | 'large.1';
+
+export const SKELETON_TEXT_SIZE_KEYWORDS = new Set<SkeletonTextSizeKeyword>([
+  'small.1',
+  'small',
+  'auto',
+  'large',
+  'large.1',
+]);
+
 // Heading
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;

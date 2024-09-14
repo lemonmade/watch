@@ -1,13 +1,13 @@
 import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
+import type {SkeletonTextProperties} from '@watching/clips';
+
 import {CSSLiteral} from '../../system.ts';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './SkeletonText.module.css';
 
-export type SkeletonTextProps =
-  PreactComponentPropsForClipsElement<'ui-skeleton-text'>;
+export interface SkeletonTextProps extends Partial<SkeletonTextProperties> {}
 
 const SIZE_CLASS_MAP = new Map<string, string | undefined>([
   ['small', styles.sizeSmall],

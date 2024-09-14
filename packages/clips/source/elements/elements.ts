@@ -76,9 +76,16 @@ export {
   SkeletonAction,
   type SkeletonActionProperties,
 } from './SkeletonAction.ts';
-export {SkeletonText, type SkeletonTextProperties} from './SkeletonText.ts';
+export {
+  SkeletonText,
+  type SkeletonTextAttributes,
+  type SkeletonTextProperties,
+  type SkeletonTextEvents,
+} from './SkeletonText.ts';
 export {
   SkeletonTextBlock,
+  type SkeletonTextBlockAttributes,
   type SkeletonTextBlockProperties,
+  type SkeletonTextBlockEvents,
 } from './SkeletonTextBlock.ts';
 export {SkeletonView, type SkeletonViewProperties} from './SkeletonView.ts';

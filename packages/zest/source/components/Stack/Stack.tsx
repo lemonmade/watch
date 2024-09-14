@@ -13,7 +13,7 @@ import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 import styles from './Stack.module.css';
 
 export interface StackProps
-  extends BaseStackProps,
+  extends Partial<BaseStackProps>,
     Omit<
       ViewProps,
       | 'padding'
