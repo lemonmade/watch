@@ -43,6 +43,18 @@ export const TEXT_EMPHASIS_KEYWORDS = new Set<TextEmphasisKeyword>([
   'subdued',
 ]);
 
+// Heading
+
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+export type HeadingLevelKeyword = `${HeadingLevel}` | 'auto';
+
+export const HEADING_LEVELS = new Set<HeadingLevel>([1, 2, 3, 4, 5, 6]);
+
+export type HeadingAccessibilityRoleKeyword = 'heading' | 'presentation';
+
+export const HEADING_ACCESSIBILITY_ROLE_KEYWORDS =
+  new Set<HeadingAccessibilityRoleKeyword>(['heading', 'presentation']);
+
 // TextField
 
 export type TextFieldKeyboardTypeKeyword = 'text' | 'email';

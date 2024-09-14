@@ -18,11 +18,12 @@ export {
   type HeaderProperties,
   type HeaderEvents,
 } from './Header.ts';
+
 export {
   Heading,
+  type HeadingAttributes,
   type HeadingProperties,
-  type HeadingLevel,
-  type HeadingAccessibilityRole,
+  type HeadingEvents,
 } from './Heading.ts';
 export {
   Image,

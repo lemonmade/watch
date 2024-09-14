@@ -1,6 +1,6 @@
 export {
   Heading,
+  type HeadingAttributes,
   type HeadingProperties,
-  type HeadingLevel,
-  type HeadingAccessibilityRole,
+  type HeadingEvents,
 } from './Heading/Heading.ts';
