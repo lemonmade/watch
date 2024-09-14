@@ -7,6 +7,12 @@ export {
   type ViewEvents,
 } from './View.ts';
 export {
+  Section,
+  type SectionAttributes,
+  type SectionProperties,
+  type SectionEvents,
+} from './Section.ts';
+export {
   Footer,
   type FooterAttributes,
   type FooterProperties,
@@ -38,7 +44,6 @@ export {
   type PopoverBlockAttachment,
   type PopoverInlineAttachment,
 } from './Popover.ts';
-export {Section, type SectionProperties} from './Section.ts';
 export {
   Text,
   type TextAttributes,

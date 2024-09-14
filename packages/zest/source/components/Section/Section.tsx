@@ -1,12 +1,14 @@
+import type {RenderableProps} from 'preact';
+
 import {NestedHeadingLevel} from '../Heading.tsx';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
+export interface SectionProps extends ViewProps {}
 
-export type SectionProps = PreactComponentPropsForClipsElement<'ui-section'> &
-  ViewProps;
-
-export function Section({children, ...viewProps}: SectionProps) {
+export function Section({
+  children,
+  ...viewProps
+}: RenderableProps<SectionProps>) {
   const view = useViewProps(viewProps);
 
   return (

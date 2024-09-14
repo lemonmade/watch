@@ -1,10 +1,9 @@
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import type {RenderableProps} from 'preact';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
-export type FooterProps = PreactComponentPropsForClipsElement<'ui-footer'> &
-  ViewProps;
+export interface FooterProps extends ViewProps {}
 
-export function Footer({children, ...viewProps}: FooterProps) {
+export function Footer({children, ...viewProps}: RenderableProps<FooterProps>) {
   const view = useViewProps(viewProps);
   return <footer {...resolveViewProps(view)}>{children}</footer>;
 }

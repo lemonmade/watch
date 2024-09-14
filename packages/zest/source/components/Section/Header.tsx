@@ -1,10 +1,9 @@
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
+import type {RenderableProps} from 'preact';
 import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
-export type HeaderProps = PreactComponentPropsForClipsElement<'ui-header'> &
-  ViewProps;
+export interface HeaderProps extends ViewProps {}
 
-export function Header({children, ...viewProps}: HeaderProps) {
+export function Header({children, ...viewProps}: RenderableProps<HeaderProps>) {
   const view = useViewProps(viewProps);
   return <header {...resolveViewProps(view)}>{children}</header>;
 }
