@@ -15,8 +15,7 @@ export interface SkeletonViewEvents extends ViewEvents {}
  */
 export class SkeletonView
   extends View<SkeletonViewAttributes, SkeletonViewEvents>
-  implements SkeletonViewProperties
-{}
+  implements SkeletonViewProperties {}
 
 customElements.define('ui-skeleton-view', SkeletonView);
 

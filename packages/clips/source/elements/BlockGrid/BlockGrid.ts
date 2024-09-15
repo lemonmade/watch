@@ -15,8 +15,7 @@ export interface BlockGridAttributes
   sizes?: string;
 }
 
-export interface BlockGridProperties
-  extends Omit<GridProperties, 'direction'> {
+export interface BlockGridProperties extends Omit<GridProperties, 'direction'> {
   direction: Extract<DirectionKeyword, 'block'>;
   sizes?: string;
 }

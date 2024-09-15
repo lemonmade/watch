@@ -1,7 +1,4 @@
-import {
-  ClipsElement,
-  backedByAttribute,
-} from '../ClipsElement.ts';
+import {ClipsElement, backedByAttribute} from '../ClipsElement.ts';
 
 export interface SkeletonTextBlockAttributes {
   /**

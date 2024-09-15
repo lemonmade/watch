@@ -26,11 +26,7 @@ declare module 'preact' {
   }
 }
 
-export function Disclosure({
-  label,
-  children,
-  ...props
-}: DisclosureProps) {
+export function Disclosure({label, children, ...props}: DisclosureProps) {
   return label && isValidElement(label) ? (
     <ui-disclosure {...props}>
       {children}

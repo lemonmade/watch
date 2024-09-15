@@ -9,10 +9,10 @@ import {ViewProps} from './View.tsx';
 
 export interface SectionProps
   extends RenderableProps<
-    Omit<Partial<SectionProperties>, keyof ViewProps>,
-    SectionElement
-  >,
-  Omit<ViewProps, 'ref'> {}
+      Omit<Partial<SectionProperties>, keyof ViewProps>,
+      SectionElement
+    >,
+    Omit<ViewProps, 'ref'> {}
 
 declare module 'preact' {
   namespace JSX {

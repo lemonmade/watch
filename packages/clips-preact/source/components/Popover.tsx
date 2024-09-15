@@ -5,7 +5,8 @@ import type {
   PopoverProperties,
 } from '@watching/clips/elements';
 
-export interface PopoverProps extends RenderableProps<PopoverProperties, PopoverElement> {}
+export interface PopoverProps
+  extends RenderableProps<PopoverProperties, PopoverElement> {}
 
 declare module 'preact' {
   namespace JSX {

@@ -1,7 +1,10 @@
 import {createContext} from 'preact';
 import {useContext} from 'preact/hooks';
 
-import type {HeadingLevel, HeadingAccessibilityRoleKeyword} from '@watching/design';
+import type {
+  HeadingLevel,
+  HeadingAccessibilityRoleKeyword,
+} from '@watching/design';
 
 export type {HeadingLevel, HeadingAccessibilityRoleKeyword};
 

@@ -9,10 +9,10 @@ import {ViewProps} from './View.tsx';
 
 export interface StackProps
   extends RenderableProps<
-    Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>,
-    StackElement
-  >,
-  Omit<ViewProps, 'ref'> {
+      Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>,
+      StackElement
+    >,
+    Omit<ViewProps, 'ref'> {
   spacing?: StackProperties['spacing'] | boolean;
 }
 

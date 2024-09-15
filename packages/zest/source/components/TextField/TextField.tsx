@@ -10,7 +10,10 @@ import {BlockStack} from '../Stack.tsx';
 import {Input} from './Input.tsx';
 
 export interface TextFieldProps
-  extends Omit<Partial<TextFieldProperties>, 'value' | 'label' | 'maximumLines'> {
+  extends Omit<
+    Partial<TextFieldProperties>,
+    'value' | 'label' | 'maximumLines'
+  > {
   value?: SignalOrValue<string | undefined>;
   label?: ComponentChild;
   onChange?(value: string): void;
