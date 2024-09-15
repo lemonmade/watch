@@ -37,7 +37,12 @@ export {
   type ImageProperties,
   type ImageEvents,
 } from './Image.ts';
-export {Modal, type ModalProperties} from './Modal.ts';
+export {
+  Modal,
+  type ModalAttributes,
+  type ModalProperties,
+  type ModalEvents,
+} from './Modal.ts';
 export {
   Popover,
   type PopoverAttributes,
@@ -50,7 +55,12 @@ export {
   type TextProperties,
   type TextEvents,
 } from './Text.ts';
-export {TextBlock, type TextBlockProperties} from './TextBlock.ts';
+export {
+  TextBlock,
+  type TextBlockAttributes,
+  type TextBlockProperties,
+  type TextBlockEvents,
+} from './TextBlock.ts';
 export {
   TextField,
   type TextFieldAttributes,
