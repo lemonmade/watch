@@ -25,9 +25,9 @@ import {
 export interface StackAttributes extends ViewAttributes {
   spacing?: SpacingKeyword;
   direction?: DirectionKeyword;
-  inlineAlignment?: AlignmentKeyword;
-  blockAlignment?: AlignmentKeyword;
-  layoutMode?: LayoutModeKeyword;
+  'inline-alignment'?: AlignmentKeyword;
+  'block-alignment'?: AlignmentKeyword;
+  'layout-mode'?: LayoutModeKeyword;
 }
 
 export interface StackProperties extends ViewProperties {
@@ -71,9 +71,9 @@ export class Stack<
     return [
       'spacing',
       'direction',
-      'inlineAlignment',
-      'blockAlignment',
-      'layoutMode',
+      'inline-alignment',
+      'block-alignment',
+      'layout-mode',
     ] satisfies (keyof StackAttributes)[];
   }
 

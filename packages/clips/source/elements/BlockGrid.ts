@@ -1,1 +1,6 @@
-export {BlockGrid, type BlockGridProperties} from './BlockGrid/BlockGrid.ts';
+export {
+  BlockGrid,
+  type BlockGridAttributes,
+  type BlockGridProperties,
+  type BlockGridEvents,
+} from './BlockGrid/BlockGrid.ts';

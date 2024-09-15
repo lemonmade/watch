@@ -88,9 +88,18 @@ export {
   type InlineStackEvents,
 } from './InlineStack.ts';
 
-export {Grid, type GridProperties} from './Grid.ts';
-export {BlockGrid, type BlockGridProperties} from './BlockGrid.ts';
-export {InlineGrid, type InlineGridProperties} from './InlineGrid.ts';
+export {Grid, type GridAttributes, type GridProperties, type GridEvents} from './Grid.ts';
+export {
+  BlockGrid,
+  type BlockGridAttributes,
+  type BlockGridProperties,
+  type BlockGridEvents,
+} from './BlockGrid.ts';
+export {
+  InlineGrid,
+  type InlineGridAttributes,
+  type InlineGridProperties,
+} from './InlineGrid.ts';
 
 // Interaction
 export {

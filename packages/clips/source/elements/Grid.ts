@@ -1,6 +1,6 @@
 export {
   Grid,
-  SizeValueOrDynamicSizeValue,
-  COMMON_GRID_PROPERTIES,
+  type GridAttributes,
   type GridProperties,
+  type GridEvents,
 } from './Grid/Grid.ts';

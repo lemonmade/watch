@@ -1,59 +1,53 @@
 import {
-  createRemoteElement,
-  type RemoteElementPropertyType,
-  type RemoteElementPropertiesDefinition,
-} from '@remote-dom/core/elements';
+  SPACING_KEYWORDS,
+  type SpacingKeyword,
+  DIRECTION_KEYWORDS,
+  type DirectionKeyword,
+  ALIGNMENT_KEYWORDS,
+  type AlignmentKeyword,
+  LAYOUT_MODE_KEYWORDS,
+  type LayoutModeKeyword,
+} from '@watching/design';
 
-import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
-import {RemoteElementSpacingValue} from '../shared.ts';
-import type {
-  SizeValue,
-  SpacingValue,
-  DirectionKeyword,
-  LayoutModeKeyword,
-  AlignmentKeyword,
-  ValueOrStyleDynamicValue,
-} from '../../styles.ts';
+import {
+  attributeRestrictedToAllowedValues,
+  backedByAttribute,
+  restrictToAllowedValues,
+} from '../ClipsElement.ts';
 
-export interface GridProperties extends ViewProperties {
-  spacing?: SpacingValue;
-  inlineSpacing?: SpacingValue;
-  blockSpacing?: SpacingValue;
+import {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from '../View.ts';
+
+export interface GridAttributes extends ViewAttributes {
+  spacing?: SpacingKeyword;
+  'inline-spacing'?: SpacingKeyword;
+  'block-spacing'?: SpacingKeyword;
   direction?: DirectionKeyword;
-  inlineSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
-  blockSizes?: ValueOrStyleDynamicValue<readonly SizeValue[]>;
-  inlineAlignment?: AlignmentKeyword;
-  blockAlignment?: AlignmentKeyword;
-  layoutMode?: LayoutModeKeyword;
+  'inline-sizes'?: string;
+  'block-sizes'?: string;
+  'inline-alignment'?: AlignmentKeyword;
+  'block-alignment'?: AlignmentKeyword;
+  'layout-mode'?: LayoutModeKeyword;
 }
 
-export const COMMON_GRID_PROPERTIES: RemoteElementPropertiesDefinition<
-  Omit<GridProperties, 'direction' | 'blockSizes' | 'inlineSizes'>
-> = {
-  ...VIEW_PROPERTIES,
-  spacing: {type: RemoteElementSpacingValue, default: false},
-  inlineSpacing: {type: RemoteElementSpacingValue, default: false},
-  blockSpacing: {type: RemoteElementSpacingValue, default: false},
-  blockAlignment: {type: String},
-  inlineAlignment: {type: String},
-  layoutMode: {type: String},
-};
+export interface GridProperties extends ViewProperties {
+  get spacing(): SpacingKeyword;
+  set spacing(value: SpacingKeyword | boolean | undefined);
+  inlineSpacing?: SpacingKeyword;
+  blockSpacing?: SpacingKeyword;
+  direction: DirectionKeyword;
+  inlineSizes?: string;
+  blockSizes?: string;
+  inlineAlignment: AlignmentKeyword;
+  blockAlignment: AlignmentKeyword;
+  layoutMode: LayoutModeKeyword;
+}
 
-export const SizeValueOrDynamicSizeValue: RemoteElementPropertyType<
-  ValueOrStyleDynamicValue<readonly SizeValue[]>
-> = {
-  parse(value) {
-    if (typeof value === 'string' && value.startsWith('css:')) {
-      return value;
-    }
-
-    try {
-      return JSON.parse((value as any) ?? '[]');
-    } catch {
-      return String(value).split(/\s+/g);
-    }
-  },
-};
+export interface GridEvents extends ViewEvents {}
 
 /**
  * A `Grid` is a container component that lays out sibling elements
@@ -73,14 +67,90 @@ export const SizeValueOrDynamicSizeValue: RemoteElementPropertyType<
  * In addition to the grid-specific properties described above, You can
  * pass any property available on `View` to a `Grid` component.
  */
-export const Grid = createRemoteElement<GridProperties>({
-  properties: {
-    ...COMMON_GRID_PROPERTIES,
-    direction: {type: String},
-    blockSizes: {type: SizeValueOrDynamicSizeValue},
-    inlineSizes: {type: SizeValueOrDynamicSizeValue},
-  },
-});
+export class Grid<
+    Attributes extends GridAttributes = GridAttributes,
+    Events extends GridEvents = GridEvents,
+  >
+  extends View<Attributes, Events>
+  implements GridProperties
+{
+  static get remoteAttributes(): string[] {
+    return [
+      'spacing',
+      'inline-spacing',
+      'block-spacing',
+      'direction',
+      'inline-sizes',
+      'block-sizes',
+      'inline-alignment',
+      'block-alignment',
+      'layout-mode',
+    ] satisfies (keyof GridAttributes)[];
+  }
+
+  get spacing(): SpacingKeyword {
+    return (
+      restrictToAllowedValues(this.getAttribute('padding'), SPACING_KEYWORDS) ??
+      'none'
+    );
+  }
+
+  set spacing(value: SpacingKeyword | boolean) {
+    const resolvedValue =
+      value === true ? 'auto' : value === false ? 'none' : value;
+
+    if (resolvedValue === 'none') {
+      this.removeAttribute('padding');
+    } else {
+      this.setAttribute('padding', resolvedValue);
+    }
+  }
+
+  @backedByAttribute<SpacingKeyword | undefined>({
+    name: 'inline-spacing',
+    ...attributeRestrictedToAllowedValues(SPACING_KEYWORDS),
+  })
+  accessor inlineSpacing: SpacingKeyword | undefined;
+
+  @backedByAttribute<SpacingKeyword | undefined>({
+    name: 'block-spacing',
+    ...attributeRestrictedToAllowedValues(SPACING_KEYWORDS),
+  })
+  accessor blockSpacing: SpacingKeyword | undefined;
+
+  @backedByAttribute({
+    ...attributeRestrictedToAllowedValues(DIRECTION_KEYWORDS),
+  })
+  accessor direction: DirectionKeyword = 'block';
+
+  @backedByAttribute({
+    name: 'inline-sizes',
+  })
+  accessor inlineSizes: string | undefined;
+
+  @backedByAttribute({
+    name: 'block-sizes',
+  })
+  accessor blockSizes: string | undefined;
+
+  @backedByAttribute({
+    name: 'inline-alignment',
+    ...attributeRestrictedToAllowedValues(ALIGNMENT_KEYWORDS),
+  })
+  accessor inlineAlignment: AlignmentKeyword = 'stretch';
+
+  @backedByAttribute({
+    name: 'block-alignment',
+    ...attributeRestrictedToAllowedValues(ALIGNMENT_KEYWORDS),
+  })
+  accessor blockAlignment: AlignmentKeyword = 'start';
+
+  @backedByAttribute({
+    name: 'layout-mode',
+    ...attributeRestrictedToAllowedValues(LAYOUT_MODE_KEYWORDS),
+  })
+  accessor layoutMode: LayoutModeKeyword = 'logical';
+}
 
 customElements.define('ui-grid', Grid);
 
