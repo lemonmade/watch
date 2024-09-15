@@ -8,7 +8,9 @@ import {
 export const Action = createClipsComponentRenderer(
   'ui-action',
   function Action(props) {
-    const {children} = useRenderedChildren(props);
+    const {overlay, children} = useRenderedChildren(props, {
+      slotProps: ['overlay'],
+    });
 
     const attributes = props.element.attributes.value;
     const events = props.element.eventListeners.value;
@@ -20,6 +22,7 @@ export const Action = createClipsComponentRenderer(
         onPress={
           events.press ? wrapEventListenerForCallback(events.press) : undefined
         }
+        overlay={overlay}
       >
         {children}
       </UIAction>

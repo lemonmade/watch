@@ -40,9 +40,9 @@ export {
 export {Modal, type ModalProperties} from './Modal.ts';
 export {
   Popover,
+  type PopoverAttributes,
   type PopoverProperties,
-  type PopoverBlockAttachment,
-  type PopoverInlineAttachment,
+  type PopoverEvents,
 } from './Popover.ts';
 export {
   Text,

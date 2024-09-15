@@ -60,7 +60,12 @@ export const TEXT_EMPHASIS_KEYWORDS = new Set<TextEmphasisKeyword>([
   'subdued',
 ]);
 
-export type SkeletonTextSizeKeyword = 'small.1' | 'small' | 'auto' | 'large' | 'large.1';
+export type SkeletonTextSizeKeyword =
+  | 'small.1'
+  | 'small'
+  | 'auto'
+  | 'large'
+  | 'large.1';
 
 export const SKELETON_TEXT_SIZE_KEYWORDS = new Set<SkeletonTextSizeKeyword>([
   'small.1',
@@ -129,3 +134,10 @@ export const IMAGE_ACCESSIBILITY_ROLE_KEYWORDS =
   new Set<ImageAccessibilityRoleKeyword>(['image', 'decorative']);
 
 export type ViewportResolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
+
+// Popover
+
+export type PopoverAttachmentKeyword = 'auto' | 'start' | 'center' | 'end';
+
+export const POPOVER_ATTACHMENT_KEYWORDS =
+  new Set<PopoverAttachmentKeyword>(['auto', 'start', 'center', 'end']);
