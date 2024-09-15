@@ -1,13 +1,30 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {SPACING_OR_NONE_KEYWORDS type SpacingOrNoneKeyword} from '@watching/design';
+import {
+  attributeRestrictedToAllowedValues,
+  backedByAttributeWithBooleanShorthand,
+  ClipsElement,
+} from '../ClipsElement.ts';
+
+export interface ModalAttributes {
+  /**
+   * Whether to add padding on the inside of the modal.
+   *
+   * @default 'none'
+   */
+  padding?: SpacingOrNoneKeyword;
+}
 
 export interface ModalProperties {
   /**
    * Whether to add padding on the inside of the modal.
    *
-   * @default false
+   * @default 'none'
    */
-  padding?: boolean;
+  get padding(): SpacingOrNoneKeyword;
+  set padding(value: SpacingOrNoneKeyword | boolean | undefined);
 }
+
+export interface ModalEvents {}
 
 /**
  * A Modal is an overlay that blocks interaction with the rest of the page. The
@@ -18,11 +35,13 @@ export interface ModalProperties {
  * passed to this prop will be automatically opened when the action is pressed, and
  * the action will be given accessibility markup that associates it with the modal.
  */
-export const Modal = createRemoteElement<ModalProperties>({
-  properties: {
-    padding: {type: Boolean},
-  },
-});
+export class Modal extends ClipsElement {
+  @backedByAttributeWithBooleanShorthand({
+    whenTrue: 'auto',
+    ...attributeRestrictedToAllowedValues(SPACING_OR_NONE_KEYWORDS),
+  })
+  accessor padding: SpacingOrNoneKeyword = 'none';
+}
 
 customElements.define('ui-modal', Modal);
 

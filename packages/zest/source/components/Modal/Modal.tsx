@@ -1,18 +1,19 @@
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
+import type {ModalProperties} from '@watching/clips';
 
 import {Overlay} from '../Overlay.tsx';
 import {HeadingLevelReset} from '../Heading.tsx';
 
 import {ActionScopeReset} from '../../shared/actions.tsx';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import systemStyles from '../../system.module.css';
 
 import styles from './Modal.module.css';
 
-export type ModalProps = PreactComponentPropsForClipsElement<'ui-modal'>;
+export interface ModalProps extends Partial<ModalProperties> {}
 
-export function Modal({children, padding}: ModalProps) {
+export function Modal({children, padding}: RenderableProps<ModalProps>) {
   return (
     <HeadingLevelReset level={2}>
       <ActionScopeReset>

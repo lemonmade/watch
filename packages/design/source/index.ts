@@ -50,6 +50,13 @@ export const CORNER_RADIUS_KEYWORDS = new Set<CornerRadiusKeyword>([
   'large.1',
 ]);
 
+export type SpacingOrNoneKeyword = 'none' | 'auto';
+
+export const SPACING_OR_NONE_KEYWORDS = new Set<SpacingOrNoneKeyword>([
+  'none',
+  'auto',
+]);
+
 // Text
 
 export type TextEmphasisKeyword = 'strong' | 'auto' | 'subdued';
@@ -139,5 +146,9 @@ export type ViewportResolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
 
 export type PopoverAttachmentKeyword = 'auto' | 'start' | 'center' | 'end';
 
-export const POPOVER_ATTACHMENT_KEYWORDS =
-  new Set<PopoverAttachmentKeyword>(['auto', 'start', 'center', 'end']);
+export const POPOVER_ATTACHMENT_KEYWORDS = new Set<PopoverAttachmentKeyword>([
+  'auto',
+  'start',
+  'center',
+  'end',
+]);

@@ -1,1 +1,6 @@
-export {Modal, type ModalProperties} from './Modal/Modal.ts';
+export {
+  Modal,
+  type ModalAttributes,
+  type ModalProperties,
+  type ModalEvents,
+} from './Modal/Modal.ts';
