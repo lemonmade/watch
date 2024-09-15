@@ -59,9 +59,24 @@ export {
 } from './TextField.ts';
 
 // Layout
-export {Stack, type StackProperties} from './Stack.ts';
-export {BlockStack, type BlockStackProperties} from './BlockStack.ts';
-export {InlineStack, type InlineStackProperties} from './InlineStack.ts';
+export {
+  Stack,
+  type StackAttributes,
+  type StackProperties,
+  type StackEvents,
+} from './Stack.ts';
+export {
+  BlockStack,
+  type BlockStackAttributes,
+  type BlockStackProperties,
+  type BlockStackEvents,
+} from './BlockStack.ts';
+export {
+  InlineStack,
+  type InlineStackAttributes,
+  type InlineStackProperties,
+  type InlineStackEvents,
+} from './InlineStack.ts';
 
 export {Grid, type GridProperties} from './Grid.ts';
 export {BlockGrid, type BlockGridProperties} from './BlockGrid.ts';

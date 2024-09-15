@@ -1,4 +1,10 @@
-import type {SpacingKeyword} from '@watching/design';
+import type {
+  AlignmentKeyword,
+  SpacingKeyword,
+  CornerRadiusKeyword,
+  DirectionKeyword,
+  LayoutModeKeyword,
+} from '@watching/design';
 
 import type {
   CSS_LITERAL_PREFIX,
@@ -6,7 +12,13 @@ import type {
   STYLE_DYNAMIC_VALUE_WHEN_PREFIX,
 } from './constants.ts';
 
-export type {SpacingKeyword};
+export type {
+  AlignmentKeyword,
+  SpacingKeyword,
+  CornerRadiusKeyword,
+  DirectionKeyword,
+  LayoutModeKeyword,
+};
 
 export type CSSLiteralValue = `${typeof CSS_LITERAL_PREFIX}${string}`;
 // It’s a list of `StyleValueCondition`s, as a string. Not sure how to type it well.
@@ -34,25 +46,9 @@ export interface DynamicValue<Value> {
 
 export type SpacingValue = SpacingKeyword | boolean;
 
-export type CornerRadiusKeyword =
-  | 'none'
-  | /** @alias small */ 'small.1'
-  | 'small'
-  | 'base'
-  | 'large'
-  | /** @alias large */ 'large.1';
 export type CornerRadiusValue = CornerRadiusKeyword | boolean;
 
 export type ViewportSizeKeyword = 'small' | 'medium' | 'large';
-
-export type AlignmentKeyword =
-  | 'start'
-  | 'end'
-  | 'center'
-  | 'stretch'
-  | 'spaceBetween';
-export type DirectionKeyword = 'inline' | 'block';
-export type LayoutModeKeyword = 'logical' /* TODO: | 'physical' */;
 
 export type SizeKeyword = 'auto' | 'fill' | 'hidden';
 export type SizeValue = SizeKeyword | CSSLiteralValue | false;

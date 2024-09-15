@@ -1,4 +1,7 @@
-import {SPACING_OR_NONE_KEYWORDS type SpacingOrNoneKeyword} from '@watching/design';
+import {
+  SPACING_OR_NONE_KEYWORDS,
+  type SpacingOrNoneKeyword,
+} from '@watching/design';
 import {
   attributeRestrictedToAllowedValues,
   backedByAttributeWithBooleanShorthand,

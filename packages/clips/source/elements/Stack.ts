@@ -1,5 +1,6 @@
 export {
   Stack,
-  COMMON_STACK_PROPERTIES,
+  type StackAttributes,
   type StackProperties,
+  type StackEvents,
 } from './Stack/Stack.ts';

@@ -30,11 +30,14 @@ export interface ViewEvents {}
  * “natural” size, so this component can be useful in layout components (like `Layout`, `Tiles`,
  * `BlockStack`, `InlineStack`) that would otherwise stretch their children to fit.
  */
-export class View
-  extends ClipsElement<ViewAttributes, ViewEvents>
+export class View<
+    Attributes extends ViewAttributes = ViewAttributes,
+    Events extends ViewEvents = ViewEvents,
+  >
+  extends ClipsElement<Attributes, Events>
   implements ViewProperties
 {
-  static get remoteAttributes() {
+  static get remoteAttributes(): string[] {
     return [
       'padding',
       'padding-inline-start',

@@ -57,6 +57,32 @@ export const SPACING_OR_NONE_KEYWORDS = new Set<SpacingOrNoneKeyword>([
   'auto',
 ]);
 
+export type DirectionKeyword = 'inline' | 'block';
+
+export const DIRECTION_KEYWORDS = new Set<DirectionKeyword>([
+  'inline',
+  'block',
+]);
+
+export type LayoutModeKeyword = 'logical' /* TODO: | 'physical' */;
+
+export const LAYOUT_MODE_KEYWORDS = new Set<LayoutModeKeyword>(['logical']);
+
+export type AlignmentKeyword =
+  | 'start'
+  | 'end'
+  | 'center'
+  | 'stretch'
+  | 'spacing-between';
+
+export const ALIGNMENT_KEYWORDS = new Set<AlignmentKeyword>([
+  'start',
+  'end',
+  'center',
+  'stretch',
+  'spacing-between',
+]);
+
 // Text
 
 export type TextEmphasisKeyword = 'strong' | 'auto' | 'subdued';

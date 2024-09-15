@@ -1,34 +1,44 @@
-import {InlineStack as UiInlineStack} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {
+  SPACING_KEYWORDS,
+  ALIGNMENT_KEYWORDS,
+  LAYOUT_MODE_KEYWORDS,
+} from '@watching/design';
+import {InlineStack as UIInlineStack} from '@lemon/zest';
 
-export const InlineStack = createClipsComponent(
+import {useViewProps} from './View.tsx';
+
+import {
+  createClipsComponentRenderer,
+  restrictToAllowedValues,
+  useRenderedChildren,
+} from './shared.ts';
+
+export const InlineStack = createClipsComponentRenderer(
   'ui-inline-stack',
-  function InlineStack({
-    children,
-    spacing,
-    blockAlignment,
-    inlineAlignment,
-    layoutMode,
-    padding,
-    paddingBlockEnd,
-    paddingBlockStart,
-    paddingInlineEnd,
-    paddingInlineStart,
-  }) {
+  function InlineStack(props) {
+    const {children} = useRenderedChildren(props);
+
+    const attributes = props.element.attributes.value;
+
     return (
-      <UiInlineStack
-        spacing={spacing}
-        blockAlignment={blockAlignment}
-        inlineAlignment={inlineAlignment}
-        layoutMode={layoutMode}
-        padding={padding}
-        paddingBlockEnd={paddingBlockEnd}
-        paddingBlockStart={paddingBlockStart}
-        paddingInlineEnd={paddingInlineEnd}
-        paddingInlineStart={paddingInlineStart}
+      <UIInlineStack
+        {...useViewProps(props)}
+        spacing={restrictToAllowedValues(attributes.spacing, SPACING_KEYWORDS)}
+        inlineAlignment={restrictToAllowedValues(
+          attributes.inlineAlignment,
+          ALIGNMENT_KEYWORDS,
+        )}
+        blockAlignment={restrictToAllowedValues(
+          attributes.blockAlignment,
+          ALIGNMENT_KEYWORDS,
+        )}
+        layoutMode={restrictToAllowedValues(
+          attributes.layoutMode,
+          LAYOUT_MODE_KEYWORDS,
+        )}
       >
         {children}
-      </UiInlineStack>
+      </UIInlineStack>
     );
   },
 );

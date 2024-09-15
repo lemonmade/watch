@@ -1,9 +1,23 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {type DirectionKeyword} from '@watching/design';
 
-import {COMMON_STACK_PROPERTIES, type StackProperties} from '../Stack.ts';
+import {
+  Stack,
+  type StackAttributes,
+  type StackProperties,
+  type StackEvents,
+} from '../Stack.ts';
+
+export interface BlockStackAttributes
+  extends Omit<StackAttributes, 'direction'> {
+  direction?: Extract<DirectionKeyword, 'block'>;
+}
 
 export interface BlockStackProperties
-  extends Omit<StackProperties, 'direction'> {}
+  extends Omit<StackProperties, 'direction'> {
+  direction: Extract<DirectionKeyword, 'block'>;
+}
+
+export interface BlockStackEvents extends StackEvents {}
 
 /**
  * A `BlockStack` is a container component that lays out sibling elements
@@ -24,9 +38,12 @@ export interface BlockStackProperties
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `BlockStack` component.
  */
-export const BlockStack = createRemoteElement<BlockStackProperties>({
-  properties: {...COMMON_STACK_PROPERTIES},
-});
+export class BlockStack
+  extends Stack<BlockStackAttributes, BlockStackEvents>
+  implements BlockStackProperties
+{
+  accessor direction = 'block' as const;
+}
 
 customElements.define('ui-block-stack', BlockStack);
 

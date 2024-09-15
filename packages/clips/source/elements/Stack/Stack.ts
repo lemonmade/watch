@@ -1,34 +1,45 @@
 import {
-  createRemoteElement,
-  type RemoteElementPropertiesDefinition,
-} from '@remote-dom/core/elements';
+  SPACING_KEYWORDS,
+  type SpacingKeyword,
+  DIRECTION_KEYWORDS,
+  type DirectionKeyword,
+  ALIGNMENT_KEYWORDS,
+  type AlignmentKeyword,
+  LAYOUT_MODE_KEYWORDS,
+  type LayoutModeKeyword,
+} from '@watching/design';
 
-import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
-import type {
-  SpacingValue,
-  DirectionKeyword,
-  LayoutModeKeyword,
-  AlignmentKeyword,
-} from '../../styles.ts';
-import {RemoteElementSpacingValue} from '../shared.ts';
+import {
+  attributeRestrictedToAllowedValues,
+  backedByAttribute,
+  restrictToAllowedValues,
+} from '../ClipsElement.ts';
 
-export interface StackProperties extends ViewProperties {
-  spacing?: SpacingValue;
+import {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from '../View.ts';
+
+export interface StackAttributes extends ViewAttributes {
+  spacing?: SpacingKeyword;
   direction?: DirectionKeyword;
   inlineAlignment?: AlignmentKeyword;
   blockAlignment?: AlignmentKeyword;
   layoutMode?: LayoutModeKeyword;
 }
 
-export const COMMON_STACK_PROPERTIES: RemoteElementPropertiesDefinition<
-  Omit<StackProperties, 'direction'>
-> = {
-  ...VIEW_PROPERTIES,
-  spacing: {type: RemoteElementSpacingValue, default: false},
-  blockAlignment: {type: String},
-  inlineAlignment: {type: String},
-  layoutMode: {type: String},
-};
+export interface StackProperties extends ViewProperties {
+  get spacing(): SpacingKeyword;
+  set spacing(value: SpacingKeyword | boolean | undefined);
+  direction: DirectionKeyword;
+  inlineAlignment: AlignmentKeyword;
+  blockAlignment: AlignmentKeyword;
+  layoutMode: LayoutModeKeyword;
+}
+
+export interface StackEvents extends ViewEvents {}
 
 /**
  * A `Stack` is a container component that lays out sibling elements
@@ -49,12 +60,64 @@ export const COMMON_STACK_PROPERTIES: RemoteElementPropertiesDefinition<
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `Stack` component.
  */
-export const Stack = createRemoteElement<StackProperties>({
-  properties: {
-    ...COMMON_STACK_PROPERTIES,
-    direction: {type: String},
-  },
-});
+export class Stack<
+    Attributes extends StackAttributes = StackAttributes,
+    Events extends StackEvents = StackEvents,
+  >
+  extends View<Attributes, Events>
+  implements StackProperties
+{
+  static get remoteAttributes(): string[] {
+    return [
+      'spacing',
+      'direction',
+      'inlineAlignment',
+      'blockAlignment',
+      'layoutMode',
+    ] satisfies (keyof StackAttributes)[];
+  }
+
+  get spacing(): SpacingKeyword {
+    return (
+      restrictToAllowedValues(this.getAttribute('padding'), SPACING_KEYWORDS) ??
+      'none'
+    );
+  }
+
+  set spacing(value: SpacingKeyword | boolean) {
+    const resolvedValue =
+      value === true ? 'auto' : value === false ? 'none' : value;
+
+    if (resolvedValue === 'none') {
+      this.removeAttribute('padding');
+    } else {
+      this.setAttribute('padding', resolvedValue);
+    }
+  }
+
+  @backedByAttribute({
+    ...attributeRestrictedToAllowedValues(DIRECTION_KEYWORDS),
+  })
+  accessor direction: DirectionKeyword = 'block';
+
+  @backedByAttribute({
+    name: 'inline-alignment',
+    ...attributeRestrictedToAllowedValues(ALIGNMENT_KEYWORDS),
+  })
+  accessor inlineAlignment: AlignmentKeyword = 'stretch';
+
+  @backedByAttribute({
+    name: 'block-alignment',
+    ...attributeRestrictedToAllowedValues(ALIGNMENT_KEYWORDS),
+  })
+  accessor blockAlignment: AlignmentKeyword = 'start';
+
+  @backedByAttribute({
+    name: 'layout-mode',
+    ...attributeRestrictedToAllowedValues(LAYOUT_MODE_KEYWORDS),
+  })
+  accessor layoutMode: LayoutModeKeyword = 'logical';
+}
 
 customElements.define('ui-stack', Stack);
 
