@@ -1,4 +1,25 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Grid as GridElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Grid = createRemoteComponent('ui-grid', GridElement);
+import type {
+  Grid as GridElement,
+  GridProperties,
+} from '@watching/clips/elements';
+import {ViewProps} from './View';
+
+export interface GridProps
+  extends Omit<Partial<GridProperties>, 'spacing' | keyof ViewProps>,
+    ViewProps {
+  spacing?: GridProperties['spacing'] | boolean;
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-grid': RenderableProps<GridProps, GridElement>;
+    }
+  }
+}
+
+export function Grid(props: RenderableProps<GridProps, GridElement>) {
+  return <ui-grid {...props} />;
+}

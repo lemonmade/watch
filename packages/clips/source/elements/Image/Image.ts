@@ -33,7 +33,7 @@ export interface ImageProperties {
   aspectRatio?: number;
   fit: ImageFitKeyword;
   get cornerRadius(): CornerRadiusKeyword;
-  set cornerRadius(value: CornerRadiusKeyword | boolean);
+  set cornerRadius(value: CornerRadiusKeyword | boolean | undefined);
 }
 
 export interface ImageEvents {}

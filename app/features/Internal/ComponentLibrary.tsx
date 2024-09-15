@@ -373,7 +373,7 @@ function PopoverComponents() {
           <BlockStack spacing>
             <Heading>inlineAttachment=center</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <Spacer size="none" />
               <PopoverExample inlineAttachment="center" />
               <PopoverExample inlineAttachment="center" />
@@ -383,7 +383,7 @@ function PopoverComponents() {
 
             <Heading>inlineAttachment=start</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <PopoverExample inlineAttachment="start" />
               <PopoverExample inlineAttachment="start" />
               <PopoverExample inlineAttachment="start" />
@@ -393,7 +393,7 @@ function PopoverComponents() {
 
             <Heading>inlineAttachment=end</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <PopoverExample inlineAttachment="end" />
               <PopoverExample inlineAttachment="end" />
               <PopoverExample inlineAttachment="end" />

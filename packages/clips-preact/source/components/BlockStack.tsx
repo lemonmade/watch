@@ -1,7 +1,26 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {BlockStack as BlockStackElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const BlockStack = createRemoteComponent(
-  'ui-block-stack',
-  BlockStackElement,
-);
+import type {
+  BlockStack as BlockStackElement,
+  BlockStackProperties,
+} from '@watching/clips/elements';
+
+import type {StackProps} from './Stack.tsx';
+
+export interface BlockStackProps
+  extends Omit<Partial<BlockStackProperties>, keyof StackProps>,
+    Omit<StackProps, 'direction'> {}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-block-stack': RenderableProps<BlockStackProps, BlockStackElement>;
+    }
+  }
+}
+
+export function BlockStack(
+  props: RenderableProps<BlockStackProps, BlockStackElement>,
+) {
+  return <ui-block-stack {...props} />;
+}

@@ -12,7 +12,7 @@ export interface TextProps extends Omit<Partial<TextProperties>, 'emphasis'> {
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-text': TextProps;
+      'ui-text': RenderableProps<TextProps, TextElement>;
     }
   }
 }

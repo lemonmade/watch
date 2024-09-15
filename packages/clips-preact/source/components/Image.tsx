@@ -1,4 +1,23 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Image as ImageElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Image = createRemoteComponent('ui-image', ImageElement);
+import type {
+  Image as ImageElement,
+  ImageProperties,
+} from '@watching/clips/elements';
+
+export interface ImageProps
+  extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
+  cornerRadius?: ImageProperties['cornerRadius'] | boolean;
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-image': RenderableProps<ImageProps, ImageElement>;
+    }
+  }
+}
+
+export function Image(props: RenderableProps<ImageProps, ImageElement>) {
+  return <ui-image {...props} />;
+}

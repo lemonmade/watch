@@ -1,4 +1,25 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Stack as StackElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Stack = createRemoteComponent('ui-stack', StackElement);
+import type {
+  Stack as StackElement,
+  StackProperties,
+} from '@watching/clips/elements';
+import {ViewProps} from './View';
+
+export interface StackProps
+  extends Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>,
+    ViewProps {
+  spacing?: StackProperties['spacing'] | boolean;
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-stack': RenderableProps<StackProps, StackElement>;
+    }
+  }
+}
+
+export function Stack(props: RenderableProps<StackProps, StackElement>) {
+  return <ui-stack {...props} />;
+}

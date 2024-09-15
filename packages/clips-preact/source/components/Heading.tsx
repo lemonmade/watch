@@ -1,4 +1,26 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Heading as HeadingElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Heading = createRemoteComponent('ui-heading', HeadingElement);
+import type {
+  Heading as HeadingElement,
+  HeadingProperties,
+} from '@watching/clips/elements';
+
+export interface HeadingProps
+  extends Omit<Partial<HeadingProperties>, 'level'> {
+  level?:
+    | HeadingProperties['level']
+    | `${NonNullable<HeadingProperties['level']>}`
+    | 'auto';
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-heading': RenderableProps<HeadingProps, HeadingElement>;
+    }
+  }
+}
+
+export function Heading(props: RenderableProps<HeadingProps, HeadingElement>) {
+  return <ui-heading {...props} />;
+}

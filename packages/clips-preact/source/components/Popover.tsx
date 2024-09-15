@@ -1,4 +1,20 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Popover as PopoverElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const Popover = createRemoteComponent('ui-popover', PopoverElement);
+import type {
+  Popover as PopoverElement,
+  PopoverProperties,
+} from '@watching/clips/elements';
+
+export interface PopoverProps extends Partial<PopoverProperties> {}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-popover': RenderableProps<PopoverProps, PopoverElement>;
+    }
+  }
+}
+
+export function Popover(props: RenderableProps<PopoverProps, PopoverElement>) {
+  return <ui-popover {...props} />;
+}
