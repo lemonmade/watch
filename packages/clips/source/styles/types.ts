@@ -49,6 +49,3 @@ export type SpacingValue = SpacingKeyword | boolean;
 export type CornerRadiusValue = CornerRadiusKeyword | boolean;
 
 export type ViewportSizeKeyword = 'small' | 'medium' | 'large';
-
-export type SizeKeyword = 'auto' | 'fill' | 'hidden';
-export type SizeValue = SizeKeyword | CSSLiteralValue | false;

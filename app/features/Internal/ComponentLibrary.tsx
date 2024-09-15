@@ -499,10 +499,6 @@ function FormComponents() {
           maximumLines={false}
         />
         <TextFieldExample label="Controlled text field" />
-        <TextFieldExample
-          label="Controlled text field (change on input)"
-          changeTiming="input"
-        />
 
         <Select
           label="Select"
@@ -787,14 +783,16 @@ function SkeletonComponents() {
         <TextBlock>Skeleton action</TextBlock>
         <InlineStack spacing>
           <SkeletonAction />
-          <SkeletonAction size="medium" />
+          <SkeletonAction size="small" />
+          <SkeletonAction size="auto" />
           <SkeletonAction size="large" />
           <SkeletonAction size={Style.css`2rem`} />
         </InlineStack>
 
         <TextBlock>Skeleton text</TextBlock>
         <SkeletonText />
-        <SkeletonText size="medium" />
+        <SkeletonText size="small" />
+        <SkeletonText size="auto" />
         <SkeletonText size="large" />
 
         <InlineGrid sizes={['fill', 'fill']} spacing>

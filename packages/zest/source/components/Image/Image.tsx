@@ -1,14 +1,34 @@
 import type {JSX} from 'preact';
 import {classes, variation} from '@lemon/css';
-import type {CornerRadiusKeyword} from '@watching/design';
-import type {ImageProperties} from '@watching/clips';
+import type {CornerRadiusKeyword, ViewportResolution} from '@watching/design';
+import type {ImageProperties, ViewportSizeKeyword} from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
 
 import styles from './Image.module.css';
 
-export interface ImageProps extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
+export interface ImageProps
+  extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
   cornerRadius?: CornerRadiusKeyword | boolean;
+  sources?: readonly ImageSource[];
+}
+
+export interface ImageSource {
+  /**
+   * The source URL to use.
+   */
+  source: string;
+
+  /**
+   * The minimum viewport size at which this condition applies. The condition will also apply at larger viewport sizes,
+   * if no other conditions are present for those larger sizes.
+   */
+  viewport?: ViewportSizeKeyword;
+
+  /**
+   * The viewport resolution that this image targets.
+   */
+  resolution?: ViewportResolution;
 }
 
 export enum Media {

@@ -11,7 +11,9 @@ import systemStyles from '../../system.module.css';
 
 import styles from './Modal.module.css';
 
-export interface ModalProps extends Partial<ModalProperties> {}
+export interface ModalProps extends Omit<Partial<ModalProperties>, 'padding'> {
+  padding?: ModalProperties['padding'] | boolean;
+}
 
 export function Modal({children, padding}: RenderableProps<ModalProps>) {
   return (

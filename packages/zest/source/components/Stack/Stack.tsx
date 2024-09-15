@@ -1,7 +1,8 @@
 import type {ComponentType, RenderableProps} from 'preact';
 import {variation} from '@lemon/css';
 import type {
-  StackProperties as BaseStackProps,
+  StackProperties,
+  ViewProperties,
   AlignmentKeyword,
 } from '@watching/clips';
 
@@ -13,24 +14,17 @@ import {useViewProps, resolveViewProps, type ViewProps} from '../View';
 import styles from './Stack.module.css';
 
 export interface StackProps
-  extends Partial<BaseStackProps>,
-    Omit<
-      ViewProps,
-      | 'padding'
-      | 'paddingInlineStart'
-      | 'paddingInlineEnd'
-      | 'paddingBlockStart'
-      | 'paddingBlockEnd'
-      | 'inlineAlignment'
-      | 'blockAlignment'
-    > {}
+  extends Omit<Partial<StackProperties>, 'spacing' | keyof ViewProperties>,
+    Omit<ViewProps, 'blockAlignment' | 'inlineAlignment'> {
+  spacing?: StackProperties['spacing'] | boolean;
+}
 
 const INLINE_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['start', styles.inlineAlignmentStart],
   ['center', styles.inlineAlignmentCenter],
   ['end', styles.inlineAlignmentEnd],
   ['stretch', styles.inlineAlignmentStretch],
-  ['spaceBetween', styles.inlineAlignmentSpaceBetween],
+  ['space-between', styles.inlineAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
 const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
@@ -38,7 +32,7 @@ const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['center', styles.blockAlignmentCenter],
   ['end', styles.blockAlignmentEnd],
   ['stretch', styles.blockAlignmentStretch],
-  ['spaceBetween', styles.blockAlignmentSpaceBetween],
+  ['space-between', styles.blockAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
 export function Stack(props: RenderableProps<StackProps>) {

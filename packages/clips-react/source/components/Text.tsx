@@ -1,9 +1,13 @@
-import type {PropsWithChildren} from 'react';
+import {forwardRef, type ForwardedRef, type PropsWithChildren} from 'react';
 
-import type {TextEmphasis} from '@watching/clips/elements';
+import type {
+  Text as TextElement,
+  TextProperties,
+} from '@watching/clips/elements';
 
-export interface TextProps {
-  emphasis?: TextEmphasis | boolean;
+export interface TextProps extends Omit<Partial<TextProperties>, 'emphasis'> {
+  ref?: ForwardedRef<TextElement>;
+  emphasis?: TextProperties['emphasis'] | boolean;
 }
 
 declare module 'react' {
@@ -14,6 +18,8 @@ declare module 'react' {
   }
 }
 
-export function Text(props: PropsWithChildren<TextProps>) {
-  return <ui-text {...props} />;
-}
+export const Text = forwardRef<TextElement, PropsWithChildren<TextElement>>(
+  function Text(props, ref) {
+    return <ui-text ref={ref} {...props} />;
+  },
+);

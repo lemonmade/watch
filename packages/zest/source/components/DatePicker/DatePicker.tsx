@@ -142,7 +142,9 @@ function DatePickerPopover({
               label="Date"
               labelStyle="placeholder"
               value={dateSearch}
-              changeTiming="input"
+              onInput={(value) => {
+                dateSearch.value = value;
+              }}
             />
           }
         >

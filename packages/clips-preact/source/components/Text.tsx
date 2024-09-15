@@ -1,9 +1,12 @@
 import type {RenderableProps} from 'preact';
 
-import type {TextEmphasis, Text as TextElement} from '@watching/clips/elements';
+import type {
+  Text as TextElement,
+  TextProperties,
+} from '@watching/clips/elements';
 
-export interface TextProps {
-  emphasis?: TextEmphasis | boolean;
+export interface TextProps extends Omit<Partial<TextProperties>, 'emphasis'> {
+  emphasis?: TextProperties['emphasis'] | boolean;
 }
 
 declare module 'preact' {

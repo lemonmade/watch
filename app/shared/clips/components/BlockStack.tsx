@@ -3,7 +3,7 @@ import {
   ALIGNMENT_KEYWORDS,
   LAYOUT_MODE_KEYWORDS,
 } from '@watching/design';
-import {BlockGrid as UIBlockGrid} from '@lemon/zest';
+import {BlockStack as UIBlockStack} from '@lemon/zest';
 
 import {useViewProps} from './View.tsx';
 
@@ -13,32 +13,23 @@ import {
   useRenderedChildren,
 } from './shared.ts';
 
-export const BlockGrid = createClipsComponentRenderer(
-  'ui-block-grid',
-  function BlockGrid(props) {
+export const BlockStack = createClipsComponentRenderer(
+  'ui-block-stack',
+  function BlockStack(props) {
     const {children} = useRenderedChildren(props);
 
     const attributes = props.element.attributes.value;
 
     return (
-      <UIBlockGrid
+      <UIBlockStack
         {...useViewProps(props)}
-        sizes={attributes.sizes}
         spacing={restrictToAllowedValues(attributes.spacing, SPACING_KEYWORDS)}
-        blockSpacing={restrictToAllowedValues(
-          attributes.blockSpacing,
-          SPACING_KEYWORDS,
-        )}
-        inlineSpacing={restrictToAllowedValues(
-          attributes.inlineSpacing,
-          SPACING_KEYWORDS,
+        inlineAlignment={restrictToAllowedValues(
+          attributes.inlineAlignment,
+          ALIGNMENT_KEYWORDS,
         )}
         blockAlignment={restrictToAllowedValues(
           attributes.blockAlignment,
-          ALIGNMENT_KEYWORDS,
-        )}
-        inlineAlignment={restrictToAllowedValues(
-          attributes.inlineAlignment,
           ALIGNMENT_KEYWORDS,
         )}
         layoutMode={restrictToAllowedValues(
@@ -47,7 +38,7 @@ export const BlockGrid = createClipsComponentRenderer(
         )}
       >
         {children}
-      </UIBlockGrid>
+      </UIBlockStack>
     );
   },
 );

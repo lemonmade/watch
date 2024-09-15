@@ -1,4 +1,5 @@
 import type {ComponentChild} from 'preact';
+import type {SignalOrValue} from '@quilted/quilt/signals';
 import type {TextFieldProperties} from '@watching/clips';
 
 import {useUniqueId} from '../../shared/id.ts';
@@ -9,10 +10,12 @@ import {BlockStack} from '../Stack.tsx';
 import {Input} from './Input.tsx';
 
 export interface TextFieldProps
-  extends Omit<Partial<TextFieldProperties>, 'label'> {
+  extends Omit<Partial<TextFieldProperties>, 'value' | 'label' | 'maximumLines'> {
+  value?: SignalOrValue<string | undefined>;
   label?: ComponentChild;
   onChange?(value: string): void;
   onInput?(value: string): void;
+  maximumLines?: TextFieldProperties['maximumLines'] | false;
 }
 
 export function TextField({

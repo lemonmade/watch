@@ -73,14 +73,24 @@ export type AlignmentKeyword =
   | 'end'
   | 'center'
   | 'stretch'
-  | 'spacing-between';
+  | 'space-between';
 
 export const ALIGNMENT_KEYWORDS = new Set<AlignmentKeyword>([
   'start',
   'end',
   'center',
   'stretch',
-  'spacing-between',
+  'space-between',
+]);
+
+// Grid
+
+export type GridSizeKeyword = 'auto' | 'none' | 'fill';
+
+export const GRID_SIZE_KEYWORDS = new Set<GridSizeKeyword>([
+  'auto',
+  'none',
+  'fill',
 ]);
 
 // Text

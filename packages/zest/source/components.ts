@@ -91,6 +91,7 @@ export {
 export {
   Grid,
   type GridProps,
+  type GridSizeValue,
   BlockGrid,
   type BlockGridProps,
   InlineGrid,
