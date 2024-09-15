@@ -1,4 +1,26 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {Image as ImageElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const Image = createRemoteComponent('ui-image', ImageElement);
+import type {
+  Image as ImageElement,
+  ImageProperties,
+} from '@watching/clips/elements';
+
+export interface ImageProps
+  extends PropsWithChildren<Omit<Partial<ImageProperties>, 'cornerRadius'>> {
+  ref?: ForwardedRef<ImageElement>;
+  cornerRadius?: ImageProperties['cornerRadius'] | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-image': ImageProps;
+    }
+  }
+}
+
+export const Image = forwardRef<ImageElement, ImageProps>(
+  function Image(props, ref) {
+    return <ui-image {...props} ref={ref} />;
+  },
+);

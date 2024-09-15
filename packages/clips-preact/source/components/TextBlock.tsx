@@ -5,18 +5,17 @@ import type {
   TextBlockProperties,
 } from '@watching/clips/elements';
 
-export interface TextBlockProps extends Partial<TextBlockProperties> {}
+export interface TextBlockProps
+  extends RenderableProps<Partial<TextBlockProperties>, TextBlockElement> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-text-block': RenderableProps<TextBlockProps, TextBlockElement>;
+      'ui-text-block': TextBlockProps;
     }
   }
 }
 
-export function TextBlock(
-  props: RenderableProps<TextBlockProps, TextBlockElement>,
-) {
+export function TextBlock(props: TextBlockProps) {
   return <ui-text-block {...props} />;
 }

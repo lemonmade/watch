@@ -4,20 +4,24 @@ import type {
   Section as SectionElement,
   SectionProperties,
 } from '@watching/clips/elements';
-import {ViewProps} from './View';
+
+import {ViewProps} from './View.tsx';
 
 export interface SectionProps
-  extends Omit<Partial<SectionProperties>, keyof ViewProps>,
-    ViewProps {}
+  extends RenderableProps<
+    Omit<Partial<SectionProperties>, keyof ViewProps>,
+    SectionElement
+  >,
+  Omit<ViewProps, 'ref'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-section': RenderableProps<SectionProps, SectionElement>;
+      'ui-section': SectionProps;
     }
   }
 }
 
-export function Section(props: RenderableProps<SectionProps, SectionElement>) {
+export function Section(props: SectionProps) {
   return <ui-section {...props} />;
 }

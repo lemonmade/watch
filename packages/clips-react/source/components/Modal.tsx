@@ -1,4 +1,26 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {Modal as ModalElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const Modal = createRemoteComponent('ui-modal', ModalElement);
+import type {
+  Modal as ModalElement,
+  ModalProperties,
+} from '@watching/clips/elements';
+
+export interface ModalProps
+  extends PropsWithChildren<Omit<Partial<ModalProperties>, 'padding'>> {
+  ref?: ForwardedRef<ModalElement>;
+  padding?: ModalProperties['padding'] | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-modal': ModalProps;
+    }
+  }
+}
+
+export const Modal = forwardRef<ModalElement, ModalProps>(
+  function Modal(props, ref) {
+    return <ui-modal {...props} ref={ref} />;
+  },
+);

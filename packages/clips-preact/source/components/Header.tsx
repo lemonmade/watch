@@ -4,20 +4,23 @@ import type {
   Header as HeaderElement,
   HeaderProperties,
 } from '@watching/clips/elements';
-import {ViewProps} from './View';
+import {ViewProps} from './View.tsx';
 
 export interface HeaderProps
-  extends Omit<Partial<HeaderProperties>, keyof ViewProps>,
-    ViewProps {}
+  extends RenderableProps<
+      Omit<Partial<HeaderProperties>, keyof ViewProps>,
+      HeaderElement
+    >,
+    Omit<ViewProps, 'ref'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-header': RenderableProps<HeaderProps, HeaderElement>;
+      'ui-header': HeaderProps;
     }
   }
 }
 
-export function Header(props: RenderableProps<HeaderProps, HeaderElement>) {
+export function Header(props: HeaderProps) {
   return <ui-header {...props} />;
 }

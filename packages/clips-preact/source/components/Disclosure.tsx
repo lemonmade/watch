@@ -11,14 +11,17 @@ import type {
 } from '@watching/clips/elements';
 
 export interface DisclosureProps
-  extends Omit<Partial<DisclosureProperties>, 'label'> {
+  extends RenderableProps<
+    Omit<Partial<DisclosureProperties>, 'label'>,
+    DisclosureElement
+  > {
   label?: ComponentChild;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-disclosure': RenderableProps<DisclosureProps, DisclosureElement>;
+      'ui-disclosure': DisclosureProps;
     }
   }
 }
@@ -27,7 +30,7 @@ export function Disclosure({
   label,
   children,
   ...props
-}: RenderableProps<DisclosureProps, DisclosureElement>) {
+}: DisclosureProps) {
   return label && isValidElement(label) ? (
     <ui-disclosure {...props}>
       {children}

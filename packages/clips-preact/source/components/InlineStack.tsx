@@ -8,19 +8,20 @@ import type {
 import type {StackProps} from './Stack.tsx';
 
 export interface InlineStackProps
-  extends Omit<Partial<InlineStackProperties>, keyof StackProps>,
-    Omit<StackProps, 'direction'> {}
+  extends RenderableProps<
+      Omit<Partial<InlineStackProperties>, keyof StackProps>,
+      InlineStackElement
+    >,
+    Omit<StackProps, 'ref' | 'direction'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-inline-stack': RenderableProps<InlineStackProps, InlineStackElement>;
+      'ui-inline-stack': InlineStackProps;
     }
   }
 }
 
-export function InlineStack(
-  props: RenderableProps<InlineStackProps, InlineStackElement>,
-) {
+export function InlineStack(props: InlineStackProps) {
   return <ui-inline-stack {...props} />;
 }

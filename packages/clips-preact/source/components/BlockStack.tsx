@@ -8,19 +8,20 @@ import type {
 import type {StackProps} from './Stack.tsx';
 
 export interface BlockStackProps
-  extends Omit<Partial<BlockStackProperties>, keyof StackProps>,
-    Omit<StackProps, 'direction'> {}
+  extends RenderableProps<
+      Omit<Partial<BlockStackProperties>, keyof StackProps>,
+      BlockStackElement
+    >,
+    Omit<StackProps, 'ref' | 'direction'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-block-stack': RenderableProps<BlockStackProps, BlockStackElement>;
+      'ui-block-stack': BlockStackProps;
     }
   }
 }
 
-export function BlockStack(
-  props: RenderableProps<BlockStackProps, BlockStackElement>,
-) {
+export function BlockStack(props: BlockStackProps) {
   return <ui-block-stack {...props} />;
 }

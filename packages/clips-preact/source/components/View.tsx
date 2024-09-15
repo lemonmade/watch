@@ -6,13 +6,16 @@ import type {
 } from '@watching/clips/elements';
 
 export interface ViewProps
-  extends Omit<
-    Partial<ViewProperties>,
-    | 'padding'
-    | 'paddingInlineStart'
-    | 'paddingInlineEnd'
-    | 'paddingBlockStart'
-    | 'paddingBlockEnd'
+  extends RenderableProps<
+    Omit<
+      Partial<ViewProperties>,
+      | 'padding'
+      | 'paddingInlineStart'
+      | 'paddingInlineEnd'
+      | 'paddingBlockStart'
+      | 'paddingBlockEnd'
+    >,
+    ViewElement
   > {
   padding?: ViewProperties['padding'] | boolean;
   paddingInlineStart?: ViewProperties['paddingInlineStart'] | boolean;
@@ -24,11 +27,11 @@ export interface ViewProps
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-view': RenderableProps<ViewProps, ViewElement>;
+      'ui-view': ViewProps;
     }
   }
 }
 
-export function View(props: RenderableProps<ViewProps, ViewElement>) {
+export function View(props: ViewProps) {
   return <ui-view {...props} />;
 }

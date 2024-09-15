@@ -4,20 +4,24 @@ import type {
   Footer as FooterElement,
   FooterProperties,
 } from '@watching/clips/elements';
-import {ViewProps} from './View';
+
+import {ViewProps} from './View.tsx';
 
 export interface FooterProps
-  extends Omit<Partial<FooterProperties>, keyof ViewProps>,
-    ViewProps {}
+  extends RenderableProps<
+      Omit<Partial<FooterProperties>, keyof ViewProps>,
+      FooterElement
+    >,
+    Omit<ViewProps, 'ref'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-footer': RenderableProps<FooterProps, FooterElement>;
+      'ui-footer': FooterProps;
     }
   }
 }
 
-export function Footer(props: RenderableProps<FooterProps, FooterElement>) {
+export function Footer(props: FooterProps) {
   return <ui-footer {...props} />;
 }

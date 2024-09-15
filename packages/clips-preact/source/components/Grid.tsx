@@ -4,22 +4,26 @@ import type {
   Grid as GridElement,
   GridProperties,
 } from '@watching/clips/elements';
-import {ViewProps} from './View';
+
+import {ViewProps} from './View.tsx';
 
 export interface GridProps
-  extends Omit<Partial<GridProperties>, 'spacing' | keyof ViewProps>,
-    ViewProps {
+  extends RenderableProps<
+      Omit<Partial<GridProperties>, 'spacing' | keyof ViewProps>,
+      GridElement
+    >,
+    Omit<ViewProps, 'ref'> {
   spacing?: GridProperties['spacing'] | boolean;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-grid': RenderableProps<GridProps, GridElement>;
+      'ui-grid': GridProps;
     }
   }
 }
 
-export function Grid(props: RenderableProps<GridProps, GridElement>) {
+export function Grid(props: GridProps) {
   return <ui-grid {...props} />;
 }

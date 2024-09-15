@@ -5,18 +5,22 @@ import type {
   ModalProperties,
 } from '@watching/clips/elements';
 
-export interface ModalProps extends Omit<Partial<ModalProperties>, 'padding'> {
+export interface ModalProps
+  extends RenderableProps<
+    Omit<Partial<ModalProperties>, 'padding'>,
+    ModalElement
+  > {
   padding?: ModalProperties['padding'] | boolean;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-modal': RenderableProps<ModalProps, ModalElement>;
+      'ui-modal': ModalProps;
     }
   }
 }
 
-export function Modal(props: RenderableProps<ModalProps, ModalElement>) {
+export function Modal(props: ModalProps) {
   return <ui-modal {...props} />;
 }

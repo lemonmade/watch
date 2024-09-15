@@ -5,16 +5,16 @@ import type {
   PopoverProperties,
 } from '@watching/clips/elements';
 
-export interface PopoverProps extends Partial<PopoverProperties> {}
+export interface PopoverProps extends RenderableProps<PopoverProperties, PopoverElement> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-popover': RenderableProps<PopoverProps, PopoverElement>;
+      'ui-popover': PopoverProps;
     }
   }
 }
 
-export function Popover(props: RenderableProps<PopoverProps, PopoverElement>) {
+export function Popover(props: PopoverProps) {
   return <ui-popover {...props} />;
 }

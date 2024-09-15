@@ -8,8 +8,11 @@ import type {
 import type {GridProps} from './Grid.tsx';
 
 export interface BlockGridProps
-  extends Omit<Partial<BlockGridProperties>, keyof GridProps>,
-    Omit<GridProps, 'direction'> {}
+  extends RenderableProps<
+      Omit<Partial<BlockGridProperties>, keyof GridProps>,
+      BlockGridElement
+    >,
+    Omit<GridProps, 'ref' | 'direction'> {}
 
 declare module 'preact' {
   namespace JSX {

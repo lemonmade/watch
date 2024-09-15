@@ -8,19 +8,20 @@ import type {
 import type {GridProps} from './Grid.tsx';
 
 export interface InlineGridProps
-  extends Omit<Partial<InlineGridProperties>, keyof GridProps>,
-    Omit<GridProps, 'direction'> {}
+  extends RenderableProps<
+      Omit<Partial<InlineGridProperties>, keyof GridProps>,
+      InlineGridElement
+    >,
+    Omit<GridProps, 'ref' | 'direction'> {}
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-inline-grid': RenderableProps<InlineGridProps, InlineGridElement>;
+      'ui-inline-grid': InlineGridProps;
     }
   }
 }
 
-export function InlineGrid(
-  props: RenderableProps<InlineGridProps, InlineGridElement>,
-) {
+export function InlineGrid(props: InlineGridProps) {
   return <ui-inline-grid {...props} />;
 }

@@ -4,22 +4,26 @@ import type {
   Stack as StackElement,
   StackProperties,
 } from '@watching/clips/elements';
-import {ViewProps} from './View';
+
+import {ViewProps} from './View.tsx';
 
 export interface StackProps
-  extends Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>,
-    ViewProps {
+  extends RenderableProps<
+    Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>,
+    StackElement
+  >,
+  Omit<ViewProps, 'ref'> {
   spacing?: StackProperties['spacing'] | boolean;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-stack': RenderableProps<StackProps, StackElement>;
+      'ui-stack': StackProps;
     }
   }
 }
 
-export function Stack(props: RenderableProps<StackProps, StackElement>) {
+export function Stack(props: StackProps) {
   return <ui-stack {...props} />;
 }

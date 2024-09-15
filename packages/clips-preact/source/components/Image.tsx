@@ -6,18 +6,21 @@ import type {
 } from '@watching/clips/elements';
 
 export interface ImageProps
-  extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
+  extends RenderableProps<
+    Omit<Partial<ImageProperties>, 'cornerRadius'>,
+    ImageElement
+  > {
   cornerRadius?: ImageProperties['cornerRadius'] | boolean;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-image': RenderableProps<ImageProps, ImageElement>;
+      'ui-image': ImageProps;
     }
   }
 }
 
-export function Image(props: RenderableProps<ImageProps, ImageElement>) {
+export function Image(props: ImageProps) {
   return <ui-image {...props} />;
 }

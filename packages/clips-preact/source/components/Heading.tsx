@@ -6,7 +6,10 @@ import type {
 } from '@watching/clips/elements';
 
 export interface HeadingProps
-  extends Omit<Partial<HeadingProperties>, 'level'> {
+  extends RenderableProps<
+    Omit<Partial<HeadingProperties>, 'level'>,
+    HeadingElement
+  > {
   level?:
     | HeadingProperties['level']
     | `${NonNullable<HeadingProperties['level']>}`
@@ -16,11 +19,11 @@ export interface HeadingProps
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-heading': RenderableProps<HeadingProps, HeadingElement>;
+      'ui-heading': HeadingProps;
     }
   }
 }
 
-export function Heading(props: RenderableProps<HeadingProps, HeadingElement>) {
+export function Heading(props: HeadingProps) {
   return <ui-heading {...props} />;
 }
