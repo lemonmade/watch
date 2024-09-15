@@ -1,26 +1,12 @@
-import {SkeletonView as UiSkeletonView} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {SkeletonView as UISKeletonView} from '@lemon/zest';
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
+import {useViewProps} from './View.tsx';
 
-export const SkeletonView = createClipsComponent(
+export const SkeletonView = createClipsComponentRenderer(
   'ui-skeleton-view',
-  function SkeletonView({
-    children,
-    padding,
-    paddingInlineStart,
-    paddingInlineEnd,
-    paddingBlockStart,
-    paddingBlockEnd,
-  }) {
-    return (
-      <UiSkeletonView
-        padding={padding}
-        paddingInlineStart={paddingInlineStart}
-        paddingInlineEnd={paddingInlineEnd}
-        paddingBlockStart={paddingBlockStart}
-        paddingBlockEnd={paddingBlockEnd}
-      >
-        {children}
-      </UiSkeletonView>
-    );
+  function SkeletonView(props) {
+    const {children} = useRenderedChildren(props);
+
+    return <UISKeletonView {...useViewProps(props)}>{children}</UISKeletonView>;
   },
 );

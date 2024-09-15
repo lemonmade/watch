@@ -10,9 +10,11 @@ import styles from './SkeletonText.module.css';
 export interface SkeletonTextProps extends Partial<SkeletonTextProperties> {}
 
 const SIZE_CLASS_MAP = new Map<string, string | undefined>([
+  ['small.1', styles.sizeSmall],
   ['small', styles.sizeSmall],
-  ['medium', styles.sizeMedium],
+  ['medium', styles.sizeAuto],
   ['large', styles.sizeLarge],
+  ['large.1', styles.sizeLarge],
 ]);
 
 export function SkeletonText({size}: RenderableProps<SkeletonTextProps>) {

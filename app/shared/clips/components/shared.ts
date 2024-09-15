@@ -12,7 +12,6 @@ import {
 } from '@watching/clips';
 import {
   renderRemoteNode,
-  createRemoteComponentRenderer,
   type RemoteComponentRendererProps,
   type RemoteComponentTypeFromElementConstructor,
   type RemoteComponentPropsFromElementConstructor,
@@ -34,15 +33,6 @@ export type PreactComponentPropsForClipsElement<
 
 export type PreactComponentTypeForClipsElement<Element extends keyof Elements> =
   RemoteComponentTypeFromElementConstructor<ElementConstructors[Element]>;
-
-export function createClipsComponent<Element extends keyof Elements>(
-  element: Element,
-  Component: ComponentType<PreactComponentPropsForClipsElement<Element>>,
-): ComponentType<RemoteComponentRendererProps> {
-  return createRemoteComponentRenderer(Component as any, {
-    name: `Clips(${element})`,
-  }) as any;
-}
 
 export function createClipsComponentRenderer<Element extends keyof Elements>(
   element: Element,

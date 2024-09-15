@@ -19,10 +19,10 @@
   }
 }
 
-.sizeMedium {
-  --z-internal-SkeletonAction-content-size: 8rem;
+.sizeSmall {
+  --z-internal-SkeletonAction-content-size: 2rem;
 }
 
 .sizeLarge {
-  --z-internal-SkeletonAction-content-size: 12rem;
+  --z-internal-SkeletonAction-content-size: 8rem;
 }

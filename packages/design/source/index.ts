@@ -93,21 +93,6 @@ export const TEXT_EMPHASIS_KEYWORDS = new Set<TextEmphasisKeyword>([
   'subdued',
 ]);
 
-export type SkeletonTextSizeKeyword =
-  | 'small.1'
-  | 'small'
-  | 'auto'
-  | 'large'
-  | 'large.1';
-
-export const SKELETON_TEXT_SIZE_KEYWORDS = new Set<SkeletonTextSizeKeyword>([
-  'small.1',
-  'small',
-  'auto',
-  'large',
-  'large.1',
-]);
-
 // Heading
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
@@ -178,3 +163,31 @@ export const POPOVER_ATTACHMENT_KEYWORDS = new Set<PopoverAttachmentKeyword>([
   'center',
   'end',
 ]);
+
+// Skeletons
+
+export type SkeletonTextSizeKeyword =
+  | 'small.1'
+  | 'small'
+  | 'auto'
+  | 'large'
+  | 'large.1';
+
+export const SKELETON_TEXT_SIZE_KEYWORDS = new Set<SkeletonTextSizeKeyword>([
+  'small.1',
+  'small',
+  'auto',
+  'large',
+  'large.1',
+]);
+
+export type SkeletonActionSizeKeyword =
+  | 'small.1'
+  | 'small'
+  | 'auto'
+  | 'large'
+  | 'large.1';
+
+export const SKELETON_ACTION_SIZE_KEYWORDS = new Set<SkeletonActionSizeKeyword>(
+  ['small.1', 'small', 'auto', 'large', 'large.1'],
+);

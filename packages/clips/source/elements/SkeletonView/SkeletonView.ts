@@ -1,12 +1,22 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from '../View.ts';
 
-import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
-
+export interface SkeletonViewAttributes extends ViewAttributes {}
 export interface SkeletonViewProperties extends ViewProperties {}
+export interface SkeletonViewEvents extends ViewEvents {}
 
-export const SkeletonView = createRemoteElement<SkeletonViewProperties>({
-  properties: VIEW_PROPERTIES,
-});
+/**
+ * SkeletonView is a placeholder component used to represent the structure of content
+ * while it's loading. It extends the View component and inherits all its properties.
+ */
+export class SkeletonView
+  extends View<SkeletonViewAttributes, SkeletonViewEvents>
+  implements SkeletonViewProperties
+{}
 
 customElements.define('ui-skeleton-view', SkeletonView);
 

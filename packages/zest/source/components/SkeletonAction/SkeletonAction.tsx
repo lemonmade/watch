@@ -1,18 +1,20 @@
 import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
+import type {SkeletonActionProperties} from '@watching/clips';
 
 import {CSSLiteral} from '../../system.ts';
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './SkeletonAction.module.css';
 
-export type SkeletonActionProps =
-  PreactComponentPropsForClipsElement<'ui-skeleton-action'>;
+export interface SkeletonActionProps
+  extends Partial<SkeletonActionProperties> {}
 
 const SIZE_CLASS_MAP = new Map<string, string | undefined>([
+  ['small.1', styles.sizeSmall],
   ['small', styles.sizeSmall],
-  ['medium', styles.sizeMedium],
+  ['auto', styles.sizeAuto],
   ['large', styles.sizeLarge],
+  ['large.1', styles.sizeLarge],
 ]);
 
 export function SkeletonAction({size}: RenderableProps<SkeletonActionProps>) {

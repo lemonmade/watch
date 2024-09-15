@@ -17,13 +17,9 @@
 }
 
 .sizeSmall {
-  inline-size: 4rem;
-}
-
-.sizeMedium {
-  inline-size: 8rem;
+  inline-size: 2rem;
 }
 
 .sizeLarge {
-  inline-size: 12rem;
+  inline-size: 8rem;
 }
