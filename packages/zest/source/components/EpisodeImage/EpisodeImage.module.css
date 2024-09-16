@@ -8,7 +8,7 @@
   aspect-ratio: 1000 / 567;
   background-size: cover;
   background-color: var(--z-Action-background);
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
 }
 
 .placeholder {
@@ -26,11 +26,11 @@
 
 .Icon {
   inline-size: 30%;
-  min-inline-size: var(--z-Icon-base-size);
+  min-inline-size: var(--z-Icon-auto-size);
 }
 
 .Image {
   inline-size: 100%;
   aspect-ratio: 1000 / 567;
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
 }

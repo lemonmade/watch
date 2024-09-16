@@ -1,10 +1,10 @@
 .TextAction {
-  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
 
   --z-internal-TextAction-border: var(--z-border-subdued);
   --z-internal-TextAction-background: var(--z-Action-subdued-background);
   --z-internal-TextAction-shadow: var(--z-Action-subdued-shadow);
-  --z-internal-TextAction-minimum-block-size: var(--z-text-base-line-height);
+  --z-internal-TextAction-minimum-block-size: var(--z-text-auto-line-height);
   --z-internal-TextAction-block-padding: calc(
     (
         var(--z-Action-minimum-size) -
@@ -38,7 +38,7 @@
       0;
 
     border: var(--z-border-subdued);
-    border-radius: var(--z-corner-radius-base);
+    border-radius: var(--z-corner-radius-auto);
     border: var(--z-internal-TextAction-border);
     background: var(--z-internal-TextAction-background);
     box-shadow: var(--z-internal-TextAction-shadow);
@@ -47,7 +47,7 @@
   }
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
 
     --z-internal-TextAction-background: var(
       --z-Action-subdued-hovered-background
@@ -56,7 +56,7 @@
   }
 
   &:where(:focus-visible) {
-    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
 
     --z-internal-TextAction-background: var(
       --z-Action-subdued-focused-background
@@ -65,7 +65,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
 
     --z-internal-TextAction-background: var(
       --z-Action-subdued-pressed-background
@@ -78,11 +78,11 @@
   float: right;
   position: relative;
   top: calc(
-    (var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size)) /
+    (var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-auto-size)) /
       2
   );
   margin-inline-start: var(--z-internal-TextAction-icon-margin);
   margin-block-end: calc(
-    var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-base-size)
+    var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-auto-size)
   );
 }

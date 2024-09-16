@@ -11,11 +11,11 @@ html {
 
 body {
   touch-action: manipulation;
-  background: var(--z-surface-background-base);
-  color: var(--z-text-base-color);
-  font-weight: var(--z-text-base-weight);
-  font-size: var(--z-text-base-font-size);
-  line-height: var(--z-text-base-line-height);
+  background: var(--z-surface-background-auto);
+  color: var(--z-text-auto-color);
+  font-weight: var(--z-text-auto-weight);
+  font-size: var(--z-text-auto-font-size);
+  line-height: var(--z-text-auto-line-height);
   margin: 0;
   font-family:
     system-ui,

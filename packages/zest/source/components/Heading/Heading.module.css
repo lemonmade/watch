@@ -2,7 +2,7 @@
   --z-internal-Heading-font-size: 1rem;
   --z-internal-Heading-line-height: 1.125rem;
   --z-internal-Heading-weight: 700;
-  --z-internal-Heading-color: var(--z-text-base-color);
+  --z-internal-Heading-color: var(--z-text-auto-color);
 
   margin: 0;
   font-size: var(--z-internal-Heading-font-size);
@@ -57,5 +57,5 @@
 
 .divider {
   padding-block-end: 0.3em;
-  border-block-end: 0.2rem solid var(--z-border-base-color);
+  border-block-end: 0.2rem solid var(--z-border-auto-color);
 }

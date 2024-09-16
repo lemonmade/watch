@@ -16,7 +16,6 @@ export const SPACING_CLASS_MAP = new Map<
   ['small', spacingStyles.spacingSmall1],
   [true, spacingStyles.spacingAuto],
   ['auto', spacingStyles.spacingAuto],
-  ['base', spacingStyles.spacingAuto],
   ['large', spacingStyles.spacingLarge1],
   ['large.1', spacingStyles.spacingLarge1],
   ['large.2', spacingStyles.spacingLarge2],

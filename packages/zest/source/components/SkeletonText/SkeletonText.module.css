@@ -3,16 +3,16 @@
   align-items: end;
   max-inline-size: 100%;
   inline-size: 4rem;
-  block-size: var(--z-text-base-line-height);
+  block-size: var(--z-text-auto-line-height);
 
   &::after {
     content: '';
     display: inline-block;
     inline-size: 100%;
-    block-size: calc(0.8 * var(--z-text-base-font-size));
+    block-size: calc(0.8 * var(--z-text-auto-font-size));
     background-color: var(--z-text-subdued-color);
-    border-radius: var(--z-corner-radius-base);
-    margin-bottom: calc(0.1 * var(--z-text-base-font-size));
+    border-radius: var(--z-corner-radius-auto);
+    margin-bottom: calc(0.1 * var(--z-text-auto-font-size));
   }
 }
 

@@ -25,7 +25,7 @@ const useChoiceListContext = ChoiceListContext.use;
 export interface ChoiceListProps<Value extends string = string> {
   id?: string;
   value?: SignalOrValue<Value>;
-  spacing?: boolean | 'base';
+  spacing?: boolean | 'auto';
   onChange?(value: Value): void;
 }
 

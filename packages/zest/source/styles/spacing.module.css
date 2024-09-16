@@ -7,11 +7,7 @@
 }
 
 .spacingAuto {
-  gap: var(--z-spacing-base);
-}
-
-.spacingBase {
-  gap: var(--z-spacing-base);
+  gap: var(--z-spacing-auto);
 }
 
 .spacingLarge1 {

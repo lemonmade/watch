@@ -1,5 +1,5 @@
 .ContentAction {
-  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
 
   --z-internal-ContentAction-border: var(--z-border-subdued);
   --z-internal-ContentAction-background: var(--z-Action-subdued-background);
@@ -13,7 +13,7 @@
   padding: var(--z-spacing-small-1);
   margin: 0 calc(-1 * var(--z-spacing-small-1));
   border: var(--z-border-subdued);
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
   border: var(--z-internal-ContentAction-border);
   background: var(--z-internal-ContentAction-background);
   box-shadow: var(--z-internal-ContentAction-shadow);
@@ -21,7 +21,7 @@
   transition: background 0.2s ease;
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
 
     --z-internal-ContentAction-background: var(
       --z-Action-subdued-hovered-background
@@ -30,7 +30,7 @@
   }
 
   &:where(:focus-visible) {
-    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
 
     --z-internal-ContentAction-background: var(
       --z-Action-subdued-focused-background
@@ -39,7 +39,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
 
     --z-internal-ContentAction-background: var(
       --z-Action-subdued-pressed-background

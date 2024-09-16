@@ -30,7 +30,7 @@ export type IconSource =
 
 export interface IconProps {
   source: IconSource;
-  size?: 'base' | 'fill';
+  size?: 'auto' | 'fill';
   emphasis?: 'subdued' | false;
 }
 

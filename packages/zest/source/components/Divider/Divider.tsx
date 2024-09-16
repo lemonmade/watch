@@ -14,7 +14,7 @@ export function Divider({emphasis, padding}: DividerProps) {
         styles.Divider,
         (emphasis === true || emphasis === 'strong') && styles.emphasized,
         emphasis === 'subdued' && styles.subdued,
-        padding === true && styles.paddingBase,
+        padding === true && styles.paddingAuto,
         typeof padding === 'string' && styles[variation('padding', padding)],
       )}
     />

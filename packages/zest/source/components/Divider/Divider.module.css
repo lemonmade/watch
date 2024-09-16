@@ -9,14 +9,14 @@
   border-width: 0;
   border-inline-end-width: var(
     --z-internal-divider-inline-size,
-    var(--z-border-base-size)
+    var(--z-border-auto-size)
   );
   border-block-end-width: var(
     --z-internal-divider-block-size,
-    var(--z-border-base-size)
+    var(--z-border-auto-size)
   );
-  border-color: var(--z-border-base-color);
-  border-style: var(--z-border-base-style);
+  border-color: var(--z-border-auto-color);
+  border-style: var(--z-border-auto-style);
 }
 
 .subdued {
@@ -53,6 +53,6 @@
   --z-Divider-padding: var(--z-spacing-small-1);
 }
 
-.paddingBase {
-  --z-Divider-padding: var(--z-spacing-base);
+.paddingAuto {
+  --z-Divider-padding: var(--z-spacing-auto);
 }

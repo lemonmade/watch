@@ -8,7 +8,7 @@ import styles from './Text.module.css';
 
 export interface TextProps {
   className?: string;
-  size?: 'small.2' | 'small.1' | 'small' | 'base';
+  size?: 'small.2' | 'small.1' | 'small' | 'auto';
   emphasis?: TextEmphasisKeyword | boolean;
   accessibilityRole?: 'code' | 'heading';
   /** @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric */
