@@ -1,5 +1,16 @@
 # @watching/clips-react
 
+## 0.5.0
+
+### Minor Changes
+
+- [#333](https://github.com/lemonmade/watch/pull/333) [`0dbd36fa`](https://github.com/lemonmade/watch/commit/0dbd36fac1f2fbdac29bf5a54974a7d4f48a8d60) Thanks [@lemonmade](https://github.com/lemonmade)! - Update custom element APIs
+
+### Patch Changes
+
+- Updated dependencies [[`0dbd36fa`](https://github.com/lemonmade/watch/commit/0dbd36fac1f2fbdac29bf5a54974a7d4f48a8d60)]:
+  - @watching/clips@0.6.0
+
 ## 0.4.7
 
 ### Patch Changes
