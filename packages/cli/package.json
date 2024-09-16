@@ -81,7 +81,7 @@
     "@watching/clips-svelte": "workspace:*"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.6.0"
+    "@watching/clips": "^0.6.1"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {
