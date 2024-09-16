@@ -1,6 +1,6 @@
 # @watching/cli
 
-## 3.0.0
+## 2.2.0
 
 ### Minor Changes
 
@@ -10,7 +10,7 @@
 
 - Updated dependencies [[`0dbd36fa`](https://github.com/lemonmade/watch/commit/0dbd36fac1f2fbdac29bf5a54974a7d4f48a8d60)]:
   - @watching/clips@0.6.0
-  - @watching/tools@1.0.0
+  - @watching/tools@0.3.0
 
 ## 2.1.7
 
