@@ -1,15 +1,15 @@
 .TextField {
-  --z-internal-TextField-corner-radius: var(--z-corner-radius-base);
+  --z-internal-TextField-corner-radius: var(--z-corner-radius-auto);
   --z-internal-TextField-focus-ring-inset: 0.125rem;
   --z-internal-TextField-focus-ring-opacity: 0;
   --z-internal-TextField-resize: none;
   --z-internal-TextField-maximum-block-size: calc(
     var(--z-internal-TextField-maximum-lines, 1) *
-      var(--z-text-base-line-height) + var(--z-spacing-small-1) * 2
+      var(--z-text-auto-line-height) + var(--z-spacing-small-1) * 2
   );
   --z-internal-TextField-minimum-block-size: calc(
     var(--z-internal-TextField-minimum-lines, 1) *
-      var(--z-text-base-line-height) + var(--z-spacing-small-1) * 2
+      var(--z-text-auto-line-height) + var(--z-spacing-small-1) * 2
   );
 
   position: relative;
@@ -70,9 +70,9 @@
 .AutoGrowWrap {
   grid-area: 1 / 1 / 2 / 2;
   font-size: 1em;
-  line-height: var(--z-text-base-line-height);
+  line-height: var(--z-text-auto-line-height);
   font-family: inherit;
-  padding: var(--z-spacing-small-1) var(--z-spacing-base);
+  padding: var(--z-spacing-small-1) var(--z-spacing-auto);
   min-block-size: var(--z-internal-TextField-minimum-block-size);
   max-block-size: var(--z-internal-TextField-maximum-block-size);
 }

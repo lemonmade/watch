@@ -10,5 +10,5 @@
 .ListItem {
   padding: var(--z-spacing-small-2) var(--z-spacing-small-1);
   background: var(--z-surface-background-emphasized);
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
 }

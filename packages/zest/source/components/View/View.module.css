@@ -18,12 +18,12 @@
 }
 
 .cornerRadiusAuto {
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
   overflow: hidden;
 }
 
-.cornerRadiusBase {
-  border-radius: var(--z-corner-radius-base);
+.cornerRadiusAuto {
+  border-radius: var(--z-corner-radius-auto);
   overflow: hidden;
 }
 
@@ -33,10 +33,10 @@
   );
 }
 
-.borderBase {
-  border-width: var(--z-border-base-size);
-  border-color: var(--z-border-base-color);
-  border-style: var(--z-border-base-style);
+.borderAuto {
+  border-width: var(--z-border-auto-size);
+  border-color: var(--z-border-auto-color);
+  border-style: var(--z-border-auto-style);
 }
 
 .borderSubdued {
@@ -51,8 +51,8 @@
   border-style: var(--z-border-emphasized-style);
 }
 
-.backgroundBase {
-  background-color: var(--z-surface-background-base);
+.backgroundAuto {
+  background-color: var(--z-surface-background-auto);
 }
 
 .backgroundSubdued {

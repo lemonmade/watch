@@ -1,6 +1,6 @@
 .Icon {
-  --z-internal-Icon-size: var(--z-Icon-base-size);
-  --z-internal-Icon-color: var(--z-Icon-base-color);
+  --z-internal-Icon-size: var(--z-Icon-auto-size);
+  --z-internal-Icon-color: var(--z-Icon-auto-color);
 
   display: block;
   inline-size: var(--z-internal-Icon-size);
@@ -24,7 +24,7 @@
 }
 
 .IconHighlight {
-  --z-internal-Icon-highlight-size: calc(1.8 * var(--z-Icon-base-size));
+  --z-internal-Icon-highlight-size: calc(1.8 * var(--z-Icon-auto-size));
 
   display: inline-flex;
   justify-content: center;
@@ -32,5 +32,5 @@
   block-size: var(--z-internal-Icon-highlight-size);
   inline-size: var(--z-internal-Icon-highlight-size);
   border-radius: 50%;
-  background: var(--Z-Icon-highlight-base-color);
+  background: var(--Z-Icon-highlight-auto-color);
 }

@@ -1,5 +1,5 @@
 .HeadingAction {
-  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
 
   --z-internal-HeadingAction-border: var(--z-border-subdued);
   --z-internal-HeadingAction-background: var(--z-Action-subdued-background);
@@ -76,7 +76,7 @@
       0;
 
     border: var(--z-border-subdued);
-    border-radius: var(--z-corner-radius-base);
+    border-radius: var(--z-corner-radius-auto);
     border: var(--z-internal-HeadingAction-border);
     background: var(--z-internal-HeadingAction-background);
     box-shadow: var(--z-internal-HeadingAction-shadow);
@@ -85,7 +85,7 @@
   }
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
 
     --z-internal-HeadingAction-background: var(
       --z-Action-subdued-hovered-background
@@ -94,7 +94,7 @@
   }
 
   &:where(:focus-visible) {
-    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
 
     --z-internal-HeadingAction-background: var(
       --z-Action-subdued-focused-background
@@ -103,7 +103,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
 
     --z-internal-HeadingAction-background: var(
       --z-Action-subdued-pressed-background
@@ -118,7 +118,7 @@
   top: calc(
     (
         var(--z-internal-HeadingAction-minimum-block-size) -
-          var(--z-Icon-base-size)
+          var(--z-Icon-auto-size)
       ) / 2
   );
   margin-inline-start: var(--z-internal-HeadingAction-icon-margin);

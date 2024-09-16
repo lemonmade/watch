@@ -1,13 +1,13 @@
 .Modal {
   top: 50%;
   left: 50%;
-  background: var(--z-surface-background-base);
-  border-radius: var(--z-corner-radius-base);
+  background: var(--z-surface-background-auto);
+  border-radius: var(--z-corner-radius-auto);
   border: var(--z-border-subdued);
 
   transform: translate(-50%, -50%);
 
-  inline-size: calc(100% - (2 * var(--z-spacing-base)));
+  inline-size: calc(100% - (2 * var(--z-spacing-auto)));
   max-inline-size: 30rem;
 
   min-block-size: 3rem;

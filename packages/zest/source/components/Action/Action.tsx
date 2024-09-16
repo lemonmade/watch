@@ -36,7 +36,7 @@ export type ActionProps = Omit<PressableProps, 'className' | 'display'> & {
   iconAlignment?: BasicAlignmentKeyword;
   detail?: ComponentChild;
   role?: ActionRoleKeyword;
-  size?: 'small' | 'base' | 'large';
+  size?: 'small' | 'auto' | 'large';
   accessory?: ComponentChild;
   inlineSize?: 'content' | 'fill';
 };

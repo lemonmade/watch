@@ -11,7 +11,7 @@ import styles from './Rating.module.css';
 
 export interface RatingProps {
   value?: SignalOrValue<number | undefined>;
-  size?: 'base' | 'large';
+  size?: 'auto' | 'large';
   onChange?(value: number | undefined): void;
   readonly?: SignalOrValue<boolean>;
 }

@@ -21,7 +21,7 @@
     var(--z-Action-minimum-size) - (2 * var(--z-spacing-small-1))
   );
 
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
   background: var(--z-Action-background);
   padding: var(--z-spacing-small-1);
 

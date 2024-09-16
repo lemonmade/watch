@@ -33,7 +33,7 @@ export function SpoilerAvoidance({value, onChange}: Props) {
     <ChoiceList
       value={resolvedValue.toLowerCase()}
       onChange={handleChange}
-      spacing="base"
+      spacing
     >
       <Choice
         value="none"

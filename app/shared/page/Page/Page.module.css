@@ -1,7 +1,7 @@
 .Header {
-  padding: var(--z-spacing-base) var(--z-spacing-base) var(--z-spacing-large-1);
+  padding: var(--z-spacing-auto) var(--z-spacing-auto) var(--z-spacing-large-1);
 }
 
 .Content {
-  padding: 0 var(--z-spacing-base) var(--z-spacing-base);
+  padding: 0 var(--z-spacing-auto) var(--z-spacing-auto);
 }

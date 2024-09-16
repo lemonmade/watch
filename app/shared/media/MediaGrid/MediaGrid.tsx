@@ -14,7 +14,7 @@ import {
 import styles from './MediaGrid.module.css';
 
 interface Props {
-  blockSpacing?: 'base' | 'large';
+  blockSpacing?: 'auto' | 'large';
   minInlineSize?: CSSLiteralValue;
 }
 

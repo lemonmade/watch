@@ -1,7 +1,7 @@
 .Choice {
   --z-internal-Choice-border-color: var(--z-Choice-border-color);
   --z-internal-Choice-corner-radius: 50%;
-  --z-internal-Choice-text-line-block-size: var(--z-text-base-line-height);
+  --z-internal-Choice-text-line-block-size: var(--z-text-auto-line-height);
   --z-internal-Choice-block-inset: calc(
     (
         var(--z-Action-minimum-size) -
@@ -24,10 +24,6 @@
 }
 
 .cornerRadiusAuto {
-  --z-internal-Choice-corner-radius: var(--z-corner-radius-small-1);
-}
-
-.cornerRadiusBase {
   --z-internal-Choice-corner-radius: var(--z-corner-radius-small-1);
 }
 

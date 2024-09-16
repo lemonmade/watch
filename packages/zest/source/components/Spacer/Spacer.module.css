@@ -1,6 +1,6 @@
 .Spacer {
-  min-block-size: var(--z-spacing-base);
-  min-inline-size: var(--z-spacing-base);
+  min-block-size: var(--z-spacing-auto);
+  min-inline-size: var(--z-spacing-auto);
 }
 
 .sizeNone {

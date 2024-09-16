@@ -7,7 +7,7 @@ import styles from './TextLink.module.css';
 
 export interface TextLinkProps extends Pick<PressableProps, 'id' | 'target'> {
   to: NonNullable<PressableProps['to']>;
-  size?: 'small' | 'base';
+  size?: 'small' | 'auto';
   emphasis?: boolean | 'strong' | 'subdued';
 }
 

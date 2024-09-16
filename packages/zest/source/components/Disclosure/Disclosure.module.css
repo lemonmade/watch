@@ -1,6 +1,6 @@
 .Disclosure {
   border: var(--z-border-subdued);
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
 }
 
 .Action {

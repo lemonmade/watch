@@ -15,7 +15,7 @@
 
 .Navigation {
   display: none;
-  background: var(--z-overlay-background-base);
+  background: var(--z-overlay-background-auto);
   border-inline-end: var(--z-border-subdued);
   position: fixed;
   top: 0;
@@ -42,8 +42,8 @@
 
 .GoMenu {
   position: fixed;
-  bottom: var(--z-spacing-base);
-  right: var(--z-spacing-base);
+  bottom: var(--z-spacing-auto);
+  right: var(--z-spacing-auto);
   z-index: var(--z-stacking-layer-2);
   inline-size: fit-content;
   margin: 0 0 0 auto;

@@ -23,12 +23,12 @@
   z-index: 10;
   display: block;
   cursor: pointer;
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
   transition:
     background 0.2s ease,
     transform 0.15s ease;
   text-decoration: none;
-  color: var(--z-text-base-color);
+  color: var(--z-text-auto-color);
   /* touch-action: manipulation; */
   user-select: none;
   -webkit-touch-callout: none;

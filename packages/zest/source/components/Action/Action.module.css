@@ -1,14 +1,14 @@
 .Action {
-  --z-Icon-base-color: var(--z-Action-icon-color);
+  --z-Icon-auto-color: var(--z-Action-icon-color);
 
   --z-internal-Action-border: var(--z-Action-border);
   --z-internal-Action-background: var(--z-Action-background);
   --z-internal-Action-divider-color: var(--z-Action-divider-color);
   --z-internal-Action-shadow: var(--z-Action-shadow);
   --z-internal-Action-text-color: var(--z-Action-text-color);
-  --z-internal-Action-corner-radius: var(--z-corner-radius-base);
+  --z-internal-Action-corner-radius: var(--z-corner-radius-auto);
   --z-internal-Action-transition: background 0.2s ease, color 0.2s ease;
-  --z-internal-Action-inline-padding: var(--z-spacing-base);
+  --z-internal-Action-inline-padding: var(--z-spacing-auto);
   --z-internal-Action-block-padding: var(
     --z-internal-Action-forced-block-padding,
     var(--z-spacing-small-2)
@@ -125,7 +125,7 @@
   }
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-hovered-border);
     --z-internal-Action-background: var(--z-Action-hovered-background);
@@ -136,7 +136,7 @@
 
   &:where(:focus-visible),
   &:where(.focused) {
-    --z-Icon-base-color: var(--z-Action-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-focused-border);
     --z-internal-Action-background: var(--z-Action-focused-background);
@@ -146,7 +146,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-pressed-border);
     --z-internal-Action-background: var(--z-Action-pressed-background);
@@ -156,7 +156,7 @@
   }
 
   &:where(.selected) {
-    --z-Icon-base-color: var(--z-Action-selected-icon-color);
+    --z-Icon-auto-color: var(--z-Action-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-selected-border);
     --z-internal-Action-background: var(--z-Action-selected-background);
@@ -166,7 +166,7 @@
   }
 
   &:where(.disabled) {
-    --z-Icon-base-color: var(--z-Action-disabled-icon-color);
+    --z-Icon-auto-color: var(--z-Action-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-disabled-border);
     --z-internal-Action-background: var(--z-Action-disabled-background);
@@ -176,7 +176,7 @@
   }
 
   &:where(.inert) {
-    --z-Icon-base-color: var(--z-Action-inert-icon-color);
+    --z-Icon-auto-color: var(--z-Action-inert-icon-color);
 
     --z-internal-Action-border: var(--z-Action-inert-border);
     --z-internal-Action-background: var(--z-Action-inert-background);
@@ -187,7 +187,7 @@
 }
 
 .emphasized {
-  --z-Icon-base-color: var(--z-Action-emphasized-icon-color);
+  --z-Icon-auto-color: var(--z-Action-emphasized-icon-color);
 
   --z-internal-Action-border: var(--z-Action-emphasized-border);
   --z-internal-Action-background: var(--z-Action-emphasized-background);
@@ -196,7 +196,7 @@
   --z-internal-Action-text-color: var(--z-Action-emphasized-text-color);
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-emphasized-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-hovered-border);
     --z-internal-Action-background: var(
@@ -213,7 +213,7 @@
 
   &:where(:focus-visible),
   &:where(.focused) {
-    --z-Icon-base-color: var(--z-Action-emphasized-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-focused-border);
     --z-internal-Action-background: var(
@@ -229,7 +229,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-emphasized-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-pressed-border);
     --z-internal-Action-background: var(
@@ -245,7 +245,7 @@
   }
 
   &:where(.selected) {
-    --z-Icon-base-color: var(--z-Action-emphasized-selected-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-selected-border);
     --z-internal-Action-background: var(
@@ -261,7 +261,7 @@
   }
 
   &:where(.disabled) {
-    --z-Icon-base-color: var(--z-Action-emphasized-disabled-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-disabled-border);
     --z-internal-Action-background: var(
@@ -277,7 +277,7 @@
   }
 
   &:where(.inert) {
-    --z-Icon-base-color: var(--z-Action-emphasized-inert-icon-color);
+    --z-Icon-auto-color: var(--z-Action-emphasized-inert-icon-color);
 
     --z-internal-Action-border: var(--z-Action-emphasized-inert-border);
     --z-internal-Action-background: var(--z-Action-emphasized-inert-background);
@@ -290,7 +290,7 @@
 }
 
 .subdued {
-  --z-Icon-base-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
 
   --z-internal-Action-border: var(--z-Action-subdued-border);
   --z-internal-Action-background: var(--z-Action-subdued-background);
@@ -299,7 +299,7 @@
   --z-internal-Action-text-color: var(--z-Action-subdued-text-color);
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-hovered-border);
     --z-internal-Action-background: var(--z-Action-subdued-hovered-background);
@@ -312,7 +312,7 @@
 
   &:where(:focus-visible),
   &:where(.focused) {
-    --z-Icon-base-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-focused-border);
     --z-internal-Action-background: var(--z-Action-subdued-focused-background);
@@ -324,7 +324,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-pressed-border);
     --z-internal-Action-background: var(--z-Action-subdued-pressed-background);
@@ -336,7 +336,7 @@
   }
 
   &:where(.selected) {
-    --z-Icon-base-color: var(--z-Action-subdued-selected-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-selected-border);
     --z-internal-Action-background: var(--z-Action-subdued-selected-background);
@@ -348,7 +348,7 @@
   }
 
   &:where(.disabled) {
-    --z-Icon-base-color: var(--z-Action-subdued-disabled-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-disabled-border);
     --z-internal-Action-background: var(--z-Action-subdued-disabled-background);
@@ -360,7 +360,7 @@
   }
 
   &:where(.inert) {
-    --z-Icon-base-color: var(--z-Action-subdued-inert-icon-color);
+    --z-Icon-auto-color: var(--z-Action-subdued-inert-icon-color);
 
     --z-internal-Action-border: var(--z-Action-subdued-inert-border);
     --z-internal-Action-background: var(--z-Action-subdued-inert-background);
@@ -373,7 +373,7 @@
 }
 
 .destructive {
-  --z-Icon-base-color: var(--z-Action-destructive-icon-color);
+  --z-Icon-auto-color: var(--z-Action-destructive-icon-color);
 
   --z-internal-Action-border: var(--z-Action-destructive-border);
   --z-internal-Action-background: var(--z-Action-destructive-background);
@@ -382,7 +382,7 @@
   --z-internal-Action-text-color: var(--z-Action-destructive-text-color);
 
   &:where(:hover) {
-    --z-Icon-base-color: var(--z-Action-destructive-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-hovered-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-hovered-border);
     --z-internal-Action-background: var(
@@ -399,7 +399,7 @@
 
   &:where(:focus-visible),
   &:where(.focused) {
-    --z-Icon-base-color: var(--z-Action-destructive-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-focused-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-focused-border);
     --z-internal-Action-background: var(
@@ -415,7 +415,7 @@
   }
 
   &:where(:active) {
-    --z-Icon-base-color: var(--z-Action-destructive-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-pressed-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-pressed-border);
     --z-internal-Action-background: var(
@@ -431,7 +431,7 @@
   }
 
   &:where(.selected) {
-    --z-Icon-base-color: var(--z-Action-destructive-selected-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-selected-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-selected-border);
     --z-internal-Action-background: var(
@@ -447,7 +447,7 @@
   }
 
   &:where(.disabled) {
-    --z-Icon-base-color: var(--z-Action-destructive-disabled-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-disabled-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-disabled-border);
     --z-internal-Action-background: var(
@@ -463,7 +463,7 @@
   }
 
   &:where(.inert) {
-    --z-Icon-base-color: var(--z-Action-destructive-inert-icon-color);
+    --z-Icon-auto-color: var(--z-Action-destructive-inert-icon-color);
 
     --z-internal-Action-border: var(--z-Action-destructive-inert-border);
     --z-internal-Action-background: var(
@@ -520,8 +520,8 @@
   }
 
   &.sizeSmall > *:first-child {
-    margin-block-start: calc(-0.5 * var(--z-Icon-base-size));
-    margin-block-end: calc(-0.5 * var(--z-Icon-base-size));
+    margin-block-start: calc(-0.5 * var(--z-Icon-auto-size));
+    margin-block-end: calc(-0.5 * var(--z-Icon-auto-size));
   }
 }
 
@@ -601,7 +601,7 @@
   width: var(--z-internal-Loading-icon-size);
   height: var(--z-internal-Loading-icon-size);
   border-radius: 50%;
-  background: var(--z-Icon-base-color);
+  background: var(--z-Icon-auto-color);
   position: absolute;
   left: 0;
   top: 0;

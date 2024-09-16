@@ -122,8 +122,8 @@
   padding: var(--z-spacing-small-1);
 }
 
-.paddingBase {
-  padding: var(--z-spacing-base);
+.paddingAuto {
+  padding: var(--z-spacing-auto);
 }
 
 .paddingLarge {
@@ -146,8 +146,8 @@
   padding-inline-start: var(--z-spacing-small-1);
 }
 
-.paddingInlineStartBase {
-  padding-inline-start: var(--z-spacing-base);
+.paddingInlineStartAuto {
+  padding-inline-start: var(--z-spacing-auto);
 }
 
 .paddingInlineStartLarge {
@@ -170,8 +170,8 @@
   padding-inline-end: var(--z-spacing-small-1);
 }
 
-.paddingInlineEndBase {
-  padding-inline-end: var(--z-spacing-base);
+.paddingInlineEndAuto {
+  padding-inline-end: var(--z-spacing-auto);
 }
 
 .paddingInlineEndLarge {
@@ -194,8 +194,8 @@
   padding-block-start: var(--z-spacing-small-1);
 }
 
-.paddingBlockStartBase {
-  padding-block-start: var(--z-spacing-base);
+.paddingBlockStartAuto {
+  padding-block-start: var(--z-spacing-auto);
 }
 
 .paddingBlockStartLarge {
@@ -218,8 +218,8 @@
   padding-block-end: var(--z-spacing-small-1);
 }
 
-.paddingBlockEndBase {
-  padding-block-end: var(--z-spacing-base);
+.paddingBlockEndAuto {
+  padding-block-end: var(--z-spacing-auto);
 }
 
 .paddingBlockEndLarge {

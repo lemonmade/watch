@@ -51,9 +51,9 @@ function safeJSONParse(value?: string) {
 }
 
 export type SpacingKeyword = ClipsSpacingKeyword;
-export type BorderKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
-export type CornerRadiusKeyword = 'none' | 'base' | 'concentric';
-export type BackgroundKeyword = 'none' | 'base' | 'emphasized' | 'subdued';
+export type BorderKeyword = 'none' | 'auto' | 'emphasized' | 'subdued';
+export type CornerRadiusKeyword = 'none' | 'auto' | 'concentric';
+export type BackgroundKeyword = 'none' | 'auto' | 'emphasized' | 'subdued';
 export type EmphasisKeyword = 'emphasized' | 'subdued';
 export type EmphasisValue = EmphasisKeyword | boolean;
 export type ActionRoleKeyword = 'destructive';

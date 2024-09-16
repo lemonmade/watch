@@ -4,18 +4,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
   block-size: var(--z-Action-minimum-size);
-  padding: 0 var(--z-spacing-base);
+  padding: 0 var(--z-spacing-auto);
   background: var(--z-Action-background);
 
   &::after {
     content: '';
     display: block;
     inline-size: var(--z-internal-SkeletonAction-content-size);
-    block-size: calc(0.8 * var(--z-text-base-font-size));
+    block-size: calc(0.8 * var(--z-text-auto-font-size));
     background-color: var(--z-text-subdued-color);
-    border-radius: var(--z-corner-radius-base);
+    border-radius: var(--z-corner-radius-auto);
   }
 }
 

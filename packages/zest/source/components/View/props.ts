@@ -46,7 +46,7 @@ export interface ViewProps {
 const BACKGROUND_CLASS_MAP = new Map<BackgroundKeyword, string | false>([
   ['none', false],
   ['subdued', styles.backgroundSubdued],
-  ['base', styles.backgroundBase],
+  ['auto', styles.backgroundAuto],
   ['emphasized', styles.backgroundEmphasized],
 ] as [BackgroundKeyword, string | false][]);
 
@@ -56,7 +56,7 @@ const PADDING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
   ['small.2', styles.paddingSmall2],
   ['small.1', styles.paddingSmall1],
   ['small', styles.paddingSmall],
-  ['base', styles.paddingBase],
+  ['auto', styles.paddingAuto],
   ['large', styles.paddingLarge],
   ['large.1', styles.paddingLarge1],
   ['large.2', styles.paddingLarge2],
@@ -66,7 +66,7 @@ const PADDING_CLASS_MAP = new Map<SpacingKeyword, string | false>([
 const BORDER_CLASS_MAP = new Map<BorderKeyword, string | false>([
   ['none', false],
   ['subdued', styles.borderSubdued],
-  ['base', styles.borderBase],
+  ['auto', styles.borderAuto],
   ['emphasized', styles.borderEmphasized],
 ] as [BorderKeyword, string | false][]);
 
@@ -154,7 +154,7 @@ export function useViewProps({
       let normalizedPadding: string;
 
       if (padding === true) {
-        normalizedPadding = 'base';
+        normalizedPadding = 'auto';
       } else if (padding === false) {
         normalizedPadding = 'none';
       } else {
@@ -241,7 +241,7 @@ export function useViewProps({
     let normalizedBorder: BorderKeyword;
 
     if (typeof border === 'boolean') {
-      normalizedBorder = 'base';
+      normalizedBorder = 'auto';
     } else {
       normalizedBorder = border;
     }
@@ -256,7 +256,7 @@ export function useViewProps({
     let normalizedBackground: BackgroundKeyword;
 
     if (typeof background === 'boolean') {
-      normalizedBackground = 'base';
+      normalizedBackground = 'auto';
     } else {
       normalizedBackground = background;
     }
@@ -280,7 +280,7 @@ export function useViewProps({
     let normalizedCornerRadius: CornerRadiusKeyword;
 
     if (typeof cornerRadius === 'boolean') {
-      normalizedCornerRadius = 'base';
+      normalizedCornerRadius = 'auto';
     } else {
       normalizedCornerRadius = cornerRadius;
     }

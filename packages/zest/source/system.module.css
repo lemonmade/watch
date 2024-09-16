@@ -127,11 +127,7 @@
 }
 
 .spacingAuto {
-  gap: var(--z-spacing-base);
-}
-
-.spacingBase {
-  gap: var(--z-spacing-base);
+  gap: var(--z-spacing-auto);
 }
 
 .spacingLarge1 {
@@ -151,11 +147,7 @@
 }
 
 .paddingAuto {
-  padding: var(--z-spacing-base);
-}
-
-.paddingBase {
-  padding: var(--z-spacing-base);
+  padding: var(--z-spacing-auto);
 }
 
 .paddingLarge1 {
@@ -179,11 +171,7 @@
 }
 
 .paddingInlineStartAuto {
-  padding-inline-start: var(--z-spacing-base);
-}
-
-.paddingInlineStartBase {
-  padding-inline-start: var(--z-spacing-base);
+  padding-inline-start: var(--z-spacing-auto);
 }
 
 .paddingInlineStartLarge1 {
@@ -207,11 +195,7 @@
 }
 
 .paddingInlineEndAuto {
-  padding-inline-end: var(--z-spacing-base);
-}
-
-.paddingInlineEndBase {
-  padding-inline-end: var(--z-spacing-base);
+  padding-inline-end: var(--z-spacing-auto);
 }
 
 .paddingInlineEndLarge1 {
@@ -235,11 +219,7 @@
 }
 
 .paddingBlockStartAuto {
-  padding-block-start: var(--z-spacing-base);
-}
-
-.paddingBlockStartBase {
-  padding-block-start: var(--z-spacing-base);
+  padding-block-start: var(--z-spacing-auto);
 }
 
 .paddingBlockStartLarge1 {
@@ -263,11 +243,7 @@
 }
 
 .paddingBlockEndAuto {
-  padding-block-end: var(--z-spacing-base);
-}
-
-.paddingBlockEndBase {
-  padding-block-end: var(--z-spacing-base);
+  padding-block-end: var(--z-spacing-auto);
 }
 
 .paddingBlockEndLarge1 {
@@ -311,11 +287,7 @@
 }
 
 .cornerRadiusAuto {
-  border-radius: var(--z-corner-radius-base);
-}
-
-.cornerRadiusBase {
-  border-radius: var(--z-corner-radius-base);
+  border-radius: var(--z-corner-radius-auto);
 }
 
 .cornerRadiusLarge1 {
