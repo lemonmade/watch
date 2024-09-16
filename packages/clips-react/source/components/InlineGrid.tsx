@@ -26,7 +26,7 @@ declare module 'react' {
 
 export const InlineGrid = forwardRef<InlineGridElement, InlineGridProps>(
   function InlineGrid(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-inline-grid {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-inline-grid {...props} ref={wrapperRef} />;
   },
 );

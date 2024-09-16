@@ -21,7 +21,7 @@ declare module 'react' {
 
 export const Header = forwardRef<HeaderElement, HeaderProps>(
   function Header(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-header {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-header {...props} ref={wrapperRef} />;
   },
 );

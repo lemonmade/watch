@@ -24,7 +24,7 @@ declare module 'react' {
 
 export const Footer = forwardRef<FooterElement, FooterProps>(
   function Footer(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-footer {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-footer {...props} ref={wrapperRef} />;
   },
 );

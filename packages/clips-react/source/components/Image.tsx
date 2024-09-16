@@ -23,7 +23,7 @@ declare module 'react' {
 
 export const Image = forwardRef<ImageElement, ImageProps>(
   function Image(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-image {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-image {...props} ref={wrapperRef} />;
   },
 );

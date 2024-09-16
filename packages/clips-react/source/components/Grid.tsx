@@ -27,7 +27,7 @@ declare module 'react' {
 
 export const Grid = forwardRef<GridElement, GridProps>(
   function Grid(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-grid {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-grid {...props} ref={wrapperRef} />;
   },
 );

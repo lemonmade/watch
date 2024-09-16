@@ -35,14 +35,15 @@ export const Action = forwardRef<ActionElement, ActionProps>(function Action(
   {overlay, children, onPress, ...props},
   ref,
 ) {
-  useCustomElementProperties(props, ref);
+  const allProps: ActionProps = {
+    onpress: onPress ? (event) => event.respondWith(onPress()) : undefined,
+    ...props,
+  };
+
+  const wrapperRef = useCustomElementProperties(allProps, ref);
 
   return (
-    <ui-action
-      ref={ref}
-      {...props}
-      onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
-    >
+    <ui-action {...allProps} ref={wrapperRef}>
       {children}
       {overlay && isValidElement(overlay)
         ? cloneElement<any>(overlay, {slot: 'overlay'})

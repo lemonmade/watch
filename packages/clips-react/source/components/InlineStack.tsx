@@ -26,7 +26,7 @@ declare module 'react' {
 
 export const InlineStack = forwardRef<InlineStackElement, InlineStackProps>(
   function InlineStack(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-inline-stack {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-inline-stack {...props} ref={wrapperRef} />;
   },
 );

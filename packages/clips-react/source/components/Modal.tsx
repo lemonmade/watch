@@ -23,7 +23,7 @@ declare module 'react' {
 
 export const Modal = forwardRef<ModalElement, ModalProps>(
   function Modal(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-modal {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-modal {...props} ref={wrapperRef} />;
   },
 );

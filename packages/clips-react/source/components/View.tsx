@@ -36,7 +36,7 @@ declare module 'react' {
 
 export const View = forwardRef<ViewElement, ViewProps>(
   function View(props, ref) {
-    useCustomElementProperties(props, ref);
-    return <ui-view {...props} ref={ref} />;
+    const wrapperRef = useCustomElementProperties(props, ref);
+    return <ui-view {...props} ref={wrapperRef} />;
   },
 );
