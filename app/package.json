@@ -30,6 +30,7 @@
     "@quilted/graphql": "^3.3.7",
     "@quilted/graphql-tools": "^0.2.11",
     "@quilted/localize": "^0.2.1",
+    "@quilted/preact-testing": "^0.1.7",
     "@quilted/quilt": "^0.8.1",
     "@remote-dom/core": "^1.5.0",
     "@remote-dom/preact": "^1.2.0",
