@@ -14,6 +14,8 @@ import {
 } from './extension-points.ts';
 import {acceptSignals} from './signals.ts';
 
+import './elements.ts';
+
 customElements.define('remote-root', RemoteRootElement);
 customElements.define('remote-fragment', RemoteFragmentElement);
 

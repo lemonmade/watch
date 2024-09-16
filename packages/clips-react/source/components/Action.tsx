@@ -30,7 +30,7 @@ declare module 'react' {
 }
 
 export const Action = forwardRef<ActionElement, ActionProps>(function Action(
-  {overlay, onPress, ...props},
+  {overlay, children, onPress, ...props},
   ref,
 ) {
   return (
@@ -39,6 +39,7 @@ export const Action = forwardRef<ActionElement, ActionProps>(function Action(
       {...props}
       onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
     >
+      {children}
       {overlay && isValidElement(overlay)
         ? cloneElement<any>(overlay, {slot: 'overlay'})
         : null}

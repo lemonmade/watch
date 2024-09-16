@@ -26,12 +26,13 @@ declare module 'preact' {
   }
 }
 
-export function Action({overlay, onPress, ...props}: ActionProps) {
+export function Action({overlay, children, onPress, ...props}: ActionProps) {
   return (
     <ui-action
-      {...props}
       onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
+      {...props}
     >
+      {children}
       {overlay && isValidElement(overlay)
         ? cloneElement(overlay, {slot: 'overlay'})
         : null}
