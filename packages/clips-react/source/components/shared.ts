@@ -24,7 +24,6 @@ export function useCustomElementProperties<T extends Element>(
       internals.values[name] = newValue;
       oldNames.delete(name);
 
-
       if (element != null && newValue !== oldValue) {
         if (name in element) {
           (element as any)[name] = newValue;
