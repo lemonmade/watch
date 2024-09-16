@@ -1,14 +1,29 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
-
 import {
-  type CornerRadiusValue,
-  type ViewportSizeKeyword,
-} from '../../styles.ts';
-import {RemoteElementCornerRadiusValue} from '../shared.ts';
+  ClipsElement,
+  backedByAttribute,
+  attributeRestrictedToAllowedValues,
+  restrictToAllowedValues,
+} from '../ClipsElement.ts';
+import {
+  CORNER_RADIUS_KEYWORDS,
+  type CornerRadiusKeyword,
+  IMAGE_FIT_KEYWORDS,
+  type ImageFitKeyword,
+  IMAGE_LOADING_KEYWORDS,
+  type ImageLoadingKeyword,
+  IMAGE_ACCESSIBILITY_ROLE_KEYWORDS,
+  type ImageAccessibilityRoleKeyword,
+} from '@watching/design';
 
-export type ImageFit = 'stretch' | 'cover' | 'contain';
-export type ImageLoading = 'immediate' | 'in-viewport';
-export type ViewportResolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
+export interface ImageAttributes {
+  source?: string;
+  description?: string;
+  'accessibility-role'?: ImageAccessibilityRoleKeyword;
+  loading?: ImageLoadingKeyword;
+  'aspect-ratio'?: string;
+  fit?: ImageFitKeyword;
+  'corner-radius'?: string;
+}
 
 export interface ImageProperties {
   /**
@@ -16,14 +31,7 @@ export interface ImageProperties {
    * the `sources` prop, the image provided here will be used as the fallback when
    * no other source matches the current viewport.
    */
-  source: string;
-
-  /**
-   * Additional image sources to use for specific viewport conditions. Each of these
-   * records will contain the `source` image URL to use, and viewport size or resolution
-   * conditions to restrict the image to.
-   */
-  sources?: ImageSource[];
+  source?: string;
 
   /**
    * Accessible content describing the image. This content will be used as `altText` for
@@ -32,16 +40,20 @@ export interface ImageProperties {
    * the `accessibilityRole` prop to `decorative`. One common signal that the image is purely
    * decorative is that the description content you would use is already present in your UI,
    * often quite close to the image.
+   *
+   * @default ''
    */
-  description?: string;
+  description: string;
 
   /**
    * Customizes the role of the image, which affect how it will be presented to assistive
    * technologies. Currently, you can only set this property to `decorative`, which signals
    * that the image should not be presented to assistive technologies at all. This is useful
    * for content like icons, where a name describing the icon is typically already on the page.
+   *
+   * @default 'image'
    */
-  accessibilityRole?: 'decorative';
+  accessibilityRole: ImageAccessibilityRoleKeyword;
 
   /**
    * How the image should load. By default, all images will load `immediate`ly when they are rendered.
@@ -49,7 +61,7 @@ export interface ImageProperties {
    *
    * @default 'immediate'
    */
-  loading?: ImageLoading;
+  loading: ImageLoadingKeyword;
 
   /**
    * The relative size of the image, expressed as its with over its height. You should provide an aspect
@@ -69,52 +81,102 @@ export interface ImageProperties {
    * - `contain`, which will cause the image to scale to fit the container while preserving its original aspect ratio.
    *   This often results in "leftover" space around the image in the container.
    *
+   * @default 'auto'
    * @see https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
    */
-  fit?: ImageFit;
+  fit: ImageFitKeyword;
 
   /**
    * The radius of the corners of the image.
    *
    * @default 'none'
    */
-  cornerRadius?: CornerRadiusValue;
+  get cornerRadius(): CornerRadiusKeyword;
+  set cornerRadius(value: CornerRadiusKeyword | boolean | undefined);
 }
 
-export interface ImageSource {
-  /**
-   * The source URL to use.
-   */
-  source: string;
-
-  /**
-   * The minimum viewport size at which this condition applies. The condition will also apply at larger viewport sizes,
-   * if no other conditions are present for those larger sizes.
-   */
-  viewport?: ViewportSizeKeyword;
-
-  /**
-   * The viewport resolution that this image targets.
-   */
-  resolution?: ViewportResolution;
-}
+export interface ImageEvents {}
 
 /**
  * Image is used to visually style and provide semantic value for a small piece of image
  * content.
  */
-export const Image = createRemoteElement<ImageProperties>({
-  properties: {
-    source: {type: String},
-    sources: {type: Array},
-    description: {type: String},
-    accessibilityRole: {type: String},
-    loading: {type: String},
-    fit: {type: String},
-    aspectRatio: {type: Number},
-    cornerRadius: {type: RemoteElementCornerRadiusValue, default: false},
-  },
-});
+export class Image
+  extends ClipsElement<ImageAttributes, ImageEvents>
+  implements ImageProperties
+{
+  static get remoteAttributes() {
+    return [
+      'source',
+      'description',
+      'accessibility-role',
+      'loading',
+      'aspect-ratio',
+      'fit',
+      'corner-radius',
+    ] satisfies (keyof ImageAttributes)[];
+  }
+
+  @backedByAttribute()
+  accessor source: string | undefined;
+
+  @backedByAttribute()
+  accessor description: string = '';
+
+  @backedByAttribute({
+    name: 'accessibility-role',
+    ...attributeRestrictedToAllowedValues(IMAGE_ACCESSIBILITY_ROLE_KEYWORDS),
+  })
+  accessor accessibilityRole: ImageAccessibilityRoleKeyword = 'image';
+
+  @backedByAttribute({
+    ...attributeRestrictedToAllowedValues(IMAGE_LOADING_KEYWORDS),
+  })
+  accessor loading: ImageLoadingKeyword = 'immediate';
+
+  get aspectRatio() {
+    return this.getAttribute('aspect-ratio')
+      ? Number(this.getAttribute('aspect-ratio'))
+      : undefined;
+  }
+
+  set aspectRatio(value: number | undefined) {
+    if (value == null) {
+      this.removeAttribute('aspect-ratio');
+    } else if (typeof value === 'number') {
+      this.setAttribute('aspect-ratio', value.toString());
+    }
+  }
+
+  @backedByAttribute({
+    ...attributeRestrictedToAllowedValues(IMAGE_FIT_KEYWORDS),
+  })
+  accessor fit: ImageFitKeyword = 'auto';
+
+  get cornerRadius(): CornerRadiusKeyword {
+    return (
+      restrictToAllowedValues(
+        this.getAttribute('corner-radius'),
+        CORNER_RADIUS_KEYWORDS,
+      ) ?? 'none'
+    );
+  }
+
+  set cornerRadius(value: CornerRadiusKeyword | boolean) {
+    const resolvedValue =
+      value === true
+        ? 'auto'
+        : value === false || value == null
+          ? 'none'
+          : restrictToAllowedValues(value, CORNER_RADIUS_KEYWORDS);
+
+    if (resolvedValue === 'none') {
+      this.removeAttribute('corner-radius');
+    } else if (resolvedValue) {
+      this.setAttribute('corner-radius', resolvedValue);
+    }
+  }
+}
 
 customElements.define('ui-image', Image);
 

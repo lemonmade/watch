@@ -1,9 +1,19 @@
-import {SkeletonTextBlock as UiSkeletonTextBlock} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {SkeletonTextBlock as UISkeletonTextBlock} from '@lemon/zest';
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
 
-export const SkeletonTextBlock = createClipsComponent(
+export const SkeletonTextBlock = createClipsComponentRenderer(
   'ui-skeleton-text-block',
-  function SkeletonTextBlock({children, lines}) {
-    return <UiSkeletonTextBlock lines={lines}>{children}</UiSkeletonTextBlock>;
+  function SkeletonTextBlock(props) {
+    const {children} = useRenderedChildren(props);
+
+    const attributes = props.element.attributes.value;
+
+    return (
+      <UISkeletonTextBlock
+        lines={attributes.lines ? Number(attributes.lines) : undefined}
+      >
+        {children}
+      </UISkeletonTextBlock>
+    );
   },
 );

@@ -1,7 +1,30 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {InlineStack as InlineStackElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const InlineStack = createRemoteComponent(
-  'ui-inline-stack',
-  InlineStackElement,
+import type {
+  InlineStack as InlineStackElement,
+  InlineStackProperties,
+} from '@watching/clips/elements';
+
+import type {StackProps} from './Stack.tsx';
+
+export interface InlineStackProps
+  extends PropsWithChildren<
+      Omit<Partial<InlineStackProperties>, keyof StackProps>
+    >,
+    Omit<StackProps, 'ref' | 'direction'> {
+  ref?: ForwardedRef<InlineStackElement>;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-inline-stack': InlineStackProps;
+    }
+  }
+}
+
+export const InlineStack = forwardRef<InlineStackElement, InlineStackProps>(
+  function InlineStack(props, ref) {
+    return <ui-inline-stack {...props} ref={ref} />;
+  },
 );

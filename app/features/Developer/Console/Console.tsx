@@ -139,7 +139,9 @@ function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServer}) {
         <TextField
           label="Local server URL"
           value={localUrl}
-          changeTiming="input"
+          onInput={(value) => {
+            localUrl.value = value;
+          }}
         />
         <Action disabled={!isValidUrl(localUrl.value)} perform="submit">
           Set local URL

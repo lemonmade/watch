@@ -1,9 +1,12 @@
-import {TextBlock as UiTextBlock} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {TextBlock as UITextBlock} from '@lemon/zest';
 
-export const TextBlock = createClipsComponent(
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
+
+export const TextBlock = createClipsComponentRenderer(
   'ui-text-block',
-  function TextBlock({children}) {
-    return <UiTextBlock>{children}</UiTextBlock>;
+  function TextBlock(props) {
+    const {children} = useRenderedChildren(props);
+
+    return <UITextBlock>{children}</UITextBlock>;
   },
 );

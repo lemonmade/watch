@@ -1,12 +1,11 @@
-import {
-  Style,
-  type CSSLiteralValue,
-  type DynamicValue,
-  type StyleDynamicValue,
-  type SpacingKeyword as ClipsSpacingKeyword,
+import type {
+  CSSLiteralValue,
+  DynamicValue,
+  StyleDynamicValue,
+  SpacingKeyword as ClipsSpacingKeyword,
 } from '@watching/clips/styles';
 
-export {Style, type CSSLiteralValue};
+export * from '@watching/clips/styles';
 
 export const CSSLiteral = {
   test(value: unknown): value is CSSLiteralValue {
@@ -59,7 +58,7 @@ export type EmphasisKeyword = 'emphasized' | 'subdued';
 export type EmphasisValue = EmphasisKeyword | boolean;
 export type ActionRoleKeyword = 'destructive';
 export type BasicAlignmentKeyword = 'start' | 'center' | 'end';
-export type AlignKeyword = BasicAlignmentKeyword | 'spaceBetween';
+export type AlignKeyword = BasicAlignmentKeyword | 'space-between';
 
 export interface Position {
   type: 'relative' | 'absolute';

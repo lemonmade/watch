@@ -1,4 +1,39 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {View as ViewElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const View = createRemoteComponent('ui-view', ViewElement);
+import type {
+  View as ViewElement,
+  ViewProperties,
+} from '@watching/clips/elements';
+
+export interface ViewProps
+  extends PropsWithChildren<
+    Omit<
+      Partial<ViewProperties>,
+      | 'padding'
+      | 'paddingInlineStart'
+      | 'paddingInlineEnd'
+      | 'paddingBlockStart'
+      | 'paddingBlockEnd'
+    >
+  > {
+  ref?: ForwardedRef<ViewElement>;
+  padding?: ViewProperties['padding'] | boolean;
+  paddingInlineStart?: ViewProperties['paddingInlineStart'] | boolean;
+  paddingInlineEnd?: ViewProperties['paddingInlineEnd'] | boolean;
+  paddingBlockStart?: ViewProperties['paddingBlockStart'] | boolean;
+  paddingBlockEnd?: ViewProperties['paddingBlockEnd'] | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-view': ViewProps;
+    }
+  }
+}
+
+export const View = forwardRef<ViewElement, ViewProps>(
+  function View(props, ref) {
+    return <ui-view {...props} ref={ref} />;
+  },
+);

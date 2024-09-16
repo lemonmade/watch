@@ -126,6 +126,10 @@
   gap: var(--z-spacing-small-1);
 }
 
+.spacingAuto {
+  gap: var(--z-spacing-base);
+}
+
 .spacingBase {
   gap: var(--z-spacing-base);
 }
@@ -144,6 +148,10 @@
 
 .paddingSmall1 {
   padding: var(--z-spacing-small-1);
+}
+
+.paddingAuto {
+  padding: var(--z-spacing-base);
 }
 
 .paddingBase {
@@ -170,6 +178,10 @@
   padding-inline-start: var(--z-spacing-small-1);
 }
 
+.paddingInlineStartAuto {
+  padding-inline-start: var(--z-spacing-base);
+}
+
 .paddingInlineStartBase {
   padding-inline-start: var(--z-spacing-base);
 }
@@ -192,6 +204,10 @@
 
 .paddingInlineEndSmall1 {
   padding-inline-end: var(--z-spacing-small-1);
+}
+
+.paddingInlineEndAuto {
+  padding-inline-end: var(--z-spacing-base);
 }
 
 .paddingInlineEndBase {
@@ -218,6 +234,10 @@
   padding-block-start: var(--z-spacing-small-1);
 }
 
+.paddingBlockStartAuto {
+  padding-block-start: var(--z-spacing-base);
+}
+
 .paddingBlockStartBase {
   padding-block-start: var(--z-spacing-base);
 }
@@ -240,6 +260,10 @@
 
 .paddingBlockEndSmall1 {
   padding-block-end: var(--z-spacing-small-1);
+}
+
+.paddingBlockEndAuto {
+  padding-block-end: var(--z-spacing-base);
 }
 
 .paddingBlockEndBase {
@@ -284,6 +308,10 @@
 
 .cornerRadiusSmall1 {
   border-radius: var(--z-corner-radius-small-1);
+}
+
+.cornerRadiusAuto {
+  border-radius: var(--z-corner-radius-base);
 }
 
 .cornerRadiusBase {

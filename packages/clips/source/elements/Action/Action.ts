@@ -1,6 +1,25 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import type {
+  RemoteEvent,
+  RemoteElementEventListenersDefinition,
+} from '@remote-dom/core/elements';
 
-import {type SignalOrValue} from '../../signals.ts';
+import {
+  ClipsElement,
+  backedByAttribute,
+  backedByAttributeAsBoolean,
+} from '../ClipsElement.ts';
+
+export interface ActionAttributes {
+  /**
+   * A URL to open when the action is clicked.
+   */
+  to?: string;
+
+  /**
+   * Disallows interaction with the action.
+   */
+  disabled?: '';
+}
 
 export interface ActionProperties {
   /**
@@ -11,33 +30,41 @@ export interface ActionProperties {
   /**
    * Disallows interaction with the action.
    */
-  disabled?: SignalOrValue<boolean>;
+  disabled: boolean;
+}
 
+export interface ActionEvents {
   /**
    * A callback that is run when the action is pressed.
    */
-  onPress?(): void | Promise<void>;
-}
-
-export interface ActionSlots {
-  /**
-   * An overlay component to render when this button is pressed. Typically,
-   * you will render either a `Popover` or a `Modal` here.
-   */
-  overlay?: true;
+  press: RemoteEvent<void>;
 }
 
 /**
  * Actions are the primary component used to allow user action.
  */
-export const Action = createRemoteElement<ActionProperties, {}, ActionSlots>({
-  slots: ['overlay'],
-  properties: {
-    to: {type: String},
-    disabled: {type: Boolean},
-    onPress: {type: Function},
-  },
-});
+export class Action
+  extends ClipsElement<ActionAttributes, ActionEvents>
+  implements ActionProperties
+{
+  static get remoteEvents(): RemoteElementEventListenersDefinition<ActionEvents> {
+    return {
+      press: {
+        bubbles: true,
+      },
+    };
+  }
+
+  static get remoteAttributes() {
+    return ['to', 'disabled'] satisfies (keyof ActionAttributes)[];
+  }
+
+  @backedByAttribute()
+  accessor to: string | undefined;
+
+  @backedByAttributeAsBoolean()
+  accessor disabled: boolean = false;
+}
 
 customElements.define('ui-action', Action);
 

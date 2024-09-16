@@ -416,7 +416,7 @@ function SubscribeSection({
       border
       cornerRadius
       background="subdued"
-      blockAlignment="spaceBetween"
+      blockAlignment="space-between"
     >
       <BlockStack spacing>
         <InlineStack spacing="small">

@@ -1,4 +1,31 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {Stack as StackElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const Stack = createRemoteComponent('ui-stack', StackElement);
+import type {
+  Stack as StackElement,
+  StackProperties,
+} from '@watching/clips/elements';
+
+import {ViewProps} from './View.tsx';
+
+export interface StackProps
+  extends PropsWithChildren<
+      Omit<Partial<StackProperties>, 'spacing' | keyof ViewProps>
+    >,
+    Omit<ViewProps, 'ref'> {
+  ref?: ForwardedRef<StackElement>;
+  spacing?: StackProperties['spacing'] | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-stack': StackProps;
+    }
+  }
+}
+
+export const Stack = forwardRef<StackElement, StackProps>(
+  function Stack(props, ref) {
+    return <ui-stack {...props} ref={ref} />;
+  },
+);

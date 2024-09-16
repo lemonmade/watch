@@ -1,12 +1,11 @@
 import type {RenderableProps} from 'preact';
+import type {PopoverProperties} from '@watching/clips';
 
 import {Overlay} from '../Overlay';
 
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
-
 import styles from './Popover.module.css';
 
-export type PopoverProps = PreactComponentPropsForClipsElement<'ui-popover'>;
+export interface PopoverProps extends Partial<PopoverProperties> {}
 
 export function Popover(props: RenderableProps<PopoverProps>) {
   return (

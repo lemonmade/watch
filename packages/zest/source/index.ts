@@ -13,5 +13,6 @@ export {
 } from './system.ts';
 
 export {default as systemStyles} from './system.module.css';
+export {DynamicStyle} from './system.ts';
 
 export * from './components.ts';

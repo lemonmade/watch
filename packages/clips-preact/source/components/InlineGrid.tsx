@@ -1,7 +1,27 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {InlineGrid as InlineGridElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const InlineGrid = createRemoteComponent(
-  'ui-inline-grid',
-  InlineGridElement,
-);
+import type {
+  InlineGrid as InlineGridElement,
+  InlineGridProperties,
+} from '@watching/clips/elements';
+
+import type {GridProps} from './Grid.tsx';
+
+export interface InlineGridProps
+  extends RenderableProps<
+      Omit<Partial<InlineGridProperties>, keyof GridProps>,
+      InlineGridElement
+    >,
+    Omit<GridProps, 'ref' | 'direction'> {}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-inline-grid': InlineGridProps;
+    }
+  }
+}
+
+export function InlineGrid(props: InlineGridProps) {
+  return <ui-inline-grid {...props} />;
+}

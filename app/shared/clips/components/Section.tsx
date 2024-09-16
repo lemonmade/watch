@@ -1,26 +1,13 @@
-import {Section as UiSection} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {Section as UISection} from '@lemon/zest';
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
 
-export const Section = createClipsComponent(
+import {useViewProps} from './View.tsx';
+
+export const Section = createClipsComponentRenderer(
   'ui-section',
-  function Section({
-    children,
-    padding,
-    paddingBlockEnd,
-    paddingBlockStart,
-    paddingInlineEnd,
-    paddingInlineStart,
-  }) {
-    return (
-      <UiSection
-        padding={padding}
-        paddingBlockEnd={paddingBlockEnd}
-        paddingBlockStart={paddingBlockStart}
-        paddingInlineEnd={paddingInlineEnd}
-        paddingInlineStart={paddingInlineStart}
-      >
-        {children}
-      </UiSection>
-    );
+  function Section(props) {
+    const {children} = useRenderedChildren(props);
+
+    return <UISection {...useViewProps(props)}>{children}</UISection>;
   },
 );

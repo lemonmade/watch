@@ -1,7 +1,21 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {TextBlock as TextBlockElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const TextBlock = createRemoteComponent(
-  'ui-text-block',
-  TextBlockElement,
-);
+import type {
+  TextBlock as TextBlockElement,
+  TextBlockProperties,
+} from '@watching/clips/elements';
+
+export interface TextBlockProps
+  extends RenderableProps<Partial<TextBlockProperties>, TextBlockElement> {}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-text-block': TextBlockProps;
+    }
+  }
+}
+
+export function TextBlock(props: TextBlockProps) {
+  return <ui-text-block {...props} />;
+}

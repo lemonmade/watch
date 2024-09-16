@@ -1,9 +1,28 @@
-import {Text as UiText} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {Text as UIText} from '@lemon/zest';
+import {TEXT_EMPHASIS_KEYWORDS} from '@watching/design';
 
-export const Text = createClipsComponent(
+import {
+  createClipsComponentRenderer,
+  useRenderedChildren,
+  restrictToAllowedValues,
+} from './shared.ts';
+
+export const Text = createClipsComponentRenderer(
   'ui-text',
-  function Text({children, emphasis}) {
-    return <UiText emphasis={emphasis}>{children}</UiText>;
+  function Text(props) {
+    const {children} = useRenderedChildren(props);
+
+    const attributes = props.element.attributes.value;
+
+    return (
+      <UIText
+        emphasis={restrictToAllowedValues(
+          attributes.emphasis,
+          TEXT_EMPHASIS_KEYWORDS,
+        )}
+      >
+        {children}
+      </UIText>
+    );
   },
 );

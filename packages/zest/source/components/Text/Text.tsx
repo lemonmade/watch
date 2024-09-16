@@ -1,5 +1,6 @@
 import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
+import type {TextEmphasisKeyword} from '@watching/design';
 
 import {useHeadingDomDetails} from '../Heading.tsx';
 
@@ -8,7 +9,7 @@ import styles from './Text.module.css';
 export interface TextProps {
   className?: string;
   size?: 'small.2' | 'small.1' | 'small' | 'base';
-  emphasis?: boolean | 'strong' | 'subdued';
+  emphasis?: TextEmphasisKeyword | boolean;
   accessibilityRole?: 'code' | 'heading';
   /** @see https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric */
   numericVariant?: 'tabular-numbers';

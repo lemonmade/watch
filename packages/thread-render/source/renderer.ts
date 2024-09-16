@@ -1,4 +1,3 @@
-import {retain, release} from '@quilted/threads';
 import {EventEmitter, raceAgainstAbortSignal} from '@quilted/events';
 import {SignalRemoteReceiver} from '@remote-dom/signals';
 import {signal, computed} from '@preact/signals-core';
@@ -74,7 +73,7 @@ export function createRenderer<Context = Record<string, never>>({
     if (instanceInternals.value != null) return;
 
     const abort = new AbortController();
-    const receiver = new SignalRemoteReceiver({retain, release});
+    const receiver = new SignalRemoteReceiver();
     const state = signal<ThreadRendererInstanceState>('preparing');
     const timings = signal<ThreadRendererInstanceTimings>({});
 

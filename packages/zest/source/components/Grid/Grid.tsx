@@ -1,18 +1,23 @@
 import type {RenderableProps} from 'preact';
 import {variation} from '@lemon/css';
+import type {GridSizeKeyword} from '@watching/design';
 import type {
   DynamicValue,
   ViewportSizeKeyword,
-  ValueFromStyleDynamicValue,
   AlignmentKeyword,
-  GridProperties as BaseGridProps,
-  BlockGridProperties as BaseBlockGridProps,
-  InlineGridProperties as BaseInlineGridProps,
+  GridProperties,
   ViewportCondition,
+  CSSLiteralValue,
+  ViewProperties,
 } from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import {CSSLiteral, DynamicStyle, type SpacingKeyword} from '../../system.ts';
+import {
+  CSSLiteral,
+  DynamicStyle,
+  type SpacingKeyword,
+  type ValueOrStyleDynamicValue,
+} from '../../system.ts';
 import {SPACING_CLASS_MAP} from '../../styles/spacing.ts';
 import {useUniqueId} from '../../shared/id.ts';
 
@@ -20,33 +25,35 @@ import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
 
 import styles from './Grid.module.css';
 
+export type GridSizeValue = GridSizeKeyword | CSSLiteralValue | boolean;
+
 export interface GridProps
-  extends BaseGridProps,
-    Omit<
-      ViewProps,
-      | 'padding'
-      | 'paddingInlineStart'
-      | 'paddingInlineEnd'
-      | 'paddingBlockStart'
-      | 'paddingBlockEnd'
-      | 'inlineAlignment'
-      | 'blockAlignment'
-    > {}
+  extends Omit<
+      Partial<GridProperties>,
+      'spacing' | 'blockSizes' | 'inlineSizes' | keyof ViewProperties
+    >,
+    Omit<ViewProps, 'blockAlignment' | 'inlineAlignment'> {
+  spacing?: GridProperties['spacing'] | boolean;
+  inlineSizes?: ValueOrStyleDynamicValue<readonly GridSizeValue[]>;
+  blockSizes?: ValueOrStyleDynamicValue<readonly GridSizeValue[]>;
+}
 
 export interface BlockGridProps
-  extends Omit<GridProps, 'direction' | 'blockSizes' | 'inlineSizes'>,
-    Pick<BaseBlockGridProps, 'sizes'> {}
+  extends Omit<GridProps, 'direction' | 'blockSizes' | 'inlineSizes'> {
+  sizes?: ValueOrStyleDynamicValue<readonly GridSizeValue[]>;
+}
 
 export interface InlineGridProps
-  extends Omit<GridProps, 'direction' | 'blockSizes' | 'inlineSizes'>,
-    Pick<BaseInlineGridProps, 'sizes'> {}
+  extends Omit<GridProps, 'direction' | 'blockSizes' | 'inlineSizes'> {
+  sizes?: ValueOrStyleDynamicValue<readonly GridSizeValue[]>;
+}
 
 const INLINE_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['start', styles.inlineAlignmentStart],
   ['center', styles.inlineAlignmentCenter],
   ['end', styles.inlineAlignmentEnd],
   ['stretch', styles.inlineAlignmentStretch],
-  ['spaceBetween', styles.inlineAlignmentSpaceBetween],
+  ['space-between', styles.inlineAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
 const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
@@ -54,7 +61,7 @@ const BLOCK_ALIGNMENT_CLASS_MAP = new Map<AlignmentKeyword, string | false>([
   ['center', styles.blockAlignmentCenter],
   ['end', styles.blockAlignmentEnd],
   ['stretch', styles.blockAlignmentStretch],
-  ['spaceBetween', styles.blockAlignmentSpaceBetween],
+  ['space-between', styles.blockAlignmentSpaceBetween],
 ] as [AlignmentKeyword, string][]);
 
 const MEDIA_QUERY_MAXIMUM_EM_REDUCTION = 0.01;
@@ -162,7 +169,7 @@ export function useGridProps({
     let normalizedSpacing: SpacingKeyword;
 
     if (typeof spacing === 'boolean') {
-      normalizedSpacing = spacing ? 'base' : 'none';
+      normalizedSpacing = spacing ? 'auto' : 'none';
     } else {
       normalizedSpacing = spacing;
     }
@@ -220,9 +227,7 @@ function createGridRules(
   if (block) {
     const rows: string[] = [];
 
-    const blockWithConditions: DynamicValue<
-      ValueFromStyleDynamicValue<GridProps['blockSizes']>
-    >[] = [];
+    const blockWithConditions: DynamicValue<readonly GridSizeValue[]>[] = [];
 
     if (DynamicStyle.test(block)) {
       blockWithConditions.push(DynamicStyle.parse(block));
@@ -240,7 +245,7 @@ function createGridRules(
       }
 
       for (const [index, size] of block.entries()) {
-        if (!size || size === 'hidden') {
+        if (!size || size === 'none') {
           rules.push(
             `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
               index + 1
@@ -286,9 +291,7 @@ function createGridRules(
   if (inline) {
     const columns: string[] = [];
 
-    const inlineWithConditions: DynamicValue<
-      ValueFromStyleDynamicValue<GridProps['inlineSizes']>
-    >[] = [];
+    const inlineWithConditions: DynamicValue<readonly GridSizeValue[]>[] = [];
 
     if (DynamicStyle.test(inline)) {
       inlineWithConditions.push(DynamicStyle.parse(inline));
@@ -306,7 +309,7 @@ function createGridRules(
       }
 
       for (const [index, size] of inline.entries()) {
-        if (!size || size === 'hidden') {
+        if (!size || size === 'none') {
           rules.push(
             `${mediaQueryPrefix}:where(${selector}) > :where(:nth-child(${
               index + 1

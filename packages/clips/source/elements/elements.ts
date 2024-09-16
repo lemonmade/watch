@@ -1,65 +1,147 @@
-export {Footer, type FooterProperties} from './Footer.ts';
-export {Header, type HeaderProperties} from './Header.ts';
+export {ClipsElement} from './ClipsElement.ts';
+
+export {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from './View/View.ts';
+export {
+  Section,
+  type SectionAttributes,
+  type SectionProperties,
+  type SectionEvents,
+} from './Section/Section.ts';
+export {
+  Footer,
+  type FooterAttributes,
+  type FooterProperties,
+  type FooterEvents,
+} from './Footer/Footer.ts';
+export {
+  Header,
+  type HeaderAttributes,
+  type HeaderProperties,
+  type HeaderEvents,
+} from './Header/Header.ts';
+
 export {
   Heading,
+  type HeadingAttributes,
   type HeadingProperties,
-  type HeadingLevel,
-  type HeadingAccessibilityRole,
-} from './Heading.ts';
+  type HeadingEvents,
+} from './Heading/Heading.ts';
 export {
   Image,
+  type ImageAttributes,
   type ImageProperties,
-  type ImageFit,
-  type ImageLoading,
-  type ImageSource,
-  type ViewportResolution,
-} from './Image.ts';
-export {Modal, type ModalProperties} from './Modal.ts';
+  type ImageEvents,
+} from './Image/Image.ts';
+export {
+  Modal,
+  type ModalAttributes,
+  type ModalProperties,
+  type ModalEvents,
+} from './Modal/Modal.ts';
 export {
   Popover,
+  type PopoverAttributes,
   type PopoverProperties,
-  type PopoverBlockAttachment,
-  type PopoverInlineAttachment,
-} from './Popover.ts';
-export {Section, type SectionProperties} from './Section.ts';
-export {Text, type TextProperties} from './Text.ts';
-export {TextBlock, type TextBlockProperties} from './TextBlock.ts';
+  type PopoverEvents,
+} from './Popover/Popover.ts';
+export {
+  Text,
+  type TextAttributes,
+  type TextProperties,
+  type TextEvents,
+} from './Text/Text.ts';
+export {
+  TextBlock,
+  type TextBlockAttributes,
+  type TextBlockProperties,
+  type TextBlockEvents,
+} from './TextBlock/TextBlock.ts';
 export {
   TextField,
-  type TextFieldSlots,
+  type TextFieldAttributes,
   type TextFieldProperties,
-  type TextFieldKeyboardType,
-  type TextFieldLabelStyle,
-  type TextFieldChangeTiming,
-  type TextFieldAutocompleteTarget,
-} from './TextField.ts';
-export {View, type ViewProperties} from './View.ts';
+  type TextFieldEvents,
+} from './TextField/TextField.ts';
 
 // Layout
-export {Stack, type StackProperties} from './Stack.ts';
-export {BlockStack, type BlockStackProperties} from './BlockStack.ts';
-export {InlineStack, type InlineStackProperties} from './InlineStack.ts';
+export {
+  Stack,
+  type StackAttributes,
+  type StackProperties,
+  type StackEvents,
+} from './Stack/Stack.ts';
+export {
+  BlockStack,
+  type BlockStackAttributes,
+  type BlockStackProperties,
+  type BlockStackEvents,
+} from './BlockStack/BlockStack.ts';
+export {
+  InlineStack,
+  type InlineStackAttributes,
+  type InlineStackProperties,
+  type InlineStackEvents,
+} from './InlineStack/InlineStack.ts';
 
-export {Grid, type GridProperties} from './Grid.ts';
-export {BlockGrid, type BlockGridProperties} from './BlockGrid.ts';
-export {InlineGrid, type InlineGridProperties} from './InlineGrid.ts';
+export {
+  Grid,
+  type GridAttributes,
+  type GridProperties,
+  type GridEvents,
+} from './Grid/Grid.ts';
+export {
+  BlockGrid,
+  type BlockGridAttributes,
+  type BlockGridProperties,
+  type BlockGridEvents,
+} from './BlockGrid/BlockGrid.ts';
+export {
+  InlineGrid,
+  type InlineGridAttributes,
+  type InlineGridProperties,
+} from './InlineGrid/InlineGrid.ts';
 
 // Interaction
-export {Action, type ActionProperties, type ActionSlots} from './Action.ts';
+export {
+  Action,
+  type ActionAttributes,
+  type ActionProperties,
+  type ActionEvents,
+} from './Action/Action.ts';
 export {
   Disclosure,
+  type DisclosureAttributes,
   type DisclosureProperties,
-  type DisclosureSlots,
-} from './Disclosure.ts';
+  type DisclosureEvents,
+} from './Disclosure/Disclosure.ts';
 
 // Skeletons
 export {
   SkeletonAction,
+  type SkeletonActionAttributes,
   type SkeletonActionProperties,
-} from './SkeletonAction.ts';
-export {SkeletonText, type SkeletonTextProperties} from './SkeletonText.ts';
+  type SkeletonActionEvents,
+} from './SkeletonAction/SkeletonAction.ts';
+export {
+  SkeletonText,
+  type SkeletonTextAttributes,
+  type SkeletonTextProperties,
+  type SkeletonTextEvents,
+} from './SkeletonText/SkeletonText.ts';
 export {
   SkeletonTextBlock,
+  type SkeletonTextBlockAttributes,
   type SkeletonTextBlockProperties,
-} from './SkeletonTextBlock.ts';
-export {SkeletonView, type SkeletonViewProperties} from './SkeletonView.ts';
+  type SkeletonTextBlockEvents,
+} from './SkeletonTextBlock/SkeletonTextBlock.ts';
+export {
+  SkeletonView,
+  type SkeletonViewAttributes,
+  type SkeletonViewProperties,
+  type SkeletonViewEvents,
+} from './SkeletonView/SkeletonView.ts';

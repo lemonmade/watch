@@ -373,7 +373,7 @@ function PopoverComponents() {
           <BlockStack spacing>
             <Heading>inlineAttachment=center</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <Spacer size="none" />
               <PopoverExample inlineAttachment="center" />
               <PopoverExample inlineAttachment="center" />
@@ -383,7 +383,7 @@ function PopoverComponents() {
 
             <Heading>inlineAttachment=start</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <PopoverExample inlineAttachment="start" />
               <PopoverExample inlineAttachment="start" />
               <PopoverExample inlineAttachment="start" />
@@ -393,7 +393,7 @@ function PopoverComponents() {
 
             <Heading>inlineAttachment=end</Heading>
 
-            <InlineStack spacing alignment="spaceBetween">
+            <InlineStack spacing alignment="space-between">
               <PopoverExample inlineAttachment="end" />
               <PopoverExample inlineAttachment="end" />
               <PopoverExample inlineAttachment="end" />
@@ -499,10 +499,6 @@ function FormComponents() {
           maximumLines={false}
         />
         <TextFieldExample label="Controlled text field" />
-        <TextFieldExample
-          label="Controlled text field (change on input)"
-          changeTiming="input"
-        />
 
         <Select
           label="Select"
@@ -787,14 +783,16 @@ function SkeletonComponents() {
         <TextBlock>Skeleton action</TextBlock>
         <InlineStack spacing>
           <SkeletonAction />
-          <SkeletonAction size="medium" />
+          <SkeletonAction size="small" />
+          <SkeletonAction size="auto" />
           <SkeletonAction size="large" />
           <SkeletonAction size={Style.css`2rem`} />
         </InlineStack>
 
         <TextBlock>Skeleton text</TextBlock>
         <SkeletonText />
-        <SkeletonText size="medium" />
+        <SkeletonText size="small" />
+        <SkeletonText size="auto" />
         <SkeletonText size="large" />
 
         <InlineGrid sizes={['fill', 'fill']} spacing>

@@ -1,7 +1,40 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {Disclosure as DisclosureElement} from '@watching/clips/elements';
+import {
+  cloneElement,
+  isValidElement,
+  type ComponentChild,
+  type RenderableProps,
+} from 'preact';
 
-export const Disclosure = createRemoteComponent(
-  'ui-disclosure',
-  DisclosureElement,
-);
+import type {
+  Disclosure as DisclosureElement,
+  DisclosureProperties,
+} from '@watching/clips/elements';
+
+export interface DisclosureProps
+  extends RenderableProps<
+    Omit<Partial<DisclosureProperties>, 'label'>,
+    DisclosureElement
+  > {
+  label?: ComponentChild;
+}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-disclosure': DisclosureProps;
+    }
+  }
+}
+
+export function Disclosure({label, children, ...props}: DisclosureProps) {
+  return label && isValidElement(label) ? (
+    <ui-disclosure {...props}>
+      {children}
+      {cloneElement(label, {slot: 'label'})}
+    </ui-disclosure>
+  ) : (
+    <ui-disclosure label={label} {...props}>
+      {children}
+    </ui-disclosure>
+  );
+}

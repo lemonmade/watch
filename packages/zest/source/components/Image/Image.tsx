@@ -1,12 +1,41 @@
 import type {JSX} from 'preact';
 import {classes, variation} from '@lemon/css';
+import type {CornerRadiusKeyword, ViewportResolution} from '@watching/design';
+import type {ImageProperties, ViewportSizeKeyword} from '@watching/clips';
 
 import systemStyles from '../../system.module.css';
-import type {PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
 
 import styles from './Image.module.css';
 
-export type ImageProps = PreactComponentPropsForClipsElement<'ui-image'>;
+export interface ImageProps
+  extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
+  cornerRadius?: CornerRadiusKeyword | boolean;
+
+  /**
+   * Additional image sources to use for specific viewport conditions. Each of these
+   * records will contain the `source` image URL to use, and viewport size or resolution
+   * conditions to restrict the image to.
+   */
+  sources?: readonly ImageSource[];
+}
+
+export interface ImageSource {
+  /**
+   * The source URL to use.
+   */
+  source: string;
+
+  /**
+   * The minimum viewport size at which this condition applies. The condition will also apply at larger viewport sizes,
+   * if no other conditions are present for those larger sizes.
+   */
+  viewport?: ViewportSizeKeyword;
+
+  /**
+   * The viewport resolution that this image targets.
+   */
+  resolution?: ViewportResolution;
+}
 
 export enum Media {
   Medium = '(min-width: 601px)',
@@ -24,8 +53,8 @@ const CORNER_RADIUS_CLASS_MAP = new Map<string | boolean, string | undefined>([
   ['none', systemStyles.cornerRadiusNone],
   ['small.1', systemStyles.cornerRadiusSmall1],
   ['small', systemStyles.cornerRadiusSmall1],
-  ['base', systemStyles.cornerRadiusBase],
-  [true, systemStyles.cornerRadiusBase],
+  ['auto', systemStyles.cornerRadiusAuto],
+  [true, systemStyles.cornerRadiusAuto],
   ['large', systemStyles.cornerRadiusLarge1],
   ['large', systemStyles.cornerRadiusLarge1],
 ]);

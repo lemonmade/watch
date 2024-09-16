@@ -40,7 +40,7 @@ export default function CreateAccount() {
   );
 
   return (
-    <BlockStack spacing padding="base">
+    <BlockStack spacing padding>
       <Heading>Create account</Heading>
 
       {reason && <ErrorBanner reason={reason} />}

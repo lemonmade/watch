@@ -5,7 +5,7 @@ export default function CheckYourEmail() {
   usePerformanceNavigation();
 
   return (
-    <View padding="base">
+    <View padding>
       <TextBlock>Check your email!</TextBlock>
     </View>
   );

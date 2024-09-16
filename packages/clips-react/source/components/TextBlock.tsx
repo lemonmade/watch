@@ -1,7 +1,25 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {TextBlock as TextBlockElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const TextBlock = createRemoteComponent(
-  'ui-text-block',
-  TextBlockElement,
+import type {
+  TextBlock as TextBlockElement,
+  TextBlockProperties,
+} from '@watching/clips/elements';
+
+export interface TextBlockProps
+  extends PropsWithChildren<Partial<TextBlockProperties>> {
+  ref?: ForwardedRef<TextBlockElement>;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-text-block': TextBlockProps;
+    }
+  }
+}
+
+export const TextBlock = forwardRef<TextBlockElement, TextBlockProps>(
+  function TextBlock(props, ref) {
+    return <ui-text-block ref={ref} {...props} />;
+  },
 );

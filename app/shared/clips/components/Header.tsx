@@ -1,26 +1,14 @@
-import {Header as UiHeader} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {Header as UIHeader} from '@lemon/zest';
 
-export const Header = createClipsComponent(
+import {useViewProps} from './View.tsx';
+
+import {createClipsComponentRenderer, useRenderedChildren} from './shared.ts';
+
+export const Header = createClipsComponentRenderer(
   'ui-header',
-  function Header({
-    children,
-    padding,
-    paddingBlockEnd,
-    paddingBlockStart,
-    paddingInlineEnd,
-    paddingInlineStart,
-  }) {
-    return (
-      <UiHeader
-        padding={padding}
-        paddingBlockEnd={paddingBlockEnd}
-        paddingBlockStart={paddingBlockStart}
-        paddingInlineEnd={paddingInlineEnd}
-        paddingInlineStart={paddingInlineStart}
-      >
-        {children}
-      </UiHeader>
-    );
+  function Header(props) {
+    const {children} = useRenderedChildren(props);
+
+    return <UIHeader {...useViewProps(props)}>{children}</UIHeader>;
   },
 );

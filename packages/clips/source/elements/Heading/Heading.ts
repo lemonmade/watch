@@ -1,17 +1,33 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {
+  HEADING_LEVELS,
+  type HeadingLevel,
+  HEADING_ACCESSIBILITY_ROLE_KEYWORDS,
+  type HeadingAccessibilityRoleKeyword,
+} from '@watching/design';
 
-/**
- * A visual heading level, which corresponds to a theme-dependent visual design.
- */
-export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+import {
+  ClipsElement,
+  backedByAttribute,
+  backedByAttributeAsBoolean,
+  attributeRestrictedToAllowedValues,
+} from '../ClipsElement.ts';
 
-/**
- * How the heading should be announced for accessibility purposes. `heading` is the default,
- * and creates semantic content headings. `presentation` can be used in rare cases when you
- * want a piece of text to visually look like a heading, but it should not create a nested
- * document structure.
- */
-export type HeadingAccessibilityRole = 'heading' | 'presentation';
+export interface HeadingAttributes {
+  /**
+   * The visual level of the heading.
+   */
+  level?: `${HeadingLevel}` | 'auto';
+
+  /**
+   * Whether to add a divider separating the heading from the content that follows it.
+   */
+  divider?: '';
+
+  /**
+   * How the heading should be announced for accessibility purposes.
+   */
+  'accessibility-role'?: HeadingAccessibilityRoleKeyword;
+}
 
 export interface HeadingProperties {
   /**
@@ -19,13 +35,14 @@ export interface HeadingProperties {
    * accessibility level, which is determined by the nesting of `Section` components containing
    * this heading.
    */
-  level?: HeadingLevel;
+  get level(): HeadingLevel | 'auto';
+  set level(value: HeadingLevel | `${HeadingLevel}` | 'auto' | undefined);
 
   /**
    * Whether to add a divider separating the heading from the content that follows it.
    * @default false
    */
-  divider?: boolean;
+  divider: boolean;
 
   /**
    * How the heading should be announced for accessibility purposes. `heading` is the default,
@@ -34,8 +51,10 @@ export interface HeadingProperties {
    * document structure.
    * @default 'heading'
    */
-  accessibilityRole?: HeadingAccessibilityRole;
+  accessibilityRole: HeadingAccessibilityRoleKeyword;
 }
+
+export interface HeadingEvents {}
 
 /**
  * Headings are used as the title for a section of content. Headings automatically
@@ -46,13 +65,45 @@ export interface HeadingProperties {
  * **can not** change the heading level for accessibility purposes. You must use `Section`
  * components to create an accessible document structure.
  */
-export const Heading = createRemoteElement<HeadingProperties>({
-  properties: {
-    level: {type: Number},
-    divider: {type: Boolean},
-    accessibilityRole: {type: String},
-  },
-});
+export class Heading
+  extends ClipsElement<HeadingAttributes, HeadingEvents>
+  implements HeadingProperties
+{
+  static get remoteAttributes() {
+    return [
+      'level',
+      'divider',
+      'accessibility-role',
+    ] satisfies (keyof HeadingAttributes)[];
+  }
+
+  get level(): HeadingLevel | 'auto' {
+    const level = this.getAttribute('level');
+    if (level === 'auto') return 'auto';
+    const toNumber = Number(level) as HeadingLevel;
+    return HEADING_LEVELS.has(toNumber) ? toNumber : 'auto';
+  }
+
+  set level(value: HeadingLevel | `${HeadingLevel}` | 'auto' | undefined) {
+    if (value === 'auto') {
+      this.setAttribute('level', 'auto');
+    } else {
+      const toNumber = Number(value) as HeadingLevel;
+      if (HEADING_LEVELS.has(toNumber)) {
+        this.setAttribute('level', toNumber.toString());
+      }
+    }
+  }
+
+  @backedByAttributeAsBoolean()
+  accessor divider: boolean = false;
+
+  @backedByAttribute({
+    name: 'accessibility-role',
+    ...attributeRestrictedToAllowedValues(HEADING_ACCESSIBILITY_ROLE_KEYWORDS),
+  })
+  accessor accessibilityRole: HeadingAccessibilityRoleKeyword = 'heading';
+}
 
 customElements.define('ui-heading', Heading);
 

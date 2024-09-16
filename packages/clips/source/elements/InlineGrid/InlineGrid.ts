@@ -1,15 +1,27 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {type DirectionKeyword} from '@watching/design';
 
 import {
-  COMMON_GRID_PROPERTIES,
-  SizeValueOrDynamicSizeValue,
+  Grid,
+  type GridAttributes,
   type GridProperties,
-} from '../Grid.ts';
+  type GridEvents,
+} from '../Grid/Grid.ts';
+
+import {backedByAttribute} from '../ClipsElement.ts';
+
+export interface InlineGridAttributes
+  extends Omit<GridAttributes, 'direction' | 'inline-sizes' | 'block-sizes'> {
+  direction?: Extract<DirectionKeyword, 'inline'>;
+  sizes?: string;
+}
 
 export interface InlineGridProperties
-  extends Omit<GridProperties, 'direction' | 'inlineSizes' | 'blockSizes'> {
-  sizes: NonNullable<GridProperties['inlineSizes']>;
+  extends Omit<GridProperties, 'direction'> {
+  direction: Extract<DirectionKeyword, 'inline'>;
+  sizes?: string;
 }
+
+export interface InlineGridEvents extends GridEvents {}
 
 /**
  * A `InlineGrid` is a container component that lays out sibling elements
@@ -28,12 +40,19 @@ export interface InlineGridProperties
  * In addition to the grid-specific properties described above, You can
  * pass any property available on `View` to a `InlineGrid` component.
  */
-export const InlineGrid = createRemoteElement<InlineGridProperties>({
-  properties: {
-    ...COMMON_GRID_PROPERTIES,
-    sizes: {type: SizeValueOrDynamicSizeValue},
-  },
-});
+export class InlineGrid
+  extends Grid<InlineGridAttributes, InlineGridEvents>
+  implements InlineGridProperties
+{
+  static get observedAttributes(): string[] {
+    return ['sizes'] satisfies (keyof InlineGridAttributes)[];
+  }
+
+  accessor direction = 'inline' as const;
+
+  @backedByAttribute()
+  accessor sizes: string | undefined;
+}
 
 customElements.define('ui-inline-grid', InlineGrid);
 

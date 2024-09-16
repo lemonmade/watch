@@ -1,15 +1,26 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {type DirectionKeyword} from '@watching/design';
 
 import {
-  COMMON_GRID_PROPERTIES,
-  SizeValueOrDynamicSizeValue,
+  Grid,
+  type GridAttributes,
   type GridProperties,
-} from '../Grid.ts';
+  type GridEvents,
+} from '../Grid/Grid.ts';
 
-export interface BlockGridProperties
-  extends Omit<GridProperties, 'direction' | 'inlineSizes' | 'blockSizes'> {
-  sizes: NonNullable<GridProperties['blockSizes']>;
+import {backedByAttribute} from '../ClipsElement.ts';
+
+export interface BlockGridAttributes
+  extends Omit<GridAttributes, 'direction' | 'inline-sizes' | 'block-sizes'> {
+  direction?: Extract<DirectionKeyword, 'block'>;
+  sizes?: string;
 }
+
+export interface BlockGridProperties extends Omit<GridProperties, 'direction'> {
+  direction: Extract<DirectionKeyword, 'block'>;
+  sizes?: string;
+}
+
+export interface BlockGridEvents extends GridEvents {}
 
 /**
  * A `BlockGrid` is a container component that lays out sibling elements
@@ -28,12 +39,19 @@ export interface BlockGridProperties
  * In addition to the grid-specific properties described above, You can
  * pass any property available on `View` to a `BlockGrid` component.
  */
-export const BlockGrid = createRemoteElement<BlockGridProperties>({
-  properties: {
-    ...COMMON_GRID_PROPERTIES,
-    sizes: {type: SizeValueOrDynamicSizeValue},
-  },
-});
+export class BlockGrid
+  extends Grid<BlockGridAttributes, BlockGridEvents>
+  implements BlockGridProperties
+{
+  static get observedAttributes(): string[] {
+    return ['sizes'] satisfies (keyof BlockGridAttributes)[];
+  }
+
+  accessor direction = 'block' as const;
+
+  @backedByAttribute()
+  accessor sizes: string | undefined;
+}
 
 customElements.define('ui-block-grid', BlockGrid);
 

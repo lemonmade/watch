@@ -1,6 +1,7 @@
 import type {RenderableProps} from 'preact';
 import {useEffect, useRef, useMemo, useCallback} from 'preact/hooks';
 import {classes, variation} from '@lemon/css';
+import type {PopoverAttachmentKeyword} from '@watching/design';
 import {
   signal,
   computed,
@@ -26,8 +27,8 @@ import styles from './Overlay.module.css';
 
 export interface OverlayProps {
   modal?: boolean;
-  blockAttachment?: 'start' | 'end';
-  inlineAttachment?: 'start' | 'center' | 'end';
+  blockAttachment?: PopoverAttachmentKeyword;
+  inlineAttachment?: PopoverAttachmentKeyword;
   relativeTo?: 'trigger' | 'viewport';
   className?: string | null | false;
   classNameOpenStart?: string | null | false;
@@ -334,7 +335,8 @@ function useOverlayTransitionController({
 
           break;
         }
-        case 'center': {
+        case 'center':
+        case 'auto': {
           const overlayInlineStart = triggerCenter - overlayGeometry.width / 2;
           const overlayInlineEnd = triggerCenter + overlayGeometry.width / 2;
 
@@ -385,7 +387,12 @@ function useOverlayTransitionController({
           blockStart = triggerGeometry.top - overlayGeometry.height;
           break;
         }
-        case 'end': {
+        case 'center': {
+          blockStart = triggerGeometry.top + triggerGeometry.height / 2;
+          break;
+        }
+        case 'end':
+        case 'auto': {
           blockStart = triggerGeometry.top + triggerGeometry.height;
           break;
         }

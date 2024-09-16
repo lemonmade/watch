@@ -7,8 +7,4 @@ export {
   HeadingLevelReset,
   NestedHeadingLevel,
 } from './Heading/HeadingLevel.tsx';
-export {
-  useHeadingDomDetails,
-  type HeadingLevel,
-  type HeadingAccessibilityRole,
-} from './Heading/shared.ts';
+export {useHeadingDomDetails, type HeadingLevel} from './Heading/shared.ts';

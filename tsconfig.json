@@ -26,6 +26,7 @@
     {"path": "./packages/clips-react"},
     {"path": "./packages/clips-svelte"},
     {"path": "./packages/css"},
+    {"path": "./packages/design"},
     {"path": "./packages/thread-render"},
     {"path": "./packages/tools"},
     {"path": "./packages/zest"}

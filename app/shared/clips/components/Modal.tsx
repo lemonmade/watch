@@ -1,9 +1,27 @@
-import {Modal as UiModal} from '@lemon/zest';
-import {createClipsComponent} from './shared.ts';
+import {SPACING_OR_NONE_KEYWORDS} from '@watching/design';
+import {Modal as UIModal} from '@lemon/zest';
+import {
+  createClipsComponentRenderer,
+  useRenderedChildren,
+  restrictToAllowedValues,
+} from './shared.ts';
 
-export const Modal = createClipsComponent(
+export const Modal = createClipsComponentRenderer(
   'ui-modal',
-  function Modal({children, padding}) {
-    return <UiModal padding={padding}>{children}</UiModal>;
+  function Modal(props) {
+    const {children} = useRenderedChildren(props);
+
+    const attributes = props.element.attributes.value;
+
+    return (
+      <UIModal
+        padding={restrictToAllowedValues(
+          attributes.padding,
+          SPACING_OR_NONE_KEYWORDS,
+        )}
+      >
+        {children}
+      </UIModal>
+    );
   },
 );

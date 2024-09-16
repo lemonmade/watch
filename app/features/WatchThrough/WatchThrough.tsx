@@ -659,7 +659,9 @@ function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
       minimumLines={4}
       maximumLines={10}
       value={notes}
-      changeTiming="input"
+      onInput={(value) => {
+        notes.value = value;
+      }}
     />
   );
 }
@@ -726,7 +728,7 @@ function SkipEpisodeModal({
 
           <DetailedReview notes={form.notes} />
 
-          <InlineStack alignment="spaceBetween" spacing="small">
+          <InlineStack alignment="space-between" spacing="small">
             <EpisodeDatePicker action="skip" value={form.at} />
             <Action emphasis perform="submit">
               Skip Episode

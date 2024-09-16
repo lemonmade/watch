@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@preact/signals-core": "^1.8.0",
-    "@remote-dom/core": "^1.4.0"
+    "@remote-dom/core": "^1.5.0"
   },
   "peerDependencies": {
     "@watching/clips": "workspace:^",

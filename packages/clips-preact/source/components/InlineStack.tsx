@@ -1,7 +1,27 @@
-import {createRemoteComponent} from '@remote-dom/preact';
-import {InlineStack as InlineStackElement} from '@watching/clips/elements';
+import type {RenderableProps} from 'preact';
 
-export const InlineStack = createRemoteComponent(
-  'ui-inline-stack',
-  InlineStackElement,
-);
+import type {
+  InlineStack as InlineStackElement,
+  InlineStackProperties,
+} from '@watching/clips/elements';
+
+import type {StackProps} from './Stack.tsx';
+
+export interface InlineStackProps
+  extends RenderableProps<
+      Omit<Partial<InlineStackProperties>, keyof StackProps>,
+      InlineStackElement
+    >,
+    Omit<StackProps, 'ref' | 'direction'> {}
+
+declare module 'preact' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-inline-stack': InlineStackProps;
+    }
+  }
+}
+
+export function InlineStack(props: InlineStackProps) {
+  return <ui-inline-stack {...props} />;
+}

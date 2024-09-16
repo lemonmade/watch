@@ -72,7 +72,7 @@ const BORDER_CLASS_MAP = new Map<BorderKeyword, string | false>([
 
 const CORNER_RADIUS_CLASS_MAP = new Map<CornerRadiusKeyword, string | false>([
   ['none', false],
-  ['base', styles.cornerRadiusBase],
+  ['auto', styles.cornerRadiusAuto],
   ['concentric', styles.cornerRadiusConcentric],
 ] as [CornerRadiusKeyword, string | false][]);
 
@@ -222,7 +222,7 @@ export function useViewProps({
     let normalizedPadding: SpacingKeyword;
 
     if (typeof padding === 'boolean') {
-      normalizedPadding = 'base';
+      normalizedPadding = 'auto';
     } else {
       normalizedPadding = padding;
     }

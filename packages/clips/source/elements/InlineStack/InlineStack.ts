@@ -1,9 +1,23 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {type DirectionKeyword} from '@watching/design';
 
-import {COMMON_STACK_PROPERTIES, type StackProperties} from '../Stack.ts';
+import {
+  Stack,
+  type StackAttributes,
+  type StackProperties,
+  type StackEvents,
+} from '../Stack/Stack.ts';
+
+export interface InlineStackAttributes
+  extends Omit<StackAttributes, 'direction'> {
+  direction?: Extract<DirectionKeyword, 'inline'>;
+}
 
 export interface InlineStackProperties
-  extends Omit<StackProperties, 'direction'> {}
+  extends Omit<StackProperties, 'direction'> {
+  direction: Extract<DirectionKeyword, 'inline'>;
+}
+
+export interface InlineStackEvents extends StackEvents {}
 
 /**
  * A `InlineStack` is a container component that lays out sibling elements
@@ -11,7 +25,7 @@ export interface InlineStackProperties
  * and will wrap to additional lines if their combined size is larger
  * than the space available to the `InlineStack`.
  *
- * `InlineStack`s lays out its children along the inline axis (horizontally,
+ * An `InlineStack` lays out its children along the inline axis (horizontally,
  * in most Western locales). To lay out children along the block axis (vertically,
  * in most Western locales), you can use a `BlockStack`. To lay out children with
  * a direction decided at runtime, you can use a `Stack`.
@@ -24,9 +38,12 @@ export interface InlineStackProperties
  * In addition to the stacking-specific properties described above, You can
  * pass any property available on `View` to a `InlineStack` component.
  */
-export const InlineStack = createRemoteElement<InlineStackProperties>({
-  properties: {...COMMON_STACK_PROPERTIES},
-});
+export class InlineStack
+  extends Stack<InlineStackAttributes, InlineStackEvents>
+  implements InlineStackProperties
+{
+  accessor direction = 'inline' as const;
+}
 
 customElements.define('ui-inline-stack', InlineStack);
 

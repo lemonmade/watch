@@ -3,5 +3,7 @@
   "compilerOptions": {
     "lib": ["WebWorker", "DOM", "esnext"]
   },
-  "references": []
+  "references": [
+    {"path": "../design"}
+  ]
 }

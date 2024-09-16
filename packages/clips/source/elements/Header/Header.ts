@@ -1,7 +1,13 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
-import {VIEW_PROPERTIES, type ViewProperties} from '../View.ts';
+import {
+  View,
+  type ViewAttributes,
+  type ViewProperties,
+  type ViewEvents,
+} from '../View/View.ts';
 
+export interface HeaderAttributes extends ViewAttributes {}
 export interface HeaderProperties extends ViewProperties {}
+export interface HeaderEvents extends ViewEvents {}
 
 /**
  * Headers are container elements that designates part of a section as “introductory content”,
@@ -12,9 +18,7 @@ export interface HeaderProperties extends ViewProperties {}
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header
  */
-export const Header = createRemoteElement<HeaderProperties>({
-  properties: VIEW_PROPERTIES,
-});
+export class Header extends View implements HeaderProperties {}
 
 customElements.define('ui-header', Header);
 

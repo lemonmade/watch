@@ -1,19 +1,23 @@
+import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
+import type {HeadingLevel} from '@watching/design';
+import type {HeadingProperties} from '@watching/clips';
 
 import {useHeadingDomDetails} from './shared.ts';
 
-import {type PreactComponentPropsForClipsElement} from '../../shared/clips.ts';
-
 import styles from './Heading.module.css';
 
-export type HeadingProps = PreactComponentPropsForClipsElement<'ui-heading'>;
+export interface HeadingProps
+  extends Omit<Partial<HeadingProperties>, 'level'> {
+  level?: HeadingLevel | `${HeadingLevel}` | 'auto';
+}
 
 export function Heading({
   level: explicitLevel,
   children,
   divider,
   accessibilityRole,
-}: HeadingProps) {
+}: RenderableProps<HeadingProps>) {
   const {level, Element} = useHeadingDomDetails({
     level: explicitLevel,
     accessibilityRole,
@@ -23,7 +27,7 @@ export function Heading({
     <Element
       className={classes(
         styles.Heading,
-        styles[`level${explicitLevel ?? level}`],
+        styles[`level${level}`],
         divider && styles.divider,
       )}
     >

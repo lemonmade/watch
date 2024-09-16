@@ -86,8 +86,10 @@ function SignInWithEmail() {
           label="Email"
           value={email}
           keyboardType="email"
-          changeTiming="input"
           autocomplete="webauthn username"
+          onInput={(value) => {
+            email.value = value;
+          }}
         />
         <Action
           disabled={disabled}
@@ -340,7 +342,7 @@ function CheckYourEmail() {
   usePerformanceNavigation({state: 'complete'});
 
   return (
-    <View padding="base">
+    <View padding>
       <TextBlock>Check your email!</TextBlock>
     </View>
   );

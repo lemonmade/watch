@@ -1,4 +1,26 @@
-import {createRemoteComponent} from '@remote-dom/react';
-import {Text as TextElement} from '@watching/clips/elements';
+import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
 
-export const Text = createRemoteComponent('ui-text', TextElement);
+import type {
+  Text as TextElement,
+  TextProperties,
+} from '@watching/clips/elements';
+
+export interface TextProps
+  extends PropsWithChildren<Omit<Partial<TextProperties>, 'emphasis'>> {
+  ref?: ForwardedRef<TextElement>;
+  emphasis?: TextProperties['emphasis'] | boolean;
+}
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'ui-text': TextProps;
+    }
+  }
+}
+
+export const Text = forwardRef<TextElement, TextProps>(
+  function Text(props, ref) {
+    return <ui-text ref={ref} {...props} />;
+  },
+);

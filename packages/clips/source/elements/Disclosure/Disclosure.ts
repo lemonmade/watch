@@ -1,29 +1,37 @@
-import {createRemoteElement} from '@remote-dom/core/elements';
+import {ClipsElement, backedByAttribute} from '../ClipsElement.ts';
 
-export interface DisclosureProperties {
-  label?: string;
-}
-
-export interface DisclosureSlots {
+export interface DisclosureAttributes {
   /**
    * The content to use for the activator button.
    */
-  label?: true;
+  label?: string;
 }
+
+export interface DisclosureProperties {
+  /**
+   * The content to use for the activator button.
+   */
+  label?: string;
+}
+
+export interface DisclosureEvents {}
 
 /**
  * A UI pattern where an activator button is used to hide and show
  * details content. This component accepts a `label` slot for the
  * content of the activator.
  */
-export const Disclosure = createRemoteElement<
-  DisclosureProperties,
-  {},
-  DisclosureSlots
->({
-  properties: {label: {type: String}},
-  slots: ['label'],
-});
+export class Disclosure
+  extends ClipsElement<DisclosureAttributes, DisclosureEvents>
+  implements DisclosureProperties
+{
+  static get remoteAttributes() {
+    return ['label'] satisfies (keyof DisclosureAttributes)[];
+  }
+
+  @backedByAttribute()
+  accessor label: string | undefined;
+}
 
 customElements.define('ui-disclosure', Disclosure);
 

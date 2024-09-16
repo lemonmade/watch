@@ -23,6 +23,10 @@
   row-gap: var(--z-spacing-small-2);
 }
 
+.cornerRadiusAuto {
+  --z-internal-Choice-corner-radius: var(--z-corner-radius-small-1);
+}
+
 .cornerRadiusBase {
   --z-internal-Choice-corner-radius: var(--z-corner-radius-small-1);
 }

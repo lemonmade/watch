@@ -12,9 +12,10 @@
     "@lemon/css": "workspace:*",
     "@preact/signals-core": "^1.8.0",
     "@quilted/events": "^2.1.1",
-    "@remote-dom/core": "^1.4.0",
-    "@remote-dom/preact": "^1.1.0",
+    "@remote-dom/core": "^1.5.0",
+    "@remote-dom/preact": "^1.2.0",
     "@watching/clips": "workspace:*",
+    "@watching/design": "workspace:*",
     "date-fns": "^2.29.3"
   },
   "devDependencies": {
