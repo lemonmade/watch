@@ -1,7 +1,7 @@
 import {
   cloneElement,
   isValidElement,
-  type ComponentChild,
+  type VNode,
   type RenderableProps,
 } from 'preact';
 
@@ -15,7 +15,7 @@ export interface DisclosureProps
     Omit<Partial<DisclosureProperties>, 'label'>,
     DisclosureElement
   > {
-  label?: ComponentChild;
+  label?: VNode<any>;
 }
 
 declare module 'preact' {

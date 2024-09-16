@@ -1,4 +1,9 @@
-import type {RenderableProps} from 'preact';
+import {
+  cloneElement,
+  isValidElement,
+  type RenderableProps,
+  type VNode,
+} from 'preact';
 
 import type {
   Action as ActionElement,
@@ -8,6 +13,7 @@ import type {
 
 export interface ActionProps
   extends RenderableProps<Partial<ActionProperties>, ActionElement> {
+  overlay?: VNode<any>;
   onPress?(): void | Promise<void>;
   onpress?(event: ActionEvents['press']): void;
 }
@@ -15,16 +21,20 @@ export interface ActionProps
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-action': Omit<ActionProps, 'onPress'>;
+      'ui-action': Omit<ActionProps, 'onPress' | 'overlay'>;
     }
   }
 }
 
-export function Action({onPress, ...props}: ActionProps) {
+export function Action({overlay, onPress, ...props}: ActionProps) {
   return (
     <ui-action
       {...props}
       onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
-    />
+    >
+      {overlay && isValidElement(overlay)
+        ? cloneElement(overlay, {slot: 'overlay'})
+        : null}
+    </ui-action>
   );
 }

@@ -1,4 +1,11 @@
-import {forwardRef, type PropsWithChildren, type ForwardedRef} from 'react';
+import {
+  forwardRef,
+  isValidElement,
+  cloneElement,
+  type ReactNode,
+  type PropsWithChildren,
+  type ForwardedRef,
+} from 'react';
 
 import type {
   Action as ActionElement,
@@ -9,6 +16,7 @@ import type {
 export interface ActionProps
   extends PropsWithChildren<Partial<ActionProperties>> {
   ref?: ForwardedRef<ActionElement>;
+  overlay?: ReactNode;
   onPress?(): void | Promise<void>;
   onpress?(event: ActionEvents['press']): void;
 }
@@ -16,13 +24,13 @@ export interface ActionProps
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-action': Omit<ActionProps, 'onPress'>;
+      'ui-action': Omit<ActionProps, 'onPress' | 'overlay'>;
     }
   }
 }
 
 export const Action = forwardRef<ActionElement, ActionProps>(function Action(
-  {onPress, ...props},
+  {overlay, onPress, ...props},
   ref,
 ) {
   return (
@@ -30,6 +38,10 @@ export const Action = forwardRef<ActionElement, ActionProps>(function Action(
       ref={ref}
       {...props}
       onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
-    />
+    >
+      {overlay && isValidElement(overlay)
+        ? cloneElement<any>(overlay, {slot: 'overlay'})
+        : null}
+    </ui-action>
   );
 });

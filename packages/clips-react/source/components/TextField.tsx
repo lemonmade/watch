@@ -14,12 +14,9 @@ import type {
 } from '@watching/clips/elements';
 
 export interface TextFieldProps
-  extends PropsWithChildren<
-    Omit<Partial<TextFieldProperties>, 'label'> & {
-      label?: ReactNode;
-    }
-  > {
+  extends PropsWithChildren<Omit<Partial<TextFieldProperties>, 'label'>> {
   ref?: ForwardedRef<TextFieldElement>;
+  label?: ReactNode;
   onChange?(value: string): void;
   onchange?(event: TextFieldEvents['change']): void;
   onInput?(value: string): void;

@@ -1,7 +1,7 @@
 import {
   cloneElement,
   isValidElement,
-  type ComponentChild,
+  type VNode,
   type RenderableProps,
 } from 'preact';
 
@@ -13,11 +13,10 @@ import type {
 
 export interface TextFieldProps
   extends RenderableProps<
-    Omit<Partial<TextFieldProperties>, 'label'> & {
-      label?: ComponentChild;
-    },
+    Omit<Partial<TextFieldProperties>, 'label'>,
     TextFieldElement
   > {
+  label?: VNode<any>;
   onChange?(value: string): void;
   onchange?(event: TextFieldEvents['change']): void;
   onInput?(value: string): void;
