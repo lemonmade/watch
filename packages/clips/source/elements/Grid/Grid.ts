@@ -90,7 +90,7 @@ export class Grid<
 
   get spacing(): SpacingKeyword {
     return (
-      restrictToAllowedValues(this.getAttribute('padding'), SPACING_KEYWORDS) ??
+      restrictToAllowedValues(this.getAttribute('spacing'), SPACING_KEYWORDS) ??
       'none'
     );
   }
@@ -104,9 +104,9 @@ export class Grid<
           : restrictToAllowedValues(value, SPACING_KEYWORDS);
 
     if (resolvedValue === 'none') {
-      this.removeAttribute('padding');
+      this.removeAttribute('spacing');
     } else if (resolvedValue) {
-      this.setAttribute('padding', resolvedValue);
+      this.setAttribute('spacing', resolvedValue);
     }
   }
 

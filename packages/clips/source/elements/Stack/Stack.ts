@@ -79,7 +79,7 @@ export class Stack<
 
   get spacing(): SpacingKeyword {
     return (
-      restrictToAllowedValues(this.getAttribute('padding'), SPACING_KEYWORDS) ??
+      restrictToAllowedValues(this.getAttribute('spacing'), SPACING_KEYWORDS) ??
       'none'
     );
   }
@@ -89,9 +89,9 @@ export class Stack<
       value === true ? 'auto' : value === false ? 'none' : value;
 
     if (resolvedValue === 'none') {
-      this.removeAttribute('padding');
+      this.removeAttribute('spacing');
     } else {
-      this.setAttribute('padding', resolvedValue);
+      this.setAttribute('spacing', resolvedValue);
     }
   }
 
