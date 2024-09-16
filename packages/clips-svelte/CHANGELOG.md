@@ -1,5 +1,14 @@
 # @watching/clips-svelte
 
+## 0.3.1
+
+### Patch Changes
+
+- [`b4005bd6`](https://github.com/lemonmade/watch/commit/b4005bd6c248406924167e5682006de22a1fbef6) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Svelte peer dependencies
+
+- Updated dependencies [[`ba5df0ce`](https://github.com/lemonmade/watch/commit/ba5df0ce4d9ac0cfa6c966817c1620642b9c350d), [`3f8d4c40`](https://github.com/lemonmade/watch/commit/3f8d4c406e69267ad231196595847102bc723741)]:
+  - @watching/clips@0.6.1
+
 ## 0.3.0
 
 ### Minor Changes
