@@ -1,5 +1,14 @@
 # @watching/clips-preact
 
+## 0.3.2
+
+### Patch Changes
+
+- [`d45bc97b`](https://github.com/lemonmade/watch/commit/d45bc97b85cbbfa2fe0ec9e9d04ecc67650b41e0) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix more element rendering issues
+
+- Updated dependencies [[`d45bc97b`](https://github.com/lemonmade/watch/commit/d45bc97b85cbbfa2fe0ec9e9d04ecc67650b41e0)]:
+  - @watching/clips@0.6.2
+
 ## 0.3.1
 
 ### Patch Changes
