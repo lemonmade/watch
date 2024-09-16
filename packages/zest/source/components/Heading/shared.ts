@@ -40,7 +40,7 @@ export function useHeadingDomDetails({
   let resolvedLevel =
     (explicitLevel === 'auto' || explicitLevel == null
       ? undefined
-      : Number(explicitLevel) as HeadingLevel) ?? level;
+      : (Number(explicitLevel) as HeadingLevel)) ?? level;
 
   return {Element, level: resolvedLevel} as const;
 }
