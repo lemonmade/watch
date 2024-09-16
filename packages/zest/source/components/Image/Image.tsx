@@ -10,6 +10,12 @@ import styles from './Image.module.css';
 export interface ImageProps
   extends Omit<Partial<ImageProperties>, 'cornerRadius'> {
   cornerRadius?: CornerRadiusKeyword | boolean;
+
+  /**
+   * Additional image sources to use for specific viewport conditions. Each of these
+   * records will contain the `source` image URL to use, and viewport size or resolution
+   * conditions to restrict the image to.
+   */
   sources?: readonly ImageSource[];
 }
 

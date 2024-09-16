@@ -1,4 +1,4 @@
-import {SkeletonText as UISkeletonText} from '@lemon/zest';
+import {SkeletonText as UISkeletonText, CSSLiteral} from '@lemon/zest';
 import {
   TEXT_EMPHASIS_KEYWORDS,
   SKELETON_TEXT_SIZE_KEYWORDS,
@@ -23,10 +23,14 @@ export const SkeletonText = createClipsComponentRenderer(
           attributes.emphasis,
           TEXT_EMPHASIS_KEYWORDS,
         )}
-        size={restrictToAllowedValues(
-          attributes.size,
-          SKELETON_TEXT_SIZE_KEYWORDS,
-        )}
+        size={
+          CSSLiteral.test(attributes.size)
+            ? attributes.size
+            : restrictToAllowedValues(
+                attributes.size,
+                SKELETON_TEXT_SIZE_KEYWORDS,
+              )
+        }
       >
         {children}
       </UISkeletonText>

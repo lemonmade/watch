@@ -12,15 +12,15 @@ export interface ViewAttributes {
 
 export interface ViewProperties {
   get padding(): SpacingKeyword;
-  set padding(value: SpacingKeyword | boolean);
+  set padding(value: SpacingKeyword | boolean | undefined);
   get paddingInlineStart(): SpacingKeyword | undefined;
-  set paddingInlineStart(value: SpacingKeyword | boolean);
+  set paddingInlineStart(value: SpacingKeyword | boolean | undefined);
   get paddingInlineEnd(): SpacingKeyword | undefined;
-  set paddingInlineEnd(value: SpacingKeyword | boolean);
+  set paddingInlineEnd(value: SpacingKeyword | boolean | undefined);
   get paddingBlockStart(): SpacingKeyword | undefined;
-  set paddingBlockStart(value: SpacingKeyword | boolean);
+  set paddingBlockStart(value: SpacingKeyword | boolean | undefined);
   get paddingBlockEnd(): SpacingKeyword | undefined;
-  set paddingBlockEnd(value: SpacingKeyword | boolean);
+  set paddingBlockEnd(value: SpacingKeyword | boolean | undefined);
 }
 
 export interface ViewEvents {}
@@ -55,12 +55,11 @@ export class View<
   }
 
   set padding(value: SpacingKeyword | boolean) {
-    const resolvedValue =
-      value === true ? 'auto' : value === false ? 'none' : value;
+    const resolvedValue = resolvePaddingValue(value);
 
     if (resolvedValue === 'none') {
       this.removeAttribute('padding');
-    } else {
+    } else if (resolvedValue) {
       this.setAttribute('padding', resolvedValue);
     }
   }
@@ -73,14 +72,7 @@ export class View<
   }
 
   set paddingInlineStart(value: SpacingKeyword | boolean | undefined) {
-    if (value == null) {
-      this.removeAttribute('padding-inline-start');
-    } else {
-      this.setAttribute(
-        'padding',
-        value === true ? 'auto' : value === false ? 'none' : value,
-      );
-    }
+    this.#updatePaddingProperty('padding-inline-start', value);
   }
 
   get paddingInlineEnd(): SpacingKeyword | undefined {
@@ -91,14 +83,7 @@ export class View<
   }
 
   set paddingInlineEnd(value: SpacingKeyword | boolean | undefined) {
-    if (value == null) {
-      this.removeAttribute('padding-inline-end');
-    } else {
-      this.setAttribute(
-        'padding',
-        value === true ? 'auto' : value === false ? 'none' : value,
-      );
-    }
+    this.#updatePaddingProperty('padding-inline-end', value);
   }
 
   get paddingBlockStart(): SpacingKeyword | undefined {
@@ -109,14 +94,7 @@ export class View<
   }
 
   set paddingBlockStart(value: SpacingKeyword | boolean | undefined) {
-    if (value == null) {
-      this.removeAttribute('padding-block-start');
-    } else {
-      this.setAttribute(
-        'padding',
-        value === true ? 'auto' : value === false ? 'none' : value,
-      );
-    }
+    this.#updatePaddingProperty('padding-block-start', value);
   }
 
   get paddingBlockEnd(): SpacingKeyword | undefined {
@@ -127,15 +105,28 @@ export class View<
   }
 
   set paddingBlockEnd(value: SpacingKeyword | boolean | undefined) {
+    this.#updatePaddingProperty('padding-block-end', value);
+  }
+
+  #updatePaddingProperty(
+    property: Extract<keyof ViewAttributes, `padding-${string}`>,
+    value: SpacingKeyword | boolean | undefined,
+  ) {
     if (value == null) {
-      this.removeAttribute('padding-block-end');
+      this.removeAttribute(property);
     } else {
-      this.setAttribute(
-        'padding',
-        value === true ? 'auto' : value === false ? 'none' : value,
-      );
+      const resolvedValue = resolvePaddingValue(value);
+      if (resolvedValue) this.setAttribute(property, resolvedValue);
     }
   }
+}
+
+function resolvePaddingValue(
+  value: string | boolean | undefined,
+): SpacingKeyword | undefined {
+  if (value === true) return 'auto';
+  if (value === false || value == null) return 'none';
+  return restrictToAllowedValues(value, SPACING_KEYWORDS);
 }
 
 customElements.define('ui-view', View);

@@ -1,5 +1,4 @@
 import {
-  retain,
   ThreadSignal,
   ThreadWebWorker,
   ThreadSerializationStructuredClone,
@@ -74,9 +73,6 @@ export async function render<T extends ExtensionPoint>(
   connection: RemoteConnection,
   api: Api<T>,
 ) {
-  retain(connection);
-  retain(api);
-
   // @ts-expect-error I can’t get TypeScript to understand the union types going on here...
   return runExtensionPoint(id, connection, api);
 }

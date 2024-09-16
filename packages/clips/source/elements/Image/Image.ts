@@ -26,12 +26,71 @@ export interface ImageAttributes {
 }
 
 export interface ImageProperties {
+  /**
+   * The main source file for this image. When multiple images are provided with
+   * the `sources` prop, the image provided here will be used as the fallback when
+   * no other source matches the current viewport.
+   */
   source?: string;
+
+  /**
+   * Accessible content describing the image. This content will be used as `altText` for
+   * the image on the web, which means it will be available to users of assistive technologies
+   * like screen readers. If this image is purely decorative, you can omit this prop and set
+   * the `accessibilityRole` prop to `decorative`. One common signal that the image is purely
+   * decorative is that the description content you would use is already present in your UI,
+   * often quite close to the image.
+   *
+   * @default ''
+   */
   description: string;
+
+  /**
+   * Customizes the role of the image, which affect how it will be presented to assistive
+   * technologies. Currently, you can only set this property to `decorative`, which signals
+   * that the image should not be presented to assistive technologies at all. This is useful
+   * for content like icons, where a name describing the icon is typically already on the page.
+   *
+   * @default 'image'
+   */
   accessibilityRole: ImageAccessibilityRoleKeyword;
+
+  /**
+   * How the image should load. By default, all images will load `immediate`ly when they are rendered.
+   * You can set this prop to `in-viewport` to defer loading the image until it is scrolled into view.
+   *
+   * @default 'immediate'
+   */
   loading: ImageLoadingKeyword;
+
+  /**
+   * The relative size of the image, expressed as its with over its height. You should provide an aspect
+   * ratio unless it is prohibitively expensive to calculate; without an aspect ratio, the image will change
+   * its size once the file has loaded, which leads to major layout shifts.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio
+   */
   aspectRatio?: number;
+
+  /**
+   * How the image should be resized to fit its container, if the two have different aspect ratios. By default,
+   * the image will be stretched to fit the container. You can change this behavior by passing one of these values:
+   *
+   * - `cover`, which will cause the image to get as large as it needs to be to fill the container, while preserving
+   *    its original aspect ratio,or to `contain`. This often results in parts of the image being cut off.
+   * - `contain`, which will cause the image to scale to fit the container while preserving its original aspect ratio.
+   *   This often results in "leftover" space around the image in the container.
+   *
+   * @default 'auto'
+   * @see https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
+   */
   fit: ImageFitKeyword;
+
+  /**
+   * The radius of the corners of the image.
+   *
+   * @default 'none'
+   */
   get cornerRadius(): CornerRadiusKeyword;
   set cornerRadius(value: CornerRadiusKeyword | boolean | undefined);
 }
@@ -82,7 +141,9 @@ export class Image
   }
 
   set aspectRatio(value: number | undefined) {
-    if (typeof value === 'number') {
+    if (value == null) {
+      this.removeAttribute('aspect-ratio');
+    } else if (typeof value === 'number') {
       this.setAttribute('aspect-ratio', value.toString());
     }
   }
@@ -105,15 +166,13 @@ export class Image
     const resolvedValue =
       value === true
         ? 'auto'
-        : value === false
+        : value === false || value == null
           ? 'none'
           : restrictToAllowedValues(value, CORNER_RADIUS_KEYWORDS);
 
-    if (resolvedValue == null) return;
-
     if (resolvedValue === 'none') {
       this.removeAttribute('corner-radius');
-    } else {
+    } else if (resolvedValue) {
       this.setAttribute('corner-radius', resolvedValue);
     }
   }

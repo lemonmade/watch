@@ -7,8 +7,9 @@ import {useHeadingDomDetails} from './shared.ts';
 
 import styles from './Heading.module.css';
 
-export interface HeadingProps extends Partial<HeadingProperties> {
-  level?: HeadingLevel | 'auto';
+export interface HeadingProps
+  extends Omit<Partial<HeadingProperties>, 'level'> {
+  level?: HeadingLevel | `${HeadingLevel}` | 'auto';
 }
 
 export function Heading({
@@ -26,7 +27,7 @@ export function Heading({
     <Element
       className={classes(
         styles.Heading,
-        styles[`level${explicitLevel ?? level}`],
+        styles[`level${level}`],
         divider && styles.divider,
       )}
     >

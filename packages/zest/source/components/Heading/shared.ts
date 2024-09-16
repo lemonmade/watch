@@ -22,13 +22,15 @@ export function useHeadingDomDetails({
   level: explicitLevel,
   accessibilityRole,
 }: {
-  level?: HeadingLevel | 'auto';
+  level?: HeadingLevel | `${HeadingLevel}` | 'auto';
   accessibilityRole?: HeadingAccessibilityRoleKeyword;
 } = {}) {
   const level = useHeadingLevel();
   const role =
     accessibilityRole ??
-    (explicitLevel == null || explicitLevel === level
+    (explicitLevel == null ||
+    explicitLevel === 'auto' ||
+    Number(explicitLevel) === level
       ? 'heading'
       : 'presentation');
 
@@ -36,7 +38,9 @@ export function useHeadingDomDetails({
     role === 'presentation' ? 'p' : (`h${toHeadingLevel(level)}` as const);
 
   let resolvedLevel =
-    (explicitLevel === 'auto' ? undefined : explicitLevel) ?? level;
+    (explicitLevel === 'auto' || explicitLevel == null
+      ? undefined
+      : Number(explicitLevel) as HeadingLevel) ?? level;
 
   return {Element, level: resolvedLevel} as const;
 }

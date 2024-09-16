@@ -66,7 +66,7 @@ export interface HeadingEvents {}
  * components to create an accessible document structure.
  */
 export class Heading
-  extends ClipsElement<HeadingAttributes>
+  extends ClipsElement<HeadingAttributes, HeadingEvents>
   implements HeadingProperties
 {
   static get remoteAttributes() {

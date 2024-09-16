@@ -97,11 +97,15 @@ export class Grid<
 
   set spacing(value: SpacingKeyword | boolean) {
     const resolvedValue =
-      value === true ? 'auto' : value === false ? 'none' : value;
+      value === true
+        ? 'auto'
+        : value === false || value == null
+          ? 'none'
+          : restrictToAllowedValues(value, SPACING_KEYWORDS);
 
     if (resolvedValue === 'none') {
       this.removeAttribute('padding');
-    } else {
+    } else if (resolvedValue) {
       this.setAttribute('padding', resolvedValue);
     }
   }
