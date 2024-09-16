@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.7
+
+### Patch Changes
+
+- [#333](https://github.com/lemonmade/watch/pull/333) [`0dbd36fa`](https://github.com/lemonmade/watch/commit/0dbd36fac1f2fbdac29bf5a54974a7d4f48a8d60) Thanks [@lemonmade](https://github.com/lemonmade)! - Update custom element APIs
+
 ## 0.2.6
 
 ### Patch Changes

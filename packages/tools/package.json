@@ -7,7 +7,7 @@
     "access": "public",
     "@watching/registry": "https://registry.npmjs.org"
   },
-  "version": "0.2.2",
+  "version": "1.0.0",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -76,7 +76,7 @@
     "zod": "^3.21.4"
   },
   "peerDependencies": {
-    "@watching/clips": "^0.5.6"
+    "@watching/clips": "^0.6.0"
   },
   "peerDependenciesMeta": {
     "@watching/clips": {
