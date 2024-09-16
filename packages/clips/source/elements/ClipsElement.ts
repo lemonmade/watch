@@ -83,54 +83,6 @@ export function backedByAttributeAsBoolean({
   });
 }
 
-export function backedByAttributeWithBooleanShorthand<T>({
-  name,
-  whenTrue,
-  parse,
-  serialize,
-}: {
-  name?: string;
-  whenTrue: T;
-  parse?(value: string | null): T | undefined;
-  serialize?(value: T, context: {current: T; default: T}): string | null;
-}) {
-  return function (
-    _target: any,
-    context: ClassAccessorDecoratorContext<HTMLElement, T>,
-  ) {
-    let defaultValue!: T;
-    const attributeName = name ?? (context.name as string);
-
-    return {
-      get(this: HTMLElement): T {
-        const attribute = this.getAttribute(attributeName);
-        return (parse ? parse(attribute) : (attribute as T)) ?? defaultValue;
-      },
-      set(this: HTMLElement, value: T | boolean) {
-        const normalizedValue =
-          value === true ? whenTrue : value === false ? defaultValue : value;
-
-        const serialized = serialize
-          ? serialize(normalizedValue, {
-              current: context.access.get(this),
-              default: defaultValue,
-            })
-          : (normalizedValue as string);
-
-        if (!Boolean(serialized) || serialized === defaultValue) {
-          this.removeAttribute(attributeName);
-        } else {
-          this.setAttribute(attributeName, serialized!);
-        }
-      },
-      init(this: HTMLElement, value: T) {
-        defaultValue = value;
-        return value;
-      },
-    };
-  };
-}
-
 export function attributeRestrictedToAllowedValues<T extends string>(
   allowed: Set<T>,
 ) {

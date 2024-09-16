@@ -2,11 +2,7 @@ import {
   SPACING_OR_NONE_KEYWORDS,
   type SpacingOrNoneKeyword,
 } from '@watching/design';
-import {
-  attributeRestrictedToAllowedValues,
-  backedByAttributeWithBooleanShorthand,
-  ClipsElement,
-} from '../ClipsElement.ts';
+import {ClipsElement, restrictToAllowedValues} from '../ClipsElement.ts';
 
 export interface ModalAttributes {
   /**
@@ -39,11 +35,27 @@ export interface ModalEvents {}
  * the action will be given accessibility markup that associates it with the modal.
  */
 export class Modal extends ClipsElement {
-  @backedByAttributeWithBooleanShorthand({
-    whenTrue: 'auto',
-    ...attributeRestrictedToAllowedValues(SPACING_OR_NONE_KEYWORDS),
-  })
-  accessor padding: SpacingOrNoneKeyword = 'none';
+  get padding(): SpacingOrNoneKeyword {
+    return (
+      restrictToAllowedValues(
+        this.getAttribute('padding'),
+        SPACING_OR_NONE_KEYWORDS,
+      ) ?? 'none'
+    );
+  }
+
+  set padding(value: SpacingOrNoneKeyword | boolean | undefined) {
+    if (value == null || value === 'none' || value === false) {
+      this.removeAttribute('padding');
+    } else {
+      const resolvedValue =
+        value === true
+          ? 'auto'
+          : restrictToAllowedValues(value, SPACING_OR_NONE_KEYWORDS);
+
+      if (resolvedValue) this.setAttribute('padding', resolvedValue);
+    }
+  }
 }
 
 customElements.define('ui-modal', Modal);

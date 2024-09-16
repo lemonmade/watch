@@ -3,11 +3,7 @@ import {
   type TextEmphasisKeyword,
 } from '@watching/design';
 
-import {
-  ClipsElement,
-  backedByAttributeWithBooleanShorthand,
-  attributeRestrictedToAllowedValues,
-} from '../ClipsElement.ts';
+import {ClipsElement, restrictToAllowedValues} from '../ClipsElement.ts';
 
 export interface TextAttributes {
   /**
@@ -47,11 +43,27 @@ export class Text
    *
    * @default 'auto'
    */
-  @backedByAttributeWithBooleanShorthand<TextEmphasisKeyword>({
-    whenTrue: 'strong',
-    ...attributeRestrictedToAllowedValues(TEXT_EMPHASIS_KEYWORDS),
-  })
-  accessor emphasis: TextEmphasisKeyword = 'auto';
+  get emphasis(): TextEmphasisKeyword {
+    return (
+      restrictToAllowedValues(
+        this.getAttribute('emphasis'),
+        TEXT_EMPHASIS_KEYWORDS,
+      ) ?? 'auto'
+    );
+  }
+
+  set emphasis(value: TextEmphasisKeyword | boolean | undefined) {
+    if (value == null || value === false) {
+      this.removeAttribute('emphasis');
+    } else {
+      const resolvedValue =
+        value === true
+          ? 'strong'
+          : restrictToAllowedValues(value, TEXT_EMPHASIS_KEYWORDS);
+
+      if (resolvedValue) this.setAttribute('emphasis', resolvedValue);
+    }
+  }
 }
 
 customElements.define('ui-text', Text);

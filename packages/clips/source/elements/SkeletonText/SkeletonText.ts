@@ -9,8 +9,6 @@ import type {CSSLiteralValue} from '../../styles.ts';
 import {
   ClipsElement,
   backedByAttribute,
-  backedByAttributeWithBooleanShorthand,
-  attributeRestrictedToAllowedValues,
   restrictToAllowedValues,
 } from '../ClipsElement.ts';
 
@@ -64,11 +62,27 @@ export class SkeletonText
    *
    * @default 'auto'
    */
-  @backedByAttributeWithBooleanShorthand<TextEmphasisKeyword>({
-    whenTrue: 'strong',
-    ...attributeRestrictedToAllowedValues(TEXT_EMPHASIS_KEYWORDS),
-  })
-  accessor emphasis: TextEmphasisKeyword = 'auto';
+  get emphasis(): TextEmphasisKeyword {
+    return (
+      restrictToAllowedValues(
+        this.getAttribute('emphasis'),
+        TEXT_EMPHASIS_KEYWORDS,
+      ) ?? 'auto'
+    );
+  }
+
+  set emphasis(value: TextEmphasisKeyword | boolean | undefined) {
+    if (value == null || value === false) {
+      this.removeAttribute('emphasis');
+    } else {
+      const resolvedValue =
+        value === true
+          ? 'strong'
+          : restrictToAllowedValues(value, TEXT_EMPHASIS_KEYWORDS);
+
+      if (resolvedValue) this.setAttribute('emphasis', resolvedValue);
+    }
+  }
 
   /**
    * The size of the skeleton text.

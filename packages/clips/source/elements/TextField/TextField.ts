@@ -16,7 +16,7 @@ import {
   ClipsElement,
   backedByAttribute,
   backedByAttributeAsBoolean,
-  backedByAttributeWithBooleanShorthand,
+  restrictToAllowedValues,
   attributeRestrictedToAllowedValues,
 } from '../ClipsElement.ts';
 // import {type SignalOrValue} from '../../signals.ts';
@@ -268,13 +268,6 @@ export class TextField
   @backedByAttributeAsBoolean()
   accessor readonly: boolean = false;
 
-  @backedByAttributeWithBooleanShorthand({
-    name: 'resize',
-    whenTrue: 'block',
-    ...attributeRestrictedToAllowedValues(TEXT_FIELD_RESIZE_KEYWORDS),
-  })
-  accessor resize: TextFieldResizeKeyword = 'none';
-
   @backedByAttribute({
     name: 'keyboard-type',
     ...attributeRestrictedToAllowedValues(TEXT_FIELD_KEYBOARD_TYPE_KEYWORDS),
@@ -310,6 +303,28 @@ export class TextField
     },
   })
   accessor maximumLines: number = 1;
+
+  get resize(): TextFieldResizeKeyword {
+    return (
+      restrictToAllowedValues(
+        this.getAttribute('resize'),
+        TEXT_FIELD_RESIZE_KEYWORDS,
+      ) ?? 'none'
+    );
+  }
+
+  set resize(value: TextFieldResizeKeyword | boolean | undefined) {
+    if (value == null || value === 'none' || value === false) {
+      this.removeAttribute('resize');
+    } else {
+      const resolvedValue =
+        value === true
+          ? 'block'
+          : restrictToAllowedValues(value, TEXT_FIELD_RESIZE_KEYWORDS);
+
+      if (resolvedValue) this.setAttribute('resize', resolvedValue);
+    }
+  }
 }
 
 customElements.define('ui-text-field', TextField);
