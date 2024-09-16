@@ -19,7 +19,7 @@ jobs:
       - uses: ./.github/workflows/actions/prepare
       - run: pnpm exec prisma generate
       - uses: ./.github/workflows/actions/type-check-with-cache
-      - run: pnpm --filter app run build
+      - run: pnpm --filter app... run build
       - uses: actions/upload-artifact@v4
         with:
           name: build-app
