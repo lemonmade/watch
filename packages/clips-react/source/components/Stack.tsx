@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import {ViewProps} from './View.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface StackProps
   extends PropsWithChildren<
@@ -26,6 +27,7 @@ declare module 'react' {
 
 export const Stack = forwardRef<StackElement, StackProps>(
   function Stack(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-stack {...props} ref={ref} />;
   },
 );

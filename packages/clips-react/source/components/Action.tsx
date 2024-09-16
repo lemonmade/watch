@@ -13,6 +13,8 @@ import type {
   ActionEvents,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface ActionProps
   extends PropsWithChildren<Partial<ActionProperties>> {
   ref?: ForwardedRef<ActionElement>;
@@ -33,6 +35,8 @@ export const Action = forwardRef<ActionElement, ActionProps>(function Action(
   {overlay, children, onPress, ...props},
   ref,
 ) {
+  useCustomElementProperties(props, ref);
+
   return (
     <ui-action
       ref={ref}

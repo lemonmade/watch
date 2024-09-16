@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import type {StackProps} from './Stack.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface InlineStackProps
   extends PropsWithChildren<
@@ -25,6 +26,7 @@ declare module 'react' {
 
 export const InlineStack = forwardRef<InlineStackElement, InlineStackProps>(
   function InlineStack(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-inline-stack {...props} ref={ref} />;
   },
 );

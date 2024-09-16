@@ -4,6 +4,8 @@ import type {
   SectionProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface SectionProps
   extends PropsWithChildren<Partial<SectionProperties>> {
   ref?: ForwardedRef<SectionElement>;
@@ -19,6 +21,7 @@ declare module 'react' {
 
 export const Section = forwardRef<SectionElement, SectionProps>(
   function Section(props, ref) {
-    return <ui-section ref={ref} {...props} />;
+    useCustomElementProperties(props, ref);
+    return <ui-section {...props} ref={ref} />;
   },
 );

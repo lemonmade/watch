@@ -5,6 +5,8 @@ import type {
   HeadingProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface HeadingProps
   extends PropsWithChildren<Omit<Partial<HeadingProperties>, 'level'>> {
   ref?: ForwardedRef<HeadingElement>;
@@ -23,7 +25,8 @@ declare module 'react' {
 }
 
 export const Heading = forwardRef<HeadingElement, HeadingProps>(
-  function Heading(props) {
-    return <ui-heading {...props} />;
+  function Heading(props, ref) {
+    useCustomElementProperties(props, ref);
+    return <ui-heading {...props} ref={ref} />;
   },
 );

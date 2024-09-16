@@ -13,6 +13,8 @@ import type {
   TextFieldEvents,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface TextFieldProps
   extends PropsWithChildren<Omit<Partial<TextFieldProperties>, 'label'>> {
   ref?: ForwardedRef<TextFieldElement>;
@@ -32,18 +34,29 @@ declare module 'react' {
 }
 
 export const TextField = forwardRef<TextFieldElement, TextFieldProps>(
-  function TextField({label, onChange, onInput, ...props}) {
-    const listeners = {
+  function TextField({label, onChange, onInput, ...props}, ref) {
+    const allProps: TextFieldProps = {
       onchange: onChange ? (event) => onChange(event.detail) : undefined,
       oninput: onInput ? (event) => onInput(event.detail) : undefined,
-    } satisfies Pick<TextFieldProps, 'onchange' | 'oninput'>;
+      ...props,
+    };
 
-    return label && isValidElement(label) ? (
-      <ui-text-field {...listeners} {...props}>
-        {cloneElement<any>(label, {slot: 'label'})}
+    let labelChild: ReactNode = null;
+
+    if (label) {
+      if (isValidElement(label)) {
+        labelChild = cloneElement<any>(label, {slot: 'label'});
+      } else {
+        allProps.label = label;
+      }
+    }
+
+    useCustomElementProperties(allProps, ref);
+
+    return (
+      <ui-text-field {...allProps} ref={ref}>
+        {labelChild}
       </ui-text-field>
-    ) : (
-      <ui-text-field label={label} {...listeners} {...props} />
     );
   },
 );

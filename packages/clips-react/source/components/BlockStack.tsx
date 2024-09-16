@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import type {StackProps} from './Stack.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface BlockStackProps
   extends PropsWithChildren<
@@ -25,6 +26,7 @@ declare module 'react' {
 
 export const BlockStack = forwardRef<BlockStackElement, BlockStackProps>(
   function BlockStack(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-block-stack {...props} ref={ref} />;
   },
 );

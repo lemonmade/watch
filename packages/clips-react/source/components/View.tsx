@@ -5,6 +5,8 @@ import type {
   ViewProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface ViewProps
   extends PropsWithChildren<
     Omit<
@@ -34,6 +36,7 @@ declare module 'react' {
 
 export const View = forwardRef<ViewElement, ViewProps>(
   function View(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-view {...props} ref={ref} />;
   },
 );

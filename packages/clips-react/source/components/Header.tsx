@@ -4,6 +4,8 @@ import type {
   HeaderProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface HeaderProps
   extends PropsWithChildren<Partial<HeaderProperties>> {
   ref?: ForwardedRef<HeaderElement>;
@@ -19,6 +21,7 @@ declare module 'react' {
 
 export const Header = forwardRef<HeaderElement, HeaderProps>(
   function Header(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-header {...props} ref={ref} />;
   },
 );

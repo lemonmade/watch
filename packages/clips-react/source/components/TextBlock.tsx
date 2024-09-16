@@ -5,6 +5,8 @@ import type {
   TextBlockProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface TextBlockProps
   extends PropsWithChildren<Partial<TextBlockProperties>> {
   ref?: ForwardedRef<TextBlockElement>;
@@ -20,6 +22,7 @@ declare module 'react' {
 
 export const TextBlock = forwardRef<TextBlockElement, TextBlockProps>(
   function TextBlock(props, ref) {
-    return <ui-text-block ref={ref} {...props} />;
+    useCustomElementProperties(props, ref);
+    return <ui-text-block {...props} ref={ref} />;
   },
 );

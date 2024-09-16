@@ -5,6 +5,8 @@ import type {
   ImageProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface ImageProps
   extends PropsWithChildren<Omit<Partial<ImageProperties>, 'cornerRadius'>> {
   ref?: ForwardedRef<ImageElement>;
@@ -21,6 +23,7 @@ declare module 'react' {
 
 export const Image = forwardRef<ImageElement, ImageProps>(
   function Image(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-image {...props} ref={ref} />;
   },
 );

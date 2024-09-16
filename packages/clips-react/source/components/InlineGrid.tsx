@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import type {GridProps} from './Grid.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface InlineGridProps
   extends PropsWithChildren<
@@ -25,6 +26,7 @@ declare module 'react' {
 
 export const InlineGrid = forwardRef<InlineGridElement, InlineGridProps>(
   function InlineGrid(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-inline-grid {...props} ref={ref} />;
   },
 );

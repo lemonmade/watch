@@ -5,6 +5,8 @@ import type {
   PopoverProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface PopoverProps
   extends PropsWithChildren<Omit<Partial<PopoverProperties>, 'padding'>> {
   ref?: ForwardedRef<PopoverElement>;
@@ -20,6 +22,7 @@ declare module 'react' {
 
 export const Popover = forwardRef<PopoverElement, PopoverProps>(
   function Popover(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-popover {...props} ref={ref} />;
   },
 );

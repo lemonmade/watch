@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import type {GridProps} from './Grid.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface BlockGridProps
   extends PropsWithChildren<
@@ -25,6 +26,7 @@ declare module 'react' {
 
 export const BlockGrid = forwardRef<BlockGridElement, BlockGridProps>(
   function BlockGrid(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-block-grid {...props} ref={ref} />;
   },
 );

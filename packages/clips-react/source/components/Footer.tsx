@@ -4,7 +4,9 @@ import type {
   Footer as FooterElement,
   FooterProperties,
 } from '@watching/clips/elements';
+
 import {ViewProps} from './View.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface FooterProps
   extends PropsWithChildren<Omit<Partial<FooterProperties>, keyof ViewProps>>,
@@ -22,6 +24,7 @@ declare module 'react' {
 
 export const Footer = forwardRef<FooterElement, FooterProps>(
   function Footer(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-footer {...props} ref={ref} />;
   },
 );

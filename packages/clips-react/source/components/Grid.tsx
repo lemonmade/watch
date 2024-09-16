@@ -6,6 +6,7 @@ import type {
 } from '@watching/clips/elements';
 
 import {ViewProps} from './View.tsx';
+import {useCustomElementProperties} from './shared.ts';
 
 export interface GridProps
   extends PropsWithChildren<
@@ -26,6 +27,7 @@ declare module 'react' {
 
 export const Grid = forwardRef<GridElement, GridProps>(
   function Grid(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-grid {...props} ref={ref} />;
   },
 );

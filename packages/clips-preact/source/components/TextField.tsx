@@ -37,16 +37,25 @@ export function TextField({
   onInput,
   ...props
 }: TextFieldProps) {
-  const listeners = {
+  const allProps: TextFieldProps = {
     onchange: onChange ? (event) => onChange(event.detail) : undefined,
     oninput: onInput ? (event) => onInput(event.detail) : undefined,
-  } satisfies Pick<TextFieldProps, 'onchange' | 'oninput'>;
+    ...props,
+  };
 
-  return label && isValidElement(label) ? (
-    <ui-text-field {...listeners} {...props}>
-      {cloneElement(label, {slot: 'label'})}
-    </ui-text-field>
-  ) : (
-    <ui-text-field label={label} {...listeners} {...props} />
-  );
+  let labelChild: VNode<any> | null = null;
+
+  if (label) {
+    if (isValidElement(label)) {
+      labelChild = cloneElement<any>(label, {slot: 'label'});
+    } else {
+      allProps.label = label;
+    }
+  }
+
+  if (labelChild) {
+    return <ui-text-field {...allProps}>{labelChild}</ui-text-field>;
+  } else {
+    return <ui-text-field {...allProps} />;
+  }
 }

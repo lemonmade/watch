@@ -5,6 +5,8 @@ import type {
   TextProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface TextProps
   extends PropsWithChildren<Omit<Partial<TextProperties>, 'emphasis'>> {
   ref?: ForwardedRef<TextElement>;
@@ -21,6 +23,7 @@ declare module 'react' {
 
 export const Text = forwardRef<TextElement, TextProps>(
   function Text(props, ref) {
-    return <ui-text ref={ref} {...props} />;
+    useCustomElementProperties(props, ref);
+    return <ui-text {...props} ref={ref} />;
   },
 );

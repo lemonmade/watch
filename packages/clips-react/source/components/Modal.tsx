@@ -5,6 +5,8 @@ import type {
   ModalProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface ModalProps
   extends PropsWithChildren<Omit<Partial<ModalProperties>, 'padding'>> {
   ref?: ForwardedRef<ModalElement>;
@@ -21,6 +23,7 @@ declare module 'react' {
 
 export const Modal = forwardRef<ModalElement, ModalProps>(
   function Modal(props, ref) {
+    useCustomElementProperties(props, ref);
     return <ui-modal {...props} ref={ref} />;
   },
 );

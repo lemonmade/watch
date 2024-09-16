@@ -12,6 +12,8 @@ import type {
   DisclosureProperties,
 } from '@watching/clips/elements';
 
+import {useCustomElementProperties} from './shared.ts';
+
 export interface DisclosureProps
   extends PropsWithChildren<Omit<Partial<DisclosureProperties>, 'label'>> {
   ref?: ForwardedRef<DisclosureElement>;
@@ -27,14 +29,24 @@ declare module 'react' {
 }
 export const Disclosure = forwardRef<DisclosureElement, DisclosureProps>(
   function Disclosure({label, children, ...props}, ref) {
-    return label && isValidElement(label) ? (
+    const allProps: DisclosureProps = {...props};
+
+    let labelElement: ReactNode;
+
+    if (label) {
+      if (isValidElement(label)) {
+        labelElement = cloneElement<any>(label, {slot: 'label'});
+      } else {
+        allProps.label = label;
+      }
+    }
+
+    useCustomElementProperties(allProps, ref);
+
+    return (
       <ui-disclosure {...props} ref={ref}>
         {children}
-        {cloneElement<any>(label, {slot: 'label'})}
-      </ui-disclosure>
-    ) : (
-      <ui-disclosure label={label} {...props} ref={ref}>
-        {children}
+        {labelElement}
       </ui-disclosure>
     );
   },

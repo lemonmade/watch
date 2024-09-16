@@ -34,7 +34,14 @@ export interface ModalEvents {}
  * passed to this prop will be automatically opened when the action is pressed, and
  * the action will be given accessibility markup that associates it with the modal.
  */
-export class Modal extends ClipsElement {
+export class Modal
+  extends ClipsElement<ModalAttributes, ModalEvents>
+  implements ModalProperties
+{
+  static get remoteAttributes(): string[] {
+    return ['padding'] satisfies (keyof ModalAttributes)[];
+  }
+
   get padding(): SpacingOrNoneKeyword {
     return (
       restrictToAllowedValues(
