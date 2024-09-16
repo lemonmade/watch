@@ -7,6 +7,32 @@ import {
 
 export {html} from '@remote-dom/core/html';
 
+export type {
+  AlignmentKeyword,
+  CornerRadiusKeyword,
+  DirectionKeyword,
+  GridSizeKeyword,
+  HeadingAccessibilityRoleKeyword,
+  HeadingLevel,
+  HeadingLevelKeyword,
+  ImageAccessibilityRoleKeyword,
+  ImageFitKeyword,
+  ImageLoadingKeyword,
+  LayoutModeKeyword,
+  PopoverAttachmentKeyword,
+  SkeletonActionSizeKeyword,
+  SkeletonTextSizeKeyword,
+  SpacingKeyword,
+  SpacingOrNoneKeyword,
+  TextEmphasisKeyword,
+  TextFieldAutocompleteTarget,
+  TextFieldAutocompleteValue,
+  TextFieldKeyboardTypeKeyword,
+  TextFieldLabelStyleKeyword,
+  TextFieldResizeKeyword,
+  ViewportResolution,
+} from '@watching/design';
+
 export * from './elements/elements.ts';
 
 export type AnyElement = Extract<keyof HTMLElementTagNameMap, `ui-${string}`>;

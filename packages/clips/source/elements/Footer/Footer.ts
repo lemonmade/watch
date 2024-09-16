@@ -3,7 +3,7 @@ import {
   type ViewAttributes,
   type ViewProperties,
   type ViewEvents,
-} from '../View.ts';
+} from '../View/View.ts';
 
 export interface FooterAttributes extends ViewAttributes {}
 export interface FooterProperties extends ViewProperties {}

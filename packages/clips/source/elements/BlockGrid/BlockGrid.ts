@@ -5,7 +5,7 @@ import {
   type GridAttributes,
   type GridProperties,
   type GridEvents,
-} from '../Grid.ts';
+} from '../Grid/Grid.ts';
 
 import {backedByAttribute} from '../ClipsElement.ts';
 

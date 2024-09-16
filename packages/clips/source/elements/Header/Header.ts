@@ -3,7 +3,7 @@ import {
   type ViewAttributes,
   type ViewProperties,
   type ViewEvents,
-} from '../View.ts';
+} from '../View/View.ts';
 
 export interface HeaderAttributes extends ViewAttributes {}
 export interface HeaderProperties extends ViewProperties {}

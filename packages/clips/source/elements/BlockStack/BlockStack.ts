@@ -5,7 +5,7 @@ import {
   type StackAttributes,
   type StackProperties,
   type StackEvents,
-} from '../Stack.ts';
+} from '../Stack/Stack.ts';
 
 export interface BlockStackAttributes
   extends Omit<StackAttributes, 'direction'> {

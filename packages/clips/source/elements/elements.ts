@@ -5,68 +5,68 @@ export {
   type ViewAttributes,
   type ViewProperties,
   type ViewEvents,
-} from './View.ts';
+} from './View/View.ts';
 export {
   Section,
   type SectionAttributes,
   type SectionProperties,
   type SectionEvents,
-} from './Section.ts';
+} from './Section/Section.ts';
 export {
   Footer,
   type FooterAttributes,
   type FooterProperties,
   type FooterEvents,
-} from './Footer.ts';
+} from './Footer/Footer.ts';
 export {
   Header,
   type HeaderAttributes,
   type HeaderProperties,
   type HeaderEvents,
-} from './Header.ts';
+} from './Header/Header.ts';
 
 export {
   Heading,
   type HeadingAttributes,
   type HeadingProperties,
   type HeadingEvents,
-} from './Heading.ts';
+} from './Heading/Heading.ts';
 export {
   Image,
   type ImageAttributes,
   type ImageProperties,
   type ImageEvents,
-} from './Image.ts';
+} from './Image/Image.ts';
 export {
   Modal,
   type ModalAttributes,
   type ModalProperties,
   type ModalEvents,
-} from './Modal.ts';
+} from './Modal/Modal.ts';
 export {
   Popover,
   type PopoverAttributes,
   type PopoverProperties,
   type PopoverEvents,
-} from './Popover.ts';
+} from './Popover/Popover.ts';
 export {
   Text,
   type TextAttributes,
   type TextProperties,
   type TextEvents,
-} from './Text.ts';
+} from './Text/Text.ts';
 export {
   TextBlock,
   type TextBlockAttributes,
   type TextBlockProperties,
   type TextBlockEvents,
-} from './TextBlock.ts';
+} from './TextBlock/TextBlock.ts';
 export {
   TextField,
   type TextFieldAttributes,
   type TextFieldProperties,
   type TextFieldEvents,
-} from './TextField.ts';
+} from './TextField/TextField.ts';
 
 // Layout
 export {
@@ -74,37 +74,37 @@ export {
   type StackAttributes,
   type StackProperties,
   type StackEvents,
-} from './Stack.ts';
+} from './Stack/Stack.ts';
 export {
   BlockStack,
   type BlockStackAttributes,
   type BlockStackProperties,
   type BlockStackEvents,
-} from './BlockStack.ts';
+} from './BlockStack/BlockStack.ts';
 export {
   InlineStack,
   type InlineStackAttributes,
   type InlineStackProperties,
   type InlineStackEvents,
-} from './InlineStack.ts';
+} from './InlineStack/InlineStack.ts';
 
 export {
   Grid,
   type GridAttributes,
   type GridProperties,
   type GridEvents,
-} from './Grid.ts';
+} from './Grid/Grid.ts';
 export {
   BlockGrid,
   type BlockGridAttributes,
   type BlockGridProperties,
   type BlockGridEvents,
-} from './BlockGrid.ts';
+} from './BlockGrid/BlockGrid.ts';
 export {
   InlineGrid,
   type InlineGridAttributes,
   type InlineGridProperties,
-} from './InlineGrid.ts';
+} from './InlineGrid/InlineGrid.ts';
 
 // Interaction
 export {
@@ -112,13 +112,13 @@ export {
   type ActionAttributes,
   type ActionProperties,
   type ActionEvents,
-} from './Action.ts';
+} from './Action/Action.ts';
 export {
   Disclosure,
   type DisclosureAttributes,
   type DisclosureProperties,
   type DisclosureEvents,
-} from './Disclosure.ts';
+} from './Disclosure/Disclosure.ts';
 
 // Skeletons
 export {
@@ -126,22 +126,22 @@ export {
   type SkeletonActionAttributes,
   type SkeletonActionProperties,
   type SkeletonActionEvents,
-} from './SkeletonAction.ts';
+} from './SkeletonAction/SkeletonAction.ts';
 export {
   SkeletonText,
   type SkeletonTextAttributes,
   type SkeletonTextProperties,
   type SkeletonTextEvents,
-} from './SkeletonText.ts';
+} from './SkeletonText/SkeletonText.ts';
 export {
   SkeletonTextBlock,
   type SkeletonTextBlockAttributes,
   type SkeletonTextBlockProperties,
   type SkeletonTextBlockEvents,
-} from './SkeletonTextBlock.ts';
+} from './SkeletonTextBlock/SkeletonTextBlock.ts';
 export {
   SkeletonView,
   type SkeletonViewAttributes,
   type SkeletonViewProperties,
   type SkeletonViewEvents,
-} from './SkeletonView.ts';
+} from './SkeletonView/SkeletonView.ts';
