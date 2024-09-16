@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.5.3
+
+### Patch Changes
+
+- [`c41c4d15`](https://github.com/lemonmade/watch/commit/c41c4d155064008e685734cee73f07afebb57ee7) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix Preact component updating
+
 ## 0.5.2
 
 ### Patch Changes
