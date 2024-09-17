@@ -58,7 +58,7 @@ export const List = createResolver('List', {
 
     return prisma.listItem.findMany({
       where: {listId: list.id},
-      orderBy: {position: 'asc'},
+      orderBy: {position: 'desc'},
       take: 50,
     });
   },
