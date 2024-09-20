@@ -1,5 +1,5 @@
-.SkeletonAction {
-  --z-internal-SkeletonAction-content-size: 4rem;
+.SkeletonButton {
+  --z-internal-SkeletonButton-content-size: 4rem;
 
   display: inline-flex;
   align-items: center;
@@ -12,7 +12,7 @@
   &::after {
     content: '';
     display: block;
-    inline-size: var(--z-internal-SkeletonAction-content-size);
+    inline-size: var(--z-internal-SkeletonButton-content-size);
     block-size: calc(0.8 * var(--z-text-auto-font-size));
     background-color: var(--z-text-subdued-color);
     border-radius: var(--z-corner-radius-auto);
@@ -20,9 +20,9 @@
 }
 
 .sizeSmall {
-  --z-internal-SkeletonAction-content-size: 2rem;
+  --z-internal-SkeletonButton-content-size: 2rem;
 }
 
 .sizeLarge {
-  --z-internal-SkeletonAction-content-size: 8rem;
+  --z-internal-SkeletonButton-content-size: 8rem;
 }

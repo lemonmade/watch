@@ -11,7 +11,7 @@ export {TextField} from './components/TextField.tsx';
 export {View} from './components/View.tsx';
 
 // Interaction
-export {Action} from './components/Action.tsx';
+export {Button} from './components/Button.tsx';
 export {Disclosure} from './components/Disclosure.tsx';
 
 // Layout
@@ -22,3 +22,9 @@ export {InlineStack} from './components/InlineStack.tsx';
 export {Grid} from './components/Grid.tsx';
 export {BlockGrid} from './components/BlockGrid.tsx';
 export {InlineGrid} from './components/InlineGrid.tsx';
+
+// Skeleton
+export {SkeletonText} from './components/SkeletonText.tsx';
+export {SkeletonTextBlock} from './components/SkeletonTextBlock.tsx';
+export {SkeletonView} from './components/SkeletonView.tsx';
+export {SkeletonButton} from './components/SkeletonButton.tsx';

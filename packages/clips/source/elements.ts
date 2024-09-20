@@ -20,7 +20,7 @@ export type {
   ImageLoadingKeyword,
   LayoutModeKeyword,
   PopoverAttachmentKeyword,
-  SkeletonActionSizeKeyword,
+  SkeletonButtonSizeKeyword,
   SkeletonTextSizeKeyword,
   SpacingKeyword,
   SpacingOrNoneKeyword,
@@ -48,7 +48,7 @@ export namespace Elements {
 
   export type TextField = HTMLElementTagNameMap['ui-text-field'];
 
-  export type Action = HTMLElementTagNameMap['ui-action'];
+  export type Button = HTMLElementTagNameMap['ui-button'];
   export type Disclosure = HTMLElementTagNameMap['ui-disclosure'];
 
   export type View = HTMLElementTagNameMap['ui-view'];
@@ -97,7 +97,7 @@ export type CommonElements = Pick<
   | 'ui-text-field'
 
   // Interaction
-  | 'ui-action'
+  | 'ui-button'
   | 'ui-disclosure'
 
   // Containers

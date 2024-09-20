@@ -1,13 +1,13 @@
-import {Action as UIAction} from '@lemon/zest';
+import {Action as UIButton} from '@lemon/zest';
 import {
   createClipsComponentRenderer,
   useRenderedChildren,
   wrapEventListenerForCallback,
 } from './shared.ts';
 
-export const Action = createClipsComponentRenderer(
-  'ui-action',
-  function Action(props) {
+export const Button = createClipsComponentRenderer(
+  'ui-button',
+  function Button(props) {
     const {overlay, children} = useRenderedChildren(props, {
       slotProps: ['overlay'],
     });
@@ -16,7 +16,7 @@ export const Action = createClipsComponentRenderer(
     const events = props.element.eventListeners.value;
 
     return (
-      <UIAction
+      <UIButton
         to={attributes.to}
         disabled={attributes.disabled != null}
         onPress={
@@ -25,7 +25,7 @@ export const Action = createClipsComponentRenderer(
         overlay={overlay}
       >
         {children}
-      </UIAction>
+      </UIButton>
     );
   },
 );

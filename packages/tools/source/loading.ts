@@ -7,7 +7,7 @@ const ALLOWED_ELEMENTS = new Map<AnyElement, Record<string, any>>([
   ['ui-block-stack', {spacing: Boolean}],
   ['ui-skeleton-text', {size: String}],
   ['ui-skeleton-text-block', {lines: Number}],
-  ['ui-skeleton-action', {}],
+  ['ui-skeleton-button', {}],
   ['ui-skeleton-view', {}],
 ]);
 

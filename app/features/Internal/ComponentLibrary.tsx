@@ -46,7 +46,7 @@ import {
   BlockGrid,
   SkeletonTextBlock,
   SkeletonText,
-  SkeletonAction,
+  SkeletonButton,
   Disclosure,
 } from '@lemon/zest';
 
@@ -782,11 +782,11 @@ function SkeletonComponents() {
 
         <TextBlock>Skeleton action</TextBlock>
         <InlineStack spacing>
-          <SkeletonAction />
-          <SkeletonAction size="small" />
-          <SkeletonAction size="auto" />
-          <SkeletonAction size="large" />
-          <SkeletonAction size={Style.css`2rem`} />
+          <SkeletonButton />
+          <SkeletonButton size="small" />
+          <SkeletonButton size="auto" />
+          <SkeletonButton size="large" />
+          <SkeletonButton size={Style.css`2rem`} />
         </InlineStack>
 
         <TextBlock>Skeleton text</TextBlock>

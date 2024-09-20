@@ -8,34 +8,34 @@ import {
 } from 'react';
 
 import type {
-  Action as ActionElement,
-  ActionProperties,
-  ActionEvents,
+  Button as ButtonElement,
+  ButtonProperties,
+  ButtonEvents,
 } from '@watching/clips/elements';
 
 import {useCustomElementProperties} from './shared.ts';
 
-export interface ActionProps
-  extends PropsWithChildren<Partial<ActionProperties>> {
-  ref?: ForwardedRef<ActionElement>;
+export interface ButtonProps
+  extends PropsWithChildren<Partial<ButtonProperties>> {
+  ref?: ForwardedRef<ButtonElement>;
   overlay?: ReactNode;
   onPress?(): void | Promise<void>;
-  onpress?(event: ActionEvents['press']): void;
+  onpress?(event: ButtonEvents['press']): void;
 }
 
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-action': Omit<ActionProps, 'onPress' | 'overlay'>;
+      'ui-button': Omit<ButtonProps, 'onPress' | 'overlay'>;
     }
   }
 }
 
-export const Action = forwardRef<ActionElement, ActionProps>(function Action(
+export const Button = forwardRef<ButtonElement, ButtonProps>(function Button(
   {overlay, children, onPress, ...props},
   ref,
 ) {
-  const allProps: ActionProps = {
+  const allProps: ButtonProps = {
     onpress: onPress ? (event) => event.respondWith(onPress()) : undefined,
     ...props,
   };
@@ -43,11 +43,11 @@ export const Action = forwardRef<ActionElement, ActionProps>(function Action(
   const wrapperRef = useCustomElementProperties(allProps, ref);
 
   return (
-    <ui-action {...allProps} ref={wrapperRef}>
+    <ui-button {...allProps} ref={wrapperRef}>
       {children}
       {overlay && isValidElement(overlay)
         ? cloneElement<any>(overlay, {slot: 'overlay'})
         : null}
-    </ui-action>
+    </ui-button>
   );
 });

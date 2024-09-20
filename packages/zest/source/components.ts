@@ -100,9 +100,9 @@ export {
 
 // Skeletons
 export {
-  SkeletonAction,
-  type SkeletonActionProps,
-} from './components/SkeletonAction.tsx';
+  SkeletonButton,
+  type SkeletonButtonProps,
+} from './components/SkeletonButton.tsx';
 export {
   SkeletonText,
   type SkeletonTextProps,
