@@ -29,6 +29,10 @@ type ConfigurationFieldInput = NonNullable<
   PushClipsExtensionMutationVariables['settings']['fields']
 >[number];
 
+type ClipsExtensionPointSupportInput = NonNullable<
+  PushClipsExtensionMutationVariables['extends']
+>[number];
+
 type ConfigurationField = NonNullable<
   ConfigurationFieldInput[keyof ConfigurationFieldInput]
 >;
@@ -169,23 +173,30 @@ async function pushExtension(
     }),
     loadTranslationsForExtension(extension),
     Promise.all(
-      extension.extends.map(async (supported) => {
-        return {
-          target: supported.target,
-          conditions: supported.conditions,
-          liveQuery: supported.query
-            ? await loadLiveQueryForExtension(supported.query, extension)
-            : undefined,
-          loading: supported.loading?.ui
-            ? {
-                ui: await loadLoadingUiForExtension(
-                  supported.loading.ui,
-                  extension,
-                ),
-              }
-            : undefined,
-        };
-      }),
+      extension.extends.map(
+        async (supported): Promise<ClipsExtensionPointSupportInput> => {
+          const [target, liveQuery, loadingUi] = await Promise.all([
+            validateExtensionPointTarget(supported.target),
+            supported.query
+              ? loadLiveQueryForExtension(supported.query, extension)
+              : undefined,
+            supported.loading?.ui
+              ? loadLoadingUiForExtension(supported.loading.ui, extension)
+              : undefined,
+          ]);
+
+          return {
+            target,
+            conditions: supported.conditions,
+            liveQuery,
+            loading: loadingUi
+              ? {
+                  ui: loadingUi,
+                }
+              : undefined,
+          };
+        },
+      ),
     ),
   ]);
 
@@ -287,34 +298,40 @@ async function pushExtension(
   return result;
 }
 
+async function validateExtensionPointTarget(target: string) {
+  const {validateExtensionPoint} = await import('@watching/tools/extension');
+
+  if (!validateExtensionPoint(target as any)) {
+    throw new Error(`Unsupported extension point: ${target}`);
+  }
+
+  return target;
+}
+
 async function loadLiveQueryForExtension(
   liveQuery: string,
   extension: LocalExtension,
 ) {
-  const graphql = await readFile(
-    path.resolve(extension.root, liveQuery),
-    'utf8',
-  );
+  const [query, {validateAndNormalizeLiveQuery}] = await Promise.all([
+    readFile(path.resolve(extension.root, liveQuery), 'utf8'),
+    import('@watching/tools/extension'),
+  ]);
 
-  const [{parse}, {cleanGraphQLDocument, toGraphQLOperation}] =
-    await Promise.all([import('graphql'), import('@quilted/graphql-tools')]);
-
-  return toGraphQLOperation(cleanGraphQLDocument(parse(graphql))).source;
+  return validateAndNormalizeLiveQuery(query);
 }
 
 async function loadLoadingUiForExtension(
   ui: string,
   extension: LocalExtension,
 ) {
-  const html = ui.endsWith('.html')
-    ? await readFile(path.resolve(extension.root, ui), 'utf8')
-    : ui;
+  const [html, {validateAndNormalizeLoadingUI}] = await Promise.all([
+    ui.endsWith('.html')
+      ? readFile(path.resolve(extension.root, ui), 'utf8')
+      : Promise.resolve(ui),
+    import('@watching/tools/extension'),
+  ]);
 
-  const {parseLoadingHtml, serializeLoadingHtml} = await import(
-    '@watching/tools/loading'
-  );
-
-  return serializeLoadingHtml(parseLoadingHtml(html));
+  return validateAndNormalizeLoadingUI(html.trim());
 }
 
 async function loadTranslationsForExtension(extension: LocalExtension) {

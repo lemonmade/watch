@@ -70,8 +70,7 @@ scalar TranslationKey
 scalar ClipsExtensionPoint
 scalar ClipsExtensionApiVersion
 scalar ClipsLiveQuery
-scalar ClipsLoadingUiTree
-scalar ClipsLoadingUiHtml
+scalar ClipsLoadingUIContentHTML
 
 type Icon {
   source: Url!
@@ -133,18 +132,18 @@ type ClipsExtensionPointSupportCondition {
 
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
+  modules: [ClipsExtensionPointSupportModule!]!
   conditions: [ClipsExtensionPointSupportCondition!]!
   liveQuery: ClipsLiveQuery
   loading: ClipsExtensionPointSupportLoading
 }
 
-type ClipsExtensionPointSupportLoadingUi {
-  tree: ClipsLoadingUiTree!
-  html: ClipsLoadingUiHtml!
+type ClipsExtensionPointSupportLoadingUI {
+  html: ClipsLoadingUIContentHTML!
 }
 
 type ClipsExtensionPointSupportLoading {
-  ui: ClipsExtensionPointSupportLoadingUi
+  ui: ClipsExtensionPointSupportLoadingUI
 }
 
 input ClipsExtensionPointSupportSeriesConditionInput {
@@ -158,13 +157,28 @@ input ClipsExtensionPointSupportConditionInput {
 
 input ClipsExtensionPointSupportInput {
   target: ClipsExtensionPoint!
+  modules: [ClipsExtensionPointSupportModuleInput!]
+  conditions: [ClipsExtensionPointSupportConditionInput!]
   liveQuery: ClipsLiveQuery
   loading: ClipsExtensionPointSupportLoadingInput
-  conditions: [ClipsExtensionPointSupportConditionInput!]
+}
+
+input ClipsExtensionPointSupportModuleInput {
+  contentType: ClipsExtensionPointSupportModuleContentType
+  content: String!
+}
+
+enum ClipsExtensionPointSupportModuleContentType {
+  HTML
+}
+
+type ClipsExtensionPointSupportModule {
+  contentType: ClipsExtensionPointSupportModuleContentType!
+  content: String!
 }
 
 input ClipsExtensionPointSupportLoadingInput {
-  ui: ClipsLoadingUiHtml
+  ui: ClipsLoadingUIContentHTML
 }
 
 # Extension settings

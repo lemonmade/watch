@@ -79,9 +79,7 @@ export function useClips<Point extends ExtensionPoint>(
           version: version.apiVersion.toLowerCase() as any,
           settings: settings ?? undefined,
           liveQuery: liveQuery ?? undefined,
-          loadingUi: loading?.ui?.tree
-            ? JSON.parse(loading.ui.tree)
-            : undefined,
+          loadingUi: loading?.ui?.html,
           translations: translations ?? undefined,
           options: options as any,
         },
