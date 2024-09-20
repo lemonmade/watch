@@ -1,5 +1,5 @@
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {BlockStack, InlineStack, Action} from '@lemon/zest';
+import {BlockStack, InlineStack, Button} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 
@@ -10,13 +10,13 @@ export default function Developer() {
     <Page heading="Developer">
       <BlockStack spacing>
         <InlineStack spacing="small">
-          <Action to="apps">Apps</Action>
-          <Action to="access-tokens">Access tokens</Action>
-          <Action to="console">Console</Action>
-          <Action to="/api/graphql/explorer" target="current">
+          <Button to="apps">Apps</Button>
+          <Button to="access-tokens">Access tokens</Button>
+          <Button to="console">Console</Button>
+          <Button to="/api/graphql/explorer" target="current">
             GraphQL
-          </Action>
-          <Action to="/internal/components">Component library</Action>
+          </Button>
+          <Button to="/internal/components">Component library</Button>
         </InlineStack>
       </BlockStack>
     </Page>

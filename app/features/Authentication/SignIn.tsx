@@ -16,14 +16,14 @@ import {
   BlockStack,
   TextBlock,
   Banner,
-  Action,
+  Button,
 } from '@lemon/zest';
 
 import {SignInErrorReason} from '~/global/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useGraphQLMutation} from '~/shared/graphql.ts';
-import {SignInWithAppleAction} from '~/shared/auth.ts';
+import {SignInWithAppleButton} from '~/shared/auth.ts';
 
 import signInWithEmailMutation from './graphql/SignInWithEmailMutation.graphql';
 import startPasskeySignInMutation from './graphql/StartPasskeySignInMutation.graphql';
@@ -91,17 +91,17 @@ function SignInWithEmail() {
             email.value = value;
           }}
         />
-        <Action
+        <Button
           disabled={disabled}
           onPress={async () => {
             await signInWithEmail({email: email.value});
           }}
         >
           Sign in email
-        </Action>
-        <Action perform="submit" disabled={disabled}>
+        </Button>
+        <Button perform="submit" disabled={disabled}>
           Sign in with Passkey
-        </Action>
+        </Button>
       </BlockStack>
     </Form>
   );
@@ -196,7 +196,7 @@ function SignInWithApple({
   const signInWithApple = useGraphQLMutation(signInWithAppleMutation);
 
   return (
-    <SignInWithAppleAction
+    <SignInWithAppleButton
       redirectUrl={new URL('/internal/auth/apple/sign-in/callback', currentUrl)}
       onPress={async ({idToken, authorizationCode}) => {
         const result = await signInWithApple.run({
@@ -217,7 +217,7 @@ function SignInWithApple({
       }}
     >
       Sign in with Apple
-    </SignInWithAppleAction>
+    </SignInWithAppleButton>
   );
 }
 
@@ -238,7 +238,7 @@ function SignInWithGithub({
   });
 
   return (
-    <Action
+    <Button
       onPress={() => {
         open({
           redirectTo:
@@ -247,7 +247,7 @@ function SignInWithGithub({
       }}
     >
       Sign in with Github
-    </Action>
+    </Button>
   );
 }
 
@@ -268,7 +268,7 @@ function SignInWithGoogle({
   });
 
   return (
-    <Action
+    <Button
       onPress={() => {
         open({
           redirectTo:
@@ -277,7 +277,7 @@ function SignInWithGoogle({
       }}
     >
       Sign in with Google
-    </Action>
+    </Button>
   );
 }
 

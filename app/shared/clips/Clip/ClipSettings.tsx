@@ -1,7 +1,7 @@
 import {useMemo} from 'preact/hooks';
 import {signal, type Signal} from '@quilted/quilt/signals';
 import {createTranslate} from '@quilted/localize';
-import {Action, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
+import {Button, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
 
 import {useGraphQLQuery, useGraphQLMutation} from '~/shared/graphql';
 
@@ -149,7 +149,7 @@ function InstalledClipLoadedSettings({
 
           throw new Error();
         })}
-        <Action perform="submit">Update</Action>
+        <Button perform="submit">Update</Button>
       </BlockStack>
     </Form>
   );

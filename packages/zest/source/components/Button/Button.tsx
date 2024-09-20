@@ -27,9 +27,9 @@ import type {
   BasicAlignmentKeyword,
 } from '../../system.ts';
 
-import styles from './Action.module.css';
+import styles from './Button.module.css';
 
-export type ActionProps = Omit<PressableProps, 'className' | 'display'> & {
+export type ButtonProps = Omit<PressableProps, 'className' | 'display'> & {
   emphasis?: EmphasisValue;
   loading?: SignalOrValue<boolean>;
   icon?: IconSource | VNode;
@@ -41,7 +41,7 @@ export type ActionProps = Omit<PressableProps, 'className' | 'display'> & {
   inlineSize?: 'content' | 'fill';
 };
 
-export function Action({
+export function Button({
   ref,
   role,
   disabled,
@@ -60,7 +60,7 @@ export function Action({
   perform,
   onPress,
   ...rest
-}: RenderableProps<ActionProps, HTMLButtonElement | HTMLAnchorElement>) {
+}: RenderableProps<ButtonProps, HTMLButtonElement | HTMLAnchorElement>) {
   const needsGrid = Boolean(children) && Boolean(detail || icon);
   const connectedAccessory = useConnectedAccessory();
   const menu = useMenuController({optional: true});

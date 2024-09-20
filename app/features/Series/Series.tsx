@@ -3,7 +3,7 @@ import {useSignal} from '@quilted/quilt/signals';
 import {useNavigate} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
-  Action,
+  Button,
   ActionList,
   BlockStack,
   InlineStack,
@@ -124,31 +124,31 @@ function SeriesWithData({
                   overlay={
                     <Popover inlineAttachment="start">
                       <Menu label="See series in…">
-                        <Action
+                        <Button
                           to={series.tmdbUrl}
                           target="new"
                           icon="arrow.end"
                         >
                           TMDB
-                        </Action>
+                        </Button>
                         {series.imdbUrl && (
-                          <Action
+                          <Button
                             to={series.imdbUrl}
                             target="new"
                             icon="arrow.end"
                           >
                             IMDB
-                          </Action>
+                          </Button>
                         )}
                       </Menu>
 
                       {user.role === 'ADMIN' && (
                         <Menu label="Admin">
-                          <SynchronizeSeriesWithTmdbAction
+                          <SynchronizeSeriesWithTmdbButton
                             seriesId={series.id}
                             onUpdate={onUpdate}
                           />
-                          <DeleteSeriesAction seriesId={series.id} />
+                          <DeleteSeriesButton seriesId={series.id} />
                         </Menu>
                       )}
                     </Popover>
@@ -172,12 +172,12 @@ function SeriesWithData({
                   viewport: {min: 'large'},
                 })}
               >
-                <WatchSeriesAction
+                <WatchSeriesButto
                   id={series.id}
                   watchThroughs={watchThroughs}
                 />
 
-                <WatchlistAction
+                <WatchlistButton
                   id={series.id}
                   inWatchLater={series.inWatchLater}
                   onUpdate={onUpdate}
@@ -249,7 +249,7 @@ function SeriesStatusTag({status}: {status: SeriesQueryData.Series['status']}) {
   }
 }
 
-function WatchSeriesAction({
+function WatchSeriesButto({
   id,
   watchThroughs,
 }: Pick<SeriesQueryData.Series, 'id' | 'watchThroughs'>) {
@@ -261,16 +261,16 @@ function WatchSeriesAction({
 
   if (ongoingWatchThrough != null) {
     return (
-      <Action icon="watch" to={ongoingWatchThrough.url}>
+      <Button icon="watch" to={ongoingWatchThrough.url}>
         Watching Season{' '}
         {ongoingWatchThrough.nextEpisode?.seasonNumber ??
           ongoingWatchThrough.to.season}
-      </Action>
+      </Button>
     );
   }
 
   return (
-    <Action
+    <Button
       icon="watch"
       onPress={async () => {
         const result = await startWatchThrough.run({
@@ -283,11 +283,11 @@ function WatchSeriesAction({
       }}
     >
       {watchThroughs.length > 0 ? 'Watch again' : 'Watch'}
-    </Action>
+    </Button>
   );
 }
 
-function WatchlistAction({
+function WatchlistButton({
   id,
   inWatchLater,
   onUpdate,
@@ -302,7 +302,7 @@ function WatchlistAction({
   const inWatchList = useSignal(inWatchLater, [inWatchLater]);
 
   return (
-    <Action
+    <Button
       inlineSize="fill"
       icon="watchlist"
       selected={inWatchList}
@@ -320,11 +320,11 @@ function WatchlistAction({
       }}
     >
       Watchlist
-    </Action>
+    </Button>
   );
 }
 
-function SynchronizeSeriesWithTmdbAction({
+function SynchronizeSeriesWithTmdbButton({
   seriesId,
   onUpdate,
 }: {
@@ -334,7 +334,7 @@ function SynchronizeSeriesWithTmdbAction({
   const sync = useGraphQLMutation(synchronizeSeriesWithTmdbMutation);
 
   return (
-    <Action
+    <Button
       icon="sync"
       onPress={async () => {
         await sync.run({id: seriesId});
@@ -342,19 +342,19 @@ function SynchronizeSeriesWithTmdbAction({
       }}
     >
       Synchronize with TMDB
-    </Action>
+    </Button>
   );
 }
 
-function DeleteSeriesAction(props: ComponentProps<typeof DeleteSeriesModal>) {
+function DeleteSeriesButton(props: ComponentProps<typeof DeleteSeriesModal>) {
   return (
-    <Action
+    <Button
       icon="delete"
       role="destructive"
       overlay={<DeleteSeriesModal {...props} />}
     >
       Delete…
-    </Action>
+    </Button>
   );
 }
 
@@ -370,7 +370,7 @@ function DeleteSeriesModal({seriesId}: {seriesId: string}) {
           This will fail if any watchthroughs or lists reference the series.
         </TextBlock>
         <InlineStack alignment="end">
-          <Action
+          <Button
             role="destructive"
             onPress={async () => {
               const result = await deleteSeries.run({id: seriesId});
@@ -384,7 +384,7 @@ function DeleteSeriesModal({seriesId}: {seriesId: string}) {
             }}
           >
             Delete
-          </Action>
+          </Button>
         </InlineStack>
       </BlockStack>
     </Modal>
@@ -465,7 +465,7 @@ function SeasonsSection({
                 </BlockStack>
 
                 {isUpcoming ? null : (
-                  <SeasonWatchThroughAction
+                  <SeasonWatchThroughButton
                     seriesId={seriesId}
                     season={season}
                     lastSeason={lastSeason}
@@ -493,17 +493,17 @@ function SeasonActionPopover({
   return (
     <Popover inlineAttachment="start">
       <Menu label="See season in…">
-        <Action icon="arrow.end" to={season.tmdbUrl} target="new">
+        <Button icon="arrow.end" to={season.tmdbUrl} target="new">
           TMDB
-        </Action>
-        <Action icon="arrow.end" to={season.imdbUrl} target="new">
+        </Button>
+        <Button icon="arrow.end" to={season.imdbUrl} target="new">
           IMDB
-        </Action>
+        </Button>
       </Menu>
 
       {season.status === 'CONTINUING' && (
         <Menu label="Internal…">
-          <Action
+          <Button
             icon="stop"
             onPress={async () => {
               await markSeasonAsFinished.run({id: season.id});
@@ -511,14 +511,14 @@ function SeasonActionPopover({
             }}
           >
             Mark finished
-          </Action>
+          </Button>
         </Menu>
       )}
     </Popover>
   );
 }
 
-function SeasonWatchThroughAction({
+function SeasonWatchThroughButton({
   seriesId,
   season,
   lastSeason,
@@ -532,13 +532,13 @@ function SeasonWatchThroughAction({
 
   const accessory =
     season.id === lastSeason.id ? null : (
-      <Action
+      <Button
         icon="more"
         accessibilityLabel="More actions…"
         overlay={
           <Popover>
             <Menu>
-              <Action
+              <Button
                 icon="watch"
                 onPress={async () => {
                   const result = await startWatchThrough.run({
@@ -552,7 +552,7 @@ function SeasonWatchThroughAction({
                 }}
               >
                 Watch from season {season.number} to {lastSeason.number}
-              </Action>
+              </Button>
             </Menu>
           </Popover>
         }
@@ -560,7 +560,7 @@ function SeasonWatchThroughAction({
     );
 
   return (
-    <Action
+    <Button
       accessory={accessory}
       onPress={async () => {
         const result = await startWatchThrough.run({
@@ -574,7 +574,7 @@ function SeasonWatchThroughAction({
       }}
     >
       Watch
-    </Action>
+    </Button>
   );
 }
 
@@ -606,8 +606,8 @@ function SeasonEpisodesList({id, seriesId}: {id: string; seriesId: string}) {
             image={<EpisodeImage source={episode.still?.source} />}
             menu={
               <Menu>
-                <WatchEpisodeAction episode={episode} />
-                <WatchSeasonFromEpisodeAction
+                <WatchEpisodeButton episode={episode} />
+                <WatchSeasonFromEpisodeButton
                   episode={episode}
                   season={season}
                   seriesId={seriesId}
@@ -628,7 +628,7 @@ function SeasonEpisodesList({id, seriesId}: {id: string; seriesId: string}) {
   );
 }
 
-function WatchEpisodeAction({
+function WatchEpisodeButton({
   episode,
 }: {
   episode: SeasonEpisodesQueryData.Season.Episodes;
@@ -638,18 +638,18 @@ function WatchEpisodeAction({
   );
 
   return (
-    <Action
+    <Button
       icon="watch"
       onPress={async () => {
         await watchEpisodeFromSeason.run({episode: episode.id});
       }}
     >
       Mark as watched…
-    </Action>
+    </Button>
   );
 }
 
-function WatchSeasonFromEpisodeAction({
+function WatchSeasonFromEpisodeButton({
   episode,
   season,
   seriesId,
@@ -662,7 +662,7 @@ function WatchSeasonFromEpisodeAction({
   const navigate = useNavigate();
 
   return (
-    <Action
+    <Button
       icon="watch"
       onPress={async () => {
         const result = await startWatchThrough.run({
@@ -676,7 +676,7 @@ function WatchSeasonFromEpisodeAction({
       }}
     >
       Watch from Episode {episode.number}
-    </Action>
+    </Button>
   );
 }
 
@@ -691,7 +691,7 @@ function WatchThroughsSection({
         <Heading divider>Watches</Heading>
         <ActionList>
           {watchThroughs.map((watchThrough) => (
-            <Action
+            <Button
               key={watchThrough.id}
               to={watchThrough.url}
               inlineAlignment="start"
@@ -718,7 +718,7 @@ function WatchThroughsSection({
                       : 'Still watching'}
                 </Text>
               </BlockStack>
-            </Action>
+            </Button>
           ))}
         </ActionList>
       </BlockStack>

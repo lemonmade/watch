@@ -1,5 +1,5 @@
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {Heading, TextBlock, Text, BlockStack, Action} from '@lemon/zest';
+import {Heading, TextBlock, Text, BlockStack, Button} from '@lemon/zest';
 
 export default function Start() {
   usePerformanceNavigation();
@@ -15,9 +15,9 @@ export default function Start() {
         source, too.
       </TextBlock>
 
-      <Action to="/sign-in">Sign in</Action>
-      <Action to="/create-account">Create account</Action>
-      <Action to="/app">Go to app</Action>
+      <Button to="/sign-in">Sign in</Button>
+      <Button to="/create-account">Create account</Button>
+      <Button to="/app">Go to app</Button>
     </BlockStack>
   );
 }

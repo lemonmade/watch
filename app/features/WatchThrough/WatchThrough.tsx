@@ -11,7 +11,7 @@ import {
   Style,
   BlockStack,
   InlineStack,
-  Action,
+  Button,
   ActionList,
   Checkbox,
   Heading,
@@ -209,21 +209,21 @@ function WatchThroughWithData({
         }
         menu={
           <Menu>
-            <Action icon="arrow.end" to={series.url}>
+            <Button icon="arrow.end" to={series.url}>
               More about {series.name}
-            </Action>
+            </Button>
             {series.tmdbUrl && (
-              <Action icon="arrow.end" target="new" to={series.tmdbUrl}>
+              <Button icon="arrow.end" target="new" to={series.tmdbUrl}>
                 TMDB
-              </Action>
+              </Button>
             )}
             {series.imdbUrl && (
-              <Action icon="arrow.end" target="new" to={series.imdbUrl}>
+              <Button icon="arrow.end" target="new" to={series.imdbUrl}>
                 IMDB
-              </Action>
+              </Button>
             )}
-            {status === 'ONGOING' && <StopWatchThroughAction id={id} />}
-            <DeleteWatchThroughAction id={id} name={series.name} />
+            {status === 'ONGOING' && <StopWatchThroughButton id={id} />}
+            <DeleteWatchThroughButton id={id} name={series.name} />
           </Menu>
         }
       >
@@ -347,17 +347,17 @@ function Finished({
           </Text>
         </BlockStack>
         {nextSeason && !nextSeason.isUpcoming && (
-          <WatchAgainAction
+          <WatchAgainButton
             watchThrough={watchThrough}
             episodes={[nextSeason.selector]}
           >
             Watch Next Season
-          </WatchAgainAction>
+          </WatchAgainButton>
         )}
         {nextSeason &&
           !nextSeason.isUpcoming &&
           nextSeason.number !== series.seasonCount && (
-            <WatchAgainAction
+            <WatchAgainButton
               watchThrough={watchThrough}
               episodes={[
                 EpisodeSelection.stringify({
@@ -367,18 +367,18 @@ function Finished({
               ]}
             >
               Watch Rest of Series
-            </WatchAgainAction>
+            </WatchAgainButton>
           )}
-        <WatchAgainAction watchThrough={watchThrough}>
+        <WatchAgainButton watchThrough={watchThrough}>
           Watch Again
-        </WatchAgainAction>
+        </WatchAgainButton>
         {from.season !== to.season && (
-          <WatchAgainAction
+          <WatchAgainButton
             watchThrough={watchThrough}
             episodes={[`S${to.season}`]}
           >
             Watch Season {to.season} Again
-          </WatchAgainAction>
+          </WatchAgainButton>
         )}
         {(series.status === 'RETURNING' ||
           series.status === 'IN_PRODUCTION' ||
@@ -390,7 +390,7 @@ function Finished({
   );
 }
 
-function WatchAgainAction({
+function WatchAgainButton({
   children,
   watchThrough,
   episodes,
@@ -404,7 +404,7 @@ function WatchAgainAction({
   );
 
   return (
-    <Action
+    <Button
       onPress={async () => {
         const result = await startWatchThroughFromWatchThrough.run({
           series: watchThrough.series.id,
@@ -421,7 +421,7 @@ function WatchAgainAction({
       }}
     >
       {children}
-    </Action>
+    </Button>
   );
 }
 
@@ -501,24 +501,24 @@ function NextEpisode({
           </InlineStack>
 
           <InlineStack spacing>
-            <Action
+            <Button
               emphasis
               size="large"
               icon="watch"
               perform="submit"
               accessory={
-                <Action
+                <Button
                   icon="more"
                   accessibilityLabel="More actions"
                   overlay={
                     <Popover inlineAttachment="end">
                       <Menu>
-                        <SkipEpisodeAction
+                        <SkipEpisodeButton
                           form={form}
                           watchThroughId={watchThroughId}
                           onUpdate={onUpdate}
                         />
-                        <SkipEpisodeWithNotesAction
+                        <SkipEpisodeWithNotesButton
                           form={form}
                           watchThroughId={watchThroughId}
                           onUpdate={onUpdate}
@@ -530,7 +530,7 @@ function NextEpisode({
               }
             >
               Watch
-            </Action>
+            </Button>
           </InlineStack>
 
           <InlineStack spacing>
@@ -666,32 +666,32 @@ function NotesTextField({value: notes}: {value: Signal<string | undefined>}) {
   );
 }
 
-interface SkipEpisodeActionProps extends SkipEpisodeOptions {}
+interface SkipEpisodeButtonProps extends SkipEpisodeOptions {}
 
-function SkipEpisodeAction(options: SkipEpisodeActionProps) {
+function SkipEpisodeButton(options: SkipEpisodeButtonProps) {
   const skipEpisode = useSkipEpisode(options);
 
   return (
-    <Action icon="skip" onPress={skipEpisode}>
+    <Button icon="skip" onPress={skipEpisode}>
       Skip
-    </Action>
+    </Button>
   );
 }
 
-interface SkipEpisodeWithNotesActionProps extends SkipEpisodeOptions {}
+interface SkipEpisodeWithNotesButtonProps extends SkipEpisodeOptions {}
 
-function SkipEpisodeWithNotesAction(props: SkipEpisodeWithNotesActionProps) {
+function SkipEpisodeWithNotesButton(props: SkipEpisodeWithNotesButtonProps) {
   return (
-    <Action icon="skip" overlay={<SkipEpisodeModal {...props} />}>
+    <Button icon="skip" overlay={<SkipEpisodeModal {...props} />}>
       Skip with note…
-    </Action>
+    </Button>
   );
 }
 
 function SkipEpisodeModal({
   form: watchForm,
   ...options
-}: SkipEpisodeWithNotesActionProps) {
+}: SkipEpisodeWithNotesButtonProps) {
   const {initialActionDate} = usePageDetails();
 
   const form = useMemo(
@@ -730,9 +730,9 @@ function SkipEpisodeModal({
 
           <InlineStack alignment="space-between" spacing="small">
             <EpisodeDatePicker action="skip" value={form.at} />
-            <Action emphasis perform="submit">
+            <Button emphasis perform="submit">
               Skip Episode
-            </Action>
+            </Button>
           </InlineStack>
         </BlockStack>
       </Form>
@@ -778,24 +778,24 @@ function useSkipEpisode({form, watchThroughId, onUpdate}: SkipEpisodeOptions) {
   return skipEpisode;
 }
 
-interface DeleteWatchThroughActionProps {
+interface DeleteWatchThroughButtonProps {
   id: string;
   name: string;
 }
 
-function DeleteWatchThroughAction(props: DeleteWatchThroughActionProps) {
+function DeleteWatchThroughButton(props: DeleteWatchThroughButtonProps) {
   return (
-    <Action
+    <Button
       role="destructive"
       icon="delete"
       overlay={<DeleteWatchThroughModal {...props} />}
     >
       Delete…
-    </Action>
+    </Button>
   );
 }
 
-function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
+function DeleteWatchThroughModal({id, name}: DeleteWatchThroughButtonProps) {
   const navigate = useNavigate();
   const deleteWatchThrough = useGraphQLMutation(deleteWatchThroughMutation);
 
@@ -812,9 +812,9 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
         </TextBlock>
 
         <InlineStack alignment="end" spacing="small">
-          <Action perform="closeContainingOverlay">Cancel</Action>
+          <Button perform="closeContainingOverlay">Cancel</Button>
 
-          <Action
+          <Button
             role="destructive"
             onPress={async () => {
               const result = await deleteWatchThrough.run({id});
@@ -825,23 +825,23 @@ function DeleteWatchThroughModal({id, name}: DeleteWatchThroughActionProps) {
             }}
           >
             Delete
-          </Action>
+          </Button>
         </InlineStack>
       </BlockStack>
     </Modal>
   );
 }
 
-interface StopWatchThroughActionProps {
+interface StopWatchThroughButtonProps {
   id: string;
 }
 
-function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
+function StopWatchThroughButton({id}: StopWatchThroughButtonProps) {
   const navigate = useNavigate();
   const stopWatchThrough = useGraphQLMutation(stopWatchThroughMutation);
 
   return (
-    <Action
+    <Button
       icon="stop"
       onPress={async () => {
         const result = await stopWatchThrough.run({id});
@@ -852,7 +852,7 @@ function StopWatchThroughAction({id}: StopWatchThroughActionProps) {
       }}
     >
       Stop watching
-    </Action>
+    </Button>
   );
 }
 
@@ -903,7 +903,7 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
     ) : null;
 
   return (
-    <Action
+    <Button
       icon={
         <IconHighlight>
           <Icon source="watch" />
@@ -922,7 +922,7 @@ function PreviousActionWatch({action}: {action: WatchAction}) {
           </InlineStack>
         ) : null}
       </BlockStack>
-    </Action>
+    </Button>
   );
 }
 
@@ -948,7 +948,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
     ) : null;
 
   return (
-    <Action
+    <Button
       icon={
         <IconHighlight>
           <Icon source="skip" />
@@ -966,7 +966,7 @@ function PreviousActionSkip({action}: {action: SkipAction}) {
           </InlineStack>
         ) : null}
       </BlockStack>
-    </Action>
+    </Button>
   );
 }
 

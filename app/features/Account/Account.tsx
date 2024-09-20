@@ -9,7 +9,7 @@ import {
   Heading,
   TextBlock,
   BlockStack,
-  Action,
+  Button,
   Section,
   Text,
   Banner,
@@ -37,7 +37,7 @@ import {
   useGraphQLQueryData,
   useGraphQLMutation,
 } from '~/shared/graphql.ts';
-import {SignInWithAppleAction} from '~/shared/auth.ts';
+import {SignInWithAppleButton} from '~/shared/auth.ts';
 
 import {SearchParam, PaymentStatus} from '~/global/subscriptions.ts';
 
@@ -170,14 +170,14 @@ function AccountSection({
     <Section>
       <BlockStack spacing>
         <TextBlock>Email: {email}</TextBlock>
-        <Action
+        <Button
           onPress={async () => {
             await signOut.run();
             navigate('/signed-out');
           }}
         >
           Sign out
-        </Action>
+        </Button>
 
         {paymentBanner}
 
@@ -217,10 +217,10 @@ function FreeAccountSection({onUpdate}: {onUpdate(): Promise<void>}) {
         </List>
 
         <InlineStack spacing="small">
-          <Action overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
+          <Button overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
             Use gift code…
-          </Action>
-          <DeleteAccountAction />
+          </Button>
+          <DeleteAccountButton />
         </InlineStack>
       </BlockStack>
 
@@ -290,26 +290,26 @@ function MemberAccountSection({
 
       <InlineStack spacing="small">
         {giftCode == null && (
-          <Action overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
+          <Button overlay={<AccountGiftCodeModal onUpdate={onUpdate} />}>
             Use gift code…
-          </Action>
+          </Button>
         )}
 
         {subscription?.status === 'ACTIVE' && (
-          <CancelSubscriptionAction onUpdate={onUpdate} />
+          <CancelSubscriptionButton onUpdate={onUpdate} />
         )}
 
-        <DeleteAccountAction />
+        <DeleteAccountButton />
       </InlineStack>
     </BlockStack>
   );
 }
 
-function DeleteAccountAction() {
+function DeleteAccountButton() {
   return (
-    <Action role="destructive" overlay={<DeleteAccountModal />}>
+    <Button role="destructive" overlay={<DeleteAccountModal />}>
       Delete…
-    </Action>
+    </Button>
   );
 }
 
@@ -324,7 +324,7 @@ function DeleteAccountModal() {
           You won’t be able to get any of your data back once you delete your
           account.
         </TextBlock>
-        <Action
+        <Button
           role="destructive"
           onPress={async () => {
             await deleteAccount.run();
@@ -332,17 +332,17 @@ function DeleteAccountModal() {
           }}
         >
           Delete account
-        </Action>
+        </Button>
       </BlockStack>
     </Modal>
   );
 }
 
-function CancelSubscriptionAction({onUpdate}: {onUpdate(): Promise<void>}) {
+function CancelSubscriptionButton({onUpdate}: {onUpdate(): Promise<void>}) {
   return (
-    <Action overlay={<CancelSubscriptionModal onUpdate={onUpdate} />}>
+    <Button overlay={<CancelSubscriptionModal onUpdate={onUpdate} />}>
       Cancel…
-    </Action>
+    </Button>
   );
 }
 
@@ -357,7 +357,7 @@ function CancelSubscriptionModal({onUpdate}: {onUpdate(): Promise<void>}) {
           current season watchthroughs will not be interrupted, and all your
           watch activity will be preserved.
         </TextBlock>
-        <Action
+        <Button
           role="destructive"
           onPress={async () => {
             await cancelSubscription.run();
@@ -365,7 +365,7 @@ function CancelSubscriptionModal({onUpdate}: {onUpdate(): Promise<void>}) {
           }}
         >
           Cancel subscription
-        </Action>
+        </Button>
       </BlockStack>
     </Modal>
   );
@@ -430,12 +430,12 @@ function SubscribeSection({
         {children}
       </BlockStack>
 
-      <SubscribeAction level={level}>Subscribe…</SubscribeAction>
+      <SubscribeButton level={level}>Subscribe…</SubscribeButton>
     </BlockStack>
   );
 }
 
-function SubscribeAction({
+function SubscribeButton({
   level,
   children,
 }: RenderableProps<{
@@ -445,7 +445,7 @@ function SubscribeAction({
   const prepareSubscription = useGraphQLMutation(prepareSubscriptionMutation);
 
   return (
-    <Action
+    <Button
       to="../my/payment"
       inlineSize="fill"
       onPress={async () => {
@@ -457,7 +457,7 @@ function SubscribeAction({
       }}
     >
       {children}
-    </Action>
+    </Button>
   );
 }
 
@@ -481,7 +481,7 @@ function AccountGiftCodeModal({onUpdate}: {onUpdate(): Promise<void>}) {
         <BlockStack spacing>
           <TextField label="Gift code" value={code} />
 
-          <Action perform="submit">Redeem</Action>
+          <Button perform="submit">Redeem</Button>
         </BlockStack>
       </Form>
     </Modal>
@@ -511,7 +511,7 @@ function PasskeySection({
           </BlockStack>
         )}
 
-        <Action
+        <Button
           onPress={async () => {
             const [{startRegistration}, result] = await Promise.all([
               import('@simplewebauthn/browser'),
@@ -538,7 +538,7 @@ function PasskeySection({
           }}
         >
           Create a Passkey
-        </Action>
+        </Button>
       </BlockStack>
     </Section>
   );
@@ -555,7 +555,7 @@ function Passkey(props: PasskeyProps) {
   return (
     <InlineGrid spacing sizes={['fill', 'auto']}>
       <Text>{id}</Text>
-      <Action overlay={<PasskeyManageMenu {...props} />}>Manage</Action>
+      <Button overlay={<PasskeyManageMenu {...props} />}>Manage</Button>
     </InlineGrid>
   );
 }
@@ -566,7 +566,7 @@ function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
   return (
     <Popover>
       <Menu>
-        <Action
+        <Button
           icon="delete"
           role="destructive"
           onPress={async () => {
@@ -575,7 +575,7 @@ function PasskeyManageMenu({passkey: {id}, onUpdate}: PasskeyProps) {
           }}
         >
           Delete
-        </Action>
+        </Button>
       </Menu>
     </Popover>
   );
@@ -600,16 +600,16 @@ function AppleSection({
         <Heading divider>Apple account</Heading>
         {account?.email ? <Text>email: {account.email}</Text> : null}
         {account ? (
-          <Action
+          <Button
             onPress={async () => {
               await disconnectAppleAccount.run();
               await onUpdate();
             }}
           >
             Disconnect
-          </Action>
+          </Button>
         ) : (
-          <SignInWithAppleAction
+          <SignInWithAppleButton
             redirectUrl={
               new URL('/internal/auth/apple/connect/callback', currentUrl)
             }
@@ -623,7 +623,7 @@ function AppleSection({
             }}
           >
             Connect
-          </SignInWithAppleAction>
+          </SignInWithAppleButton>
         )}
       </BlockStack>
     </Section>
@@ -650,14 +650,14 @@ function GoogleSection({
       <BlockStack spacing>
         <Heading divider>Google account</Heading>
         <TextBlock>username: {email}</TextBlock>
-        <Action
+        <Button
           onPress={async () => {
             await disconnectAccount.run();
             await onUpdate();
           }}
         >
           Disconnect
-        </Action>
+        </Button>
       </BlockStack>
     </Section>
   );
@@ -687,14 +687,14 @@ function ConnectGoogleAccount({onUpdate}: {onUpdate(): Promise<void>}) {
         <TextBlock>
           Connecting your Google account lets you sign in with Google.
         </TextBlock>
-        <Action
+        <Button
           onPress={() => {
             setError(false);
             open({redirectTo: currentUrl.href});
           }}
         >
           Connect Google
-        </Action>
+        </Button>
       </BlockStack>
     </Section>
   );
@@ -720,10 +720,10 @@ function GithubSection({
       <BlockStack spacing>
         <Heading divider>Github account</Heading>
         <TextBlock>username: {username}</TextBlock>
-        <Action to={profileUrl} target="new">
+        <Button to={profileUrl} target="new">
           Visit profile
-        </Action>
-        <Action
+        </Button>
+        <Button
           onPress={async () => {
             await disconnectAccount.run();
             onConnectionChange();
@@ -732,7 +732,7 @@ function GithubSection({
           <Text>
             Disconnect <Text emphasis="strong">{username}</Text>
           </Text>
-        </Action>
+        </Button>
       </BlockStack>
     </Section>
   );
@@ -766,14 +766,14 @@ function ConnectGithubAccount({
         <TextBlock>
           Connecting your Github account lets you sign in with Github.
         </TextBlock>
-        <Action
+        <Button
           onPress={() => {
             setError(false);
             open({redirectTo: currentUrl.href});
           }}
         >
           Connect Github
-        </Action>
+        </Button>
       </BlockStack>
     </Section>
   );

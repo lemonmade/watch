@@ -1,4 +1,4 @@
-import {Action as UIButton} from '@lemon/zest';
+import {Button as UIButton} from '@lemon/zest';
 import {
   createClipsComponentRenderer,
   useRenderedChildren,

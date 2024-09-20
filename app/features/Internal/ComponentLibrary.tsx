@@ -3,7 +3,7 @@ import {useSignal} from '@quilted/quilt/signals';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   Style,
-  Action,
+  Button,
   ActionList,
   Checkbox,
   BlockStack,
@@ -81,66 +81,66 @@ function ActionComponents() {
         <Heading>Actions</Heading>
 
         <Stack direction="inline" spacing="small">
-          <Action>Action (button)</Action>
-          <Action to="#">Action (link)</Action>
-          <Action disabled>Action (disabled)</Action>
+          <Button>Action (button)</Button>
+          <Button to="#">Action (link)</Button>
+          <Button disabled>Action (disabled)</Button>
 
-          <Action emphasis>Action (emphasized)</Action>
-          <Action emphasis disabled icon="arrow.end">
+          <Button emphasis>Action (emphasized)</Button>
+          <Button emphasis disabled icon="arrow.end">
             Action (emphasized disabled)
-          </Action>
+          </Button>
 
-          <Action emphasis="subdued">Action (subdued)</Action>
-          <Action emphasis="subdued" disabled icon="arrow.end">
+          <Button emphasis="subdued">Action (subdued)</Button>
+          <Button emphasis="subdued" disabled icon="arrow.end">
             Action (subdued disabled)
-          </Action>
+          </Button>
 
-          <Action role="destructive" icon="delete">
+          <Button role="destructive" icon="delete">
             Action (destructive)
-          </Action>
-          <Action role="destructive" disabled icon="delete">
+          </Button>
+          <Button role="destructive" disabled icon="delete">
             Action (destructive disabled)
-          </Action>
+          </Button>
 
-          <Action overlay={<ActionExampleModal />}>Action (modal)</Action>
-          <Action size="small">Action (small)</Action>
-          <Action size="large">Action (large)</Action>
-          <Action detail={<Icon source="arrow.end" />}>Action (detail)</Action>
+          <Button overlay={<ActionExampleModal />}>Action (modal)</Button>
+          <Button size="small">Action (small)</Button>
+          <Button size="large">Action (large)</Button>
+          <Button detail={<Icon source="arrow.end" />}>Action (detail)</Button>
           <Pressable>Pressable</Pressable>
           <Pressable to="#">Pressable (link)</Pressable>
         </Stack>
 
-        <Action>Action that fills</Action>
-        <Action icon="delete">Action that fills</Action>
-        <Action icon="delete" inlineAlignment="start">
+        <Button>Action that fills</Button>
+        <Button icon="delete">Action that fills</Button>
+        <Button icon="delete" inlineAlignment="start">
           Action that fills that is really really really really really really
           really really really really long
-        </Action>
+        </Button>
 
         <LoadingActionExample />
 
         <Divider emphasis="subdued" />
 
         <InlineStack spacing="small">
-          <Action accessory={<ActionAccessoryExampleMenu />}>Accessory</Action>
-          <Action emphasis accessory={<ActionAccessoryExampleMenu />}>
+          <Button accessory={<ActionAccessoryExampleMenu />}>Accessory</Button>
+          <Button emphasis accessory={<ActionAccessoryExampleMenu />}>
             Accessory (emphasized)
-          </Action>
-          <Action emphasis="subdued" accessory={<ActionAccessoryExampleMenu />}>
+          </Button>
+          <Button emphasis="subdued" accessory={<ActionAccessoryExampleMenu />}>
             Accessory (subdued)
-          </Action>
-          <Action role="destructive" accessory={<ActionAccessoryExampleMenu />}>
+          </Button>
+          <Button role="destructive" accessory={<ActionAccessoryExampleMenu />}>
             Accessory (destructive)
-          </Action>
-          <Action disabled accessory={<ActionAccessoryExampleMenu />}>
+          </Button>
+          <Button disabled accessory={<ActionAccessoryExampleMenu />}>
             Accessory (disabled)
-          </Action>
-          <Action accessory={<ActionAccessoryExampleMenu disabled />}>
+          </Button>
+          <Button accessory={<ActionAccessoryExampleMenu disabled />}>
             Accessory (accessory disabled)
-          </Action>
-          <Action emphasis disabled accessory={<ActionAccessoryExampleMenu />}>
+          </Button>
+          <Button emphasis disabled accessory={<ActionAccessoryExampleMenu />}>
             Accessory (emphasized disabled)
-          </Action>
+          </Button>
         </InlineStack>
 
         <Divider emphasis="subdued" />
@@ -227,32 +227,32 @@ function ActionComponents() {
         <Divider emphasis="subdued" />
 
         <Menu>
-          <Action>Menu button</Action>
-          <Action to="#">Menu link</Action>
-          <Action emphasis="subdued">Menu button (subdued)</Action>
-          <Action loading icon="arrow.end">
+          <Button>Menu button</Button>
+          <Button to="#">Menu link</Button>
+          <Button emphasis="subdued">Menu button (subdued)</Button>
+          <Button loading icon="arrow.end">
             Menu button (loading)
-          </Action>
-          <Action emphasis>Menu button (emphasized)</Action>
-          <Action icon="delete" role="destructive">
+          </Button>
+          <Button emphasis>Menu button (emphasized)</Button>
+          <Button icon="delete" role="destructive">
             Menu button (destructive)
-          </Action>
+          </Button>
         </Menu>
 
         <Menu label="Important actions…">
-          <Action icon="delete">Delete</Action>
+          <Button icon="delete">Delete</Button>
         </Menu>
 
         <ActionList>
-          <Action icon="watch">Item one</Action>
-          <Action icon="skip">Item two</Action>
-          <Action icon="stop">Item three</Action>
-          <Action icon="go" loading>
+          <Button icon="watch">Item one</Button>
+          <Button icon="skip">Item two</Button>
+          <Button icon="stop">Item three</Button>
+          <Button icon="go" loading>
             Item four (loading)
-          </Action>
-          <Action icon="delete" role="destructive">
+          </Button>
+          <Button icon="delete" role="destructive">
             Item (destructive)
-          </Action>
+          </Button>
         </ActionList>
       </BlockStack>
     </Section>
@@ -267,23 +267,23 @@ function LoadingActionExample() {
       <Checkbox checked={loading}>Loading buttons</Checkbox>
 
       <InlineStack spacing>
-        <Action loading={loading}>Action (loading)</Action>
-        <Action
+        <Button loading={loading}>Action (loading)</Button>
+        <Button
           icon="close"
           accessory={<ActionAccessoryExampleMenu />}
           loading={loading}
         >
           Action (accessory loading)
-        </Action>
-        <Action emphasis="subdued" loading={loading} icon="arrow.end">
+        </Button>
+        <Button emphasis="subdued" loading={loading} icon="arrow.end">
           Action (subdued loading)
-        </Action>
-        <Action emphasis loading={loading} icon="arrow.end">
+        </Button>
+        <Button emphasis loading={loading} icon="arrow.end">
           Action (emphasized loading)
-        </Action>
-        <Action role="destructive" loading={loading} icon="delete">
+        </Button>
+        <Button role="destructive" loading={loading} icon="delete">
           Action (destructive loading)
-        </Action>
+        </Button>
       </InlineStack>
     </BlockStack>
   );
@@ -293,13 +293,13 @@ function ActionExamplePopoverMenu(props: ComponentProps<typeof Popover>) {
   return (
     <Popover {...props}>
       <Menu>
-        <Action icon="watchlist">Menu button</Action>
-        <Action icon="arrow.end" to="#">
+        <Button icon="watchlist">Menu button</Button>
+        <Button icon="arrow.end" to="#">
           Menu link
-        </Action>
-        <Action icon="delete" role="destructive">
+        </Button>
+        <Button icon="delete" role="destructive">
           Menu destructive
-        </Action>
+        </Button>
       </Menu>
     </Popover>
   );
@@ -307,7 +307,7 @@ function ActionExamplePopoverMenu(props: ComponentProps<typeof Popover>) {
 
 function ActionAccessoryExampleMenu({disabled = false} = {}) {
   return (
-    <Action
+    <Button
       disabled={disabled}
       accessibilityLabel="More actions"
       icon="more"
@@ -328,15 +328,15 @@ function ActionExampleModal() {
           nemo porro aspernatur itaque.
         </TextBlock>
         <InlineStack alignment="end" spacing="small">
-          <Action
+          <Button
             accessory={
-              <Action
+              <Button
                 icon="more"
                 accessibilityLabel="More actions"
                 overlay={
                   <Popover>
                     <Menu>
-                      <Action>Nice!</Action>
+                      <Button>Nice!</Button>
                     </Menu>
                   </Popover>
                 }
@@ -344,8 +344,8 @@ function ActionExampleModal() {
             }
           >
             Dismiss
-          </Action>
-          <Action emphasis>Save</Action>
+          </Button>
+          <Button emphasis>Save</Button>
         </InlineStack>
       </BlockStack>
     </Modal>
@@ -411,20 +411,20 @@ function PopoverExample({
   blockAttachment,
 }: ComponentProps<typeof Popover>) {
   return (
-    <Action
+    <Button
       overlay={
         <Popover
           inlineAttachment={inlineAttachment}
           blockAttachment={blockAttachment}
         >
           <Menu>
-            <Action>Nice!</Action>
+            <Button>Nice!</Button>
           </Menu>
         </Popover>
       }
     >
       Popover
-    </Action>
+    </Button>
   );
 }
 
@@ -463,8 +463,8 @@ function DisplayComponents() {
 
           <Footer padding>
             <InlineStack spacing="small">
-              <Action>Banner button</Action>
-              <Action>Banner button</Action>
+              <Button>Banner button</Button>
+              <Button>Banner button</Button>
             </InlineStack>
           </Footer>
         </Banner>

@@ -16,7 +16,7 @@ import {
   type Signal,
 } from '@quilted/quilt/signals';
 import {createOptionalContext} from '@quilted/quilt/context';
-import {Action, BlockStack, Form, Banner} from '@lemon/zest';
+import {Button, BlockStack, Form, Banner} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {
@@ -94,9 +94,9 @@ export default function Payment() {
 
           <StripeContent />
 
-          <Action perform="submit" emphasis>
+          <Button perform="submit" emphasis>
             Subscribe
-          </Action>
+          </Button>
         </BlockStack>
       </StripeForm>
     </Page>

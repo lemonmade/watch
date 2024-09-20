@@ -1,6 +1,6 @@
 import type {RenderableProps} from 'preact';
 
-import {Action, Menu, View, Modal, Icon} from '@lemon/zest';
+import {Button, Menu, View, Modal, Icon} from '@lemon/zest';
 
 import {Navigation, NavigationItem} from './components/Navigation.ts';
 
@@ -17,9 +17,9 @@ export default function Frame({children}: RenderableProps<Props>) {
   return (
     <View display="grid" className={styles.Frame}>
       <View className={styles.GoMenu}>
-        <Action emphasis detail={<Icon source="go" />} overlay={<GoModal />}>
+        <Button emphasis detail={<Icon source="go" />} overlay={<GoModal />}>
           Go
-        </Action>
+        </Button>
       </View>
       <View className={styles.Navigation}>
         <NavigationMenu />
@@ -74,31 +74,31 @@ function GoModal() {
   return (
     <Modal>
       <Menu>
-        <Action to="/app" icon="watching">
+        <Button to="/app" icon="watching">
           Watching
-        </Action>
-        <Action to="/app/watch-later" icon="watchlist">
+        </Button>
+        <Button to="/app/watch-later" icon="watchlist">
           Watch later
-        </Action>
-        <Action to="/app/subscriptions" icon="subscription">
+        </Button>
+        <Button to="/app/subscriptions" icon="subscription">
           Subscriptions
-        </Action>
-        <Action to="/app/search" icon="search">
+        </Button>
+        <Button to="/app/search" icon="search">
           Search
-        </Action>
-        <Action to="/app/apps" icon="app">
+        </Button>
+        <Button to="/app/apps" icon="app">
           Apps
-        </Action>
-        <Action to="/app/developer" icon="developer">
+        </Button>
+        <Button to="/app/developer" icon="developer">
           Developer
-        </Action>
-        <Action to="/app/me" icon="user">
+        </Button>
+        <Button to="/app/me" icon="user">
           Me
-        </Action>
+        </Button>
         {user.role === 'ADMIN' && (
-          <Action to="/app/admin" icon="developer">
+          <Button to="/app/admin" icon="developer">
             Admin
-          </Action>
+          </Button>
         )}
       </Menu>
     </Modal>

@@ -1,1 +1,1 @@
-export {SignInWithAppleAction} from './auth/SignInWithAppleAction.tsx';
+export {SignInWithAppleButton} from './auth/SignInWithAppleButton.tsx';

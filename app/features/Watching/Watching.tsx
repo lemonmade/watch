@@ -3,7 +3,7 @@ import type {ComponentChild} from 'preact';
 
 import {useLocalizedFormatting} from '@quilted/quilt/localize';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {Menu, Action, Poster, Spacer, Tag} from '@lemon/zest';
+import {Menu, Button, Poster, Spacer, Tag} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {
@@ -49,9 +49,9 @@ export default function Watching(_: Props) {
       heading="Watching"
       menu={
         <Menu>
-          <Action icon="arrow.end" to="/app/finished">
+          <Button icon="arrow.end" to="/app/finished">
             Finished watching
-          </Action>
+          </Button>
         </Menu>
       }
     >
