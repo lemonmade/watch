@@ -121,10 +121,9 @@ export class Grid<
   }
 
   set inlineSpacing(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
-    const resolvedValue =
-      formatAutoOrNoneAttributeValue(value, {
-        allowed: SPACING_KEYWORDS,
-      });
+    const resolvedValue = formatAutoOrNoneAttributeValue(value, {
+      allowed: SPACING_KEYWORDS,
+    });
 
     if (resolvedValue == null) {
       this.removeAttribute('inline-spacing');
@@ -142,10 +141,9 @@ export class Grid<
   }
 
   set blockSpacing(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
-    const resolvedValue =
-      formatAutoOrNoneAttributeValue(value, {
-        allowed: SPACING_KEYWORDS,
-      });
+    const resolvedValue = formatAutoOrNoneAttributeValue(value, {
+      allowed: SPACING_KEYWORDS,
+    });
 
     if (resolvedValue == null) {
       this.removeAttribute('block-spacing');
