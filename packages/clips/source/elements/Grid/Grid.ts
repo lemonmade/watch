@@ -10,9 +10,10 @@ import {
 } from '@watching/design';
 
 import {
-  attributeRestrictedToAllowedValues,
   backedByAttribute,
-  restrictToAllowedValues,
+  attributeRestrictedToAllowedValues,
+  formatAutoOrNoneAttributeValue,
+  type AttributeValueAsPropertySetter,
 } from '../ClipsElement.ts';
 
 import {
@@ -48,6 +49,8 @@ export interface GridProperties extends ViewProperties {
 }
 
 export interface GridEvents extends ViewEvents {}
+
+const DEFAULT_SPACING_VALUE = 'none';
 
 /**
  * A `Grid` is a container component that lays out sibling elements
@@ -90,37 +93,66 @@ export class Grid<
 
   get spacing(): SpacingKeyword {
     return (
-      restrictToAllowedValues(this.getAttribute('spacing'), SPACING_KEYWORDS) ??
-      'none'
+      formatAutoOrNoneAttributeValue(this.getAttribute('spacing'), {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE
     );
   }
 
-  set spacing(value: SpacingKeyword | boolean) {
+  set spacing(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
     const resolvedValue =
-      value === true
-        ? 'auto'
-        : value === false || value == null
-          ? 'none'
-          : restrictToAllowedValues(value, SPACING_KEYWORDS);
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE;
 
-    if (resolvedValue === 'none') {
+    if (resolvedValue === DEFAULT_SPACING_VALUE) {
       this.removeAttribute('spacing');
-    } else if (resolvedValue) {
+    } else {
       this.setAttribute('spacing', resolvedValue);
     }
   }
 
-  @backedByAttribute<SpacingKeyword | undefined>({
-    name: 'inline-spacing',
-    ...attributeRestrictedToAllowedValues(SPACING_KEYWORDS),
-  })
-  accessor inlineSpacing: SpacingKeyword | undefined;
+  get inlineSpacing(): SpacingKeyword {
+    return (
+      formatAutoOrNoneAttributeValue(this.getAttribute('inline-spacing'), {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE
+    );
+  }
 
-  @backedByAttribute<SpacingKeyword | undefined>({
-    name: 'block-spacing',
-    ...attributeRestrictedToAllowedValues(SPACING_KEYWORDS),
-  })
-  accessor blockSpacing: SpacingKeyword | undefined;
+  set inlineSpacing(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
+    const resolvedValue =
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_KEYWORDS,
+      });
+
+    if (resolvedValue == null) {
+      this.removeAttribute('inline-spacing');
+    } else {
+      this.setAttribute('inline-spacing', resolvedValue);
+    }
+  }
+
+  get blockSpacing(): SpacingKeyword {
+    return (
+      formatAutoOrNoneAttributeValue(this.getAttribute('block-spacing'), {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE
+    );
+  }
+
+  set blockSpacing(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
+    const resolvedValue =
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_KEYWORDS,
+      });
+
+    if (resolvedValue == null) {
+      this.removeAttribute('block-spacing');
+    } else {
+      this.setAttribute('block-spacing', resolvedValue);
+    }
+  }
 
   @backedByAttribute({
     ...attributeRestrictedToAllowedValues(DIRECTION_KEYWORDS),

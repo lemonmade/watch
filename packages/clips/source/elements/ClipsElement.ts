@@ -10,6 +10,43 @@ export class ClipsElement<
   readonly __attributes?: Attributes;
 }
 
+export function formatAttributeValue<T extends string>(
+  value: string | boolean | null | undefined,
+  options: {truthy?: NoInfer<T>; false?: NoInfer<T>; allowed: Set<T>},
+) {
+  if (value === true || value === '') return options.truthy;
+  if (value === false) return options.false;
+  if (value == null) return undefined;
+  return restrictToAllowedValues(value, options.allowed);
+}
+
+export function formatAutoAttributeValue<T extends string>(
+  value: string | boolean | null | undefined,
+  options: {truthy?: NoInfer<T>; false?: NoInfer<T>; allowed: Set<T>},
+) {
+  return formatAttributeValue<T>(value, {
+    truthy: 'auto' as T,
+    ...options,
+  });
+}
+
+export function formatAutoOrNoneAttributeValue<T extends string>(
+  value: string | boolean | null | undefined,
+  options: {truthy?: NoInfer<T>; allowed: Set<T>},
+) {
+  return formatAutoAttributeValue<T>(value, {
+    ...options,
+    false: 'none' as T,
+  });
+}
+
+export type AttributeValueAsPropertySetter<T extends string> =
+  | T
+  | ''
+  | boolean
+  | null
+  | undefined;
+
 export function isAllowedValue<T extends string>(
   value: string | null,
   allowed: Set<T>,

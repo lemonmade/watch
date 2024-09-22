@@ -10,9 +10,9 @@ import {
 } from '@watching/design';
 
 import {
-  attributeRestrictedToAllowedValues,
   backedByAttribute,
-  restrictToAllowedValues,
+  attributeRestrictedToAllowedValues,
+  formatAutoOrNoneAttributeValue,
 } from '../ClipsElement.ts';
 
 import {
@@ -40,6 +40,8 @@ export interface StackProperties extends ViewProperties {
 }
 
 export interface StackEvents extends ViewEvents {}
+
+const DEFAULT_SPACING_VALUE = 'none';
 
 /**
  * A `Stack` is a container component that lays out sibling elements
@@ -79,16 +81,19 @@ export class Stack<
 
   get spacing(): SpacingKeyword {
     return (
-      restrictToAllowedValues(this.getAttribute('spacing'), SPACING_KEYWORDS) ??
-      'none'
+      formatAutoOrNoneAttributeValue(this.getAttribute('spacing'), {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE
     );
   }
 
-  set spacing(value: SpacingKeyword | boolean) {
+  set spacing(value: SpacingKeyword | '' | boolean | null | undefined) {
     const resolvedValue =
-      value === true ? 'auto' : value === false ? 'none' : value;
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_SPACING_VALUE;
 
-    if (resolvedValue === 'none') {
+    if (resolvedValue === DEFAULT_SPACING_VALUE) {
       this.removeAttribute('spacing');
     } else {
       this.setAttribute('spacing', resolvedValue);

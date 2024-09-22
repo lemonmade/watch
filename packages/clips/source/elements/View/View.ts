@@ -1,4 +1,8 @@
-import {ClipsElement, restrictToAllowedValues} from '../ClipsElement.ts';
+import {
+  ClipsElement,
+  formatAutoOrNoneAttributeValue,
+  type AttributeValueAsPropertySetter,
+} from '../ClipsElement.ts';
 
 import {type SpacingKeyword, SPACING_KEYWORDS} from '@watching/design';
 
@@ -25,6 +29,8 @@ export interface ViewProperties {
 
 export interface ViewEvents {}
 
+const DEFAULT_PADDING_VALUE = 'none';
+
 /**
  * A View is a generic container component. Its contents will always be their
  * “natural” size, so this component can be useful in layout components (like `Layout`, `Tiles`,
@@ -49,13 +55,17 @@ export class View<
 
   get padding(): SpacingKeyword {
     return (
-      restrictToAllowedValues(this.getAttribute('padding'), SPACING_KEYWORDS) ??
-      'none'
+      formatAutoOrNoneAttributeValue(this.getAttribute('padding'), {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_PADDING_VALUE
     );
   }
 
-  set padding(value: SpacingKeyword | boolean) {
-    const resolvedValue = resolvePaddingValue(value);
+  set padding(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
+    const resolvedValue =
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_KEYWORDS,
+      }) ?? DEFAULT_PADDING_VALUE;
 
     if (resolvedValue === 'none') {
       this.removeAttribute('padding');
@@ -65,68 +75,73 @@ export class View<
   }
 
   get paddingInlineStart(): SpacingKeyword | undefined {
-    return restrictToAllowedValues(
+    return formatAutoOrNoneAttributeValue(
       this.getAttribute('padding-inline-start'),
-      SPACING_KEYWORDS,
+      {
+        allowed: SPACING_KEYWORDS,
+      },
     );
   }
 
-  set paddingInlineStart(value: SpacingKeyword | boolean | undefined) {
+  set paddingInlineStart(
+    value: AttributeValueAsPropertySetter<SpacingKeyword>,
+  ) {
     this.#updatePaddingProperty('padding-inline-start', value);
   }
 
   get paddingInlineEnd(): SpacingKeyword | undefined {
-    return restrictToAllowedValues(
+    return formatAutoOrNoneAttributeValue(
       this.getAttribute('padding-inline-end'),
-      SPACING_KEYWORDS,
+      {
+        allowed: SPACING_KEYWORDS,
+      },
     );
   }
 
-  set paddingInlineEnd(value: SpacingKeyword | boolean | undefined) {
+  set paddingInlineEnd(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
     this.#updatePaddingProperty('padding-inline-end', value);
   }
 
   get paddingBlockStart(): SpacingKeyword | undefined {
-    return restrictToAllowedValues(
+    return formatAutoOrNoneAttributeValue(
       this.getAttribute('padding-block-start'),
-      SPACING_KEYWORDS,
+      {
+        allowed: SPACING_KEYWORDS,
+      },
     );
   }
 
-  set paddingBlockStart(value: SpacingKeyword | boolean | undefined) {
+  set paddingBlockStart(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
     this.#updatePaddingProperty('padding-block-start', value);
   }
 
   get paddingBlockEnd(): SpacingKeyword | undefined {
-    return restrictToAllowedValues(
+    return formatAutoOrNoneAttributeValue(
       this.getAttribute('padding-block-end'),
-      SPACING_KEYWORDS,
+      {
+        allowed: SPACING_KEYWORDS,
+      },
     );
   }
 
-  set paddingBlockEnd(value: SpacingKeyword | boolean | undefined) {
+  set paddingBlockEnd(value: AttributeValueAsPropertySetter<SpacingKeyword>) {
     this.#updatePaddingProperty('padding-block-end', value);
   }
 
   #updatePaddingProperty(
-    property: Extract<keyof ViewAttributes, `padding-${string}`>,
-    value: SpacingKeyword | boolean | undefined,
+    attribute: Extract<keyof ViewAttributes, `padding-${string}`>,
+    value: AttributeValueAsPropertySetter<SpacingKeyword>,
   ) {
-    if (value == null) {
-      this.removeAttribute(property);
+    const resolvedValue = formatAutoOrNoneAttributeValue(value, {
+      allowed: SPACING_KEYWORDS,
+    });
+
+    if (resolvedValue == null) {
+      this.removeAttribute(attribute);
     } else {
-      const resolvedValue = resolvePaddingValue(value);
-      if (resolvedValue) this.setAttribute(property, resolvedValue);
+      this.setAttribute(attribute, resolvedValue);
     }
   }
-}
-
-function resolvePaddingValue(
-  value: string | boolean | undefined,
-): SpacingKeyword | undefined {
-  if (value === true) return 'auto';
-  if (value === false || value == null) return 'none';
-  return restrictToAllowedValues(value, SPACING_KEYWORDS);
 }
 
 customElements.define('ui-view', View);

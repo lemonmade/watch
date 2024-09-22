@@ -9,7 +9,9 @@ import type {CSSLiteralValue} from '../../styles.ts';
 import {
   ClipsElement,
   backedByAttribute,
+  formatAutoAttributeValue,
   restrictToAllowedValues,
+  type AttributeValueAsPropertySetter,
 } from '../ClipsElement.ts';
 
 export interface SkeletonTextAttributes {
@@ -42,6 +44,8 @@ export interface SkeletonTextProperties {
 
 export interface SkeletonTextEvents {}
 
+const DEFAULT_EMPHASIS_VALUE = 'auto';
+
 /**
  * Text is used to visually style and provide semantic value for a small piece of text
  * content.
@@ -64,23 +68,24 @@ export class SkeletonText
    */
   get emphasis(): TextEmphasisKeyword {
     return (
-      restrictToAllowedValues(
-        this.getAttribute('emphasis'),
-        TEXT_EMPHASIS_KEYWORDS,
-      ) ?? 'auto'
+      formatAutoAttributeValue(this.getAttribute('emphasis'), {
+        allowed: TEXT_EMPHASIS_KEYWORDS,
+      }) ?? DEFAULT_EMPHASIS_VALUE
     );
   }
 
-  set emphasis(value: TextEmphasisKeyword | boolean | undefined) {
-    if (value == null || value === false) {
+  set emphasis(value: AttributeValueAsPropertySetter<TextEmphasisKeyword>) {
+    const resolvedValue =
+      formatAutoAttributeValue(value, {
+        allowed: TEXT_EMPHASIS_KEYWORDS,
+        truthy: 'strong',
+        false: 'auto',
+      }) ?? DEFAULT_EMPHASIS_VALUE;
+
+    if (resolvedValue === DEFAULT_EMPHASIS_VALUE) {
       this.removeAttribute('emphasis');
     } else {
-      const resolvedValue =
-        value === true
-          ? 'strong'
-          : restrictToAllowedValues(value, TEXT_EMPHASIS_KEYWORDS);
-
-      if (resolvedValue) this.setAttribute('emphasis', resolvedValue);
+      this.setAttribute('emphasis', resolvedValue);
     }
   }
 

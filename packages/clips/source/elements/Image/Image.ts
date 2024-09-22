@@ -1,8 +1,9 @@
 import {
   ClipsElement,
   backedByAttribute,
+  formatAutoOrNoneAttributeValue,
   attributeRestrictedToAllowedValues,
-  restrictToAllowedValues,
+  type AttributeValueAsPropertySetter,
 } from '../ClipsElement.ts';
 import {
   CORNER_RADIUS_KEYWORDS,
@@ -97,6 +98,8 @@ export interface ImageProperties {
 
 export interface ImageEvents {}
 
+const DEFAULT_CORNER_RADIUS_VALUE = 'none';
+
 /**
  * Image is used to visually style and provide semantic value for a small piece of image
  * content.
@@ -155,20 +158,17 @@ export class Image
 
   get cornerRadius(): CornerRadiusKeyword {
     return (
-      restrictToAllowedValues(
-        this.getAttribute('corner-radius'),
-        CORNER_RADIUS_KEYWORDS,
-      ) ?? 'none'
+      formatAutoOrNoneAttributeValue(this.getAttribute('corner-radius'), {
+        allowed: CORNER_RADIUS_KEYWORDS,
+      }) ?? DEFAULT_CORNER_RADIUS_VALUE
     );
   }
 
-  set cornerRadius(value: CornerRadiusKeyword | boolean) {
+  set cornerRadius(value: AttributeValueAsPropertySetter<CornerRadiusKeyword>) {
     const resolvedValue =
-      value === true
-        ? 'auto'
-        : value === false || value == null
-          ? 'none'
-          : restrictToAllowedValues(value, CORNER_RADIUS_KEYWORDS);
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: CORNER_RADIUS_KEYWORDS,
+      }) ?? DEFAULT_CORNER_RADIUS_VALUE;
 
     if (resolvedValue === 'none') {
       this.removeAttribute('corner-radius');

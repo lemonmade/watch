@@ -2,7 +2,11 @@ import {
   SPACING_OR_NONE_KEYWORDS,
   type SpacingOrNoneKeyword,
 } from '@watching/design';
-import {ClipsElement, restrictToAllowedValues} from '../ClipsElement.ts';
+import {
+  ClipsElement,
+  formatAutoOrNoneAttributeValue,
+  type AttributeValueAsPropertySetter,
+} from '../ClipsElement.ts';
 
 export interface ModalAttributes {
   /**
@@ -25,6 +29,8 @@ export interface ModalProperties {
 
 export interface ModalEvents {}
 
+const DEFAULT_PADDING_VALUE = 'none';
+
 /**
  * A Modal is an overlay that blocks interaction with the rest of the page. The
  * user must take an action to dismiss the modal, either by pressing on the backdrop,
@@ -44,23 +50,22 @@ export class Modal
 
   get padding(): SpacingOrNoneKeyword {
     return (
-      restrictToAllowedValues(
-        this.getAttribute('padding'),
-        SPACING_OR_NONE_KEYWORDS,
-      ) ?? 'none'
+      formatAutoOrNoneAttributeValue(this.getAttribute('padding'), {
+        allowed: SPACING_OR_NONE_KEYWORDS,
+      }) ?? DEFAULT_PADDING_VALUE
     );
   }
 
-  set padding(value: SpacingOrNoneKeyword | boolean | undefined) {
-    if (value == null || value === 'none' || value === false) {
-      this.removeAttribute('padding');
-    } else {
-      const resolvedValue =
-        value === true
-          ? 'auto'
-          : restrictToAllowedValues(value, SPACING_OR_NONE_KEYWORDS);
+  set padding(value: AttributeValueAsPropertySetter<SpacingOrNoneKeyword>) {
+    const resolvedValue =
+      formatAutoOrNoneAttributeValue(value, {
+        allowed: SPACING_OR_NONE_KEYWORDS,
+      }) ?? DEFAULT_PADDING_VALUE;
 
-      if (resolvedValue) this.setAttribute('padding', resolvedValue);
+    if (resolvedValue === 'none') {
+      this.removeAttribute('padding');
+    } else if (resolvedValue) {
+      this.setAttribute('padding', resolvedValue);
     }
   }
 }

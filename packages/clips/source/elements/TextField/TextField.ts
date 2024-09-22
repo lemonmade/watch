@@ -16,8 +16,9 @@ import {
   ClipsElement,
   backedByAttribute,
   backedByAttributeAsBoolean,
-  restrictToAllowedValues,
+  formatAttributeValue,
   attributeRestrictedToAllowedValues,
+  type AttributeValueAsPropertySetter,
 } from '../ClipsElement.ts';
 // import {type SignalOrValue} from '../../signals.ts';
 
@@ -205,6 +206,8 @@ export interface TextFieldEvents {
   input: RemoteEvent<string>;
 }
 
+const DEFAULT_RESIZE_VALUE = 'none';
+
 /**
  * TextField is used to collect text input from a user.
  */
@@ -306,23 +309,24 @@ export class TextField
 
   get resize(): TextFieldResizeKeyword {
     return (
-      restrictToAllowedValues(
-        this.getAttribute('resize'),
-        TEXT_FIELD_RESIZE_KEYWORDS,
-      ) ?? 'none'
+      formatAttributeValue(this.getAttribute('resize'), {
+        allowed: TEXT_FIELD_RESIZE_KEYWORDS,
+      }) ?? DEFAULT_RESIZE_VALUE
     );
   }
 
-  set resize(value: TextFieldResizeKeyword | boolean | undefined) {
-    if (value == null || value === 'none' || value === false) {
+  set resize(value: AttributeValueAsPropertySetter<TextFieldResizeKeyword>) {
+    const resolvedValue =
+      formatAttributeValue(value, {
+        allowed: TEXT_FIELD_RESIZE_KEYWORDS,
+        false: 'none',
+        truthy: 'block',
+      }) ?? DEFAULT_RESIZE_VALUE;
+
+    if (resolvedValue === 'none') {
       this.removeAttribute('resize');
     } else {
-      const resolvedValue =
-        value === true
-          ? 'block'
-          : restrictToAllowedValues(value, TEXT_FIELD_RESIZE_KEYWORDS);
-
-      if (resolvedValue) this.setAttribute('resize', resolvedValue);
+      this.setAttribute('resize', resolvedValue);
     }
   }
 }
