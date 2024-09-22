@@ -90,14 +90,14 @@ export default extension((root, {target}) => {
         <ui-text emphasis>${countText}</ui-text> times.
       </ui-text>
 
-      <ui-action
-        onPress=${() => {
+      <ui-button
+        onpress=${() => {
           count++;
           countText.textContent = String(count);
         }}
       >
         Click me!
-      </ui-action>
+      </ui-button>
     </ui-block-stack>
   `;
 
