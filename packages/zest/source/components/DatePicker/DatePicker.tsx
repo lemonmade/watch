@@ -18,7 +18,7 @@ import {
   isSameDay,
 } from 'date-fns';
 
-import {Action} from '../Action.tsx';
+import {Button} from '../Button.tsx';
 import {Popover} from '../Popover.tsx';
 import {Menu} from '../Menu.tsx';
 import {Text} from '../Text.tsx';
@@ -62,14 +62,14 @@ export function DatePicker({id, label, value, onChange}: DatePickerProps) {
     );
 
   return (
-    <Action
+    <Button
       id={id}
       overlay={
         handleChange ? <DatePickerPopover onChange={handleChange} /> : null
       }
       accessory={
         resolvedValue == null || handleChange == null ? null : (
-          <Action
+          <Button
             icon="delete"
             accessibilityLabel="Clear date"
             onPress={() => handleChange(undefined)}
@@ -78,7 +78,7 @@ export function DatePicker({id, label, value, onChange}: DatePickerProps) {
       }
     >
       {content}
-    </Action>
+    </Button>
   );
 }
 
@@ -111,24 +111,24 @@ function DatePickerPopover({
   const menuItems =
     currentDateSearch === '' ? (
       <>
-        <Action icon="date" onPress={() => onChange(startOfToday())}>
+        <Button icon="date" onPress={() => onChange(startOfToday())}>
           Today
-        </Action>
-        <Action icon="date" onPress={() => onChange(startOfYesterday())}>
+        </Button>
+        <Button icon="date" onPress={() => onChange(startOfYesterday())}>
           Yesterday
-        </Action>
+        </Button>
       </>
     ) : (
       dateSuggestions.value.map(({date, label, detail}) => {
         return (
-          <Action
+          <Button
             key={label}
             icon="date"
             onPress={() => onChange(date)}
             detail={<Text emphasis="subdued">{detail}</Text>}
           >
             {label}
-          </Action>
+          </Button>
         );
       })
     );

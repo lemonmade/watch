@@ -1,7 +1,7 @@
 import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 
-import {Text, InlineStack, View, Action, TextBlock} from '@lemon/zest';
+import {Text, InlineStack, View, Button, TextBlock} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 import {
@@ -37,14 +37,14 @@ export default function Apps() {
           <TextBlock>name: {app.name}</TextBlock>
           <TextBlock>extensions: {app.extensions.length}</TextBlock>
         </View>
-        <Action
+        <Button
           onPress={async () => {
             await deleteApp.run({id: app.id});
             await query.rerun();
           }}
         >
           Delete
-        </Action>
+        </Button>
       </InlineStack>
     ));
   }

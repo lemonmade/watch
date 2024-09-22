@@ -1,5 +1,5 @@
 import {
-  Action,
+  Button,
   Banner,
   BlockStack,
   InlineStack,
@@ -63,14 +63,14 @@ function CreateGiftCodeSection() {
         </Banner>
       )}
 
-      <Action
+      <Button
         onPress={async () => {
           await createAccountGiftCard.run();
           await query.rerun();
         }}
       >
         Create gift code
-      </Action>
+      </Button>
 
       <BlockStack spacing>
         {giftCodes.map((giftCode) =>
@@ -100,23 +100,23 @@ function UnusedGiftCode({
         </Text>
       </BlockStack>
 
-      <Action
+      <Button
         detail={<Icon source="more" />}
         overlay={
           <Popover>
             <Menu>
-              <Action onPress={() => copy(giftCode.code)}>
+              <Button onPress={() => copy(giftCode.code)}>
                 Copy gift code
-              </Action>
-              <Action onPress={() => copy(giftCode.createAccountUrl)}>
+              </Button>
+              <Button onPress={() => copy(giftCode.createAccountUrl)}>
                 Copy account create link
-              </Action>
+              </Button>
             </Menu>
           </Popover>
         }
       >
-        Actions
-      </Action>
+        Buttons
+      </Button>
     </InlineGrid>
   );
 }

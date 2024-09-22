@@ -61,7 +61,7 @@ export {TextLink, type TextLinkProps} from './components/TextLink.tsx';
 export {View, type ViewProps} from './components/View.tsx';
 
 // Interaction
-export {Action, type ActionProps} from './components/Action.tsx';
+export {Button, type ButtonProps} from './components/Button.tsx';
 export {ActionList, type ActionListProps} from './components/ActionList.tsx';
 export {
   ContentAction,
@@ -100,9 +100,9 @@ export {
 
 // Skeletons
 export {
-  SkeletonAction,
-  type SkeletonActionProps,
-} from './components/SkeletonAction.tsx';
+  SkeletonButton,
+  type SkeletonButtonProps,
+} from './components/SkeletonButton.tsx';
 export {
   SkeletonText,
   type SkeletonTextProps,

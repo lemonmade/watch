@@ -1,7 +1,7 @@
 import {RemoteFragmentRenderer} from '@remote-dom/preact/host';
 import {type RemoteComponentRendererMap} from '@remote-dom/react/host';
 
-import {Action} from './components/Action.tsx';
+import {Button} from './components/Button.tsx';
 import {BlockGrid} from './components/BlockGrid.tsx';
 import {BlockStack} from './components/BlockStack.tsx';
 import {Disclosure} from './components/Disclosure.tsx';
@@ -15,7 +15,7 @@ import {InlineStack} from './components/InlineStack.tsx';
 import {Modal} from './components/Modal.tsx';
 import {Popover} from './components/Popover.tsx';
 import {Section} from './components/Section.tsx';
-import {SkeletonAction} from './components/SkeletonAction.tsx';
+import {SkeletonButton} from './components/SkeletonButton.tsx';
 import {SkeletonText} from './components/SkeletonText.tsx';
 import {SkeletonTextBlock} from './components/SkeletonTextBlock.tsx';
 import {SkeletonView} from './components/SkeletonView.tsx';
@@ -49,7 +49,7 @@ export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-view', View],
 
   // Interaction
-  ['ui-action', Action],
+  ['ui-button', Button],
   ['ui-disclosure', Disclosure],
 
   // Layout
@@ -61,7 +61,7 @@ export const CommonComponents: RemoteComponentRendererMap = new Map([
   ['ui-inline-grid', InlineGrid],
 
   // Skeletons
-  ['ui-skeleton-action', SkeletonAction],
+  ['ui-skeleton-button', SkeletonButton],
   ['ui-skeleton-text', SkeletonText],
   ['ui-skeleton-text-block', SkeletonTextBlock],
   ['ui-skeleton-view', SkeletonView],

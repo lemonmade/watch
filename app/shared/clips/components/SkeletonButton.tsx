@@ -1,5 +1,5 @@
-import {SkeletonAction as UISkeletonAction} from '@lemon/zest';
-import {SKELETON_ACTION_SIZE_KEYWORDS} from '@watching/design';
+import {SkeletonButton as UISkeletonButton} from '@lemon/zest';
+import {SKELETON_BUTTON_SIZE_KEYWORDS} from '@watching/design';
 
 import {
   createClipsComponentRenderer,
@@ -7,22 +7,22 @@ import {
   restrictToAllowedValues,
 } from './shared.ts';
 
-export const SkeletonAction = createClipsComponentRenderer(
-  'ui-skeleton-action',
-  function SkeletonAction(props) {
+export const SkeletonButton = createClipsComponentRenderer(
+  'ui-skeleton-button',
+  function SkeletonButton(props) {
     const {children} = useRenderedChildren(props);
 
     const attributes = props.element.attributes.value;
 
     return (
-      <UISkeletonAction
+      <UISkeletonButton
         size={restrictToAllowedValues(
           attributes.size,
-          SKELETON_ACTION_SIZE_KEYWORDS,
+          SKELETON_BUTTON_SIZE_KEYWORDS,
         )}
       >
         {children}
-      </UISkeletonAction>
+      </UISkeletonButton>
     );
   },
 );

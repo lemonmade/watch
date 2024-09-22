@@ -191,13 +191,13 @@ export const SKELETON_TEXT_SIZE_KEYWORDS = new Set<SkeletonTextSizeKeyword>([
   'large.1',
 ]);
 
-export type SkeletonActionSizeKeyword =
+export type SkeletonButtonSizeKeyword =
   | 'small.1'
   | 'small'
   | 'auto'
   | 'large'
   | 'large.1';
 
-export const SKELETON_ACTION_SIZE_KEYWORDS = new Set<SkeletonActionSizeKeyword>(
+export const SKELETON_BUTTON_SIZE_KEYWORDS = new Set<SkeletonButtonSizeKeyword>(
   ['small.1', 'small', 'auto', 'large', 'large.1'],
 );

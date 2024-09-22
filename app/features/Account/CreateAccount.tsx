@@ -3,7 +3,7 @@ import {useSignal} from '@quilted/quilt/signals';
 import {useNavigate, useCurrentURL} from '@quilted/quilt/navigation';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
-  Action,
+  Button,
   Banner,
   TextField,
   Form,
@@ -14,7 +14,7 @@ import {
 } from '@lemon/zest';
 
 import {CreateAccountErrorReason} from '~/global/auth.ts';
-import {SignInWithAppleAction} from '~/shared/auth.ts';
+import {SignInWithAppleButton} from '~/shared/auth.ts';
 import {useGithubOAuthModal, GithubOAuthFlow} from '~/shared/github.ts';
 import {useGoogleOAuthModal, GoogleOAuthFlow} from '~/shared/google.ts';
 import {useGraphQLMutation} from '~/shared/graphql.ts';
@@ -90,7 +90,7 @@ function CreateAccountWithEmail() {
           autocomplete="email"
         />
 
-        <Action perform="submit">Create account with email</Action>
+        <Button perform="submit">Create account with email</Button>
       </BlockStack>
     </Form>
   );
@@ -107,7 +107,7 @@ function CreateAccountWithApple({
   );
 
   return (
-    <SignInWithAppleAction
+    <SignInWithAppleButton
       redirectUrl={
         new URL('/internal/auth/apple/create-account/callback', currentUrl)
       }
@@ -131,7 +131,7 @@ function CreateAccountWithApple({
       }}
     >
       Create account with Apple
-    </SignInWithAppleAction>
+    </SignInWithAppleButton>
   );
 }
 
@@ -152,7 +152,7 @@ function CreateAccountWithGithub({
   });
 
   return (
-    <Action
+    <Button
       onPress={() => {
         open({
           redirectTo:
@@ -170,7 +170,7 @@ function CreateAccountWithGithub({
       }}
     >
       Create account with Github
-    </Action>
+    </Button>
   );
 }
 
@@ -191,7 +191,7 @@ function CreateAccountWithGoogle({
   });
 
   return (
-    <Action
+    <Button
       onPress={() => {
         open({
           redirectTo:
@@ -209,7 +209,7 @@ function CreateAccountWithGoogle({
       }}
     >
       Create account with Google
-    </Action>
+    </Button>
   );
 }
 

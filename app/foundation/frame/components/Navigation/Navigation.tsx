@@ -5,7 +5,7 @@ import {
   useRouter,
   type NavigateTo,
 } from '@quilted/quilt/navigation';
-import {View, Action, Icon} from '@lemon/zest';
+import {View, Button, Icon} from '@lemon/zest';
 
 import styles from './Navigation.module.css';
 
@@ -19,7 +19,7 @@ export interface NavigationItemProps {
   to: NavigateTo;
   icon: ComponentProps<typeof Icon>['source'];
   matches?: (string | RegExp)[];
-  emphasis?: ComponentProps<typeof Action>['emphasis'];
+  emphasis?: ComponentProps<typeof Button>['emphasis'];
 }
 
 export function NavigationItem({
@@ -32,7 +32,7 @@ export function NavigationItem({
   const selected = useItemSelected(to, matches);
 
   return (
-    <Action
+    <Button
       selected={selected}
       to={to}
       inlineAlignment="start"
@@ -41,7 +41,7 @@ export function NavigationItem({
       emphasis={emphasis}
     >
       {children}
-    </Action>
+    </Button>
   );
 }
 

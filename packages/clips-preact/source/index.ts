@@ -4,7 +4,8 @@ export {html} from '@remote-dom/preact/html';
 
 export {extension} from './extension.tsx';
 export {
-  Action,
+  Button,
+  Disclosure,
   Footer,
   Header,
   Heading,
@@ -24,6 +25,12 @@ export {
   Grid,
   BlockGrid,
   InlineGrid,
+
+  // Skeleton
+  SkeletonText,
+  SkeletonTextBlock,
+  SkeletonView,
+  SkeletonButton,
 } from './components.ts';
 export {
   useApi,

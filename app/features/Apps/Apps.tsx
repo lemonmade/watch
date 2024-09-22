@@ -3,7 +3,7 @@ import {
   BlockStack,
   View,
   TextBlock,
-  Action,
+  Button,
   InlineStack,
   Section,
   Banner,
@@ -42,14 +42,14 @@ export default function Apps() {
             <InlineStack spacing>
               <TextBlock>{app.name}</TextBlock>
               {!app.isInstalled && (
-                <Action
+                <Button
                   onPress={async () => {
                     await installApp.run({id: app.id});
                     await query.rerun();
                   }}
                 >
                   Install
-                </Action>
+                </Button>
               )}
             </InlineStack>
 
@@ -72,7 +72,7 @@ export default function Apps() {
                         <InlineStack spacing>
                           <TextBlock>{extension.name}</TextBlock>
                           {!extension.isInstalled && (
-                            <Action
+                            <Button
                               onPress={async () => {
                                 await installExtension.run({
                                   id: extension.id,
@@ -83,7 +83,7 @@ export default function Apps() {
                               }}
                             >
                               Install
-                            </Action>
+                            </Button>
                           )}
                         </InlineStack>
                       </View>
@@ -129,7 +129,7 @@ function AppSecretSection({app}: {app: AppsQueryData.Apps}) {
         <TextBlock>{app.userDetailsJWT}</TextBlock>
 
         <InlineStack>
-          <Action
+          <Button
             onPress={async () => {
               const result = await createSecret.run({id: app.id});
               console.log(result);
@@ -137,7 +137,7 @@ function AppSecretSection({app}: {app: AppsQueryData.Apps}) {
             inlineSize="content"
           >
             Create secret
-          </Action>
+          </Button>
         </InlineStack>
       </BlockStack>
     </Section>

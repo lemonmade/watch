@@ -1,0 +1,643 @@
+.Button {
+  --z-Icon-auto-color: var(--z-Button-icon-color);
+
+  --z-internal-Button-border: var(--z-Button-border);
+  --z-internal-Button-background: var(--z-Button-background);
+  --z-internal-Button-divider-color: var(--z-Button-divider-color);
+  --z-internal-Button-shadow: var(--z-Button-shadow);
+  --z-internal-Button-text-color: var(--z-Button-text-color);
+  --z-internal-Button-corner-radius: var(--z-corner-radius-auto);
+  --z-internal-Button-transition: background 0.2s ease, color 0.2s ease;
+  --z-internal-Button-inline-padding: var(--z-spacing-auto);
+  --z-internal-Button-block-padding: var(
+    --z-internal-Button-forced-block-padding,
+    var(--z-spacing-small-2)
+  );
+  --z-internal-Button-alignment: center;
+  --z-internal-Button-minimum-block-size: var(--z-Button-minimum-size);
+
+  --z-internal-Button-loading-indicator-opacity: 0;
+  --z-internal-Button-loading-content-opacity: 1;
+  --z-internal-Button-loading-opacity-transition: opacity 0.2s ease;
+
+  position: relative;
+  min-block-size: var(--z-internal-Button-minimum-block-size);
+  margin: calc(-1 * var(--z-internal-Button-inset-block-nudge, 0)) 0;
+  padding: calc(
+      var(--z-internal-Button-inset-block-size, 0px) +
+        var(--z-internal-Button-block-padding)
+    )
+    var(--z-internal-Button-inline-padding);
+  border-block-start: var(
+    --z-internal-Button-inset-none,
+    var(
+      --z-internal-forced-block-start-divider,
+      var(--z-internal-Button-border)
+    )
+  );
+  border-block-end: var(
+    --z-internal-Button-inset-none,
+    var(--z-internal-forced-block-end-divider, var(--z-internal-Button-border))
+  );
+  border-inline-start: var(
+    --z-internal-Button-inset-none,
+    var(
+      --z-internal-forced-inline-start-divider,
+      var(--z-internal-Button-border)
+    )
+  );
+  border-inline-end: var(
+    --z-internal-Button-inset-none,
+    var(--z-internal-forced-inline-end-divider, var(--z-internal-Button-border))
+  );
+  border-radius: var(
+      --z-internal-Button-inset-none,
+      var(
+        --z-internal-forced-block-start-inline-start-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Button-inset-none,
+      var(
+        --z-internal-forced-block-start-inline-end-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Button-inset-none,
+      var(
+        --z-internal-forced-block-end-inline-end-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+    )
+    var(
+      --z-internal-Button-inset-none,
+      var(
+        --z-internal-forced-block-end-inline-start-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+    );
+  background: var(
+    --z-internal-Button-inset-none,
+    var(--z-internal-Button-background)
+  );
+  box-shadow: var(
+    --z-internal-Button-inset-none,
+    var(--z-internal-Button-shadow)
+  );
+  color: var(--z-internal-Button-text-color);
+  transition: var(--z-internal-Button-transition);
+
+  &::before {
+    z-index: -1;
+    content: var(--z-internal-Button-inset-content);
+    display: var(--z-internal-Button-inset-display, none);
+  }
+
+  &::before {
+    pointer-events: none;
+    position: absolute;
+    top: var(--z-internal-Button-inset-block-size, 0);
+    left: 0;
+    right: 0;
+    bottom: var(--z-internal-Button-inset-block-size, 0);
+    border: var(--z-internal-Button-border);
+    border-radius: var(
+        --z-internal-forced-block-start-inline-start-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-start-inline-end-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-end-inline-end-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      )
+      var(
+        --z-internal-forced-block-end-inline-start-corner-radius,
+        var(--z-internal-Button-corner-radius)
+      );
+    background: var(--z-internal-Button-background);
+    box-shadow: var(--z-internal-Button-shadow);
+    transition: var(--z-internal-Button-transition);
+  }
+
+  &:where(:hover) {
+    --z-Icon-auto-color: var(--z-Button-hovered-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-hovered-border);
+    --z-internal-Button-background: var(--z-Button-hovered-background);
+    --z-internal-Button-divider-color: var(--z-Button-hovered-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-hovered-shadow);
+    --z-internal-Button-text-color: var(--z-Button-hovered-text-color);
+  }
+
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-auto-color: var(--z-Button-focused-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-focused-border);
+    --z-internal-Button-background: var(--z-Button-focused-background);
+    --z-internal-Button-divider-color: var(--z-Button-focused-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-focused-shadow);
+    --z-internal-Button-text-color: var(--z-Button-focused-text-color);
+  }
+
+  &:where(:active) {
+    --z-Icon-auto-color: var(--z-Button-pressed-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-pressed-border);
+    --z-internal-Button-background: var(--z-Button-pressed-background);
+    --z-internal-Button-divider-color: var(--z-Button-pressed-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-pressed-shadow);
+    --z-internal-Button-text-color: var(--z-Button-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-auto-color: var(--z-Button-selected-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-selected-border);
+    --z-internal-Button-background: var(--z-Button-selected-background);
+    --z-internal-Button-divider-color: var(--z-Button-selected-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-selected-shadow);
+    --z-internal-Button-text-color: var(--z-Button-selected-text-color);
+  }
+
+  &:where(.disabled) {
+    --z-Icon-auto-color: var(--z-Button-disabled-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-disabled-border);
+    --z-internal-Button-background: var(--z-Button-disabled-background);
+    --z-internal-Button-divider-color: var(--z-Button-disabled-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-disabled-shadow);
+    --z-internal-Button-text-color: var(--z-Button-disabled-text-color);
+  }
+
+  &:where(.inert) {
+    --z-Icon-auto-color: var(--z-Button-inert-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-inert-border);
+    --z-internal-Button-background: var(--z-Button-inert-background);
+    --z-internal-Button-divider-color: var(--z-Button-inert-divider-color);
+    --z-internal-Button-shadow: var(--z-Button-inert-shadow);
+    --z-internal-Button-text-color: var(--z-Button-inert-text-color);
+  }
+}
+
+.emphasized {
+  --z-Icon-auto-color: var(--z-Button-emphasized-icon-color);
+
+  --z-internal-Button-border: var(--z-Button-emphasized-border);
+  --z-internal-Button-background: var(--z-Button-emphasized-background);
+  --z-internal-Button-divider-color: var(--z-Button-emphasized-divider-color);
+  --z-internal-Button-shadow: var(--z-Button-emphasized-shadow);
+  --z-internal-Button-text-color: var(--z-Button-emphasized-text-color);
+
+  &:where(:hover) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-hovered-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-hovered-border);
+    --z-internal-Button-background: var(
+      --z-Button-emphasized-hovered-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-hovered-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-hovered-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-emphasized-hovered-text-color
+    );
+  }
+
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-focused-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-focused-border);
+    --z-internal-Button-background: var(
+      --z-Button-emphasized-focused-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-focused-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-focused-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-emphasized-focused-text-color
+    );
+  }
+
+  &:where(:active) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-pressed-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-pressed-border);
+    --z-internal-Button-background: var(
+      --z-Button-emphasized-pressed-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-pressed-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-pressed-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-emphasized-pressed-text-color
+    );
+  }
+
+  &:where(.selected) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-selected-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-selected-border);
+    --z-internal-Button-background: var(
+      --z-Button-emphasized-selected-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-selected-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-selected-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-emphasized-selected-text-color
+    );
+  }
+
+  &:where(.disabled) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-disabled-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-disabled-border);
+    --z-internal-Button-background: var(
+      --z-Button-emphasized-disabled-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-disabled-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-disabled-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-emphasized-disabled-text-color
+    );
+  }
+
+  &:where(.inert) {
+    --z-Icon-auto-color: var(--z-Button-emphasized-inert-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-emphasized-inert-border);
+    --z-internal-Button-background: var(--z-Button-emphasized-inert-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-emphasized-inert-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-emphasized-inert-shadow);
+    --z-internal-Button-text-color: var(--z-Button-emphasized-inert-text-color);
+  }
+}
+
+.subdued {
+  --z-Icon-auto-color: var(--z-Button-subdued-icon-color);
+
+  --z-internal-Button-border: var(--z-Button-subdued-border);
+  --z-internal-Button-background: var(--z-Button-subdued-background);
+  --z-internal-Button-divider-color: var(--z-Button-subdued-divider-color);
+  --z-internal-Button-shadow: var(--z-Button-subdued-shadow);
+  --z-internal-Button-text-color: var(--z-Button-subdued-text-color);
+
+  &:where(:hover) {
+    --z-Icon-auto-color: var(--z-Button-subdued-hovered-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-hovered-border);
+    --z-internal-Button-background: var(--z-Button-subdued-hovered-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-hovered-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-hovered-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-hovered-text-color);
+  }
+
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-auto-color: var(--z-Button-subdued-focused-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-focused-border);
+    --z-internal-Button-background: var(--z-Button-subdued-focused-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-focused-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-focused-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-focused-text-color);
+  }
+
+  &:where(:active) {
+    --z-Icon-auto-color: var(--z-Button-subdued-pressed-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-pressed-border);
+    --z-internal-Button-background: var(--z-Button-subdued-pressed-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-pressed-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-pressed-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-pressed-text-color);
+  }
+
+  &:where(.selected) {
+    --z-Icon-auto-color: var(--z-Button-subdued-selected-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-selected-border);
+    --z-internal-Button-background: var(--z-Button-subdued-selected-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-selected-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-selected-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-selected-text-color);
+  }
+
+  &:where(.disabled) {
+    --z-Icon-auto-color: var(--z-Button-subdued-disabled-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-disabled-border);
+    --z-internal-Button-background: var(--z-Button-subdued-disabled-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-disabled-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-disabled-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-disabled-text-color);
+  }
+
+  &:where(.inert) {
+    --z-Icon-auto-color: var(--z-Button-subdued-inert-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-subdued-inert-border);
+    --z-internal-Button-background: var(--z-Button-subdued-inert-background);
+    --z-internal-Button-divider-color: var(
+      --z-Button-subdued-inert-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-subdued-inert-shadow);
+    --z-internal-Button-text-color: var(--z-Button-subdued-inert-text-color);
+  }
+}
+
+.destructive {
+  --z-Icon-auto-color: var(--z-Button-destructive-icon-color);
+
+  --z-internal-Button-border: var(--z-Button-destructive-border);
+  --z-internal-Button-background: var(--z-Button-destructive-background);
+  --z-internal-Button-divider-color: var(--z-Button-destructive-divider-color);
+  --z-internal-Button-shadow: var(--z-Button-destructive-shadow);
+  --z-internal-Button-text-color: var(--z-Button-destructive-text-color);
+
+  &:where(:hover) {
+    --z-Icon-auto-color: var(--z-Button-destructive-hovered-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-hovered-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-hovered-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-hovered-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-hovered-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-hovered-text-color
+    );
+  }
+
+  &:where(:focus-visible),
+  &:where(.focused) {
+    --z-Icon-auto-color: var(--z-Button-destructive-focused-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-focused-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-focused-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-focused-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-focused-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-focused-text-color
+    );
+  }
+
+  &:where(:active) {
+    --z-Icon-auto-color: var(--z-Button-destructive-pressed-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-pressed-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-pressed-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-pressed-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-pressed-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-pressed-text-color
+    );
+  }
+
+  &:where(.selected) {
+    --z-Icon-auto-color: var(--z-Button-destructive-selected-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-selected-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-selected-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-selected-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-selected-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-selected-text-color
+    );
+  }
+
+  &:where(.disabled) {
+    --z-Icon-auto-color: var(--z-Button-destructive-disabled-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-disabled-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-disabled-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-disabled-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-disabled-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-disabled-text-color
+    );
+  }
+
+  &:where(.inert) {
+    --z-Icon-auto-color: var(--z-Button-destructive-inert-icon-color);
+
+    --z-internal-Button-border: var(--z-Button-destructive-inert-border);
+    --z-internal-Button-background: var(
+      --z-Button-destructive-inert-background
+    );
+    --z-internal-Button-divider-color: var(
+      --z-Button-destructive-inert-divider-color
+    );
+    --z-internal-Button-shadow: var(--z-Button-destructive-inert-shadow);
+    --z-internal-Button-text-color: var(
+      --z-Button-destructive-inert-text-color
+    );
+  }
+}
+
+.sizeSmall {
+  --z-internal-Button-inset-content: '';
+  --z-internal-Button-inset-display: block;
+  --z-internal-Button-inset-none: none;
+  --z-internal-Button-inset-block-size: var(--z-spacing-small-1);
+  --z-internal-Button-inset-block-nudge: var(
+    --z-internal-Button-inset-block-size
+  );
+
+  --z-internal-Button-inline-padding: var(--z-spacing-small-1);
+}
+
+.sizeLarge {
+  --z-internal-Button-inline-padding: var(--z-spacing-large-1);
+  --z-internal-Button-minimum-block-size: 3.25rem;
+}
+
+.inlineSizeFill {
+  justify-self: stretch;
+}
+
+.spacing {
+  gap: var(--z-spacing-small-1);
+}
+
+.hasIcon {
+  grid-template-columns: auto auto;
+
+  & > *:first-child {
+    align-self: var(--z-internal-Button-alignment);
+  }
+
+  &:not(.sizeSmall) > *:first-child {
+    margin-inline-start: calc(-0.5 * var(--z-spacing-small-1));
+
+    &:only-child {
+      margin-inline-end: calc(-0.5 * var(--z-spacing-small-1));
+    }
+  }
+
+  &.sizeSmall > *:first-child {
+    margin-block-start: calc(-0.5 * var(--z-Icon-auto-size));
+    margin-block-end: calc(-0.5 * var(--z-Icon-auto-size));
+  }
+}
+
+.iconAlignmentStart {
+  --z-internal-Button-alignment: start;
+}
+
+.iconAlignmentEnd {
+  --z-internal-Button-alignment: end;
+}
+
+.iconAlignmentCenter {
+  --z-internal-Button-alignment: center;
+}
+
+.Content {
+  opacity: var(--z-internal-Button-loading-content-opacity);
+  transition: var(--z-internal-Button-loading-opacity-transition);
+}
+
+.hasDetail {
+  grid-template-columns: 1fr auto;
+}
+
+.hasIcon.hasDetail {
+  grid-template-columns: auto 1fr auto;
+}
+
+.loading {
+  --z-internal-Button-loading-indicator-opacity: 1;
+
+  &:not(.hasIcon) {
+    --z-internal-Button-loading-content-opacity: 0;
+  }
+
+  &.hasIcon {
+    --z-internal-Button-loading-icon-opacity: 0;
+  }
+}
+
+.IconContainer {
+  position: relative;
+}
+
+.Icon {
+  opacity: var(--z-internal-Button-loading-icon-opacity);
+  transition: var(--z-internal-Button-loading-opacity-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LoadingContent {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: var(--z-internal-Button-loading-indicator-opacity);
+  transition: var(--z-internal-Button-loading-opacity-transition);
+}
+
+.LoadingIcon {
+  --z-internal-Loading-icon-size: 1.25rem;
+
+  width: var(--z-internal-Loading-icon-size);
+  height: var(--z-internal-Loading-icon-size);
+  position: relative;
+}
+
+.LoadingIcon::after,
+.LoadingIcon::before {
+  content: '';
+  box-sizing: border-box;
+  width: var(--z-internal-Loading-icon-size);
+  height: var(--z-internal-Loading-icon-size);
+  border-radius: 50%;
+  background: var(--z-Icon-auto-color);
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: buttonLoadingIcon 1.2s ease-out infinite;
+}
+
+.LoadingIcon::after {
+  animation-delay: -0.6s;
+}
+
+@keyframes buttonLoadingIcon {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.ButtonContainer {
+  display: var(
+    --z-internal-display-none,
+    var(--z-internal-display-grid, inline-grid)
+  );
+  grid-template-columns: 1fr auto;
+}
+
+.connectedMain {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-inline-end: 1px solid var(--z-internal-Button-divider-color);
+}
+
+.connectedAccessory {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}

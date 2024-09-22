@@ -1,23 +1,23 @@
 import type {RenderableProps} from 'preact';
-import {Action} from '@lemon/zest';
+import {Button} from '@lemon/zest';
 
-export interface SignInWithActionResponse {
+export interface SignInWithAppleResponse {
   idToken: string;
   authorizationCode: string;
 }
 
-export interface SignInWithAppleActionProps {
+export interface SignInWithAppleButtonProps {
   redirectUrl: URL | string;
-  onPress(response: SignInWithActionResponse): void | Promise<void>;
+  onPress(response: SignInWithAppleResponse): void | Promise<void>;
 }
 
-export function SignInWithAppleAction({
+export function SignInWithAppleButton({
   children,
   redirectUrl,
   onPress,
-}: RenderableProps<SignInWithAppleActionProps>) {
+}: RenderableProps<SignInWithAppleButtonProps>) {
   return (
-    <Action
+    <Button
       onPress={async () => {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
@@ -46,6 +46,6 @@ export function SignInWithAppleAction({
       }}
     >
       {children}
-    </Action>
+    </Button>
   );
 }

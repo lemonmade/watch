@@ -108,11 +108,11 @@ export {
 
 // Interaction
 export {
-  Action,
-  type ActionAttributes,
-  type ActionProperties,
-  type ActionEvents,
-} from './Action/Action.ts';
+  Button,
+  type ButtonAttributes,
+  type ButtonProperties,
+  type ButtonEvents,
+} from './Button/Button.ts';
 export {
   Disclosure,
   type DisclosureAttributes,
@@ -122,11 +122,11 @@ export {
 
 // Skeletons
 export {
-  SkeletonAction,
-  type SkeletonActionAttributes,
-  type SkeletonActionProperties,
-  type SkeletonActionEvents,
-} from './SkeletonAction/SkeletonAction.ts';
+  SkeletonButton,
+  type SkeletonButtonAttributes,
+  type SkeletonButtonProperties,
+  type SkeletonButtonEvents,
+} from './SkeletonButton/SkeletonButton.ts';
 export {
   SkeletonText,
   type SkeletonTextAttributes,

@@ -6,29 +6,29 @@ import {
 } from 'preact';
 
 import type {
-  Action as ActionElement,
-  ActionProperties,
-  ActionEvents,
+  Button as ButtonElement,
+  ButtonProperties,
+  ButtonEvents,
 } from '@watching/clips/elements';
 
-export interface ActionProps
-  extends RenderableProps<Partial<ActionProperties>, ActionElement> {
+export interface ButtonProps
+  extends RenderableProps<Partial<ButtonProperties>, ButtonElement> {
   overlay?: VNode<any>;
   onPress?(): void | Promise<void>;
-  onpress?(event: ActionEvents['press']): void;
+  onpress?(event: ButtonEvents['press']): void;
 }
 
 declare module 'preact' {
   namespace JSX {
     interface IntrinsicElements {
-      'ui-action': Omit<ActionProps, 'onPress' | 'overlay'>;
+      'ui-button': Omit<ButtonProps, 'onPress' | 'overlay'>;
     }
   }
 }
 
-export function Action({overlay, children, onPress, ...props}: ActionProps) {
+export function Button({overlay, children, onPress, ...props}: ButtonProps) {
   return (
-    <ui-action
+    <ui-button
       onpress={onPress ? (event) => event.respondWith(onPress()) : undefined}
       {...props}
     >
@@ -36,6 +36,6 @@ export function Action({overlay, children, onPress, ...props}: ActionProps) {
       {overlay && isValidElement(overlay)
         ? cloneElement(overlay, {slot: 'overlay'})
         : null}
-    </ui-action>
+    </ui-button>
   );
 }

@@ -4,7 +4,7 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,
   TextBlock,
-  Action,
+  Button,
   Banner,
   Text,
   InlineGrid,
@@ -63,14 +63,14 @@ export default function AccessTokens() {
                 : 'never'}
             </Text>
           </BlockStack>
-          <Action
+          <Button
             onPress={async () => {
               await deleteAccessToken.run({id: accessToken.id});
               await query.rerun();
             }}
           >
             Delete
-          </Action>
+          </Button>
         </InlineGrid>
       ))
     );
@@ -86,7 +86,7 @@ export default function AccessTokens() {
           </Banner>
         )}
         {accessTokens}
-        <Action
+        <Button
           onPress={async () => {
             setCreateResult(undefined);
             const result = await createAccessToken.run();
@@ -121,7 +121,7 @@ export default function AccessTokens() {
           }}
         >
           Create access token
-        </Action>
+        </Button>
       </BlockStack>
     </Page>
   );

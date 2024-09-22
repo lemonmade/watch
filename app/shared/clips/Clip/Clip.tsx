@@ -15,9 +15,9 @@ import {
   Menu,
   ContentAction,
   Icon,
-  Action,
+  Button,
   Section,
-  SkeletonAction,
+  SkeletonButton,
   SkeletonText,
   SkeletonTextBlock,
   SkeletonView,
@@ -72,11 +72,11 @@ export function Clip<Point extends ExtensionPoint>({
               )}
               <Menu>
                 <ViewAppAction />
-                {renderer && <RestartClipAction instance={renderer} />}
+                {renderer && <RestartClipButton instance={renderer} />}
                 {extension.installed && (
-                  <UninstallClipAction extension={extension} />
+                  <UninstallClipButton extension={extension} />
                 )}
-                {extension.installed && <ReportIssueAction />}
+                {extension.installed && <ReportIssueButton />}
               </Menu>
             </Popover>
           }
@@ -112,28 +112,28 @@ export function Clip<Point extends ExtensionPoint>({
 
 function ViewAppAction() {
   return (
-    <Action
+    <Button
       icon="arrow.end"
       onPress={() => alert('App page not implemented yet!')}
     >
       View app
-    </Action>
+    </Button>
   );
 }
 
-function RestartClipAction({
+function RestartClipButton({
   instance,
 }: {
   instance: ClipsExtensionPointInstance<any>;
 }) {
   return (
-    <Action icon="sync" onPress={() => instance.restart()}>
+    <Button icon="sync" onPress={() => instance.restart()}>
       Restart
-    </Action>
+    </Button>
   );
 }
 
-function UninstallClipAction({
+function UninstallClipButton({
   extension,
 }: {
   extension: ClipsExtensionPoint<any>;
@@ -145,25 +145,25 @@ function UninstallClipAction({
   const {id} = extension.extension;
 
   return (
-    <Action
+    <Button
       icon="delete"
       onPress={async () => {
         await uninstallClipsExtensionFromClip.run({id});
       }}
     >
       Uninstall
-    </Action>
+    </Button>
   );
 }
 
-function ReportIssueAction() {
+function ReportIssueButton() {
   return (
-    <Action
+    <Button
       icon="message"
       onPress={() => alert('Reporting not implemented yet!')}
     >
       Report an issue
-    </Action>
+    </Button>
   );
 }
 
@@ -219,7 +219,7 @@ const LOADING_COMPONENT_MAP = new Map<string, ComponentType<any>>([
   ['ui-stack', Stack],
   ['ui-block-stack', BlockStack],
   ['ui-inline-stack', InlineStack],
-  ['ui-skeleton-action', SkeletonAction],
+  ['ui-skeleton-button', SkeletonButton],
   ['ui-skeleton-text', SkeletonText],
   ['ui-skeleton-text-block', SkeletonTextBlock],
   ['ui-skeleton-view', SkeletonView],

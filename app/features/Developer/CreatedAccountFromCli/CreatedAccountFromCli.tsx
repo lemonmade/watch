@@ -1,6 +1,6 @@
 import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {BlockStack, TextBlock, Text, Action} from '@lemon/zest';
+import {BlockStack, TextBlock, Text, Button, TextLink} from '@lemon/zest';
 
 import {Page} from '~/shared/page';
 
@@ -48,15 +48,18 @@ export default function CreatedAccountFromCli() {
         <TextBlock>
           If you want to revoke access to this token in the future, you can do
           so on the{' '}
-          <Action to="/app/developer/access-tokens">access tokens page</Action>.
+          <TextLink to="/app/developer/access-tokens">
+            access tokens page
+          </TextLink>
+          .
         </TextBlock>
-        <Action
+        <Button
           onPress={async () => {
             await authenticateCliWithAccessToken.perform();
           }}
         >
           Authenticate the CLI
-        </Action>
+        </Button>
       </BlockStack>
     );
   }

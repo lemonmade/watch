@@ -3,7 +3,7 @@ import {usePerformanceNavigation} from '@quilted/quilt/performance';
 import {
   BlockStack,
   TextField,
-  Action,
+  Button,
   Form,
   TextBlock,
   Heading,
@@ -60,7 +60,7 @@ function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
               <BlockStack spacing="small">
                 {extension.extends.map(({target, conditions, preview}) => {
                   return (
-                    <Action
+                    <Button
                       to={preview.url}
                       key={target}
                       detail={<Icon source="arrow.end" />}
@@ -82,7 +82,7 @@ function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
                             );
                           })}
                       </BlockStack>
-                    </Action>
+                    </Button>
                   );
                 })}
               </BlockStack>
@@ -143,9 +143,9 @@ function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServer}) {
             localUrl.value = value;
           }}
         />
-        <Action disabled={!isValidUrl(localUrl.value)} perform="submit">
+        <Button disabled={!isValidUrl(localUrl.value)} perform="submit">
           Set local URL
-        </Action>
+        </Button>
       </BlockStack>
     </Form>
   );

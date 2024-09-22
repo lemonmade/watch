@@ -1,6 +1,6 @@
 import type {ComponentChild} from 'preact';
 import {usePerformanceNavigation} from '@quilted/quilt/performance';
-import {BlockStack, TextBlock, Text, Action, TextLink} from '@lemon/zest';
+import {BlockStack, TextBlock, Text, Button, TextLink} from '@lemon/zest';
 
 import {Page} from '~/shared/page.ts';
 
@@ -53,13 +53,13 @@ export default function AuthenticateCli() {
           </TextLink>
           .
         </TextBlock>
-        <Action
+        <Button
           onPress={async () => {
             await authenticateCliWithAccessToken.perform();
           }}
         >
           Authenticate the CLI
-        </Action>
+        </Button>
       </BlockStack>
     );
   }
