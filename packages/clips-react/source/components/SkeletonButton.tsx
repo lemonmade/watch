@@ -19,9 +19,10 @@ declare module 'react' {
   }
 }
 
-export const SkeletonButton = forwardRef<SkeletonButtonElement, SkeletonButtonProps>(
-  function SkeletonButton(props, ref) {
-    const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-skeleton-button {...props} ref={wrapperRef} />;
-  },
-);
+export const SkeletonButton = forwardRef<
+  SkeletonButtonElement,
+  SkeletonButtonProps
+>(function SkeletonButton(props, ref) {
+  const wrapperRef = useCustomElementProperties(props, ref);
+  return <ui-skeleton-button {...props} ref={wrapperRef} />;
+});

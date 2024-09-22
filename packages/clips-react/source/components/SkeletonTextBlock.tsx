@@ -19,9 +19,10 @@ declare module 'react' {
   }
 }
 
-export const SkeletonTextBlock = forwardRef<SkeletonTextBlockElement, SkeletonTextBlockProps>(
-  function SkeletonTextBlock(props, ref) {
-    const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-skeleton-text-block {...props} ref={wrapperRef} />;
-  },
-);
+export const SkeletonTextBlock = forwardRef<
+  SkeletonTextBlockElement,
+  SkeletonTextBlockProps
+>(function SkeletonTextBlock(props, ref) {
+  const wrapperRef = useCustomElementProperties(props, ref);
+  return <ui-skeleton-text-block {...props} ref={wrapperRef} />;
+});
