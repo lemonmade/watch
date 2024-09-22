@@ -1,9 +1,9 @@
 .ContentAction {
-  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Button-subdued-icon-color);
 
   --z-internal-ContentAction-border: var(--z-border-subdued);
-  --z-internal-ContentAction-background: var(--z-Action-subdued-background);
-  --z-internal-ContentAction-shadow: var(--z-Action-subdued-shadow);
+  --z-internal-ContentAction-background: var(--z-Button-subdued-background);
+  --z-internal-ContentAction-shadow: var(--z-Button-subdued-shadow);
   --z-internal-ContentAction-icon-margin: var(--z-spacing-small-1);
 
   grid-template-columns: 1fr auto;
@@ -21,30 +21,30 @@
   transition: background 0.2s ease;
 
   &:where(:hover) {
-    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-hovered-icon-color);
 
     --z-internal-ContentAction-background: var(
-      --z-Action-subdued-hovered-background
+      --z-Button-subdued-hovered-background
     );
-    --z-internal-ContentAction-shadow: var(--z-Action-subdued-hovered-shadow);
+    --z-internal-ContentAction-shadow: var(--z-Button-subdued-hovered-shadow);
   }
 
   &:where(:focus-visible) {
-    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-focused-icon-color);
 
     --z-internal-ContentAction-background: var(
-      --z-Action-subdued-focused-background
+      --z-Button-subdued-focused-background
     );
-    --z-internal-ContentAction-shadow: var(--z-Action-subdued-focused-shadow);
+    --z-internal-ContentAction-shadow: var(--z-Button-subdued-focused-shadow);
   }
 
   &:where(:active) {
-    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-pressed-icon-color);
 
     --z-internal-ContentAction-background: var(
-      --z-Action-subdued-pressed-background
+      --z-Button-subdued-pressed-background
     );
-    --z-internal-ContentAction-shadow: var(--z-Action-subdued-pressed-shadow);
+    --z-internal-ContentAction-shadow: var(--z-Button-subdued-pressed-shadow);
   }
 }
 

@@ -38,7 +38,7 @@
   &:focus,
   &:active {
     outline: none;
-    background: var(--z-Action-hovered-background);
+    background: var(--z-Button-hovered-background);
   }
 
   &:active {

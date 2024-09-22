@@ -7,28 +7,28 @@
   --z-border-subdued-color: var(--z-border-auto-color);
   --z-border-emphasized-color: var(--z-border-auto-color);
 
-  --z-Action-background: rgb(73 87 133);
-  --z-Action-hovered-background: rgb(82 99 155);
-  --z-Action-focused-background: rgb(82 99 155);
-  --z-Action-pressed-background: rgb(97 119 194);
+  --z-Button-background: rgb(73 87 133);
+  --z-Button-hovered-background: rgb(82 99 155);
+  --z-Button-focused-background: rgb(82 99 155);
+  --z-Button-pressed-background: rgb(97 119 194);
 }
 
 .toneCritical {
   --z-surface-background-auto: rgb(105, 10, 10);
   --z-border-auto-color: rgb(208 33 33);
 
-  --z-Action-background: rgb(150 58 59);
-  --z-Action-hovered-background: rgb(185 60 61);
-  --z-Action-focused-background: rgb(185 60 61);
-  --z-Action-pressed-background: rgb(212 44 45);
+  --z-Button-background: rgb(150 58 59);
+  --z-Button-hovered-background: rgb(185 60 61);
+  --z-Button-focused-background: rgb(185 60 61);
+  --z-Button-pressed-background: rgb(212 44 45);
 }
 
 .tonePositive {
   --z-surface-background-auto: rgb(25 70 55);
   --z-border-auto-color: rgb(46 160 127);
 
-  --z-Action-background: rgb(25 102 77);
-  --z-Action-hovered-background: rgb(24 112 85);
-  --z-Action-focused-background: rgb(24 112 85);
-  --z-Action-pressed-background: rgb(21 138 102);
+  --z-Button-background: rgb(25 102 77);
+  --z-Button-hovered-background: rgb(24 112 85);
+  --z-Button-focused-background: rgb(24 112 85);
+  --z-Button-pressed-background: rgb(21 138 102);
 }

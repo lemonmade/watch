@@ -1,18 +1,18 @@
 .Navigation {
-  --z-internal-Action-inset-content: '';
-  --z-internal-Action-inset-display: block;
-  --z-internal-Action-inset-none: none;
-  --z-internal-Action-inset-block-size: calc(var(--z-spacing-small-2) / 2);
-  --z-internal-Action-inset-block-nudge: 0;
+  --z-internal-Button-inset-content: '';
+  --z-internal-Button-inset-display: block;
+  --z-internal-Button-inset-none: none;
+  --z-internal-Button-inset-block-size: calc(var(--z-spacing-small-2) / 2);
+  --z-internal-Button-inset-block-nudge: 0;
 
-  --z-Action-selected-background: var(--z-Action-pressed-background);
-  --z-Action-selected-divider-color: var(--z-Action-pressed-divider-color);
-  --z-Action-selected-border: var(--z-Action-pressed-border);
-  --z-Action-selected-text-color: var(--z-Action-pressed-text-color);
-  --z-Action-selected-icon-color: var(--z-Action-pressed-icon-color);
-  --z-Action-selected-shadow: var(--z-Action-pressed-shadow);
+  --z-Button-selected-background: var(--z-Button-pressed-background);
+  --z-Button-selected-divider-color: var(--z-Button-pressed-divider-color);
+  --z-Button-selected-border: var(--z-Button-pressed-border);
+  --z-Button-selected-text-color: var(--z-Button-pressed-text-color);
+  --z-Button-selected-icon-color: var(--z-Button-pressed-icon-color);
+  --z-Button-selected-shadow: var(--z-Button-pressed-shadow);
 
-  --z-Action-background: transparent;
+  --z-Button-background: transparent;
 
   padding: var(--z-spacing-small-1);
 }

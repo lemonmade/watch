@@ -1,12 +1,12 @@
 .HeadingAction {
-  --z-Icon-auto-color: var(--z-Action-subdued-icon-color);
+  --z-Icon-auto-color: var(--z-Button-subdued-icon-color);
 
   --z-internal-HeadingAction-border: var(--z-border-subdued);
-  --z-internal-HeadingAction-background: var(--z-Action-subdued-background);
-  --z-internal-HeadingAction-shadow: var(--z-Action-subdued-shadow);
+  --z-internal-HeadingAction-background: var(--z-Button-subdued-background);
+  --z-internal-HeadingAction-shadow: var(--z-Button-subdued-shadow);
   --z-internal-HeadingAction-block-padding: calc(
     (
-        var(--z-Action-minimum-size) -
+        var(--z-Button-minimum-size) -
           var(--z-internal-HeadingAction-minimum-block-size)
       ) / 2
   );
@@ -85,30 +85,30 @@
   }
 
   &:where(:hover) {
-    --z-Icon-auto-color: var(--z-Action-subdued-hovered-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-hovered-icon-color);
 
     --z-internal-HeadingAction-background: var(
-      --z-Action-subdued-hovered-background
+      --z-Button-subdued-hovered-background
     );
-    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-hovered-shadow);
+    --z-internal-HeadingAction-shadow: var(--z-Button-subdued-hovered-shadow);
   }
 
   &:where(:focus-visible) {
-    --z-Icon-auto-color: var(--z-Action-subdued-focused-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-focused-icon-color);
 
     --z-internal-HeadingAction-background: var(
-      --z-Action-subdued-focused-background
+      --z-Button-subdued-focused-background
     );
-    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-focused-shadow);
+    --z-internal-HeadingAction-shadow: var(--z-Button-subdued-focused-shadow);
   }
 
   &:where(:active) {
-    --z-Icon-auto-color: var(--z-Action-subdued-pressed-icon-color);
+    --z-Icon-auto-color: var(--z-Button-subdued-pressed-icon-color);
 
     --z-internal-HeadingAction-background: var(
-      --z-Action-subdued-pressed-background
+      --z-Button-subdued-pressed-background
     );
-    --z-internal-HeadingAction-shadow: var(--z-Action-subdued-pressed-shadow);
+    --z-internal-HeadingAction-shadow: var(--z-Button-subdued-pressed-shadow);
   }
 }
 

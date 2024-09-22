@@ -18,16 +18,16 @@
 
 .interactive {
   --z-internal-Rating-star-size: calc(
-    var(--z-Action-minimum-size) - (2 * var(--z-spacing-small-1))
+    var(--z-Button-minimum-size) - (2 * var(--z-spacing-small-1))
   );
 
   border-radius: var(--z-corner-radius-auto);
-  background: var(--z-Action-background);
+  background: var(--z-Button-background);
   padding: var(--z-spacing-small-1);
 
   &:focus,
   &:hover {
-    background: var(--z-Action-hovered-background);
+    background: var(--z-Button-hovered-background);
   }
 
   &:active,

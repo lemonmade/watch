@@ -5,9 +5,9 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--z-corner-radius-auto);
-  block-size: var(--z-Action-minimum-size);
+  block-size: var(--z-Button-minimum-size);
   padding: 0 var(--z-spacing-auto);
-  background: var(--z-Action-background);
+  background: var(--z-Button-background);
 
   &::after {
     content: '';

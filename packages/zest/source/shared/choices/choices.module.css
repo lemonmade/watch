@@ -4,7 +4,7 @@
   --z-internal-Choice-text-line-block-size: var(--z-text-auto-line-height);
   --z-internal-Choice-block-inset: calc(
     (
-        var(--z-Action-minimum-size) -
+        var(--z-Button-minimum-size) -
           var(--z-internal-Choice-text-line-block-size)
       ) * -0.5
   );
@@ -15,7 +15,7 @@
 
   display: grid;
   grid-template-columns: auto 1fr;
-  min-block-size: var(--z-Action-minimum-size);
+  min-block-size: var(--z-Button-minimum-size);
   align-items: start;
   padding: calc(-1 * var(--z-internal-Choice-block-inset)) 0;
   margin: var(--z-internal-Choice-block-inset) 0;

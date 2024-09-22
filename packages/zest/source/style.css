@@ -40,268 +40,268 @@
   --z-text-emphasized-color: inherit;
   --z-text-emphasized-weight: 600;
 
-  --z-Action-minimum-size: 2.5rem; /* 44px / 16px */
+  --z-Button-minimum-size: 2.5rem; /* 44px / 16px */
 
-  --z-Action-background: rgb(35 29 46);
-  --z-Action-divider-color: var(--z-border-subdued-color);
-  --z-Action-border: none;
-  --z-Action-text-color: var(--z-text-auto-color);
-  --z-Action-icon-color: var(--z-Icon-auto-color);
-  --z-Action-shadow: none;
-  --z-Action-disabled-background: var(--z-Action-background);
-  --z-Action-disabled-divider-color: var(--z-Action-divider-color);
-  --z-Action-disabled-border: var(--z-Action-border);
-  --z-Action-disabled-text-color: var(--z-text-subdued-color);
-  --z-Action-disabled-icon-color: rgb(131 119 155);
-  --z-Action-disabled-shadow: none;
-  --z-Action-inert-background: var(--z-Action-background);
-  --z-Action-inert-divider-color: var(--z-Action-divider-color);
-  --z-Action-inert-border: var(--z-Action-border);
-  --z-Action-inert-text-color: var(--z-Action-disabled-text-color);
-  --z-Action-inert-icon-color: var(--z-Action-icon-color);
-  --z-Action-inert-shadow: none;
-  --z-Action-hovered-background: rgb(48 39 63);
-  --z-Action-hovered-divider-color: var(--z-Action-divider-color);
-  --z-Action-hovered-border: var(--z-Action-border);
-  --z-Action-hovered-text-color: var(--z-Action-text-color);
-  --z-Action-hovered-icon-color: var(--z-Action-icon-color);
-  --z-Action-hovered-shadow: none;
-  --z-Action-focused-background: var(--z-Action-hovered-background);
-  --z-Action-focused-divider-color: var(--z-Action-divider-color);
-  --z-Action-focused-border: var(--z-Action-border);
-  --z-Action-focused-text-color: var(--z-Action-text-color);
-  --z-Action-focused-icon-color: var(--z-Action-icon-color);
-  --z-Action-focused-shadow: none;
-  --z-Action-pressed-background: rgb(82 66 109);
-  --z-Action-pressed-divider-color: var(--z-Action-divider-color);
-  --z-Action-pressed-border: var(--z-Action-border);
-  --z-Action-pressed-text-color: rgb(227 224 233);
-  --z-Action-pressed-icon-color: rgb(227 224 233);
-  --z-Action-pressed-shadow: none;
-  --z-Action-selected-background: rgb(32 121 196);
-  --z-Action-selected-divider-color: var(--z-Action-pressed-divider-color);
-  --z-Action-selected-border: var(--z-Action-pressed-border);
-  --z-Action-selected-text-color: var(--z-Action-pressed-text-color);
-  --z-Action-selected-icon-color: var(--z-Action-pressed-icon-color);
-  --z-Action-selected-shadow: var(--z-Action-pressed-shadow);
+  --z-Button-background: rgb(35 29 46);
+  --z-Button-divider-color: var(--z-border-subdued-color);
+  --z-Button-border: none;
+  --z-Button-text-color: var(--z-text-auto-color);
+  --z-Button-icon-color: var(--z-Icon-auto-color);
+  --z-Button-shadow: none;
+  --z-Button-disabled-background: var(--z-Button-background);
+  --z-Button-disabled-divider-color: var(--z-Button-divider-color);
+  --z-Button-disabled-border: var(--z-Button-border);
+  --z-Button-disabled-text-color: var(--z-text-subdued-color);
+  --z-Button-disabled-icon-color: rgb(131 119 155);
+  --z-Button-disabled-shadow: none;
+  --z-Button-inert-background: var(--z-Button-background);
+  --z-Button-inert-divider-color: var(--z-Button-divider-color);
+  --z-Button-inert-border: var(--z-Button-border);
+  --z-Button-inert-text-color: var(--z-Button-disabled-text-color);
+  --z-Button-inert-icon-color: var(--z-Button-icon-color);
+  --z-Button-inert-shadow: none;
+  --z-Button-hovered-background: rgb(48 39 63);
+  --z-Button-hovered-divider-color: var(--z-Button-divider-color);
+  --z-Button-hovered-border: var(--z-Button-border);
+  --z-Button-hovered-text-color: var(--z-Button-text-color);
+  --z-Button-hovered-icon-color: var(--z-Button-icon-color);
+  --z-Button-hovered-shadow: none;
+  --z-Button-focused-background: var(--z-Button-hovered-background);
+  --z-Button-focused-divider-color: var(--z-Button-divider-color);
+  --z-Button-focused-border: var(--z-Button-border);
+  --z-Button-focused-text-color: var(--z-Button-text-color);
+  --z-Button-focused-icon-color: var(--z-Button-icon-color);
+  --z-Button-focused-shadow: none;
+  --z-Button-pressed-background: rgb(82 66 109);
+  --z-Button-pressed-divider-color: var(--z-Button-divider-color);
+  --z-Button-pressed-border: var(--z-Button-border);
+  --z-Button-pressed-text-color: rgb(227 224 233);
+  --z-Button-pressed-icon-color: rgb(227 224 233);
+  --z-Button-pressed-shadow: none;
+  --z-Button-selected-background: rgb(32 121 196);
+  --z-Button-selected-divider-color: var(--z-Button-pressed-divider-color);
+  --z-Button-selected-border: var(--z-Button-pressed-border);
+  --z-Button-selected-text-color: var(--z-Button-pressed-text-color);
+  --z-Button-selected-icon-color: var(--z-Button-pressed-icon-color);
+  --z-Button-selected-shadow: var(--z-Button-pressed-shadow);
 
-  --z-Action-subdued-background: transparent;
-  --z-Action-subdued-divider-color: var(--z-border-subdued-color);
-  --z-Action-subdued-border: none;
-  --z-Action-subdued-text-color: var(--z-text-auto-color);
-  --z-Action-subdued-icon-color: var(--z-Icon-auto-color);
-  --z-Action-subdued-shadow: none;
-  --z-Action-subdued-disabled-background: var(--z-Action-subdued-background);
-  --z-Action-subdued-disabled-divider-color: var(
-    --z-Action-subdued-divider-color
+  --z-Button-subdued-background: transparent;
+  --z-Button-subdued-divider-color: var(--z-border-subdued-color);
+  --z-Button-subdued-border: none;
+  --z-Button-subdued-text-color: var(--z-text-auto-color);
+  --z-Button-subdued-icon-color: var(--z-Icon-auto-color);
+  --z-Button-subdued-shadow: none;
+  --z-Button-subdued-disabled-background: var(--z-Button-subdued-background);
+  --z-Button-subdued-disabled-divider-color: var(
+    --z-Button-subdued-divider-color
   );
-  --z-Action-subdued-disabled-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-disabled-text-color: var(--z-text-subdued-color);
-  --z-Action-subdued-disabled-icon-color: var(--z-Action-disabled-icon-color);
-  --z-Action-subdued-disabled-shadow: none;
-  --z-Action-subdued-inert-background: var(--z-Action-subdued-background);
-  --z-Action-subdued-inert-divider-color: var(--z-Action-subdued-divider-color);
-  --z-Action-subdued-inert-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-inert-text-color: var(
-    --z-Action-subdued-disabled-text-color
+  --z-Button-subdued-disabled-border: var(--z-Button-subdued-border);
+  --z-Button-subdued-disabled-text-color: var(--z-text-subdued-color);
+  --z-Button-subdued-disabled-icon-color: var(--z-Button-disabled-icon-color);
+  --z-Button-subdued-disabled-shadow: none;
+  --z-Button-subdued-inert-background: var(--z-Button-subdued-background);
+  --z-Button-subdued-inert-divider-color: var(--z-Button-subdued-divider-color);
+  --z-Button-subdued-inert-border: var(--z-Button-subdued-border);
+  --z-Button-subdued-inert-text-color: var(
+    --z-Button-subdued-disabled-text-color
   );
-  --z-Action-subdued-inert-icon-color: var(--z-Action-subdued-icon-color);
-  --z-Action-subdued-inert-shadow: none;
-  --z-Action-subdued-hovered-background: var(--z-Action-background);
-  --z-Action-subdued-hovered-divider-color: var(
-    --z-Action-subdued-divider-color
+  --z-Button-subdued-inert-icon-color: var(--z-Button-subdued-icon-color);
+  --z-Button-subdued-inert-shadow: none;
+  --z-Button-subdued-hovered-background: var(--z-Button-background);
+  --z-Button-subdued-hovered-divider-color: var(
+    --z-Button-subdued-divider-color
   );
-  --z-Action-subdued-hovered-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-hovered-text-color: var(--z-Action-subdued-text-color);
-  --z-Action-subdued-hovered-icon-color: var(--z-Action-subdued-icon-color);
-  --z-Action-subdued-hovered-shadow: none;
-  --z-Action-subdued-focused-background: var(
-    --z-Action-subdued-hovered-background
+  --z-Button-subdued-hovered-border: var(--z-Button-subdued-border);
+  --z-Button-subdued-hovered-text-color: var(--z-Button-subdued-text-color);
+  --z-Button-subdued-hovered-icon-color: var(--z-Button-subdued-icon-color);
+  --z-Button-subdued-hovered-shadow: none;
+  --z-Button-subdued-focused-background: var(
+    --z-Button-subdued-hovered-background
   );
-  --z-Action-subdued-focused-divider-color: var(
-    --z-Action-subdued-divider-color
+  --z-Button-subdued-focused-divider-color: var(
+    --z-Button-subdued-divider-color
   );
-  --z-Action-subdued-focused-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-focused-text-color: var(--z-Action-subdued-text-color);
-  --z-Action-subdued-focused-icon-color: var(--z-Action-subdued-icon-color);
-  --z-Action-subdued-focused-shadow: none;
-  --z-Action-subdued-pressed-background: var(--z-Action-hovered-background);
-  --z-Action-subdued-pressed-divider-color: var(
-    --z-Action-hovered-divider-color
+  --z-Button-subdued-focused-border: var(--z-Button-subdued-border);
+  --z-Button-subdued-focused-text-color: var(--z-Button-subdued-text-color);
+  --z-Button-subdued-focused-icon-color: var(--z-Button-subdued-icon-color);
+  --z-Button-subdued-focused-shadow: none;
+  --z-Button-subdued-pressed-background: var(--z-Button-hovered-background);
+  --z-Button-subdued-pressed-divider-color: var(
+    --z-Button-hovered-divider-color
   );
-  --z-Action-subdued-pressed-border: var(--z-Action-subdued-border);
-  --z-Action-subdued-pressed-text-color: var(--z-Action-hovered-text-color);
-  --z-Action-subdued-pressed-icon-color: var(--z-Action-hovered-icon-color);
-  --z-Action-subdued-pressed-shadow: none;
-  --z-Action-subdued-selected-background: var(
-    --z-Action-subdued-pressed-background
+  --z-Button-subdued-pressed-border: var(--z-Button-subdued-border);
+  --z-Button-subdued-pressed-text-color: var(--z-Button-hovered-text-color);
+  --z-Button-subdued-pressed-icon-color: var(--z-Button-hovered-icon-color);
+  --z-Button-subdued-pressed-shadow: none;
+  --z-Button-subdued-selected-background: var(
+    --z-Button-subdued-pressed-background
   );
-  --z-Action-subdued-selected-divider-color: var(
-    --z-Action-subdued-pressed-divider-color
+  --z-Button-subdued-selected-divider-color: var(
+    --z-Button-subdued-pressed-divider-color
   );
-  --z-Action-subdued-selected-border: var(--z-Action-subdued-pressed-border);
-  --z-Action-subdued-selected-text-color: var(
-    --z-Action-subdued-pressed-text-color
+  --z-Button-subdued-selected-border: var(--z-Button-subdued-pressed-border);
+  --z-Button-subdued-selected-text-color: var(
+    --z-Button-subdued-pressed-text-color
   );
-  --z-Action-subdued-selected-icon-color: var(
-    --z-Action-subdued-pressed-icon-color
+  --z-Button-subdued-selected-icon-color: var(
+    --z-Button-subdued-pressed-icon-color
   );
-  --z-Action-subdued-selected-shadow: var(--z-Action-subdued-pressed-shadow);
+  --z-Button-subdued-selected-shadow: var(--z-Button-subdued-pressed-shadow);
 
-  --z-Action-emphasized-background: rgb(176 29 134);
-  --z-Action-emphasized-divider-color: rgb(206 115 180);
-  --z-Action-emphasized-border: none;
-  --z-Action-emphasized-text-color: rgb(255 255 255);
-  --z-Action-emphasized-icon-color: rgb(255 255 255);
-  --z-Action-emphasized-shadow: none;
-  --z-Action-emphasized-disabled-background: rgb(92 30 74);
-  --z-Action-emphasized-disabled-divider-color: rgb(161 84 138);
-  --z-Action-emphasized-disabled-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-disabled-text-color: rgb(184 150 174);
-  --z-Action-emphasized-disabled-icon-color: var(
-    --z-Action-emphasized-disabled-text-color
+  --z-Button-emphasized-background: rgb(176 29 134);
+  --z-Button-emphasized-divider-color: rgb(206 115 180);
+  --z-Button-emphasized-border: none;
+  --z-Button-emphasized-text-color: rgb(255 255 255);
+  --z-Button-emphasized-icon-color: rgb(255 255 255);
+  --z-Button-emphasized-shadow: none;
+  --z-Button-emphasized-disabled-background: rgb(92 30 74);
+  --z-Button-emphasized-disabled-divider-color: rgb(161 84 138);
+  --z-Button-emphasized-disabled-border: var(--z-Button-emphasized-border);
+  --z-Button-emphasized-disabled-text-color: rgb(184 150 174);
+  --z-Button-emphasized-disabled-icon-color: var(
+    --z-Button-emphasized-disabled-text-color
   );
-  --z-Action-emphasized-disabled-shadow: none;
-  --z-Action-emphasized-inert-background: var(--z-Action-emphasized-background);
-  --z-Action-emphasized-inert-divider-color: var(
-    --z-Action-emphasized-divider-color
+  --z-Button-emphasized-disabled-shadow: none;
+  --z-Button-emphasized-inert-background: var(--z-Button-emphasized-background);
+  --z-Button-emphasized-inert-divider-color: var(
+    --z-Button-emphasized-divider-color
   );
-  --z-Action-emphasized-inert-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-inert-text-color: rgb(210 189 204);
-  --z-Action-emphasized-inert-icon-color: var(--z-Action-emphasized-icon-color);
-  --z-Action-emphasized-inert-shadow: none;
-  --z-Action-emphasized-hovered-background: rgb(192 51 152);
-  --z-Action-emphasized-hovered-divider-color: var(
-    --z-Action-emphasized-divider-color
+  --z-Button-emphasized-inert-border: var(--z-Button-emphasized-border);
+  --z-Button-emphasized-inert-text-color: rgb(210 189 204);
+  --z-Button-emphasized-inert-icon-color: var(--z-Button-emphasized-icon-color);
+  --z-Button-emphasized-inert-shadow: none;
+  --z-Button-emphasized-hovered-background: rgb(192 51 152);
+  --z-Button-emphasized-hovered-divider-color: var(
+    --z-Button-emphasized-divider-color
   );
-  --z-Action-emphasized-hovered-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-hovered-text-color: var(
-    --z-Action-emphasized-text-color
+  --z-Button-emphasized-hovered-border: var(--z-Button-emphasized-border);
+  --z-Button-emphasized-hovered-text-color: var(
+    --z-Button-emphasized-text-color
   );
-  --z-Action-emphasized-hovered-icon-color: var(
-    --z-Action-emphasized-icon-color
+  --z-Button-emphasized-hovered-icon-color: var(
+    --z-Button-emphasized-icon-color
   );
-  --z-Action-emphasized-hovered-shadow: none;
-  --z-Action-emphasized-focused-background: var(
-    --z-Action-emphasized-hovered-background
+  --z-Button-emphasized-hovered-shadow: none;
+  --z-Button-emphasized-focused-background: var(
+    --z-Button-emphasized-hovered-background
   );
-  --z-Action-emphasized-focused-divider-color: var(
-    --z-Action-emphasized-divider-color
+  --z-Button-emphasized-focused-divider-color: var(
+    --z-Button-emphasized-divider-color
   );
-  --z-Action-emphasized-focused-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-focused-text-color: var(
-    --z-Action-emphasized-text-color
+  --z-Button-emphasized-focused-border: var(--z-Button-emphasized-border);
+  --z-Button-emphasized-focused-text-color: var(
+    --z-Button-emphasized-text-color
   );
-  --z-Action-emphasized-focused-icon-color: var(
-    --z-Action-emphasized-icon-color
+  --z-Button-emphasized-focused-icon-color: var(
+    --z-Button-emphasized-icon-color
   );
-  --z-Action-emphasized-focused-shadow: none;
-  --z-Action-emphasized-pressed-background: rgb(205 80 169);
-  --z-Action-emphasized-pressed-divider-color: var(
-    --z-Action-emphasized-divider-color
+  --z-Button-emphasized-focused-shadow: none;
+  --z-Button-emphasized-pressed-background: rgb(205 80 169);
+  --z-Button-emphasized-pressed-divider-color: var(
+    --z-Button-emphasized-divider-color
   );
-  --z-Action-emphasized-pressed-border: var(--z-Action-emphasized-border);
-  --z-Action-emphasized-pressed-text-color: var(
-    --z-Action-emphasized-text-color
+  --z-Button-emphasized-pressed-border: var(--z-Button-emphasized-border);
+  --z-Button-emphasized-pressed-text-color: var(
+    --z-Button-emphasized-text-color
   );
-  --z-Action-emphasized-pressed-icon-color: var(
-    --z-Action-emphasized-icon-color
+  --z-Button-emphasized-pressed-icon-color: var(
+    --z-Button-emphasized-icon-color
   );
-  --z-Action-emphasized-pressed-shadow: none;
-  --z-Action-emphasized-selected-background: var(
-    --z-Action-emphasized-pressed-background
+  --z-Button-emphasized-pressed-shadow: none;
+  --z-Button-emphasized-selected-background: var(
+    --z-Button-emphasized-pressed-background
   );
-  --z-Action-emphasized-selected-divider-color: var(
-    --z-Action-emphasized-pressed-divider-color
+  --z-Button-emphasized-selected-divider-color: var(
+    --z-Button-emphasized-pressed-divider-color
   );
-  --z-Action-emphasized-selected-border: var(
-    --z-Action-emphasized-pressed-border
+  --z-Button-emphasized-selected-border: var(
+    --z-Button-emphasized-pressed-border
   );
-  --z-Action-emphasized-selected-text-color: var(
-    --z-Action-emphasized-pressed-text-color
+  --z-Button-emphasized-selected-text-color: var(
+    --z-Button-emphasized-pressed-text-color
   );
-  --z-Action-emphasized-selected-icon-color: var(
-    --z-Action-emphasized-pressed-icon-color
+  --z-Button-emphasized-selected-icon-color: var(
+    --z-Button-emphasized-pressed-icon-color
   );
-  --z-Action-emphasized-selected-shadow: var(
-    --z-Action-emphasized-pressed-shadow
+  --z-Button-emphasized-selected-shadow: var(
+    --z-Button-emphasized-pressed-shadow
   );
 
-  --z-Action-destructive-background: rgb(113 32 54);
-  --z-Action-destructive-divider-color: rgb(140 68 87);
-  --z-Action-destructive-border: none;
-  --z-Action-destructive-text-color: rgb(236 214 220);
-  --z-Action-destructive-icon-color: rgb(229 175 190);
-  --z-Action-destructive-shadow: none;
-  --z-Action-destructive-disabled-background: rgb(69 32 42);
-  --z-Action-destructive-disabled-divider-color: rgb(112 60 74);
-  --z-Action-destructive-disabled-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-disabled-text-color: rgb(172 144 152);
-  --z-Action-destructive-disabled-icon-color: rgb(172 144 152);
-  --z-Action-destructive-disabled-shadow: var(--z-Action-destructive-shadow);
-  --z-Action-destructive-inert-background: var(
-    --z-Action-destructive-background
+  --z-Button-destructive-background: rgb(113 32 54);
+  --z-Button-destructive-divider-color: rgb(140 68 87);
+  --z-Button-destructive-border: none;
+  --z-Button-destructive-text-color: rgb(236 214 220);
+  --z-Button-destructive-icon-color: rgb(229 175 190);
+  --z-Button-destructive-shadow: none;
+  --z-Button-destructive-disabled-background: rgb(69 32 42);
+  --z-Button-destructive-disabled-divider-color: rgb(112 60 74);
+  --z-Button-destructive-disabled-border: var(--z-Button-destructive-border);
+  --z-Button-destructive-disabled-text-color: rgb(172 144 152);
+  --z-Button-destructive-disabled-icon-color: rgb(172 144 152);
+  --z-Button-destructive-disabled-shadow: var(--z-Button-destructive-shadow);
+  --z-Button-destructive-inert-background: var(
+    --z-Button-destructive-background
   );
-  --z-Action-destructive-inert-divider-color: var(
-    --z-Action-destructive-divider-color
+  --z-Button-destructive-inert-divider-color: var(
+    --z-Button-destructive-divider-color
   );
-  --z-Action-destructive-inert-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-inert-text-color: rgb(185 150 159);
-  --z-Action-destructive-inert-icon-color: var(
-    --z-Action-destructive-icon-color
+  --z-Button-destructive-inert-border: var(--z-Button-destructive-border);
+  --z-Button-destructive-inert-text-color: rgb(185 150 159);
+  --z-Button-destructive-inert-icon-color: var(
+    --z-Button-destructive-icon-color
   );
-  --z-Action-destructive-inert-shadow: none;
-  --z-Action-destructive-hovered-background: rgb(138 30 60);
-  --z-Action-destructive-hovered-divider-color: var(
-    --z-Action-destructive-divider-color
+  --z-Button-destructive-inert-shadow: none;
+  --z-Button-destructive-hovered-background: rgb(138 30 60);
+  --z-Button-destructive-hovered-divider-color: var(
+    --z-Button-destructive-divider-color
   );
-  --z-Action-destructive-hovered-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-hovered-text-color: var(
-    --z-Action-destructive-text-color
+  --z-Button-destructive-hovered-border: var(--z-Button-destructive-border);
+  --z-Button-destructive-hovered-text-color: var(
+    --z-Button-destructive-text-color
   );
-  --z-Action-destructive-hovered-icon-color: var(
-    --z-Action-destructive-icon-color
+  --z-Button-destructive-hovered-icon-color: var(
+    --z-Button-destructive-icon-color
   );
-  --z-Action-destructive-hovered-shadow: none;
-  --z-Action-destructive-focused-background: var(
-    --z-Action-destructive-hovered-background
+  --z-Button-destructive-hovered-shadow: none;
+  --z-Button-destructive-focused-background: var(
+    --z-Button-destructive-hovered-background
   );
-  --z-Action-destructive-focused-divider-color: var(
-    --z-Action-destructive-divider-color
+  --z-Button-destructive-focused-divider-color: var(
+    --z-Button-destructive-divider-color
   );
-  --z-Action-destructive-focused-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-focused-text-color: var(
-    --z-Action-destructive-text-color
+  --z-Button-destructive-focused-border: var(--z-Button-destructive-border);
+  --z-Button-destructive-focused-text-color: var(
+    --z-Button-destructive-text-color
   );
-  --z-Action-destructive-focused-icon-color: var(
-    --z-Action-destructive-icon-color
+  --z-Button-destructive-focused-icon-color: var(
+    --z-Button-destructive-icon-color
   );
-  --z-Action-destructive-focused-shadow: none;
-  --z-Action-destructive-pressed-background: rgb(160 60 86);
-  --z-Action-destructive-pressed-divider-color: var(
-    --z-Action-destructive-divider-color
+  --z-Button-destructive-focused-shadow: none;
+  --z-Button-destructive-pressed-background: rgb(160 60 86);
+  --z-Button-destructive-pressed-divider-color: var(
+    --z-Button-destructive-divider-color
   );
-  --z-Action-destructive-pressed-border: var(--z-Action-destructive-border);
-  --z-Action-destructive-pressed-text-color: rgb(235 220 224);
-  --z-Action-destructive-pressed-icon-color: rgb(235 220 224);
-  --z-Action-destructive-pressed-shadow: none;
-  --z-Action-destructive-selected-background: var(
-    --z-Action-destructive-pressed-background
+  --z-Button-destructive-pressed-border: var(--z-Button-destructive-border);
+  --z-Button-destructive-pressed-text-color: rgb(235 220 224);
+  --z-Button-destructive-pressed-icon-color: rgb(235 220 224);
+  --z-Button-destructive-pressed-shadow: none;
+  --z-Button-destructive-selected-background: var(
+    --z-Button-destructive-pressed-background
   );
-  --z-Action-destructive-selected-divider-color: var(
-    --z-Action-destructive-pressed-divider-color
+  --z-Button-destructive-selected-divider-color: var(
+    --z-Button-destructive-pressed-divider-color
   );
-  --z-Action-destructive-selected-border: var(
-    --z-Action-destructive-pressed-border
+  --z-Button-destructive-selected-border: var(
+    --z-Button-destructive-pressed-border
   );
-  --z-Action-destructive-selected-text-color: var(
-    --z-Action-destructive-pressed-text-color
+  --z-Button-destructive-selected-text-color: var(
+    --z-Button-destructive-pressed-text-color
   );
-  --z-Action-destructive-selected-icon-color: var(
-    --z-Action-destructive-pressed-icon-color
+  --z-Button-destructive-selected-icon-color: var(
+    --z-Button-destructive-pressed-icon-color
   );
-  --z-Action-destructive-selected-shadow: var(
-    --z-Action-destructive-pressed-shadow
+  --z-Button-destructive-selected-shadow: var(
+    --z-Button-destructive-pressed-shadow
   );
 
   --z-input-border-color: var(--z-border-auto-color);

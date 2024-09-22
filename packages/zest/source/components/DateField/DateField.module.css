@@ -2,7 +2,7 @@
   appearance: none;
   border: none;
   font-size: 1.25rem;
-  min-block-size: var(--z-Action-minimum-size);
+  min-block-size: var(--z-Button-minimum-size);
   background: transparent;
   color: inherit;
   border-radius: var(--z-corner-radius-auto);
