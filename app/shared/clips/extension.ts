@@ -9,6 +9,7 @@ import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
 import {type OptionsForExtensionPoint} from './extension-points.ts';
 import {type Sandbox} from './sandbox.ts';
 import {type LiveQueryRunner} from './live-query.ts';
+import {type ClipsManager} from './manager.ts';
 
 export type {Version, ExtensionPoint};
 
@@ -16,6 +17,7 @@ export interface ClipsExtensionPoint<Point extends ExtensionPoint> {
   readonly id: string;
   readonly target: Point;
   readonly extension: ClipsExtension;
+  readonly manager: ClipsManager;
   readonly local?: ClipsExtensionPointLocalInstanceOptions<Point>;
   readonly installed?: ClipsExtensionPointInstalledInstanceOptions<Point>;
 }

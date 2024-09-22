@@ -163,6 +163,12 @@ export const IMAGE_ACCESSIBILITY_ROLE_KEYWORDS =
 
 export type ViewportResolution = 1 | 1.3 | 1.5 | 2 | 2.6 | 3 | 3.5 | 4;
 
+// Button
+
+export type ButtonNavigateAction = `navigate(${string})`;
+export type ButtonMutateAction = `mutate(${string})`;
+export type ButtonAction = 'auto' | ButtonNavigateAction | ButtonMutateAction;
+
 // Popover
 
 export type PopoverAttachmentKeyword = 'auto' | 'start' | 'center' | 'end';

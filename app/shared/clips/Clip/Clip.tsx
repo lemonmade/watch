@@ -20,6 +20,7 @@ import type {ThreadRendererInstance} from '@watching/thread-render';
 
 import {useGraphQLMutation} from '~/shared/graphql.ts';
 
+import {ClipsExtensionPointBeingRenderedContext} from '../context.ts';
 import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
@@ -50,56 +51,58 @@ export function Clip<Point extends ExtensionPoint>({
   const renderer = local ?? installed;
 
   return (
-    <Section>
-      <BlockStack spacing>
-        <ContentAction
-          overlay={
-            <Popover inlineAttachment="start">
-              {installed?.instance.value && (
-                <Section padding>
-                  <ClipSettings
-                    id={extension.id}
-                    instance={installed.instance.value}
-                  />
-                </Section>
-              )}
-              <Menu>
-                <ViewAppAction />
-                {renderer && <RestartClipButton instance={renderer} />}
-                {extension.installed && (
-                  <UninstallClipButton extension={extension} />
+    <ClipsExtensionPointBeingRenderedContext.Provider value={extension}>
+      <Section>
+        <BlockStack spacing>
+          <ContentAction
+            overlay={
+              <Popover inlineAttachment="start">
+                {installed?.instance.value && (
+                  <Section padding>
+                    <ClipSettings
+                      id={extension.id}
+                      instance={installed.instance.value}
+                    />
+                  </Section>
                 )}
-                {extension.installed && <ReportIssueButton />}
-              </Menu>
-            </Popover>
-          }
-        >
-          <InlineGrid sizes={['auto', 'fill']} spacing="small">
-            <View
-              display="inlineFlex"
-              background="emphasized"
-              border="subdued"
-              cornerRadius
-              alignment="center"
-              blockSize={Style.css`2.5rem`}
-              inlineSize={Style.css`2.5rem`}
-            >
-              <Icon source="app" />
-            </View>
-            <BlockStack>
-              <Text emphasis accessibilityRole="heading">
-                {name}
-              </Text>
-              <Text emphasis="subdued" size="small">
-                from app <Text emphasis>{app.name}</Text>
-              </Text>
-            </BlockStack>
-          </InlineGrid>
-        </ContentAction>
+                <Menu>
+                  <ViewAppAction />
+                  {renderer && <RestartClipButton instance={renderer} />}
+                  {extension.installed && (
+                    <UninstallClipButton extension={extension} />
+                  )}
+                  {extension.installed && <ReportIssueButton />}
+                </Menu>
+              </Popover>
+            }
+          >
+            <InlineGrid sizes={['auto', 'fill']} spacing="small">
+              <View
+                display="inlineFlex"
+                background="emphasized"
+                border="subdued"
+                cornerRadius
+                alignment="center"
+                blockSize={Style.css`2.5rem`}
+                inlineSize={Style.css`2.5rem`}
+              >
+                <Icon source="app" />
+              </View>
+              <BlockStack>
+                <Text emphasis accessibilityRole="heading">
+                  {name}
+                </Text>
+                <Text emphasis="subdued" size="small">
+                  from app <Text emphasis>{app.name}</Text>
+                </Text>
+              </BlockStack>
+            </InlineGrid>
+          </ContentAction>
 
-        {renderer && <ClipInstanceRenderer renderer={renderer} />}
-      </BlockStack>
-    </Section>
+          {renderer && <ClipInstanceRenderer renderer={renderer} />}
+        </BlockStack>
+      </Section>
+    </ClipsExtensionPointBeingRenderedContext.Provider>
   );
 }
 

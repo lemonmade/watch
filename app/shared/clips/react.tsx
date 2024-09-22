@@ -41,6 +41,10 @@ export function useClips<Point extends ExtensionPoint>(
     : [never?]
 ): readonly ClipsExtensionPoint<Point>[] {
   const [options] = optionsArg;
+
+  const manager = useClipsManager();
+  const server = manager.localDevelopment;
+
   const installedClips = useMemo(() => {
     if (installations == null) return [];
 
@@ -63,6 +67,7 @@ export function useClips<Point extends ExtensionPoint>(
       installedClips.push({
         id: `${id}:${point}`,
         target: point,
+        manager,
         extension: {
           id: extension.id,
           name: extension.name,
@@ -89,8 +94,6 @@ export function useClips<Point extends ExtensionPoint>(
     return installedClips;
   }, [installations, point, options]);
 
-  const server = useClipsManager().localDevelopment;
-
   const allClips = useComputed(() => {
     const allLocalClips = server.extensions.value;
 
@@ -108,6 +111,7 @@ export function useClips<Point extends ExtensionPoint>(
       localClips.push({
         id: `${id}:${point}`,
         target: point,
+        manager,
         extension: {
           id,
           name,
