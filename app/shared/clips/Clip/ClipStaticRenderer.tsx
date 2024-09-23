@@ -139,12 +139,12 @@ function renderNode(node: Node, {key}: {key: any}) {
   }
 
   const element = node as Element;
-  const tagName = element.tagName;
+  const localName = element.localName;
 
-  const Component = LOADING_COMPONENT_MAP.get(tagName);
+  const Component = LOADING_COMPONENT_MAP.get(localName);
 
   if (Component == null) {
-    throw new Error(`Unknown loading component: ${tagName}`);
+    throw new Error(`Unknown loading component: ${localName}`);
   }
 
   return (
