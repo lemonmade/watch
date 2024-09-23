@@ -1,5 +1,11 @@
 # @watching/tools
 
+## 0.3.2
+
+### Patch Changes
+
+- [`6861b9c4`](https://github.com/lemonmade/watch/commit/6861b9c497becde1039ba93b854a103a1e9778b5) Thanks [@lemonmade](https://github.com/lemonmade)! - Fix validation of loading UI
+
 ## 0.3.1
 
 ### Patch Changes
