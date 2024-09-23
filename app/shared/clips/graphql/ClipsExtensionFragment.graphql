@@ -6,7 +6,7 @@ fragment ClipsExtension on ClipsExtensionInstallation {
   liveQuery
   loading {
     ui {
-      tree
+      html
     }
   }
   version {

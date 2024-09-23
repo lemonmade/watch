@@ -9,6 +9,7 @@ import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
 import {type OptionsForExtensionPoint} from './extension-points.ts';
 import {type Sandbox} from './sandbox.ts';
 import {type LiveQueryRunner} from './live-query.ts';
+import {type ClipsManager} from './manager.ts';
 
 export type {Version, ExtensionPoint};
 
@@ -16,6 +17,7 @@ export interface ClipsExtensionPoint<Point extends ExtensionPoint> {
   readonly id: string;
   readonly target: Point;
   readonly extension: ClipsExtension;
+  readonly manager: ClipsManager;
   readonly local?: ClipsExtensionPointLocalInstanceOptions<Point>;
   readonly installed?: ClipsExtensionPointInstalledInstanceOptions<Point>;
 }
@@ -34,23 +36,12 @@ export interface App {
 export interface ClipsExtensionPointInstance<Point extends ExtensionPoint>
   extends ThreadRenderer<ClipsExtensionPointInstanceContext<Point>> {}
 
-export interface ClipsExtensionPointInstanceLoadingElement {
-  readonly type: string;
-  readonly properties: Record<string, unknown>;
-  readonly children: readonly (
-    | string
-    | ClipsExtensionPointInstanceLoadingElement
-  )[];
-}
-
 export interface ClipsExtensionPointInstanceContext<
   Point extends ExtensionPoint,
 > {
   readonly settings: Signal<Record<string, unknown>>;
   readonly liveQuery: LiveQueryRunner<Point>;
-  readonly loadingUi: Signal<
-    ClipsExtensionPointInstanceLoadingElement['children'] | undefined
-  >;
+  readonly loadingUi: Signal<string | undefined>;
   readonly mutate: Api<Point>['mutate'];
   readonly components: RemoteComponentRendererMap;
   readonly sandbox: Thread<Sandbox>;
@@ -69,7 +60,7 @@ export interface ClipsExtensionPointInstalledInstanceOptions<
   readonly version: Version;
   readonly settings?: string;
   readonly liveQuery?: string;
-  readonly loadingUi?: ClipsExtensionPointInstanceLoadingElement['children'];
+  readonly loadingUi?: string;
   readonly translations?: string;
   readonly extension: {readonly id: string};
   readonly script: {readonly url: string};

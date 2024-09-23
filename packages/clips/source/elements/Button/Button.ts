@@ -1,3 +1,4 @@
+import type {ButtonAction} from '@watching/design';
 import type {
   RemoteEvent,
   RemoteElementEventListenersDefinition,
@@ -19,6 +20,11 @@ export interface ButtonAttributes {
    * Disallows interaction with the button.
    */
   disabled?: '';
+
+  /**
+   * An action to perform when the button is pressed.
+   */
+  action?: ButtonAction;
 }
 
 export interface ButtonProperties {
@@ -56,7 +62,7 @@ export class Button
   }
 
   static get remoteAttributes() {
-    return ['to', 'disabled'] satisfies (keyof ButtonAttributes)[];
+    return ['action', 'to', 'disabled'] satisfies (keyof ButtonAttributes)[];
   }
 
   @backedByAttribute()
@@ -64,6 +70,9 @@ export class Button
 
   @backedByAttributeAsBoolean()
   accessor disabled: boolean = false;
+
+  @backedByAttribute()
+  accessor action: ButtonAction | undefined;
 }
 
 customElements.define('ui-button', Button);

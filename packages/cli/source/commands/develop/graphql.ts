@@ -94,33 +94,23 @@ export function createQueryResolver(
               const ui = extensionPoint.loading?.ui;
               if (ui == null) return null;
 
-              const {parseLoadingHtml, serializeLoadingHtml} = await import(
-                '@watching/tools/loading'
-              );
-
               if (ui.endsWith('.html')) {
                 for await (const {content} of watchFile(
                   path.resolve(extension.root, ui),
                   {signal},
                 )) {
-                  const tree = parseLoadingHtml(content);
-
                   yield object('ClipsExtensionPointLoading', {
-                    ui: object('ClipsExtensionPointLoadingUi', {
+                    ui: object('ClipsExtensionPointLoadingUI', {
                       file: ui,
-                      tree: () => JSON.stringify(tree),
-                      html: () => serializeLoadingHtml(tree),
+                      html: content,
                     }),
                   });
                 }
               } else {
-                const tree = parseLoadingHtml(ui);
-
                 return object('ClipsExtensionPointLoading', {
-                  ui: object('ClipsExtensionPointLoadingUi', {
+                  ui: object('ClipsExtensionPointLoadingUI', {
                     file: extension.configurationFile.path,
-                    tree: () => JSON.stringify(tree),
-                    html: () => serializeLoadingHtml(tree),
+                    html: ui,
                   }),
                 });
               }

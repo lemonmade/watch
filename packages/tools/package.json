@@ -29,11 +29,11 @@
       "quilt:esnext": "./build/esnext/graphql.esnext",
       "import": "./build/esm/graphql.mjs"
     },
-    "./loading": {
-      "types": "./build/typescript/loading.d.ts",
-      "quilt:source": "./source/loading.ts",
-      "quilt:esnext": "./build/esnext/loading.esnext",
-      "import": "./build/esm/loading.mjs"
+    "./extension": {
+      "types": "./build/typescript/extension.d.ts",
+      "quilt:source": "./source/extension.ts",
+      "quilt:esnext": "./build/esnext/extension.esnext",
+      "import": "./build/esm/extension.mjs"
     },
     "./rollup": {
       "types": "./build/typescript/rollup.d.ts",
@@ -48,8 +48,8 @@
       "graphql": [
         "./build/typescript/graphql.d.ts"
       ],
-      "loading": [
-        "./build/typescript/loading.d.ts"
+      "extension": [
+        "./build/typescript/extension.d.ts"
       ],
       "rollup": [
         "./build/typescript/rollup.d.ts"
@@ -70,7 +70,9 @@
     "chokidar": "^3.5.0",
     "esbuild": "^0.23.1",
     "glob": "^10.0.0",
+    "graphql": "^16.8.0",
     "htm": "^3.1.1",
+    "node-html-parser": "^6.1.13",
     "rollup": "^4.21.1",
     "rollup-plugin-esbuild": "^6.1.0",
     "zod": "^3.21.4"

@@ -5,8 +5,7 @@ scalar Locale
 scalar Version
 scalar ExtensionPoint
 scalar ExtensionApiVersion
-scalar ExtensionLoadingUiTree
-scalar ExtensionLoadingUiHtml
+scalar ClipsLoadingUIContentHTML
 
 type Asset {
   source: Url!
@@ -62,14 +61,13 @@ type ClipsExtensionPointLiveQuery {
   query: String!
 }
 
-type ClipsExtensionPointLoadingUi {
+type ClipsExtensionPointLoadingUI {
   file: String!
-  tree: ExtensionLoadingUiTree!
-  html: ExtensionLoadingUiHtml!
+  html: ClipsLoadingUIContentHTML!
 }
 
 type ClipsExtensionPointLoading {
-  ui: ClipsExtensionPointLoadingUi
+  ui: ClipsExtensionPointLoadingUI
 }
 
 type ClipsExtensionPointSupport {

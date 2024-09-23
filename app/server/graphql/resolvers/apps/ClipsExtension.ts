@@ -338,6 +338,7 @@ export const ClipsExtensionVersion = createResolverWithGid(
     assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
     translations: ({translations}) =>
       translations ? JSON.stringify(translations) : null,
+    // Database needs to store the exact right shapes in its JSON fields
     extends: ({extends: supports}) => (supports as any) ?? [],
     settings: ({settings}) => (settings as any) ?? {fields: []},
   },
@@ -435,13 +436,10 @@ export const ClipsExtensionInstallation = createResolverWithGid(
 
       if (loading == null) return null;
 
-      const {parseLoadingHtml} = await import('@watching/tools/loading');
-
       return {
         ui: loading?.ui
           ? {
               html: loading.ui,
-              tree: JSON.stringify(parseLoadingHtml(loading.ui)),
             }
           : null,
       };
@@ -528,6 +526,30 @@ export const WatchThrough = createResolver('WatchThrough', {
   },
 });
 
+async function parseExtensionPointTarget(extensionPoint: string) {
+  const {validateExtensionPoint} = await import('@watching/tools/extension');
+
+  if (!validateExtensionPoint(extensionPoint)) {
+    throw new Error(`Unsupported extension point: ${extensionPoint}`);
+  }
+
+  return extensionPoint;
+}
+
+async function parseLiveQuery(liveQuery: string) {
+  const {validateAndNormalizeLiveQuery} = await import(
+    '@watching/tools/extension'
+  );
+  return validateAndNormalizeLiveQuery(liveQuery);
+}
+
+async function parseLoadingUI(loadingUI: string) {
+  const {validateAndNormalizeLoadingUI} = await import(
+    '@watching/tools/extension'
+  );
+  return validateAndNormalizeLoadingUI(loadingUI);
+}
+
 async function createStagedClipsVersion({
   code,
   appId,
@@ -580,45 +602,53 @@ async function createStagedClipsVersion({
     translations: translations && JSON.parse(translations),
     extends: supports
       ? await Promise.all(
-          supports.map(async ({target, liveQuery, loading, conditions}) => {
-            return {
-              target,
-              liveQuery: liveQuery
-                ? await (async () => {
-                    const [
-                      {parse},
-                      {toGraphQLOperation, cleanGraphQLDocument},
-                    ] = await Promise.all([
-                      import('graphql'),
-                      import('@quilted/graphql-tools'),
-                    ]);
+          supports.map(
+            async ({target, modules, liveQuery, loading, conditions}) => {
+              const [
+                parsedTarget,
+                parsedModules,
+                parsedLiveQuery,
+                parsedLoadingUI,
+              ] = await Promise.all([
+                parseExtensionPointTarget(target),
+                Promise.all(
+                  (modules ?? []).map(
+                    async ({content, contentType = 'HTML'}) => {
+                      if (content.length > 10_000) {
+                        throw new Error(
+                          `Clip module content for ${target} is too long`,
+                        );
+                      }
 
-                    return toGraphQLOperation(
-                      cleanGraphQLDocument(parse(liveQuery)),
-                    ).source;
-                  })()
-                : undefined,
-              loading: loading?.ui
-                ? {
-                    ui: await (async () => {
-                      const {parseLoadingHtml, serializeLoadingHtml} =
-                        await import('@watching/tools/loading');
+                      // TODO: validate HTML content
 
-                      return serializeLoadingHtml(
-                        parseLoadingHtml(loading.ui!),
-                      );
-                    })(),
+                      return {content, contentType};
+                    },
+                  ),
+                ),
+                liveQuery ? parseLiveQuery(liveQuery) : undefined,
+                loading?.ui ? parseLoadingUI(loading.ui) : undefined,
+              ]);
+
+              return {
+                target: parsedTarget,
+                modules: parsedModules,
+                liveQuery: parsedLiveQuery,
+                loading: parsedLoadingUI
+                  ? {
+                      ui: parsedLoadingUI,
+                    }
+                  : undefined,
+                conditions: conditions?.map((condition) => {
+                  if (condition?.series?.handle == null) {
+                    throw new Error(`Unknown condition: ${condition}`);
                   }
-                : undefined,
-              conditions: conditions?.map((condition) => {
-                if (condition?.series?.handle == null) {
-                  throw new Error(`Unknown condition: ${condition}`);
-                }
 
-                return condition;
-              }),
-            };
-          }) as any,
+                  return condition;
+                }),
+              };
+            },
+          ) as any,
         )
       : [],
     settings: settings?.fields

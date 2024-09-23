@@ -1,4 +1,3 @@
-import type {ComponentType} from 'preact';
 import {useEffect, useRef} from 'preact/hooks';
 
 import {type ExtensionPoint} from '@watching/clips';
@@ -6,8 +5,6 @@ import {RemoteRootRenderer} from '@remote-dom/preact/host';
 import {
   Style,
   Popover,
-  Stack,
-  InlineStack,
   BlockStack,
   InlineGrid,
   View,
@@ -17,25 +14,22 @@ import {
   Icon,
   Button,
   Section,
-  SkeletonButton,
-  SkeletonText,
-  SkeletonTextBlock,
-  SkeletonView,
 } from '@lemon/zest';
 import {classes} from '@lemon/css';
 import type {ThreadRendererInstance} from '@watching/thread-render';
 
 import {useGraphQLMutation} from '~/shared/graphql.ts';
 
+import {ClipsExtensionPointBeingRenderedContext} from '../context.ts';
 import {useClipsManager} from '../react.tsx';
 import {
   type ClipsExtensionPoint,
   type ClipsExtensionPointInstance,
   type ClipsExtensionPointInstanceContext,
-  type ClipsExtensionPointInstanceLoadingElement,
 } from '../extension.ts';
 
 import {ClipSettings} from './ClipSettings.tsx';
+import {ClipStaticRenderer} from './ClipStaticRenderer.tsx';
 
 import styles from './Clip.module.css';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
@@ -57,56 +51,58 @@ export function Clip<Point extends ExtensionPoint>({
   const renderer = local ?? installed;
 
   return (
-    <Section>
-      <BlockStack spacing>
-        <ContentAction
-          overlay={
-            <Popover inlineAttachment="start">
-              {installed?.instance.value && (
-                <Section padding>
-                  <ClipSettings
-                    id={extension.id}
-                    instance={installed.instance.value}
-                  />
-                </Section>
-              )}
-              <Menu>
-                <ViewAppAction />
-                {renderer && <RestartClipButton instance={renderer} />}
-                {extension.installed && (
-                  <UninstallClipButton extension={extension} />
+    <ClipsExtensionPointBeingRenderedContext.Provider value={extension}>
+      <Section>
+        <BlockStack spacing>
+          <ContentAction
+            overlay={
+              <Popover inlineAttachment="start">
+                {installed?.instance.value && (
+                  <Section padding>
+                    <ClipSettings
+                      id={extension.id}
+                      instance={installed.instance.value}
+                    />
+                  </Section>
                 )}
-                {extension.installed && <ReportIssueButton />}
-              </Menu>
-            </Popover>
-          }
-        >
-          <InlineGrid sizes={['auto', 'fill']} spacing="small">
-            <View
-              display="inlineFlex"
-              background="emphasized"
-              border="subdued"
-              cornerRadius
-              alignment="center"
-              blockSize={Style.css`2.5rem`}
-              inlineSize={Style.css`2.5rem`}
-            >
-              <Icon source="app" />
-            </View>
-            <BlockStack>
-              <Text emphasis accessibilityRole="heading">
-                {name}
-              </Text>
-              <Text emphasis="subdued" size="small">
-                from app <Text emphasis>{app.name}</Text>
-              </Text>
-            </BlockStack>
-          </InlineGrid>
-        </ContentAction>
+                <Menu>
+                  <ViewAppAction />
+                  {renderer && <RestartClipButton instance={renderer} />}
+                  {extension.installed && (
+                    <UninstallClipButton extension={extension} />
+                  )}
+                  {extension.installed && <ReportIssueButton />}
+                </Menu>
+              </Popover>
+            }
+          >
+            <InlineGrid sizes={['auto', 'fill']} spacing="small">
+              <View
+                display="inlineFlex"
+                background="emphasized"
+                border="subdued"
+                cornerRadius
+                alignment="center"
+                blockSize={Style.css`2.5rem`}
+                inlineSize={Style.css`2.5rem`}
+              >
+                <Icon source="app" />
+              </View>
+              <BlockStack>
+                <Text emphasis accessibilityRole="heading">
+                  {name}
+                </Text>
+                <Text emphasis="subdued" size="small">
+                  from app <Text emphasis>{app.name}</Text>
+                </Text>
+              </BlockStack>
+            </InlineGrid>
+          </ContentAction>
 
-        {renderer && <ClipInstanceRenderer renderer={renderer} />}
-      </BlockStack>
-    </Section>
+          {renderer && <ClipInstanceRenderer renderer={renderer} />}
+        </BlockStack>
+      </Section>
+    </ClipsExtensionPointBeingRenderedContext.Provider>
   );
 }
 
@@ -215,16 +211,6 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
   );
 }
 
-const LOADING_COMPONENT_MAP = new Map<string, ComponentType<any>>([
-  ['ui-stack', Stack],
-  ['ui-block-stack', BlockStack],
-  ['ui-inline-stack', InlineStack],
-  ['ui-skeleton-button', SkeletonButton],
-  ['ui-skeleton-text', SkeletonText],
-  ['ui-skeleton-text-block', SkeletonTextBlock],
-  ['ui-skeleton-view', SkeletonView],
-]);
-
 function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
   instance,
 }: {
@@ -234,28 +220,5 @@ function ClipsInstanceRendererLoading<Point extends ExtensionPoint>({
 
   if (loadingUi == null) return null;
 
-  const renderNode = (
-    child: ClipsExtensionPointInstanceLoadingElement['children'][number],
-    index: number,
-  ) => {
-    if (typeof child === 'string') {
-      return <>{child}</>;
-    }
-
-    const {type, properties, children} = child;
-
-    const Component = LOADING_COMPONENT_MAP.get(type);
-
-    if (Component == null) {
-      throw new Error(`Unknown loading component: ${type}`);
-    }
-
-    return (
-      <Component key={index} {...properties}>
-        {children.map(renderNode)}
-      </Component>
-    );
-  };
-
-  return <>{loadingUi.map(renderNode)}</>;
+  return <ClipStaticRenderer content={loadingUi} />;
 }
