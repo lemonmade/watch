@@ -37,10 +37,10 @@ export async function validateAndNormalizeLoadingUI(ui: string) {
 
   // TODO: more validation
   for (const element of html.querySelectorAll('*')) {
-    const tagName = element.tagName;
+    const localName = element.localName;
 
-    if (!ALLOWED_LOADING_ELEMENTS.has(tagName as any)) {
-      throw new Error(`Unknown loading element: ${tagName}`);
+    if (!ALLOWED_LOADING_ELEMENTS.has(localName as any)) {
+      throw new Error(`Unknown loading element: ${localName}`);
     }
   }
 
