@@ -1,5 +1,13 @@
 # @watching/api
 
+## 0.1.1
+
+### Patch Changes
+
+- [#347](https://github.com/lemonmade/watch/pull/347) [`9f6aaa12`](https://github.com/lemonmade/watch/commit/9f6aaa125cd7bc465a24e571cf2d5ed7b87dafa7) Thanks [@lemonmade](https://github.com/lemonmade)! - Rename `ui-action` to `ui-button`
+
+- [#346](https://github.com/lemonmade/watch/pull/346) [`65666e40`](https://github.com/lemonmade/watch/commit/65666e409eadeffd4d9538ae73ddf4e0076b850c) Thanks [@lemonmade](https://github.com/lemonmade)! - Add basic support for `action` attribute on button
+
 ## 0.1.0
 
 ### Minor Changes
