@@ -8,7 +8,6 @@ app/graphql/types*
 app/graphql/schema.ts
 **/*.graphql.d.ts
 **/*.graphql.ts
-packages/cli/source/commands/develop/schema.ts
 !packages/cli/source/commands/build/
 packages/clips/source/graphql/**/*.ts
 packages/clips/graphql/**/*.graphql
