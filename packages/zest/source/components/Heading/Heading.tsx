@@ -7,6 +7,8 @@ import {useHeadingDomDetails} from './shared.ts';
 
 import styles from './Heading.module.css';
 
+export {NestedHeadingLevel, HeadingLevelReset} from './HeadingLevel.tsx';
+
 export interface HeadingProps
   extends Omit<Partial<HeadingProperties>, 'level'> {
   level?: HeadingLevel | `${HeadingLevel}` | 'auto';

@@ -21,7 +21,7 @@ import {
 import {SPACING_CLASS_MAP} from '../../styles/spacing.ts';
 import {useUniqueId} from '../../shared/id.ts';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View/View.tsx';
 
 import styles from './Grid.module.css';
 

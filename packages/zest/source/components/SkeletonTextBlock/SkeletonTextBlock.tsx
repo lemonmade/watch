@@ -5,7 +5,7 @@ import type {SkeletonTextBlockProperties} from '@watching/clips';
 
 import {Style} from '../../system.ts';
 import {SkeletonText} from '../SkeletonText/SkeletonText.tsx';
-import {useStackProps, resolveStackProps} from '../Stack.tsx';
+import {useStackProps, resolveStackProps} from '../Stack/Stack.tsx';
 
 export interface SkeletonTextBlockProps
   extends Partial<SkeletonTextBlockProperties> {}

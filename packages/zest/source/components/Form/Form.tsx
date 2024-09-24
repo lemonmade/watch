@@ -2,13 +2,13 @@ import {useMemo} from 'preact/hooks';
 import type {RenderableProps, ComponentChild, JSX} from 'preact';
 import {computed, signal, type SignalOrValue} from '@quilted/quilt/signals';
 
-import {Portal} from '../Portal.tsx';
+import {Portal} from '../Portal/Portal.tsx';
 import {
   View,
   useViewProps,
   resolveViewProps,
   type ViewProps,
-} from '../View.tsx';
+} from '../View/View.tsx';
 
 import {removeFromSet} from '../../shared/sets.ts';
 import {useUniqueId} from '../../shared/id.ts';

@@ -2,8 +2,8 @@ import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 import type {ModalProperties} from '@watching/clips';
 
-import {Overlay} from '../Overlay.tsx';
-import {HeadingLevelReset} from '../Heading.tsx';
+import {Overlay} from '../Overlay/Overlay.tsx';
+import {HeadingLevelReset} from '../Heading/Heading.tsx';
 
 import {ActionScopeReset} from '../../shared/actions.tsx';
 

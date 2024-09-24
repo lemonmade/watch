@@ -4,8 +4,8 @@ import type {TextFieldProperties} from '@watching/clips';
 
 import {useUniqueId} from '../../shared/id.ts';
 
-import {Label} from '../Label.tsx';
-import {BlockStack} from '../Stack.tsx';
+import {Label} from '../Label/Label.tsx';
+import {BlockStack} from '../Stack/Stack.tsx';
 
 import {Input} from './Input.tsx';
 

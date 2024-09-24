@@ -1,7 +1,7 @@
 import type {RenderableProps} from 'preact';
 
-import {NestedHeadingLevel} from '../Heading.tsx';
-import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
+import {NestedHeadingLevel} from '../Heading/Heading.tsx';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View/View.tsx';
 
 export interface SectionProps extends ViewProps {}
 

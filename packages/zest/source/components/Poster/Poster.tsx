@@ -1,7 +1,7 @@
 import {classes} from '@lemon/css';
 
-import {Icon} from '../Icon.tsx';
-import {Text} from '../Text.tsx';
+import {Icon} from '../Icon/Icon.tsx';
+import {Text} from '../Text/Text.tsx';
 
 import styles from './Poster.module.css';
 

@@ -2,7 +2,7 @@ import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 import type {TextEmphasisKeyword} from '@watching/design';
 
-import {useHeadingDomDetails} from '../Heading.tsx';
+import {useHeadingDomDetails} from '../Heading/shared.ts';
 
 import styles from './Text.module.css';
 

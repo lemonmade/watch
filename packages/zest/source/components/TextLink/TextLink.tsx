@@ -1,7 +1,7 @@
 import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 
-import {Pressable, type PressableProps} from '../Pressable.tsx';
+import {Pressable, type PressableProps} from '../Pressable/Pressable.tsx';
 
 import styles from './TextLink.module.css';
 

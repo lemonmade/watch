@@ -18,12 +18,12 @@ import {
   isSameDay,
 } from 'date-fns';
 
-import {Button} from '../Button.tsx';
-import {Popover} from '../Popover.tsx';
-import {Menu} from '../Menu.tsx';
-import {Text} from '../Text.tsx';
-import {TextField} from '../TextField.tsx';
-import {View} from '../View.tsx';
+import {Button} from '../Button/Button.tsx';
+import {Popover} from '../Popover/Popover.tsx';
+import {Menu} from '../Menu/Menu.tsx';
+import {Text} from '../Text/Text.tsx';
+import {TextField} from '../TextField/TextField.tsx';
+import {View} from '../View/View.tsx';
 
 import {
   prettyDate,

@@ -9,7 +9,7 @@ import type {
 import systemStyles from '../../system.module.css';
 import {SPACING_CLASS_MAP} from '../../styles/spacing';
 
-import {useViewProps, resolveViewProps, type ViewProps} from '../View';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View/View.tsx';
 
 import styles from './Stack.module.css';
 

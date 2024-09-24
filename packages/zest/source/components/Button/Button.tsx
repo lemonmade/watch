@@ -8,8 +8,8 @@ import {
   computed,
 } from '@quilted/quilt/signals';
 
-import {Icon, type IconSource} from '../Icon.tsx';
-import {Pressable, type PressableProps} from '../Pressable.tsx';
+import {Icon, type IconSource} from '../Icon/Icon.tsx';
+import {Pressable, type PressableProps} from '../Pressable/Pressable.tsx';
 
 import {useUniqueId} from '../../shared/id.ts';
 import {

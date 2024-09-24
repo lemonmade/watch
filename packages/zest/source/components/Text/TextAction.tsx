@@ -1,8 +1,8 @@
 import type {RenderableProps} from 'preact';
 import {classes} from '@lemon/css';
 
-import {Icon} from '../Icon.tsx';
-import {Pressable, type PressableProps} from '../Pressable.tsx';
+import {Icon} from '../Icon/Icon.tsx';
+import {Pressable, type PressableProps} from '../Pressable/Pressable.tsx';
 
 import systemStyles from '../../system.module.css';
 

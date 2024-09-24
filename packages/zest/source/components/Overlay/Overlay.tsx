@@ -21,7 +21,7 @@ import {useLayer, type Layer} from '../../shared/layers.tsx';
 import {useGlobalEventListener} from '../../shared/global-events.ts';
 import {focusFirstFocusable} from '../../shared/focus.ts';
 
-import {Portal} from '../Portal.tsx';
+import {Portal} from '../Portal/Portal.tsx';
 
 import styles from './Overlay.module.css';
 

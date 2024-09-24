@@ -1,5 +1,5 @@
 import type {RenderableProps} from 'preact';
-import {useViewProps, resolveViewProps, type ViewProps} from '../View.tsx';
+import {useViewProps, resolveViewProps, type ViewProps} from '../View/View.tsx';
 
 export interface HeaderProps extends ViewProps {}
 

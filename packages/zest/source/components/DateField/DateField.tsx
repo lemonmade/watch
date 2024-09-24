@@ -1,6 +1,6 @@
 import {type ReactNode} from 'react';
 
-import {useStackProps, resolveStackProps} from '../Stack.tsx';
+import {useStackProps, resolveStackProps} from '../Stack/Stack.tsx';
 
 import styles from './DateField.module.css';
 

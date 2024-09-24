@@ -1,7 +1,7 @@
 import type {RenderableProps} from 'preact';
 import type {PopoverProperties} from '@watching/clips';
 
-import {Overlay} from '../Overlay';
+import {Overlay} from '../Overlay/Overlay.tsx';
 
 import styles from './Popover.module.css';
 

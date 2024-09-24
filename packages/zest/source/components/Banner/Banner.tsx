@@ -1,8 +1,8 @@
 import type {RenderableProps} from 'preact';
 import {classes, variation} from '@lemon/css';
 
-import {View} from '../View.tsx';
-import {NestedHeadingLevel} from '../Heading.tsx';
+import {View} from '../View/View.tsx';
+import {NestedHeadingLevel} from '../Heading/Heading.tsx';
 
 import styles from './Banner.module.css';
 
