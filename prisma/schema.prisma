@@ -184,6 +184,7 @@ enum SeriesStatus {
   RETURNING
   IN_PRODUCTION
   PLANNED
+  PILOT
 }
 
 model Series {

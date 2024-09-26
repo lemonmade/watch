@@ -366,6 +366,8 @@ export function tmdbStatusToEnum(status: TmdbSeries['status']) {
       return 'IN_PRODUCTION';
     case 'Planned':
       return 'PLANNED';
+    case 'Pilot':
+      return 'PILOT';
     default: {
       throw new Error(`Unrecognized status: ${status}`);
     }
