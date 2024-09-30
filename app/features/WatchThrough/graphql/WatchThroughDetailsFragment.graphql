@@ -1,4 +1,4 @@
-#import "../../../shared/clips/graphql/ClipsExtensionFragment.graphql"
+#import "../../../shared/clips/graphql/ClipsExtensionPointFragment.graphql"
 
 fragment WatchThroughDetails on WatchThrough {
   id
@@ -129,7 +129,7 @@ fragment WatchThroughDetails on WatchThrough {
   settings {
     spoilerAvoidance
   }
-  clipsInstallations(target: "watch-through.details.accessory") {
-    ...ClipsExtension
+  clipsToRender(target: "watch-through.details.accessory") {
+    ...ClipsExtensionPoint
   }
 }

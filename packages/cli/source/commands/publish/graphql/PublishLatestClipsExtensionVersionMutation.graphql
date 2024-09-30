@@ -2,8 +2,16 @@ mutation PublishLatestClipsExtensionVersion($id: ID!) {
   publishLatestClipsExtensionVersion(id: $id) {
     version {
       id
-      assets {
-        source
+      extends {
+        target
+        entry {
+          asHTML {
+            content
+          }
+          asJavaScript {
+            src
+          }
+        }
       }
     }
   }

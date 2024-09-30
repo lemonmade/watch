@@ -5,9 +5,7 @@ import {type SignalRemoteReceiver} from '@remote-dom/signals';
 export interface ThreadRenderer<Context = Record<string, never>>
   extends Pick<EventEmitter<ThreadRendererEventMap>, 'on' | 'once'> {
   readonly signal: AbortSignal;
-  readonly instance: ReadonlySignal<
-    ThreadRendererInstance<Context> | undefined
-  >;
+  readonly instance: ThreadRendererInstance<Context> | undefined;
   start(): Promise<void>;
   stop(): Promise<void>;
   restart(): Promise<void>;

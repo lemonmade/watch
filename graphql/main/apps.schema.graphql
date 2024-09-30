@@ -27,9 +27,9 @@ extend type Mutation {
   updateClipsExtension(id: ID!, name: String): UpdateClipsExtensionPayload!
   pushClipsExtension(
     id: ID!
-    code: String!
     name: String
     extends: [ClipsExtensionPointSupportInput!]
+    build: ClipsExtensionBuildInput!
     settings: ClipsExtensionSettingsInput
     translations: JSON
   ): PushClipsExtensionPayload!
@@ -55,28 +55,25 @@ extend type User {
 }
 
 extend type Series {
-  clipsInstallations(
+  clipsToRender(
     target: ClipsExtensionPoint!
-  ): [ClipsExtensionInstallation!]!
+  ): [ClipsExtensionPointInstallation!]!
 }
 
 extend type WatchThrough {
-  clipsInstallations(
+  clipsToRender(
     target: ClipsExtensionPoint!
-  ): [ClipsExtensionInstallation!]!
+  ): [ClipsExtensionPointInstallation!]!
 }
 
 scalar TranslationKey
 scalar ClipsExtensionPoint
 scalar ClipsExtensionApiVersion
 scalar ClipsLiveQuery
+scalar ClipsContentHTML
 scalar ClipsLoadingUIContentHTML
 
 type Icon {
-  source: Url!
-}
-
-type Asset {
   source: Url!
 }
 
@@ -112,7 +109,6 @@ enum ClipsExtensionVersionStatus {
 type ClipsExtensionVersion {
   id: ID!
   status: ClipsExtensionVersionStatus!
-  assets: [Asset!]!
   apiVersion: ClipsExtensionApiVersion!
   extension: ClipsExtension!
   extends: [ClipsExtensionPointSupport!]!
@@ -132,18 +128,35 @@ type ClipsExtensionPointSupportCondition {
 
 type ClipsExtensionPointSupport {
   target: ClipsExtensionPoint!
-  modules: [ClipsExtensionPointSupportModule!]!
   conditions: [ClipsExtensionPointSupportCondition!]!
-  liveQuery: ClipsLiveQuery
+  entry: ClipsExtensionPointSupportEntry!
+  liveQuery: ClipsExtensionPointSupportLiveQuery
   loading: ClipsExtensionPointSupportLoading
+}
+
+type ClipsExtensionPointSupportEntry {
+  asHTML: ClipsExtensionPointSupportEntryHTML
+  asJavaScript: ClipsExtensionPointSupportEntryJavaScript
+}
+
+type ClipsExtensionPointSupportEntryHTML {
+  content: ClipsContentHTML!
+}
+
+type ClipsExtensionPointSupportEntryJavaScript {
+  src: Url!
+}
+
+type ClipsExtensionPointSupportLiveQuery {
+  content: ClipsLiveQuery!
+}
+
+type ClipsExtensionPointSupportLoading {
+  content: ClipsLoadingUIContentHTML!
 }
 
 type ClipsExtensionPointSupportLoadingUI {
   html: ClipsLoadingUIContentHTML!
-}
-
-type ClipsExtensionPointSupportLoading {
-  ui: ClipsExtensionPointSupportLoadingUI
 }
 
 input ClipsExtensionPointSupportSeriesConditionInput {
@@ -155,30 +168,40 @@ input ClipsExtensionPointSupportConditionInput {
   series: ClipsExtensionPointSupportSeriesConditionInput
 }
 
-input ClipsExtensionPointSupportInput {
-  target: ClipsExtensionPoint!
-  modules: [ClipsExtensionPointSupportModuleInput!]
-  conditions: [ClipsExtensionPointSupportConditionInput!]
-  liveQuery: ClipsLiveQuery
-  loading: ClipsExtensionPointSupportLoadingInput
-}
-
-input ClipsExtensionPointSupportModuleInput {
-  contentType: ClipsExtensionPointSupportModuleContentType
-  content: String!
-}
-
-enum ClipsExtensionPointSupportModuleContentType {
+enum ClipsExtensionBuildModuleContentType {
   HTML
+  GRAPHQL
+  JAVASCRIPT
 }
 
-type ClipsExtensionPointSupportModule {
-  contentType: ClipsExtensionPointSupportModuleContentType!
+input ClipsExtensionBuildModuleInput {
+  name: String!
   content: String!
+  contentType: ClipsExtensionBuildModuleContentType!
+}
+
+input ClipsExtensionBuildInput {
+  modules: [ClipsExtensionBuildModuleInput!]!
+}
+
+input ClipsExtensionPointSupportEntryInput {
+  module: String!
+}
+
+input ClipsExtensionPointSupportLiveQueryInput {
+  module: String!
 }
 
 input ClipsExtensionPointSupportLoadingInput {
-  ui: ClipsLoadingUIContentHTML
+  module: String!
+}
+
+input ClipsExtensionPointSupportInput {
+  target: ClipsExtensionPoint!
+  entry: ClipsExtensionPointSupportEntryInput!
+  liveQuery: ClipsExtensionPointSupportLiveQueryInput
+  loading: ClipsExtensionPointSupportLoadingInput
+  conditions: [ClipsExtensionPointSupportConditionInput!]
 }
 
 # Extension settings
@@ -280,29 +303,41 @@ enum ClipsExtensionVersionStatus {
 type AppInstallation {
   id: ID!
   app: App!
-  extensions: [AppExtensionInstallation!]!
+  extensions: [AppExtensionPointInstallation!]!
 }
 
 type ClipsExtensionInstallation {
   id: ID!
   extension: ClipsExtension!
   version: ClipsExtensionVersion!
-  target: ClipsExtensionPoint!
   appInstallation: AppInstallation!
   settings: JSON
   translations: JSON
-  liveQuery: ClipsLiveQuery
+  extensionPoints: [ClipsExtensionPointInstallation!]!
+}
+
+type ClipsExtensionPointInstallation {
+  id: ID!
+  target: ClipsExtensionPoint!
+  apiVersion: ClipsExtensionApiVersion!
+  settings: JSON
+  translations: JSON
+  extension: ClipsExtension!
+  extensionInstallation: ClipsExtensionInstallation!
+  appInstallation: AppInstallation!
+  entry: ClipsExtensionPointSupportEntry!
+  liveQuery: ClipsExtensionPointSupportLiveQuery
   loading: ClipsExtensionPointSupportLoading
 }
 
-union AppExtensionInstallation = ClipsExtensionInstallation
+union AppExtensionPointInstallation = ClipsExtensionInstallation
 
 # Mutations
 
 input CreateClipsInitialVersion {
-  code: String!
-  translations: JSON
   extends: [ClipsExtensionPointSupportInput!]
+  build: ClipsExtensionBuildInput!
+  translations: JSON
   settings: ClipsExtensionSettingsInput
 }
 

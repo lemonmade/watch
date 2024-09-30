@@ -6,9 +6,11 @@ import type {
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
 import Env from 'quilt:module/env';
+import type {ExtensionPoint} from '@watching/clips';
 import {z} from 'zod';
 
 import type {
+  ClipsExtensionBuildModuleInput,
   ClipsExtensionPointSupportInput,
   ClipsExtensionPointSupportConditionInput,
   CreateClipsInitialVersion,
@@ -33,11 +35,22 @@ declare module '@quilted/quilt/env' {
   }
 }
 
+type DatabaseClipsExtensionInstallationWithActiveVersion =
+  DatabaseClipsExtensionInstallation & {
+    extension: DatabaseClipsExtension & {
+      activeVersion: DatabaseClipsExtensionVersion | null;
+    };
+  };
+
 declare module '../types' {
   export interface GraphQLValues {
     ClipsExtension: DatabaseClipsExtension;
     ClipsExtensionVersion: DatabaseClipsExtensionVersion;
-    ClipsExtensionInstallation: DatabaseClipsExtensionInstallation;
+    ClipsExtensionInstallation: DatabaseClipsExtensionInstallationWithActiveVersion;
+    ClipsExtensionPointInstallation: {
+      target: ExtensionPoint;
+      installation: DatabaseClipsExtensionInstallationWithActiveVersion;
+    };
   }
 }
 
@@ -51,7 +64,7 @@ export const Query = createQueryResolver({
       },
       include: {
         extension: {
-          select: {activeVersion: {select: {status: true, extends: true}}},
+          include: {activeVersion: true},
         },
       },
       take: 50,
@@ -64,12 +77,20 @@ export const Query = createQueryResolver({
     return filterInstallations(installations, {
       target,
       conditions: resolvedConditions,
-    });
+    }).map(({installation}) => installation);
   },
-  clipsInstallation(_, {id}, {prisma}) {
-    return prisma.clipsExtensionInstallation.findUniqueOrThrow({
-      where: {id: fromGid(id).id},
-    });
+  async clipsInstallation(_, {id}, {prisma}) {
+    const installation =
+      await prisma.clipsExtensionInstallation.findUniqueOrThrow({
+        where: {id: fromGid(id).id},
+        include: {
+          extension: {
+            include: {activeVersion: true},
+          },
+        },
+      });
+
+    return installation;
   },
 });
 
@@ -133,7 +154,7 @@ export const Mutation = createMutationResolver({
   },
   async pushClipsExtension(
     _,
-    {id: extensionId, code, name, translations, extends: supports, settings},
+    {id: extensionId, build, name, translations, extends: supports, settings},
     {prisma, request},
   ) {
     const id = fromGid(extensionId).id;
@@ -148,8 +169,8 @@ export const Mutation = createMutationResolver({
     });
 
     const {version: versionInput} = await createStagedClipsVersion({
-      code,
       id,
+      build,
       appId: extension.appId,
       extensionName: name ?? extension.name,
       translations,
@@ -211,7 +232,7 @@ export const Mutation = createMutationResolver({
     const extension = await prisma.clipsExtension.findUniqueOrThrow({
       where: {id: fromGid(id).id},
       include: {
-        activeVersion: {select: {extends: true}},
+        activeVersion: true,
       },
     });
 
@@ -248,6 +269,11 @@ export const Mutation = createMutationResolver({
         settings: settings == null ? undefined : JSON.parse(settings),
         appInstallationId: appInstallation.id,
       },
+      include: {
+        extension: {
+          include: {activeVersion: true},
+        },
+      },
     });
 
     return {
@@ -281,20 +307,23 @@ export const Mutation = createMutationResolver({
         select: {id: true, userId: true},
       });
 
-    const {extension, ...installation} =
-      await prisma.clipsExtensionInstallation.update({
-        where: {id: installationDetails.id},
-        include: {extension: true},
-        data:
-          settings == null
-            ? {}
-            : {
-                settings: JSON.parse(settings),
-              },
-      });
+    const installation = await prisma.clipsExtensionInstallation.update({
+      where: {id: installationDetails.id},
+      include: {
+        extension: {
+          include: {activeVersion: true},
+        },
+      },
+      data:
+        settings == null
+          ? {}
+          : {
+              settings: JSON.parse(settings),
+            },
+    });
 
     return {
-      extension,
+      extension: installation.extension,
       installation,
     };
   },
@@ -335,7 +364,6 @@ export const ClipsExtensionVersion = createResolverWithGid(
       prisma.clipsExtension.findUniqueOrThrow({
         where: {id: extensionId},
       }),
-    assets: ({scriptUrl}) => (scriptUrl ? [{source: scriptUrl}] : []),
     translations: ({translations}) =>
       translations ? JSON.stringify(translations) : null,
     // Database needs to store the exact right shapes in its JSON fields
@@ -395,63 +423,125 @@ export const ClipsExtensionInstallation = createResolverWithGid(
       prisma.appInstallation.findUniqueOrThrow({
         where: {id: appInstallationId},
       }),
-    async version({extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findUniqueOrThrow({
-        where: {id: extensionId},
-        select: {activeVersion: true},
-      });
-
+    async version({extension}) {
       return extension.activeVersion!;
     },
-    async translations({extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findUniqueOrThrow({
-        where: {id: extensionId},
-        select: {activeVersion: true},
-      });
-
+    async translations({extension}) {
       const translations = extension.activeVersion?.translations;
 
       return translations ? JSON.stringify(translations) : null;
-    },
-    async liveQuery({target, extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findUniqueOrThrow({
-        where: {id: extensionId},
-        select: {activeVersion: true},
-      });
-
-      const extend = (extension.activeVersion?.extends ?? []) as any[];
-
-      return extend.find((extend) => extend.target === target)?.liveQuery;
-    },
-    async loading({target, extensionId}, _, {prisma}) {
-      const extension = await prisma.clipsExtension.findUniqueOrThrow({
-        where: {id: extensionId},
-        select: {activeVersion: true},
-      });
-
-      const extend = (extension.activeVersion?.extends ?? []) as any[];
-
-      const loading = extend.find((extend) => extend.target === target)
-        ?.loading;
-
-      if (loading == null) return null;
-
-      return {
-        ui: loading?.ui
-          ? {
-              html: loading.ui,
-            }
-          : null,
-      };
     },
     settings: ({settings}) => (settings ? JSON.stringify(settings) : null),
   },
 );
 
+export const ClipsExtensionPointInstallation = createResolverWithGid(
+  'ClipsExtensionPointInstallation',
+  {
+    id: ({target, installation}) =>
+      toGid(`${installation.id}/${target}`, 'ClipsExtensionPointInstallation'),
+    target: ({target}) => target,
+    apiVersion: ({installation}) =>
+      installation.extension.activeVersion!.apiVersion,
+    entry({target, installation}) {
+      const {entry} = getExtensionPoint(target, installation);
+      const module = getExtensionBuildModule(entry.module, installation);
+
+      switch (module.contentType) {
+        case 'JAVASCRIPT':
+          return {
+            asHTML: null,
+            asJavaScript: {
+              src: module.src!,
+            },
+          };
+        case 'HTML':
+          return {
+            asHTML: {
+              content: module.content,
+            },
+            asJavaScript: null,
+          };
+        default:
+          throw new Error(`Unsupported content type: ${module.contentType}`);
+      }
+    },
+    liveQuery({target, installation}) {
+      const {liveQuery} = getExtensionPoint(target, installation);
+
+      if (liveQuery == null) return null;
+
+      const module = getExtensionBuildModule(liveQuery.module, installation);
+
+      return {
+        content: module.content,
+      };
+    },
+    loading({target, installation}) {
+      const {loading} = getExtensionPoint(target, installation);
+
+      if (loading == null) return null;
+
+      const module = getExtensionBuildModule(loading.module, installation);
+
+      return {
+        content: module.content,
+      };
+    },
+    settings: ({installation}) =>
+      installation.extension.activeVersion?.settings
+        ? JSON.stringify(installation.extension.activeVersion.settings)
+        : null,
+    translations: ({installation}) =>
+      installation.extension.activeVersion?.translations
+        ? JSON.stringify(installation.extension.activeVersion.translations)
+        : null,
+    extension: ({installation}) => installation.extension,
+    extensionInstallation: ({installation}) => installation,
+    appInstallation: ({installation}, _, {prisma}) =>
+      prisma.appInstallation.findUniqueOrThrow({
+        where: {id: installation.appInstallationId},
+      }),
+  },
+);
+
+function getExtensionPoint(
+  target: string,
+  installation: DatabaseClipsExtensionInstallationWithActiveVersion,
+) {
+  const extend = installation.extension.activeVersion
+    ?.extends as any as ClipsExtensionPointSupportDatabaseJSON[];
+  const extensionPoint = extend?.find((extend) => extend.target === target);
+
+  if (extensionPoint == null) {
+    throw new Error(`Extension point not found: ${target}`);
+  }
+
+  return extensionPoint;
+}
+
+function getExtensionBuildModule(
+  name: string,
+  installation: DatabaseClipsExtensionInstallationWithActiveVersion,
+) {
+  const modules = (
+    installation.extension.activeVersion
+      ?.build as any as ClipsExtensionBuildDatabaseJSON
+  )?.modules;
+
+  const module = modules?.find((module) => module.name === name);
+
+  if (module == null) {
+    throw new Error(`Unknown module: ${name}`);
+  }
+
+  return module;
+}
+
 const SeriesExtensionPoint = z.enum(['series.details.accessory']);
 
 export const Series = createResolver('Series', {
-  async clipsInstallations(series, {target}, {user, prisma}) {
+  async clipsToRender(series, {target}, {user, prisma}) {
     if (!SeriesExtensionPoint.safeParse(target).success) {
       throw new Error(`Invalid target: ${target}`);
     }
@@ -464,7 +554,7 @@ export const Series = createResolver('Series', {
       },
       include: {
         extension: {
-          select: {activeVersion: {select: {status: true, extends: true}}},
+          include: {activeVersion: true},
         },
       },
       take: 50,
@@ -487,7 +577,7 @@ export const Series = createResolver('Series', {
 const WatchThroughExtensionPoint = z.enum(['watch-through.details.accessory']);
 
 export const WatchThrough = createResolver('WatchThrough', {
-  async clipsInstallations({seriesId}, {target}, {user, prisma}) {
+  async clipsToRender({seriesId}, {target}, {user, prisma}) {
     if (!WatchThroughExtensionPoint.safeParse(target).success) {
       throw new Error(`Invalid target: ${target}`);
     }
@@ -505,7 +595,7 @@ export const WatchThrough = createResolver('WatchThrough', {
         },
         include: {
           extension: {
-            select: {activeVersion: {select: {status: true, extends: true}}},
+            include: {activeVersion: true},
           },
         },
         take: 50,
@@ -550,8 +640,64 @@ async function parseLoadingUI(loadingUI: string) {
   return validateAndNormalizeLoadingUI(loadingUI);
 }
 
+interface ClipsExtensionBuildDatabaseJSON {
+  modules: ClipsExtensionBuildModuleDatabaseJSON[];
+}
+
+interface ClipsExtensionBuildModuleDatabaseJSON
+  extends ClipsExtensionBuildModuleInput {
+  src?: string;
+}
+
+interface ClipsExtensionPointSupportDatabaseJSON
+  extends ClipsExtensionPointSupportInput {
+  target: ExtensionPoint;
+}
+
+// const ClipsExtensionBuildModuleInputSchema = z.object({
+//   name: z.string(),
+//   content: z.string(),
+//   contentType: z.enum(['JAVASCRIPT', 'HTML', 'GRAPHQL']),
+// });
+
+// const ClipsExtensionBuildModuleDatabaseSchema =
+//   ClipsExtensionBuildModuleInputSchema.extend({
+//     src: z.string().optional(),
+//   });
+
+// const ClipsExtensionBuildDatabaseSchema = z.object({
+//   modules: z.array(ClipsExtensionBuildModuleDatabaseSchema),
+// });
+
+// const ClipsExtensionPointSupportConditionInputSchema = z.object({
+//   series: z
+//     .object({
+//       handle: z.string().optional(),
+//     })
+//     .optional(),
+// });
+
+// const ClipsExtensionPointModuleDatabaseSchema = z.object({
+//   module: z.string(),
+// });
+
+// const ClipsExtensionPointSchema = z.enum([
+//   'series.details.accessory',
+//   'watch-through.details.accessory',
+// ]);
+
+// const ClipsExtensionPointSupportDatabaseSchema = z.object({
+//   target: ClipsExtensionPointSchema,
+//   conditions: z
+//     .array(ClipsExtensionPointSupportConditionInputSchema)
+//     .optional(),
+//   entry: ClipsExtensionPointModuleDatabaseSchema,
+//   liveQuery: ClipsExtensionPointModuleDatabaseSchema.optional(),
+//   loading: ClipsExtensionPointModuleDatabaseSchema.optional(),
+// });
+
 async function createStagedClipsVersion({
-  code,
+  build,
   appId,
   extensionName,
   translations,
@@ -560,97 +706,128 @@ async function createStagedClipsVersion({
   settings,
 }: {
   id: string;
-  code: string;
   appId: string;
   extensionName: string;
 } & Pick<ResolverContext, 'request'> &
   CreateClipsInitialVersion) {
-  const hash = createHash('sha256').update(code).digest('hex');
-  const path = `assets/clips/${appId}/${toParam(extensionName)}.${hash}.js`;
+  const modules = new Map<string, ClipsExtensionBuildModuleDatabaseJSON>();
 
-  const token = await createSignedToken(
-    {path, code},
-    {
-      secret: Env.UPLOAD_CLIPS_JWT_SECRET,
-      expiresIn: '5m',
-    },
-  );
+  for (const buildModule of build.modules) {
+    if (buildModule.contentType === 'JAVASCRIPT') {
+      if (buildModule.name !== '_extension.js') continue;
+      modules.set(buildModule.name, buildModule);
+    }
 
-  const putResult = await fetch(
-    new URL('/internal/upload/clips', request.url),
-    {
-      method: 'PUT',
-      body: token,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // @see https://github.com/nodejs/node/issues/46221
-      ...{duplex: 'half'},
-    },
-  );
+    if (buildModule.content.length > 10_000) {
+      throw new Error(
+        `Clip module content for ${buildModule.name} is too long`,
+      );
+    }
 
-  if (!putResult.ok) {
-    throw new Error(`Could not upload clips: '${await putResult.text()}'`);
+    modules.set(buildModule.name, buildModule);
   }
+
+  const javascriptModule = modules.get('_extension.js');
+
+  if (javascriptModule) {
+    const code = javascriptModule.content;
+
+    const hash = createHash('sha256').update(code).digest('hex');
+    const path = `assets/clips/${appId}/${toParam(extensionName)}.${hash.slice(
+      0,
+      8,
+    )}.js`;
+
+    const token = await createSignedToken(
+      {path, code},
+      {
+        secret: Env.UPLOAD_CLIPS_JWT_SECRET,
+        expiresIn: '5m',
+      },
+    );
+
+    const putResult = await fetch(
+      new URL('/internal/upload/clips', request.url),
+      {
+        method: 'PUT',
+        body: token,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // @see https://github.com/nodejs/node/issues/46221
+        ...{duplex: 'half'},
+      },
+    );
+
+    if (!putResult.ok) {
+      throw new Error(`Could not upload clips: '${await putResult.text()}'`);
+    }
+
+    javascriptModule.content = '';
+    javascriptModule.src = `https://watch.lemon.tools/${path}`;
+  }
+
+  const extensionPoints = await Promise.all(
+    (supports ?? []).map(
+      async ({target, entry, liveQuery, loading, conditions}) => {
+        if (!modules.has(entry.module)) {
+          throw new Error(`Unknown entry module: ${entry.module}`);
+        }
+
+        if (liveQuery) {
+          const module = modules.get(liveQuery.module);
+
+          if (module == null) {
+            throw new Error(`Unknown live query module: ${liveQuery.module}`);
+          }
+
+          if (module.contentType !== 'GRAPHQL') {
+            throw new Error(
+              `Unsupported content type for live query: ${module.contentType}`,
+            );
+          }
+
+          // TODO: what if multiple targets use the same live query?
+          module.content = await parseLiveQuery(module.content);
+        }
+
+        if (loading) {
+          const module = modules.get(loading.module);
+
+          if (module == null) {
+            throw new Error(`Unknown loading module: ${loading.module}`);
+          }
+
+          module.content = await parseLoadingUI(module.content);
+        }
+
+        return {
+          target: await parseExtensionPointTarget(target),
+          entry,
+          liveQuery,
+          loading,
+          conditions: conditions?.map((condition) => {
+            if (condition?.series?.handle == null) {
+              throw new Error(`Unknown condition: ${condition}`);
+            }
+
+            return condition;
+          }),
+        } satisfies ClipsExtensionPointSupportDatabaseJSON;
+      },
+    ),
+  );
 
   const version: Omit<
     import('@prisma/client').Prisma.ClipsExtensionVersionCreateWithoutExtensionInput,
     'status'
   > = {
-    scriptUrl: `https://watch.lemon.tools/${path}`,
     apiVersion: 'UNSTABLE',
     translations: translations && JSON.parse(translations),
-    extends: supports
-      ? await Promise.all(
-          supports.map(
-            async ({target, modules, liveQuery, loading, conditions}) => {
-              const [
-                parsedTarget,
-                parsedModules,
-                parsedLiveQuery,
-                parsedLoadingUI,
-              ] = await Promise.all([
-                parseExtensionPointTarget(target),
-                Promise.all(
-                  (modules ?? []).map(
-                    async ({content, contentType = 'HTML'}) => {
-                      if (content.length > 10_000) {
-                        throw new Error(
-                          `Clip module content for ${target} is too long`,
-                        );
-                      }
-
-                      // TODO: validate HTML content
-
-                      return {content, contentType};
-                    },
-                  ),
-                ),
-                liveQuery ? parseLiveQuery(liveQuery) : undefined,
-                loading?.ui ? parseLoadingUI(loading.ui) : undefined,
-              ]);
-
-              return {
-                target: parsedTarget,
-                modules: parsedModules,
-                liveQuery: parsedLiveQuery,
-                loading: parsedLoadingUI
-                  ? {
-                      ui: parsedLoadingUI,
-                    }
-                  : undefined,
-                conditions: conditions?.map((condition) => {
-                  if (condition?.series?.handle == null) {
-                    throw new Error(`Unknown condition: ${condition}`);
-                  }
-
-                  return condition;
-                }),
-              };
-            },
-          ) as any,
-        )
-      : [],
+    build: {
+      modules: Array.from(modules.values()),
+    } satisfies ClipsExtensionBuildDatabaseJSON as any,
+    extends: extensionPoints as any,
     settings: settings?.fields
       ? {
           fields: settings.fields?.map(
@@ -768,14 +945,7 @@ async function resolveConditions(
 }
 
 function filterInstallations(
-  installations: (DatabaseClipsExtensionInstallation & {
-    extension: {
-      activeVersion: Pick<
-        DatabaseClipsExtensionVersion,
-        'status' | 'extends'
-      > | null;
-    };
-  })[],
+  installations: DatabaseClipsExtensionInstallationWithActiveVersion[],
   {
     target,
     conditions,
@@ -784,20 +954,19 @@ function filterInstallations(
     conditions: ResolvedCondition[];
   },
 ) {
-  return installations.filter((installation) => {
+  return installations.flatMap<{
+    target: ExtensionPoint;
+    installation: DatabaseClipsExtensionInstallationWithActiveVersion;
+  }>((installation) => {
     const version = installation.extension.activeVersion;
 
     if (version == null || version.status !== 'PUBLISHED') {
-      return false;
+      return [];
     }
 
-    const extensionPoints =
-      (version.extends as {
-        target: string;
-        conditions?: {series?: {handle?: string}}[];
-      }[]) ?? [];
-
-    return extensionPoints.some((extensionPoint) => {
+    const matches = (
+      version.extends as unknown as ClipsExtensionPointSupportDatabaseJSON[]
+    ).some((extensionPoint) => {
       if (target != null && target !== extensionPoint.target) {
         return false;
       }
@@ -817,5 +986,9 @@ function filterInstallations(
         );
       });
     });
+
+    return matches
+      ? {target: installation.target as ExtensionPoint, installation}
+      : [];
   });
 }

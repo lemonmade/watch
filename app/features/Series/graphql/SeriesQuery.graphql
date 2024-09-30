@@ -1,4 +1,4 @@
-#import "../../../shared/clips/graphql/ClipsExtensionFragment.graphql"
+#import "../../../shared/clips/graphql/ClipsExtensionPointFragment.graphql"
 
 query Series($id: ID, $handle: String) {
   series(id: $id, handle: $handle) {
@@ -55,8 +55,8 @@ query Series($id: ID, $handle: String) {
         episode
       }
     }
-    clipsInstallations(target: "series.details.accessory") {
-      ...ClipsExtension
+    clipsToRender(target: "series.details.accessory") {
+      ...ClipsExtensionPoint
     }
   }
 }

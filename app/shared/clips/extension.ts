@@ -9,17 +9,30 @@ import {type Version, type ExtensionPoint, type Api} from '@watching/clips';
 import {type OptionsForExtensionPoint} from './extension-points.ts';
 import {type Sandbox} from './sandbox.ts';
 import {type LiveQueryRunner} from './live-query.ts';
-import {type ClipsManager} from './manager.ts';
+import {type ClipsManagerType} from './manager.ts';
 
 export type {Version, ExtensionPoint};
+
+export interface ClipsExtensionPointRenderer<Point extends ExtensionPoint>
+  extends ThreadRenderer<ClipsExtensionPointInstanceContext<Point>> {}
 
 export interface ClipsExtensionPoint<Point extends ExtensionPoint> {
   readonly id: string;
   readonly target: Point;
+  readonly installation: ClipsExtensionInstallation;
   readonly extension: ClipsExtension;
-  readonly manager: ClipsManager;
-  readonly local?: ClipsExtensionPointLocalInstanceOptions<Point>;
-  readonly installed?: ClipsExtensionPointInstalledInstanceOptions<Point>;
+  readonly manager: ClipsManagerType;
+  readonly options: OptionsForExtensionPoint<Point>;
+  readonly local?: {
+    readonly renderer: ClipsExtensionPointRenderer<Point>;
+  };
+  readonly installed?: {
+    readonly renderer: ClipsExtensionPointRenderer<Point>;
+  };
+}
+
+export interface ClipsExtensionInstallation {
+  readonly id: string;
 }
 
 export interface ClipsExtension {
@@ -33,9 +46,6 @@ export interface App {
   readonly name: string;
 }
 
-export interface ClipsExtensionPointInstance<Point extends ExtensionPoint>
-  extends ThreadRenderer<ClipsExtensionPointInstanceContext<Point>> {}
-
 export interface ClipsExtensionPointInstanceContext<
   Point extends ExtensionPoint,
 > {
@@ -47,10 +57,6 @@ export interface ClipsExtensionPointInstanceContext<
   readonly sandbox: Thread<Sandbox>;
   readonly graphql: GraphQLFetch;
 }
-
-export type ClipsExtensionPointInstanceOptions<Point extends ExtensionPoint> =
-  | ClipsExtensionPointInstalledInstanceOptions<Point>
-  | ClipsExtensionPointLocalInstanceOptions<Point>;
 
 export interface ClipsExtensionPointInstalledInstanceOptions<
   Point extends ExtensionPoint,

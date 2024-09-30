@@ -16,7 +16,7 @@ import {Page} from '~/shared/page.ts';
 import {
   useClipsManager,
   useLocalDevelopmentServerQuery,
-  type ClipsLocalDevelopmentServer,
+  type ClipsLocalDevelopmentServerType,
 } from '~/shared/clips.ts';
 
 import developerConsoleQuery, {
@@ -37,7 +37,7 @@ export default function Console() {
   );
 }
 
-function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServer}) {
+function ConnectedConsole({server}: {server: ClipsLocalDevelopmentServerType}) {
   const {data, loading} = useLocalDevelopmentServerQuery(developerConsoleQuery);
 
   usePerformanceNavigation({state: loading ? 'loading' : 'complete'});
@@ -119,7 +119,7 @@ function ExtensionBuildResult({
   }
 }
 
-function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServer}) {
+function ConnectToConsole({server}: {server: ClipsLocalDevelopmentServerType}) {
   usePerformanceNavigation({state: 'complete'});
 
   const localUrl = useSignal('');
