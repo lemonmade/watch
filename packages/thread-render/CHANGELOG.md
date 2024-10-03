@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.8
+
+### Patch Changes
+
+- [#352](https://github.com/lemonmade/watch/pull/352) [`1aaf4aab`](https://github.com/lemonmade/watch/commit/1aaf4aabb68006504510a29fa8ae0aef9eb8a44d) Thanks [@lemonmade](https://github.com/lemonmade)! - Put a facade over some signal usage
+
 ## 0.2.7
 
 ### Patch Changes

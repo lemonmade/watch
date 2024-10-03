@@ -1,5 +1,11 @@
 # @watching/cli
 
+## 2.3.0
+
+### Minor Changes
+
+- [#352](https://github.com/lemonmade/watch/pull/352) [`1aaf4aab`](https://github.com/lemonmade/watch/commit/1aaf4aabb68006504510a29fa8ae0aef9eb8a44d) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Clips upload flow
+
 ## 2.2.2
 
 ### Patch Changes
