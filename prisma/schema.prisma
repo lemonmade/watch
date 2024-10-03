@@ -405,6 +405,7 @@ model ClipsExtensionVersion {
   status       ClipsExtensionVersionStatus
   apiVersion   ClipsApiVersion
   scriptUrl    String?                     @db.VarChar(400)
+  build        Json?
   extends      Json?
   translations Json?
   settings     Json?

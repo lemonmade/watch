@@ -1,15 +1,15 @@
 mutation PushClipsExtension(
   $id: ID!
-  $code: String!
   $name: String
+  $build: ClipsExtensionBuildInput!
   $translations: JSON
   $extends: [ClipsExtensionPointSupportInput!]
   $settings: ClipsExtensionSettingsInput!
 ) {
   pushClipsExtension(
     id: $id
-    code: $code
     name: $name
+    build: $build
     translations: $translations
     extends: $extends
     settings: $settings

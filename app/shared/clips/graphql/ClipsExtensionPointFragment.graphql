@@ -1,0 +1,36 @@
+fragment ClipsExtensionPoint on ClipsExtensionPointInstallation {
+  __typename
+  id
+  apiVersion
+  target
+  settings
+  translations
+  entry {
+    asHTML {
+      content
+    }
+    asJavaScript {
+      src
+    }
+  }
+  loading {
+    content
+  }
+  liveQuery {
+    content
+  }
+  extensionInstallation {
+    id
+    extension {
+      id
+      name
+      app {
+        id
+        name
+      }
+    }
+    appInstallation {
+      id
+    }
+  }
+}

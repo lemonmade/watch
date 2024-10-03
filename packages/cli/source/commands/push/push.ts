@@ -33,6 +33,9 @@ type ClipsExtensionPointSupportInput = NonNullable<
   PushClipsExtensionMutationVariables['extends']
 >[number];
 
+type ClipsExtensionBuildModule =
+  PushClipsExtensionMutationVariables['build']['modules'][number];
+
 type ConfigurationField = NonNullable<
   ConfigurationFieldInput[keyof ConfigurationFieldInput]
 >;
@@ -167,34 +170,52 @@ async function pushExtension(
 
   const {directory, filename} = buildDetailsForExtension(extension, app);
 
-  const [code, translations, extensionPointSupport] = await Promise.all([
-    readFile(path.join(directory, filename), {
-      encoding: 'utf8',
-    }),
+  const modules = new Map<string, ClipsExtensionBuildModule>();
+
+  const entry = await loadEntryForExtension(
+    path.join(directory, filename),
+    extension,
+  );
+  modules.set(entry.name, entry);
+
+  const [translations, extensionPointSupport] = await Promise.all([
     loadTranslationsForExtension(extension),
     Promise.all(
       extension.extends.map(
         async (supported): Promise<ClipsExtensionPointSupportInput> => {
-          const [target, liveQuery, loadingUi] = await Promise.all([
+          const [target, liveQuery, loadingUI] = await Promise.all([
             validateExtensionPointTarget(supported.target),
             supported.query
               ? loadLiveQueryForExtension(supported.query, extension)
               : undefined,
             supported.loading?.ui
-              ? loadLoadingUiForExtension(supported.loading.ui, extension)
+              ? loadLoadingUIForExtension(supported.loading.ui, extension)
               : undefined,
           ]);
 
-          return {
+          const extensionPoint: ClipsExtensionPointSupportInput = {
             target,
             conditions: supported.conditions,
-            liveQuery,
-            loading: loadingUi
-              ? {
-                  ui: loadingUi,
-                }
-              : undefined,
+            entry: {
+              module: entry.name,
+            },
           };
+
+          if (liveQuery) {
+            modules.set(liveQuery.name, liveQuery);
+            extensionPoint.liveQuery = {
+              module: liveQuery.name,
+            };
+          }
+
+          if (loadingUI) {
+            modules.set(loadingUI.name, loadingUI);
+            extensionPoint.loading = {
+              module: loadingUI.name,
+            };
+          }
+
+          return extensionPoint;
         },
       ),
     ),
@@ -202,11 +223,13 @@ async function pushExtension(
 
   const buildOptions: Pick<
     PushClipsExtensionMutationVariables,
-    'code' | 'extends' | 'translations' | 'settings'
+    'build' | 'extends' | 'translations' | 'settings'
   > = {
-    code,
     translations: translations && JSON.stringify(translations),
     extends: extensionPointSupport,
+    build: {
+      modules: Array.from(modules.values()),
+    },
     settings: {
       fields: extension.settings.fields.map(
         (
@@ -308,30 +331,62 @@ async function validateExtensionPointTarget(target: string) {
   return target;
 }
 
+async function loadEntryForExtension(file: string, _extension: LocalExtension) {
+  const [code] = await Promise.all([readFile(file, 'utf8')]);
+
+  return {
+    name: '_extension.js',
+    content: code,
+    contentType: 'JAVASCRIPT',
+  } satisfies ClipsExtensionBuildModule;
+}
+
 async function loadLiveQueryForExtension(
   liveQuery: string,
   extension: LocalExtension,
 ) {
+  const absolutePath = path.resolve(extension.root, liveQuery);
   const [query, {validateAndNormalizeLiveQuery}] = await Promise.all([
-    readFile(path.resolve(extension.root, liveQuery), 'utf8'),
+    readFile(absolutePath, 'utf8'),
     import('@watching/tools/extension'),
   ]);
 
-  return validateAndNormalizeLiveQuery(query);
+  const content = await validateAndNormalizeLiveQuery(query);
+
+  return {
+    name: path.relative(extension.root, absolutePath),
+    content,
+    contentType: 'GRAPHQL',
+  } satisfies ClipsExtensionBuildModule;
 }
 
-async function loadLoadingUiForExtension(
+async function loadLoadingUIForExtension(
   ui: string,
   extension: LocalExtension,
 ) {
+  const isExternalFile = ui.endsWith('.html');
   const [html, {validateAndNormalizeLoadingUI}] = await Promise.all([
-    ui.endsWith('.html')
+    isExternalFile
       ? readFile(path.resolve(extension.root, ui), 'utf8')
       : Promise.resolve(ui),
     import('@watching/tools/extension'),
   ]);
 
-  return validateAndNormalizeLoadingUI(html.trim());
+  const content = await validateAndNormalizeLoadingUI(html.trim());
+
+  return (
+    isExternalFile
+      ? {
+          name: path.relative(extension.root, ui),
+          content,
+          contentType: 'HTML',
+        }
+      : {
+          name: '_extension.html',
+          content,
+          contentType: 'HTML',
+        }
+  ) satisfies ClipsExtensionBuildModule;
 }
 
 async function loadTranslationsForExtension(extension: LocalExtension) {

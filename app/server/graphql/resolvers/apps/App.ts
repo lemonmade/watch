@@ -250,6 +250,13 @@ export const AppInstallation = createResolverWithGid('AppInstallation', {
   async extensions({id}, _, {prisma}) {
     const installations = await prisma.clipsExtensionInstallation.findMany({
       where: {appInstallationId: id},
+      include: {
+        extension: {
+          include: {
+            activeVersion: true,
+          },
+        },
+      },
       take: 50,
       // orderBy: {createAt, 'desc'},
     });

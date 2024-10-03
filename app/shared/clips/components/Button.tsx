@@ -1,6 +1,6 @@
 import {Button as UIButton, type ButtonProps} from '@lemon/zest';
 
-import {useRenderClipsExtensionPointBeingRendered} from '../context.ts';
+import {useClipsExtensionPointBeingRendered} from '../context.ts';
 import type {ClipsExtensionPoint} from '../extension.ts';
 
 import {
@@ -12,7 +12,7 @@ import {
 export const Button = createClipsComponentRenderer(
   'ui-button',
   function Button(props) {
-    const extension = useRenderClipsExtensionPointBeingRendered();
+    const extension = useClipsExtensionPointBeingRendered();
 
     const {overlay, children} = useRenderedChildren(props, {
       slotProps: ['overlay'],

@@ -193,7 +193,7 @@ function SeriesWithData({
       <AccessoryClips
         id={series.id}
         name={series.name}
-        installations={series.clipsInstallations}
+        clips={series.clipsToRender}
       />
 
       <SeasonsSection id={series.id} seasons={seasons} onUpdate={onUpdate} />
@@ -212,13 +212,13 @@ function SeriesWithData({
 function AccessoryClips({
   id,
   name,
-  installations,
+  clips,
 }: {
   id: string;
   name: string;
-  installations: SeriesQueryData.Series['clipsInstallations'];
+  clips: SeriesQueryData.Series['clipsToRender'];
 }) {
-  const accessoryClips = useClips('series.details.accessory', installations, {
+  const accessoryClips = useClips('series.details.accessory', clips, {
     id,
     name,
   });
@@ -228,7 +228,7 @@ function AccessoryClips({
   return (
     <BlockStack spacing="large">
       {accessoryClips.map((clip) => (
-        <Clip key={clip.id} extension={clip} />
+        <Clip key={clip.id} extensionPoint={clip} />
       ))}
     </BlockStack>
   );

@@ -5,7 +5,7 @@ import {Button, BlockStack, Form, Select, Text, TextField} from '@lemon/zest';
 
 import {useGraphQLQuery, useGraphQLMutation} from '~/shared/graphql';
 
-import {type ClipsExtensionPointInstance} from '../extension';
+import {useClipsExtensionPointBeingRendered} from '../context.ts';
 
 import clipsExtensionSettingsQuery, {
   type ClipExtensionSettingsQueryData,
@@ -14,15 +14,11 @@ import updateClipsExtensionSettingsMutation, {
   type UpdateClipsExtensionSettingsMutationData,
 } from './graphql/UpdateClipsExtensionSettingsMutation.graphql';
 
-export function ClipSettings({
-  id,
-  instance,
-}: {
-  id: string;
-  instance: NonNullable<ClipsExtensionPointInstance<any>['instance']['value']>;
-}) {
+export function ClipSettings() {
+  const extensionPoint = useClipsExtensionPointBeingRendered();
+
   const query = useGraphQLQuery(clipsExtensionSettingsQuery, {
-    variables: {id},
+    variables: {id: extensionPoint.installation.id},
     suspend: false,
   });
 
@@ -43,14 +39,15 @@ export function ClipSettings({
 
   return (
     <InstalledClipLoadedSettings
-      id={id}
       settings={settings}
       translations={translations}
       schema={schema}
       onUpdate={async (data) => {
-        instance.context.settings.value = JSON.parse(
-          data.updateClipsExtensionInstallation.installation?.settings ?? '{}',
-        );
+        extensionPoint.installed!.renderer.instance!.context.settings.value =
+          JSON.parse(
+            data.updateClipsExtensionInstallation.installation?.settings ??
+              '{}',
+          );
         await query.rerun();
       }}
     />
@@ -58,7 +55,6 @@ export function ClipSettings({
 }
 
 function InstalledClipLoadedSettings({
-  id,
   translations,
   settings,
   schema,
@@ -67,10 +63,12 @@ function InstalledClipLoadedSettings({
   ClipExtensionSettingsQueryData.ClipsInstallation.Version,
   'translations'
 > &
-  Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'id' | 'settings'> & {
+  Pick<ClipExtensionSettingsQueryData.ClipsInstallation, 'settings'> & {
     schema: ClipExtensionSettingsQueryData.ClipsInstallation.Version['settings'];
     onUpdate(data: UpdateClipsExtensionSettingsMutationData): Promise<void>;
   }) {
+  const extensionPoint = useClipsExtensionPointBeingRendered();
+
   const updateClipsExtensionSettings = useGraphQLMutation(
     updateClipsExtensionSettingsMutation,
   );
@@ -98,7 +96,7 @@ function InstalledClipLoadedSettings({
     }
 
     const result = await updateClipsExtensionSettings.run({
-      id,
+      id: extensionPoint.installation.id,
       settings: JSON.stringify(values),
     });
 

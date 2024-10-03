@@ -8,4 +8,4 @@ export {
 export * from './clips/manager.ts';
 export * from './clips/local-development.tsx';
 export * from './clips/extension-points';
-export {type ClipsExtensionFragmentData as InstalledClipsExtensionPointFragment} from './clips/graphql/ClipsExtensionFragment.graphql';
+export {type ClipsExtensionPointFragmentData as InstalledClipsExtensionPointFragment} from './clips/graphql/ClipsExtensionPointFragment.graphql';

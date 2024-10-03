@@ -127,7 +127,7 @@ function WatchThroughWithData({
     settings,
     from,
     to,
-    clipsInstallations,
+    clipsToRender,
   } = watchThrough;
 
   const watchingSingleSeason = from.season === to.season;
@@ -234,7 +234,7 @@ function WatchThroughWithData({
             id={id}
             url={url}
             series={series}
-            installations={clipsInstallations}
+            clips={clipsToRender}
             currentWatch={nextEpisodeForm}
           />
 
@@ -1016,24 +1016,26 @@ function AccessoryClips({
   id,
   url,
   series,
-  installations,
+  clips,
   currentWatch,
 }: Pick<WatchThroughQueryData.WatchThrough, 'id' | 'url' | 'series'> & {
-  installations: WatchThroughQueryData.WatchThrough['clipsInstallations'];
+  clips: WatchThroughQueryData.WatchThrough['clipsToRender'];
   currentWatch: Signal<WatchForm | undefined>;
 }) {
-  const accessoryClips = useClips(
-    'watch-through.details.accessory',
-    installations,
-    {id, url, seriesId: series.id, seriesName: series.name, currentWatch},
-  );
+  const accessoryClips = useClips('watch-through.details.accessory', clips, {
+    id,
+    url,
+    seriesId: series.id,
+    seriesName: series.name,
+    currentWatch,
+  });
 
   if (accessoryClips.length === 0) return null;
 
   return (
     <BlockStack spacing="large">
       {accessoryClips.map((clip) => (
-        <Clip key={clip.id} extension={clip} />
+        <Clip key={clip.id} extensionPoint={clip} />
       ))}
     </BlockStack>
   );

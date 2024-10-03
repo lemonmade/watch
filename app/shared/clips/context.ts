@@ -4,5 +4,5 @@ import type {ClipsExtensionPoint} from './extension.ts';
 export const ClipsExtensionPointBeingRenderedContext =
   createOptionalContext<ClipsExtensionPoint<any>>();
 
-export const useRenderClipsExtensionPointBeingRendered =
+export const useClipsExtensionPointBeingRendered =
   ClipsExtensionPointBeingRenderedContext.use;

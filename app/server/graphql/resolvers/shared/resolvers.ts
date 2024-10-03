@@ -32,8 +32,8 @@ export {createResolver, createQueryResolver, createMutationResolver};
 
 export function createResolverWithGid<
   Type extends keyof Resolvers,
-  Fields extends keyof Resolvers[Type],
->(type: Type, resolver: Required<Pick<Resolvers[Type], Fields>>) {
+  Resolver extends Partial<Resolvers[Type]>,
+>(type: Type, resolver: Resolver): Resolver & {id: (arg: any) => string} {
   return {id: ({id}: {id: string}) => toGid(id, type), ...resolver};
 }
 
@@ -51,10 +51,10 @@ export function createUnionResolver(): UnionResolver {
 
 const RESOLVED_TYPE = Symbol.for('watch.resolved-type');
 
-export function addResolvedType<T extends object>(type: string, object: T) {
+export function addResolvedType<T extends object>(type: string, object: T): T {
   return {...object, [RESOLVED_TYPE]: type};
 }
 
-function resolveType(obj: {[RESOLVED_TYPE]?: string; id: string}) {
+function resolveType(obj: any) {
   return obj[RESOLVED_TYPE] ?? fromGid(obj.id).type;
 }

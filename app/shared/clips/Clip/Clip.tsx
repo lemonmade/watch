@@ -20,11 +20,13 @@ import type {ThreadRendererInstance} from '@watching/thread-render';
 
 import {useGraphQLMutation} from '~/shared/graphql.ts';
 
-import {ClipsExtensionPointBeingRenderedContext} from '../context.ts';
-import {useClipsManager} from '../react.tsx';
 import {
+  ClipsExtensionPointBeingRenderedContext,
+  useClipsExtensionPointBeingRendered,
+} from '../context.ts';
+import {
+  ClipsExtensionPointRenderer,
   type ClipsExtensionPoint,
-  type ClipsExtensionPointInstance,
   type ClipsExtensionPointInstanceContext,
 } from '../extension.ts';
 
@@ -35,43 +37,33 @@ import styles from './Clip.module.css';
 import uninstallClipsExtensionFromClipMutation from './graphql/UninstallClipsExtensionFromClipMutation.graphql';
 
 export interface ClipProps<Point extends ExtensionPoint> {
-  extension: ClipsExtensionPoint<Point>;
+  extensionPoint: ClipsExtensionPoint<Point>;
 }
 
 export function Clip<Point extends ExtensionPoint>({
-  extension,
+  extensionPoint,
 }: ClipProps<Point>) {
-  const {name, app} = extension.extension;
-
-  const manager = useClipsManager();
-  const installed =
-    extension.installed && manager.fetchInstance(extension.installed);
-  const local = extension.local && manager.fetchInstance(extension.local);
-
-  const renderer = local ?? installed;
+  const {name, app} = extensionPoint.extension;
+  const renderer =
+    extensionPoint.installed?.renderer ?? extensionPoint.local?.renderer;
 
   return (
-    <ClipsExtensionPointBeingRenderedContext.Provider value={extension}>
+    <ClipsExtensionPointBeingRenderedContext.Provider value={extensionPoint}>
       <Section>
         <BlockStack spacing>
           <ContentAction
             overlay={
               <Popover inlineAttachment="start">
-                {installed?.instance.value && (
+                {extensionPoint.installed && (
                   <Section padding>
-                    <ClipSettings
-                      id={extension.id}
-                      instance={installed.instance.value}
-                    />
+                    <ClipSettings />
                   </Section>
                 )}
                 <Menu>
                   <ViewAppAction />
-                  {renderer && <RestartClipButton instance={renderer} />}
-                  {extension.installed && (
-                    <UninstallClipButton extension={extension} />
-                  )}
-                  {extension.installed && <ReportIssueButton />}
+                  {renderer && <RestartClipButton renderer={renderer} />}
+                  {extensionPoint.installed && <UninstallClipButton />}
+                  {extensionPoint.installed && <ReportIssueButton />}
                 </Menu>
               </Popover>
             }
@@ -118,27 +110,25 @@ function ViewAppAction() {
 }
 
 function RestartClipButton({
-  instance,
+  renderer,
 }: {
-  instance: ClipsExtensionPointInstance<any>;
+  renderer: ClipsExtensionPointRenderer<any>;
 }) {
   return (
-    <Button icon="sync" onPress={() => instance.restart()}>
+    <Button icon="sync" onPress={() => renderer.restart()}>
       Restart
     </Button>
   );
 }
 
-function UninstallClipButton({
-  extension,
-}: {
-  extension: ClipsExtensionPoint<any>;
-}) {
+function UninstallClipButton() {
+  const extensionPoint = useClipsExtensionPointBeingRendered();
+
   const uninstallClipsExtensionFromClip = useGraphQLMutation(
     uninstallClipsExtensionFromClipMutation,
   );
 
-  const {id} = extension.extension;
+  const {id} = extensionPoint.installation;
 
   return (
     <Button
@@ -166,9 +156,9 @@ function ReportIssueButton() {
 function ClipInstanceRenderer<Point extends ExtensionPoint>({
   renderer,
 }: {
-  renderer: ClipsExtensionPointInstance<Point>;
+  renderer: ClipsExtensionPointRenderer<Point>;
 }) {
-  const instance = renderer.instance.value;
+  const {instance} = renderer;
 
   useEffect(() => {
     renderer.start();

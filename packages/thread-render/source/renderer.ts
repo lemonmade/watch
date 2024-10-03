@@ -60,7 +60,9 @@ export function createRenderer<Context = Record<string, never>>({
     signal: abort.signal,
     on: events.on,
     once: events.once,
-    instance,
+    get instance() {
+      return instance.value;
+    },
     start,
     stop,
     destroy,

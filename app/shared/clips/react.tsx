@@ -1,5 +1,5 @@
 import {useMemo, useEffect} from 'preact/hooks';
-import {signal, useComputed, type Signal} from '@quilted/quilt/signals';
+import {signal, type Signal} from '@quilted/quilt/signals';
 import {
   type GraphQLResult,
   type GraphQLOperation,
@@ -15,7 +15,7 @@ import {
   type ExtensionPointWithOptions,
   type OptionsForExtensionPoint,
 } from './extension-points';
-import {type ClipsExtensionFragmentData} from './graphql/ClipsExtensionFragment.graphql';
+import {type ClipsExtensionPointFragmentData} from './graphql/ClipsExtensionPointFragment.graphql';
 
 declare module '~/shared/context.ts' {
   interface AppContext {
@@ -35,7 +35,7 @@ export function useClipsManager() {
 
 export function useClips<Point extends ExtensionPoint>(
   point: Point,
-  installations: readonly ClipsExtensionFragmentData[] | null | undefined,
+  clips: readonly ClipsExtensionPointFragmentData[] | null | undefined,
   ...optionsArg: Point extends ExtensionPointWithOptions
     ? [OptionsForExtensionPoint<Point>]
     : [never?]
@@ -43,98 +43,10 @@ export function useClips<Point extends ExtensionPoint>(
   const [options] = optionsArg;
 
   const manager = useClipsManager();
-  const server = manager.localDevelopment;
 
-  const installedClips = useMemo(() => {
-    if (installations == null) return [];
+  if (clips) manager.addInstalledClips(clips);
 
-    const installedClips: ClipsExtensionPoint<Point>[] = [];
-
-    for (const installation of installations) {
-      const {
-        id,
-        target,
-        extension,
-        version,
-        settings,
-        liveQuery,
-        loading,
-        translations,
-      } = installation;
-
-      if (target !== point) continue;
-
-      installedClips.push({
-        id: `${id}:${point}`,
-        target: point,
-        manager,
-        extension: {
-          id: extension.id,
-          name: extension.name,
-          app: {
-            id: extension.app.id,
-            name: extension.app.name,
-          },
-        },
-        installed: {
-          source: 'installed',
-          target: point,
-          extension: {id: extension.id},
-          script: {url: version.assets[0]!.source},
-          version: version.apiVersion.toLowerCase() as any,
-          settings: settings ?? undefined,
-          liveQuery: liveQuery ?? undefined,
-          loadingUi: loading?.ui?.html,
-          translations: translations ?? undefined,
-          options: options as any,
-        },
-      });
-    }
-
-    return installedClips;
-  }, [installations, point, options]);
-
-  const allClips = useComputed(() => {
-    const allLocalClips = server.extensions.value;
-
-    if (allLocalClips.length === 0) return installedClips;
-
-    const localClips: ClipsExtensionPoint<Point>[] = [];
-
-    for (const localClip of allLocalClips) {
-      const {id, name, app} = localClip;
-
-      if (!localClip.extends.some(({target}) => target === point)) {
-        continue;
-      }
-
-      localClips.push({
-        id: `${id}:${point}`,
-        target: point,
-        manager,
-        extension: {
-          id,
-          name,
-          app: {
-            id: app.id,
-            name: app.name,
-          },
-        },
-        local: {
-          source: 'local',
-          target: point,
-          extension: {id},
-          options: options as any,
-        },
-      });
-    }
-
-    if (localClips.length === 0) return installedClips;
-
-    return [...localClips, ...installedClips];
-  }, [server, point, installedClips]);
-
-  return allClips.value;
+  return manager.clipsForExtensionPoint(point, options as any);
 }
 
 type ClipsLocalDevelopmentServerGraphQLResult<Data> =

@@ -1,13 +1,25 @@
-fragment InstalledClipExtension on ClipsExtensionInstallation {
+fragment InstalledClipExtension on ClipsExtensionPointInstallation {
   id
+  apiVersion
   target
-  settings
-  version {
-    id
-    apiVersion
-    assets {
-      source
+  entry {
+    asHTML {
+      content
     }
+    asJavaScript {
+      src
+    }
+  }
+  liveQuery {
+    content
+  }
+  loading {
+    content
+  }
+  extensionInstallation {
+    id
+    settings
+    translations
   }
   extension {
     id
