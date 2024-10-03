@@ -444,8 +444,19 @@ export const ClipsExtensionPointInstallation = createResolverWithGid(
     apiVersion: ({installation}) =>
       installation.extension.activeVersion!.apiVersion,
     entry({target, installation}) {
+      const {activeVersion} = installation.extension;
+
       const {entry} = getExtensionPoint(target, installation);
-      const module = getExtensionBuildModule(entry.module, installation);
+
+      const module: ClipsExtensionBuildModuleDatabaseJSON =
+        activeVersion?.scriptUrl
+          ? {
+              contentType: 'JAVASCRIPT',
+              name: '_extension.js',
+              content: '',
+              src: activeVersion.scriptUrl,
+            }
+          : getExtensionBuildModule(entry.module, installation);
 
       switch (module.contentType) {
         case 'JAVASCRIPT':

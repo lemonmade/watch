@@ -155,10 +155,6 @@ type ClipsExtensionPointSupportLoading {
   content: ClipsLoadingUIContentHTML!
 }
 
-type ClipsExtensionPointSupportLoadingUI {
-  html: ClipsLoadingUIContentHTML!
-}
-
 input ClipsExtensionPointSupportSeriesConditionInput {
   id: ID
   handle: String
