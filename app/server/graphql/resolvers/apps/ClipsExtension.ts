@@ -482,6 +482,10 @@ export const ClipsExtensionPointInstallation = createResolverWithGid(
 
       if (liveQuery == null) return null;
 
+      if (typeof liveQuery === 'string') {
+        return {content: liveQuery};
+      }
+
       const module = getExtensionBuildModule(liveQuery.module, installation);
 
       return {
@@ -492,6 +496,10 @@ export const ClipsExtensionPointInstallation = createResolverWithGid(
       const {loading} = getExtensionPoint(target, installation);
 
       if (loading == null) return null;
+
+      if (typeof loading === 'string') {
+        return {content: loading};
+      }
 
       const module = getExtensionBuildModule(loading.module, installation);
 
