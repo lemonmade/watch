@@ -10,6 +10,7 @@ import {
 import {
   ClipsExtension,
   ClipsExtensionInstallation,
+  ClipsExtensionPointInstallation,
   ClipsExtensionPointSupportCondition,
   ClipsExtensionSettingsField,
   ClipsExtensionSettingsString,
@@ -27,6 +28,7 @@ export {
   AppExtensionInstallation,
   ClipsExtension,
   ClipsExtensionInstallation,
+  ClipsExtensionPointInstallation,
   ClipsExtensionPointSupportCondition,
   ClipsExtensionSettingsField,
   ClipsExtensionSettingsString,
