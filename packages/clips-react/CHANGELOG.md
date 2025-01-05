@@ -1,5 +1,11 @@
 # @watching/clips-react
 
+## 0.5.5
+
+### Patch Changes
+
+- [`f39da5f8`](https://github.com/lemonmade/watch/commit/f39da5f8910220fcfea6589701d98a3d5552e0ea) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove unnecessary props in React wrapper components
+
 ## 0.5.4
 
 ### Patch Changes
