@@ -23,6 +23,6 @@ declare module 'react' {
 export const SkeletonText = forwardRef<SkeletonTextElement, SkeletonTextProps>(
   function SkeletonText(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-skeleton-text {...props} ref={wrapperRef} />;
+    return <ui-skeleton-text ref={wrapperRef} />;
   },
 );

@@ -44,7 +44,7 @@ export const Disclosure = forwardRef<DisclosureElement, DisclosureProps>(
     const wrapperRef = useCustomElementProperties(allProps, ref);
 
     return (
-      <ui-disclosure {...props} ref={wrapperRef}>
+      <ui-disclosure ref={wrapperRef}>
         {children}
         {labelElement}
       </ui-disclosure>

@@ -27,6 +27,6 @@ declare module 'react' {
 export const BlockGrid = forwardRef<BlockGridElement, BlockGridProps>(
   function BlockGrid(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-block-grid {...props} ref={wrapperRef} />;
+    return <ui-block-grid ref={wrapperRef} />;
   },
 );

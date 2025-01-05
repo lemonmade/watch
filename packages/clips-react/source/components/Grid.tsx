@@ -28,6 +28,6 @@ declare module 'react' {
 export const Grid = forwardRef<GridElement, GridProps>(
   function Grid(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-grid {...props} ref={wrapperRef} />;
+    return <ui-grid ref={wrapperRef} />;
   },
 );

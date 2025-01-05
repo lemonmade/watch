@@ -54,7 +54,7 @@ export const TextField = forwardRef<TextFieldElement, TextFieldProps>(
     const wrapperRef = useCustomElementProperties(allProps, ref);
 
     return (
-      <ui-text-field {...allProps} ref={wrapperRef}>
+      <ui-text-field ref={wrapperRef}>
         {labelChild}
       </ui-text-field>
     );

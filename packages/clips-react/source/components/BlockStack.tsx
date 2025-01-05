@@ -27,6 +27,6 @@ declare module 'react' {
 export const BlockStack = forwardRef<BlockStackElement, BlockStackProps>(
   function BlockStack(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-block-stack {...props} ref={wrapperRef} />;
+    return <ui-block-stack ref={wrapperRef} />;
   },
 );

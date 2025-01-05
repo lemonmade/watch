@@ -22,6 +22,6 @@ declare module 'react' {
 export const Section = forwardRef<SectionElement, SectionProps>(
   function Section(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-section {...props} ref={wrapperRef} />;
+    return <ui-section ref={wrapperRef} />;
   },
 );

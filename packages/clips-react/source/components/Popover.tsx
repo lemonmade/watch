@@ -23,6 +23,6 @@ declare module 'react' {
 export const Popover = forwardRef<PopoverElement, PopoverProps>(
   function Popover(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-popover {...props} ref={wrapperRef} />;
+    return <ui-popover ref={wrapperRef} />;
   },
 );

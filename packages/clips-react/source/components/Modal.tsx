@@ -24,6 +24,6 @@ declare module 'react' {
 export const Modal = forwardRef<ModalElement, ModalProps>(
   function Modal(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-modal {...props} ref={wrapperRef} />;
+    return <ui-modal ref={wrapperRef} />;
   },
 );

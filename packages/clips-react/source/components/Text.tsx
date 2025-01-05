@@ -24,6 +24,6 @@ declare module 'react' {
 export const Text = forwardRef<TextElement, TextProps>(
   function Text(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-text {...props} ref={wrapperRef} />;
+    return <ui-text ref={wrapperRef} />;
   },
 );

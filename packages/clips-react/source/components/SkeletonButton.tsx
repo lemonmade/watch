@@ -24,5 +24,5 @@ export const SkeletonButton = forwardRef<
   SkeletonButtonProps
 >(function SkeletonButton(props, ref) {
   const wrapperRef = useCustomElementProperties(props, ref);
-  return <ui-skeleton-button {...props} ref={wrapperRef} />;
+  return <ui-skeleton-button ref={wrapperRef} />;
 });

@@ -23,6 +23,6 @@ declare module 'react' {
 export const TextBlock = forwardRef<TextBlockElement, TextBlockProps>(
   function TextBlock(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-text-block {...props} ref={wrapperRef} />;
+    return <ui-text-block ref={wrapperRef} />;
   },
 );

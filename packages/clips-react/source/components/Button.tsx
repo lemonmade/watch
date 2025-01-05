@@ -43,7 +43,7 @@ export const Button = forwardRef<ButtonElement, ButtonProps>(function Button(
   const wrapperRef = useCustomElementProperties(allProps, ref);
 
   return (
-    <ui-button {...allProps} ref={wrapperRef}>
+    <ui-button ref={wrapperRef}>
       {children}
       {overlay && isValidElement(overlay)
         ? cloneElement<any>(overlay, {slot: 'overlay'})

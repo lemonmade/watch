@@ -28,6 +28,6 @@ declare module 'react' {
 export const Stack = forwardRef<StackElement, StackProps>(
   function Stack(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-stack {...props} ref={wrapperRef} />;
+    return <ui-stack ref={wrapperRef} />;
   },
 );

@@ -22,6 +22,6 @@ declare module 'react' {
 export const SkeletonView = forwardRef<SkeletonViewElement, SkeletonViewProps>(
   function SkeletonView(props, ref) {
     const wrapperRef = useCustomElementProperties(props, ref);
-    return <ui-skeleton-view {...props} ref={wrapperRef} />;
+    return <ui-skeleton-view ref={wrapperRef} />;
   },
 );

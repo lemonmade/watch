@@ -24,5 +24,5 @@ export const SkeletonTextBlock = forwardRef<
   SkeletonTextBlockProps
 >(function SkeletonTextBlock(props, ref) {
   const wrapperRef = useCustomElementProperties(props, ref);
-  return <ui-skeleton-text-block {...props} ref={wrapperRef} />;
+  return <ui-skeleton-text-block ref={wrapperRef} />;
 });
