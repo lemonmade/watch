@@ -35,7 +35,7 @@ export const SeriesDetailsAccessoryExtensionPoint = createExtensionPoint({
         {from, to, includeSpecials, spoilerAvoidance, navigate},
         {graphql, router},
       ) {
-        const {data} = await graphql(startWatchThroughMutation, {
+        const {data} = await graphql.fetch(startWatchThroughMutation, {
           variables: {series: id, from, to, includeSpecials, spoilerAvoidance},
         });
 

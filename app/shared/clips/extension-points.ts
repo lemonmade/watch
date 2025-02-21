@@ -1,5 +1,3 @@
-import type {Router} from '@quilted/quilt/navigation';
-import type {GraphQLFetch} from '@quilted/quilt/graphql';
 import {
   type ExtensionPoint,
   type SharedGraphQLApi,
@@ -10,6 +8,8 @@ import {
   type GraphQLLiveResolverCreateHelper,
   type GraphQLLiveResolverObject,
 } from '@lemonmade/graphql-live';
+
+import type {AppContext} from '~/shared/context.ts';
 
 export type GraphQLApiByExtensionPoint = {
   [Point in ExtensionPoint]: GraphQLApiForExtensionPoint<Point>;
@@ -46,10 +46,9 @@ type GraphQLMutationResolver<
     >
   : never;
 
-export interface ExtensionPointDefinitionContext {
-  readonly router: Router;
-  readonly graphql: GraphQLFetch;
-  readonly user: {readonly id: string};
+export interface ExtensionPointDefinitionContext
+  extends Pick<AppContext, 'router' | 'graphql'> {
+  readonly user: NonNullable<AppContext['user']>;
 }
 
 export interface ExtensionPointDefinition<

@@ -1,28 +1,23 @@
 import 'preact/debug';
 
 import '@quilted/quilt/globals';
-import {hydrate} from 'preact';
-import {Browser, BrowserContext} from '@quilted/quilt/browser';
+import {hydrate, Browser} from '@quilted/quilt/browser';
 import {Router} from '@quilted/quilt/navigation';
 import {createPerformance} from '@quilted/quilt/performance';
-import {
-  GraphQLCache,
-  createGraphQLFetch,
-  type GraphQLFetch,
-} from '@quilted/quilt/graphql';
 
 import Env from 'quilt:module/env';
 
 import type {AppContext} from '~/shared/context.ts';
-import {SearchParam} from '~/global/auth.ts';
 import {ClipsManager} from '~/shared/clips.ts';
+import type {User} from '~/shared/user.ts';
 
 import App from './App.tsx';
 import {EXTENSION_POINTS} from './clips.ts';
+import {GraphQLForBrowser} from './browser/graphql.ts';
 
 const browser = new Browser();
 
-const user = browser.serializations.get('app.user');
+const user = browser.serializations.get<User | undefined>('app.user');
 
 const router = new Router(browser.request.url, {
   isExternal(url, currentURL) {
@@ -36,50 +31,17 @@ const router = new Router(browser.request.url, {
 
 const performance = createPerformance();
 
-const fetchGraphQLBase =
-  process.env.NODE_ENV === 'production'
-    ? createGraphQLFetch({
-        method: (operation) =>
-          operation.source.startsWith('mutation ') ? 'POST' : 'GET',
-        url: (operation) => {
-          const url = new URL(`/api/graphql`, location.href);
-          if (operation.name) url.searchParams.set('name', operation.name);
-          url.searchParams.set('id', operation.id);
-          return url;
-        },
-        source: false,
-        credentials: 'include',
-      })
-    : createGraphQLFetch({
-        url: (operation) => {
-          const url = new URL(`/api/graphql`, location.href);
-          if (operation.name) url.searchParams.set('name', operation.name);
-          return url;
-        },
-        credentials: 'include',
-      });
-
-const fetchGraphQL: GraphQLFetch = async function fetchWithAuth(...args) {
-  const result = await fetchGraphQLBase(...args);
-
-  if (result.errors?.some((error) => (error as any).status === 401)) {
-    const signInUrl = new URL('/sign-in', location.href);
-    signInUrl.searchParams.set(SearchParam.RedirectTo, location.href);
-    location.assign(signInUrl.href);
-  }
-
-  return result;
-};
-
 const element = document.querySelector('#app')!;
+
+const graphql = new GraphQLForBrowser();
 
 const context = {
   user,
   router,
-  graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
+  graphql,
   performance,
   clipsManager: user
-    ? new ClipsManager({user, graphql: fetchGraphQL, router}, EXTENSION_POINTS)
+    ? new ClipsManager({user, graphql, router}, EXTENSION_POINTS)
     : undefined,
 } satisfies AppContext;
 
@@ -107,11 +69,8 @@ performance.on('navigation', async (navigation) => {
   }
 });
 
-Object.assign(globalThis, {app: {context}});
+Object.assign(globalThis, {app: {context, element}});
 
-hydrate(
-  <BrowserContext browser={browser}>
-    <App context={context} />
-  </BrowserContext>,
-  element,
-);
+hydrate(<App context={context} />, {element, browser});
+
+// Helpers

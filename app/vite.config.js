@@ -10,6 +10,7 @@ export default defineConfig({
       protocol: 'ws',
       host: 'localhost',
     },
+    allowedHosts: ['watch.lemon.dev'],
   },
   plugins: [
     quiltApp({

@@ -1,5 +1,8 @@
 import {createRender} from '@quilted/quilt/testing';
-import {BrowserContext, BrowserTestMock} from '@quilted/quilt/browser/testing';
+import {
+  BrowserDetailsContext,
+  BrowserTestMock,
+} from '@quilted/quilt/browser/testing';
 import {Navigation, TestRouter} from '@quilted/quilt/navigation/testing';
 import {Localization} from '@quilted/quilt/localize';
 
@@ -40,13 +43,13 @@ export const renderApp = createRender<
 
     return (
       <AppContextReact.Provider value={context}>
-        <BrowserContext browser={browser}>
+        <BrowserDetailsContext.Provider value={browser}>
           <Localization locale={locale}>
             <GraphQLTesting controller={graphQLController}>
               <Navigation router={router}>{element}</Navigation>
             </GraphQLTesting>
           </Localization>
-        </BrowserContext>
+        </BrowserDetailsContext.Provider>
       </AppContextReact.Provider>
     );
   },

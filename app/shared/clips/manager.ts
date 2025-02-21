@@ -10,6 +10,7 @@ import {
 import {EventEmitter} from '@quilted/quilt/events';
 import {
   createGraphQLFetch,
+  GraphQLCache,
   type GraphQLOperation,
   type GraphQLResult,
   type GraphQLVariableOptions,
@@ -204,7 +205,7 @@ class ClipsExtensionPointWithOptions<Point extends ExtensionPoint>
 
     const extensionContext: ExtensionPointDefinitionContext = {
       ...this.manager.context,
-      graphql: extensionGraphQL,
+      graphql: {fetch: extensionGraphQL, cache: new GraphQLCache()},
     };
 
     const events = new EventEmitter<{script: string}>();
@@ -369,7 +370,7 @@ class ClipsExtensionPointInstalledInstance<Point extends ExtensionPoint> {
 
     const extensionContext: ExtensionPointDefinitionContext = {
       ...manager.context,
-      graphql: extensionGraphQL,
+      graphql: {fetch: extensionGraphQL, cache: new GraphQLCache()},
     };
 
     const events = new EventEmitter<{script: string}>();

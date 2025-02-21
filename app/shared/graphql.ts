@@ -8,12 +8,14 @@ export {
   useGraphQLQueryRefetchOnMount,
 } from '@quilted/quilt/graphql';
 
+export interface GraphQL {
+  readonly fetch: GraphQLFetch;
+  readonly cache: GraphQLCache;
+}
+
 declare module '~/shared/context.ts' {
   interface AppContext {
-    readonly graphql: {
-      readonly fetch: GraphQLFetch;
-      readonly cache: GraphQLCache;
-    };
+    readonly graphql: GraphQL;
   }
 }
 

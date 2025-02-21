@@ -1,4 +1,4 @@
-import {renderToResponse} from '@quilted/quilt/server';
+import {renderAppToHTMLResponse} from '@quilted/quilt/server';
 import {RequestHandler} from '@quilted/quilt/request-router';
 import {GraphQLCache, type GraphQLFetch} from '@quilted/quilt/graphql';
 import {Router} from '@quilted/quilt/navigation';
@@ -57,19 +57,18 @@ export const handleApp: RequestHandler = async function handleApp(request) {
 
   const router = new Router(request.url);
 
+  const graphql = {cache: new GraphQLCache(), fetch: fetchGraphQL};
+
   const context = {
     user,
     router,
-    graphql: {cache: new GraphQLCache(), fetch: fetchGraphQL},
+    graphql,
     clipsManager: user
-      ? new ClipsManager(
-          {user, graphql: fetchGraphQL, router},
-          EXTENSION_POINTS,
-        )
+      ? new ClipsManager({user, graphql, router}, EXTENSION_POINTS)
       : undefined,
   } satisfies AppContext;
 
-  const response = await renderToResponse(<App context={context} />, {
+  const response = await renderAppToHTMLResponse(<App context={context} />, {
     assets,
     request,
     serializations: [['app.user', user]],

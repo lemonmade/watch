@@ -41,7 +41,7 @@
   "devDependencies": {
     "@watching/clips": "workspace:^",
     "p-limit": "^4.0.0",
-    "preact": "^10.23.2",
+    "preact": "^10.26.2",
     "terser": "^5.15.1"
   }
 }

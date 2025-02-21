@@ -58,9 +58,9 @@
   },
   "dependencies": {
     "@preact/signals-core": "^1.8.0",
-    "@quilted/graphql": "^3.3.7",
+    "@quilted/graphql": "^3.3.8",
     "@quilted/localize": "^0.2.1",
-    "@quilted/threads": "^3.1.2",
+    "@quilted/threads": "^3.1.3",
     "@remote-dom/core": "^1.5.0",
     "@watching/design": "workspace:^0.1.1"
   }
