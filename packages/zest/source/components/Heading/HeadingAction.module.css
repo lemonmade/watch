@@ -8,7 +8,8 @@
     (
         var(--z-Button-minimum-size) -
           var(--z-internal-HeadingAction-minimum-block-size)
-      ) / 2
+      ) /
+      2
   );
   --z-internal-HeadingAction-visible-block-padding: var(--z-spacing-small-2);
   --z-internal-HeadingAction-icon-margin: var(--z-spacing-small-1);
@@ -119,7 +120,8 @@
     (
         var(--z-internal-HeadingAction-minimum-block-size) -
           var(--z-Icon-auto-size)
-      ) / 2
+      ) /
+      2
   );
   margin-inline-start: var(--z-internal-HeadingAction-icon-margin);
 }

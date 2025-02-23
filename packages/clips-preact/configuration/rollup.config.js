@@ -1,5 +1,5 @@
 import {quiltPackage} from '@quilted/rollup/package';
-import nameCache from './terser/name-cache.json' assert {type: 'json'};
+import nameCache from './terser/name-cache.json' with {type: 'json'};
 
 export default quiltPackage({
   customize: {

@@ -184,7 +184,7 @@ function ClipInstanceRenderer<Point extends ExtensionPoint>({
 
   const resolvedReceiver = isRendered
     ? receiver
-    : lastRenderedReceiver ?? receiver;
+    : (lastRenderedReceiver ?? receiver);
 
   const restarting = receiver !== resolvedReceiver;
 

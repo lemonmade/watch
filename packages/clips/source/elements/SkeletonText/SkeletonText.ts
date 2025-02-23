@@ -103,8 +103,8 @@ export class SkeletonText
     serialize(value, context) {
       return value?.startsWith('css:')
         ? value
-        : restrictToAllowedValues(value, SKELETON_TEXT_SIZE_KEYWORDS) ??
-            context.current;
+        : (restrictToAllowedValues(value, SKELETON_TEXT_SIZE_KEYWORDS) ??
+            context.current);
     },
   })
   accessor size: SkeletonTextSizeKeyword | CSSLiteralValue = 'auto';

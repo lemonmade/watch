@@ -24,11 +24,8 @@ export type CSSLiteralValue = `${typeof CSS_LITERAL_PREFIX}${string}`;
 // It’s a list of `StyleValueCondition`s, as a string. Not sure how to type it well.
 export type StyleDynamicValue<Value> = string & {__value?: Value};
 export type ValueOrStyleDynamicValue<Value> = Value | StyleDynamicValue<Value>;
-export type ValueFromStyleDynamicValue<T> = T extends StyleDynamicValue<
-  infer Value
->
-  ? Value
-  : never;
+export type ValueFromStyleDynamicValue<T> =
+  T extends StyleDynamicValue<infer Value> ? Value : never;
 export type StyleDynamicValueCondition<_Value> =
   `${typeof STYLE_DYNAMIC_VALUE_PREFIX}${string}${
     | ''

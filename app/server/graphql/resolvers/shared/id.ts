@@ -3,7 +3,8 @@ export function toGid(id: string, type: string) {
 }
 
 export function fromGid(gid: string) {
-  const {type, id} = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/.exec(gid)!
-    .groups!;
+  const {type, id} = /gid:\/\/watch\/(?<type>\w+)\/(?<id>[\w-]+)/.exec(
+    gid,
+  )!.groups!;
   return {type: type!, id: id!};
 }

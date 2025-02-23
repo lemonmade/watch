@@ -6,7 +6,8 @@
     (
         var(--z-Button-minimum-size) -
           var(--z-internal-Choice-text-line-block-size)
-      ) * -0.5
+      ) *
+      -0.5
   );
   --z-internal-Choice-overlay-opacity: 0;
   --z-internal-Choice-overlay-scale: 0.25;
@@ -59,8 +60,11 @@
     pointer-events: none;
     position: absolute;
     inset: calc(
-      -1 * (var(--z-internal-Choice-focus-ring-inset) +
-            var(--z-Choice-border-size))
+      -1 *
+        (
+          var(--z-internal-Choice-focus-ring-inset) +
+            var(--z-Choice-border-size)
+        )
     );
     box-shadow: 0 0 0 0.125rem var(--z-Choice-focused-border-color);
     border-radius: calc(

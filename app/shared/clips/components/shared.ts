@@ -27,9 +27,10 @@ export type {RemoteComponentRendererProps};
 
 export type PreactComponentPropsForClipsElement<
   Element extends keyof Elements,
-> = Elements[Element] extends ClipsElement<infer Attributes, infer _Events>
-  ? Partial<Attributes>
-  : RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
+> =
+  Elements[Element] extends ClipsElement<infer Attributes, infer _Events>
+    ? Partial<Attributes>
+    : RemoteComponentPropsFromElementConstructor<ElementConstructors[Element]>;
 
 export type PreactComponentTypeForClipsElement<Element extends keyof Elements> =
   RemoteComponentTypeFromElementConstructor<ElementConstructors[Element]>;

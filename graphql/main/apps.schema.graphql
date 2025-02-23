@@ -215,7 +215,7 @@ type ClipsExtensionSettingsStringStatic {
 }
 
 union ClipsExtensionSettingsString =
-    ClipsExtensionSettingsStringTranslation
+  | ClipsExtensionSettingsStringTranslation
   | ClipsExtensionSettingsStringStatic
 
 interface ClipsExtensionSettingsFieldBase {
@@ -252,7 +252,7 @@ input ClipsExtensionSettingsInput {
 }
 
 union ClipsExtensionSettingsField =
-    ClipsExtensionSettingsStringField
+  | ClipsExtensionSettingsStringField
   | ClipsExtensionSettingsNumberField
   | ClipsExtensionSettingsOptionsField
 

@@ -74,7 +74,7 @@ export async function startGoogleOAuth<State extends {} = {}>(
         .map((byte) => byte % 10)
         .join(''),
       redirectTo,
-      ...(getState ? (await getState()) ?? {} : {}),
+      ...(getState ? ((await getState()) ?? {}) : {}),
     },
     {secret: Env.GOOGLE_CLIENT_SECRET, expiresIn: '15 minutes'},
   );

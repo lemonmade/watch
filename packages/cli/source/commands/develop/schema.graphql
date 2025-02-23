@@ -38,7 +38,7 @@ type ExtensionBuildError {
 }
 
 union ExtensionBuild =
-    ExtensionBuildInProgress
+  | ExtensionBuildInProgress
   | ExtensionBuildSuccess
   | ExtensionBuildError
 

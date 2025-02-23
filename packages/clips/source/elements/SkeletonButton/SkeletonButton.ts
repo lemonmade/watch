@@ -54,8 +54,8 @@ export class SkeletonButton
     serialize(value, context) {
       return value?.startsWith('css:')
         ? value
-        : restrictToAllowedValues(value, SKELETON_BUTTON_SIZE_KEYWORDS) ??
-            context.current;
+        : (restrictToAllowedValues(value, SKELETON_BUTTON_SIZE_KEYWORDS) ??
+            context.current);
     },
   })
   accessor size: SkeletonButtonSizeKeyword | CSSLiteralValue = 'auto';

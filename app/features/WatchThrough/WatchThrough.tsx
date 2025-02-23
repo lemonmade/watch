@@ -204,7 +204,7 @@ function WatchThroughWithData({
               {statusDetailContent}
             </InlineStack>
           ) : (
-            episodeRangeContent ?? statusDetailContent
+            (episodeRangeContent ?? statusDetailContent)
           )
         }
         menu={

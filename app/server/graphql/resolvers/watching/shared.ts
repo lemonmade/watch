@@ -53,10 +53,10 @@ export async function updateWatchThrough(
 
   const updatedAt =
     'watch' in action
-      ? action.watch.finishedAt ??
+      ? (action.watch.finishedAt ??
         action.watch.startedAt ??
-        action.watch.createdAt
-      : action.skip.at ?? action.skip.createdAt;
+        action.watch.createdAt)
+      : (action.skip.at ?? action.skip.createdAt);
 
   if (nextEpisode == null) {
     const [updatedWatchThrough] = await Promise.all([

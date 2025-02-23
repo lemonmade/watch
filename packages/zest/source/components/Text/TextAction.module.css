@@ -9,7 +9,8 @@
     (
         var(--z-Button-minimum-size) -
           var(--z-internal-TextAction-minimum-block-size)
-      ) / 2
+      ) /
+      2
   );
   --z-internal-TextAction-visible-block-padding: var(--z-spacing-small-2);
   --z-internal-TextAction-icon-margin: var(--z-spacing-small-1);
@@ -78,7 +79,10 @@
   float: right;
   position: relative;
   top: calc(
-    (var(--z-internal-TextAction-minimum-block-size) - var(--z-Icon-auto-size)) /
+    (
+        var(--z-internal-TextAction-minimum-block-size) -
+          var(--z-Icon-auto-size)
+      ) /
       2
   );
   margin-inline-start: var(--z-internal-TextAction-icon-margin);
