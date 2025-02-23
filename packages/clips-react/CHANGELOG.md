@@ -1,5 +1,16 @@
 # @watching/clips-react
 
+## 0.5.5
+
+### Patch Changes
+
+- [`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt and Preact dependencies
+
+- [`f39da5f8`](https://github.com/lemonmade/watch/commit/f39da5f8910220fcfea6589701d98a3d5552e0ea) Thanks [@lemonmade](https://github.com/lemonmade)! - Remove unnecessary props in React wrapper components
+
+- Updated dependencies [[`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb)]:
+  - @watching/clips@0.6.4
+
 ## 0.5.4
 
 ### Patch Changes
