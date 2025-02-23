@@ -138,7 +138,7 @@ export function Image({
 
 function normalizeLoading(
   loading: NonNullable<ImageProps['loading']>,
-): JSX.HTMLAttributes<HTMLImageElement>['loading'] {
+): JSX.ImgHTMLAttributes['loading'] {
   switch (loading) {
     case 'immediate':
       return 'eager';
