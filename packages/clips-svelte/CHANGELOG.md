@@ -1,5 +1,12 @@
 # @watching/clips-svelte
 
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [[`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb)]:
+  - @watching/clips@0.6.4
+
 ## 0.3.3
 
 ### Patch Changes
