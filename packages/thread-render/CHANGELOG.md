@@ -1,5 +1,11 @@
 # @watching/thread-render
 
+## 0.2.9
+
+### Patch Changes
+
+- [`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt and Preact dependencies
+
 ## 0.2.8
 
 ### Patch Changes

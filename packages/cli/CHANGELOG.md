@@ -1,5 +1,15 @@
 # @watching/cli
 
+## 2.3.1
+
+### Patch Changes
+
+- [`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb) Thanks [@lemonmade](https://github.com/lemonmade)! - Update Quilt and Preact dependencies
+
+- Updated dependencies [[`65d95999`](https://github.com/lemonmade/watch/commit/65d959996255486d5cad9fa786ecd2a33a31cddb)]:
+  - @watching/clips@0.6.4
+  - @watching/tools@0.3.3
+
 ## 2.3.0
 
 ### Minor Changes
