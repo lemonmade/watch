@@ -68,7 +68,7 @@ jobs:
 
       - name: Sync app assets to R2
         run: |
-          aws s3 sync ./app/build/assets/ s3://watch-assets/assets/app/ --endpoint-url https://9bfdb755def60e50760e33036c6f1624.r2.cloudflarestorage.com --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync ./app/build/assets/ s3://watch-assets/assets/app/ --endpoint-url https://9bfdb755def60e50760e33036c6f1624.r2.cloudflarestorage.com --cache-control "public, max-age=31536000, immutable" --checksum-algorithm CRC32
 
   deploy-cloudflare-worker-email:
     name: Deploy email to Cloudflare 🌥
