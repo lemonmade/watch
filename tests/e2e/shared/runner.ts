@@ -16,7 +16,18 @@ export class AppTestRunner {
   }
 
   async goto(path: AppRoute | URL = '/') {
+    await this.#setE2ETestHeader();
     const url = typeof path === 'string' ? new AppURL(path) : path;
     await this.page.goto(url.href);
+  }
+
+  async #setE2ETestHeader() {
+    const {sign} = await import('jsonwebtoken');
+
+    const token = sign({git: {sha: process.env.GITHUB_SHA}}, 'SECRET');
+
+    await this.page.setExtraHTTPHeaders({
+      'Watch-E2E-Test': token,
+    });
   }
 }

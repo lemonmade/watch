@@ -29,6 +29,7 @@
     {"path": "./packages/design"},
     {"path": "./packages/thread-render"},
     {"path": "./packages/tools"},
-    {"path": "./packages/zest"}
+    {"path": "./packages/zest"},
+    {"path": "./tests/e2e"}
   ]
 }

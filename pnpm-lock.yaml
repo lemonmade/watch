@@ -627,6 +627,15 @@ importers:
         specifier: ^13.2.0
         version: 13.2.2
 
+  tests/e2e:
+    dependencies:
+      '@types/jsonwebtoken':
+        specifier: ^8.0.0
+        version: 8.5.8
+      jsonwebtoken:
+        specifier: ^8.0.0
+        version: 8.5.1
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -7641,7 +7650,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.0
       resolve-from: 5.0.0
-      semver: 7.5.4
+      semver: 7.7.1
 
   '@changesets/assemble-release-plan@5.2.4':
     dependencies:
@@ -7650,7 +7659,7 @@ snapshots:
       '@changesets/get-dependents-graph': 1.3.6
       '@changesets/types': 5.2.1
       '@manypkg/get-packages': 1.1.3
-      semver: 7.5.4
+      semver: 7.7.1
 
   '@changesets/changelog-git@0.1.14':
     dependencies:
@@ -7720,7 +7729,7 @@ snapshots:
       '@manypkg/get-packages': 1.1.3
       chalk: 2.4.2
       fs-extra: 7.0.1
-      semver: 7.5.4
+      semver: 7.7.1
 
   '@changesets/get-github-info@0.5.0':
     dependencies:
@@ -9200,7 +9209,7 @@ snapshots:
 
   '@types/jsonwebtoken@8.5.8':
     dependencies:
-      '@types/node': 20.9.4
+      '@types/node': 20.10.1
 
   '@types/mime@2.0.3': {}
 

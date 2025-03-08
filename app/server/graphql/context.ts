@@ -12,6 +12,11 @@ export interface Context {
   readonly prisma: Prisma;
   readonly request: EnhancedRequest;
   readonly response: MutableResponse;
+  readonly e2e?: E2ETestContext;
+}
+
+export interface E2ETestContext {
+  readonly git: {sha: string};
 }
 
 interface MutableResponse {

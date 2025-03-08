@@ -4,3 +4,4 @@ packages:
   - functions/*
   - packages/*
   - scripts/*
+  - tests/e2e

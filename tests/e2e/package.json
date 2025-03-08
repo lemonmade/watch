@@ -1,0 +1,10 @@
+{
+  "name": "watch-tests-e2e",
+  "type": "module",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@types/jsonwebtoken": "^8.0.0",
+    "jsonwebtoken": "^8.0.0"
+  }
+}
