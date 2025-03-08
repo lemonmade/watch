@@ -1,4 +1,10 @@
 name: Run E2E tests
+
+inputs:
+  secret:
+    description: 'The secret to use for the E2E test header JWT'
+    required: true
+
 runs:
   using: 'composite'
   steps:
@@ -8,6 +14,8 @@ runs:
     - name: Run Playwright tests
       run: pnpm test.e2e
       shell: bash
+      env:
+        JWT_E2E_TEST_HEADER_SECRET: ${{inputs.secret}}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
