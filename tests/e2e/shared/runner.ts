@@ -2,7 +2,12 @@ import type {Page} from '@playwright/test';
 
 import {E2E_TEST_CONTEXT_HEADER} from '../../../global/e2e.ts';
 
-export type AppRoute = '/' | '/app' | '/sign-in';
+export type AppRoute =
+  | '/'
+  | '/app'
+  | '/app/me'
+  | '/sign-in'
+  | '/create-account';
 
 export class AppURL extends URL {
   constructor(path: AppRoute = '/') {
@@ -24,9 +29,9 @@ export class AppTestRunner {
   }
 
   async #setE2ETestHeader() {
-    const {sign} = await import('jsonwebtoken');
+    const {default: jwt} = await import('jsonwebtoken');
 
-    const token = sign(
+    const token = jwt.sign(
       {git: {sha: process.env.GITHUB_SHA}},
       process.env.JWT_E2E_TEST_HEADER_SECRET!,
       {
