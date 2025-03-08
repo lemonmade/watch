@@ -162,6 +162,9 @@ type AccountGiftCode {
 
 type CreateAccountPayload {
   email: Email!
+  user: User
+  nextStepUrl: Url
+  errors: [Error!]!
 }
 
 type DeleteAccountPayload {
@@ -186,6 +189,9 @@ type CancelSubscriptionPayload {
 
 type SignInPayload {
   email: Email!
+  user: User
+  nextStepUrl: Url
+  errors: [Error!]!
 }
 
 type SignOutPayload {

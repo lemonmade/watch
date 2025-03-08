@@ -178,12 +178,17 @@ function useSignInWithEmail() {
   const signInWithEmail = useGraphQLMutation(signInWithEmailMutation);
 
   return async function doSignInWithEmail({email}: {email: string}) {
-    await signInWithEmail.run({
+    const result = await signInWithEmail.run({
       email,
       redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
     });
 
-    navigate('/check-your-email');
+    if (result.data?.signIn.nextStepUrl) {
+      // Can’t update the user dynamically, so we need a full-page reload
+      window.location.replace(result.data.signIn.nextStepUrl);
+    } else {
+      navigate('check-your-email');
+    }
   };
 }
 

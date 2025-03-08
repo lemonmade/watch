@@ -7,6 +7,8 @@ import {
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
 
+import {E2E_TEST_CONTEXT_HEADER} from '~/global/e2e.ts';
+
 import {authenticate} from './shared/auth.ts';
 import {createPrisma} from './shared/database.ts';
 import type {E2ETestContext} from './graphql/context.ts';
@@ -172,8 +174,7 @@ export async function runGraphQLRequest(
 
   const auth = await authenticate(request, prisma);
 
-  const e2eHeader = request.headers.get('Watch-E2E-Test');
-  const e2e = e2eHeader ? await parseE2ETestHeader(e2eHeader) : undefined;
+  const e2e = await e2eTestContextForRequest(request);
 
   try {
     const result = await fetchGraphQL(operation, {
@@ -216,11 +217,19 @@ export async function runGraphQLRequest(
   }
 }
 
-async function parseE2ETestHeader(header: string) {
-  const {verify} = await import('jsonwebtoken');
+async function e2eTestContextForRequest(request: EnhancedRequest) {
+  const e2eHeader = request.headers.get(E2E_TEST_CONTEXT_HEADER);
+  const e2e = e2eHeader ? await parseE2ETestHeader(e2eHeader) : undefined;
+  return e2e;
+}
 
+async function parseE2ETestHeader(header: string) {
   try {
-    const result = verify(header, 'SECRET') as unknown as E2ETestContext;
+    const {default: jwt} = await import('jsonwebtoken');
+    const result = jwt.verify(
+      header,
+      process.env.JWT_E2E_TEST_HEADER_SECRET!,
+    ) as unknown as E2ETestContext;
     console.log(`Parsed E2E test header: ${JSON.stringify(result)}`);
     return result;
   } catch (error) {

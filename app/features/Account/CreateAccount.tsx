@@ -73,13 +73,18 @@ function CreateAccountWithEmail() {
   return (
     <Form
       onSubmit={async () => {
-        await createAccountWithEmail.run({
+        const result = await createAccountWithEmail.run({
           email: email.value,
           code: currentUrl.searchParams.get(SearchParam.GiftCode),
           redirectTo: currentUrl.searchParams.get(SearchParam.RedirectTo),
         });
 
-        navigate('check-your-email');
+        if (result.data?.createAccount.nextStepUrl) {
+          // Can’t update the user dynamically, so we need a full-page reload
+          window.location.replace(result.data.createAccount.nextStepUrl);
+        } else {
+          navigate('check-your-email');
+        }
       }}
     >
       <BlockStack spacing="small">

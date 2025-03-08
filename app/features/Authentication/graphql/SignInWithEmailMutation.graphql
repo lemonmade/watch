@@ -1,5 +1,13 @@
 mutation SignInWithEmail($email: Email!, $redirectTo: Url) {
   signIn(email: $email, redirectTo: $redirectTo) {
-    email
+    nextStepUrl
+    user {
+      id
+      email
+    }
+    errors {
+      code
+      message
+    }
   }
 }

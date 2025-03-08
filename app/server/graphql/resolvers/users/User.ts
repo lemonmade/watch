@@ -1,6 +1,10 @@
 import type {User as DatabaseUser, Prisma} from '@prisma/client';
 
+import {isE2ETestAccountEmail} from '~/global/e2e.ts';
+
 import {createSignedToken, removeAuthCookies} from '../../../shared/auth.ts';
+import {addAuthCookies} from '../../../shared/auth.ts';
+import {createAccountWithGiftCode} from '../../../shared/create-account.ts';
 
 import {User as AppsUser} from '../apps.ts';
 import {User as WatchThroughUser} from '../watching.ts';
@@ -94,13 +98,29 @@ export const User = createResolverWithGid('User', {
 });
 
 export const Mutation = createMutationResolver({
-  async signIn(_, {email, redirectTo}, {prisma, request}) {
+  async signIn(_, {email, redirectTo}, {prisma, request, response, e2e}) {
     const user = await prisma.user.findUnique({where: {email}});
 
     if (user == null) {
       // Need to make this take roughly the same amount of time as
       // enqueuing a message, which can sometimes take a long time...
-      return {email};
+      return {
+        email,
+        errors: [],
+        user: null,
+        nextStepUrl: new URL('/sign-in/check-your-email', request.url).href,
+      };
+    }
+
+    if (e2e && isE2ETestAccountEmail(email)) {
+      await addAuthCookies(user, response);
+
+      return {
+        email,
+        user,
+        errors: [],
+        nextStepUrl: redirectTo ?? new URL('/app', request.url).href,
+      };
     }
 
     await sendEmail(
@@ -115,16 +135,41 @@ export const Mutation = createMutationResolver({
       {request},
     );
 
-    return {email};
+    return {
+      email,
+      errors: [],
+      user: null,
+      nextStepUrl: new URL('/sign-in/check-your-email', request.url).href,
+    };
   },
   async signOut(_, __, {user, response, request}) {
     removeAuthCookies(response, {request});
     return {userId: toGid(user.id, 'User')};
   },
-  async createAccount(_, {email, code, redirectTo}, {prisma, request}) {
+  async createAccount(
+    _,
+    {email, code, redirectTo},
+    {prisma, request, response, e2e},
+  ) {
+    // Auto-login E2E test accounts
+    if (e2e && isE2ETestAccountEmail(email)) {
+      const user = await createAccountWithGiftCode(
+        {email},
+        {giftCode: code ?? undefined, prisma},
+      );
+
+      await addAuthCookies(user, response);
+
+      return {
+        email,
+        nextStepUrl: redirectTo ?? new URL('/app', request.url).href,
+        user,
+        errors: [],
+      };
+    }
+
     const user = await prisma.user.findUnique({
       where: {email},
-      select: {id: true},
     });
 
     if (user != null) {
@@ -140,7 +185,12 @@ export const Mutation = createMutationResolver({
         {request},
       );
 
-      return {email};
+      return {
+        email,
+        nextStepUrl: new URL('/sign-in/check-your-email', request.url).href,
+        user,
+        errors: [],
+      };
     }
 
     await sendEmail(
@@ -155,7 +205,12 @@ export const Mutation = createMutationResolver({
       {request},
     );
 
-    return {email};
+    return {
+      email,
+      nextStepUrl: new URL('/sign-in/check-your-email', request.url).href,
+      user,
+      errors: [],
+    };
   },
   async deleteAccount(_, __, {prisma, user}) {
     const deleted = await prisma.user.delete({where: {id: user.id}});

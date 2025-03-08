@@ -1,5 +1,7 @@
 import type {Page} from '@playwright/test';
 
+import {E2E_TEST_CONTEXT_HEADER} from '../../../global/e2e.ts';
+
 export type AppRoute = '/' | '/app' | '/sign-in';
 
 export class AppURL extends URL {
@@ -24,10 +26,16 @@ export class AppTestRunner {
   async #setE2ETestHeader() {
     const {sign} = await import('jsonwebtoken');
 
-    const token = sign({git: {sha: process.env.GITHUB_SHA}}, 'SECRET');
+    const token = sign(
+      {git: {sha: process.env.GITHUB_SHA}},
+      process.env.JWT_E2E_TEST_HEADER_SECRET!,
+      {
+        expiresIn: '10 minutes',
+      },
+    );
 
     await this.page.setExtraHTTPHeaders({
-      'Watch-E2E-Test': token,
+      [E2E_TEST_CONTEXT_HEADER]: token,
     });
   }
 }

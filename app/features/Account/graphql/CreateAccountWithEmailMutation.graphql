@@ -4,6 +4,14 @@ mutation CreateAccountWithEmail(
   $redirectTo: Url
 ) {
   createAccount(email: $email, code: $code, redirectTo: $redirectTo) {
-    email
+    user {
+      id
+      email
+    }
+    nextStepUrl
+    errors {
+      code
+      message
+    }
   }
 }
