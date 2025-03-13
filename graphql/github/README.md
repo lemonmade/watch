@@ -1,7 +1,6 @@
 To generate, run the following script with an access token for the Github API:
 
 ```ts
-import fetch from 'node-fetch';
 import {printSchema, buildClientSchema} from 'graphql';
 
 async function run() {

@@ -3,5 +3,7 @@
   "type": "module",
   "private": true,
   "version": "0.0.0",
-  "dependencies": {}
+  "dependencies": {
+    "@tsndr/cloudflare-worker-jwt": "^3.1.0"
+  }
 }

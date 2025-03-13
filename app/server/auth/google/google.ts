@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import Env from 'quilt:module/env';
 import {
   RedirectResponse,
   HTMLResponse,
@@ -8,6 +7,7 @@ import {
   type CookieOptions,
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
+import type {ContextVariableMap} from 'hono';
 
 import {
   SearchParam,
@@ -17,15 +17,14 @@ import {
   GoogleOAuthFlow,
   type GoogleOAuthMessage,
 } from '~/global/auth.ts';
+import {createSignedToken, verifySignedToken} from '~/global/tokens.ts';
+import type {Environment} from '../../context.ts';
 
-import {
-  getUserIdFromRequest,
-  addAuthCookies,
-  createSignedToken,
-  verifySignedToken,
-} from '../../shared/auth.ts';
+import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth.ts';
 import {createAccountWithGiftCode} from '../../shared/create-account.ts';
-import {validateRedirectTo, createPrisma} from '../shared.ts';
+import {createResponseHandler} from '../../shared/response.ts';
+
+import {validateRedirectTo} from '../shared.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
@@ -63,7 +62,10 @@ interface GoogleOAuthStateToken {
 
 export async function startGoogleOAuth<State extends {} = {}>(
   request: EnhancedRequest,
-  {getState}: {getState?(): void | State | Promise<void | State>} = {},
+  {
+    env,
+    getState,
+  }: {env: Environment; getState?(): void | State | Promise<void | State>},
 ) {
   const url = new URL(request.url);
   const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
@@ -76,7 +78,7 @@ export async function startGoogleOAuth<State extends {} = {}>(
       redirectTo,
       ...(getState ? ((await getState()) ?? {}) : {}),
     },
-    {secret: Env.GOOGLE_CLIENT_SECRET, expiresIn: '15 minutes'},
+    {secret: env.GOOGLE_CLIENT_SECRET, expiresIn: 15 * 60 * 1_000},
   );
 
   const googleOAuthUrl = new URL(
@@ -85,7 +87,7 @@ export async function startGoogleOAuth<State extends {} = {}>(
   googleOAuthUrl.searchParams.set(GoogleSearchParam.ResponseType, 'code');
   googleOAuthUrl.searchParams.set(
     GoogleSearchParam.ClientId,
-    Env.GOOGLE_CLIENT_ID,
+    env.GOOGLE_CLIENT_ID,
   );
   googleOAuthUrl.searchParams.set(GoogleSearchParam.Scope, SCOPES);
   googleOAuthUrl.searchParams.set(GoogleSearchParam.State, state);
@@ -110,41 +112,59 @@ export async function startGoogleOAuth<State extends {} = {}>(
   return response;
 }
 
-export function handleGoogleOAuthSignIn(request: EnhancedRequest) {
-  return handleGoogleOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
-      return restartSignIn({
-        request,
-        redirectTo,
-        reason: SignInErrorReason.GoogleError,
-      });
-    },
-    onSuccess({userIdFromExistingAccount, redirectTo}) {
-      if (userIdFromExistingAccount) {
-        console.log(
-          `Found existing user during sign-in: ${userIdFromExistingAccount}`,
-        );
+export const handleStartGoogleOAuth = createResponseHandler(
+  async function handleStartGoogleOAuth(request, {env}) {
+    return startGoogleOAuth(request, {env});
+  },
+);
 
-        return completeSignIn(userIdFromExistingAccount, {
-          redirectTo,
-          request,
-        });
-      } else {
-        console.log(`No user found!`);
-
+export const handleGoogleOAuthSignIn = createResponseHandler(
+  async function handleGoogleOAuthSignIn(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    return handleGoogleOAuthCallback(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, redirectTo}) {
         return restartSignIn({
           request,
           redirectTo,
-          reason: SignInErrorReason.GoogleNoAccount,
+          reason: SignInErrorReason.GoogleError,
         });
-      }
-    },
-  });
-}
+      },
+      onSuccess({userIdFromExistingAccount, redirectTo}) {
+        if (userIdFromExistingAccount) {
+          console.log(
+            `Found existing user during sign-in: ${userIdFromExistingAccount}`,
+          );
+
+          return completeSignIn(userIdFromExistingAccount, {
+            env,
+            redirectTo,
+            request,
+          });
+        } else {
+          console.log(`No user found!`);
+
+          return restartSignIn({
+            request,
+            redirectTo,
+            reason: SignInErrorReason.GoogleNoAccount,
+          });
+        }
+      },
+    });
+  },
+);
 
 function completeSignIn(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {env: Environment; request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -153,6 +173,7 @@ function completeSignIn(
       event: {flow: GoogleOAuthFlow.SignIn, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
@@ -160,88 +181,107 @@ interface CreateAccountState {
   giftCode?: string;
 }
 
-export function startGoogleOAuthCreateAccount(request: EnhancedRequest) {
-  return startGoogleOAuth<CreateAccountState>(request, {
-    getState() {
-      const giftCode = new URL(request.url).searchParams.get(
-        SearchParam.GiftCode,
-      );
-
-      return giftCode ? {giftCode} : {};
-    },
-  });
-}
-
-export function handleGoogleOAuthCreateAccount(request: EnhancedRequest) {
-  return handleGoogleOAuthCallback<CreateAccountState>(request, {
-    onFailure({request, state, redirectTo}) {
-      return restartCreateAccount({
-        request,
-        redirectTo,
-        giftCode: state?.giftCode,
-        reason: CreateAccountErrorReason.GoogleError,
-      });
-    },
-    async onSuccess({
-      state,
-      redirectTo,
-      googleAccount,
-      userIdFromExistingAccount,
-    }) {
-      if (userIdFromExistingAccount) {
-        console.log(
-          `Found existing user during sign-up: ${userIdFromExistingAccount}`,
+export const handleStartGoogleOAuthCreateAccount = createResponseHandler(
+  async function handleStartGoogleOAuthCreateAccount(request, {env}) {
+    return startGoogleOAuth<CreateAccountState>(request, {
+      env,
+      getState() {
+        const giftCode = new URL(request.url).searchParams.get(
+          SearchParam.GiftCode,
         );
 
-        return completeCreateAccount(userIdFromExistingAccount, {
+        return giftCode ? {giftCode} : {};
+      },
+    });
+  },
+);
+
+export const handleGoogleOAuthCreateAccount = createResponseHandler(
+  async function handleGoogleOAuthCreateAccount(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    return handleGoogleOAuthCallback<CreateAccountState>(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, state, redirectTo}) {
+        return restartCreateAccount({
           request,
           redirectTo,
+          giftCode: state?.giftCode,
+          reason: CreateAccountErrorReason.GoogleError,
         });
-      }
+      },
+      async onSuccess({
+        state,
+        redirectTo,
+        googleAccount,
+        userIdFromExistingAccount,
+      }) {
+        if (userIdFromExistingAccount) {
+          console.log(
+            `Found existing user during sign-up: ${userIdFromExistingAccount}`,
+          );
 
-      const {id: googleUserId, email, imageUrl} = googleAccount;
+          return completeCreateAccount(userIdFromExistingAccount, {
+            env,
+            request,
+            redirectTo,
+          });
+        }
 
-      try {
-        const prisma = await createPrisma();
+        const {id: googleUserId, email, imageUrl} = googleAccount;
 
-        const googleAccount = {
-          id: googleUserId,
-          email,
-          imageUrl,
-        };
+        try {
+          const prisma = await prismaContext.load();
 
-        // Don’t try to be clever here and give feedback to the user if
-        // this failed because their email already exists. It’s tempting
-        // to just log them in or tell them they have an account already,
-        // but that feedback could be used to probe for emails.
-        const {id: updatedUserId} = state.giftCode
-          ? await createAccountWithGiftCode(
-              {
-                email,
-                googleAccount: {create: googleAccount},
-              },
-              {giftCode: state.giftCode, prisma},
-            )
-          : await prisma.user.create({
-              data: {
-                email,
-                googleAccount: {create: googleAccount},
-              },
-            });
+          const googleAccount = {
+            id: googleUserId,
+            email,
+            imageUrl,
+          };
 
-        console.log(`Created new user during sign-up: ${updatedUserId}`);
+          // Don’t try to be clever here and give feedback to the user if
+          // this failed because their email already exists. It’s tempting
+          // to just log them in or tell them they have an account already,
+          // but that feedback could be used to probe for emails.
+          const {id: updatedUserId} = state.giftCode
+            ? await createAccountWithGiftCode(
+                {
+                  email,
+                  googleAccount: {create: googleAccount},
+                },
+                {giftCode: state.giftCode, prisma},
+              )
+            : await prisma.user.create({
+                data: {
+                  email,
+                  googleAccount: {create: googleAccount},
+                },
+              });
 
-        return completeCreateAccount(updatedUserId, {redirectTo, request});
-      } catch {
-        return restartCreateAccount({redirectTo, request});
-      }
-    },
-  });
-}
+          console.log(`Created new user during sign-up: ${updatedUserId}`);
+
+          return completeCreateAccount(updatedUserId, {
+            env,
+            redirectTo,
+            request,
+          });
+        } catch {
+          return restartCreateAccount({redirectTo, request});
+        }
+      },
+    });
+  },
+);
 
 function completeCreateAccount(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {env: Environment; request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -250,76 +290,94 @@ function completeCreateAccount(
       event: {flow: GoogleOAuthFlow.CreateAccount, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
-export function handleGoogleOAuthConnect(request: EnhancedRequest) {
-  return handleGoogleOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
-      return restartConnect({redirectTo, request});
-    },
-    async onSuccess({userIdFromExistingAccount, redirectTo, googleAccount}) {
-      const userIdFromRequest = await getUserIdFromRequest(request);
+export const handleGoogleOAuthConnect = createResponseHandler(
+  async function handleGoogleOAuthConnect(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    return handleGoogleOAuthCallback(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, redirectTo}) {
+        return restartConnect({redirectTo, request});
+      },
+      async onSuccess({userIdFromExistingAccount, redirectTo, googleAccount}) {
+        const userIdFromRequest = await getUserIdFromRequest(request, {env});
 
-      if (userIdFromExistingAccount) {
-        if (userIdFromRequest === userIdFromExistingAccount) {
+        if (userIdFromExistingAccount) {
+          if (userIdFromRequest === userIdFromExistingAccount) {
+            console.log(
+              `Found existing Google account while connecting (user: ${userIdFromExistingAccount})`,
+            );
+
+            return completeConnect(userIdFromRequest, {
+              env,
+              request,
+              redirectTo,
+            });
+          } else {
+            console.log(
+              `Attempted to connect a Google account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
+            );
+
+            return restartConnect({request, redirectTo});
+          }
+        }
+
+        // We are trying to connect, but there is no user signed in!
+        if (userIdFromRequest == null) {
+          return restartSignIn({redirectTo, request});
+        }
+
+        const {id: googleUserId, email, imageUrl} = googleAccount;
+
+        try {
+          const prisma = await prismaContext.load();
+
+          await prisma.googleAccount.create({
+            data: {
+              id: googleUserId,
+              userId: userIdFromRequest,
+              email,
+              imageUrl,
+            },
+          });
+
           console.log(
-            `Found existing Google account while connecting (user: ${userIdFromExistingAccount})`,
+            `Connected Google account ${email} to user: ${userIdFromRequest}`,
           );
 
           return completeConnect(userIdFromRequest, {
+            env,
             request,
             redirectTo,
           });
-        } else {
-          console.log(
-            `Attempted to connect a Google account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
-          );
-
+        } catch {
+          // Should have better behavior here, what do we do if
+          // the db request to connect the account failed? Probably
+          // need a URL param for the next page to pick up
           return restartConnect({request, redirectTo});
         }
-      }
-
-      // We are trying to connect, but there is no user signed in!
-      if (userIdFromRequest == null) {
-        return restartSignIn({redirectTo, request});
-      }
-
-      const {id: googleUserId, email, imageUrl} = googleAccount;
-
-      try {
-        const prisma = await createPrisma();
-
-        await prisma.googleAccount.create({
-          data: {
-            id: googleUserId,
-            userId: userIdFromRequest,
-            email,
-            imageUrl,
-          },
-        });
-
-        console.log(
-          `Connected Google account ${email} to user: ${userIdFromRequest}`,
-        );
-
-        return completeConnect(userIdFromRequest, {
-          request,
-          redirectTo,
-        });
-      } catch {
-        // Should have better behavior here, what do we do if
-        // the db request to connect the account failed? Probably
-        // need a URL param for the next page to pick up
-        return restartConnect({request, redirectTo});
-      }
-    },
-  });
-}
+      },
+    });
+  },
+);
 
 function completeConnect(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {
+    env: Environment;
+    request: EnhancedRequest;
+    redirectTo?: string;
+  },
 ) {
   return addAuthCookies(
     {id: userId},
@@ -328,6 +386,7 @@ function completeConnect(
       event: {flow: GoogleOAuthFlow.Connect, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
@@ -366,14 +425,17 @@ interface GoogleCallbackFailureResult<State extends {} = {}> {
 async function handleGoogleOAuthCallback<State extends {} = {}>(
   request: EnhancedRequest,
   {
+    env,
     onSuccess,
     onFailure,
+    prisma: prismaContext,
   }: {
+    env: Environment;
     onSuccess(
       result: GoogleCallbackResult<State>,
     ): Response | Promise<Response>;
     onFailure(result: GoogleCallbackFailureResult<State>): EnhancedResponse;
-  },
+  } & Pick<ContextVariableMap, 'prisma'>,
 ) {
   const url = new URL(request.url);
   const {cookies} = request;
@@ -392,7 +454,7 @@ async function handleGoogleOAuthCallback<State extends {} = {}>(
   const {expired, data} = await verifySignedToken<
     GoogleOAuthStateToken & State
   >(state, {
-    secret: Env.GOOGLE_CLIENT_SECRET,
+    secret: env.GOOGLE_CLIENT_SECRET,
   });
 
   const redirectTo = data?.redirectTo;
@@ -414,8 +476,8 @@ async function handleGoogleOAuthCallback<State extends {} = {}>(
     {
       method: 'POST',
       body: JSON.stringify({
-        client_id: Env.GOOGLE_CLIENT_ID,
-        client_secret: Env.GOOGLE_CLIENT_SECRET,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
         grant_type: 'authorization_code',
         redirect_uri: redirectUri.href,
         code,
@@ -459,7 +521,7 @@ async function handleGoogleOAuthCallback<State extends {} = {}>(
     email,
   };
 
-  const prisma = await createPrisma();
+  const prisma = await prismaContext.load();
   const account = await prisma.googleAccount.findUnique({
     where: {id: googleAccount.id},
     select: {userId: true},

@@ -28,10 +28,10 @@ export const Mutation = createMutationResolver({
       where: {id: user.id},
     });
 
-    const result = generateRegistrationOptions({
+    const result = await generateRegistrationOptions({
       rpID: new URL(request.url).host,
       rpName: 'Watch',
-      userID: user.id,
+      userID: new TextEncoder().encode(user.id),
       userName: email,
       attestationType: 'none',
       excludeCredentials: [],
@@ -73,7 +73,7 @@ export const Mutation = createMutationResolver({
       const parsedCredential = JSON.parse(credential);
 
       const result = await verifyRegistrationResponse({
-        credential: parsedCredential,
+        response: parsedCredential,
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
@@ -89,10 +89,12 @@ export const Mutation = createMutationResolver({
       const {user: updatedUser, ...passkeyResult} = await prisma.passkey.create(
         {
           data: {
-            counter: registrationInfo.counter,
-            credentialId: registrationInfo.credentialID,
-            publicKey: registrationInfo.credentialPublicKey,
-            transports: parsedCredential.transports,
+            counter: registrationInfo.credential.counter,
+            credentialId: new TextEncoder().encode(
+              registrationInfo.credential.id,
+            ),
+            publicKey: registrationInfo.credential.publicKey,
+            transports: parsedCredential.credential.transports,
             userId: user.id,
           },
           include: {user: true},
@@ -118,11 +120,11 @@ export const Mutation = createMutationResolver({
         })
       : [];
 
-    const result = generateAuthenticationOptions({
+    const result = await generateAuthenticationOptions({
       rpID: new URL(request.url).host,
       userVerification: 'required',
       allowCredentials: passkeys.map((passkey) => ({
-        id: passkey.credentialId,
+        id: new TextDecoder().decode(passkey.credentialId),
         type: 'public-key',
         transports:
           Array.isArray(passkey.transports) &&
@@ -143,7 +145,7 @@ export const Mutation = createMutationResolver({
       result: JSON.stringify(result),
     };
   },
-  async finishPasskeySignIn(_, {credential}, {prisma, request, response}) {
+  async finishPasskeySignIn(_, {credential}, {env, prisma, request, response}) {
     try {
       const cookie = request.cookies.get(PASSKEY_CHALLENGE_COOKIE);
 
@@ -166,16 +168,19 @@ export const Mutation = createMutationResolver({
         },
       });
 
+      const encoder = new TextDecoder();
+
       const result = await verifyAuthenticationResponse({
-        credential: credentialJson,
+        response: credentialJson,
         expectedChallenge: cookie,
         expectedOrigin: origin,
         expectedRPID: host,
         requireUserVerification: true,
-        authenticator: {
+
+        credential: {
           counter: passkey.counter,
-          credentialID: passkey.credentialId,
-          credentialPublicKey: passkey.publicKey,
+          id: encoder.decode(passkey.credentialId),
+          publicKey: passkey.publicKey,
         },
       });
 
@@ -191,7 +196,7 @@ export const Mutation = createMutationResolver({
           data: {counter: authenticationInfo.newCounter},
           include: {user: true},
         }),
-        addAuthCookies({id: passkey.userId}, response),
+        addAuthCookies({id: passkey.userId}, response, {env}),
       ]);
 
       return {

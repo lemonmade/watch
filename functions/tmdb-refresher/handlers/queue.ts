@@ -1,6 +1,9 @@
-import {updateSeries} from '~/global/tmdb.ts';
-import {createPrisma, type Environment, type Message} from './shared.ts';
 import type {MessageBatch} from '@cloudflare/workers-types';
+
+import {updateSeries} from '~/global/tmdb.ts';
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
+
+import type {Environment, Message} from './shared.ts';
 
 export async function handleQueue(
   batch: MessageBatch<Message>,
@@ -13,7 +16,7 @@ export async function handleQueue(
       .join('\n'),
   );
 
-  const prisma = await createPrisma(env.DATABASE_URL);
+  const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
 
   await Promise.all(
     batch.messages.map(async ({body: {id, name, tmdbId}}) => {

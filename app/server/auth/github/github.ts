@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import Env from 'quilt:module/env';
 import {
   HTMLResponse,
   RedirectResponse,
@@ -8,8 +7,9 @@ import {
   type CookieOptions,
 } from '@quilted/quilt/request-router';
 import {createGraphQLFetch} from '@quilted/quilt/graphql';
-import {stripIndent} from 'common-tags';
 import type {Prisma as PrismaData} from '@prisma/client';
+import {stripIndent} from 'common-tags';
+import type {ContextVariableMap} from 'hono';
 
 import {
   SearchParam,
@@ -20,9 +20,13 @@ import {
   type GithubOAuthMessage,
 } from '~/global/auth.ts';
 
+import type {Environment} from '../../context.ts';
+
 import {getUserIdFromRequest, addAuthCookies} from '../../shared/auth.ts';
 import {createAccountWithGiftCode} from '../../shared/create-account.ts';
-import {validateRedirectTo, createPrisma} from '../shared.ts';
+import {createResponseHandler} from '../../shared/response.ts';
+
+import {validateRedirectTo} from '../shared.ts';
 
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
@@ -55,9 +59,9 @@ enum GithubSearchParam {
   Redirect = 'redirect_uri',
 }
 
-export function startGithubOAuth(
+async function startGithubOAuth(
   request: EnhancedRequest,
-  {resolveUrl}: {resolveUrl?(url: URL): URL | void} = {},
+  {env, resolveUrl}: {env: Environment; resolveUrl?(url: URL): URL | void},
 ) {
   const state = crypto
     .randomBytes(15)
@@ -70,7 +74,7 @@ export function startGithubOAuth(
   const githubOAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubOAuthUrl.searchParams.set(
     GithubSearchParam.ClientId,
-    Env.GITHUB_CLIENT_ID,
+    env.GITHUB_CLIENT_ID,
   );
   githubOAuthUrl.searchParams.set(GithubSearchParam.Scope, SCOPES);
   githubOAuthUrl.searchParams.set(GithubSearchParam.State, state);
@@ -104,41 +108,59 @@ export function startGithubOAuth(
   return response;
 }
 
-export function handleGithubOAuthSignIn(request: EnhancedRequest) {
-  return handleGithubOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
-      return restartSignIn({
-        request,
-        redirectTo,
-        reason: SignInErrorReason.GithubError,
-      });
-    },
-    onSuccess({userIdFromExistingAccount, redirectTo}) {
-      if (userIdFromExistingAccount) {
-        console.log(
-          `Found existing user during sign-in: ${userIdFromExistingAccount}`,
-        );
+export const handleStartGithubOAuth = createResponseHandler(
+  async function handleStartGithubOAuth(request, {env}) {
+    return startGithubOAuth(request, {env});
+  },
+);
 
-        return completeSignIn(userIdFromExistingAccount, {
-          redirectTo,
-          request,
-        });
-      } else {
-        console.log(`No user found!`);
-
+export const handleGithubOAuthSignIn = createResponseHandler(
+  async function handleGithubOAuthSignIn(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    return handleGithubOAuthCallback(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, redirectTo}) {
         return restartSignIn({
           request,
           redirectTo,
-          reason: SignInErrorReason.GithubNoAccount,
+          reason: SignInErrorReason.GithubError,
         });
-      }
-    },
-  });
-}
+      },
+      onSuccess({userIdFromExistingAccount, redirectTo}) {
+        if (userIdFromExistingAccount) {
+          console.log(
+            `Found existing user during sign-in: ${userIdFromExistingAccount}`,
+          );
+
+          return completeSignIn(userIdFromExistingAccount, {
+            env,
+            redirectTo,
+            request,
+          });
+        } else {
+          console.log(`No user found!`);
+
+          return restartSignIn({
+            request,
+            redirectTo,
+            reason: SignInErrorReason.GithubNoAccount,
+          });
+        }
+      },
+    });
+  },
+);
 
 function completeSignIn(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {env: Environment; request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -147,98 +169,119 @@ function completeSignIn(
       event: {flow: GithubOAuthFlow.SignIn, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
-export function startGithubOAuthCreateAccount(request: EnhancedRequest) {
-  return startGithubOAuth(request, {
-    resolveUrl(url) {
-      const code = new URL(request.url).searchParams.get(SearchParam.GiftCode);
+export const handleStartGithubOAuthCreateAccount = createResponseHandler(
+  async function handleStartGithubOAuthCreateAccount(request, {env}) {
+    return startGithubOAuth(request, {
+      env,
+      resolveUrl(url) {
+        const code = request.URL.searchParams.get(SearchParam.GiftCode);
 
-      if (code) {
-        url.searchParams.set(SearchParam.GiftCode, code);
-      }
+        if (code) {
+          url.searchParams.set(SearchParam.GiftCode, code);
+        }
 
-      return url;
-    },
-  });
-}
+        return url;
+      },
+    });
+  },
+);
 
-export function handleGithubOAuthCreateAccount(request: EnhancedRequest) {
-  const giftCode =
-    new URL(request.url).searchParams.get(SearchParam.GiftCode) ?? undefined;
+export const handleGithubOAuthCreateAccount = createResponseHandler(
+  async function handleGithubOAuthCreateAccount(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    const giftCode =
+      request.URL.searchParams.get(SearchParam.GiftCode) ?? undefined;
 
-  return handleGithubOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
-      return restartCreateAccount({
-        redirectTo,
-        request,
-        giftCode,
-        reason: CreateAccountErrorReason.GithubError,
-      });
-    },
-    async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
-      if (userIdFromExistingAccount) {
-        console.log(
-          `Found existing user during sign-up: ${userIdFromExistingAccount}`,
-        );
-
-        return completeCreateAccount(userIdFromExistingAccount, {
-          request,
+    return handleGithubOAuthCallback(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, redirectTo}) {
+        return restartCreateAccount({
           redirectTo,
+          request,
+          giftCode,
+          reason: CreateAccountErrorReason.GithubError,
         });
-      }
+      },
+      async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
+        if (userIdFromExistingAccount) {
+          console.log(
+            `Found existing user during sign-up: ${userIdFromExistingAccount}`,
+          );
 
-      const {
-        id: githubUserId,
-        email,
-        url: githubUserUrl,
-        login,
-        avatarUrl,
-      } = githubUser;
+          return completeCreateAccount(userIdFromExistingAccount, {
+            env,
+            request,
+            redirectTo,
+          });
+        }
 
-      try {
-        const prisma = await createPrisma();
-
-        const githubAccount: PrismaData.GithubAccountCreateWithoutUserInput = {
+        const {
           id: githubUserId,
-          username: login,
-          profileUrl: githubUserUrl,
+          email,
+          url: githubUserUrl,
+          login,
           avatarUrl,
-        };
+        } = githubUser;
 
-        // Don’t try to be clever here and give feedback to the user if
-        // this failed because their email already exists. It’s tempting
-        // to just log them in or tell them they have an account already,
-        // but that feedback could be used to probe for emails.
-        const {id: updatedUserId} = giftCode
-          ? await createAccountWithGiftCode(
-              {
-                email,
-                githubAccount: {create: githubAccount},
-              },
-              {giftCode, prisma},
-            )
-          : await prisma.user.create({
-              data: {
-                email,
-                githubAccount: {create: githubAccount},
-              },
-            });
+        try {
+          const prisma = await prismaContext.load();
 
-        console.log(`Created new user during sign-up: ${updatedUserId}`);
+          const githubAccount: PrismaData.GithubAccountCreateWithoutUserInput =
+            {
+              id: githubUserId,
+              username: login,
+              profileUrl: githubUserUrl,
+              avatarUrl,
+            };
 
-        return completeCreateAccount(updatedUserId, {redirectTo, request});
-      } catch {
-        return restartCreateAccount({redirectTo, request});
-      }
-    },
-  });
-}
+          // Don’t try to be clever here and give feedback to the user if
+          // this failed because their email already exists. It’s tempting
+          // to just log them in or tell them they have an account already,
+          // but that feedback could be used to probe for emails.
+          const {id: updatedUserId} = giftCode
+            ? await createAccountWithGiftCode(
+                {
+                  email,
+                  githubAccount: {create: githubAccount},
+                },
+                {giftCode, prisma},
+              )
+            : await prisma.user.create({
+                data: {
+                  email,
+                  githubAccount: {create: githubAccount},
+                },
+              });
+
+          console.log(`Created new user during sign-up: ${updatedUserId}`);
+
+          return completeCreateAccount(updatedUserId, {
+            env,
+            redirectTo,
+            request,
+          });
+        } catch {
+          return restartCreateAccount({redirectTo, request});
+        }
+      },
+    });
+  },
+);
 
 function completeCreateAccount(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {env: Environment; request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -247,82 +290,96 @@ function completeCreateAccount(
       event: {flow: GithubOAuthFlow.CreateAccount, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
-export function handleGithubOAuthConnect(request: EnhancedRequest) {
-  return handleGithubOAuthCallback(request, {
-    onFailure({request, redirectTo}) {
-      return restartConnect({redirectTo, request});
-    },
-    async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
-      const userIdFromRequest = await getUserIdFromRequest(request);
+export const handleGithubOAuthConnect = createResponseHandler(
+  async function handleGithubOAuthConnect(
+    request,
+    {env, var: {prisma: prismaContext}},
+  ) {
+    return handleGithubOAuthCallback(request, {
+      env,
+      prisma: prismaContext,
+      onFailure({request, redirectTo}) {
+        return restartConnect({redirectTo, request});
+      },
+      async onSuccess({userIdFromExistingAccount, redirectTo, githubUser}) {
+        const userIdFromRequest = await getUserIdFromRequest(request, {env});
 
-      if (userIdFromExistingAccount) {
-        if (userIdFromRequest === userIdFromExistingAccount) {
+        if (userIdFromExistingAccount) {
+          if (userIdFromRequest === userIdFromExistingAccount) {
+            console.log(
+              `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
+            );
+
+            return completeConnect(userIdFromRequest, {
+              env,
+              request,
+              redirectTo,
+            });
+          } else {
+            console.log(
+              `Attempted to connect a Github account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
+            );
+
+            return restartConnect({request, redirectTo});
+          }
+        }
+
+        // We are trying to connect, but there is no user signed in!
+        if (userIdFromRequest == null) {
+          return restartSignIn({redirectTo, request});
+        }
+
+        const {
+          id: githubUserId,
+          url: githubUserUrl,
+          login,
+          avatarUrl,
+        } = githubUser;
+
+        try {
+          const prisma = await prismaContext.load();
+
+          await prisma.githubAccount.create({
+            data: {
+              id: githubUserId,
+              userId: userIdFromRequest,
+              username: login,
+              profileUrl: githubUserUrl,
+              avatarUrl,
+            },
+          });
+
           console.log(
-            `Found existing Github account while connecting (user: ${userIdFromExistingAccount})`,
+            `Connected Github account ${login} to user: ${userIdFromRequest}`,
           );
 
           return completeConnect(userIdFromRequest, {
+            env,
             request,
             redirectTo,
           });
-        } else {
-          console.log(
-            `Attempted to connect a Github account to user ${userIdFromRequest}, but that account is already connected to user ${userIdFromExistingAccount}`,
-          );
-
+        } catch {
+          // Should have better behavior here, what do we do if
+          // the db request to connect the account failed? Probably
+          // need a URL param for the next page to pick up
           return restartConnect({request, redirectTo});
         }
-      }
-
-      // We are trying to connect, but there is no user signed in!
-      if (userIdFromRequest == null) {
-        return restartSignIn({redirectTo, request});
-      }
-
-      const {
-        id: githubUserId,
-        url: githubUserUrl,
-        login,
-        avatarUrl,
-      } = githubUser;
-
-      try {
-        const prisma = await createPrisma();
-
-        await prisma.githubAccount.create({
-          data: {
-            id: githubUserId,
-            userId: userIdFromRequest,
-            username: login,
-            profileUrl: githubUserUrl,
-            avatarUrl,
-          },
-        });
-
-        console.log(
-          `Connected Github account ${login} to user: ${userIdFromRequest}`,
-        );
-
-        return completeConnect(userIdFromRequest, {
-          request,
-          redirectTo,
-        });
-      } catch {
-        // Should have better behavior here, what do we do if
-        // the db request to connect the account failed? Probably
-        // need a URL param for the next page to pick up
-        return restartConnect({request, redirectTo});
-      }
-    },
-  });
-}
+      },
+    });
+  },
+);
 
 function completeConnect(
   userId: string,
-  {request, redirectTo}: {request: EnhancedRequest; redirectTo?: string},
+  {
+    env,
+    request,
+    redirectTo,
+  }: {env: Environment; request: EnhancedRequest; redirectTo?: string},
 ) {
   return addAuthCookies(
     {id: userId},
@@ -331,6 +388,7 @@ function completeConnect(
       event: {flow: GithubOAuthFlow.Connect, success: true},
       redirectTo: validatedRedirectUrl(redirectTo, request),
     }),
+    {env},
   );
 }
 
@@ -354,15 +412,17 @@ interface GithubCallbackFailureResult {
 async function handleGithubOAuthCallback(
   request: EnhancedRequest,
   {
+    env,
     onSuccess,
     onFailure,
+    prisma: prismaContext,
   }: {
+    env: Environment;
     onSuccess(result: GithubCallbackResult): Response | Promise<Response>;
     onFailure(result: GithubCallbackFailureResult): EnhancedResponse;
-  },
+  } & Pick<ContextVariableMap, 'prisma'>,
 ) {
-  const url = new URL(request.url);
-  const {cookies} = request;
+  const {cookies, URL: url} = request;
 
   const redirectTo = url.searchParams.get(SearchParam.RedirectTo) ?? undefined;
 
@@ -383,8 +443,8 @@ async function handleGithubOAuthCallback(
     {
       method: 'POST',
       body: JSON.stringify({
-        client_id: Env.GITHUB_CLIENT_ID,
-        client_secret: Env.GITHUB_CLIENT_SECRET,
+        client_id: env.GITHUB_CLIENT_ID,
+        client_secret: env.GITHUB_CLIENT_SECRET,
         code,
         state,
       }),
@@ -427,7 +487,7 @@ async function handleGithubOAuthCallback(
     });
   }
 
-  const prisma = await createPrisma();
+  const prisma = await prismaContext.load();
   const account = await prisma.githubAccount.findUnique({
     where: {id: githubResult.viewer.id},
     select: {userId: true},

@@ -1,6 +1,7 @@
 import type {R2Bucket} from '@cloudflare/workers-types';
 import {JSONResponse, NoContentResponse} from '@quilted/request-router';
-import jwt from '@tsndr/cloudflare-worker-jwt';
+
+import {verifySignedToken} from '~/global/tokens.ts';
 
 interface Environment {
   JWT_SECRET: string;
@@ -33,9 +34,37 @@ async function handleRequest(request: Request, env: Environment) {
   }
 
   const token = await request.text();
-  const valid = await jwt.verify(token, env.JWT_SECRET);
 
-  if (!valid) {
+  try {
+    const {
+      data: {path, code},
+    } = await verifySignedToken<{
+      path?: string;
+      code?: string;
+    }>(token, {secret: env.JWT_SECRET});
+
+    if (typeof path !== 'string' || typeof code !== 'string') {
+      return new JSONResponse(
+        {
+          error:
+            'You must call this API with a token that contains `path` and `code` properties',
+        },
+        {
+          status: 400,
+          headers: DEFAULT_HEADERS,
+        },
+      );
+    }
+
+    await env.CLIPS_ASSETS.put(path, code, {
+      httpMetadata: {
+        contentType: 'text/javascript',
+        cacheControl: 'public, max-age=31536000, immutable',
+      },
+    });
+
+    return new JSONResponse({path}, {headers: DEFAULT_HEADERS});
+  } catch (error) {
     return new JSONResponse(
       {error: 'Invalid token'},
       {
@@ -44,33 +73,6 @@ async function handleRequest(request: Request, env: Environment) {
       },
     );
   }
-
-  const {path, code} = jwt.decode(token).payload as {
-    path?: string;
-    code?: string;
-  };
-
-  if (typeof path !== 'string' || typeof code !== 'string') {
-    return new JSONResponse(
-      {
-        error:
-          'You must call this API with a token that contains `path` and `code` properties',
-      },
-      {
-        status: 400,
-        headers: DEFAULT_HEADERS,
-      },
-    );
-  }
-
-  await env.CLIPS_ASSETS.put(path, code, {
-    httpMetadata: {
-      contentType: 'text/javascript',
-      cacheControl: 'public, max-age=31536000, immutable',
-    },
-  });
-
-  return new JSONResponse({path}, {headers: DEFAULT_HEADERS});
 }
 
 export default {fetch: handleRequest};

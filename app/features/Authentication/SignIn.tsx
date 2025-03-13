@@ -117,8 +117,8 @@ function useSignInWithPasskey() {
 
     async function signInWithPasskey({
       email,
-      browserAutocomplete = false,
-    }: {email?: string; browserAutocomplete?: boolean} = {}) {
+      browserAutofill = false,
+    }: {email?: string; browserAutofill?: boolean} = {}) {
       const [{startAuthentication}, options] = await Promise.all([
         import('@simplewebauthn/browser'),
         startPasskeySignIn.run({
@@ -131,10 +131,10 @@ function useSignInWithPasskey() {
         return;
       }
 
-      const authenticationResult = await startAuthentication(
-        JSON.parse(options.data.startPasskeySignIn.result),
-        browserAutocomplete,
-      );
+      const authenticationResult = await startAuthentication({
+        optionsJSON: JSON.parse(options.data.startPasskeySignIn.result),
+        useBrowserAutofill: browserAutofill,
+      });
 
       const result = await finishPasskeySignIn.run({
         credential: JSON.stringify(authenticationResult),
@@ -158,7 +158,7 @@ function useSignInWithPasskey() {
       if (!(await browserSupportsWebAuthnAutofill())) return;
 
       try {
-        await signInWithPasskey({browserAutocomplete: true});
+        await signInWithPasskey({browserAutofill: true});
       } catch {
         // intentional noop
       }

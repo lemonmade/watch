@@ -1,6 +1,8 @@
-import type {EnhancedRequest} from '@quilted/quilt/request-router';
+import {createResponseHandler} from '../../shared/response.ts';
 
-export async function handleAppleCallback(request: EnhancedRequest) {
-  console.log(await request.json());
-  return new Response(null, {status: 200});
-}
+export const handleAppleCallback = createResponseHandler(
+  async function handleAppleCallback(request) {
+    console.log(await request.json());
+    return new Response(null, {status: 200});
+  },
+);

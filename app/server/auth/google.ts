@@ -1,7 +1,7 @@
 export {
-  startGoogleOAuth,
+  handleStartGoogleOAuth,
   handleGoogleOAuthSignIn,
-  startGoogleOAuthCreateAccount,
+  handleStartGoogleOAuthCreateAccount,
   handleGoogleOAuthCreateAccount,
   handleGoogleOAuthConnect,
 } from './google/google.ts';

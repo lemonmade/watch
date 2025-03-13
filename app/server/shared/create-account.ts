@@ -1,10 +1,10 @@
 import {type Prisma as PrismaData} from '@prisma/client';
 
-import {type Prisma} from './database.ts';
+import {type PrismaClient} from '~/global/database.ts';
 
 export async function createAccountWithGiftCode(
   data: PrismaData.UserCreateInput,
-  {giftCode, prisma}: {giftCode?: string; prisma: Prisma},
+  {giftCode, prisma}: {giftCode?: string; prisma: PrismaClient},
 ) {
   const code = giftCode
     ? await prisma.accountGiftCode.findUniqueOrThrow({

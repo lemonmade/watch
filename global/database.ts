@@ -1,23 +1,41 @@
+import type {PrismaClient} from '@prisma/client';
+
+const CACHE = new Map<string, Promise<PrismaClient>>();
+
+export type {PrismaClient};
+
 export async function createEdgeDatabaseConnection({url}: {url: string}) {
-  const [{Client: PlanetScaleClient}, {PrismaClient}, {PrismaPlanetScale}] =
-    await Promise.all([
-      import('@planetscale/database'),
-      import('@prisma/client'),
-      import('@prisma/adapter-planetscale'),
-    ]);
+  let prismaPromise = CACHE.get(url);
 
-  const client = new PlanetScaleClient({
-    url,
-    // @see https://github.com/cloudflare/workerd/issues/698
-    fetch(url, init) {
-      if (init) delete init['cache'];
-      return fetch(url, init);
-    },
-  });
+  if (prismaPromise) {
+    const prisma = await prismaPromise;
+    return prisma;
+  }
 
-  const adapter = new PrismaPlanetScale(client);
+  prismaPromise = (async () => {
+    const [{Client: PlanetScaleClient}, {PrismaClient}, {PrismaPlanetScale}] =
+      await Promise.all([
+        import('@planetscale/database'),
+        import('@prisma/client'),
+        import('@prisma/adapter-planetscale'),
+      ]);
 
-  const prisma = new PrismaClient({adapter});
+    const client = new PlanetScaleClient({
+      url,
+      // @see https://github.com/cloudflare/workerd/issues/698
+      fetch(url, init) {
+        if (init) delete init['cache'];
+        return fetch(url, init);
+      },
+    });
 
+    const adapter = new PrismaPlanetScale(client);
+
+    return new PrismaClient({adapter});
+  })();
+
+  CACHE.set(url, prismaPromise);
+
+  const prisma = await prismaPromise;
   return prisma;
 }

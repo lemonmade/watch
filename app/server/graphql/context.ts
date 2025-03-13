@@ -4,19 +4,17 @@ import type {
 } from '@quilted/quilt/request-router';
 
 import {type UserRole} from '~/graphql/types.ts';
+import {type PrismaClient} from '~/global/database.ts';
 
-import {type Prisma} from '../shared/database';
+import {type E2ETestContext, type Environment} from '../context.ts';
 
 export interface Context {
   readonly user: {id: string; role: UserRole};
-  readonly prisma: Prisma;
+  readonly prisma: PrismaClient;
   readonly request: EnhancedRequest;
   readonly response: MutableResponse;
+  readonly env: Environment;
   readonly e2e?: E2ETestContext;
-}
-
-export interface E2ETestContext {
-  readonly git: {sha: string};
 }
 
 interface MutableResponse {

@@ -3,7 +3,7 @@ import type {
   AppInstallation as DatabaseAppInstallation,
 } from '@prisma/client';
 
-import Env from 'quilt:module/env';
+import {createSignedToken} from '~/global/tokens.ts';
 
 import {
   addResolvedType,
@@ -81,7 +81,7 @@ export const Mutation = createMutationResolver({
 
     return {app, installation};
   },
-  async createAppSecret(_, {id}, {prisma}) {
+  async createAppSecret(_, {id}, {env, prisma}) {
     // Ensure the app exists
     await prisma.app.findUniqueOrThrow({
       where: {id: fromGid(id).id},
@@ -90,7 +90,7 @@ export const Mutation = createMutationResolver({
     const secret = await createSecret();
 
     const encryptedSecret = await encryptSecret(secret, {
-      key: Env.APP_SECRET_ENCRYPTION_KEY,
+      key: env.APP_SECRET_ENCRYPTION_KEY,
     });
 
     const app = await prisma.app.update({
@@ -124,21 +124,24 @@ export const App = createResolverWithGid('App', {
   hasSecret({secret}) {
     return secret != null;
   },
-  async userDetailsJWT({secret: encryptedSecret}, _, {user}) {
+  async userDetailsJWT({secret: encryptedSecret}, _, {user, env}) {
     if (encryptedSecret == null) {
       return null;
     }
 
-    const [{default: jwt}, secret] = await Promise.all([
-      import('jsonwebtoken'),
+    const [secret] = await Promise.all([
       decryptSecret(encryptedSecret, {
-        key: Env.APP_SECRET_ENCRYPTION_KEY,
+        key: env.APP_SECRET_ENCRYPTION_KEY,
       }),
     ]);
 
-    const data = jwt.sign({user: {id: toGid(user.id, 'User')}}, secret, {
-      expiresIn: '5 minutes',
-    });
+    const data = await createSignedToken(
+      {user: {id: toGid(user.id, 'User')}},
+      {
+        secret,
+        expiresIn: 5 * 60 * 1_000,
+      },
+    );
 
     return data;
   },
