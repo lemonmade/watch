@@ -17,14 +17,11 @@ export class AppURL extends URL {
 }
 
 export async function navigate(page: Page, to: AppRoute | URL = '/') {
-  const {default: jwt} = await import('jsonwebtoken');
+  const {default: jwt} = await import('@tsndr/cloudflare-worker-jwt');
 
-  const token = jwt.sign(
-    {git: {sha: process.env.GITHUB_SHA}},
+  const token = await jwt.sign(
+    {git: {sha: process.env.GITHUB_SHA}, exp: Date.now() + 10 * 60 * 1_000},
     process.env.JWT_E2E_TEST_HEADER_SECRET!,
-    {
-      expiresIn: '10 minutes',
-    },
   );
 
   await page.setExtraHTTPHeaders({
@@ -49,14 +46,11 @@ export class AppTestHelper {
   }
 
   async #setE2ETestHeader() {
-    const {default: jwt} = await import('jsonwebtoken');
+    const {default: jwt} = await import('@tsndr/cloudflare-worker-jwt');
 
-    const token = jwt.sign(
-      {git: {sha: process.env.GITHUB_SHA}},
+    const token = await jwt.sign(
+      {git: {sha: process.env.GITHUB_SHA}, exp: Date.now() + 10 * 60 * 1_000},
       process.env.JWT_E2E_TEST_HEADER_SECRET!,
-      {
-        expiresIn: '10 minutes',
-      },
     );
 
     await this.page.setExtraHTTPHeaders({

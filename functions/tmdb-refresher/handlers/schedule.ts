@@ -1,11 +1,12 @@
 import type {ScheduledEvent} from '@cloudflare/workers-types';
-import {createPrisma, type Environment} from './shared';
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
+import type {Environment} from './shared.ts';
 
 export async function handleScheduled(event: ScheduledEvent, env: Environment) {
   console.log('Scheduled event:');
   console.log(JSON.stringify(event, null, 2));
 
-  const prisma = await createPrisma(env.DATABASE_URL);
+  const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
 
   const series = await prisma.series.findMany({
     where: {status: 'RETURNING'},

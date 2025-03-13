@@ -1,5 +1,7 @@
 import {updateSeries} from '~/global/tmdb.ts';
-import {createPrisma, type Environment} from './shared.ts';
+import {createEdgeDatabaseConnection} from '~/global/database.ts';
+
+import type {Environment} from './shared.ts';
 
 export async function handleFetch(request: Request, env: Environment) {
   console.log(`Handling fetch request: ${request.url}`);
@@ -64,7 +66,7 @@ export async function handleFetch(request: Request, env: Environment) {
       );
     }
 
-    const prisma = await createPrisma(env.DATABASE_URL);
+    const prisma = await createEdgeDatabaseConnection({url: env.DATABASE_URL});
     const {id, name, tmdbId} = await prisma.series.findUniqueOrThrow({
       where: idOption ? {id: idOption} : {handle: handleOption},
       select: {id: true, name: true, tmdbId: true},

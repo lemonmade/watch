@@ -1,13 +1,13 @@
-import Env from 'quilt:module/env';
 import type {
   EnhancedRequest,
   EnhancedResponse,
 } from '@quilted/quilt/request-router';
-import type {SignOptions, VerifyOptions} from 'jsonwebtoken';
 
+import type {PrismaClient} from '~/global/database.ts';
+import {createSignedToken, verifySignedToken} from '~/global/tokens.ts';
 import type {UserRole} from '~/graphql/types.ts';
 
-import {createPrisma, type Prisma} from './database.ts';
+import type {Environment} from '../context.ts';
 
 declare module '@quilted/quilt/env' {
   interface EnvironmentVariables {
@@ -44,16 +44,14 @@ export const ACCESS_TOKEN_HEADER = 'X-Access-Token';
 
 export async function authenticate(
   request: EnhancedRequest,
-  explicitPrisma?: Prisma,
+  {prisma, env}: {prisma: PrismaClient; env: Environment},
 ): Promise<Authentication> {
-  const cookieAuthUserId = await getUserIdFromRequest(request);
+  const cookieAuthUserId = await getUserIdFromRequest(request, {env});
   const accessToken = request.headers.get(ACCESS_TOKEN_HEADER);
 
   if (cookieAuthUserId == null && accessToken == null) {
     return {type: 'unauthenticated'};
   }
-
-  const prisma = explicitPrisma ?? (await createPrisma());
 
   const userFromCookie = cookieAuthUserId
     ? await prisma.user.findUnique({
@@ -91,51 +89,18 @@ export async function authenticate(
   };
 }
 
-export async function createSignedToken(
-  data?: Record<string, any>,
-  {
-    secret = Env.JWT_DEFAULT_SECRET,
-    ...options
-  }: SignOptions & {secret?: string} = {},
+export async function getUserIdFromRequest(
+  request: EnhancedRequest,
+  {env}: {env: Environment},
 ) {
-  const {default: jwt} = await import('jsonwebtoken');
-  return jwt.sign(data ?? {}, secret, options);
-}
-
-interface SignedTokenResult<T> {
-  data: T;
-  subject?: string;
-  expired: boolean;
-  expiresAt?: Date;
-}
-
-export async function verifySignedToken<T = Record<string, unknown>>(
-  token: string,
-  {
-    secret = Env.JWT_DEFAULT_SECRET!,
-    ...options
-  }: VerifyOptions & {secret?: string} = {},
-): Promise<SignedTokenResult<T>> {
-  const {default: jwt} = await import('jsonwebtoken');
-
-  const {exp, sub, ...data} = jwt.verify(token, secret, {
-    ...options,
-    ignoreExpiration: true,
-  }) as any as T & {exp?: number; sub?: string};
-
-  const expiresAt = exp ? new Date(exp * 1_000) : undefined;
-  const expired = expiresAt != null && expiresAt.getTime() < Date.now();
-
-  return {data: data as T, subject: sub || undefined, expired, expiresAt};
-}
-
-export async function getUserIdFromRequest(request: EnhancedRequest) {
   const cookie = request.cookies.get(Cookie.Auth);
 
   if (!cookie) return undefined;
 
   try {
-    const {subject, expired} = await verifySignedToken(cookie);
+    const {subject, expired} = await verifySignedToken(cookie, {
+      secret: env.JWT_DEFAULT_SECRET,
+    });
     return expired ? undefined : subject;
   } catch {
     return undefined;
@@ -144,10 +109,13 @@ export async function getUserIdFromRequest(request: EnhancedRequest) {
 
 export async function addAuthCookies<
   ResponseType extends Pick<EnhancedResponse, 'cookies'>,
->(user: {id: string}, response: ResponseType) {
+>(user: {id: string}, response: ResponseType, {env}: {env: Environment}) {
   const token = await createSignedToken(
-    {},
-    {expiresIn: '7 days', subject: user.id},
+    {sub: user.id},
+    {
+      expiresIn: 7 * 24 * 60 * 60 * 1_000,
+      secret: env.JWT_DEFAULT_SECRET,
+    },
   );
 
   response.cookies.set(Cookie.Auth, token, {

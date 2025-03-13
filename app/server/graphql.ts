@@ -2,20 +2,27 @@ import {
   HTMLResponse,
   JSONResponse,
   NoContentResponse,
-  RequestRouter,
   EnhancedRequest,
 } from '@quilted/quilt/request-router';
 import {stripIndent} from 'common-tags';
+import {Hono} from 'hono';
 
 import {E2E_TEST_CONTEXT_HEADER} from '~/global/e2e.ts';
+import {verifySignedToken} from '~/global/tokens.ts';
+
+import type {
+  HonoEnv,
+  HonoContextVariableMap,
+  E2ETestContext,
+} from './context.ts';
 
 import {authenticate} from './shared/auth.ts';
-import {createPrisma} from './shared/database.ts';
-import type {E2ETestContext} from './graphql/context.ts';
+import {createResponseHandler} from './shared/response.ts';
+import type {Context} from './graphql/context.ts';
 
-const router = new RequestRouter();
+const routes = new Hono<HonoEnv>();
 
-router.options(
+routes.options(
   '/',
   () =>
     new NoContentResponse({
@@ -28,109 +35,130 @@ router.options(
     }),
 );
 
-router.post('/', async (request) => {
-  const {
-    name,
-    operationName,
-    query,
-    mutation,
-    operation,
-    variables,
-    extensions,
-  } = (await request.json()) as any;
+routes.post(
+  '/',
+  createResponseHandler(
+    async (request, {env, var: {prisma: prismaContext}}) => {
+      const {
+        name,
+        operationName,
+        query,
+        mutation,
+        operation,
+        variables,
+        extensions,
+      } = (await request.json()) as any;
 
-  const resolvedOperation = operation ?? query ?? mutation;
-  const resolvedName = name ?? operationName;
+      const resolvedOperation = operation ?? query ?? mutation;
+      const resolvedName = name ?? operationName;
 
-  const response = await runGraphQLRequest(request, {
-    operation: resolvedOperation,
-    operationName: resolvedName,
-    variables,
-    extensions,
-  });
+      const response = await runGraphQLRequest(request, {
+        operation: resolvedOperation,
+        operationName: resolvedName,
+        variables,
+        extensions,
+        env,
+        prisma: prismaContext,
+      });
 
-  return response;
-});
+      return response;
+    },
+  ),
+);
 
-router.post('/clips', async (request) => {
-  const extension = request.URL.searchParams.get('extension');
+routes.post(
+  '/clips',
+  createResponseHandler(
+    async (request, {env, var: {prisma: prismaContext}}) => {
+      const extension = request.URL.searchParams.get('extension');
 
-  if (extension) {
-    console.log(`Running GraphQL operation for extension ${extension}`);
-  } else {
-    return new JSONResponse(
-      {errors: [{message: 'Missing extension'}]},
-      {
-        status: 400,
-        headers: {
-          'Timing-Allow-Origin': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'no-store',
-        },
-      },
-    );
-  }
+      if (extension) {
+        console.log(`Running GraphQL operation for extension ${extension}`);
+      } else {
+        return new JSONResponse(
+          {errors: [{message: 'Missing extension'}]},
+          {
+            status: 400,
+            headers: {
+              'Timing-Allow-Origin': '*',
+              'Access-Control-Allow-Origin': '*',
+              'Cache-Control': 'no-store',
+            },
+          },
+        );
+      }
 
-  const {
-    name,
-    operationName,
-    query,
-    mutation,
-    operation,
-    variables,
-    extensions,
-  } = (await request.json()) as any;
+      const {
+        name,
+        operationName,
+        query,
+        mutation,
+        operation,
+        variables,
+        extensions,
+      } = (await request.json()) as any;
 
-  const resolvedOperation = operation ?? query ?? mutation;
-  const resolvedName = name ?? operationName;
+      const resolvedOperation = operation ?? query ?? mutation;
+      const resolvedName = name ?? operationName;
 
-  const response = await runGraphQLRequest(request, {
-    operation: resolvedOperation,
-    operationName: resolvedName,
-    variables,
-    extensions,
-  });
+      const response = await runGraphQLRequest(request, {
+        operation: resolvedOperation,
+        operationName: resolvedName,
+        variables,
+        extensions,
+        env,
+        prisma: prismaContext,
+      });
 
-  return response;
-});
+      return response;
+    },
+  ),
+);
 
-router.get('/', async (request) => {
-  const {searchParams} = request.URL;
-  const operation =
-    searchParams.get('operation') ??
-    searchParams.get('query') ??
-    searchParams.get('mutation');
-  const variables = searchParams.get('variables');
-  const extensions = searchParams.get('extensions');
-  const operationName =
-    searchParams.get('name') ??
-    searchParams.get('operationName') ??
-    searchParams.get('operation-name') ??
-    undefined;
+routes.get(
+  '/',
+  createResponseHandler(
+    async (request, {env, var: {prisma: prismaContext}}) => {
+      const {searchParams} = request.URL;
+      const operation =
+        searchParams.get('operation') ??
+        searchParams.get('query') ??
+        searchParams.get('mutation');
+      const variables = searchParams.get('variables');
+      const extensions = searchParams.get('extensions');
+      const operationName =
+        searchParams.get('name') ??
+        searchParams.get('operationName') ??
+        searchParams.get('operation-name') ??
+        undefined;
 
-  if (operation == null) {
-    return new JSONResponse(
-      {errors: [{message: 'Missing operation'}]},
-      {
-        status: 400,
-        headers: {
-          'Timing-Allow-Origin': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'no-store',
-        },
-      },
-    );
-  }
+      if (operation == null) {
+        return new JSONResponse(
+          {errors: [{message: 'Missing operation'}]},
+          {
+            status: 400,
+            headers: {
+              'Timing-Allow-Origin': '*',
+              'Access-Control-Allow-Origin': '*',
+              'Cache-Control': 'no-store',
+            },
+          },
+        );
+      }
 
-  const response = await runGraphQLRequest(request, {
-    operation: operation!,
-    operationName,
-    variables: variables ? JSON.parse(variables) : undefined,
-    extensions: extensions ? JSON.parse(extensions) : undefined,
-  });
+      const response = await runGraphQLRequest(request, {
+        operation: operation!,
+        operationName,
+        variables: variables ? JSON.parse(variables) : undefined,
+        extensions: extensions ? JSON.parse(extensions) : undefined,
+        env,
+        prisma: prismaContext,
+      });
 
-  return response;
-});
+      return response;
+    },
+  ),
+);
 
 export async function runGraphQLRequest(
   request: EnhancedRequest,
@@ -138,12 +166,15 @@ export async function runGraphQLRequest(
     operation,
     variables,
     operationName,
+    env,
+    prisma: prismaContext,
   }: {
     operation: string;
     operationName?: string;
     variables?: Record<string, unknown> | null;
     extensions?: Record<string, unknown> | null;
-  },
+  } & Pick<HonoContextVariableMap, 'prisma'> &
+    Pick<Context, 'env'>,
 ) {
   console.log(`Performing operation: ${operationName}`);
   console.log(`Variables:\n${JSON.stringify(variables ?? {}, null, 2)}`);
@@ -168,13 +199,13 @@ export async function runGraphQLRequest(
   };
 
   const [prisma, {fetchGraphQL}] = await Promise.all([
-    createPrisma(),
+    prismaContext.load(),
     import('./graphql/fetch.ts'),
   ]);
 
-  const auth = await authenticate(request, prisma);
+  const auth = await authenticate(request, {prisma, env});
 
-  const e2e = await e2eTestContextForRequest(request);
+  const e2e = await e2eTestContextForRequest(request, {env});
 
   try {
     const result = await fetchGraphQL(operation, {
@@ -185,6 +216,7 @@ export async function runGraphQLRequest(
         request,
         response,
         e2e,
+        env,
         get user() {
           if (auth.user == null) {
             response.status = 401;
@@ -217,28 +249,38 @@ export async function runGraphQLRequest(
   }
 }
 
-async function e2eTestContextForRequest(request: EnhancedRequest) {
+async function e2eTestContextForRequest(
+  request: EnhancedRequest,
+  {env}: Pick<Context, 'env'>,
+) {
   const e2eHeader = request.headers.get(E2E_TEST_CONTEXT_HEADER);
-  const e2e = e2eHeader ? await parseE2ETestHeader(e2eHeader) : undefined;
+  const e2e = e2eHeader
+    ? await parseE2ETestHeader(e2eHeader, {env})
+    : undefined;
   return e2e;
 }
 
-async function parseE2ETestHeader(header: string) {
+async function parseE2ETestHeader(header: string, {env}: Pick<Context, 'env'>) {
   try {
-    const {default: jwt} = await import('jsonwebtoken');
-    const result = jwt.verify(
-      header,
-      process.env.JWT_E2E_TEST_HEADER_SECRET!,
-    ) as unknown as E2ETestContext;
-    console.log(`Parsed E2E test header: ${JSON.stringify(result)}`);
-    return result;
+    const verifiedHeader = await verifySignedToken<E2ETestContext>(header, {
+      secret: env.JWT_E2E_TEST_HEADER_SECRET,
+    });
+
+    if (verifiedHeader.expired) {
+      console.error(`E2E test header expired`);
+      return undefined;
+    }
+
+    const context = verifiedHeader.data;
+    console.log(`Parsed E2E test header: ${JSON.stringify(context)}`);
+    return context;
   } catch (error) {
     console.error(`Error parsing E2E test header: ${error}`);
     return undefined;
   }
 }
 
-router.get('/explorer', () => {
+routes.get('/explorer', () => {
   return new HTMLResponse(
     stripIndent`
       <!DOCTYPE html>
@@ -301,4 +343,4 @@ router.get('/explorer', () => {
   );
 });
 
-export default router;
+export default routes;

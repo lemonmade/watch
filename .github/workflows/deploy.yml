@@ -70,6 +70,28 @@ jobs:
         run: |
           aws s3 sync ./app/build/assets/ s3://watch-assets/assets/app/ --endpoint-url https://9bfdb755def60e50760e33036c6f1624.r2.cloudflarestorage.com --cache-control "public, max-age=31536000, immutable" --checksum-algorithm CRC32
 
+  deploy-cloudflare-worker-app:
+    name: Deploy app to Cloudflare 🌥
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - deploy-cloudflare-assets
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-app
+          path: app/build
+
+      - uses: ./.github/workflows/actions/prepare
+      - run: pnpm exec prisma generate
+      - uses: ./.github/workflows/actions/type-check-with-cache
+      - run: pnpm --filter ./app run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
   deploy-cloudflare-worker-email:
     name: Deploy email to Cloudflare 🌥
     runs-on: ubuntu-latest
@@ -162,74 +184,10 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-  deploy-fly:
-    name: Deploy to Fly.io 🦋
-    needs: [build-app]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/workflows/actions/prepare
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-app
-          path: app/build
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: v0.9.1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Authenticate with Fly container registry
-        uses: docker/login-action@v2
-        with:
-          registry: registry.fly.io
-          username: x
-          password: ${{ secrets.FLY_API_TOKEN }}
-
-      - name: Docker build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: app/Dockerfile
-          push: true
-          tags: registry.fly.io/watch-test-app:${{ github.ref_name }}-${{ github.sha }}
-          build-args: |
-            COMMIT_SHA=${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      # This ugly bit is necessary if you don't want your cache to grow forever
-      # till it hits GitHub's limit of 5GB.
-      # Temp fix
-      # https://github.com/docker/build-push-action/issues/252
-      # https://github.com/moby/buildkit/issues/1896
-      - name: Move Docker cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Deploy application code to Fly.io
-        uses: superfly/flyctl-actions@1.3
-        with:
-          args: 'deploy --config app/configuration/fly.toml --image registry.fly.io/watch-test-app:${{ github.ref_name }}-${{ github.sha }}'
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
   deploy-cloudflare-router:
     name: Deploy router to Cloudflare 🌥
     needs:
-      - deploy-fly
+      - deploy-cloudflare-worker-app
       - deploy-cloudflare-assets
       - deploy-cloudflare-worker-email
       - deploy-cloudflare-worker-images

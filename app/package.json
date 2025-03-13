@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config ./configuration/rollup.config.js",
+    "deploy": "wrangler deploy --config ./configuration/wrangler.toml",
     "develop": "vite --config ./vite.config.js",
     "start": "node ./build/server/server.js"
   },
@@ -16,11 +17,11 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.19.0",
     "@aws-sdk/s3-request-presigner": "^3.19.0",
-    "@prisma/client": "^5.11.0",
+    "@prisma/client": "^6.4.0",
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.0",
     "aws-sdk": "^2.935.0",
-    "prisma": "^5.11.0",
+    "prisma": "^6.4.0",
     "stripe": "^14.24.0"
   },
   "devDependencies": {
@@ -35,11 +36,10 @@
     "@remote-dom/core": "^1.5.0",
     "@remote-dom/preact": "^1.2.0",
     "@remote-dom/react": "^1.2.0",
-    "@simplewebauthn/browser": "^6.2.0",
-    "@simplewebauthn/server": "^6.2.0",
+    "@simplewebauthn/browser": "^13.1.0",
+    "@simplewebauthn/server": "^13.1.0",
     "@stripe/stripe-js": "^1.46.0",
     "@types/common-tags": "^1.8.0",
-    "@types/jsonwebtoken": "^8.0.0",
     "@watching/api": "workspace:*",
     "@watching/clips": "workspace:*",
     "@watching/design": "workspace:*",
@@ -48,9 +48,9 @@
     "base64url": "^3.0.1",
     "common-tags": "^1.8.0",
     "graphql": "^16.8.0",
+    "hono": "^4.7.0",
     "jose": "^4.14.4",
     "jsdom": "^25.0.0",
-    "jsonwebtoken": "^8.0.0",
     "mime": "^2.5.0",
     "nanoid": "^4.0.0",
     "preact": "^10.26.2",

@@ -1,4 +1,3 @@
-import Env from 'quilt:module/env';
 import type {PrismaClient, StripeSubscription} from '@prisma/client';
 import type {Stripe} from 'stripe';
 
@@ -28,10 +27,10 @@ declare module '@quilted/quilt/env' {
 export const Subscription = createResolverWithGid('Subscription', {
   startedAt: ({startedAt}) => startedAt?.toISOString() ?? null,
   endedAt: ({endedAt}) => endedAt?.toISOString() ?? null,
-  paymentFlow: ({paymentFlow}) => {
+  paymentFlow: ({paymentFlow}, _, {env}) => {
     return paymentFlow
       ? {
-          apiKey: Env.STRIPE_PUBLISHABLE_KEY,
+          apiKey: env.APP_SECRET_ENCRYPTION_KEY,
           level: (paymentFlow as any).level,
           clientSecret: (paymentFlow as any).clientSecret,
         }
@@ -40,10 +39,10 @@ export const Subscription = createResolverWithGid('Subscription', {
 });
 
 export const Mutation = createMutationResolver({
-  async prepareSubscription(_, {level}, {prisma, user}) {
+  async prepareSubscription(_, {level}, {prisma, user, env}) {
     const {default: Stripe} = await import('stripe');
 
-    const stripe = new Stripe(Env.STRIPE_API_KEY, {
+    const stripe = new Stripe(env.STRIPE_API_KEY, {
       apiVersion: '2023-10-16',
       httpClient: Stripe.createFetchHttpClient(),
     });
@@ -158,7 +157,7 @@ export const Mutation = createMutationResolver({
       subscription,
     };
   },
-  async cancelSubscription(_, __, {prisma, user}) {
+  async cancelSubscription(_, __, {prisma, user, env}) {
     const subscription = await prisma.stripeSubscription.findUnique({
       where: {userId: user.id},
     });
@@ -169,7 +168,7 @@ export const Mutation = createMutationResolver({
 
     const {default: Stripe} = await import('stripe');
 
-    const stripe = new Stripe(Env.STRIPE_API_KEY, {
+    const stripe = new Stripe(env.STRIPE_API_KEY, {
       apiVersion: '2023-10-16',
       httpClient: Stripe.createFetchHttpClient(),
     });

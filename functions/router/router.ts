@@ -15,6 +15,7 @@ const APP_HOST = 'watch-test-app.fly.dev';
 interface Environment {
   APP_ASSETS: R2Bucket;
   CLIPS_ASSETS: R2Bucket;
+  SERVICE_APP: Fetcher;
   SERVICE_UPLOAD_CLIPS: Fetcher;
   SERVICE_EMAIL: Service<EmailService & Rpc.WorkerEntrypointBranded>;
   SERVICE_STRIPE: Fetcher;
@@ -141,21 +142,25 @@ const handleGraphQLRequest: RequestHandler<CloudflareRequestContext> = async (
     }
   }
 
-  return rewriteAndFetch(resolvedRequest, (url) => {
-    url.host = APP_HOST;
-  });
+  return respondFromApp(resolvedRequest, {env});
 };
 
 router.get('api/graphql', handleGraphQLRequest);
 router.post('api/graphql', handleGraphQLRequest);
 
-router.any((request) => {
+router.any((request, {env}) => respondFromApp(request, {env}));
+
+export default router;
+
+function respondFromApp(request: Request, {env}: {env: Environment}) {
+  if (request.headers.has('Watch-App-Force-Worker')) {
+    return env.SERVICE_APP.fetch(request as any) as any as Promise<Response>;
+  }
+
   return rewriteAndFetch(request, (url) => {
     url.host = APP_HOST;
   });
-});
-
-export default router;
+}
 
 function rewriteAndFetch(request: Request, rewrite: (url: URL) => URL | void) {
   const url = new URL(request.url);

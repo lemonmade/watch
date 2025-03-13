@@ -1,4 +1,7 @@
-import {createSignedToken, Header} from '../../../shared/auth.ts';
+import {createSignedToken} from '~/global/tokens.ts';
+
+import type {Environment} from '../../../context.ts';
+import {Header} from '../../../shared/auth.ts';
 
 import type {
   Email,
@@ -9,7 +12,7 @@ import type {
 export async function sendEmail<T extends EmailType>(
   type: T,
   props: PropsForEmail<T>,
-  {request}: {request: Request},
+  {request, env}: {request: Request; env: Environment},
 ) {
   const email: Email = {
     type,
@@ -20,7 +23,10 @@ export async function sendEmail<T extends EmailType>(
     method: 'POST',
     body: JSON.stringify(email),
     headers: {
-      [Header.Token]: await createSignedToken({}, {expiresIn: '5 minutes'}),
+      [Header.Token]: await createSignedToken(
+        {},
+        {expiresIn: 5 * 60 * 1_000, secret: env.JWT_DEFAULT_SECRET},
+      ),
       'Content-Type': 'application/json',
     },
     // @see https://github.com/nodejs/node/issues/46221

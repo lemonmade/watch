@@ -1,8 +1,9 @@
 import type {User as DatabaseUser, Prisma} from '@prisma/client';
 
 import {isE2ETestAccountEmail} from '~/global/e2e.ts';
+import {createSignedToken} from '~/global/tokens.ts';
 
-import {createSignedToken, removeAuthCookies} from '../../../shared/auth.ts';
+import {removeAuthCookies} from '../../../shared/auth.ts';
 import {addAuthCookies} from '../../../shared/auth.ts';
 import {createAccountWithGiftCode} from '../../../shared/create-account.ts';
 
@@ -98,7 +99,7 @@ export const User = createResolverWithGid('User', {
 });
 
 export const Mutation = createMutationResolver({
-  async signIn(_, {email, redirectTo}, {prisma, request, response, e2e}) {
+  async signIn(_, {email, redirectTo}, {prisma, request, response, e2e, env}) {
     const user = await prisma.user.findUnique({where: {email}});
 
     if (user == null) {
@@ -113,7 +114,7 @@ export const Mutation = createMutationResolver({
     }
 
     if (e2e && isE2ETestAccountEmail(email)) {
-      await addAuthCookies(user, response);
+      await addAuthCookies(user, response, {env});
 
       return {
         email,
@@ -127,12 +128,15 @@ export const Mutation = createMutationResolver({
       'signIn',
       {
         token: await createSignedToken(
-          {redirectTo},
-          {subject: email, expiresIn: '15 minutes'},
+          {sub: email, redirectTo},
+          {
+            expiresIn: 15 * 60 * 1_000,
+            secret: env.JWT_DEFAULT_SECRET,
+          },
         ),
         userEmail: email,
       },
-      {request},
+      {request, env},
     );
 
     return {
@@ -149,7 +153,7 @@ export const Mutation = createMutationResolver({
   async createAccount(
     _,
     {email, code, redirectTo},
-    {prisma, request, response, e2e},
+    {prisma, request, response, e2e, env},
   ) {
     // Auto-login E2E test accounts
     if (e2e && isE2ETestAccountEmail(email)) {
@@ -158,7 +162,7 @@ export const Mutation = createMutationResolver({
         {giftCode: code ?? undefined, prisma},
       );
 
-      await addAuthCookies(user, response);
+      await addAuthCookies(user, response, {env});
 
       return {
         email,
@@ -177,12 +181,15 @@ export const Mutation = createMutationResolver({
         'signIn',
         {
           token: await createSignedToken(
-            {giftCode: code, redirectTo},
-            {subject: email, expiresIn: '15 minutes'},
+            {sub: email, giftCode: code, redirectTo},
+            {
+              expiresIn: 15 * 60 * 1_000,
+              secret: env.JWT_DEFAULT_SECRET,
+            },
           ),
           userEmail: email,
         },
-        {request},
+        {request, env},
       );
 
       return {
@@ -197,12 +204,15 @@ export const Mutation = createMutationResolver({
       'welcome',
       {
         token: await createSignedToken(
-          {giftCode: code, redirectTo},
-          {subject: email, expiresIn: '15 minutes'},
+          {sub: email, giftCode: code, redirectTo},
+          {
+            expiresIn: 15 * 60 * 1_000,
+            secret: env.JWT_DEFAULT_SECRET,
+          },
         ),
         userEmail: email,
       },
-      {request},
+      {request, env},
     );
 
     return {

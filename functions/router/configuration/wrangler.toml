@@ -8,6 +8,11 @@ logpush = true
 workers_dev = false
 
 [[services]]
+binding = "SERVICE_APP"
+service = "watch-app"
+environment = "production"
+
+[[services]]
 binding = "SERVICE_IMAGES"
 service = "watch-images"
 environment = "production"

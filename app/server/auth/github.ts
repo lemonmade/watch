@@ -1,7 +1,7 @@
 export {
-  startGithubOAuth,
+  handleStartGithubOAuth,
   handleGithubOAuthSignIn,
-  startGithubOAuthCreateAccount,
+  handleStartGithubOAuthCreateAccount,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
 } from './github/github.ts';

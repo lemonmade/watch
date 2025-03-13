@@ -1,5 +1,4 @@
 import {renderAppToHTMLResponse} from '@quilted/quilt/server';
-import {RequestHandler} from '@quilted/quilt/request-router';
 import {GraphQLCache, type GraphQLFetch} from '@quilted/quilt/graphql';
 import {Router} from '@quilted/quilt/navigation';
 import {BrowserAssets} from 'quilt:module/assets';
@@ -11,16 +10,21 @@ import App from '../App.tsx';
 import {EXTENSION_POINTS} from '../clips.ts';
 
 import {authenticate} from './shared/auth.ts';
-import {createPrisma} from './shared/database.ts';
+import {createResponseHandler} from './shared/response.ts';
 
 const assets = new BrowserAssets();
 
-export const handleApp: RequestHandler = async function handleApp(request) {
+export const handleApp = createResponseHandler(async function handleApp(
+  request,
+  {env, var: {prisma: prismaContext}},
+) {
   if (request.method !== 'GET') {
     return new Response(null, {status: 405, headers: {Allow: 'GET'}});
   }
 
-  const [auth] = await Promise.all([authenticate(request)]);
+  const prisma = await prismaContext.load();
+
+  const [auth] = await Promise.all([authenticate(request, {prisma, env})]);
 
   const user = auth.user
     ? {
@@ -30,14 +34,14 @@ export const handleApp: RequestHandler = async function handleApp(request) {
     : undefined;
 
   const fetchGraphQL: GraphQLFetch = async (operation, {variables} = {}) => {
-    const [prisma, {fetchGraphQL: fetchGraphQLBase}] = await Promise.all([
-      createPrisma(),
+    const [{fetchGraphQL: fetchGraphQLBase}] = await Promise.all([
       import('./graphql/fetch.ts'),
     ]);
 
     const result = await fetchGraphQLBase(operation, {
       variables,
       context: {
+        env,
         prisma,
         request,
         response: {} as any,
@@ -75,4 +79,4 @@ export const handleApp: RequestHandler = async function handleApp(request) {
   });
 
   return response;
-};
+});

@@ -1,11 +1,8 @@
-import jwt from 'jsonwebtoken';
+import jwt from '@tsndr/cloudflare-worker-jwt';
 
-const token = jwt.sign(
-  {git: {sha: 'imaginarysha'}},
+const token = await jwt.sign(
+  {git: {sha: 'imaginarysha'}, exp: Date.now() + 10 * 60 * 1_000},
   process.env.JWT_E2E_TEST_HEADER_SECRET!,
-  {
-    expiresIn: '10 minutes',
-  },
 );
 
 console.log(token);

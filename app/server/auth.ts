@@ -1,60 +1,64 @@
-import {RequestRouter, RedirectResponse} from '@quilted/quilt/request-router';
+import {Hono} from 'hono';
+import {RedirectResponse} from '@quilted/quilt/request-router';
 
 import {SearchParam} from '~/global/auth.ts';
 
 import {signInFromEmail, createAccountFromEmail} from './auth/email.ts';
 import {
-  startGithubOAuth,
+  handleStartGithubOAuth,
   handleGithubOAuthSignIn,
-  startGithubOAuthCreateAccount,
+  handleStartGithubOAuthCreateAccount,
   handleGithubOAuthCreateAccount,
   handleGithubOAuthConnect,
 } from './auth/github.ts';
 import {
-  startGoogleOAuth,
+  handleStartGoogleOAuth,
   handleGoogleOAuthSignIn,
-  startGoogleOAuthCreateAccount,
+  handleStartGoogleOAuthCreateAccount,
   handleGoogleOAuthCreateAccount,
   handleGoogleOAuthConnect,
 } from './auth/google.ts';
 import {handleAppleCallback} from './auth/apple.ts';
 
-const router = new RequestRouter();
+import {createResponseHandler} from './shared/response.ts';
 
-router.get('/email/sign-in', signInFromEmail);
-router.get('/email/create-account', createAccountFromEmail);
+const routes = new Hono();
 
-router.get('/apple/sign-in/callback', handleAppleCallback);
-router.get('/apple/create-account/callback', handleAppleCallback);
-router.get('/apple/connect/callback', handleAppleCallback);
+routes.get('/email/sign-in', signInFromEmail);
+routes.get('/email/create-account', createAccountFromEmail);
 
-router.get('/github/sign-in', startGithubOAuth);
-router.get('/github/sign-in/callback', handleGithubOAuthSignIn);
-router.get('/github/create-account', startGithubOAuthCreateAccount);
-router.get('/github/create-account/callback', handleGithubOAuthCreateAccount);
-router.get('/github/connect', startGithubOAuth);
-router.get('/github/connect/callback', handleGithubOAuthConnect);
+routes.get('/apple/sign-in/callback', handleAppleCallback);
+routes.get('/apple/create-account/callback', handleAppleCallback);
+routes.get('/apple/connect/callback', handleAppleCallback);
 
-router.get('/google/sign-in', startGoogleOAuth);
-router.get('/google/sign-in/callback', handleGoogleOAuthSignIn);
-router.get('/google/create-account', startGoogleOAuthCreateAccount);
-router.get('/google/create-account/callback', handleGoogleOAuthCreateAccount);
-router.get('/google/connect', startGoogleOAuth);
-router.get('/google/connect/callback', handleGoogleOAuthConnect);
+routes.get('/github/sign-in', handleStartGithubOAuth);
+routes.get('/github/sign-in/callback', handleGithubOAuthSignIn);
+routes.get('/github/create-account', handleStartGithubOAuthCreateAccount);
+routes.get('/github/create-account/callback', handleGithubOAuthCreateAccount);
+routes.get('/github/connect', handleStartGithubOAuth);
+routes.get('/github/connect/callback', handleGithubOAuthConnect);
 
-router.get((request) => {
-  const url = new URL(request.url);
+routes.get('/google/sign-in', handleStartGoogleOAuth);
+routes.get('/google/sign-in/callback', handleGoogleOAuthSignIn);
+routes.get('/google/create-account', handleStartGoogleOAuthCreateAccount);
+routes.get('/google/create-account/callback', handleGoogleOAuthCreateAccount);
+routes.get('/google/connect', handleStartGoogleOAuth);
+routes.get('/google/connect/callback', handleGoogleOAuthConnect);
 
-  console.log('Fallback route', url.href);
+routes.get(
+  '*',
+  createResponseHandler((request) => {
+    console.log('Fallback route', request.url);
 
-  const loginUrl = new URL('/login', url);
-  const redirectTo = url.searchParams.get(SearchParam.RedirectTo);
+    const loginUrl = new URL('/login', request.url);
+    const redirectTo = request.URL.searchParams.get(SearchParam.RedirectTo);
 
-  if (redirectTo) {
-    loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
-  }
+    if (redirectTo) {
+      loginUrl.searchParams.set(SearchParam.RedirectTo, redirectTo);
+    }
 
-  return new RedirectResponse(loginUrl);
-});
+    return new RedirectResponse(loginUrl);
+  }),
+);
 
-export default router;
+export default routes;

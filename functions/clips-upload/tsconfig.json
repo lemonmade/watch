@@ -1,9 +1,16 @@
 {
   "extends": "@quilted/typescript/tsconfig.project.json",
   "compilerOptions": {
-    "types": ["@cloudflare/workers-types"]
+    "types": ["@cloudflare/workers-types"],
+    "paths": {
+      "~/global/*": ["../../global/*"]
+    }
   },
   "include": ["**/*"],
   "exclude": ["build"],
-  "references": []
+  "references": [
+    {
+      "path": "../../global"
+    }
+  ]
 }

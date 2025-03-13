@@ -5,9 +5,10 @@ import type {
   ClipsExtensionVersion as DatabaseClipsExtensionVersion,
   ClipsExtensionInstallation as DatabaseClipsExtensionInstallation,
 } from '@prisma/client';
-import Env from 'quilt:module/env';
 import type {ExtensionPoint} from '@watching/clips';
 import {z} from 'zod';
+
+import {createSignedToken} from '~/global/tokens.ts';
 
 import type {
   ClipsExtensionBuildModuleInput,
@@ -16,7 +17,6 @@ import type {
   CreateClipsInitialVersion,
   ClipsExtensionSettingsStringInput,
 } from '../../schema.ts';
-import {createSignedToken} from '../../../shared/auth.ts';
 
 import {
   createMutationResolver,
@@ -98,7 +98,7 @@ export const Mutation = createMutationResolver({
   async createClipsExtension(
     _,
     {name, handle, appId, initialVersion},
-    {prisma, request},
+    {prisma, request, env},
   ) {
     const {app, ...extension} = await prisma.clipsExtension.create({
       data: {
@@ -119,6 +119,7 @@ export const Mutation = createMutationResolver({
       appId: fromGid(appId).id,
       extensionName: name,
       request,
+      env,
     });
 
     const version = await prisma.clipsExtensionVersion.create({
@@ -155,7 +156,7 @@ export const Mutation = createMutationResolver({
   async pushClipsExtension(
     _,
     {id: extensionId, build, name, translations, extends: supports, settings},
-    {prisma, request},
+    {prisma, request, env},
   ) {
     const id = fromGid(extensionId).id;
 
@@ -177,6 +178,7 @@ export const Mutation = createMutationResolver({
       extends: supports,
       settings,
       request,
+      env,
     });
 
     if (existingVersion) {
@@ -723,11 +725,12 @@ async function createStagedClipsVersion({
   extends: supports,
   request,
   settings,
+  env,
 }: {
   id: string;
   appId: string;
   extensionName: string;
-} & Pick<ResolverContext, 'request'> &
+} & Pick<ResolverContext, 'request' | 'env'> &
   CreateClipsInitialVersion) {
   const modules = new Map<string, ClipsExtensionBuildModuleDatabaseJSON>();
 
@@ -760,8 +763,8 @@ async function createStagedClipsVersion({
     const token = await createSignedToken(
       {path, code},
       {
-        secret: Env.UPLOAD_CLIPS_JWT_SECRET,
-        expiresIn: '5m',
+        secret: env.UPLOAD_CLIPS_JWT_SECRET,
+        expiresIn: 5 * 60 * 1_000,
       },
     );
 
