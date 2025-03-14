@@ -10,8 +10,6 @@ import type {CloudflareRequestContext} from '@quilted/cloudflare';
 
 import type {EmailService} from '../email';
 
-const APP_HOST = 'watch-test-app.fly.dev';
-
 interface Environment {
   APP_ASSETS: R2Bucket;
   CLIPS_ASSETS: R2Bucket;
@@ -153,25 +151,7 @@ router.any((request, {env}) => respondFromApp(request, {env}));
 export default router;
 
 function respondFromApp(request: Request, {env}: {env: Environment}) {
-  if (request.headers.has('Watch-App-Force-Worker')) {
-    return env.SERVICE_APP.fetch(request as any) as any as Promise<Response>;
-  }
-
-  return rewriteAndFetch(request, (url) => {
-    url.host = APP_HOST;
-  });
-}
-
-function rewriteAndFetch(request: Request, rewrite: (url: URL) => URL | void) {
-  const url = new URL(request.url);
-  const newUrl = rewrite(url) ?? url;
-
-  const newRequest = new Request(newUrl.href, request);
-
-  const originalUrl = new URL(request.url);
-  newRequest.headers.set('X-Forwarded-Host', originalUrl.host);
-
-  return fetch(newRequest);
+  return env.SERVICE_APP.fetch(request as any) as any as Promise<Response>;
 }
 
 // @see https://developers.cloudflare.com/r2/get-started/
