@@ -9,18 +9,8 @@ const configuration = await quiltApp({
   server: {
     entry: './server.tsx',
     runtime: cloudflareWorkers(),
-    env: {
-      inline: [
-        'EMAIL_QUEUE_URL',
-        'DATABASE_URL',
-        'JWT_DEFAULT_SECRET',
-        'TMDB_ACCESS_TOKEN',
-        'GITHUB_CLIENT_ID',
-        'GITHUB_CLIENT_SECRET',
-        'GOOGLE_CLIENT_ID',
-        'GOOGLE_CLIENT_SECRET',
-      ],
-    },
+    format:
+      process.env.NODE_ENV === 'development' ? 'request-router' : 'custom',
   },
 });
 

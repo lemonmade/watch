@@ -1,6 +1,5 @@
-import Env from 'quilt:module/env';
-
 import {
+  tmdbFetch,
   seasonStatus,
   seriesToHandle,
   tmdbStatusToEnum,
@@ -11,39 +10,24 @@ import {
 
 import type {Context} from '../../context.ts';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    TMDB_ACCESS_TOKEN: string;
-  }
-}
-
 const SEASON_BATCH_SIZE = 10;
-
-export async function tmdbFetch<T = unknown>(path: string): Promise<T> {
-  const fetched = await fetch(`https://api.themoviedb.org/3${path}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${Env.TMDB_ACCESS_TOKEN}`,
-    },
-    // @see https://github.com/nodejs/node/issues/46221
-    ...{duplex: 'half'},
-  });
-
-  return fetched.json();
-}
 
 export async function loadTmdbSeries(
   tmdbId: string,
-  {prisma}: Pick<Context, 'prisma'>,
+  {prisma, env}: Pick<Context, 'prisma' | 'env'>,
 ) {
   const {external_ids: seriesIds, ...seriesResult} = await tmdbFetch<
     TmdbSeries & {external_ids: TmdbExternalIds}
-  >(`/tv/${tmdbId}?append_to_response=external_ids`);
+  >(`/tv/${tmdbId}?append_to_response=external_ids`, {
+    accessToken: env.TMDB_ACCESS_TOKEN,
+  });
 
   const seasonResults = (
     await Promise.all(
       seriesResult.seasons.map((season) =>
-        tmdbFetch<TmdbSeason>(`/tv/${tmdbId}/season/${season.season_number}`),
+        tmdbFetch<TmdbSeason>(`/tv/${tmdbId}/season/${season.season_number}`, {
+          accessToken: env.TMDB_ACCESS_TOKEN,
+        }),
       ),
     )
   ).filter(({season_number: seasonNumber}) => seasonNumber != null);

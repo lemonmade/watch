@@ -86,8 +86,6 @@ jobs:
           path: app/build
 
       - uses: ./.github/workflows/actions/prepare
-      - run: pnpm exec prisma generate
-      - uses: ./.github/workflows/actions/type-check-with-cache
       - run: pnpm --filter ./app run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

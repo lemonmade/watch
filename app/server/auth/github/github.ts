@@ -31,13 +31,6 @@ import {validateRedirectTo} from '../shared.ts';
 import viewerQuery from './graphql/GithubViewerQuery.graphql';
 import type {GithubViewerQueryData} from './graphql/GithubViewerQuery.graphql';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    GITHUB_CLIENT_ID: string;
-    GITHUB_CLIENT_SECRET: string;
-  }
-}
-
 const SCOPES = 'read:user';
 
 const DEFAULT_COOKIE_OPTIONS: CookieOptions = {

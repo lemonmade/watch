@@ -29,12 +29,6 @@ import {
 import {toHandle} from '../shared/handle.ts';
 import {toGid, fromGid} from '../shared/id.ts';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    UPLOAD_CLIPS_JWT_SECRET: string;
-  }
-}
-
 type DatabaseClipsExtensionInstallationWithActiveVersion =
   DatabaseClipsExtensionInstallation & {
     extension: DatabaseClipsExtension & {

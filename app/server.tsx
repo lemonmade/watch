@@ -3,13 +3,13 @@ import {EnhancedRequest} from '@quilted/quilt/request-router';
 
 import {Hono} from 'hono';
 
-import {PrismaContext} from './server/context.ts';
+import {PrismaContext, type Environment} from './server/context.ts';
 import {handleApp} from './server/app.tsx';
 import auth from './server/auth.ts';
 import graphql from './server/graphql.ts';
 
 // Create Hono app
-const app = new Hono<{Bindings: {DATABASE_URL: string}}>();
+const app = new Hono<{Bindings: Environment}>();
 
 // Add Prisma to the Hono context
 app.use('*', async (c, next) => {

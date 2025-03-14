@@ -16,7 +16,7 @@ export interface Environment {
   readonly APP_SECRET_ENCRYPTION_KEY: string;
   readonly UPLOAD_CLIPS_JWT_SECRET: string;
   readonly STRIPE_API_KEY: string;
-  readonly STRIPE_PUBLISHABLE_KEY: string;
+  readonly TMDB_ACCESS_TOKEN: string;
 }
 
 export type HonoEnv = {Bindings: Environment};

@@ -59,10 +59,11 @@ export async function updateSeries({
   tmdbId: string;
   name: string;
   prisma: PrismaClient;
-  accessToken?: string;
+  accessToken: string;
 }) {
   const log = (message: string) => console.log(`[${name}] ${message}`);
-  const tmdbFetch = (path: string) => baseTmdbFetch(path, {accessToken});
+  const tmdbFetch = <T = unknown>(path: string) =>
+    baseTmdbFetch<T>(path, {accessToken});
 
   log(`Updating series (tmdb: ${tmdbId}, id: ${seriesId})`);
 
@@ -80,7 +81,7 @@ export async function updateSeries({
     },
   });
 
-  const seriesResult: TmdbSeries = await tmdbFetch(`/tv/${tmdbId}`);
+  const seriesResult = await tmdbFetch<TmdbSeries>(`/tv/${tmdbId}`);
 
   // Update anything that has aired in the last six months
   const seasonsInTheLastSixMonths = seriesResult.seasons
@@ -144,9 +145,9 @@ export async function updateSeries({
     }
   }
 
-  const seasonResults: TmdbSeason[] = await Promise.all(
+  const seasonResults = await Promise.all(
     [...seasonsToUpdate].map((season) =>
-      tmdbFetch(`/tv/${tmdbId}/season/${season}`),
+      tmdbFetch<TmdbSeason>(`/tv/${tmdbId}/season/${season}`),
     ),
   );
 

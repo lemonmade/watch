@@ -9,12 +9,6 @@ import type {UserRole} from '~/graphql/types.ts';
 
 import type {Environment} from '../context.ts';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    JWT_DEFAULT_SECRET: string;
-  }
-}
-
 export enum Cookie {
   Auth = 'Auth',
 }

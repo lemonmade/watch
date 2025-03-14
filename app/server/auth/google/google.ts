@@ -26,13 +26,6 @@ import {createResponseHandler} from '../../shared/response.ts';
 
 import {validateRedirectTo} from '../shared.ts';
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    GOOGLE_CLIENT_ID: string;
-    GOOGLE_CLIENT_SECRET: string;
-  }
-}
-
 const SCOPES = 'email profile';
 
 const DEFAULT_COOKIE_OPTIONS: CookieOptions = {

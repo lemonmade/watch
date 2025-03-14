@@ -23,12 +23,6 @@ declare module '../types' {
   }
 }
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    APP_SECRET_ENCRYPTION_KEY: string;
-  }
-}
-
 export const Query = createQueryResolver({
   app(_, {id}, {prisma}) {
     return prisma.app.findUnique({where: {id: fromGid(id).id}});

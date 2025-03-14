@@ -70,7 +70,7 @@ export const Mutation = createMutationResolver({
     await prisma.series.delete({where: {id}});
     return {deletedId: gid, errors: []};
   },
-  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma, user, response}) {
+  async synchronizeSeriesWithTmdb(_, {id: gid}, {prisma, user, response, env}) {
     if (user.role !== 'ADMIN') {
       response.status = 401;
 
@@ -87,7 +87,13 @@ export const Mutation = createMutationResolver({
 
     const {id} = fromGid(gid);
     const {tmdbId, name} = await prisma.series.findUniqueOrThrow({where: {id}});
-    const {series} = await updateSeries({id, name, tmdbId, prisma});
+    const {series} = await updateSeries({
+      id,
+      name,
+      tmdbId,
+      prisma,
+      accessToken: env.TMDB_ACCESS_TOKEN,
+    });
     return {series, errors: []};
   },
 });

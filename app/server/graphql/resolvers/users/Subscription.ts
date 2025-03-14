@@ -17,13 +17,6 @@ declare module '../types' {
   }
 }
 
-declare module '@quilted/quilt/env' {
-  interface EnvironmentVariables {
-    STRIPE_API_KEY: string;
-    STRIPE_PUBLISHABLE_KEY: string;
-  }
-}
-
 export const Subscription = createResolverWithGid('Subscription', {
   startedAt: ({startedAt}) => startedAt?.toISOString() ?? null,
   endedAt: ({endedAt}) => endedAt?.toISOString() ?? null,

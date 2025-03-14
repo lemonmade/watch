@@ -1,14 +1,17 @@
+import {tmdbFetch} from '~/global/tmdb.ts';
+
 import {createQueryResolver} from '../shared/resolvers.ts';
-import {tmdbFetch, loadTmdbSeries} from '../shared/tmdb.ts';
+import {loadTmdbSeries} from '../shared/tmdb.ts';
 
 export const Query = createQueryResolver({
-  async search(_, {query}, {prisma}) {
+  async search(_, {query}, {prisma, env}) {
     if (!query?.length) {
       return {series: []};
     }
 
     const {results} = await tmdbFetch<{results: any[]}>(
       `/search/tv?query=${encodeURIComponent(query)}`,
+      {accessToken: env.TMDB_ACCESS_TOKEN},
     );
     const cappedResults = results.slice(0, 12);
     const existingSeries =
@@ -27,7 +30,10 @@ export const Query = createQueryResolver({
 
     await Promise.all(
       unmatchedSeries.map(async (unmatchedSeries) => {
-        const series = await loadTmdbSeries(unmatchedSeries.id, {prisma});
+        const series = await loadTmdbSeries(unmatchedSeries.id, {
+          prisma,
+          env,
+        });
         idToResult.set(series.tmdbId, series);
       }),
     );
