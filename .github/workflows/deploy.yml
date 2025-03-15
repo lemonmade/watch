@@ -48,6 +48,7 @@ jobs:
     name: Deploy app to Cloudflare 🌥
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: [build-app]
 
     steps:
       - uses: actions/checkout@v4
