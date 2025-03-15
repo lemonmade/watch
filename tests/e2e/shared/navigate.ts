@@ -1,6 +1,7 @@
 import type {Page} from '@playwright/test';
 
 import {E2E_TEST_CONTEXT_HEADER} from '../../../global/e2e.ts';
+import {PREVIEW_HEADER} from '../../../global/preview.ts';
 
 export type AppRoute =
   | '/'
@@ -53,8 +54,14 @@ export class AppTestHelper {
       process.env.JWT_E2E_TEST_HEADER_SECRET!,
     );
 
-    await this.page.setExtraHTTPHeaders({
+    const extraHeaders: Record<string, string> = {
       [E2E_TEST_CONTEXT_HEADER]: token,
-    });
+    };
+
+    if (process.env.PREVIEW_COMMIT) {
+      extraHeaders[PREVIEW_HEADER] = process.env.PREVIEW_COMMIT;
+    }
+
+    await this.page.setExtraHTTPHeaders(extraHeaders);
   }
 }

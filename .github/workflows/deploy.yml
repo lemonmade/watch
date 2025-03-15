@@ -44,9 +44,8 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  deploy-cloudflare-assets:
-    name: Deploy assets to Cloudflare 🌥
-    needs: [build-app]
+  deploy-cloudflare-worker-app:
+    name: Deploy app to Cloudflare 🌥
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -59,33 +58,11 @@ jobs:
           path: app/build
 
       - run: ls -R
-
-      - name: Configure R2 credentials for AWS CLI
-        run: |
-          aws configure set region us-east-1
-          aws configure set aws_access_key_id ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
-
-      - name: Sync app assets to R2
-        run: |
-          aws s3 sync ./app/build/assets/ s3://watch-assets/assets/app/ --endpoint-url https://9bfdb755def60e50760e33036c6f1624.r2.cloudflarestorage.com --cache-control "public, max-age=31536000, immutable" --checksum-algorithm CRC32
-
-  deploy-cloudflare-worker-app:
-    name: Deploy app to Cloudflare 🌥
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs:
-      - deploy-cloudflare-assets
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-app
-          path: app/build
-
       - uses: ./.github/workflows/actions/prepare
+      - uses: ./.github/workflows/actions/deploy-app-assets
+        with:
+          access-key-id: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
       - run: pnpm --filter ./app run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -186,7 +163,6 @@ jobs:
     name: Deploy router to Cloudflare 🌥
     needs:
       - deploy-cloudflare-worker-app
-      - deploy-cloudflare-assets
       - deploy-cloudflare-worker-email
       - deploy-cloudflare-worker-images
       - deploy-cloudflare-worker-clips-upload

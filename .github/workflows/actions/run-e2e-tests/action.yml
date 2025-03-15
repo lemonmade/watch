@@ -15,6 +15,7 @@ runs:
       run: pnpm test.e2e
       shell: bash
       env:
+        PREVIEW_COMMIT: ${{github.sha}}
         JWT_E2E_TEST_HEADER_SECRET: ${{inputs.secret}}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

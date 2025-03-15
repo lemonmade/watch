@@ -78,3 +78,20 @@ You can get a visual UI for the database by running Prisma Studio:
 ```sh
 pnpm exec prisma studio
 ```
+
+## Deployments
+
+### Adding secrets
+
+To add a new secret that will be deployed to production:
+
+```sh
+# key stored in private notes
+pnpm secrets.encrypt --name MY_KEY --value secret-value --file ./app/configuration/cloudflare/secrets.production.json --key abc
+```
+
+To read the secrets locally:
+
+```sh
+pnpm secrets.decrypt --file ./app/configuration/cloudflare/secrets.production.json --key abc
+```

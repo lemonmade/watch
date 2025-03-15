@@ -13,7 +13,7 @@
     }
   },
   "include": ["**/*"],
-  "exclude": ["infrastructure", "build"],
+  "exclude": ["configuration", "build", "scripts"],
   "references": [
     {"path": "../functions/email"},
     {"path": "../global"},

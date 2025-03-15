@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rollup --config ./configuration/rollup.config.js",
     "deploy": "wrangler deploy --config ./configuration/wrangler.toml",
+    "deploy:preview": "tsx ./scripts/deploy-preview.ts",
     "develop": "vite --config ./vite.config.js",
     "start": "node ./build/server/server.js"
   },
