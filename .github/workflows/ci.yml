@@ -52,6 +52,7 @@ jobs:
           access-key-secret: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_SECRET }}
       - run: pnpm --filter ./app run deploy.preview
         env:
+          CLOUDFLARE_ACCOUNT_ID: 9bfdb755def60e50760e33036c6f1624
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SECRETS_ENCRYPTION_KEY: ${{ secrets.SECRETS_ENCRYPTION_KEY }}
 
