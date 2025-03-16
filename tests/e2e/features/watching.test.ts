@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
-import {navigate} from './shared/navigate.ts';
-import {createAccount} from './shared/user.ts';
+import {navigate} from '../shared/navigate.ts';
+import {createAccount} from '../shared/user.ts';
 
 const SERIES_HANDLE = 'the-white-lotus-111803';
 
@@ -11,7 +11,7 @@ test.describe('watching', () => {
   }) => {
     await createAccount(page);
 
-    await navigate(page, `/app/series/${SERIES_HANDLE}`);
+    await navigate(page, {to: `/app/series/${SERIES_HANDLE}`});
 
     // The first button is the series watch, which watches all seasons in a series
     await page.getByRole('button', {name: /watch/i}).nth(2).click();
@@ -42,7 +42,7 @@ test.describe('watching', () => {
   test('a user can watch episodes in a watchthrough', async ({page}) => {
     await createAccount(page);
 
-    await navigate(page, `/app/series/${SERIES_HANDLE}`);
+    await navigate(page, {to: `/app/series/${SERIES_HANDLE}`});
 
     await page.getByRole('button', {name: /watch/i}).first().click();
 

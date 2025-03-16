@@ -17,7 +17,7 @@ export class AppURL extends URL {
   }
 }
 
-export async function navigate(page: Page, to: AppRoute | URL = '/') {
+export async function navigate(page: Page, {to}: {to: AppRoute | URL}) {
   const {default: jwt} = await import('@tsndr/cloudflare-worker-jwt');
 
   const token = await jwt.sign(
