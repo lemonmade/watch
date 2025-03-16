@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import {Cloudflare} from 'cloudflare';
 import spawn from 'nano-spawn';
 
-import {decryptFile} from '../../scripts/secrets/decrypt.ts';
+import {decryptFile} from '../../tools/secrets/decrypt.ts';
 
 const cloudflare = new Cloudflare();
 

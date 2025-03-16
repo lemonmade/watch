@@ -17,23 +17,18 @@ app.use('*', async (c, next) => {
   await next();
 });
 
+// Allows us to throw responses to short-circuit the request
+app.use('*', async (c, next) => {
+  try {
+    await next();
+  } catch (error) {
+    if (error instanceof Response) c.res = error;
+  }
+});
+
 app.route('/api/graphql', graphql);
 app.route('/internal/auth', auth);
 app.get('*', handleApp);
-
-app.onError((error, {req: {raw: request}}) => {
-  if (error instanceof Response) return error;
-
-  if (request.headers.get('Accept')?.includes('application/json')) {
-    return new Response(JSON.stringify({
-      error: {
-        message: 'Internal server error',
-      },
-    }), {status: 500});
-  }
-
-  return new Response('Internal server error', {status: 500});
-});
 
 let exported: any = app;
 
