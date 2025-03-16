@@ -6,7 +6,7 @@ export default function Start() {
 
   return (
     <BlockStack spacing padding>
-      <Heading>What are we watching next?</Heading>
+      <Heading>What are we watching next? (from preview)</Heading>
 
       <TextBlock>
         <Text emphasis="strong">Watch</Text> is an app to keep track of the
