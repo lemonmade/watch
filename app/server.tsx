@@ -21,6 +21,20 @@ app.route('/api/graphql', graphql);
 app.route('/internal/auth', auth);
 app.get('*', handleApp);
 
+app.onError((error, {req: {raw: request}}) => {
+  if (error instanceof Response) return error;
+
+  if (request.headers.get('Accept')?.includes('application/json')) {
+    return new Response(JSON.stringify({
+      error: {
+        message: 'Internal server error',
+      },
+    }), {status: 500});
+  }
+
+  return new Response('Internal server error', {status: 500});
+});
+
 let exported: any = app;
 
 if (process.env.NODE_ENV === 'development') {
