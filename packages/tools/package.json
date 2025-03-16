@@ -58,7 +58,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "build": "rollup --config configuration/rollup.config.js"
+    "build": "rollup --config ./tools/rollup.config.js"
   },
   "dependencies": {
     "@iarna/toml": "^3.0.0",

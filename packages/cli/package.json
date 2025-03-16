@@ -43,7 +43,7 @@
     "bin"
   ],
   "scripts": {
-    "build": "rollup --config configuration/rollup.config.js"
+    "build": "rollup --config ./tools/rollup.config.js"
   },
   "dependencies": {
     "@lemonmade/graphql-live": "^0.4.4",

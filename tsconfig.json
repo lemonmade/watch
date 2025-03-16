@@ -1,6 +1,6 @@
 {
   "extends": "@quilted/typescript/tsconfig.workspace.json",
-  "include": ["configuration/**/*.ts", "**/configuration/**/*.ts", "scripts/**/*.ts", "tools/**/*.ts", "graphql.config.ts"],
+  "include": ["tools/**/*.ts", "**/tools/**/*.ts", "scripts/**/*.ts", "graphql.config.ts"],
   "exclude": ["build"],
   "compilerOptions": {
     "outDir": "build/typescript/workspace",
