@@ -155,7 +155,7 @@ router.any((request, {env}) => respondFromApp(request, {env}));
 export default router;
 
 function respondFromApp(request: Request, {env}: {env: Environment}) {
-  const previewCommit = request.headers.has(PREVIEW_HEADER);
+  const previewCommit = request.headers.get(PREVIEW_HEADER);
 
   if (previewCommit) {
     const previewWorker = env.WATCH_PREVIEWS.get(`app.${previewCommit}`);
