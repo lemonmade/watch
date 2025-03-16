@@ -2,5 +2,10 @@
   "extends": "@quilted/typescript/tsconfig.project.json",
   "include": ["**/*"],
   "exclude": ["build"],
-  "references": [{"path": "../email"}]
+  "compilerOptions": {
+    "paths": {
+      "~/global/*": ["../../global/*"]
+    }
+  },
+  "references": [{"path": "../email"}, {"path": "../../global"}]
 }

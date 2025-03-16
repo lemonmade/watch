@@ -42,6 +42,10 @@ binding = "SERVICE_TMDB_REFRESHER"
 service = "watch-tmdb-refresher"
 environment = "production"
 
+[[dispatch_namespaces]]
+binding = "WATCH_PREVIEWS"
+namespace = "watch-previews"
+
 [[r2_buckets]]
 binding = "APP_ASSETS"
 bucket_name = "watch-assets"

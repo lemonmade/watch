@@ -5,8 +5,11 @@ import type {
   Fetcher,
   Service,
   Rpc,
+  DispatchNamespace,
 } from '@cloudflare/workers-types';
 import type {CloudflareRequestContext} from '@quilted/cloudflare';
+
+import {PREVIEW_HEADER} from '~/global/preview.ts';
 
 import type {EmailService} from '../email';
 
@@ -21,6 +24,7 @@ interface Environment {
   SERVICE_METRICS: Fetcher;
   SERVICE_IMAGES: Fetcher;
   PERSISTED_QUERIES: KVNamespace;
+  WATCH_PREVIEWS: DispatchNamespace;
 }
 
 declare module '@quilted/cloudflare' {
@@ -151,6 +155,13 @@ router.any((request, {env}) => respondFromApp(request, {env}));
 export default router;
 
 function respondFromApp(request: Request, {env}: {env: Environment}) {
+  const previewCommit = request.headers.has(PREVIEW_HEADER);
+
+  if (previewCommit) {
+    const previewWorker = env.WATCH_PREVIEWS.get(`app.${previewCommit}`);
+    return previewWorker.fetch(request as any) as any as Promise<Response>;
+  }
+
   return env.SERVICE_APP.fetch(request as any) as any as Promise<Response>;
 }
 
