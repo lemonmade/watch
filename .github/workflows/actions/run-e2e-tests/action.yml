@@ -8,8 +8,22 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install Playwright Browsers
-      run: pnpm exec playwright install --with-deps
+    - name: Get installed Playwright version
+      id: playwright-version
+      run: echo "PLAYWRIGHT_VERSION=$(pnpm tsx ./tests/e2e/scripts/playwright-version.ts)" >> $GITHUB_ENV
+      shell: bash
+    - name: Cache playwright binaries
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: |
+          ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+    - run: pnpm exec playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+    - run: pnpm exec playwright install-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
       shell: bash
     - name: Run Playwright tests
       run: pnpm test.e2e
