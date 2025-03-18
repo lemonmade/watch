@@ -1,0 +1,5 @@
+watch.lemon.dev {
+  reverse_proxy localhost:8912
+
+  tls tools/caddy/tls/watch.lemon.dev.pem tools/caddy/tls/watch.lemon.dev-key.pem
+}

@@ -21,7 +21,7 @@ const deployCommand = spawn('pnpm', [
   `--name`,
   dispatchName,
   `--config`,
-  `./configuration/wrangler.toml`,
+  `./tools/wrangler.toml`,
 ]);
 
 console.log('wrangler deploy:');
@@ -37,7 +37,7 @@ console.log();
 console.log(`Adding secrets...`);
 
 const secretsJSON = await decryptFile(
-  path.resolve(`./configuration/cloudflare/secrets.production.json`),
+  path.resolve(`./tools/cloudflare/secrets.production.json`),
   {key: process.env.SECRETS_ENCRYPTION_KEY!},
 );
 

@@ -26,7 +26,7 @@
   "types": "./build/typescript/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "build": "rollup --config configuration/rollup.config.js"
+    "build": "rollup --config ./tools/rollup.config.js"
   },
   "dependencies": {
     "@preact/signals-core": "^1.8.0",
