@@ -1,7 +1,7 @@
 import {quiltApp} from '@quilted/rollup/app';
 import {cloudflareWorkers} from '@quilted/cloudflare/craft';
 
-import {prismaFromEdge} from '../../configuration/rollup/prisma.js';
+import {prismaFromEdge} from '../../tools/rollup/prisma.js';
 
 const configuration = await quiltApp({
   assets: {baseURL: '/assets/app/'},

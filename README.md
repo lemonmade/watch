@@ -23,7 +23,7 @@ If you have not already, install the global dependencies:
 brew install mkcert
 brew install caddy
 mkcert -install
-mkcert -cert-file configuration/caddy/tls/watch.lemon.dev.pem -key-file configuration/caddy/tls/watch.lemon.dev-key.pem "watch.lemon.dev"
+mkcert -cert-file tools/caddy/tls/watch.lemon.dev.pem -key-file tools/caddy/tls/watch.lemon.dev-key.pem "watch.lemon.dev"
 
 nvm install
 pnpm install
@@ -87,11 +87,11 @@ To add a new secret that will be deployed to production:
 
 ```sh
 # key stored in private notes
-pnpm secrets.encrypt --name MY_KEY --value secret-value --file ./app/configuration/cloudflare/secrets.production.json --key abc
+pnpm secrets.encrypt --name MY_KEY --value secret-value --file ./app/tools/cloudflare/secrets.production.json --key abc
 ```
 
 To read the secrets locally:
 
 ```sh
-pnpm secrets.decrypt --file ./app/configuration/cloudflare/secrets.production.json --key abc
+pnpm secrets.decrypt --file ./app/tools/cloudflare/secrets.production.json --key abc
 ```

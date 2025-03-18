@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "pnpm -r run build",
-    "develop": "concurrently --names \"app,graphql-types,planetscale,caddy\" --prefix-colors \"bgBlue.bold,bgMagenta.bold,bgGreen.bold,bgYellow.bold\" \"pnpm --filter ./app run develop\" \"quilt-graphql-typescript --watch\" \"pscale connect watch-test-db develop --port 3309\" \"caddy start --config ./configuration/caddy/Caddyfile\"",
+    "develop": "concurrently --names \"app,graphql-types,planetscale,caddy\" --prefix-colors \"bgBlue.bold,bgMagenta.bold,bgGreen.bold,bgYellow.bold\" \"pnpm --filter ./app run develop\" \"quilt-graphql-typescript --watch\" \"pscale connect watch-test-db develop --port 3309\" \"caddy start --config ./tools/caddy/Caddyfile\"",
     "format": "prettier --write --cache .",
     "lint": "prettier --check --cache .",
     "test": "vitest",
