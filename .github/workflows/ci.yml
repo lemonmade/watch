@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  push:
+  pull_request:
     branches:
-      - '**'
-      - '!main'
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -55,6 +54,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: 9bfdb755def60e50760e33036c6f1624
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           SECRETS_ENCRYPTION_KEY: ${{ secrets.SECRETS_ENCRYPTION_KEY }}
+          PREVIEW_COMMIT: ${{github.event.pull_request.head.sha}}
 
   e2e:
     name: E2E tests 🖥️
@@ -67,3 +67,4 @@ jobs:
       - uses: ./.github/workflows/actions/run-e2e-tests
         with:
           secret: ${{secrets.JWT_E2E_TEST_HEADER_SECRET}}
+          preview-commit: ${{github.event.pull_request.head.sha}}

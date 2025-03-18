@@ -7,7 +7,9 @@ import {decryptFile} from '../../tools/secrets/decrypt.ts';
 
 const cloudflare = new Cloudflare();
 
-const {output: gitHash} = await spawn('git', ['rev-parse', 'HEAD']);
+const gitHash =
+  process.env.PREVIEW_COMMIT ??
+  (await spawn('git', ['rev-parse', 'HEAD'])).output;
 
 const dispatchNamespace = 'watch-previews';
 const dispatchName = `app.${gitHash}`;
