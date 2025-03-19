@@ -22,11 +22,7 @@ runs:
         path: |
           ~/.cache/ms-playwright
         key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-    - run: pnpm exec playwright install --with-deps
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
-      shell: bash
-    - run: pnpm exec playwright install-deps
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
+    - run: pnpm exec playwright install --with-deps --only-shell
       shell: bash
     - name: Run Playwright tests
       run: pnpm test.e2e
