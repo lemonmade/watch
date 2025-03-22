@@ -46,7 +46,7 @@
     "cloudflare": "^4.1.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.0.0",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.25.1",
     "nano-spawn": "^0.2.0",
     "nodemon": "^2.0.0",
     "preact": "^10.26.2",
