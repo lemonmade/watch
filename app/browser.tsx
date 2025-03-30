@@ -14,8 +14,10 @@ import type {User} from '~/shared/user.ts';
 import App from './App.tsx';
 import {EXTENSION_POINTS} from './clips.ts';
 import {GraphQLForBrowser} from './browser/graphql.ts';
+import {EnvironmentForBrowser} from './browser/environment.ts';
 
 const browser = new Browser();
+const environment = new EnvironmentForBrowser(browser);
 
 const user = browser.serializations.get<User | undefined>('app.user');
 
@@ -36,6 +38,7 @@ const element = document.querySelector('#app')!;
 const graphql = new GraphQLForBrowser();
 
 const context = {
+  environment,
   user,
   router,
   graphql,

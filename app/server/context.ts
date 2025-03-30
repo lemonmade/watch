@@ -5,6 +5,8 @@ import {
   type PrismaClient,
 } from '~/global/database.ts';
 
+import {EnvironmentForRequest} from './environment.ts';
+
 export interface Environment {
   readonly DATABASE_URL: string;
   readonly JWT_DEFAULT_SECRET: string;
@@ -24,6 +26,7 @@ export type HonoContext = HonoContextType<HonoEnv>;
 
 export interface HonoContextVariableMap {
   readonly prisma: PrismaContext;
+  readonly environment: EnvironmentForRequest;
 }
 
 declare module 'hono' {

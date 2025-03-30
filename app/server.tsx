@@ -7,6 +7,7 @@ import {PrismaContext, type Environment} from './server/context.ts';
 import {handleApp} from './server/app.tsx';
 import auth from './server/auth.ts';
 import graphql from './server/graphql.ts';
+import {EnvironmentForRequest} from './server/environment.ts';
 
 // Create Hono app
 const app = new Hono<{Bindings: Environment}>();
@@ -14,6 +15,7 @@ const app = new Hono<{Bindings: Environment}>();
 // Add Prisma to the Hono context
 app.use('*', async (c, next) => {
   c.set('prisma', new PrismaContext(c.env.DATABASE_URL));
+  c.set('environment', new EnvironmentForRequest(c.req.raw));
   await next();
 });
 

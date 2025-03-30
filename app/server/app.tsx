@@ -8,6 +8,7 @@ import {ClipsManager} from '~/shared/clips.ts';
 
 import App from '../App.tsx';
 import {EXTENSION_POINTS} from '../clips.ts';
+import type {SerializedEnvironmentFromServer} from '../browser/environment.ts';
 
 import {authenticate} from './shared/auth.ts';
 import {createResponseHandler} from './shared/response.ts';
@@ -16,7 +17,7 @@ const assets = new BrowserAssets();
 
 export const handleApp = createResponseHandler(async function handleApp(
   request,
-  {env, var: {prisma: prismaContext}},
+  {env, var: {prisma: prismaContext, environment}},
 ) {
   if (request.method !== 'GET') {
     return new Response(null, {status: 405, headers: {Allow: 'GET'}});
@@ -64,6 +65,7 @@ export const handleApp = createResponseHandler(async function handleApp(
   const graphql = {cache: new GraphQLCache(), fetch: fetchGraphQL};
 
   const context = {
+    environment,
     user,
     router,
     graphql,
@@ -75,7 +77,16 @@ export const handleApp = createResponseHandler(async function handleApp(
   const response = await renderAppToHTMLResponse(<App context={context} />, {
     assets,
     request,
-    serializations: [['app.user', user]],
+    serializations: [
+      ['app.user', user],
+      [
+        'app.environment',
+        {
+          preview: environment.preview,
+          debug: environment.debug,
+        } satisfies SerializedEnvironmentFromServer,
+      ],
+    ],
   });
 
   return response;
