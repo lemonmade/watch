@@ -4,6 +4,7 @@ import type {BrowserTestMock} from '@quilted/quilt/browser/testing';
 import type {AppContext} from '~/shared/context.ts';
 
 import type {GraphQLController} from '../graphql.ts';
+import type {TestEnvironment} from '../environment.ts';
 
 export interface RenderOptions {
   /**
@@ -45,6 +46,11 @@ export interface RenderOptions {
    * ```
    */
   readonly graphql?: GraphQLController;
+
+  /**
+   * A custom environment for this component test.
+   */
+  readonly environment?: TestEnvironment;
 }
 
 export interface RenderContext extends AppContext {
@@ -62,6 +68,11 @@ export interface RenderContext extends AppContext {
    * The GraphQL controller used for this component test.
    */
   readonly graphQLController: GraphQLController;
+
+  /**
+   * The environment for this component test.
+   */
+  readonly environment: TestEnvironment;
 }
 
 export interface RenderActions extends Record<string, never> {}

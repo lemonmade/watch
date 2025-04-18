@@ -8,9 +8,9 @@ import {Localization} from '@quilted/quilt/localize';
 
 import {AppContextReact} from '~/shared/context.ts';
 
+import type {RenderOptions, RenderContext, RenderActions} from './types.ts';
 import {GraphQLTesting, GraphQLController, GraphQLCache} from '../graphql.ts';
-
-import {RenderOptions, RenderContext, RenderActions} from './types.ts';
+import {TestEnvironment} from '../environment.ts';
 
 /**
  * Renders a component with test-friendly versions of all global
@@ -29,12 +29,14 @@ export const renderApp = createRender<
     router = new TestRouter(),
     browser = new BrowserTestMock(),
     graphql = new GraphQLController(),
+    environment = new TestEnvironment(),
   }) {
     return {
       router,
       browser,
       graphql: {cache: new GraphQLCache(), fetch: graphql.fetch},
       graphQLController: graphql,
+      environment,
     };
   },
   // Render all of our app-wide context providers around each component under test.
