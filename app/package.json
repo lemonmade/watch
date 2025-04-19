@@ -54,7 +54,7 @@
     "jose": "^4.14.4",
     "jsdom": "^25.0.0",
     "mime": "^2.5.0",
-    "nanoid": "^4.0.0",
+    "nanoid": "^5.0.9",
     "preact": "^10.26.2",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
