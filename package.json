@@ -60,7 +60,7 @@
     "typescript": "^5.5.4",
     "vite": "^6.1.1",
     "vitest": "^3.0.6",
-    "wrangler": "^3.78.0"
+    "wrangler": "^3.114.17"
   },
   "packageManager": "pnpm@10.4.1+sha256.4b702887986995933d4300836b04d6d02a43bc72b52e4f7e93a4ca608b959197",
   "prettier": "@quilted/prettier",
