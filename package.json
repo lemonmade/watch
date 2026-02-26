@@ -54,7 +54,7 @@
     "prisma": "^6.4.0",
     "react": "npm:@quilted/react@^18.2.0",
     "react-dom": "npm:@quilted/react-dom@^18.2.0",
-    "rollup": "^4.34.8",
+    "rollup": "^4.59.0",
     "source-map-support": "^0.5.21",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
