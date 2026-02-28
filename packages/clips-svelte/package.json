@@ -46,6 +46,6 @@
   },
   "devDependencies": {
     "@watching/clips": "workspace:^",
-    "svelte": "^4.2.0"
+    "svelte": "^5.53.5"
   }
 }
